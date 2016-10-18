@@ -1,9 +1,8 @@
 package com.bis.sourcelead.service;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 
@@ -57,7 +56,7 @@ public interface ProjectsService {
 	
 		Integer getUserAssignedProjectsCount(Long userId,Long orgLocationId);
 		
-		List<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
+		HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
 		
 		void  userEmailNotificationForTimeSheetSubmission(User user, List<TimesheetSubmissions> timesheetSubmissions) throws Exception;
 		

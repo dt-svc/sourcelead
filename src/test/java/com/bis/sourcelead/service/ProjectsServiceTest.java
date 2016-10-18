@@ -3,6 +3,7 @@ package com.bis.sourcelead.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import org.junit.Test;
@@ -195,7 +196,7 @@ public class ProjectsServiceTest {
 	 */
 	@Test
 	public void getAllUserTimeSheetSubmissionStatus() throws Exception{
-		List<User> usrList = projectsService.getAllUserTimeSheetSubmissionStatus();
+		HashSet<User> usrList = projectsService.getAllUserTimeSheetSubmissionStatus();
 		for(User user : usrList){
 			if("Admin".equalsIgnoreCase(user.getUserType()))
 				continue;

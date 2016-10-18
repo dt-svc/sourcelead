@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -496,20 +497,32 @@ public class ProjectsDaoImpl implements ProjectsDao{
  */
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public List<User> getAllUserTimeSheetSubmissionStatus() throws Exception {
+		public HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception {
 			
 			Session session = this.sessionFactory.getCurrentSession();
-			java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
-			Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
-			currentCal.setLenient(false);
-			currentCal.setTime(new Date());
-			Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "MON");
-			Date MondayDate = startMonday.getTime();
-			java.sql.Date  startMondayDate = new java.sql.Date(MondayDate.getTime());
-			String query = "from User user where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where ts.startDate = :startDate and ts.status = '1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
-			List<User> userList  = session.createQuery(query.toString()).setDate("startDate", startMondayDate).setCacheable(true).list(); 
+			Date currentWeekStartDate = CalendarUtil.getCurrentWeekDay("MON");
+			java.sql.Date  currentWeekStartDayDate = new java.sql.Date(currentWeekStartDate.getTime());
+			
+			Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+			cal.setLenient(false);
+			cal.setTime(new Date());
+			
+			Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+			
+			Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
+			Date previousWeekStartDate = previousMonday.getTime();
+			java.sql.Date  previousWeekStartDayDate = new java.sql.Date(previousWeekStartDate.getTime());
+			
+			
+			
+			String query = "from User user where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where  (ts.startDate >= :frmDate and ts.endDate < :endsDate)  and ts.status = '1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
+			List<User> userList  =  session.createQuery(query.toString()).setDate("frmDate", previousWeekStartDayDate).setDate("endsDate", currentWeekStartDayDate).setCacheable(true).list(); 
 			logger.debug("The Total Employees which are not submitted the Time sheets within a week are : "+userList.size());
-			return userList;
+			HashSet<User> userSet  = null;
+			if(userList != null && !userList.isEmpty()){
+				userSet = new HashSet<>(userList);
+			}
+			return userSet;
 		}
 
 

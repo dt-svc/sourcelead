@@ -429,7 +429,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 
 	@Override
-	public List<User> getAllUserTimeSheetSubmissionStatus() throws Exception {
+	public HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception {
 		
 		return projectsDao.getAllUserTimeSheetSubmissionStatus();
 	}
