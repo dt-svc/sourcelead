@@ -251,7 +251,7 @@ function closeCertificatePopup(){
 								if (json.isCurrentPosition == 'Y' && json.isCurrentPosition != '' && json.isCurrentPosition !== 'undefined') {
 									result = result	+ '	 <label> <input type="checkbox" id="isCurrentPositionEdit"  value="'+ json.isCurrentPosition+ '"   checked="checked"    onClick ="iscurrentPositionEdit();" name = "isCurrentPosition"> Is Current Position</label>';
 								} else {
-									result = result	+ '	     <label> <input type="checkbox" id="isCurrentPosition"  value="'+ json.isCurrentPosition+ '" onClick ="iscurrentPositionEdit();" name= "isCurrentPosition"> Is Current Position</label>';
+									result = result	+ '	     <label> <input type="checkbox" id="isCurrentPositionEdit"  value="'+ json.isCurrentPosition+ '" onClick ="iscurrentPositionEdit();" name= "isCurrentPosition"> Is Current Position</label>';
 								}
 								result = result + '	                 </div>';
 								result = result + '	               </div>';
