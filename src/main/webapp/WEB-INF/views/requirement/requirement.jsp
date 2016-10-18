@@ -76,7 +76,6 @@ background-color: #ccc;
 <script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
-			
 			$(".isClient").click(function(){  
 		        $(".clientDetails").toggleClass('hidden', 500);
 		    });
@@ -1256,8 +1255,8 @@ background-color: #ccc;
     <div class="col-lg-12">
       <div class="pull-right">
         <input type="button" value="Submit for Approval" id="submitForApproval" class="btn btn-primary" style="display:none;">
-        <input type="button" value="Draft" class="btn btn-danger">
-        <input type="button" value="Save" id="store_requirement" onclick="storeRequirement();" class="btn btn-primary">
+        <input type="button" value="Draft" id="draft" class="btn btn-danger">
+        <input type="button" value="Save" id="save" onclick="storeRequirement();" class="btn btn-primary" >
         <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
       </div>
     </div>
@@ -1725,8 +1724,15 @@ function addLvl(){
 
 <script>
 function approvalType(type){
-	    $("#submitForApproval").removeAttr("style");
-	  /*   $("#store_requirement").attr("width","500"); */
+
+		if($("#apprverReq").is(':checked')){
+			$("#submitForApproval").removeAttr("style");
+		    $("#save").attr("style","display:none"); 
+		}
+		else{
+			$("#save").removeAttr("style");
+		    $("#submitForApproval").attr("style","display:none"); 
+		}
 	    
 	    $(".parallel, #parallel, .apprverReq").show();
 		$(".sequential").hide();
