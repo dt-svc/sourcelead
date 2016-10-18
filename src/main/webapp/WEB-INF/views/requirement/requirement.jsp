@@ -981,7 +981,7 @@ background-color: #ccc;
          <div class="form-group parallel" style="display:none;">
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
-                    <select multiple class="chosen-select form-control" name="parallelApprover">
+                    <select multiple class="chosen-select form-control" name="parallelApprover" field-name="Approver" data-validation="required">
                        <option disabled>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
@@ -994,7 +994,7 @@ background-color: #ccc;
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select multiple class="chosen-select form-control" name="sequentialApprover1">
+                    <select  class="chosen-select form-control" name="sequentialApprover1" field-name="Approver" data-validation="required">
                        <option disabled>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
@@ -1009,7 +1009,7 @@ background-color: #ccc;
               <div class="form-group">
               <div class="col-md-3">Approver 2</div>
               <div class="col-md-9">
-              		<select multiple class="chosen-select form-control" name="sequentialApprover2">
+              		<select  class="chosen-select form-control" name="sequentialApprover2" field-name="Approver 2" data-validation="required">
                        <option disabled>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
@@ -1304,8 +1304,20 @@ background-color: #ccc;
 				return false;
 		 }  
 	} 
+	
+	$('body').on('blur', '#requirement_form', function() {
+		$("#requirement_form").showHelpOnFocus();
+		$("#requirement_form").validateOnBlur(false, validationSettings);
+	});
 </script>
-
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
  <script>
 function storeTeam(){
 	
