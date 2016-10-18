@@ -110,8 +110,6 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 			    	}
 		    	}
 	    	//send mail to assigned Project Manager
-	    	String teamMembersList = "";
-	    	
 			if(jsonObj.has("level2Manager")){ 	
 				if(!jsonObj.getString("level2Manager").isEmpty()){
 					User approverUserId2 = new User();
@@ -127,8 +125,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 			 }
 		 
 		//admin as approver hierarchy ..
-			 
-		Collection<User> uLsit = userService.getUsersByUserRoles(loginOrgLocation.getId());
+		/*Collection<User> uLsit = userService.getUsersByUserRoles(loginOrgLocation.getId());
 		CopyOnWriteArrayList<User> userLsit = new CopyOnWriteArrayList<User>(uLsit);
 		if(userLsit != null && !userLsit.isEmpty()){
 		for(User userRole : userLsit){
@@ -147,7 +144,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 			  } 
 			  
 		}
-		}
+		}*/
 		return projectMemberList;
 	}
 	
