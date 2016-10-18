@@ -23,7 +23,6 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 public class SourceleadResumeParser {
 	
-@SuppressWarnings("unused")
 /**@param
  *  Sourcelead Resume Parser
  *  Using this we can able to get candidate details from upload resume
@@ -31,7 +30,7 @@ public class SourceleadResumeParser {
  *  @author: Naresh Bolisetty
  *  @date: 17-October-2016
  */
-private  String getCandidateDetailsFromResume(byte[] source)
+public  String getCandidateDetailsFromResume(byte[] source)
 				throws IOException, SAXException, TikaException {
 				
     	    BodyContentHandler htmlHandler = new BodyContentHandler();
