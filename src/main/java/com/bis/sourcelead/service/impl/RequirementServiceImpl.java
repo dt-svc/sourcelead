@@ -197,14 +197,24 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			
 			//approval mechanisum....
-			/*HashSet<RequirementApproverHierarchy> requirementApproverHierarchyList = new HashSet<RequirementApproverHierarchy>();
+			HashSet<RequirementApproverHierarchy> requirementApproverHierarchyList = new HashSet<RequirementApproverHierarchy>();
 			if(jsonObj.has("parallelApprover") && StringUtils.isNotEmpty(jsonObj.getString("parallelApprover"))){
 				  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
-				  rah.setId(Long.parseLong(jsonObj.getString("parallelApprover")));
+				  
+				  User approverUserId = new User();
+				  approverUserId.setId(Long.parseLong(jsonObj.getString("parallelApprover")));
+				  rah.setApproverUserId(approverUserId);
+				  
 				  rah.setRequirementId(requirement);
+				  
+				  rah.setCreatedDate(commonUtil.currentDate());
+				  rah.setCreatedBy(user.getUserCode());
+				  rah.setUpdatedBy(user.getUserCode());
+				  rah.setUpdatedDate(commonUtil.currentDate());
+				  
 				  requirementApproverHierarchyList.add(rah);
 			} 
-			requirement.setRequirementApprover(requirementApproverHierarchyList);*/
+			requirement.setRequirementApprover(requirementApproverHierarchyList);
 			
 			if(jsonObj.has("manager") && StringUtils.isNotEmpty(jsonObj.getString("manager"))){
 				    User managerUserId = new User();

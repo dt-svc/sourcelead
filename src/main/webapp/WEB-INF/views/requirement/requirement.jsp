@@ -981,7 +981,7 @@ background-color: #ccc;
          <div class="form-group parallel" style="display:none;">
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
-                    <select multiple class="chosen-select form-control">
+                    <select multiple class="chosen-select form-control" name="parallelApprover">
                        <option disabled>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
@@ -989,7 +989,6 @@ background-color: #ccc;
                     </select>
                 </div>
          </div>
-          
          
          <div class="form-group sequential" id="addLvl" style="display:none;">
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
@@ -1001,12 +1000,6 @@ background-color: #ccc;
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
 		               </c:forEach>
                     </select>
-                   <!--  <select class="chosen-select form-control">
-                      <option disabled>Select Client</option>
-                      <option>Client-1</option>
-                      <option>Client-2</option>
-                      <option>Client-3</option>
-                    </select> -->
                     <span onClick="addLvl();"><i class="fa fa-level-down btn btn-default formic1" data-toggle="tooltip" data-placement="left" title="Add Level"></i></span>
                     </div>
                 </div>
@@ -1039,7 +1032,7 @@ background-color: #ccc;
                 <option>Manager-2</option>
                 <option>Manager-3</option>
               </select> -->
-              <select multiple class="chosen-select form-control"  data-validation = "required" field-name = "Manager">
+              <select multiple class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager">
                        <option disabled>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
@@ -1170,7 +1163,7 @@ background-color: #ccc;
           <div class="form-group">
             <label class="col-md-3">Priority<span class="text-danger">*</span></label>
             <div class="col-md-9">
-              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" field-name = "Priority">
+              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" field-name = "Priority" name="priority">
                 <option value="">Select Priority</option>
                 <option value="Urgent">Urgent</option>
                 <option value="High">High</option>
