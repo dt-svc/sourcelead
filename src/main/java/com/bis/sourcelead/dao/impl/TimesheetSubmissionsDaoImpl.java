@@ -137,7 +137,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Date getNextMondayByProjectMemberId(Long pojectMemberId) {
 		Session session = this.sessionFactory.getCurrentSession();
-         String query = "select MAX(ts.startDate) from TimesheetSubmissions ts  where ts.projectMembers.id =:pojectMemberId and ts.status = 'ACTIVE' ";
+         String query = "select MAX(ts.startDate) from TimesheetSubmissions ts  where ts.projectMembers.id =:pojectMemberId and ts.status = '1' ";
          List<java.sql.Timestamp>  wtsList = (List<java.sql.Timestamp>)session.createQuery(query).setLong("pojectMemberId", pojectMemberId).list();
          Date date = null;
           if(wtsList != null && !wtsList.isEmpty()){
@@ -158,7 +158,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<TimesheetSubmissions> getApprovalTimesheetSubmissions(Long userId) throws Exception {
 			Session session = this.sessionFactory.getCurrentSession();  
-			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user user where user.userState != 'INACTIVE'  and  ts.status != 'INACTIVE' and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:approverUserId))  GROUP BY emp.id";   
+			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user user where user.userState != 'INACTIVE'  and  ts.status != '0' and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:approverUserId))  GROUP BY emp.id";   
 			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("approverUserId", userId).list();
 		    for(TimesheetSubmissions ts : timesheetSubmissionsList){
 				HashMap<String, Date> submissionDateRange =	 getMinAndMaxTimesheetSubmissionDatesForApprover(userId,ts.getProjectMembers().getEmployee().getUser().getId());
@@ -181,7 +181,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sDate = new java.sql.Date(startDate.getTime());
-		String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and ts.status = 'ACTIVE' and ts.startDate =:startDate and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";
+		String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and ts.status = '1' and ts.startDate =:startDate and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";
 		List<TimesheetSubmissions> timesheetSubmissionsList1 = session.createQuery(query1)
 																		  .setLong("empId", projectMemberId)	
 					                                                      .setLong("userId", userId)
@@ -218,7 +218,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 				sqlStartDate = new java.sql.Date(startDate.getTime());
 			}
 			
-			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.projects pr  left join fetch pm.employee emp left join fetch emp.user where ( pm.id IN(select pmh.projectMemberId.id from ProjectMembersHistory pmh where  pmh.projectTerminationDate IS NULL OR (pmh.projectTerminationDate >= :startDate) ) ) and emp.user.id = :userId and ts.status ='ACTIVE' and ts.startDate = :startDate  order by pr.id ";  
+			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.projects pr  left join fetch pm.employee emp left join fetch emp.user where ( pm.id IN(select pmh.projectMemberId.id from ProjectMembersHistory pmh where  pmh.projectTerminationDate IS NULL OR (pmh.projectTerminationDate >= :startDate) ) ) and emp.user.id = :userId and ts.status ='1' and ts.startDate = :startDate  order by pr.id ";  
 			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("userId", userId).setParameter("startDate", sqlStartDate).list();
 			return timesheetSubmissionsList;
 	}
@@ -230,7 +230,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			
 	    // TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();  
-		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))  and ts.status = 'ACTIVE'  and ts.startDate =:startDate GROUP BY emp.id,ts.startDate";   
+		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))  and ts.status = '1'  and ts.startDate =:startDate GROUP BY emp.id,ts.startDate";   
 		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setInteger("userId", userId.intValue()).setParameter("startDate", startDate).list();
 		
 		
@@ -298,7 +298,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	    // TODO Auto-generated method stub
 		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
 		Session session = this.sessionFactory.getCurrentSession();  
-		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where  ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :empUserId)  and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))  and ts.status = 'ACTIVE' and ts.startDate =:startDate GROUP BY emp.id,ts.startDate";   
+		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where  ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :empUserId)  and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))  and ts.status = '1' and ts.startDate =:startDate GROUP BY emp.id,ts.startDate";   
 		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("userId", userId).setLong("empUserId", empUserId).setParameter("startDate", sqlStartDate).list();
 		
 		
@@ -388,7 +388,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		//(ts.projectMembers.projectEndDate IS NULL OR  (ts.projectMembers.projectEndDate > ts.startDate))
 		
 		  Session session = this.sessionFactory.getCurrentSession();
-		  String query = "select  distinct min(ts.startDate),max(ts.endDate) from TimesheetSubmissions ts  where ts.status = 'ACTIVE' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)";
+		  String query = "select  distinct min(ts.startDate),max(ts.endDate) from TimesheetSubmissions ts  where ts.status = '1' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)";
 		  List results = session.createQuery(query).setLong("userId", userId).list();
 													
 		  HashMap<String,Date> dateList =  new HashMap<String,Date>();;
@@ -632,7 +632,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	public HashMap<String, Date> getMinAndMaxTimesheetSubmissionDatesForApprover(Long approverUserId, Long empUserId)
 			throws Exception {
 		  Session session = this.sessionFactory.getCurrentSession();
-		  String query = "select  distinct min(ts.startDate),max(ts.endDate) from TimesheetSubmissions ts  where ts.status = 'ACTIVE' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :empUserId)  and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :approverUserId))";
+		  String query = "select  distinct min(ts.startDate),max(ts.endDate) from TimesheetSubmissions ts  where ts.status = '1' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :empUserId)  and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :approverUserId))";
 		  List results = session.createQuery(query).setLong("empUserId", empUserId).setLong("approverUserId", approverUserId).list();
 													
 		  HashMap<String,Date> dateList =  new HashMap<String,Date>();
@@ -666,7 +666,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			sqlCurrentStartDate = new java.sql.Date(currentStartDate.getTime());
 		}  
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "select  distinct max(ts.startDate) from TimesheetSubmissions ts   where ts.startDate < :currentStartDate and  ts.status = 'ACTIVE' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)";
+	    String query = "select  distinct max(ts.startDate) from TimesheetSubmissions ts   where ts.startDate < :currentStartDate and  ts.status = '1' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)";
 		List results = session.createQuery(query).setLong("userId", userId).setParameter("currentStartDate", sqlCurrentStartDate).list();
 													
 		  Date leftNavStartDate=  null;
@@ -689,7 +689,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		  if(currentStartDate != null){
 			 sqlCurrentStartDate = new java.sql.Date(currentStartDate.getTime());
 		  } 
-		  String query = "select  distinct min(ts.startDate) from TimesheetSubmissions  ts where ts.startDate > :currentStartDate and ts.status = 'ACTIVE' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)";
+		  String query = "select  distinct min(ts.startDate) from TimesheetSubmissions  ts where ts.startDate > :currentStartDate and ts.status = '1' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)";
 		  List results = session.createQuery(query).setLong("userId", userId).setParameter("currentStartDate", sqlCurrentStartDate).list();
 													
 		  Date rightNavStartDate=  null;
@@ -713,7 +713,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		  if(currentStartDate != null){
 			 sqlCurrentStartDate = new java.sql.Date(currentStartDate.getTime());
 		  } 
-		  String query = "select  distinct max(ts.startDate) from TimesheetSubmissions ts  where   ts.startDate < :currentStartDate and ts.status = 'ACTIVE' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :empUserId)  and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :approverUserId))";
+		  String query = "select  distinct max(ts.startDate) from TimesheetSubmissions ts  where   ts.startDate < :currentStartDate and ts.status = '1' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :empUserId)  and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :approverUserId))";
 		  List results = session.createQuery(query).setLong("empUserId", empUserId).setLong("approverUserId", approverUserId).setParameter("currentStartDate", sqlCurrentStartDate).list();
 													
 		  Date leftNavStartDate=  null;
@@ -737,7 +737,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		  if(currentStartDate != null){
 			 sqlCurrentStartDate = new java.sql.Date(currentStartDate.getTime());
 		  } 
-		  String query = "select  distinct min(ts.startDate) from TimesheetSubmissions ts  where  ts.startDate > :currentStartDate and ts.status = 'ACTIVE' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :empUserId)  and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :approverUserId))";
+		  String query = "select  distinct min(ts.startDate) from TimesheetSubmissions ts  where  ts.startDate > :currentStartDate and ts.status = '1' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :empUserId)  and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :approverUserId))";
 		  List results = session.createQuery(query).setLong("empUserId", empUserId).setLong("approverUserId", approverUserId).setParameter("currentStartDate", sqlCurrentStartDate).list();
 													
 		  Date rightNavStartDate=  null;

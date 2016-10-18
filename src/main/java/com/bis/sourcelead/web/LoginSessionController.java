@@ -212,7 +212,7 @@ public class LoginSessionController {
 					    String[] parts = date.toString().split(" ");
 					    notifications.setDateValue(parts[0]);
 					    final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
-					    final Date dateObj = sdf.parse(parts[1].toString());
+					    final Date dateObj = sdf.parse(parts[1]);
 					    notifications.setTime(new SimpleDateFormat("K:mm a").format(dateObj));
 					    
 					    // calculating days b/w dates 
