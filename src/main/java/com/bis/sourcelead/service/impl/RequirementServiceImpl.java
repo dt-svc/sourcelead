@@ -338,8 +338,8 @@ public class RequirementServiceImpl implements RequirementService {
 	*/
 
 	@Override
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients) throws Exception {
-		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients);
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,Long  userId) throws Exception {
+		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients, userId);
 	}
 
 	
