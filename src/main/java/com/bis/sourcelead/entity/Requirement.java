@@ -561,5 +561,21 @@ import org.hibernate.annotations.FetchMode;
 		this.reqSkillsList = reqSkillsList;
 	}
 
+	public String getSubmissionTemplateJsonString() {
+		return submissionTemplateJsonString;
+	}
+
+	public void setSubmissionTemplateJsonString(String submissionTemplateJsonString) {
+		this.submissionTemplateJsonString = submissionTemplateJsonString;
+	}
+
+	public String getClientSubmissionTemplateJsonString() {
+		return clientSubmissionTemplateJsonString;
+	}
+
+	public void setClientSubmissionTemplateJsonString(String clientSubmissionTemplateJsonString) {
+		this.clientSubmissionTemplateJsonString = clientSubmissionTemplateJsonString;
+	}
+
 		
 }
