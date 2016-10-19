@@ -432,10 +432,10 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			spocInvitationStatus = spocInvitationStatus + "spoc.invitationStatus = 'New' or ";
 		}
 		if (Arrays.asList(invitations).contains("Accepted")) {
-			spocInvitationStatus = spocInvitationStatus + "spoc.invitationStatus = 'Accept' or ";
+			spocInvitationStatus = spocInvitationStatus + "spoc.invitationStatus = 'Accepted' or ";
 		}
 		if (Arrays.asList(invitations).contains("Rejected")) {
-			spocInvitationStatus = spocInvitationStatus + "spoc.invitationStatus = 'Reject' or ";
+			spocInvitationStatus = spocInvitationStatus + "spoc.invitationStatus = 'Rejected' or ";
 		}
 		
 		if(!spocInvitationStatus.equalsIgnoreCase("")){
@@ -445,6 +445,9 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		
 		//vendor length based on vendors List
 		if (client[0] != null && client[0].length() > 0) {
+			if(!spocStatus.equalsIgnoreCase("") && !spocInvitationStatus.equalsIgnoreCase("")){
+				spocStatus = spocStatus +" and ";
+			}
 				for (String clnt : client) {
 					String subquery1 = "";
 					if(spocStatus.equalsIgnoreCase("") && spocInvitationStatus.equalsIgnoreCase("")){
@@ -453,7 +456,6 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 						subquery1 = "orgrelation.id =" + clnt+" and ";
 					}else{
 					    subquery1 = "orgrelation.id =" + clnt+" and ";
-					    spocStatus = spocStatus +" and ";
 					}
 					
 					if (isadmin) {
