@@ -116,6 +116,9 @@ public class OrgSpoc {
 	
 	@Transient
 	private Long tempOwnerId;
+	
+	@Transient
+	private Long tempSpocId;
 
 	public Long getSpocLocationId() {
 		return spocLocationId;
@@ -346,5 +349,13 @@ public class OrgSpoc {
 
 	public void setTempOwnerId(Long tempOwnerId) {
 		this.tempOwnerId = tempOwnerId;
+	}
+
+	public Long getTempSpocId() {
+		return tempSpocId;
+	}
+
+	public void setTempSpocId(Long tempSpocId) {
+		this.tempSpocId = tempSpocId;
 	}
 }

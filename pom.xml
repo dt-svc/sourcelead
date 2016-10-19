@@ -261,6 +261,21 @@
 			<artifactId>cucumber-jruby</artifactId>
 			<version>1.0.13</version>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.apache.tika/tika-app -->
+	    <dependency>
+		    <groupId>org.apache.tika</groupId>
+		    <artifactId>tika-app</artifactId>
+		    <version>1.12</version>
+	    </dependency>
+
+		
+		<!-- https://mvnrepository.com/artifact/com.googlecode.libphonenumber/libphonenumber -->
+		<dependency>
+		    <groupId>com.googlecode.libphonenumber</groupId>
+		    <artifactId>libphonenumber</artifactId>
+		    <version>7.7.2</version>
+		</dependency>
 
 		<!-- The following are Spring Testing dependencies. -->
 		<dependency>

@@ -136,9 +136,19 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name="STATUS")
 	private String status;
 	
+
 	@Column(name = "REQUIREMENT_SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
 	private REQUIREMENT_SUBMISSION_STATUS requirementSubmissionStatus;
+
+	
+	@Column(name = "SUBMISSION_TEMPLATE_JSON_STRING", columnDefinition = "TEXT default NULL")
+	private String submissionTemplateJsonString;
+	
+	
+	@Column(name = "CLIENT_SUBMISSION_TEMPLATE_JSON_STRING", columnDefinition = "TEXT default NULL")
+	private String clientSubmissionTemplateJsonString;
+	
 	
 	@Column(name="PARENT_REQUIREMENT_ID")
 	private Long parent_requirement_id;
@@ -588,6 +598,22 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setReqSkillsList(String[] reqSkillsList) {
 		this.reqSkillsList = reqSkillsList;
+	}
+
+	public String getSubmissionTemplateJsonString() {
+		return submissionTemplateJsonString;
+	}
+
+	public void setSubmissionTemplateJsonString(String submissionTemplateJsonString) {
+		this.submissionTemplateJsonString = submissionTemplateJsonString;
+	}
+
+	public String getClientSubmissionTemplateJsonString() {
+		return clientSubmissionTemplateJsonString;
+	}
+
+	public void setClientSubmissionTemplateJsonString(String clientSubmissionTemplateJsonString) {
+		this.clientSubmissionTemplateJsonString = clientSubmissionTemplateJsonString;
 	}
 
 		

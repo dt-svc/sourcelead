@@ -3,6 +3,7 @@ package com.bis.sourcelead.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import org.junit.Test;
@@ -30,6 +31,9 @@ public class ProjectsServiceTest {
 
 	@Autowired
 	ProjectsService projectsService;
+	
+	@Autowired
+	TimesheetSubmissionsService timesheetSubmissionsService;
 	
 	/**
 	 * this method for save project
@@ -192,9 +196,11 @@ public class ProjectsServiceTest {
 	 */
 	@Test
 	public void getAllUserTimeSheetSubmissionStatus() throws Exception{
-		List<User> usrList = projectsService.getAllUserTimeSheetSubmissionStatus();
+		HashSet<User> usrList = projectsService.getAllUserTimeSheetSubmissionStatus();
 		for(User user : usrList){
-			TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
+			if("Admin".equalsIgnoreCase(user.getUserType()))
+				continue;
+			List<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
 			projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
 			logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+usrList.size());
 			

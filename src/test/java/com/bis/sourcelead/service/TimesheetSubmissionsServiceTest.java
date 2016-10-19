@@ -306,8 +306,8 @@ public class TimesheetSubmissionsServiceTest {
 	}
 	
 	@Test 
-	public void getWeekFrequencyTest(){
-	      TimesheetSubmissions tms = timesheetSubmissionsService.getWeekFrequency(32l);
+	public void getWeekFrequencyTest() throws Exception{
+	      List<TimesheetSubmissions> tms = timesheetSubmissionsService.getWeekFrequency(32l);
 		assertNotNull(tms);
 	}
 	

@@ -191,9 +191,14 @@
 						//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId">';
 						result = result + '</div>';
 						}
+						
+						//to diffentiate temp spoc user
+						result = result + '<input type="hidden"  id="existingSpocUserId" name="existingSpocUserId" value="'+json.tempSpocId+'">';
+						
+						
 						result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 						result = result + '<label>Phone No:</label>';
-						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone">';
+						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" data-validation="validate_int validate_length length9-20" >';
 						result = result + '</div>';
 						
 						result = result + ' <div class="user_summary_edit_cta" >';
@@ -312,7 +317,7 @@
              var sourceleadUrl ='${sourceleadUrl}';
 	 	 $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId, 	   
+			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId, 	   
 	   		    success: function(data) {
 	   		    	var ownerId = data;
 	   		    	vendorDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId);
@@ -324,8 +329,8 @@
            }
 		
     }
-	$('body').on('blur', '#editClient_form', function() {
-        $("#editClient_form").showHelpOnFocus();
-        $("#editClient_form").validateOnBlur(false, validationSettings);  
+	$('body').on('blur', '#editVendorContact_form', function() {
+        $("#editVendorContact_form").showHelpOnFocus();
+        $("#editVendorContact_form").validateOnBlur(false, validationSettings);  
     });
 </script>    
