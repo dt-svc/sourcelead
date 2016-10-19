@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -50,6 +52,10 @@ public class RequirementListRestController {
 
 	 @Autowired
 	 RequirementService requirementService;
+	 
+	 
+	 @Autowired
+	 RequirementAssignToService requirementAssignToService;
 	 
 	 /**
 	   * @author sarath kumar
@@ -106,15 +112,53 @@ public class RequirementListRestController {
 				requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
 				requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
 				requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
-				requirement.setManager(requirement.getManagerUserId().getFirstName()+" "+requirement.getManagerUserId().getLastName());
+				if(requirement.getManagerUserId() != null && requirement.getManagerUserId().getFirstName() != null && requirement.getManagerUserId().getLastName() != null ){
+					requirement.setManager(requirement.getManagerUserId().getFirstName()+" "+requirement.getManagerUserId().getLastName());	
+				}
+				
+				
 				}
 				resultJson = commonUtil.toJSON(requirement);
+				 
 			}
 			
 			return resultJson;
 			
      }
 	 
+	 
+	 /**
+		 * @author sarath kumar
+		 * @since  sep 13 2016
+		 * @version 0.0.1
+		 * 
+		 * This method is used to get Requirement by requirementId .
+		 *  
+		 * @param requirementId This is the first paramter to getRequirementByRequirementId method
+		 * 
+		 * @return Requirement 
+		 * 
+		 * @throws NullPointer
+		 */
+		 
+		 @RequestMapping(value = "/getRequirementAssignedListByRequirementId" , method = RequestMethod.POST)
+		 public @ResponseBody  String getRequirementAssignedListByRequirementId(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
+				String resultJson = null;
+				List<RequirementAssignTo> requirementAssignToList = null;
+				if(requirementId !=null && !requirementId.isEmpty()){
+			       requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
+			       if(requirementAssignToList !=null && !requirementAssignToList.isEmpty()){
+			           for (RequirementAssignTo assing : requirementAssignToList) {
+					       assing.setAssignedUserName(assing.getAssignUserId().getFirstName()+" "+assing.getAssignUserId().getLastName());
+					       assing.setAssignedUserRole(assing.getAssignedUserRole());
+				      }
+			       }
+					resultJson = commonUtil.toJSON(requirementAssignToList);
+				}else{
+					resultJson = "failure";
+				}
+				return resultJson;
+	     }
 	 	   
 		
 }

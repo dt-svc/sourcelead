@@ -188,16 +188,15 @@ public class UserServiceImpl implements UserService {
 					&& ("Y".equals(jsonObj.getString("isMailSent")))){
 				sendEmailToClientOrVendor(user,loginuser,password,responderType,loginOrg,orgLocations.getOrg(),orgLocations);
 			}
-		
-		/**
-		 * This method is used to newly added admin as a level2 manager for all existing projectmembers
-		 * @author: Naresh Bolisetty
-		 * @throws Exception 
-		 * 
-		 */
-		if(userRole != null && StringUtils.isNotEmpty(userRole.getRoles().getRoleName()) && userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)){
-			commonUtil.addAdminAsSecondLevelManager(orgLocations.getId(), user, loginuser);
-		}
+			/**
+			 * This method is used to newly added admin as a level2 manager for all existing projectmembers
+			 * @author: Naresh Bolisetty
+			 * @throws Exception 
+			 * 
+			 */
+			if(userRole != null && StringUtils.isNotEmpty(userRole.getRoles().getRoleName()) && userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)){
+				commonUtil.addAdminAsSecondLevelManager(orgLocations.getId(), user, loginuser);
+			}
 		 
         return user1;
 				
@@ -587,6 +586,32 @@ public class UserServiceImpl implements UserService {
 		return userDao.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLocationsId,ownerId,ownerListOfSpoc);
 	}
 	
+	
+	
+	/**
+	 * @author Sammeta David
+	 * to fetch get All Users By OrgLocation Code
+	 * @param orgLocationsId
+	 * @return List<User> 
+	 */
+	@Override
+	public List<User> getAllUsersByOrgLocationCode(Long orgLocationsId) throws Exception {
+		return userDao.getAllUsersByOrgLocationCode(orgLocationsId);
+	}
+
+	/**
+	 * @author Sammeta David
+	 * to fetch get All Users By OrgLocation Code Except TeamOwner
+	 * @param orgLocationsId,teamOwnerUserId
+	 * @return List<User> 
+	 */
+	
+	@Override
+	public List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId, Long orgLocationsId)
+			throws Exception {
+		return userDao.getAllUsersByOrgLocationCodeExceptTeamOwner(teamOwnerUserId,orgLocationsId);
+	}
+
 	
 	
 	@Override

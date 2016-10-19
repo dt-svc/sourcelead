@@ -579,7 +579,7 @@ public class ClientServiceImpl implements ClientService{
 		}
 		
 		@Override
-		public void updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId, User loginUser) throws Exception {
+		public void updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId, User loginUser ,Long ownerId, Long spocUserId) throws Exception {
 			
 			//OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(vendorLocationId,orgRelationId);
 			
@@ -593,27 +593,29 @@ public class ClientServiceImpl implements ClientService{
 			String owner = "owner";
 			
 			if(null != orgSpoc){
-				User user = orgSpoc.getSpocUser();
-				
-				if(jsonObj.getString(vendorContactFirstName) != null && !jsonObj.getString(vendorContactFirstName).isEmpty()){
-					user.setFirstName(jsonObj.getString(vendorContactFirstName));
+				/*User user = orgSpoc.getSpocUser();*/
+				if(jsonObj.getString("existingSpocUserId") != null && !jsonObj.getString("existingSpocUserId").isEmpty()){
+					User existingUser = userService.getUserById(Long.parseLong(jsonObj.getString("existingSpocUserId")));
+					if(jsonObj.getString(vendorContactFirstName) != null && !jsonObj.getString(vendorContactFirstName).isEmpty()){
+						existingUser.setFirstName(jsonObj.getString(vendorContactFirstName));
+					}
+					if(jsonObj.getString(vendorContactLastName) != null && !jsonObj.getString(vendorContactLastName).isEmpty()){
+						existingUser.setLastName(jsonObj.getString(vendorContactLastName));
+					}
+					if(jsonObj.getString(mobilePhone) != null && !jsonObj.getString(mobilePhone).isEmpty()){
+						existingUser.setMobilePhone(jsonObj.getString(mobilePhone));
+					}
+					if(jsonObj.getString(emailId) != null && !jsonObj.getString(emailId).isEmpty()){
+						existingUser.setEmail(jsonObj.getString(emailId));
+					}
+					userService.addUser(existingUser);
 				}
-				if(jsonObj.getString(vendorContactLastName) != null && !jsonObj.getString(vendorContactLastName).isEmpty()){
-					user.setLastName(jsonObj.getString(vendorContactLastName));
-				}
-				if(jsonObj.getString(mobilePhone) != null && !jsonObj.getString(mobilePhone).isEmpty()){
-					user.setMobilePhone(jsonObj.getString(mobilePhone));
-				}
-				if(jsonObj.getString(emailId) != null && !jsonObj.getString(emailId).isEmpty()){
-					user.setEmail(jsonObj.getString(emailId));
-				}
-				userService.addUser(user);
 				
 				if(jsonObj.getString(spocStatus) != null && !jsonObj.getString(spocStatus).isEmpty()){
 					orgSpoc.setSpocStatus(jsonObj.getString(spocStatus));
 				}
 				
-				if(orgSpoc.getSpocUser().getId() == loginUser.getId()){
+				/*if(orgSpoc.getSpocUser().getId() == loginUser.getId()){
 					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
 						User spocUser = new User();
 						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
@@ -626,8 +628,30 @@ public class ClientServiceImpl implements ClientService{
 						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
 						orgSpoc.setOwnerUser(spocUser);
 					}
+				}*/
+				User user = orgSpoc.getSpocUser();
+				if(user.getId() == spocUserId){
+					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
+						User spocUser = new User();
+						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
+						orgSpoc.setSpocUser(spocUser);
+					}
 				}
 				
+				else if(user.getId() == ownerId){
+					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
+						User spocUser = new User();
+						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
+						orgSpoc.setOwnerUser(spocUser);
+					}
+				}
+				else{
+					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
+						User spocUser = new User();
+						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
+						orgSpoc.setOwnerUser(spocUser);
+					}
+				}
 				orgSpocService.addOrgSpoc(orgSpoc);
 			}else{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));

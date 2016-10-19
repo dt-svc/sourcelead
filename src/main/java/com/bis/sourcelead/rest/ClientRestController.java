@@ -3,7 +3,6 @@ package com.bis.sourcelead.rest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,20 +19,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
-
 import com.bis.sourcelead.entity.Org;
-
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -47,8 +41,6 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 
 /**
@@ -178,9 +170,6 @@ public class ClientRestController {
 				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				
-				boolean flag = orgService.isClientNameValid(jsonObj.getString("orgName"),orgLocation.getId(),responderType);
-				
-				if(flag == false){
 					if(null != orgLocationId){
 						jsonObj.put("orgLocationId", orgLocationId);
 					}
@@ -191,9 +180,6 @@ public class ClientRestController {
 							"Successfully you have created a client");
 
 					return "clientDashboard";
-				}else{
-					return "invalid";
-				}
 				
 				
 			} 
@@ -300,60 +286,6 @@ public class ClientRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId());
-		for (OrgSpoc orgSpoc : orgSpocsList) {
-			if(orgSpoc.getSpocUser().getId() == loginUser.getId() || orgSpoc.getOwnerUser().getId() == loginUser.getId()){
-				//if login user is spoc
-				if(orgSpoc.getSpocUser().getId() == loginUser.getId()){
-    				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
-    				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
-    				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
-    				 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-    				// orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
-    				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
-    				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
-				}
-				//if login user is Owner
-				else if(orgSpoc.getOwnerUser().getId() == loginUser.getId()){
-						 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-						 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-						 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-						 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
-						 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
-						 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
-						 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
-					}
-				 
-			}else{
-				if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
-					 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-					 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-					 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-					 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
-					 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
-					 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
-				 }
-				if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
-				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
-				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
-				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
-				 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
-				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
-				}
-			}
-			if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
-				orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
-				orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
-			}
-			if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
-				orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
-				orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
-			}
-			
-			orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
-			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
-			orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());
-		}
 		return commonUtil.toJSON(orgSpocsList);
 	}
 	
@@ -478,42 +410,17 @@ public class ClientRestController {
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/getSpocAndOwnerDetailsById", method = RequestMethod.POST)
-	 @ResponseBody String getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId) throws Exception{
-		     OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsById(spocId,ownerId);
+	 @ResponseBody String getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId,@RequestParam(value = "tempOwnerId", required = false) Long tempOwnerId ) throws Exception{
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		     
-		     if(user.getId()==ownerId){
-		    	 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
-		    	 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
-			     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
-			     orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-			     orgSpoc.setSpocFirstName(orgSpoc.getSpocUser().getFirstName());
-			     orgSpoc.setSpocLastName(orgSpoc.getSpocUser().getLastName());
-			     orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-			     orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-			     orgSpoc.setUserState(orgSpoc.getSpocUser().getUserState().toString());
-		     }
-		     else{
-		    	 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
-		    	 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
-			     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
-			     orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-			     orgSpoc.setSpocFirstName(orgSpoc.getOwnerUser().getFirstName());
-			     orgSpoc.setSpocLastName(orgSpoc.getOwnerUser().getLastName());
-			     orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
-			     orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
-			     orgSpoc.setUserState(orgSpoc.getOwnerUser().getUserState().toString());
-		     }
-		     
-		     OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	         OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 
+	         OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsByIdAndOwnerId(spocId,ownerId,user.getId(),spocUserId,orgLoc.getId());
 		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
 		     List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
-		     
 		     orgSpoc.setUserList(userList);
 		 return commonUtil.toJSON(orgSpoc);
 		}
 
-	
 	/**
 	 * Handles project inline editing
 	 * @param orgRelationId
@@ -593,41 +500,14 @@ public class ClientRestController {
 	@RequestMapping(value = "/getClientAndVendorOrgDeatilsById", method = RequestMethod.POST)
 	@ResponseBody String getClientAndVendorOrgDeatilsById(@RequestParam(value = "vendorLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
-		OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocationId,orgRelationId);
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String resultJson;
-		//if login user org id is equals to vendor location id then we get vendor list of ResponderLocationId Org details 
-		 if(orgRelation.getLocationId().getId()== orgLocation.getId()){ 
-				orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
-				orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
-				orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
-				orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
-				orgRelation.setState(orgRelation.getResponderLocationId().getState());
-				orgRelation.setPhone(orgRelation.getResponderLocationId().getPhone());
-				orgRelation.setEmail(orgRelation.getResponderLocationId().getEmail());
-				orgRelation.setLevel(orgRelation.getInitiatorLevel());
-				orgRelation.setOrgType(orgRelation.getResponderLocationId().getOrg().getOrgType());
-				
-		 }
-		 //to fetch user details by usercode 
-		User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
-		orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());
 		
-		//if login user org id is equals to vendor ResponderLocationId id then we get vendor list of location Org details 
-		 if(orgRelation.getResponderLocationId().getId()== orgLocation.getId()){ 
-				orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
-				orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
-				orgRelation.setCountry(orgRelation.getLocationId().getCountry());
-				orgRelation.setCity(orgRelation.getLocationId().getCity());
-				orgRelation.setState(orgRelation.getLocationId().getState());
-				orgRelation.setPhone(orgRelation.getLocationId().getPhone());
-				orgRelation.setEmail(orgRelation.getLocationId().getEmail());
-				orgRelation.setLevel(orgRelation.getResponderLevel());
-				orgRelation.setOrgType(orgRelation.getLocationId().getOrg().getOrgType());
-		 } 
-		 
-		 resultJson = commonUtil.toJSON(orgRelation);
-		 return resultJson;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId(orgLocationId,orgRelationId,orgLocation.getId());
+		
+		String resultJson;
+		resultJson = commonUtil.toJSON(orgRelation);
+		return resultJson;
 	}
 	
 	/**
@@ -645,53 +525,9 @@ public class ClientRestController {
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    String resultJson;
 		    
-		    
-		    List<OrgRelations> clientsList = orgRelationsService.getAllClientsFilterByOrgLocationId(orgLocations.getId(),status);
-		    //List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
-			
-			for (OrgRelations orgRelation : clientsList) {
-				 //to fetch user details by usercode 
-				User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
-				if(user != null){
-					orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());
-				}
-				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId(),orgLocations.getId());
-				orgRelation.setNoOfContatcs(orgSpocs.size());
-				if(orgRelation.getLocationId().getId() == orgLocations.getId()){
-					
-					orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
-					orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
-					orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
-					orgRelation.setState(orgRelation.getResponderLocationId().getState());
-					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
-					orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
-					if(orgRelation.getInitiatorLevel()!=null){
-						orgRelation.setLevel(orgRelation.getInitiatorLevel());
-					}
-					else{
-						orgRelation.setLevel("");
-					}
-				}
-				
-				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
-					orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
-					orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
-					orgRelation.setCountry(orgRelation.getLocationId().getCountry());
-					orgRelation.setState(orgRelation.getLocationId().getState());
-					orgRelation.setCity(orgRelation.getLocationId().getCity());
-					orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
-					if(orgRelation.getInitiatorLevel()!=null){
-						orgRelation.setLevel(orgRelation.getInitiatorLevel());
-					}
-					else{
-						orgRelation.setLevel("");
-					}
-				}
-				
-			}
-		    
-			 resultJson = commonUtil.toJSON(clientsList);
-			 return resultJson;
+		    List<OrgRelations> clientsList = orgRelationsService.getAllClientsFilterByOrgLocationId(orgLocations.getId(),status,loginUser.getId());
+			resultJson = commonUtil.toJSON(clientsList);
+			return resultJson;
 		}
 	 
 	/**
@@ -726,13 +562,14 @@ public class ClientRestController {
 	
 	@RequestMapping(value = "/vendorContactDetailsUpdateUsingId", method = RequestMethod.POST)
 	 String vendorContactDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
-			@RequestParam(value = "spocId", required = false) Long spocId) throws Exception {
+			@RequestParam(value = "spocId", required = false) Long spocId,
+			@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId) throws Exception {
 		
 	       String jsonVal = "{" + json + "}";
 	       JSONObject jsonObj = new JSONObject(jsonVal);
 	       User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser);
+	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId);
 
 		return jsonObj.getString("owner");
 	}
@@ -747,68 +584,8 @@ public class ClientRestController {
 	    String resultJson;
 	    
 	    List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(loginUser.getId(),orgLocations.getId(), "Vendor",status,clientIds,invitationStatus);
-	    
-	   // List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactListByOrgLocationId(loginUser.getId(),orgLocations.getId(),"Vendor");
-	
-		
-		for (OrgSpoc orgSpoc : vandorsContactListByOrgLocationId) {
-			
-			if(orgSpoc.getSpocUser().getId() == loginUser.getId() || orgSpoc.getOwnerUser().getId() == loginUser.getId()){
-				
-				//if login user is spoc
-				if(orgSpoc.getSpocUser().getId() == loginUser.getId()){
-    				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
-    				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
-    				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
-    				 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-    				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
-    				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
-				}
-				//if login user is Owner
-				else if(orgSpoc.getOwnerUser().getId() == loginUser.getId()){
-						 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-						 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-						 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-						 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
-						 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
-						 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
-					}
-					
-				 
-			}else{
-				if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
-					 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-					 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-					 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-					 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
-					 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
-					 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
-					 
-				 }
-				if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
-				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
-				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
-				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
-				 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
-				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
-				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
-				}
-			}
-			if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
-				orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
-				 orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
-			}
-			if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
-				 orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
-				orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
-			}
-			orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
-			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
-			orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());
-		}
-		
-		 resultJson = commonUtil.toJSON(vandorsContactListByOrgLocationId);
-		 return resultJson;
+		resultJson = commonUtil.toJSON(vandorsContactListByOrgLocationId);
+		return resultJson;
 	}
 	
 	
@@ -820,6 +597,7 @@ public class ClientRestController {
 	@RequestMapping(value = "/saveClientSubmissionTemplate" , method = RequestMethod.POST)
 	   public String saveClientSubmissionTemplate(@RequestParam(value="jsonData", required=false) String json,
 			   @RequestParam(value="clientLocationId", required=false) Long clientLocationId,
+			   @RequestParam(value="templateId", required=false) String templateId,
 			   @RequestParam(value="jsonStringData", required=false) String jsonStringData) throws Exception {
 			
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -828,8 +606,15 @@ public class ClientRestController {
 		    String json1 = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(json1);
 			
+			
 		   try {
-			   SubmissionTemplate submissionTemplate = new SubmissionTemplate();
+			   SubmissionTemplate submissionTemplate = null;
+			   if(!isNullOrEmpty(templateId)){
+				   submissionTemplate = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
+				}else{
+					submissionTemplate = new SubmissionTemplate();
+				}
+			   
 			   submissionTemplate.setTemplateName(jsonObj.getString("templateName"));
 			   submissionTemplate.setDescription(jsonObj.getString("description"));
 			   OrgLocations clientOrgLocation = orgLocationService.getOrgLocations(clientLocationId);
@@ -872,6 +657,22 @@ public class ClientRestController {
 			return submissionTemplate.getJsonString();
 	    
 	   }
+	
+	@RequestMapping(value = "/validateSubmissionTemplateLabelName" , method = RequestMethod.GET)
+	   public String validateSubmissionTemplateLabelName(@RequestParam(value="templateId", required=false) Long templateId,
+			   @RequestParam(value="labelName", required=false) String labelName) throws Exception {
+			
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    SubmissionTemplate submissionTemplate = submissionTemplateService.getSubmissionTemplateByLabelName(templateId, labelName);
+		   
+		    if(submissionTemplate == null){
+		    	return "Success";
+		    }else{
+		    	return "Existed";
+		    }
+	    
+	   }
+	
 	
 	/**
 	 * check given string empty or null

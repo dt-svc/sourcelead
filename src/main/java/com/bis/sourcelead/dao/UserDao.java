@@ -68,4 +68,17 @@ public interface UserDao {
 
 	List<User> getOwnersByOrgLocationIdAndNotExistedOwnerId(Long id, Long ownerId, List<Long> ownerListOfSpoc);
 	
+	
+	/**
+	 * @author Sammeta David Raju
+	 * This method to fetch all users in the org by orgLocation code
+	 * @param orgLocationsId
+	 * @return
+	 * @throws Exception
+	 */
+	List<User> getAllUsersByOrgLocationCode(Long orgLocationsId) throws Exception;;
+	
+	
+	List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId ,Long orgLocationsId) throws Exception;;
+	
 }

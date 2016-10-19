@@ -10,12 +10,13 @@
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css" type="text/css" >
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css" type="text/css" >
 
-<script src="resources/js/sjfb-builder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="resources/js/sjfb-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+
+<script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->

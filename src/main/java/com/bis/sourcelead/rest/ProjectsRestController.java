@@ -192,10 +192,13 @@ public class ProjectsRestController {
 		  * @throws Exception
 		  */
 	  @RequestMapping(value = "/getEmployeesListByExcludingManagers",  method = RequestMethod.POST)
-		public @ResponseBody  String getEmployeesListByExcludingManagers(HttpServletRequest request,@RequestParam(value="level1Manager", required=false) Long level1Manager,@RequestParam(value="level2Manager", required=false) Long level2Manager) throws Exception {
+		public @ResponseBody  String getEmployeesListByExcludingManagers(HttpServletRequest request,
+			   @RequestParam(value="level1Manager", required=false) Long level1Manager,
+			   @RequestParam(value="level2Manager", required=false) Long level2Manager,
+			   @RequestParam(value="searchByName", required=false) String searchByName) throws Exception {
 		 	String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-		    Collection<Employees> employeList=employeesService.getAllEmployeesByOrgLocationId(loginOrgLocations.getId(),level1Manager,level2Manager);
+		    Collection<Employees> employeList=employeesService.getAllEmployeesByOrgLocationIdAndSearchByName(loginOrgLocations.getId(),level1Manager,level2Manager,searchByName);
 		    return  commonUtil.toJSON(employeList);
 			
 	  }

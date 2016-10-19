@@ -85,6 +85,11 @@ public class LoginSessionController {
 		setLoginSession(request, authentication,user,userRole);
 		
 		ModelAndView model = new ModelAndView();
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPwdMsg");
+		if(null != msg && !msg.isEmpty()){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "resetPwdMsg");
+		}
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("dashboard");
 	    return model;
@@ -134,7 +139,7 @@ public class LoginSessionController {
 				SourceLeadSessionManager.setSessionAttribute(request, "orgSettingsVisible", "Y");
 			}
 			
-			if("SOURCELEAD_ADMIN".equalsIgnoreCase(userRole.getRoles().getRoleName())){
+			if("ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole.getRoles().getRoleName())){
 				SourceLeadSessionManager.setSessionAttribute(request, "enrollOrgVisible", "Y");
 			}
 			
@@ -207,7 +212,7 @@ public class LoginSessionController {
 					    String[] parts = date.toString().split(" ");
 					    notifications.setDateValue(parts[0]);
 					    final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
-					    final Date dateObj = sdf.parse(parts[1].toString());
+					    final Date dateObj = sdf.parse(parts[1]);
 					    notifications.setTime(new SimpleDateFormat("K:mm a").format(dateObj));
 					    
 					    // calculating days b/w dates 

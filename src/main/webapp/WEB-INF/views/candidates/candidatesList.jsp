@@ -102,7 +102,12 @@
 			                 result = result +"  <td><input type='checkbox' id='checkbox12'/></td>";
 			                 result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
 			                 result = result +"  <td><div><span>"+designation+"</span></div></td>";
-			                 result = result +"  <td><div>"+opt.designationType+"</div></td>";
+			                 if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
+			                	 {
+			                      result = result +"  <td><div>"+opt.designationType+"</div></td>";
+			                	 }else{
+			                		 result = result +"  <td><div>No Data</div></td>"; 
+			                	 }
 			                 result = result +"  <td><div ><span>"+opt.email+"</span></div></td>";
 			                 result = result +"  <td><div>"+mobilePhone+"</div></td>";
 			                 result = result +"  <td><div><span title='"+address+"'>"+address+"</span></div></td>";
@@ -625,9 +630,9 @@ function cancel(candidateId){
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Candidate list</h2>
+      <h2>Candidate List</h2>
     </div>
-    <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Client Contact Details</div>
+    <div class="pull-right brud-crum"><a href="dashboard">Home </a> &raquo;Candidate List</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">

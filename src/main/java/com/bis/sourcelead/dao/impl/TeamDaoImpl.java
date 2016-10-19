@@ -70,7 +70,7 @@ public class TeamDaoImpl  implements TeamDao{
 	public List<Team> getTeamListByOrgLocationID(Long orgLocationId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Team team  where team.orgLocationsId =:orgLocationId";
+		String query = "from Team team  where team.orgLocationsId =:orgLocationId and  team.status <> 0";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		
 	}
@@ -114,9 +114,10 @@ public class TeamDaoImpl  implements TeamDao{
 		return (Team) session.get(Team.class, teamId);
 	}
 
-	@Override
+
+	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Boolean deleteTeamById(Long id) throws Exception {
+	public Team deleteTeamById(Long teamId,Long id) throws Exception {
 		 logger.debug("In Team deleteTeamByTeamId method");
 		 Session session = this.sessionFactory.getCurrentSession();
 		 boolean isDeleted = false;
@@ -134,6 +135,6 @@ public class TeamDaoImpl  implements TeamDao{
 		 }
 		
 		return isDeleted;
-	}
+	}*/
 
 }

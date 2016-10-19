@@ -104,7 +104,8 @@ function clientSubmissionTemplate(clientLocationId){
 	                result = result + '<td><div>'+opt.templateName+'</a></div></td>';
 	                result = result + '<td><div class="tbldata-dotdot">'+opt.description+'</div></td>';
 	                result = result + '<td><div>';
-	                result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+clientLocationId+','+opt.id+',\''+opt.templateName+'\')">View</a>';
+	                result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+clientLocationId+','+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;';
+	                result = result + '|&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+clientLocationId+','+opt.id+',\''+opt.templateName+'\',\''+opt.description+'\')">Edit</a>';
       	            result = result +'</div></td>';
 	                result = result + '	 </tr>';
 				} 
@@ -152,7 +153,7 @@ function templatepagination(){
 
 
 <script type="text/javascript">
-	function addSubmissionTemplateFields(clientLocationId) {
+	function addSubmissionTemplateFields(clientLocationId,templateId,templateName,description) {
 		
 		var sourceleadUrl ='${sourceleadUrl}';
 		var result = "";
@@ -166,19 +167,30 @@ function templatepagination(){
 
 		           result = result + '<form id="sjfb" novalidate>';
 		           result = result + '<input type="hidden" id="clientLocationId" value="'+clientLocationId+'">';
+		           result = result + '<input type="hidden" id="templateId" value="'+templateId+'">';
 		           
 		           result = result  +'	<div class="row mb">';
 		            result = result  +'	<div class="col-xs-12 col-md-6" id="templateNameDiv">';
 		            result = result  +'<label>Template Name<span class="text-danger">&nbsp;*</label>';
 			    	result = result  +'	<div class="mt10">';
-			    	result = result  +'	<input type="text" class="form-control input-sm" value="" onblur="validateTemplateName('+clientLocationId+')" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';
+			    	if(templateName){
+			    		result = result  +'	<input type="text" class="form-control input-sm" value="'+templateName+'" readonly="readonly" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';	
+			    	}else{
+			    		result = result  +'	<input type="text" class="form-control input-sm"  onblur="validateTemplateName('+clientLocationId+')" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';
+			    	}
+			    	
 			    	result = result  +'	</div>';
 			    	result = result  +'	</div>';
 			    	
 			    	result = result  +'	<div class="col-xs-12 col-md-6">';
 			    	 result = result  +'<label>Description<span class="text-danger">&nbsp;*</label>';
 			    	result = result  +'	  <div class="mt10">';
-			    	result = result  +'	     <textarea rows="2" name="description" field-name="Description" data-validation="required" class="form-control"></textarea>';
+			    	if(description){
+			    		result = result  +'<textarea rows="2" name="description" field-name="Description" data-validation="required" class="form-control">'+description+'</textarea>';
+			    	}else{
+			    		result = result  +'<textarea rows="2" name="description" field-name="Description" data-validation="required" class="form-control"></textarea>';
+			    	}
+			    	
 			    	result = result  +'	   </div>';
 			    	result = result  +'	</div>';
 			    	result = result  +'	</div>';
@@ -228,7 +240,7 @@ function templatepagination(){
 		           $("#tab-4").empty();  
 		           $("#tab-4-addTemplate").empty();
 		           $("#tab-4").append(result); 
-		           customizeFields(clientLocationId,sourceleadUrl);
+		           customizeFields(clientLocationId,templateId,sourceleadUrl);
 		  
 	}
 </script>	
@@ -298,6 +310,8 @@ function validateTemplateName(clientLocationId){
         var con = JSON.stringify(frm);
         con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
+        var isRemoved = '';
+        var isLabelModified = 'N';
 
         //Loop through fields and save field data to array
         var fields = [];
@@ -337,18 +351,45 @@ function validateTemplateName(clientLocationId){
 
                 });
             }
-
+            
+            
+            if(fieldLabel == 'First Name'  || fieldLabel == 'Phone Number'  
+        		|| fieldLabel == 'Email Id' || fieldLabel == 'DOB' || fieldLabel == 'Current / Last Company' || fieldLabel == 'Designation' 
+        		|| fieldLabel == 'Education' || fieldLabel == 'Work Experience' || fieldLabel == 'Current CTC' || fieldLabel == 'Expected CTC' 
+        		|| fieldLabel == 'Notice Period'){
+        	
+            	isRemoved = 'N';
+            }else{
+            	isRemoved = 'Y';
+            }
+            
+           /*  if(fieldLabel == 'First Name' || fieldLabel == 'Last Name' || fieldLabel == 'Phone Number'  || fieldLabel == 'Alternate Number' 
+            		|| fieldLabel == 'Email Id' || fieldLabel == 'DOB' || fieldLabel == 'Current / Last Company' || fieldLabel == 'Designation' 
+            		|| fieldLabel == 'Education' || fieldLabel == 'Work Experience' || fieldLabel == 'Current CTC' || fieldLabel == 'Expected CTC' 
+            		|| fieldLabel == 'Notice Period'){
+            	
+            	isLabelModified = 'N';
+            }else{
+            	isLabelModified = 'Y';
+            }
+ 			*/
             fields.push({
                 type: fieldType,
                 label: fieldLabel,
                 req: fieldReq,
-                choices: choices
+                choices: choices,
+                isRemoved : isRemoved,
+                isLabelModified : isLabelModified
             });
 
         });
 
         var frontEndFormHTML = '';
         var clientLocationId = document.getElementById("clientLocationId").value;
+        var templateId = document.getElementById("templateId").value;
+        if(templateId == 'undefined'){
+        	templateId = '';
+        }
         var sourceleadUrl ='${sourceleadUrl}';
         //Save form to database
         //Demo doesn't actually save. Download project files for save
@@ -357,7 +398,7 @@ function validateTemplateName(clientLocationId){
         $( "#save_button" ).addClass('button').val('Processing..');
    	    $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/saveClientSubmissionTemplate?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+	        url: sourceleadUrl+"/saveClientSubmissionTemplate?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
 	        success: function(result) {
 	        	if((result == 'home')){
 	        		clientSubmissionTemplate(clientLocationId);  
@@ -410,7 +451,6 @@ function validateTemplateName(clientLocationId){
 	})(jQuery);
 </script>
 
-<jsp:include page="submissionTemplate.jsp" />	
 
 
 

@@ -261,9 +261,8 @@
 												<div class="form-horizontal row custom-form">
 													<div class="col-xs-12 col-md-12 col-lg-12">
 														<div class="input-group">
-															<input type="search" class="form-control" value="">
-															<span class="input-group-addon bt-primary"><i
-																class="fa fa-search"></i></span>
+															<input type="search" class="form-control"  placeholder="Name / Email" id="searchByName">
+															<span class="input-group-addon bt-primary" onclick="getTeamMembers();"><i class="fa fa-search"></i></span>
 														</div>
 													</div>
 												</div>
@@ -903,7 +902,7 @@ function getOrgDetails()
 		var level1Manager = $("#level1Manager").val(); 
 		var level2Manager = $("#level2Manager").val();
 		var startDate     =    $("#StartDate").val();
-		
+		var searchByName = $("#searchByName").val();
 		var sourceleadUrl = '${sourceleadUrl}';
 		if(startDate != null  && startDate != ''){
 			
@@ -922,8 +921,7 @@ function getOrgDetails()
 			  $("#assignTeamModal").attr('data-target','#assignTeam');
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl
-								+ "/getEmployeesListByExcludingManagers?${_csrf.parameterName}=${_csrf.token}&level1Manager="+level1Manager+"&level2Manager="+level2Manager,
+						url : sourceleadUrl + "/getEmployeesListByExcludingManagers?${_csrf.parameterName}=${_csrf.token}&level1Manager="+level1Manager+"&level2Manager="+level2Manager+"&searchByName="+searchByName,
 						success : function(data) {
 							var json = JSON.parse(data);
 							var output = "";

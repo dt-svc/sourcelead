@@ -132,6 +132,15 @@ import org.hibernate.annotations.FetchMode;
 	@Column(name="STATUS")
 	private String status;
 	
+	
+	@Column(name = "SUBMISSION_TEMPLATE_JSON_STRING", columnDefinition = "TEXT default NULL")
+	private String submissionTemplateJsonString;
+	
+	
+	@Column(name = "CLIENT_SUBMISSION_TEMPLATE_JSON_STRING", columnDefinition = "TEXT default NULL")
+	private String clientSubmissionTemplateJsonString;
+	
+	
 	@Column(name="PARENT_REQUIREMENT_ID")
 	private Long parent_requirement_id;
 	
@@ -170,11 +179,13 @@ import org.hibernate.annotations.FetchMode;
 	private String spocMobilePhone;
 	
 	@Transient
-	private String[] educationList;
+	private String[] reqEducationList;
 	
 	@Transient
 	private String manager;
 	
+	@Transient
+	private String[] reqSkillsList;
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -526,14 +537,6 @@ import org.hibernate.annotations.FetchMode;
 		this.requirementId = requirementId;
 	}
 
-	public String[] getEducationList() {
-		return educationList;
-	}
-
-	public void setEducationList(String[] educationList) {
-		this.educationList = educationList;
-	}
-
 	public String getManager() {
 		return manager;
 	}
@@ -541,6 +544,38 @@ import org.hibernate.annotations.FetchMode;
 	public void setManager(String manager) {
 		this.manager = manager;
 	}
-	
-	
+
+	public String[] getReqEducationList() {
+		return reqEducationList;
+	}
+
+	public void setReqEducationList(String[] reqEducationList) {
+		this.reqEducationList = reqEducationList;
+	}
+
+	public String[] getReqSkillsList() {
+		return reqSkillsList;
+	}
+
+	public void setReqSkillsList(String[] reqSkillsList) {
+		this.reqSkillsList = reqSkillsList;
+	}
+
+	public String getSubmissionTemplateJsonString() {
+		return submissionTemplateJsonString;
+	}
+
+	public void setSubmissionTemplateJsonString(String submissionTemplateJsonString) {
+		this.submissionTemplateJsonString = submissionTemplateJsonString;
+	}
+
+	public String getClientSubmissionTemplateJsonString() {
+		return clientSubmissionTemplateJsonString;
+	}
+
+	public void setClientSubmissionTemplateJsonString(String clientSubmissionTemplateJsonString) {
+		this.clientSubmissionTemplateJsonString = clientSubmissionTemplateJsonString;
+	}
+
+		
 }

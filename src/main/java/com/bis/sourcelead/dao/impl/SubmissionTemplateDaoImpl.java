@@ -124,4 +124,33 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
 		}
    	}
 
+
+	@Override
+	@Transactional
+	public SubmissionTemplate getSubmissionTemplateByLabelName(Long templateId,String labelName) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<SubmissionTemplate> submissionTemplate = new ArrayList<SubmissionTemplate>();
+		logger.debug("getSubmissionTemplateByLabelName start");
+		submissionTemplate = session.createQuery("from SubmissionTemplate st where st.id = :templateId and st.jsonString like '%"+labelName+"%' " ).setLong( "templateId", templateId ).setCacheable(true).list();
+		logger.debug("getSubmissionTemplateByLabelName end");
+		if (submissionTemplate.size() > 0) {
+			return submissionTemplate.get(0);
+		} else {
+			return null;
+		}
+   	}
+
+
+	@Override
+	@Transactional
+	public List<SubmissionTemplate> getOrgSubmissionTemplatesByOrgLocationId(Long orgLocationId) throws Exception {
+		logger.debug("getOrgSubmissionTemplatesByOrgLocationId start");
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from SubmissionTemplate st where st.orgLocationId.id = :orgLocationId and (st.clientLocationId IS NULL or st.clientLocationId = '') and st.status = '1' ";
+	    List<SubmissionTemplate> submissionTemplateList = session.createQuery(query).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+        return submissionTemplateList;
+        
+	}
+
 }

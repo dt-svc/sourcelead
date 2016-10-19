@@ -29,7 +29,7 @@ window.onload = function () {
   <div class="content-dashboard clearfix">
    <div id="loading"></div>
     <section class="content-header clearfix">
-         <c:if test="${not empty msg}">
+         <c:if test="${!empty msg}">
 	        <div class="success_pop" id="selector"  style="display: block;">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
@@ -55,7 +55,7 @@ window.onload = function () {
 		   <li><i class="fa fa-filter"></i>&nbsp;
 				<select id="userRole" onchange="getUsersList();">
 				<option value="">&nbsp;--Select Role--&nbsp;&nbsp;&nbsp;</option>
-				<option value="All" >All Roles</option>
+				<!-- <option value="All" >All Roles</option> -->
 				<c:forEach var="roles" items="${rolesList}">
 	                 <option value="${roles.id}">${roles.displayName}</option>
                 </c:forEach>
@@ -95,9 +95,7 @@ window.onload = function () {
 		
 		var sourceleadUrl = '${sourceleadUrl}';
 		var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-		if(loginUserRole == 'ROLE_ADMIN' || loginUserRole == 'SOURCELEAD_ADMIN'){
-			var userRole = document.getElementById("userRole").value;
-	   	}
+	    var userRole = document.getElementById("userRole").value;
 		
 		var searchByName = document.getElementById("searchByName").value;
 		var userState = document.getElementById("userState").value;

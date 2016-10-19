@@ -11,6 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Controller;
 @ComponentScan(excludeFilters = { @Filter(type = FilterType.ANNOTATION, value = Controller.class),
 @Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebAppConfig.class) })
 @PropertySource(value = { "${propertyLocation:app.properties}" })
+@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class SecurityConfig  {
 	
     @Configuration
@@ -96,7 +98,8 @@ public class SecurityConfig  {
     			.antMatchers("/verifyResetPassword").permitAll() 
     			.antMatchers("/acceptClientOrVendorInvitation").permitAll() 
     			.antMatchers("/resources/**/**").permitAll() 
-    			.antMatchers("/**").access("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER') OR hasRole('ROLE_APPROVER') OR hasRole('SOURCELEAD_ADMIN') OR hasRole('ROLE_HR_MANAGER') OR hasRole('ROLE_ACCOUNT_MANAGER') OR hasRole('ROLE_SALES_MANAGER') OR hasRole('ROLE_RECRUITER') ") 
+    			/*.antMatchers("/**").access("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER') OR hasRole('ROLE_APPROVER') OR hasRole('ROLE_SOURCELEAD_ADMIN') OR hasRole('ROLE_HR_MANAGER') OR hasRole('ROLE_ACCOUNT_MANAGER') OR hasRole('ROLE_SALES_MANAGER') OR hasRole('ROLE_RECRUITER') ")*/ 
+    			.antMatchers("/**").fullyAuthenticated()
     			.anyRequest().authenticated()                                                   
     			.and()
     		    .formLogin().loginPage("/login")

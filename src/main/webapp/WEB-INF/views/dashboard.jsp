@@ -1,9 +1,16 @@
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
   <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
+    	 <c:if test="${not empty msg}">
+	        <div class="success_pop" id="selector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
       <div class="pull-left">
         <h2>Dashboard</h2>
       </div>
@@ -177,5 +184,10 @@ function timeSheetSubmissionStatusCount(){
 	}
 
 </script>
+
+
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+</script> 
 
 <jsp:include page="masterFooter.jsp" />
