@@ -21,6 +21,7 @@ import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -228,6 +229,7 @@ public class RequirementServiceImpl implements RequirementService {
 						  
 						rah.setRequirementId(requirement);
 						
+						rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
 						rah.setLevel("1");
 						  
 						rah.setCreatedDate(commonUtil.currentDate());
@@ -250,6 +252,7 @@ public class RequirementServiceImpl implements RequirementService {
 					  rah.setApproverUserId(approverUserId);
 					  rah.setRequirementId(requirement);
 					  
+					  rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
 					  rah.setLevel("1");
 					  
 					  rah.setCreatedDate(commonUtil.currentDate());
@@ -269,6 +272,7 @@ public class RequirementServiceImpl implements RequirementService {
 					  
 					  rah.setRequirementId(requirement);
 					  
+					  rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
 					  rah.setLevel("2");
 					  
 					  rah.setCreatedDate(commonUtil.currentDate());

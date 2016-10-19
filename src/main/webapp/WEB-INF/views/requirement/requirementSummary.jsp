@@ -2312,9 +2312,11 @@ function requirementDetails(requirementId){
 				            result = result +' <div class="require_wrap_details">';
 				           
 				            result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary pull-right" type="button">Edit</button></a>';
-				            result = result +' <a href="#" onClick="updateReuqirementStatus();">Approve</a>';
-				            result = result +' <a href="#" onClick="updateReuqirementStatus();">Reject</a>';
-							
+				            var APPROVED = "APPROVED";     
+				            var REJECTED = "REJECTED";
+				            result = result +'<button  class="btn btn-primary pull-right" type="button" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
+				            result = result +'<button  class="btn btn-primary pull-right" type="button" onClick ="updateReuqirementStatus(\''+ REJECTED+ '\');">Reject</button>';
+				            
 				            result = result +'     <div class="clearfix row">';
 					        result = result +'     <div class="col-md-10 divskill divsAssigned">';
 					        
@@ -2481,8 +2483,7 @@ function requirementDetails(requirementId){
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script>
-function updateReuqirementStatus(){
-	alert("accept");
+function updateReuqirementStatus(status){
 	var status = "approved";
 	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementId = '${requirementId}';
