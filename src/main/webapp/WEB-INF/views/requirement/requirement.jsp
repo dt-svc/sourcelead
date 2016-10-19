@@ -76,7 +76,6 @@ background-color: #ccc;
 <script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
-			
 			$(".isClient").click(function(){  
 		        $(".clientDetails").toggleClass('hidden', 500);
 		    });
@@ -96,10 +95,10 @@ background-color: #ccc;
 <!-- Content Area -->
 <section class="content-wraper">
   <section class="content-header clearfix">
-    <div class="pull-left">
+     <div class="pull-left">
       <h2>Requirement Details</h2>
     </div>
-    <div class="pull-right brud-crum">Home &raquo; Requirement &raquo; Requirement Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Requirement List  </a>&raquo; Add Requirement </div>
   </section>
   <div class="content-area content-new clearfix">
    <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
@@ -140,14 +139,14 @@ background-color: #ccc;
 	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
 	         <div class="col-md-9">
 	          <div class="input-group">
-	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
+	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length2-250"   value="" class="form-control">
 	             <div class="input-group-btn selp-custom-min">
 	             <select class="selectpicker" id="jobType" name="jobType">
-	                 <option><a href="#">C2C</a></option>
-	                 <option><a href="#">W-2</a></option>
-	                 <option><a href="#">Part Time</a></option>
-	                 <option><a href="#">Full Time</a></option>
-	                 <option><a href="#">Other</a></option>
+	                 <option  ${requirement.jobType  == 'c2c' ? 'selected' : ''}><a href="#">C2C</a></option>
+	                 <option  ${requirement.jobType  == 'W-2' ? 'selected' : ''}><a href="#">W-2</a></option>
+	                 <option  ${requirement.jobType  == 'Part Time' ? 'selected' : ''}><a href="#">Part Time</a></option>
+	                 <option  ${requirement.jobType  == 'Full Time' ? 'selected' : ''}><a href="#">Full Time</a></option>
+	                 <option  ${requirement.jobType  == 'Other' ? 'selected' : ''}><a href="#">Other</a></option>
 	             </select>
 	             </div>
 	           </div>
@@ -177,14 +176,15 @@ background-color: #ccc;
               <div class="col-md-9">
                 <select multiple  class="chosen-select form-control" name="education" id="education" data-validation="validate_Space" data-validation-optional="true">
                 <c:forEach var="edu" items="${educationsList}">
-	                     <c:forEach var="existEdu" items="${requirement.educationList}">
+                		<option  value="${edu.name}">${edu.name}</option>
+	                      <c:forEach var="existEdu" items="${requirement.reqEducationList}">
 	                     			 <c:if test="${edu.name == existEdu}">  
-			                    	<option selected value="${edu.name}">${edu.name}</option>
+			                    			<option selected value="${edu.name}">${edu.name}</option>
 						             </c:if> 
 						             <c:if test="${edu.name != existEdu}"> 
-						                       <option  value="${edu.name}">${edu.name}</option>
+						           			 <option  value="${edu.name}">${edu.name}</option>
 						             </c:if>
-	                     </c:forEach>
+	                     </c:forEach> 
 			             
                 </c:forEach>
                 </select>
@@ -208,28 +208,28 @@ background-color: #ccc;
           <div class="form-group">
             <label class="col-md-3">Pay Rate/Salary</label>
             <div class="col-md-9">
-              <div class="input-group">
+             <div class="input-group">
                 <div class="input-group-btn selp-custom-min">
                   
                   <select class="selectpicker" id="currencyCode" name="currencyCode">
-	                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-	                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-	                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-	                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-	                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-	                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+	                 <option ${requirement.currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
+	                 <option ${requirement.currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
+	                 <option ${requirement.currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
+	                 <option ${requirement.currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+	                 <option ${requirement.currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
+	                 <option ${requirement.currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
                 </select>
                 
                 </div>
                 <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker" id="rateType" name="rateType">
-                    <option value="c2c">Per</option>
-                    <option value="1hr">1hr</option>
-                    <option value="2hr">2hr</option>
-                    <option value="3hr">3hr</option>
-                    <option value="4hr">4hr</option>
-                    <option value="Other">Other</option>
+                    <option ${requirement.rateType  == 'c2c' ? 'selected' : ''}>Per</option>
+                    <option ${requirement.rateType  == '1hr' ? 'selected' : ''}>1hr</option>
+                    <option ${requirement.rateType  == '2hr' ? 'selected' : ''}>2hr</option>
+                    <option ${requirement.rateType  == '3hr' ? 'selected' : ''}>3hr</option>
+                    <option ${requirement.rateType  == '4hr' ? 'selected' : ''}>4hr</option>
+                    <option ${requirement.rateType  == 'others' ? 'selected' : ''}>Other</option>
                   </select>
                 </div>
               </div>
@@ -267,8 +267,16 @@ background-color: #ccc;
               <label class="col-md-3">Skills</label>
               <div class="col-md-9">
                 <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation="validate_Space" data-validation-optional="true">
-                <c:forEach var="skill" items="${skillsList}">
-	                     <option value="${skill.name}">${skill.name}</option>
+               <c:forEach var="skill" items="${skillsList}">
+                <option  value="${skill.name}">${skill.name}</option>
+	                     <c:forEach var="skillExist" items="${requirement.reqSkillsList}">
+	                     			 <c:if test="${skill.name == skillExist}">  
+			                    	<option selected value="${skill.name}">${skill.name}</option>
+						             </c:if> 
+						             <c:if test="${skill.name != skillExist}"> 
+						                       <option  value="${skill.name}">${skill.name}</option>
+						             </c:if>
+	                     </c:forEach>
                 </c:forEach>
                 </select>
               </div>
@@ -292,7 +300,7 @@ background-color: #ccc;
            <div class="form-group">
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
-             <textarea rows="2" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true"></textarea>
+             <textarea rows="2" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true">${requirement.description}</textarea>
             </div>
           </div>
           
@@ -308,7 +316,7 @@ background-color: #ccc;
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
 	      <div class="ml">
-            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="" onclick="getIsClientVal();">
+            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="" onclick="getIsClientVal(this);">
             <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
             &nbsp;&nbsp;
             <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
@@ -322,8 +330,8 @@ background-color: #ccc;
                 <label class="col-md-3">Client <span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select class="chosen-select form-control select-bg" name="selectClient" id="addClientId" onchange="getContactList(this);">
-                    	<option value=''>-- Select Client --</option>
+                    <select class="chosen-select form-control select-bg" data-validation-optional="true" field-name = "Client" name="selectClient" id="addClientId" onchange="getContactList(this); getClientSubmissionTemplates(this); ">
+                    	<option value="">-- Select Client --</option>
 	                    <c:forEach var="report" items="${add_clientList}">
 							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
 			                    	<option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
@@ -374,10 +382,10 @@ background-color: #ccc;
                 <label class="col-md-3">Client Contact <span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select class="chosen-select form-control" name="selectContact" id="selectContact">
+                    <select class="chosen-select form-control" name="selectContact" data-validation-optional="true" field-name = "Client Contact" id="selectContact">
                       <option value=''>-- Select Contact --</option>
                     </select>
-                    <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" onClick="addClientContactPopUp();"></i> 
+                    <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i> 
                  	<div id="addContact" class="modal fade" role="dialog">
                     </div>
                  </div>
@@ -417,218 +425,11 @@ background-color: #ccc;
                 <label class="col-md-3">Submission Form<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select class="chosen-select form-control" id="clientSubmissionForm" name="clientSubmissionForm">
+                    <select class="chosen-select form-control" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
                       <option value="">-- Select Submission Form --</option>
-                      <option value="1">Submission Form-1</option>
-                      <option value="2">Submission Form-2</option>
-                      <option value="3">Submission Form-3</option>
                     </select>
-                    <i data-target="#addSubmissonForm" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new"></i> </div>
-                  <div id="addSubmissonForm" class="modal fade">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                          <h4 class="modal-title">Submission Form</h4>
-                        </div>
-                        <div class="modal-body clearfix">
-                          <div class="form-horizontal custom-form clearfix">
-                          <div class="row">
-                            <div class="col-xs-12 col-md-12 col-lg-12">
-								<div class="clearfix">
-                    <div class="form-horizontal clearfix custom-fields">
-                      <div class="clearfix mb">
-                        <div class="col-md-8">
-                          <div class="row">
-                            <label class="col-md-3">Title</label>
-                            <div class="col-md-8">
-                              <input type="text" class="form-control input-sm" value="" placeholder="Title">
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-md-4">
-                          <input type="button" class="btn btn-primary btn-sm" value="Add Field">
-                        </div>
-                      </div>
-                      <div class="clearfix mb">
-                        <div class="col-md-8">
-                          <div class="row">
-                            <label class="col-md-3">
-								<input type="text" placeholder="Field Name" class="form-control input-sm">
-                            </label>
-                            <div class="col-md-8">
-                              <select class="form-control">
-                                <option>Option Value-1</option>
-                                <option>Option Value-2</option>
-                                <option>Option Value-3</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                                                    <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-
-                      </div>
-                      <div class="form-custom">
-                      <div class="form-header clearfix mb col-md-12">
-                      <div class="col-sm-3">
-                       <label>Field</label>
-                      </div>
-                      <div class="col-sm-5">
-                        <label>Type</label>
-                      </div>
-                      <div class="col-sm-4">
-                         <label>Is Mandator</label>
-                      </div>
-                      </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Text Field</label>
-                              <div class="col-md-8">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Text Field">
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox" checked>
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Number Field</label>
-                              <div class="col-md-8">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Number Field">
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Select Field</label>
-                              <div class="col-md-8">
-                                <select class="form-control">
-                                  <option>Select Value-1</option>
-                                  <option>Select Value-2</option>
-                                  <option>Select Value-3</option>
-                                  <option>Select Value-4</option>
-                                </select>
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox" checked>
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Browse File</label>
-                              <div class="col-md-8">
-                                    <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
-                                            <div class="input-group">
-                                            <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                                            <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">
-                                            </span> </label>
-                                            <input type="text" class="form-control" readonly id="uploadFile" placeholder="Files are not selected...">
-                                        </div>
-                                    <!-- upload file html need to add bottom JavaScript otherwise it will not work --> 
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Radio btn</label>
-                              <div class="col-md-8 toggle-button">
-                                <label class="switch">
-                                <input type="checkbox" checked>
-                                <div class="slider round"></div>
-                                </label>
-                                </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox" checked>
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Checkbox</label>
-                              <div class="col-md-8 toggle-button">
-                                <label class="switch">
-                                <input type="checkbox">
-                                <div class="slider round"></div>
-                                </label>
-                                </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Textarea</label>
-                              <div class="col-md-8">
-                                <textarea rows="1" class="form-control" placeholder="Textarea"></textarea>
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox" checked>
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                      </div>
-                    </div>
                   </div>
-                            </div>
-                          </div> </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
-                          <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  
                 </div>
               </div>
             </div>
@@ -1140,18 +941,18 @@ background-color: #ccc;
                 <div class="ml">
                 
                 <div class="pull-left">
-                <input type="checkbox" name="cd" id="apprverReq" onClick="selApprover()" checked>
+                <input type="checkbox" name="cd" id="apprverReq" onClick="approvalType('Default');" checked>
                 <label>&nbsp;&nbsp;<strong>Approver required</strong></label>
                 </div>
                 
                 <!-- Radio buttons for Sequential or Parallel function -->
                 <div  class="ml pull-left apprverReq" style="display:none;">
                 <label class="rad" id="parallel">
-                <input type="radio" name="Approver" checked="checked">
+                <input type="radio" name="approver"  checked="checked" onClick="approvalType('Parallel');">
                 <i class="fa fa-align-center" data-placement="top" data-toggle="tooltip"  title="Parallel"></i>
                 </label>
                 <label class="rad" id="sequential">
-                <input type="radio" name="approver" onClick="sequential();">
+                <input type="radio" name="approver" onClick="approvalType('Sequential');">
                 <i class="fa fa-retweet" data-placement="top" data-toggle="tooltip" title="Sequential"></i>
                 </label>
                 
@@ -1164,7 +965,7 @@ background-color: #ccc;
        <!-- Approver Required Check box html ends -->  
          
          
-         <div class="form-group parallel" style="display:none;">
+        <!--  <div class="form-group parallel" style="display:none;">
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                     <select multiple class="chosen-select form-control">
@@ -1174,43 +975,67 @@ background-color: #ccc;
                       <option>Approver-3</option>
                     </select>
                 </div>
+         </div> -->
+         
+         <div class="form-group parallel" style="display:none;">
+                <label class="col-md-3">Approver<span class="text-danger">*</span></label>
+                <div class="col-md-9">
+                    <select multiple class="chosen-select form-control" name="parallelApprover" field-name="Approver" data-validation="required">
+                       <option disabled>Select Approver</option>
+                       <c:forEach var="report" items="${approverList}">
+		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+		               </c:forEach>
+                    </select>
+                </div>
          </div>
          
          <div class="form-group sequential" id="addLvl" style="display:none;">
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select class="chosen-select form-control">
-                      <option disabled>Select Client</option>
-                      <option>Client-1</option>
-                      <option>Client-2</option>
-                      <option>Client-3</option>
+                    <select   class="chosen-select form-control" name="sequentialApprover1" field-name="Approver" data-validation="required">
+                       <option>Select Approver</option>
+                       <c:forEach var="report" items="${approverList}">
+		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+		               </c:forEach>
                     </select>
                     <span onClick="addLvl();"><i class="fa fa-level-down btn btn-default formic1" data-toggle="tooltip" data-placement="left" title="Add Level"></i></span>
                     </div>
                 </div>
               </div>
               
-              <div class="clearfix lvlTow" style="display:none;">
+              <div class="clearfix lvlTow" id ="sequentialApproverDiv" style="display:none;">
               <div class="form-group">
               <div class="col-md-3">Approver 2</div>
               <div class="col-md-9">
-                <select class="chosen-select form-control">
+              		<select   class="chosen-select form-control" name="sequentialApprover2" field-name="Approver 2" data-validation="required">
+                       <option>Select Addpprover</option>
+                       <c:forEach var="report" items="${approverList}">
+		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+		               </c:forEach>
+                    </select>
+                <!-- <select class="chosen-select form-control">
                       <option disabled>Select Client</option>
                       <option>Client-1</option>
                       <option>Client-2</option>
                       <option>Client-3</option>
-                    </select>
+                    </select> -->
               </div></div>
           </div>
           <div class="form-group">
             <label class="col-md-3">Manager<span class="text-danger">*</span></label>
             <div class="col-md-9">
-              <select multiple class="chosen-select form-control">
+             <!--  <select multiple class="chosen-select form-control">
                 <option>Select Manager</option>
                 <option>Manager-1</option>
                 <option>Manager-2</option>
                 <option>Manager-3</option>
+              </select> -->
+              <select multiple class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager">
+                       <option disabled>Select Approver</option>
+                       <c:forEach var="report" items="${approverList}">
+		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+		               </c:forEach>
               </select>
             </div>
           </div>
@@ -1222,12 +1047,12 @@ background-color: #ccc;
             <div class="col-md-9">
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-                  <input type="text" value="Assing Role" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
+                  <input type="text" value="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
                   <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1"></i> </span>
                   </div>
                 <!-- Modal content Assign To -->
-                <div role="dialog" id="assignTeam" class="modal fade">
+                <div role="dialog" id="assignTeam"   class="modal fade">
                   <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                       <div class="modal-header">
@@ -1332,68 +1157,35 @@ background-color: #ccc;
                   </div>
                 </div>
                 <!-- Assign To modal popup ends -->
-                <!-- Modal content Demo Popup: Need to Update -->
-                <div role="dialog" id="addTeam" class="modal fade">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button data-dismiss="modal" class="close" type="button">×</button>
-                        <h4 class="modal-title">Add Team</h4>
-                      </div>
-                      <div class="modal-body clearfix">
-                        <div class="form-horizontal custom-form clearfix">
-                          <div class="col-xs-12 col-md-12 col-lg-12">
-                            <div class="form-group">
-                            <label class="col-lg-4">Team Name <span class="text-danger">*</span></label>
-                            <div class="col-lg-8">
-                              <input type="text" class="form-control" value="">
-                              </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-4">Team Owner <span class="text-danger">*</span></label>
-                            <div class="col-lg-8">
-                              <input type="text" class="form-control" value="">
-                              </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-4">Team Members <span class="text-danger">*</span></label>
-                            <div class="col-lg-8">
-                              <input type="text" class="form-control" value="">
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
-                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- Modal content Demo Popup: Need to Update ends --> 
               </div>
           </div>
           <div class="form-group">
             <label class="col-md-3">Priority<span class="text-danger">*</span></label>
             <div class="col-md-9">
-              <select class="selectpicker form-control">
-                <option>Select Priority</option>
-                <option>Priority-1</option>
-                <option>Priority-2</option>
-                <option>Priority-3</option>
+              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" field-name = "Priority" name="priority">
+                <option value="">Select Priority</option>
+                <option value="Urgent">Urgent</option>
+                <option value="High">High</option>
+                <option value="Medioum">Medioum</option>
+                <option value="Low">Low</option>
               </select>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-3">Application Form<span class="text-danger">*</span></label>
             <div class="col-md-9">
-                <select class="chosen-select form-control">
+                <!-- <select class="chosen-select form-control">
                   <option>Select Client</option>
                   <option>Client-1</option>
                   <option>Client-2</option>
                   <option>Client-3</option>
-                </select>
+                </select> -->
+                <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId" data-validation = "required" field-name = "Application Form">
+                    	<option value="">-- Select Client --</option>
+		                <c:forEach var="report" items="${add_clientList}">
+					               <option value="${report.id},${report.responderLocationId.id}">${report.locationId.org.orgName}</option>
+						</c:forEach>
+               </select>						
           </div>
         </div>
       </div>
@@ -1405,11 +1197,66 @@ background-color: #ccc;
     </div>
       <input type="hidden" value="${requirement.id}" name ="requirementId"  id ="requirementId">
     </form:form>
+    
+      <!-- Modal content Demo Popup: Need to Update -->
+                <div role="dialog" id="addTeam" class="modal fade">
+                  <div class="modal-dialog">
+                    <form role="form"  id="team_form" name="team_form" method="post" >
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button data-dismiss="modal" class="close" type="button">×</button>
+                        <h4 class="modal-title">Add Team</h4>
+                      </div>
+                      <div class="modal-body clearfix">
+                        <div class="form-horizontal custom-form clearfix">
+                          <div class="col-xs-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                            <label class="col-lg-4">Team Name <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                              <!-- <input type="text" class="form-control" value=""> -->
+                              <input type="text" class="form-control"  placeholder="Team Name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                            <label class="col-lg-4">Team Owner <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                             <select class="form-control"  name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">
+			                    	<option value=''>-- Select Owner Id --</option>
+				                    <c:forEach var="report" items="${all_users_List}">
+						                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+									</c:forEach>
+			                  </select>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                            <label class="col-lg-4">Team Members <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                             <select multiple class="chosen-select form-control select-bg" name="memberUserId" id="memberUserId" placeholder="Team Member *" data-validation="required validate_Space" field-name="Team Member">
+			                    		<option value=''>-- Select Team --</option>
+					                    <c:forEach var="report" items="${all_users_List}">
+							                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+								       </c:forEach>
+		                       </select>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="storeTeam();" >Save</button>
+                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                      </div>
+                    </div>
+                    </form>
+                  </div>
+                </div>
+                <!-- Modal content Demo Popup: Need to Update ends --> 
   <div class="form-footer clearfix">
     <div class="col-lg-12">
       <div class="pull-right">
-        <input type="button" value="Release" class="btn btn-danger">
-        <input type="button" value="Save" id="store_requirement" onclick="storeRequirement();" class="btn btn-primary">
+        <input type="button" value="Submit for Approval" id="submitForApproval" class="btn btn-primary" style="display:none;">
+        <input type="button" value="Draft" id="draft" class="btn btn-danger">
+        <input type="button" value="Save" id="save" onclick="storeRequirement();" class="btn btn-primary" >
         <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
       </div>
     </div>
@@ -1457,7 +1304,58 @@ background-color: #ccc;
 				return false;
 		 }  
 	} 
+	
+	$('body').on('blur', '#requirement_form', function() {
+		$("#requirement_form").showHelpOnFocus();
+		$("#requirement_form").validateOnBlur(false, validationSettings);
+	});
 </script>
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
+ <script>
+function storeTeam(){
+	
+	   var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         };
+	   if ($('#team_form').validate(false, validationSettings)){ 
+			var frm = $('#team_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			
+		     var jsonData = encodeURIComponent(con);
+			 var sourceleadUrl = '${sourceleadUrl}';
+			
+			 $("#team_form").attr("disabled", "disabled");
+			
+			$.ajax({
+					type : "POST",
+					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
+					success :function(data) { 
+						  /* location.replace(sourceleadUrl+"/team"); */
+				      }, 
+		    }); 
+			return true; 
+	   }else{ 
+			return false;
+	        } 
+		} 
+ 
+		$('body').on('blur', '#team_form', function() {
+			$("#team_form").showHelpOnFocus();
+			$("#team_form").validateOnBlur(false, validationSettings);
+		});
+</script>   
+
 
 <script type="text/javascript">
 	(function($) {
@@ -1753,6 +1651,7 @@ $(function(){
     $("#country").chosen();
     $("#state").chosen();
     $("#city").chosen();
+    $("#owner").chosen();
     
     $("#country").on('change', function (e) {
  	   getStates();
@@ -1768,7 +1667,6 @@ $(function(){
 	  })
 });
 </script>
-
 
 <script>
 // script for tooltip
@@ -1791,8 +1689,9 @@ $(document).ready(function() {
 // Show hide Approver script
 $("#apprverReq").removeAttr("checked");
 $("#sequential input").removeAttr("checked");
-
+/* 
 function selApprover(){
+	
   if ($("#apprverReq").prop('checked') ) {
 			$(".parallel, #parallel, .apprverReq").show();
 			$(".sequential").hide();
@@ -1816,11 +1715,51 @@ $("#parallel").click(function(){
 	$(".sequential").hide();
 	$("#parallel i").addClass("apprverReq-active");
 	$("#sequential i").removeClass("apprverReq-active");
-});
+}); */
 function addLvl(){
 	$(".lvlTow").toggle();
 }
+
 </script> 
+
+<script>
+function approvalType(type){
+
+		if($("#apprverReq").is(':checked')){
+			$("#submitForApproval").removeAttr("style");
+		    $("#save").attr("style","display:none"); 
+		}
+		else{
+			$("#save").removeAttr("style");
+		    $("#submitForApproval").attr("style","display:none"); 
+		}
+	    
+	    $(".parallel, #parallel, .apprverReq").show();
+		$(".sequential").hide();
+		$("#parallel i").addClass("apprverReq-active");
+		$("#sequential i").removeClass("apprverReq-active");
+	  if(type == "Default" || type == "Parallel"){
+		    $(".parallel").show();
+			$(".sequential").hide();
+			$("#parallel i").addClass("apprverReq-active");
+			$("#sequential i").removeClass("apprverReq-active"); 
+			
+			$("#sequentialApproverDiv").hide();
+			
+			$('#sequential').find('p.jquery_form_error_message').remove();
+			
+			
+	  }
+	  if(type == "Sequential"){
+		    $(".parallel").hide();
+			$(".sequential").show();
+			$("#parallel i").removeClass("apprverReq-active");
+			$("#sequential i").addClass("apprverReq-active");
+			
+			$('#parallel').find('p.jquery_form_error_message').remove();
+	  }
+}
+</script>
 
 
 
@@ -1881,14 +1820,13 @@ function getUserList(){
 		                    for (var i = 0; i < json.length; i++) { 
 		                    	 var opt = json[i]; 
 		                    	 result = result +'<tr>';
-		                    	/*  var localCheckedStatus;
+		                    	 var localCheckedStatus = "no";
 		                    	 $(".defaultCheckBox").each(function() {
-		         							var localId = this.id;
+		         							var localValue = this.value;
 		         							if(localId == opt.id){
-		         								localCheckedStatus = true;
-		         							} 
+		         								localCheckedStatus = "yes";
+		         							}  
 		                    	 });
-		                    	 alert("localCheckedStatus"+localCheckedStatus); */
 		                    	 result = result +'             <td><input id="'+opt.id+'" value="'+opt.id+'"  type="checkbox" name="team" class="myCheckbox" ></td>';
 		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
 		                    	 result = result +'             <td>'+opt.email+'</td>';
@@ -2002,5 +1940,73 @@ function assignMembers() {
 </script>
 
 
+
+<script type="text/javascript">
+function getTeamMembers(){
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var teamOwnerUserId = document.getElementById("teamOwnerId").value;
+	 if(teamOwnerUserId != null && teamOwnerUserId != ''  && teamOwnerUserId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?${_csrf.parameterName}=${_csrf.token}&teamOwnerUserId="+teamOwnerUserId,
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-Select Team Members-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#teamMembersId").empty();
+			        $("#teamMembersId").append(output);
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	 }
+	 $(function(){
+		    var config = {
+				  '.chosen-select'           : {},
+				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  '.chosen-select-width'     : {width:"95%"}
+				}
+		   
+		    $('.chosen-select').each(function() {
+					var $this = $(this);
+					$this.next().css({'width': '100%'});
+			  })
+		});
+} 
+</script>
+
+<script>
+function getIsClientVal(){
+	 if (document.getElementById('isClientJob').checked) {
+       $('#addClientId').removeAttr('data-validation-optional');
+	   $('#addClientId').attr("data-validation","required"); 
+	   
+	   $('#selectContact').removeAttr('data-validation-optional');
+	   $('#selectContact').attr("data-validation","required"); 
+	   
+	   $('#clientSubmissionForm').removeAttr('data-validation-optional');
+	   $('#clientSubmissionForm').attr("data-validation","required"); 
+	 } else {
+		 $('#addClientId').removeAttr('data-validation');
+		 $('#addClientId').attr("data-validation-optional","true"); 
+		 
+		 $('#selectContact').removeAttr('data-validation');
+		 $('#selectContact').attr("data-validation-optional","true"); 
+		 
+		 $('#clientSubmissionForm').removeAttr('data-validation');
+		 $('#clientSubmissionForm').attr("data-validation-optional","true"); 
+	 }
+}
+
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

@@ -195,7 +195,7 @@ public class CommonUtil {
 	 * @throws Exception 
 	 * 
 	 */
-	public void addAdminAsSecondLevelManager(Long locationId,User adminUser,User loginUser) throws Exception{
+	 public void addAdminAsSecondLevelManager(Long locationId,User adminUser,User loginUser) throws Exception{
 		
 		List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(locationId);
         if(projectsList != null && !projectsList.isEmpty()){

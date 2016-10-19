@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -83,6 +84,9 @@ public class CandidateEducation {
 	
 	@Transient
 	private String endDateStr;
+	
+	@Transient
+	private List<LookUpData> educationList;
 	
 	public long getCandidateEduId() {
 		return candidateEduId;
@@ -234,6 +238,14 @@ public class CandidateEducation {
 
 	public void setEndDateStr(String endDateStr) {
 		this.endDateStr = endDateStr;
+	}
+
+	public List<LookUpData> getEducationList() {
+		return educationList;
+	}
+
+	public void setEducationList(List<LookUpData> educationList) {
+		this.educationList = educationList;
 	}
 	
 }

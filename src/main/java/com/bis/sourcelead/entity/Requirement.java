@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,6 +24,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	@Entity
 	@Table(name = "REQUIREMENT", catalog = "sourcelead")
@@ -98,7 +102,7 @@ import org.hibernate.annotations.FetchMode;
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations clientId;
-	
+	    
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="SPOC_ID", nullable=false )        
     private OrgSpoc spocId;
@@ -132,6 +136,20 @@ import org.hibernate.annotations.FetchMode;
 	@Column(name="STATUS")
 	private String status;
 	
+
+	@Column(name = "REQUIREMENT_SUBMISSION_STATUS")
+	@Enumerated(EnumType.STRING)
+	private REQUIREMENT_SUBMISSION_STATUS requirementSubmissionStatus;
+
+	
+	@Column(name = "SUBMISSION_TEMPLATE_JSON_STRING", columnDefinition = "TEXT default NULL")
+	private String submissionTemplateJsonString;
+	
+	
+	@Column(name = "CLIENT_SUBMISSION_TEMPLATE_JSON_STRING", columnDefinition = "TEXT default NULL")
+	private String clientSubmissionTemplateJsonString;
+	
+	
 	@Column(name="PARENT_REQUIREMENT_ID")
 	private Long parent_requirement_id;
 	
@@ -160,6 +178,14 @@ import org.hibernate.annotations.FetchMode;
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementAssignTo> requirementAssignTo = new HashSet<RequirementAssignTo>(0);
 	
+	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+	private Set<RequirementApproverHierarchy> requirementApprover = new HashSet<RequirementApproverHierarchy>(0);
+	
+	
+	@Transient
+	private String clientName;
+	
 	@Transient
 	private String spocName;
 	
@@ -170,11 +196,13 @@ import org.hibernate.annotations.FetchMode;
 	private String spocMobilePhone;
 	
 	@Transient
-	private String[] educationList;
+	private String[] reqEducationList;
 	
 	@Transient
 	private String manager;
 	
+	@Transient
+	private String[] reqSkillsList;
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -275,6 +303,14 @@ import org.hibernate.annotations.FetchMode;
 	}
 
 
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
+	}
 
 	public String getRate() {
 		return rate;
@@ -436,7 +472,13 @@ import org.hibernate.annotations.FetchMode;
 		this.status = status;
 	}
 
-	
+	public REQUIREMENT_SUBMISSION_STATUS getRequirementSubmissionStatus() {
+		return requirementSubmissionStatus;
+	}
+
+	public void setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS requirementSubmissionStatus) {
+		this.requirementSubmissionStatus = requirementSubmissionStatus;
+	}
 
 	public Long getParent_requirement_id() {
 		return parent_requirement_id;
@@ -493,6 +535,14 @@ import org.hibernate.annotations.FetchMode;
 	public void setRequirementAssignTo(Set<RequirementAssignTo> requirementAssignTo) {
 		this.requirementAssignTo = requirementAssignTo;
 	}
+	
+	public Set<RequirementApproverHierarchy> getRequirementApprover() {
+		return requirementApprover;
+	}
+
+	public void setRequirementApprover(Set<RequirementApproverHierarchy> requirementApprover) {
+		this.requirementApprover = requirementApprover;
+	}
 
 	public String getSpocName() {
 		return spocName;
@@ -526,14 +576,6 @@ import org.hibernate.annotations.FetchMode;
 		this.requirementId = requirementId;
 	}
 
-	public String[] getEducationList() {
-		return educationList;
-	}
-
-	public void setEducationList(String[] educationList) {
-		this.educationList = educationList;
-	}
-
 	public String getManager() {
 		return manager;
 	}
@@ -541,6 +583,38 @@ import org.hibernate.annotations.FetchMode;
 	public void setManager(String manager) {
 		this.manager = manager;
 	}
-	
-	
+
+	public String[] getReqEducationList() {
+		return reqEducationList;
+	}
+
+	public void setReqEducationList(String[] reqEducationList) {
+		this.reqEducationList = reqEducationList;
+	}
+
+	public String[] getReqSkillsList() {
+		return reqSkillsList;
+	}
+
+	public void setReqSkillsList(String[] reqSkillsList) {
+		this.reqSkillsList = reqSkillsList;
+	}
+
+	public String getSubmissionTemplateJsonString() {
+		return submissionTemplateJsonString;
+	}
+
+	public void setSubmissionTemplateJsonString(String submissionTemplateJsonString) {
+		this.submissionTemplateJsonString = submissionTemplateJsonString;
+	}
+
+	public String getClientSubmissionTemplateJsonString() {
+		return clientSubmissionTemplateJsonString;
+	}
+
+	public void setClientSubmissionTemplateJsonString(String clientSubmissionTemplateJsonString) {
+		this.clientSubmissionTemplateJsonString = clientSubmissionTemplateJsonString;
+	}
+
+		
 }

@@ -1063,7 +1063,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
  * 
  */
 		@Override
-		public TimesheetSubmissions getWeekFrequency(Long userId) {
+		public List<TimesheetSubmissions> getWeekFrequency(Long userId) throws Exception {
 			return timesheetSubmissionsDao.getWeekFrequency(userId);
 		}
 

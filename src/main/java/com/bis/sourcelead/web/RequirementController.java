@@ -57,7 +57,11 @@ public class RequirementController {
 			requirement = this.requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
 			if(requirement.getEducation() != null){
 					String[] educationList = requirement.getEducation().split(",");
-					requirement.setEducationList(educationList);
+					requirement.setReqEducationList(educationList);
+			}
+			if(requirement.getSkills() != null){		
+					String[] skillsList = requirement.getSkills().split(",");
+					requirement.setReqSkillsList(skillsList);
 			}
 			model.addObject("requirement",requirement);
 			model.addObject("requirementId",requirementId);
@@ -81,6 +85,9 @@ public class RequirementController {
 		List<User> usersList = userService.getOwnersByOrgLocationId(orgLocations.getId());
 		model.addObject("usersList", usersList);
 		
+		List<User> allusersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		model.addObject("all_users_List", allusersList);
+		
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		model.addObject("skillsList", skillsList);
 		
@@ -99,6 +106,24 @@ public class RequirementController {
 		List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
 		model.addObject("spocOwnersList", userList);
 		
+		//approver list
+		List<User> approverList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		model.addObject("approverList", approverList);
+		
+		
+		return model;
+
+	}
+	
+	@RequestMapping(value = "/requirementSummary")
+	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
+		 
+		
+		ModelAndView model = new ModelAndView();
+		model.setViewName("requirement/requirementSummary");
+		
+		model.addObject("requirementId",requirementId);
+		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 
 	}

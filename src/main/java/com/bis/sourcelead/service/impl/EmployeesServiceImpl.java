@@ -93,5 +93,19 @@ public class EmployeesServiceImpl implements EmployeesService {
 		return employeesDao.validateEmployeeEmailId(userId,emailId);
 	}
 
+	@Override
+	public Collection<Employees> getAllEmployeesByOrgLocationIdAndSearchByName(Long orgLocationId, Long level1Manager,
+			Long level2Manager, String searchByName) throws Exception {
+		Collection<Employees> employeeList = employeesDao.getAllEmployeesByOrgLocationIdAndSearchByName(orgLocationId, level1Manager, level2Manager, searchByName);
+		return employeeList;
+	}
+
+	@Override
+	public List<Employees> getEmployeesExcludeTeamMembersBySearchByName(Long projectId, Long orgLocationsId,
+			String searchByName) throws Exception {
+		List<Employees> emplist= employeesDao.getEmployeesExcludeTeamMembersBySearchByName(projectId, orgLocationsId, searchByName);
+		return emplist;
+	}
+
 	
 }

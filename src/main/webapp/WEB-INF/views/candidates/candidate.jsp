@@ -117,7 +117,7 @@
         <div class="form-group">
           <label class="col-md-3">Mobile</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="phone" name="phone" value="${phone}"  field-name="Mobile Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true" value="">
+            <input type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="${phone}"  field-name="Mobile Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true" value="">
           </div>
         </div>
         
@@ -188,7 +188,7 @@
              <div class="col-xs-6 col-md-6">
              		<select class="form-control" id="experienceMonths" name="experienceMonths">
              		<option selected disabled>Month</option>
-             		 <c:forEach begin="0" end="12" varStatus="loop">
+             		 <c:forEach begin="0" end="11" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
              		</select>
@@ -225,7 +225,7 @@
            <div class="input-group">
             <input type="text" id="expectedRate" name="expectedRate" value="${expectedRate}" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
               <div class="input-group-btn selp-custom-min">
-             <select class="selectpicker" id="expectedRateCurrencey" name="expectedRateCurrencey">
+              <select class="selectpicker" id="expectedRateCurrencey" name="expectedRateCurrencey">
                  
                  <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
                  <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
@@ -318,15 +318,22 @@
      2.parameter : csrf token,con.
      3.ajax url implementation in CandidateRestController.
     --%>
-
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
 <script type="text/javascript">
 	function storeCandidate() {
 		var validationSettings = {
-		        errorMessagePosition : 'element',
-		       borderColorOnError : '',
+				errorMessagePosition : 'element',
+				borderColorOnError : '',
 				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd' 
-	         }; 
+				dateFormat : 'yyyy/mm/dd'
+			};
 		 if ($('#candidate_form').validate(false, validationSettings)){ 
 			var frm = $('#candidate_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -354,6 +361,11 @@
 				return false;
 		 } 
 	} 
+	
+	$('body').on('blur', '#candidate_form', function() {
+		$("#candidate_form").showHelpOnFocus();
+		$("#candidate_form").validateOnBlur(false, validationSettings);
+	});
 </script>
 
 <script type="text/javascript">

@@ -60,7 +60,7 @@ window.onload = function () {
            <h3>Vendor Details</h3>
             <div class="form-group" ><label class="col-md-3" for="Project Id">Vendor Name<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9" id="clientNameDiv">
-					<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails();" field-name="Vendor Name" data-validation="required validate_Space validate_length length2-250" value="">
+					<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails(); validateClientName();" field-name="Vendor Name" data-validation="required validate_Space validate_length length2-250" value="">
 					<input type="hidden" id="orgLocationId" />
 					<span class="hidden">Enter Vendor Name</span>
 				</div>
@@ -453,16 +453,6 @@ function validateEmail(){
 								location.replace(sourceleadUrl
 										+ "/vendorsList");
 							}
-							else if (result == 'invalid') {
-								//duplicate client
-								$("#loading").removeAttr("style");
-								var clientName = document.getElementById("orgName").value;
-								$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is Already Existed</span>");
-								document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
-								document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed");
-								
-							}
-
 						},
 					}); 
 			return true;
@@ -583,8 +573,8 @@ function validateClientName(){
 					$('input#orgName').attr('class','valid form-control');
 					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
 					$("#save_client").click(function() {
-						if ($(this).validate(false, validationSettings)) {
-						}
+						/* if ($(this).validate(false, validationSettings)) {
+						} */
 					});
 				}
 			},

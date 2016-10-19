@@ -75,21 +75,36 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 	public TeamMembers saveTeamMembersByJsonData(JSONObject jSONObject,Long teamId) throws Exception {
 		
 		TeamMembers teamMembers = new TeamMembers();
-		User memberUser = userService.getUserById(Long.parseLong(jSONObject.getString("memberUserId")));
-		
-		Team team = new Team();
-		team.setId(teamId);
-		teamMembers.setTeamId(team);
-	
-		if(jSONObject.has("memberUserId")){
-			teamMembers.setMemberUserId(memberUser);
+		String  userList = jSONObject.getString("memberUserId");
+		userList = userList.replaceAll("\\[", "").replaceAll("\\]","");
+		userList = userList.replaceAll("\"", "");
+		String[] usersIds = userList.split(",");
+		for(int i=0;usersIds[0].length() >= i ;i++){
+			User user = new User();
+			user.setId(Long.parseLong(usersIds[i]));
+			teamMembers.setMemberUserId(user);
+			
+			Team team = new Team();
+			team.setId(teamId);
+			teamMembers.setTeamId(team);
+			
+			teamMembers.setStatus(Constants.MEMBER_ACTIVE);
+			teamMembers.setCreatedDate(commonUtil.currentDate());
+			teamMembers.setUpdatedDate(commonUtil.currentDate());
+	     teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
 		}
-		teamMembers.setStatus(Constants.MEMBER_ACTIVE);
-		teamMembers.setCreatedDate(commonUtil.currentDate());
-		teamMembers.setUpdatedDate(commonUtil.currentDate());
-		
-		return teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
+	    
+		return teamMembers;
 	
 }
+
+	@Override
+	public TeamMembers deleteTeamMemberById(Long teamMemberId) throws Exception {
+		
+		TeamMembers teamMembers = teamMemberDao.getTeamMemberByTeamMemberId(teamMemberId);
+		teamMembers.setStatus(Constants.TEAM_IN_ACTIVE);
+		return teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
+		
+	}
 }
 

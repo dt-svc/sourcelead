@@ -110,8 +110,6 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 			    	}
 		    	}
 	    	//send mail to assigned Project Manager
-	    	String teamMembersList = "";
-	    	
 			if(jsonObj.has("level2Manager")){ 	
 				if(!jsonObj.getString("level2Manager").isEmpty()){
 					User approverUserId2 = new User();
@@ -127,26 +125,25 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 			 }
 		 
 		//admin as approver hierarchy ..
-			 
 		Collection<User> uLsit = userService.getUsersByUserRoles(loginOrgLocation.getId());
 		CopyOnWriteArrayList<User> userLsit = new CopyOnWriteArrayList<User>(uLsit);
 		if(userLsit != null && !userLsit.isEmpty()){
-		for(User userRole : userLsit){
-			  if(ids[0] != null &&  ids[0].equals(userRole.getId())){
-				  userLsit.remove(userRole);
-			  }
-			  else if (ids[1] != null && ids[1].equals(userRole.getId())) {
-				  userLsit.remove(userRole);
-			  }else{
-				    ProjectApproverHierarchy pah3 = new ProjectApproverHierarchy();
-				    pah3.setProjectId(projects);
-					pah3.setApproverUserId(userRole);
-					pah3.setLevel(2);
-					projectMemberList.add(pah3);
-				    //ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah3);
-			  } 
-			  
-		}
+			for(User userRole : userLsit){
+				  if(ids[0] != null &&  ids[0].equals(userRole.getId())){
+					  userLsit.remove(userRole);
+				  }
+				  else if (ids[1] != null && ids[1].equals(userRole.getId())) {
+					  userLsit.remove(userRole);
+				  }else{
+					    ProjectApproverHierarchy pah3 = new ProjectApproverHierarchy();
+					    pah3.setProjectId(projects);
+						pah3.setApproverUserId(userRole);
+						pah3.setLevel(2);
+						projectMemberList.add(pah3);
+					    //ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah3);
+				  } 
+				  
+			}
 		}
 		return projectMemberList;
 	}

@@ -38,6 +38,15 @@ text-align:left;
 function editCandidate(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var loginCountryName = '${loginCountryName}';
+	  
+		var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	         }; 
+ if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
+	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -58,7 +67,7 @@ function editCandidate(candidateId){
 							
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="validate_Space required">';
 							result = result + '		          </div>';
 							result = result + '		          <div class="col-md-6">';
 							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+json.lastName+'" placeholder="Last Name">';
@@ -66,11 +75,13 @@ function editCandidate(candidateId){
 							result = result + '		        </div>';
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email">';
 							result = result + '		          </div>';
-							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="mobilePhone"  value="'+json.mobilePhone+'" placeholder="Mobile">';
-							result = result + '		          </div>';
+							
+							result = result + '<div class="col-md-6">';
+							result = result + '<input type="text" class="form-control input-sm" name="mobilePhone"  value="'+json.mobilePhone+'" placeholder="Mobile">';
+							result = result + '</div>';
+							
 							result = result + '		        </div>';
 							
 						    /* 	  
@@ -81,12 +92,12 @@ function editCandidate(candidateId){
 							result = result + '  </div>'; */
 					        
 					        
-							result = result + '		        <div class="clearfix mb10">';
-							result = result + '		          <div class="col-md-6 custom-fields">';
-								result = result + '    <input type="hidden" class="form-control" id="CountryAutocomplete" name="country"';
-								result = result + '				name="country" field-name="Country" value="'+json.country+'" data-validation="validate_Space" disabled="disabled" data-validation-optional="true" />'; 
-								result = result + '	<ul id="country" class="form-control" onkeypress="getAllCountries(\''+sourceleadUrl+'\');"></ul>';
-							result = result + '		          </div>';
+							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="col-md-6 custom-fields">';
+							result = result + '<input type="hidden" class="form-control" id="CountryAutocomplete" name="country"';
+							result = result + 'name="country" field-name="Country" value="'+json.country+'" data-validation="validate_Space" disabled="disabled" data-validation-optional="true" />'; 
+							result = result + '	<ul id="country" class="form-control" onkeypress="getAllCountries(\''+sourceleadUrl+'\');"></ul>';
+							result = result + '</div>';
 							result = result + '		          <div class="col-md-6 custom-fields select-arrow">';
 								result = result + '	<input type="hidden" id="stateAutoComplete" name="state"';
 								result = result + '	field-name="State" class="form-control" value="'+json.state+'" data-validation="validate_Space" data-validation-optional="true">';
@@ -103,8 +114,8 @@ function editCandidate(candidateId){
 							result = result + '		        </div>';
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-12">';
-							result = result + '<textarea class="form-control input-sm" placeholder="Summary"  name="summary" rows="2" cols="0">';
-							result = result + ''+json.summary+'</textarea>';
+							result = result + '<textarea class="form-control input-sm" placeholder="Summary"  name="summary" rows="2" cols="0" > '+json.summary+'</textarea>';
+							//result = result + ''+json.summary+'</textarea>';
 							result = result + ' </div>';
 							result = result + '		        </div>';
 							result = result + '		        <div class="clearfix mr">';
@@ -158,7 +169,7 @@ function editCandidate(candidateId){
 							       ,placeholderText:""
 							  });
 							 
-							  
+            		 
             		 }
                 }else{
          	    	         var result ="";
@@ -178,6 +189,7 @@ function editCandidate(candidateId){
                  },
                    
               }); 
+		 }
 }
 </script> 
 
@@ -395,7 +407,7 @@ function candidateProfile(candidateId){
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details">';	 
 							result = result +'		<h1>Summary:</h1>';
-							result = result +'	    <textarea placeholder="Enter description">'+json.summary+'</textarea>';
+							result = result +'	    <textarea placeholder="Enter description" readonly>'+json.summary+'</textarea>';
 							result = result +'		<h2>Skills:</h2>';
 							
 							result = result + '	<div class="row select-skills">';

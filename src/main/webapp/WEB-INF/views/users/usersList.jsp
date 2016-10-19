@@ -29,7 +29,7 @@ window.onload = function () {
   <div class="content-dashboard clearfix">
    <div id="loading"></div>
     <section class="content-header clearfix">
-         <c:if test="${not empty msg}">
+         <c:if test="${!empty msg}">
 	        <div class="success_pop" id="selector"  style="display: block;">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>

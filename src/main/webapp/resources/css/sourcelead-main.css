@@ -443,7 +443,6 @@ textarea {
 /* spoclinks more that 5 */
 .spoclinksMore {
 	min-width: 955px; padding: 0 0 0 10px;
-	height: 280px; overflow-y:scroll; 
 }
 .spoclinksMore ul li {
 	border-bottom: 1px solid #d2d2d2; line-height: normal !important; height: auto !important; padding: 10px !important;
@@ -534,7 +533,7 @@ margin-bottom: 5px; line-height: normal !important; padding-left: 10px;
 	margin-left: 55px;
 	position: absolute;
 	z-index: 999;
-	top: 218px;
+	top: 410px;
 	border-radius: 0 5px 5px 0;
 	-webkit-transition: all 0.5s ease-in-out 0s;
 	-ms-transition: all 0.5s ease-in-out 0s;
@@ -1955,7 +1954,7 @@ custom scroll bar ends*/
 	text-shadow: 1px 1px 1px #333;
 }
 .move-btn .fa-home {
-	padding: 7px 10px;
+	padding: 6px 10px;
 }
 .move-btn .fa-angle-double-right {
 	-webkit-transition: all 0.3s ease-in-out;
@@ -2081,7 +2080,7 @@ input[type="text"].mybtn:after {
 }
 /* choosen customized styled */
 .chosen-container-multi .chosen-choices {
-	border-radius: 3px;
+	border-radius: 3px; padding:0px  5px !important;
 }
 .chosen-container-multi .chosen-choices li.search-field input[type="text"] {
 	height: 28px;
@@ -2486,6 +2485,7 @@ ul.sl-jobboard li img {
 	margin-bottom: 5px;
 	margin-top: 5px;
 	color: #039BE5;
+	padding:0 !important;
 }
 .other-detials {
 	position: relative;
@@ -2815,13 +2815,13 @@ input:checked + .slider:before {
 	background: #fff none repeat scroll 0 0;
 	border: 1px solid #909090;
 	border-radius: 5px;
-	bottom: -50px;
+	bottom: -20px;
 	box-shadow: 0 8px 6px -8px #505050;
 	margin-top: 0;
 	opacity: 0;
 	padding: 10px 15px;
 	position: absolute;
-	right: 35px;
+	left: 140px;
 	text-align: left;
 	transition: all 0.6s ease 0s;
 	z-index: 8;
@@ -2906,7 +2906,7 @@ input:checked + .slider:before {
 	padding: 10px 5px;
 	position: absolute;
 	right: 20px;
-	z-index: 8;
+	z-index: 100000;
 	text-align: left;
 	margin-top: 8px;
 	box-shadow: 0 8px 6px -8px #505050;
@@ -3162,6 +3162,12 @@ approver-block {
 	background-color:#2ae0c8;
 	text-shadow:none;
 	font-size:15px;
+}
+.chosen-container .chosen-results li.active-result {
+color:#101010 ! Important;
+}
+.export_pop ul, .approved_pop ul {
+      min-width:150px;
 }
 @media (max-width: 320px) {
 .hidden-xs {
@@ -3423,3 +3429,8 @@ div.pages-404.width {
 	margin: 0 !important;
 }
 }
+
+#id1 {
+	padding:0px 15px 12px 15px;
+	}
+#id1 i { top:15px; position:absolute; right:20px;}	

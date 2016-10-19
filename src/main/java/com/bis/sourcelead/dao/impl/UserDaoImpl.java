@@ -374,15 +374,37 @@ public class UserDaoImpl implements UserDao {
 		 Session session = this.sessionFactory.getCurrentSession();
 		 List<User> userRoleList;	     
 	     if(ownerListOfSpoc!=null && !ownerListOfSpoc.isEmpty()){
-			 String query = "from User user where user.id !=:ownerId and user.id NOT IN (:ids) and user.id IN (select userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' ";
-		      userRoleList = session.createQuery(query).setLong( "ownerId", ownerId).setLong( "orgLocationsId", orgLocationsId).setParameterList("ids", ownerListOfSpoc).setCacheable(true).list();
+	    	//removed by prasad salina --->user.id !=:ownerId and 
+			 String query = "from User user where user.id NOT IN (:ids) and user.id IN (select userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' ";
+		      userRoleList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setParameterList("ids", ownerListOfSpoc).setCacheable(true).list();
 		 }
 		 else{
-			 String query = "from User user where user.id !=:ownerId and user.id IN (select userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' ";
-		      userRoleList = session.createQuery(query).setLong( "ownerId", ownerId).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+			 //removed by prasad salina --->user.id !=:ownerId and 
+			 String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' ";
+		      userRoleList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
 		 }
 	     return userRoleList;
 	     
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<User> getAllUsersByOrgLocationCode(Long orgLocationsId) {
+
+		 Session session = this.sessionFactory.getCurrentSession();
+	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' ";
+	     List<User> userRoleList = session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+	     return userRoleList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId, Long orgLocationsId) {
+
+		 Session session = this.sessionFactory.getCurrentSession();
+	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' and user.id <> :teamOwnerUserId  ";
+	     List<User> userRoleList = session.createQuery(query.toString()).setLong( "teamOwnerUserId", teamOwnerUserId).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+	     return userRoleList;
 	}
 	
 
