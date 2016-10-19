@@ -43,8 +43,8 @@ public class RequirementListController {
 	}
 	
 	
-	@RequestMapping(value = "/releaseRequirementToClientOrVendors/{requirementId}" , method = RequestMethod.GET)
-	public ModelAndView releaseRequirementToClientOrVendors(@PathVariable Long userId,HttpServletRequest request) {
+	@RequestMapping(value = "/releaseRequirementToClientOrVendors")
+	public ModelAndView releaseRequirementToClientOrVendors(String requirementId,HttpServletRequest request) {
 		
 		
 		ModelAndView model = new ModelAndView();

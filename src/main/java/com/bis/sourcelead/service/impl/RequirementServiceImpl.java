@@ -17,9 +17,11 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -194,6 +196,106 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setUpdatedBy(user.getUserCode());
 			requirement.setUpdatedDate(commonUtil.currentDate());
 			
+			//requirement status 
+			if(jsonObj.has("saveType")){
+				
+				if(jsonObj.getString("saveType").equalsIgnoreCase("Draft")){
+					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.DRAFT);
+				}
+				if(jsonObj.getString("saveType").equalsIgnoreCase("Save")){
+					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+				}
+				if(jsonObj.getString("saveType").equalsIgnoreCase("SubmitForApproval")){
+					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED);
+				}
+				
+			}
+			
+			//approval mechnism
+			HashSet<RequirementApproverHierarchy> requirementApproverHierarchyList = new HashSet<RequirementApproverHierarchy>();
+			//approval saving for sequential
+			if(jsonObj.has("parallelApprover") && StringUtils.isNotEmpty(jsonObj.getString("parallelApprover"))){
+				  
+				  String approverNames = jsonObj.getString("parallelApprover");
+				  String[] approvers = approverNames.split(",");
+				  for(String approver : approvers){
+					    
+					    RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
+						
+						User approverUserId = new User();
+						approverUserId.setId(Long.parseLong(approver));
+						rah.setApproverUserId(approverUserId);
+						  
+						rah.setRequirementId(requirement);
+						
+						rah.setLevel("1");
+						  
+						rah.setCreatedDate(commonUtil.currentDate());
+						rah.setCreatedBy(user.getUserCode());
+						rah.setUpdatedBy(user.getUserCode());
+						rah.setUpdatedDate(commonUtil.currentDate());
+						  
+						requirementApproverHierarchyList.add(rah);
+				  }
+				 
+			} 
+			//approval saving for parallel
+			if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
+				  
+				  if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
+					  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
+					  
+					  User approverUserId = new User();
+					  approverUserId.setId(Long.parseLong(jsonObj.getString("sequentialApprover1")));
+					  rah.setApproverUserId(approverUserId);
+					  rah.setRequirementId(requirement);
+					  
+					  rah.setLevel("1");
+					  
+					  rah.setCreatedDate(commonUtil.currentDate());
+					  rah.setCreatedBy(user.getUserCode());
+					  rah.setUpdatedBy(user.getUserCode());
+					  rah.setUpdatedDate(commonUtil.currentDate());
+					  
+					  requirementApproverHierarchyList.add(rah);
+				  }
+				  
+				  if(jsonObj.has("sequentialApprover2") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover2"))){
+					  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
+					  
+					  User approverUserId = new User();
+					  approverUserId.setId(Long.parseLong(jsonObj.getString("sequentialApprover2")));
+					  rah.setApproverUserId(approverUserId);
+					  
+					  rah.setRequirementId(requirement);
+					  
+					  rah.setLevel("2");
+					  
+					  rah.setCreatedDate(commonUtil.currentDate());
+					  rah.setCreatedBy(user.getUserCode());
+					  rah.setUpdatedBy(user.getUserCode());
+					  rah.setUpdatedDate(commonUtil.currentDate());
+					  
+					  requirementApproverHierarchyList.add(rah);
+				  }
+				 
+			} 
+			requirement.setRequirementApprover(requirementApproverHierarchyList);
+			
+			
+			if(jsonObj.has("manager") && StringUtils.isNotEmpty(jsonObj.getString("manager"))){
+				    User managerUserId = new User();
+				    managerUserId.setId(Long.parseLong(jsonObj.getString("manager")));
+				    requirement.setManagerUserId(managerUserId);
+			} 
+			if(jsonObj.has("priority") && StringUtils.isNotEmpty(jsonObj.getString("priority"))){
+				  requirement.setPriority(jsonObj.getString("priority"));
+			} 
+			/*if(jsonObj.has("applicationFrom") && StringUtils.isNotEmpty(jsonObj.getString("applicationFrom"))){
+				  jsonObj.getString("applicationFrom");
+			} */
+			
+			
 			HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
 			if (jsonObj.has("assignedToMaxCount")){
 				String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
@@ -248,8 +350,8 @@ public class RequirementServiceImpl implements RequirementService {
 	*/
 
 	@Override
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients) throws Exception {
-		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients);
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,Long  userId) throws Exception {
+		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients, userId);
 	}
 
 	

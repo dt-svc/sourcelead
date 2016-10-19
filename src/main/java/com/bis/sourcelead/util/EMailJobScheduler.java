@@ -1,6 +1,7 @@
 package com.bis.sourcelead.util;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -8,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.JobSchedulerTestService;
@@ -62,7 +62,9 @@ public class EMailJobScheduler {
 		try {
 			List<User> usrList = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus();
 			for(User user : usrList){
-				TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
+				if("Admin".equalsIgnoreCase(user.getUserType()))
+					continue;
+				List<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
 				projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
 			}
 			emailJobSchedulerStatus = jobSchedulerTestService.schedulerTest(date.toLocaleString());
@@ -85,9 +87,11 @@ public class EMailJobScheduler {
 		try {
 			notificationJobSchedulerStatus = jobSchedulerTestService.notiFicationSchedularTest(date.toLocaleString());
 			logger.info("*********** COMPLETED the Notification Job Scheduler with status as : "+notificationJobSchedulerStatus+" ***********");
-			List<User> usrList = projectsService.getAllUserTimeSheetSubmissionStatus();
+			HashSet<User> usrList = projectsService.getAllUserTimeSheetSubmissionStatus();
 			for(User user : usrList){
-				TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
+				if("Admin".equalsIgnoreCase(user.getUserType()))
+					continue;
+				List<TimesheetSubmissions>  timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
 				projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
 			}
 			

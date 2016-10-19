@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -60,6 +61,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Transient
 	private String assignedUserRole;
+	
+	@Transient
+	private String teamName;
 
 	public Long getId() {
 		return id;
@@ -97,6 +101,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 		return assignUserId;
 	}
 
+	
 	public String getAssignedUserRole() {
 		return assignedUserRole;
 	}
@@ -148,4 +153,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setAssignedUserName(String assignedUserName) {
 		this.assignedUserName = assignedUserName;
 	}
+
+	public String getTeamName() {
+		return teamName;
+	}
+
+	public void setTeamName(String teamName) {
+		this.teamName = teamName;
+	}
+	
+	
 }

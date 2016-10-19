@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import org.hibernate.annotations.Cache;
@@ -54,7 +55,7 @@ public interface ProjectsDao {
 
 	public Integer getUserAssignedProjectsCount(Long userId,Long orgLocationId);
 	
-	public List<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
+	public HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
 	
 	public void saveAllProjects(List<Projects> projectsList) throws Exception;
 	
