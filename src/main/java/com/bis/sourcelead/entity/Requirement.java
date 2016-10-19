@@ -132,6 +132,15 @@ import org.hibernate.annotations.FetchMode;
 	@Column(name="STATUS")
 	private String status;
 	
+	
+	@Column(name = "SUBMISSION_TEMPLATE_JSON_STRING", columnDefinition = "TEXT default NULL")
+	private String submissionTemplateJsonString;
+	
+	
+	@Column(name = "CLIENT_SUBMISSION_TEMPLATE_JSON_STRING", columnDefinition = "TEXT default NULL")
+	private String clientSubmissionTemplateJsonString;
+	
+	
 	@Column(name="PARENT_REQUIREMENT_ID")
 	private Long parent_requirement_id;
 	
@@ -550,6 +559,22 @@ import org.hibernate.annotations.FetchMode;
 
 	public void setReqSkillsList(String[] reqSkillsList) {
 		this.reqSkillsList = reqSkillsList;
+	}
+
+	public String getSubmissionTemplateJsonString() {
+		return submissionTemplateJsonString;
+	}
+
+	public void setSubmissionTemplateJsonString(String submissionTemplateJsonString) {
+		this.submissionTemplateJsonString = submissionTemplateJsonString;
+	}
+
+	public String getClientSubmissionTemplateJsonString() {
+		return clientSubmissionTemplateJsonString;
+	}
+
+	public void setClientSubmissionTemplateJsonString(String clientSubmissionTemplateJsonString) {
+		this.clientSubmissionTemplateJsonString = clientSubmissionTemplateJsonString;
 	}
 
 		

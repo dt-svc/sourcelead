@@ -170,9 +170,6 @@ public class ClientRestController {
 				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				
-				boolean flag = orgService.isClientNameValid(jsonObj.getString("orgName"),orgLocation.getId(),responderType);
-				
-				if(flag == false){
 					if(null != orgLocationId){
 						jsonObj.put("orgLocationId", orgLocationId);
 					}
@@ -183,9 +180,6 @@ public class ClientRestController {
 							"Successfully you have created a client");
 
 					return "clientDashboard";
-				}else{
-					return "invalid";
-				}
 				
 				
 			} 

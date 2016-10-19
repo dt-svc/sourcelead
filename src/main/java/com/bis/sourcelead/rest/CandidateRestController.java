@@ -22,6 +22,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.SourceleadResumeParser;
 /**
  * Handles requests for the Candidate service.
  * 
@@ -82,6 +83,25 @@ public class CandidateRestController {
 		return "success";
 	}
 	
+	@RequestMapping(value = "/parseResume", method = RequestMethod.POST)
+	public @ResponseBody String parseResume(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+		
+		MultipartFile multiFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if(itrator.hasNext()){
+	        multiFile = request.getFile(itrator.next());
+		}
+		SourceleadResumeParser resumeParser = new SourceleadResumeParser();
+		String resumeDetails = resumeParser.getCandidateDetailsFromResume(multiFile.getBytes());
+		/*//multiFile.getBytes()
+		String jsonc = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(jsonc);
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Candidate candidate = candidateService.storeCandidate(jsonObj,orgLocation,user,multiFile);*/
+		return resumeDetails;
+	}
 	 /**
 	  * To  validate user email
 	  * @param EmailId

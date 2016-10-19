@@ -1,4 +1,4 @@
-
+SET GLOBAL sql_mode = '';
 DROP TABLE IF EXISTS `sourcelead`.`countries`;
 CREATE TABLE `sourcelead`.`countries` (
   ID BIGINT NOT NULL AUTO_INCREMENT,

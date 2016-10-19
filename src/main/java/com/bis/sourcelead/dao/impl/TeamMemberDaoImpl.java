@@ -106,6 +106,20 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 		return teamMembers;
 		
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public TeamMembers getTeamMemberByTeamMemberId(Long teamMemberId) throws Exception {
+		
+		logger.debug("In Team getTeamByTeamId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		return (TeamMembers) session.get(TeamMembers.class, teamMemberId);
+		
+	}
+	
+	
+	
 	 
 
 }
