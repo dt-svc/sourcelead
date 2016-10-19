@@ -29,7 +29,7 @@
                 </span>            	
             </h2>
           </div>
-          <div class="pull-right brud-crum">Home &raquo; Vendors list </div>
+          <div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;Vendors List  </div>
         </section>
         
        
