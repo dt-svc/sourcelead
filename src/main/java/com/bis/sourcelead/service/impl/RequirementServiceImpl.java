@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
+import com.bis.sourcelead.dao.SubmissionTemplateDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -44,6 +45,8 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	private CommonUtil commonUtil;
 	
+	@Autowired
+	private SubmissionTemplateDao submissionTemplateDao;
 	
 	
 	/**
@@ -163,7 +166,7 @@ public class RequirementServiceImpl implements RequirementService {
 				 requirement.setFileContentType(multiFile.getContentType());
 			 }
 			 
-			if(jsonObj.has("isClient") && StringUtils.isNotEmpty(jsonObj.getString("isClient"))){
+			if(jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y") && StringUtils.isNotEmpty(jsonObj.getString("isClient"))){
 					requirement.setIsClientJob(jsonObj.getString("isClient"));
 			}
 			if(jsonObj.has("selectClient") && StringUtils.isNotEmpty(jsonObj.getString("selectClient"))){
@@ -185,10 +188,11 @@ public class RequirementServiceImpl implements RequirementService {
 			if(jsonObj.has("clientRateType") && StringUtils.isNotEmpty(jsonObj.getString("clientRateType"))){
 				requirement.setClientRateType(jsonObj.getString("clientRateType"));
 			} 
-			if(jsonObj.has("clientSubmissionForm") && StringUtils.isNotEmpty(jsonObj.getString("clientSubmissionForm"))){
-				SubmissionTemplate submissionTemplate = new SubmissionTemplate();
+			if(jsonObj.getString("isClient").equalsIgnoreCase("Y") && jsonObj.has("isClient") && StringUtils.isNotEmpty(jsonObj.getString("isClient")) && jsonObj.has("clientSubmissionForm") && StringUtils.isNotEmpty(jsonObj.getString("clientSubmissionForm"))){
+				SubmissionTemplate submissionTemplate = submissionTemplateDao.getSubmissionTemplateById(Long.parseLong(jsonObj.getString("clientSubmissionForm")));
 				submissionTemplate.setId(Long.parseLong(jsonObj.getString("clientSubmissionForm")));
 				requirement.setClientSubmissionTemplateId(submissionTemplate);
+				requirement.setClientSubmissionTemplateJsonString(submissionTemplate.getJsonString());
 			}
 			
 			requirement.setStatus(Constants.REQUIREMENT_STATUS);

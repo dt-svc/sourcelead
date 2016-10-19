@@ -1997,7 +1997,10 @@ function getIsClientVal(){
 	   
 	   $('#clientSubmissionForm').removeAttr('data-validation-optional');
 	   $('#clientSubmissionForm').attr("data-validation","required"); 
+	   $("#isClientJob").val('Y');
+	   
 	 } else {
+		 $("#isClientJob").val('N');
 		 $('#addClientId').removeAttr('data-validation');
 		 $('#addClientId').attr("data-validation-optional","true"); 
 		 
