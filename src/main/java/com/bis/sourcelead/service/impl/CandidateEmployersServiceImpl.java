@@ -69,14 +69,16 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	        	if(jsonObject.getString("isCurrentPosition")!=null && !jsonObject.getString("isCurrentPosition").isEmpty()){
 	        		candidateEmployers.setIsCurrentPosition(jsonObject.getString("isCurrentPosition"));
 	        	}
+        	}else{
+        		candidateEmployers.setIsCurrentPosition("N");
         	}
         	if(jsonObject.has("startYear") && !(jsonObject.getString("startYear").isEmpty())){
  				   candidateEmployers.setStartYear(jsonObject.getString("startYear"));
- 				   candidateEmployers.setStartMonth(jsonObject.getString("startMonth"));
+ 				   candidateEmployers.setStartMonth(jsonObject.getString("startMonth").split("&")[1]);
         	}
         	if(jsonObject.has("endYear") && !(jsonObject.getString("endYear").isEmpty())){
   				   candidateEmployers.setEndYear(jsonObject.getString("endYear"));
-  				   candidateEmployers.setEndMonth(jsonObject.getString("endMonth"));
+  				   candidateEmployers.setEndMonth(jsonObject.getString("endMonth").split("&")[1]);
         	}
         	candidateEmployers.setStatus(Constants.CANDIDATE_ACTIVE);
         	candidateEmployers.setCreatedBy(user.getUserCode());

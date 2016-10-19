@@ -493,7 +493,7 @@ function addCertification(candidateId) {
 								result = result	+ '	                   <input type="hidden"  value="'+candidateCertificationId+'" id="candidateCertificationId"  name="candidatecertificateID" >';
 								result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
 							
-								result  = result + '                   <button type="button"  id="addCandidate"  onClick ="updateCandidateCertification('+ candidateId+ ','+ candidateCertificationId+ ');" class="btn btn-sm btn-primary pull-right"  >Add</button>';
+								result  = result + '                   <button type="button"  id="addCandidate"  onClick ="updateCandidateCertification('+ candidateId+ ','+ candidateCertificationId+ ');" class="btn btn-sm btn-primary pull-right"  >Update</button>';
 								result  = result + '                 </div>';
 								result  = result + '               </div>';
 								result  = result + '              </form>';

@@ -318,15 +318,22 @@
      2.parameter : csrf token,con.
      3.ajax url implementation in CandidateRestController.
     --%>
-
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
 <script type="text/javascript">
 	function storeCandidate() {
 		var validationSettings = {
-		        errorMessagePosition : 'element',
-		       borderColorOnError : '',
+				errorMessagePosition : 'element',
+				borderColorOnError : '',
 				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd' 
-	         }; 
+				dateFormat : 'yyyy/mm/dd'
+			};
 		 if ($('#candidate_form').validate(false, validationSettings)){ 
 			var frm = $('#candidate_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -354,6 +361,11 @@
 				return false;
 		 } 
 	} 
+	
+	$('body').on('blur', '#candidate_form', function() {
+		$("#candidate_form").showHelpOnFocus();
+		$("#candidate_form").validateOnBlur(false, validationSettings);
+	});
 </script>
 
 <script type="text/javascript">
