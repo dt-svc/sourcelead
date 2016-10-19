@@ -607,7 +607,20 @@ function getCities(){
 					url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}",
 					success : function(data) {
 						var json = JSON.parse(data);
-						$("#firstName").val(json.name);
+						var name = json.name;
+						var firstName = '';
+						var lastName = '';
+						if(name != null && name != 'undefined' && name != ''){
+							 firstName = name.split(".")[0]; 
+							 lastName = name.split(".")[1]; 
+							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
+									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
+								 firstName = name;
+							 }
+						}
+						
+						$("#firstName").val(firstName);
+						$("#lastName").val(lastName);
 						$("#email").val(json.email);
 						$("#mobilePhone").val(json.phoneNumbers);
 						$("#loading").removeAttr("style");
