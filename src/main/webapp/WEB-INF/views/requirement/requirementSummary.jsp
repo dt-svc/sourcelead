@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="resources/css/style.css" />
  
  
+ 
 <script>
 $(document).ready(function() {
 	 var requirementId = '${requirementId}'; 
@@ -2963,8 +2964,10 @@ function getAddApplicant(requirementId){
 	generateOrgSubmissionForm(sourceleadUrl,requirementId)
 	
 	var result = "";
-
 	result = result + '<form id="addApplicant_form" >';
+	result = result + '<div class="col-lg-12">';
+	result = result + '<h3>Add Applicant</h3>';
+	result = result + '</div>';
 	result = result + '<div class="form-horizontal clearfix">';
 	result = result + '<div class="row">';
 	result = result + '<div class="col-md-12 mb10">';
@@ -2986,7 +2989,7 @@ function getAddApplicant(requirementId){
 	result = result + '</div>';
 	
 	
-	result = result + '<div class="col-md-12">';
+	/* result = result + '<div class="col-md-12">';
 	result = result + '<div class="panel-border">';
 	result = result + '<div class="col-md-12">';
 	result = result + '<div class="input-group">';
@@ -3029,7 +3032,7 @@ function getAddApplicant(requirementId){
 	result = result + '</select>';
 	result = result + '</div>';
 	result = result + '</div>';
-	result = result + '</div>';
+	result = result + '</div>'; */
                         
                         
 	result = result + '</div>';
@@ -3129,4 +3132,126 @@ function getAddApplicant(requirementId){
 </script>
 
 
+
+<script type="text/javascript">
+function getAllCountries(){
+	$.ajax({
+    	type: "POST",
+    	dataType: "json",
+    	 url: '${sourceleadUrl}'+"/sourceLeadCountryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	$('#country').empty();
+        	$('#country').append('<option value="">---Select---</option>');
+            for(var i=0;i<json.length;i++){
+            	if(json[i] == '${loginCountryName}'){
+            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            	}
+            	else{
+            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+            	}
+            	
+            }
+            $('#country').trigger("chosen:updated");
+        },
+        error: function(e){
+        }
+    });
+} 
+</script>
+
+<script>
+function getStates(){
+	
+	var countryName = $("#country").val();
+	if(countryName != null && countryName != "" && countryName !="undefined"){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#state').empty();
+	        	$('#state').append('<option value="">---Select---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#state').trigger("chosen:updated");
+	            
+	            $('#city').empty();
+	            $('#city').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#state').empty();
+    	$('#state').append('<option value="">---Select---</option>');
+    	$('#state').trigger("chosen:updated");
+    	$('#city').empty();
+    	$('#city').append('<option value="">---Select---</option>');
+        $('#city').trigger("chosen:updated");
+	}
+}
+</script> 
+
+
+<script>
+function getCities(){
+	
+	var countryName = $("#country").val();
+	var stateName = $("#state").val();
+	
+	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#city').empty();
+	        	$('#city').append('<option value="">---Select---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#city').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#city').empty();
+    	$('#city').append('<option value="">---Select---</option>');
+    	$('#city').trigger("chosen:updated");
+	}
+}
+</script>
+<script type="text/javascript">
+function init(){
+	       getAllCountries();
+	      
+	       $("#country").on('change', function (e) {
+	    	   getStates();
+	    	   getCities();
+	       });
+	       $("#state").on('change', function (e) {
+	    	   getCities();
+	       });
+	      
+	       $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+}
+</script>
+
+<script>
+  $( function() {
+	  
+	  $('#dob').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	  });
+	  
+  } );
+</script>
 
