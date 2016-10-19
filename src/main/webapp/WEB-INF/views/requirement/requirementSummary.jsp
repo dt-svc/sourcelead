@@ -3179,7 +3179,7 @@ function getAllCountries(){
         	$('#country').empty();
         	$('#country').append('<option value="">---Select---</option>');
             for(var i=0;i<json.length;i++){
-            	if(json[i] == '${loginCountryName}'){
+            	if(json[i] == '${SourceLeadWeb_orgLocations.country}'){
             		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{
@@ -3188,6 +3188,7 @@ function getAllCountries(){
             	
             }
             $('#country').trigger("chosen:updated");
+            getStates();
         },
         error: function(e){
         }
