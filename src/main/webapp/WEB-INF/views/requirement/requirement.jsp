@@ -1252,11 +1252,11 @@ background-color: #ccc;
                 </div>
                 <!-- Modal content Demo Popup: Need to Update ends --> 
   <div class="form-footer clearfix">
-    <div class="col-lg-12">
+    <div class="col-lg-12">   
       <div class="pull-right">
-        <input type="button" value="Submit for Approval" id="submitForApproval" class="btn btn-primary" style="display:none;">
-        <input type="button" value="Draft" id="draft" class="btn btn-danger">
-        <input type="button" value="Save" id="save" onclick="storeRequirement();" class="btn btn-primary" >
+        <input type="button" value="Submit for Approval" id="submitForApproval" onclick="storeRequirement('submitForApproval');" class="btn btn-primary" style="display:none;">
+        <input type="button" value="Draft" id="draft" onclick="storeRequirement('draft');" class="btn btn-danger">
+        <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary" >    
         <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
       </div>
     </div>
@@ -1268,8 +1268,8 @@ background-color: #ccc;
 </section>
 
 <script type="text/javascript">
-	function storeRequirement() {
-		
+	function storeRequirement(saveType) {
+		alert("saveType"+saveType);
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -1286,6 +1286,7 @@ background-color: #ccc;
       		var formData = new FormData(form); 
 			  //It will escape all the special characters
 			var sourceleadUrl = '${sourceleadUrl}';
+			alert();
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
@@ -1294,7 +1295,7 @@ background-color: #ccc;
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&json="+con,
+						url : sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType+"&json="+con,
 						success : function(result) {
 								location.replace(sourceleadUrl+"/requirementList");
 						},

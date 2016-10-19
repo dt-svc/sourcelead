@@ -197,15 +197,15 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setUpdatedDate(commonUtil.currentDate());
 			
 			//requirement status 
-			if(jsonObj.has("saveType")){
+			if(jsonObj.has("saveType")){            
 				
-				if(jsonObj.getString("saveType").equalsIgnoreCase("Draft")){
+				if(jsonObj.getString("saveType").equalsIgnoreCase("draft")){
 					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.DRAFT);
 				}
-				if(jsonObj.getString("saveType").equalsIgnoreCase("Save")){
+				if(jsonObj.getString("saveType").equalsIgnoreCase("save")){
 					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
 				}
-				if(jsonObj.getString("saveType").equalsIgnoreCase("SubmitForApproval")){
+				if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval")){
 					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED);
 				}
 				
