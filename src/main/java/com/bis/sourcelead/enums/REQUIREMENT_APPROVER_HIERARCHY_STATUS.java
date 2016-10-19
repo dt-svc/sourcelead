@@ -2,10 +2,10 @@ package com.bis.sourcelead.enums;
 
 public enum REQUIREMENT_APPROVER_HIERARCHY_STATUS {
 
-	ACCEPTED("Accepted"),
-	REJECTED("Rejected"),
-	POSTED("Posted");
-	
+	NEW("new"),
+	SUBMITTEDFORAPPROVAL("submitted for approval"),
+	APPROVED("approved"),
+	REJECTED("rejected");
 	
     private String value;
 	private REQUIREMENT_APPROVER_HIERARCHY_STATUS(String value){

@@ -2310,8 +2310,12 @@ function requirementDetails(requirementId){
             		 else{    
 							var result ="";
 				            result = result +' <div class="require_wrap_details">';
+				           
 				            result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary pull-right" type="button">Edit</button></a>';
-							result = result +'     <div class="clearfix row">';
+				            result = result +' <a href="#" onClick="updateReuqirementStatus();">Approve</a>';
+				            result = result +' <a href="#" onClick="updateReuqirementStatus();">Reject</a>';
+							
+				            result = result +'     <div class="clearfix row">';
 					        result = result +'     <div class="col-md-10 divskill divsAssigned">';
 					        
 					        result = result + '<div id="assignedMemberList"></div>';
@@ -2322,7 +2326,7 @@ function requirementDetails(requirementId){
 					            }
 					            else{
 					            result = result +'   <textarea placeholder="Enter description"> NO DATA</textarea>';
-					            }
+				    	            }
 				            result = result +'   <h2>Other details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            if(json.positions != null && json.positions != '' && json.positions != 'undefined'){
@@ -2352,13 +2356,22 @@ function requirementDetails(requirementId){
 				            result = result +'   </div>';
 				            result = result +'   <h2>Client details:</h2>';
 				            result = result +'   <div class="require_one">';
+				            
 				            if(json.spocName != '' && json.spocName !=null && json.spocName != 'undefined'){
 				            	
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Client contact:</b> <span class="pull-left"> '+json.spocName+' </span>';
+				            result = result +'     <div class="require_wrap_details_cta"> <b>Client Contact:</b> <span class="pull-left"> '+json.spocName+' </span>';
 				            }
 				            else{
 					        result = result +'     <div class="require_wrap_details_cta"> <b>Client contact:</b> <span class="pull-left"> -- </span>';
 
+				            }
+				            result = result +'       <div class="clearfix"></div>';
+				            result = result +'     </div>';
+				            if(json.clientName != '' && json.clientName !=null && json.clientName != 'undefined'){
+					        result = result +'     <div class="require_wrap_details_cta"> <b>Client Name:</b> <span class="pull-left"> '+json.clientName+' </span>';
+				            }
+				            else{
+						        result = result +'     <div class="require_wrap_details_cta"> <b>Client Name:</b> <span class="pull-left"> ---  </span>';
 				            }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>'; 
@@ -2380,32 +2393,31 @@ function requirementDetails(requirementId){
 				            }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
-				            if(json.clientCurrencyCode == 'INR' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
+				            if(json.clientCurrencyCode == 'INR' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' &&  json.clientRate != '' && json.clientRate != 'undefined' && json.clientRate != null){
+					        result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ' +json.clientRate+'</span>';
+						    }
+						    else if(json.clientCurrencyCode == 'EUR' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
 
-					            result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ' +json.clientRate+'</span>';
-						        }
-						        else if(json.clientCurrencyCode == 'EUR' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
+						    result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i> ' +json.clientRate+'</span>';
+							}
+						    else if(json.clientCurrencyCode == 'GPB' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
 
-						        result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i> ' +json.clientRate+'</span>';
-							        }
-						        else if(json.clientCurrencyCode == 'GPB' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
-
-							    result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i> ' +json.clientRate+'</span>';
-								        }
-						        else if(json.clientCurrencyCode  == 'USD' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
-								result = result +'     <div class="require_wrap_details_cta" > <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ' +json.clientRate+'</span>';
-								       }
-						        else if(json.clientCurrencyCode  == 'AUD'  && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
-								result = result +'     <div class="require_wrap_details_cta" > <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ' +json.clientRate+'</span>';
+							result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i> ' +json.clientRate+'</span>';
+							}
+						    else if(json.clientCurrencyCode  == 'USD' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
+							result = result +'     <div class="require_wrap_details_cta" > <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ' +json.clientRate+'</span>';
+							}
+						    else if(json.clientCurrencyCode  == 'AUD'  && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
+							result = result +'     <div class="require_wrap_details_cta" > <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ' +json.clientRate+'</span>';
 	
-						        }
-						        else if(json.clientCurrencyCode  == 'SGD' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
-								result = result +'     <div class="require_wrap_details_cta" > <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ' +json.clientRate+'</span>';
+						    }
+						    else if(json.clientCurrencyCode  == 'SGD' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' && json.clientRate != '' && json.clientRate != 'undefined'){
+							result = result +'     <div class="require_wrap_details_cta" > <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ' +json.clientRate+'</span>';
 	
-						        }
-						        else{
-								result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span> <i class="fa fa-money"></i> --- </span>';
-						        }
+						    }
+						    else{
+							result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span> --- </span>';
+						    }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="require_wrap_details_cta"> <b>Submission Form:</b> <span>Submission Form</span>';
@@ -2415,7 +2427,7 @@ function requirementDetails(requirementId){
 				            result = result +'   </div>';
 				            result = result +'   <h2>Internal details:</h2>';
 				            result = result +'   <div class="require_one">';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Manager:</b> <span>Manager</span>';
+				            //result = result +'     <div class="require_wrap_details_cta"> <b>Manager:</b> <span>Manager</span>';
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span>Business Analyst </span>';
@@ -2460,6 +2472,41 @@ function requirementDetails(requirementId){
             }); 
 }
 </script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for update Requirement.
+     1.usage     :  used in Requirement jsp.
+     2.parameter : csrf token .
+     3.ajax url implementation in CandidateListRestController.
+--%>
+<script>
+function updateReuqirementStatus(){
+	alert("accept");
+	var status = "approved";
+	var sourceleadUrl = '${sourceleadUrl}';
+	var requirementId = '${requirementId}';
+	$.ajax({
+      type : "POST",
+       url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,        
+       success :function(data) {  
+            if(data != null && data != 'undefined' && data != ""){  
+            	var json = JSON.parse(data);
+          		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+          		 else if (data.indexOf('exception') >= 0) {
+          			 location.replace(sourceleadUrl+"/errorPage");
+          		 }
+          		 else{ 
+          			   alert("success"+data);
+          		 }
+            }
+       },
+	  }); 
+}
+</script>
+
 
 <%-- 
      @author : sarath kumar.
@@ -2908,7 +2955,7 @@ function assignedMemberList(requirementId){
 						    result = result +'         <tr>';
 						    result = result +'         <td><div class="tbldata-dotdot-me">'+report.assignedUserName+'</div></td>';
 						    result = result +'         <td><div class="tbldata-dotdot-sm">'+report.assignedUserRole+'</div></td>';
-						    result = result +'         <td><div class="tbldata-dotdot-sm">Team</div></td>';
+						    result = result +'         <td><div class="tbldata-dotdot-sm">'+report.teamName+'</div></td>';
 						    result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
 						    result = result +'         </tr>';
 			   				}

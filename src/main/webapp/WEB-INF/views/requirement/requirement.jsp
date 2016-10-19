@@ -76,7 +76,6 @@ background-color: #ccc;
 <script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
-			
 			$(".isClient").click(function(){  
 		        $(".clientDetails").toggleClass('hidden', 500);
 		    });
@@ -140,7 +139,7 @@ background-color: #ccc;
 	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
 	         <div class="col-md-9">
 	          <div class="input-group">
-	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
+	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length2-250"   value="" class="form-control">
 	             <div class="input-group-btn selp-custom-min">
 	             <select class="selectpicker" id="jobType" name="jobType">
 	                 <option  ${requirement.jobType  == 'c2c' ? 'selected' : ''}><a href="#">C2C</a></option>
@@ -317,7 +316,7 @@ background-color: #ccc;
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
 	      <div class="ml">
-            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="" onclick="getIsClientVal();">
+            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="" onclick="getIsClientVal(this);">
             <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
             &nbsp;&nbsp;
             <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
@@ -331,7 +330,7 @@ background-color: #ccc;
                 <label class="col-md-3">Client <span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select class="chosen-select form-control select-bg" name="selectClient" id="addClientId" onchange="getContactList(this); getClientSubmissionTemplates(this);">
+                    <select class="chosen-select form-control select-bg" data-validation-optional="true" field-name = "Client" name="selectClient" id="addClientId" onchange="getContactList(this); getClientSubmissionTemplates(this); ">
                     	<option value="">-- Select Client --</option>
 	                    <c:forEach var="report" items="${add_clientList}">
 							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
@@ -383,7 +382,7 @@ background-color: #ccc;
                 <label class="col-md-3">Client Contact <span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select class="chosen-select form-control" name="selectContact" id="selectContact">
+                    <select class="chosen-select form-control" name="selectContact" data-validation-optional="true" field-name = "Client Contact" id="selectContact">
                       <option value=''>-- Select Contact --</option>
                     </select>
                     <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i> 
@@ -426,7 +425,7 @@ background-color: #ccc;
                 <label class="col-md-3">Submission Form<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select class="chosen-select form-control" id="clientSubmissionForm" name="clientSubmissionForm">
+                    <select class="chosen-select form-control" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
                       <option value="">-- Select Submission Form --</option>
                     </select>
                   </div>
@@ -942,18 +941,18 @@ background-color: #ccc;
                 <div class="ml">
                 
                 <div class="pull-left">
-                <input type="checkbox" name="cd" id="apprverReq" onClick="selApprover()" checked>
+                <input type="checkbox" name="cd" id="apprverReq" onClick="approvalType('Default');" checked>
                 <label>&nbsp;&nbsp;<strong>Approver required</strong></label>
                 </div>
                 
                 <!-- Radio buttons for Sequential or Parallel function -->
                 <div  class="ml pull-left apprverReq" style="display:none;">
                 <label class="rad" id="parallel">
-                <input type="radio" name="Approver" checked="checked">
+                <input type="radio" name="approver"  checked="checked" onClick="approvalType('Parallel');">
                 <i class="fa fa-align-center" data-placement="top" data-toggle="tooltip"  title="Parallel"></i>
                 </label>
                 <label class="rad" id="sequential">
-                <input type="radio" name="approver" onClick="sequential();">
+                <input type="radio" name="approver" onClick="approvalType('Sequential');">
                 <i class="fa fa-retweet" data-placement="top" data-toggle="tooltip" title="Sequential"></i>
                 </label>
                 
@@ -966,7 +965,7 @@ background-color: #ccc;
        <!-- Approver Required Check box html ends -->  
          
          
-         <div class="form-group parallel" style="display:none;">
+        <!--  <div class="form-group parallel" style="display:none;">
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                     <select multiple class="chosen-select form-control">
@@ -976,43 +975,67 @@ background-color: #ccc;
                       <option>Approver-3</option>
                     </select>
                 </div>
+         </div> -->
+         
+         <div class="form-group parallel" style="display:none;">
+                <label class="col-md-3">Approver<span class="text-danger">*</span></label>
+                <div class="col-md-9">
+                    <select multiple class="chosen-select form-control" name="parallelApprover" field-name="Approver" data-validation="required">
+                       <option disabled>Select Approver</option>
+                       <c:forEach var="report" items="${approverList}">
+		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+		               </c:forEach>
+                    </select>
+                </div>
          </div>
          
          <div class="form-group sequential" id="addLvl" style="display:none;">
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select class="chosen-select form-control">
-                      <option disabled>Select Client</option>
-                      <option>Client-1</option>
-                      <option>Client-2</option>
-                      <option>Client-3</option>
+                    <select   class="chosen-select form-control" name="sequentialApprover1" field-name="Approver" data-validation="required">
+                       <option>Select Approver</option>
+                       <c:forEach var="report" items="${approverList}">
+		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+		               </c:forEach>
                     </select>
                     <span onClick="addLvl();"><i class="fa fa-level-down btn btn-default formic1" data-toggle="tooltip" data-placement="left" title="Add Level"></i></span>
                     </div>
                 </div>
               </div>
               
-              <div class="clearfix lvlTow" style="display:none;">
+              <div class="clearfix lvlTow" id ="sequentialApproverDiv" style="display:none;">
               <div class="form-group">
               <div class="col-md-3">Approver 2</div>
               <div class="col-md-9">
-                <select class="chosen-select form-control">
+              		<select   class="chosen-select form-control" name="sequentialApprover2" field-name="Approver 2" data-validation="required">
+                       <option>Select Addpprover</option>
+                       <c:forEach var="report" items="${approverList}">
+		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+		               </c:forEach>
+                    </select>
+                <!-- <select class="chosen-select form-control">
                       <option disabled>Select Client</option>
                       <option>Client-1</option>
                       <option>Client-2</option>
                       <option>Client-3</option>
-                    </select>
+                    </select> -->
               </div></div>
           </div>
           <div class="form-group">
             <label class="col-md-3">Manager<span class="text-danger">*</span></label>
             <div class="col-md-9">
-              <select multiple class="chosen-select form-control">
+             <!--  <select multiple class="chosen-select form-control">
                 <option>Select Manager</option>
                 <option>Manager-1</option>
                 <option>Manager-2</option>
                 <option>Manager-3</option>
+              </select> -->
+              <select multiple class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager">
+                       <option disabled>Select Approver</option>
+                       <c:forEach var="report" items="${approverList}">
+		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+		               </c:forEach>
               </select>
             </div>
           </div>
@@ -1024,12 +1047,12 @@ background-color: #ccc;
             <div class="col-md-9">
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-                  <input type="text" value="Assing Role" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
+                  <input type="text" value="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
                   <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1"></i> </span>
                   </div>
                 <!-- Modal content Assign To -->
-                <div role="dialog" id="assignTeam" class="modal fade">
+                <div role="dialog" id="assignTeam"   class="modal fade">
                   <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                       <div class="modal-header">
@@ -1139,7 +1162,7 @@ background-color: #ccc;
           <div class="form-group">
             <label class="col-md-3">Priority<span class="text-danger">*</span></label>
             <div class="col-md-9">
-              <select class="selectpicker form-control" id="priority" name="priority">
+              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" field-name = "Priority" name="priority">
                 <option value="">Select Priority</option>
                 <option value="Urgent">Urgent</option>
                 <option value="High">High</option>
@@ -1151,12 +1174,18 @@ background-color: #ccc;
           <div class="form-group">
             <label class="col-md-3">Application Form<span class="text-danger">*</span></label>
             <div class="col-md-9">
-                <select class="chosen-select form-control">
+                <!-- <select class="chosen-select form-control">
                   <option>Select Client</option>
                   <option>Client-1</option>
                   <option>Client-2</option>
                   <option>Client-3</option>
-                </select>
+                </select> -->
+                <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId" data-validation = "required" field-name = "Application Form">
+                    	<option value="">-- Select Client --</option>
+		                <c:forEach var="report" items="${add_clientList}">
+					               <option value="${report.id},${report.responderLocationId.id}">${report.locationId.org.orgName}</option>
+						</c:forEach>
+               </select>						
           </div>
         </div>
       </div>
@@ -1225,8 +1254,9 @@ background-color: #ccc;
   <div class="form-footer clearfix">
     <div class="col-lg-12">
       <div class="pull-right">
-        <input type="button" value="Release" class="btn btn-danger">
-        <input type="button" value="Save" id="store_requirement" onclick="storeRequirement();" class="btn btn-primary">
+        <input type="button" value="Submit for Approval" id="submitForApproval" class="btn btn-primary" style="display:none;">
+        <input type="button" value="Draft" id="draft" class="btn btn-danger">
+        <input type="button" value="Save" id="save" onclick="storeRequirement();" class="btn btn-primary" >
         <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
       </div>
     </div>
@@ -1274,8 +1304,20 @@ background-color: #ccc;
 				return false;
 		 }  
 	} 
+	
+	$('body').on('blur', '#requirement_form', function() {
+		$("#requirement_form").showHelpOnFocus();
+		$("#requirement_form").validateOnBlur(false, validationSettings);
+	});
 </script>
-
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
  <script>
 function storeTeam(){
 	
@@ -1626,7 +1668,6 @@ $(function(){
 });
 </script>
 
-
 <script>
 // script for tooltip
 $('[data-toggle="tooltip"]').tooltip();
@@ -1648,8 +1689,9 @@ $(document).ready(function() {
 // Show hide Approver script
 $("#apprverReq").removeAttr("checked");
 $("#sequential input").removeAttr("checked");
-
+/* 
 function selApprover(){
+	
   if ($("#apprverReq").prop('checked') ) {
 			$(".parallel, #parallel, .apprverReq").show();
 			$(".sequential").hide();
@@ -1673,11 +1715,51 @@ $("#parallel").click(function(){
 	$(".sequential").hide();
 	$("#parallel i").addClass("apprverReq-active");
 	$("#sequential i").removeClass("apprverReq-active");
-});
+}); */
 function addLvl(){
 	$(".lvlTow").toggle();
 }
+
 </script> 
+
+<script>
+function approvalType(type){
+
+		if($("#apprverReq").is(':checked')){
+			$("#submitForApproval").removeAttr("style");
+		    $("#save").attr("style","display:none"); 
+		}
+		else{
+			$("#save").removeAttr("style");
+		    $("#submitForApproval").attr("style","display:none"); 
+		}
+	    
+	    $(".parallel, #parallel, .apprverReq").show();
+		$(".sequential").hide();
+		$("#parallel i").addClass("apprverReq-active");
+		$("#sequential i").removeClass("apprverReq-active");
+	  if(type == "Default" || type == "Parallel"){
+		    $(".parallel").show();
+			$(".sequential").hide();
+			$("#parallel i").addClass("apprverReq-active");
+			$("#sequential i").removeClass("apprverReq-active"); 
+			
+			$("#sequentialApproverDiv").hide();
+			
+			$('#sequential').find('p.jquery_form_error_message').remove();
+			
+			
+	  }
+	  if(type == "Sequential"){
+		    $(".parallel").hide();
+			$(".sequential").show();
+			$("#parallel i").removeClass("apprverReq-active");
+			$("#sequential i").addClass("apprverReq-active");
+			
+			$('#parallel').find('p.jquery_form_error_message').remove();
+	  }
+}
+</script>
 
 
 
@@ -1902,6 +1984,29 @@ function getTeamMembers(){
 } 
 </script>
 
+<script>
+function getIsClientVal(){
+	 if (document.getElementById('isClientJob').checked) {
+       $('#addClientId').removeAttr('data-validation-optional');
+	   $('#addClientId').attr("data-validation","required"); 
+	   
+	   $('#selectContact').removeAttr('data-validation-optional');
+	   $('#selectContact').attr("data-validation","required"); 
+	   
+	   $('#clientSubmissionForm').removeAttr('data-validation-optional');
+	   $('#clientSubmissionForm').attr("data-validation","required"); 
+	 } else {
+		 $('#addClientId').removeAttr('data-validation');
+		 $('#addClientId').attr("data-validation-optional","true"); 
+		 
+		 $('#selectContact').removeAttr('data-validation');
+		 $('#selectContact').attr("data-validation-optional","true"); 
+		 
+		 $('#clientSubmissionForm').removeAttr('data-validation');
+		 $('#clientSubmissionForm').attr("data-validation-optional","true"); 
+	 }
+}
 
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
