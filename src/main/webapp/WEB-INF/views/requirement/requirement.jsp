@@ -980,7 +980,7 @@ background-color: #ccc;
          <div class="form-group parallel" style="display:none;">
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
-                    <select multiple class="chosen-select form-control" name="parallelApprover" field-name="Approver" data-validation="required">
+                    <select multiple class="chosen-select form-control" id="parallelApprover" name="parallelApprover" field-name="Approver" data-validation="required">
                        <option disabled>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
@@ -993,7 +993,7 @@ background-color: #ccc;
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select   class="chosen-select form-control" name="sequentialApprover1" field-name="Approver" data-validation="required">
+                    <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required">
                        <option>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
@@ -1748,7 +1748,7 @@ function approvalType(type){
 			$("#sequentialApproverDiv").hide();
 			
 			$('#sequential').find('p.jquery_form_error_message').remove();
-			
+			$('#sequentialApprover1').removeAttr('data-validation');
 			
 	  }
 	  if(type == "Sequential"){
@@ -1757,7 +1757,8 @@ function approvalType(type){
 			$("#parallel i").removeClass("apprverReq-active");
 			$("#sequential i").addClass("apprverReq-active");
 			
-			$('#parallel').find('p.jquery_form_error_message').remove();
+			$('#parallel').find('p.jquery_form_error_message').remove(); 
+			$('#parallelApprover').removeAttr('data-validation');
 	  }
 }
 </script>
