@@ -76,9 +76,9 @@ background-color: #ccc;
 <script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
-			$(".isClient").click(function(){  
+			/*  $(".isClient").click(function(){  
 		        $(".clientDetails").toggleClass('hidden', 500);
-		    });
+		    });  */
 			
 			$(".cd1").click(function(){  
 		        $(".col-md-12 clearfix").toggleClass('hidden', 500);
@@ -90,6 +90,7 @@ background-color: #ccc;
  <script>
 		$(document).ready(function() {
 			document.getElementById("requirement_form").reset();
+			getIsClientVal();
 		});
 	</script>
 <!-- Content Area -->
@@ -316,12 +317,13 @@ background-color: #ccc;
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
 	      <div class="ml">
-            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="" onclick="getIsClientVal(this);">
+            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
+            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
             <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
             &nbsp;&nbsp;
             <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
 		  </div>
-          <div class="clientDetails hidden">
+          <div id="clientDetails" style="display: none;">
             <div class="clearfix">
               <h3>Client Details</h3>
             </div>
@@ -334,10 +336,10 @@ background-color: #ccc;
                     	<option value="">-- Select Client --</option>
 	                    <c:forEach var="report" items="${add_clientList}">
 							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
-			                    	<option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
+			                    	<option value="${report.id},${report.responderLocationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option>
 			                    </c:if>  
 			                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-			                  	 	<option value="${report.id},${report.responderLocationId.id}">${report.locationId.org.orgName}</option>
+			                  	 	<option value="${report.id},${report.responderLocationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
 			                    </c:if>
 						</c:forEach>
                     </select>
@@ -1988,19 +1990,31 @@ function getTeamMembers(){
 
 <script>
 function getIsClientVal(){
-	 if (document.getElementById('isClientJob').checked) {
-       $('#addClientId').removeAttr('data-validation-optional');
-	   $('#addClientId').attr("data-validation","required"); 
-	   
-	   $('#selectContact').removeAttr('data-validation-optional');
-	   $('#selectContact').attr("data-validation","required"); 
-	   
-	   $('#clientSubmissionForm').removeAttr('data-validation-optional');
-	   $('#clientSubmissionForm').attr("data-validation","required"); 
-	   $("#isClientJob").val('Y');
-	   
-	 } else {
+var existingValue = document.getElementById('isClientJob').value;
+
+	if (document.getElementById('isClientJob').checked){
+		 $("#isClientJob").val('Y');	
+		 existingValue = document.getElementById('isClientJob').value;
+	}else {
 		 $("#isClientJob").val('N');
+		 existingValue = document.getElementById('isClientJob').value;
+	}
+	 if ((document.getElementById('isClientJob').checked) || (existingValue != null && existingValue != '' && existingValue !='undefined' && existingValue == 'Y') ) {
+		 document.getElementById("clientDetails").style.display="";
+		 $("#isClientJob").val('Y');
+		 
+         $('#addClientId').removeAttr('data-validation-optional');
+	     $('#addClientId').attr("data-validation","required"); 
+	   
+	     $('#selectContact').removeAttr('data-validation-optional');
+	     $('#selectContact').attr("data-validation","required"); 
+	   
+	     $('#clientSubmissionForm').removeAttr('data-validation-optional');
+	     $('#clientSubmissionForm').attr("data-validation","required"); 
+	 } else {
+		 document.getElementById("clientDetails").style.display="none";
+		 $("#isClientJob").val('N');
+		 
 		 $('#addClientId').removeAttr('data-validation');
 		 $('#addClientId').attr("data-validation-optional","true"); 
 		 

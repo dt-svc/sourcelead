@@ -164,7 +164,9 @@ public class RequirementServiceImpl implements RequirementService {
 				 requirement.setDocFile(multiFile.getBytes());
 				 requirement.setFileName(multiFile.getOriginalFilename());
 				 requirement.setFileContentType(multiFile.getContentType());
-			 }
+			 }else{
+					requirement.setIsClientJob("N");
+				}
 			 
 			if(jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y") && StringUtils.isNotEmpty(jsonObj.getString("isClient"))){
 					requirement.setIsClientJob(jsonObj.getString("isClient"));
