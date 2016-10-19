@@ -48,7 +48,6 @@ function closeCertificatePopup(){
 --%>
 <script type="text/javascript">
 	function candidateEmployersStore(candidateId) {
-
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -140,48 +139,48 @@ function closeCertificatePopup(){
 		result = result + '	               <div class="clearfix mb10">';
 		result = result + '	                 <p class="ml">Start Date</p>';
 		result = result + '	                 <div class="col-md-6">';
-		result = result	+ '	                   <select class="chosen-select"  name="startMonth" id="startMonth">';
+		result = result	+ '	                   <select class="chosen-select"  name="startMonth" id="startMonth" onChange="validYear();">';
 		result = result	+ '	                       <option value="Select Month ">Select Month</option>';
-		result = result	+ '	                       <option value="January">January</option>';
-		result = result	+ '	                       <option value="February">February</option>';
-		result = result	+ '	                       <option value="March">March</option>';
-		result = result	+ '	                       <option value="April">April</option>';
-		result = result + '	                       <option value="May">May</option>';
-		result = result + '	                       <option value="June">June</option>';
-		result = result + '	                       <option value="July">July</option>';
-		result = result	+ '	                       <option value="August">August</option>';
-		result = result	+ '	                       <option value="September">September</option>';
-		result = result	+ '	                       <option value="October">October</option>';
-		result = result	+ '	                       <option value="November">November</option>';
-		result = result	+ '	                       <option value="December">December</option>';
+		result = result	+ ' 					   <option value="1&January">January</option>';
+		result = result	+ '	                       <option value="2&February">February</option>';
+		result = result	+ '	                       <option value="3&March">March</option>';
+		result = result	+ '	                       <option value="4&April">April</option>';
+		result = result	+ '	                       <option value="5&May">May</option>';
+		result = result + '	                       <option value="6&June">June</option> ';
+		result = result + '	                       <option value="7&July">July</option>';
+		result = result	+ '	                       <option value="8&August">August</option>';
+		result = result	+ '	                       <option value="9&September">September</option>';
+		result = result	+ '	                       <option value="10&October">October</option>';
+		result = result	+ '	                       <option value="11&November">November</option>';
+		result = result	+ '	                       <option value="12&December">December</option>';
 		result = result + '	                   </select>';
 		result = result + '	                   </div>';
-		result = result + '	                   <div class="col-md-6">';
-		result = result	+ '	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear" onclick="validYear();"  placeholder="Enter Year"  field-name="Start Date" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true"  >';
+		result = result + '	                   <div class="col-md-6" id="startYearDiv">';
+		result = result	+ '	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear" onblur="validYear();"  placeholder="Enter Year"  field-name="Start Date" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true"  >';
 		result = result + '	                 </div>';
 		result = result + '	                 </div>';
 		result = result + '	                 <div id="endDateDiv">';
 		result = result + '	                 <div class="clearfix mb10 endDate">';
 		result = result + '	                 <p class="ml">End Date</p>';
 		result = result	+ '	                 <div class="col-md-6 id = "endMR"">';
-		result = result	+ '	                    <select class="chosen-select" class="required" name="endMonth" id="endMonth">';
+		result = result	+ '	                    <select class="chosen-select" class="required" name="endMonth" id="endMonth" onChange="validYear();">';
 		result = result	+ '	                       <option value="Select Month">Select Month</option>';
-		result = result	+ '	                       <option value="January">January</option>';
-		result = result	+ '	                       <option value="February">February</option>';
-		result = result	+ '	                       <option value="March">March</option>';
-		result = result	+ '	                       <option value="April">April</option>';
-		result = result	+ '	                       <option value="May">May</option>';
-		result = result + '	                       <option value="June">June</option> ';
-		result = result + '	                       <option value="July">July</option>';
-		result = result	+ '	                       <option value="August">August</option>';
-		result = result	+ '	                       <option value="September">September</option>';
-		result = result	+ '	                       <option value="October">October</option>';
-		result = result	+ '	                       <option value="November">November</option>';
-		result = result	+ '	                       <option value="December">December</option>';
+		result = result	+ '	                       <option value="1&January">January</option>';
+		result = result	+ '	                       <option value="2&February">February</option>';
+		result = result	+ '	                       <option value="3&March">March</option>';
+		result = result	+ '	                       <option value="4&April">April</option>';
+		result = result	+ '	                       <option value="5&May">May</option>';
+		result = result + '	                       <option value="6&June">June</option> ';
+		result = result + '	                       <option value="7&July">July</option>';
+		result = result	+ '	                       <option value="8&August">August</option>';
+		result = result	+ '	                       <option value="9&September">September</option>';
+		result = result	+ '	                       <option value="10&October">October</option>';
+		result = result	+ '	                       <option value="11&November">November</option>';
+		result = result	+ '	                       <option value="12&December">December</option>';
 		result = result + '	                   </select>';
 		result = result + '	                   </div>';
 		result = result + '	                   <div class="col-md-6" >';
-		result = result	+ '	                   <input type="text" max class="form-control" id="endYear" name="endYear" field-name="End Year"  placeholder="Enter Year" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true" >';
+		result = result	+ '	                   <input type="text" max class="form-control" id="endYear" name="endYear" field-name="End Year" onblur="validYear();" placeholder="Enter Year" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true" >';
 		result = result + '	                 </div>';
 		result = result + '	                 </div> ';
 		result = result + '	                 </div> ';
@@ -251,7 +250,7 @@ function closeCertificatePopup(){
 								if (json.isCurrentPosition == 'Y' && json.isCurrentPosition != '' && json.isCurrentPosition !== 'undefined') {
 									result = result	+ '	 <label> <input type="checkbox" id="isCurrentPositionEdit"  value="'+ json.isCurrentPosition+ '"   checked="checked"    onClick ="iscurrentPositionEdit();" name = "isCurrentPosition"> Is Current Position</label>';
 								} else {
-									result = result	+ '	     <label> <input type="checkbox" id="isCurrentPosition"  value="'+ json.isCurrentPosition+ '" onClick ="iscurrentPositionEdit();" name= "isCurrentPosition"> Is Current Position</label>';
+									result = result	+ '	     <label> <input type="checkbox" id="isCurrentPositionEdit"  value="'+ json.isCurrentPosition+ '" onClick ="iscurrentPositionEdit();" name= "isCurrentPosition"> Is Current Position</label>';
 								}
 								result = result + '	                 </div>';
 								result = result + '	               </div>';
@@ -744,3 +743,29 @@ function closeCertificatePopup(){
 	}
 </script>
 
+<script>
+function validYear(){
+	
+	var startYear= document.getElementById("startYear").value;
+	var startMonth= document.getElementById("startMonth").value;
+	
+	var endYear= document.getElementById("endYear").value;
+	var endMonth= document.getElementById("endMonth").value;
+	
+	var SMdata = startMonth.split('&');
+	var sMonthNumber = SMdata[0];
+	
+	var EMdata = endMonth.split('&');
+	var eMonthNumber = EMdata[0];
+	
+	 if(startYear == endYear && sMonthNumber > eMonthNumber){
+		$("input#startYear").parent().after("<p class='jquery_form_error_message'><span>Start Month Should be less then end Month</span></p>");
+		
+	}else if((startYear > endYear )&&(endYear != '' && endYear!=null && endYear!='undefined')){
+		$("input#startYear").parent().after("<p class='jquery_form_error_message'><span>Start Date Should be less then end Date</span></p>");
+	}else{
+		$('#startYearDiv').parent().find('p.jquery_form_error_message').remove(); 
+	}
+}
+
+</script>

@@ -299,7 +299,6 @@ function pagination(){
 
 <script>
 function getVendorLists(){
-	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var requirementId = '0';
@@ -373,7 +372,8 @@ function getVendorLists(){
    	        	result = result +'</table>';
    	        	result = result +' </div>';
    	    	    $("#vendorContacts").empty();  
-   	    	    $("#vendor").append(result)
+   	    	 	$("#vendor").empty();
+   	    	    $("#vendor").append(result);
    	    	    
    		    }
 	 });
