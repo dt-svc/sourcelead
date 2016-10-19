@@ -2422,8 +2422,13 @@ function requirementDetails(requirementId){
 						    }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Submission Form:</b> <span>Submission Form</span>';
-				            result = result +'       <div class="clearfix"></div>';
+				            if(json.clientSubmissionTemplate != '' && json.clientSubmissionTemplate != null && json.clientSubmissionTemplate != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Submission Form:</b> <span>'+json.clientSubmissionTemplate+'</span>';
+					            }
+					            else{
+						        result = result +'     <div class="require_wrap_details_cta"> <b>Submission Form:</b> <span> --- </span>';
+	  	
+					            }				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
