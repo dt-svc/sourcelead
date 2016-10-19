@@ -1,0 +1,68 @@
+package com.bis.sourcelead.rest;
+
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.json.JSONArray;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.service.CandidateResumesService;
+import com.bis.sourcelead.service.CandidateService;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
+
+@RestController
+@PropertySource("${propertyLocation:app.properties}")
+public class SubmissionsRestController {
+	
+	@Autowired
+	CandidateResumesService candidateResumesService;
+	
+	@Autowired
+	CandidateService candidateService;
+    
+    @RequestMapping(value = "/getCandidateResumes")
+    public String getCandidateResumes(@RequestParam(value="candidateId", required=false) Long candidateId,HttpServletRequest request) throws Exception {
+    	
+    	String resultJson = null;
+    	List<CandidateResumes> resumesList = candidateResumesService.getCandidateResumesListByCandidateIdAndStatus(candidateId, Constants.CANDIDATE_ACTIVE);
+    	resultJson = toJSON(resumesList);
+		return resultJson;
+		
+	}
+    
+    
+    @RequestMapping(value = "/getCandidateDetails")
+    public String getCandidateDetails(@RequestParam(value="candidateId", required=false) Long candidateId,HttpServletRequest request) throws Exception {
+    	
+    	String resultJson = null;
+    	Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+    	resultJson = toJSON(candidate);
+		return resultJson;
+		
+	}
+    
+    private String toJSON(Object obj){
+        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+            public HierarchicalStreamWriter createWriter(Writer writer) {
+                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+            }
+        });
+        return xstream.toXML(obj);
+    }
+
+}

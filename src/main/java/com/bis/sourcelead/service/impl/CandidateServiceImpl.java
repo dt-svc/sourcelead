@@ -269,5 +269,10 @@ public class CandidateServiceImpl implements CandidateService {
 		logger.debug("In CandidateService class...");
 		return candidateDao.storeCandidate(candidate);
 	}
+
+	@Override
+	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId) throws Exception {
+		return candidateDao.getCandidatesByOrgLocationID(orgLocationId);
+	}
 	
 }

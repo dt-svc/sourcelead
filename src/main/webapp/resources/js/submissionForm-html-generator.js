@@ -300,21 +300,21 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation+' '+novalidation+' field-name=\''+label+'\' name=\''+label+'\' id="text-' + uniqueID + '">' +
+                             '<input type="text" '+datavalidation+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
                              '</div>';
 
                      case 'textarea':
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-textarea">' +
                              '<label for="textarea-' + uniqueID + '"></label>' +
-                             '<textarea  rows="3" '+datavalidation+' '+novalidation+' name=\''+label+'\' field-name=\''+label+'\' id="textarea-' + uniqueID + '"></textarea>' +
+                             '<textarea  rows="3" '+datavalidation+' '+novalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' id="textarea-' + uniqueID + '"></textarea>' +
                              '</div>';
 
                      case 'select':
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-select">' +
                              '<label for="select-' + uniqueID + '"></label>' +
-                             '<select id="select-' + uniqueID + '" '+datavalidation2+' '+novalidation+' name=\''+label+'\' field-name=\''+label+'\' class="choices choices-select"></select>' +
+                             '<select id="select-' + uniqueID + '" '+datavalidation2+' '+novalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' class="choices choices-select"></select>' +
                              '</div>';
 
                      case 'radio':
@@ -336,7 +336,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label for="calandar-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation2+' name=\''+label+'\' field-name=\''+label+'\' id="dob" readonly="readonly">' +
+                             '<input type="text" '+datavalidation2+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' id="dob" readonly="readonly">' +
                              '</div>';
                          
                      case 'autocomplete':
@@ -369,7 +369,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                     		 return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label for="autocomplete-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation2+' '+novalidation+' field-name=\''+label+'\' name=\''+label+'\' id="text-' + uniqueID + '">' +
+                             '<input type="text" '+datavalidation2+' '+novalidation+' field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
                              '</div>';
                     	 }	
                     	 

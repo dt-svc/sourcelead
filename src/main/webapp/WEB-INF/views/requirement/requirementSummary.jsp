@@ -2962,36 +2962,28 @@ function getAddApplicant(requirementId){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
 	generateOrgSubmissionForm(sourceleadUrl,requirementId)
-	
+	var candidatesList ='${candidatesList}';
 	var result = "";
 	result = result + '<form id="addApplicant_form" >';
-	result = result + '<div class="col-lg-12">';
 	result = result + '<h3>Add Applicant</h3>';
-	result = result + '</div>';
 	result = result + '<div class="form-horizontal clearfix">';
 	result = result + '<div class="row">';
 	result = result + '<div class="col-md-12 mb10">';
 	result = result + '<label>Select Candiate</label>';
-	result = result + '<select class="form-control  block">';
-	result = result + '<option>Rameshkumar Korrapati</option>';
-	result = result + '<option>Prasanth Korrapati</option>';
-	result = result + '<option>Muralimohan Korrapati</option>';
-	result = result + '<option>Sarathkumar Korrapati</option>';
+	result = result + '<select  onchange="getCandidateResumes();" onclick="getCandidateDetails();" id="candidateId" field-name="Candidate" class="form-control  block">';
+	result = result + '<option value="">--Select Candidate--</option>';
+	result = result + '<c:forEach var="option" items='${candidatesList}'>';
+	result = result + '<option value="'+${option.id}+'">${option.firstName} ${option.lastName}</option>';
+	result = result + '</c:forEach>';
 	result = result + '</select>';
 	result = result + '</div>';
 	result = result + '<div class="clearfix text-center text-info mb10">';
 	result = result + '-------------------------------- OR --------------------------------';
 	result = result + '</div>';
 	
-	result = result + '<div id="sjfb-fields" class="viewTemplate">';
-	
-	
-	result = result + '</div>';
-	
-	
-	/* result = result + '<div class="col-md-12">';
-	result = result + '<div class="panel-border">';
 	result = result + '<div class="col-md-12">';
+	result = result + '<div class="panel-border col-md-12">';
+	result = result + '<div class="col-md-12" id="browseDiv"  style="display: block;">';
 	result = result + '<div class="input-group">';
 	result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '<input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">';
@@ -3000,40 +2992,18 @@ function getAddApplicant(requirementId){
 	result = result + '</div>';
 	result = result + '</div>';
                     
+	result = result + '<div class="col-md-12" id="resumesDiv"  style="display: none;">';
 	result = result + '<div class="col-md-12 mt10 mb10 clearfix text-center text-info">';
-	result = result + '-------------------------------- OR --------------------------------';
 	result = result + '</div>';
-	result = result + '<div class="col-md-12">';
-	result = result + '<select class="form-control block">';
-	result = result + '<option>Select</option>';
-	result = result + '<option>Prasanth Korrapati</option>';
-	result = result + '<option>Muralimohan Korrapati</option>';
-	result = result + '<option>Sarathkumar Korrapati</option>';
+	result = result + '<select id="candidateResumesList" field-name="Resume" class="form-control block">';
 	result = result + '</select>';
 	result = result + '</div>';
 	result = result + '</div></div>';
-	result = result + '<div class="col-md-12 mb10">';
-	result = result + '<label>Expected Rate / Salary <span class="text-danger">*</span></label>';
-	result = result + '<div class="row div-padding">';
-	result = result + '<div class="col-md-4">';
-	result = result + '<select class="form-control block">';
-	result = result + '<option>Rupee</option>';
-	result = result + '<option>Dollar</option>';
-	result = result + '<option>Rupee</option>';
-	result = result + '</select>';
+	
+	result = result + '<div id="sjfb-fields" class="viewTemplate">';
+	
 	result = result + '</div>';
-	result = result + '<div class="col-md-4">';
-	result = result + '<input type="text" value="" class="form-control input-sm">';
-	result = result + '</div>';
-	result = result + '<div class="col-md-4">';
-	result = result + '<select class="form-control block">';
-	result = result + '<option>Yearly</option>';
-	result = result + '<option>Monthly</option>';
-	result = result + '</select>';
-	result = result + '</div>';
-	result = result + '</div>';
-	result = result + '</div>'; */
-                        
+	
                         
 	result = result + '</div>';
 	result = result + '<div class="clearfix mt10">';
@@ -3130,6 +3100,71 @@ function getAddApplicant(requirementId){
 		};
 	})(jQuery);
 </script>
+
+
+
+<script type="text/javascript">
+ function getCandidateResumes() {
+	 var candidateId = document.getElementById("candidateId").value
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
+		 $("#candidateResumesList").attr("data-validation", "required");
+		 document.getElementById("resumesDiv").style.display="";
+		 document.getElementById("browseDiv").style.display="none";
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Resume --</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
+					}
+		        	$("#candidateResumesList").empty();
+			        $("#candidateResumesList").append(output);
+		        },
+		    });
+	 }else{
+		 var output = "";
+     	 output = output + "<option value=''>-- Select Resume --</option>"; 
+     	 $("#candidateResumesList").empty();
+     	 $("#candidateResumesList").removeAttr("data-validation");
+		 document.getElementById("resumesDiv").style.display="none";
+		 document.getElementById("browseDiv").style.display="";
+	     $("#candidateResumesList").append(output);
+	 }
+	
+ }
+</script>
+
+<script type="text/javascript">
+function getCandidateDetails(){
+	var candidateId = document.getElementById("candidateId").value
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	 $("input[name=FirstName]").val(json['firstName']);
+		        	 $("input[name=LastName]").val(json['lastName']);
+		        	 $("input[name=EmailId]").val(json['email']);
+		        	 $("input[name=PhoneNumber]").val(json['mobilePhone']);
+		        },
+		    });
+	 }else{
+		 $("input[name=FirstName]").val('');
+    	 $("input[name=LastName]").val('');
+    	 $("input[name=EmailId]").val('');
+    	 $("input[name=PhoneNumber]").val('');
+	 }
+}
+</script>
+
 
 
 
