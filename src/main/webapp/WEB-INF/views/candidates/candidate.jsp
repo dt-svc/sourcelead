@@ -60,6 +60,7 @@
     <div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;<a href="candidatesList"> Candidate List</a> &raquo; Create Candidate</div>
   </section>
   <div class="content-area content-new clearfix">
+  <div id="loading"></div> 
   <form:form id="candidate_form" name="candidate_form"  enctype='multipart/form-data' >
     <div class="row form-horizontal mt myForm">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
@@ -69,10 +70,10 @@
         <div class="well">
           <div class="input-group col-md-6" id="uploadFileGroup" style="margin:0 auto; position:relative;">
             <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-              <input type="file" name="uploadBtn" id="uploadBtn"  class="hidden upload">
+              <input type="file" name="uploadBtn" id="uploadBtn" class="hidden upload">
               </span> 
            </label>
-             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file" name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_Space validatedoc" data-validation-optional="true">
+             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_Space validateResume" data-validation-optional="true">
           </div>
           </div>
         </div>
@@ -390,7 +391,23 @@
 </script>
 
 <!-- Country,State,City Script Starts Here -->
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
+    var allowed_extensions = new Array("docx","doc","pdf","rtf");
+    var file_extension = fileName.split('.').pop(); // split function will split the filename by dot(.), and pop function will pop the last element from the array which will give you the extension as well. If there will be no extension then it will return the filename.
 
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i]==file_extension)
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
+}
+</script>
 <script type="text/javascript">
 function getAllCountries(){
 	$.ajax({
@@ -573,12 +590,47 @@ function getCities(){
  /* upload file script for size validation 2MB*/
  var selectedFile = document.getElementById("uploadBtn");
  selectedFile.addEventListener("change", function() {
-   var docSize = this.files[0].size;
-   $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-   if(docSize > 2097152){
- 	  document.getElementById("uploadFile").value = '';
- 	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-   }
+ 	 $("#uploadFile").focus();
+ 	 if(validate_fileupload(this.value)){
+ 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		var form = $('#candidate_form')[0];
+  		var formData = new FormData(form); 
+		var sourceleadUrl = '${sourceleadUrl}';
+		   $.ajax({
+					type : "POST",
+	        	    data: formData,
+	        	    contentType : 'application/json; charset=utf-8',
+	        	    enctype: 'multipart/form-data',
+	    	        processData: false,
+	    	        contentType:false,
+	        	    dataType : 'json',
+					url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}",
+					success : function(data) {
+						var json = JSON.parse(data);
+						var name = json.name;
+						var firstName = '';
+						var lastName = '';
+						if(name != null && name != 'undefined' && name != ''){
+							 firstName = name.split(".")[0]; 
+							 lastName = name.split(".")[1]; 
+							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
+									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
+								 firstName = name;
+							 }
+						}
+						
+						$("#firstName").val(firstName);
+						$("#lastName").val(lastName);
+						$("#email").val(json.email);
+						$("#mobilePhone").val(json.phoneNumbers);
+						$("#loading").removeAttr("style");
+					},
+				});
+ 	 }
+  // var docSize = this.files[0].size;
+   //$("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+ 	  //document.getElementById("uploadFile").value = '';
+ 	  //$("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
  });
 
 

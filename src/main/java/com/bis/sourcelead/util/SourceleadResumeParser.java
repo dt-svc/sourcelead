@@ -40,7 +40,17 @@ public  String getCandidateDetailsFromResume(byte[] source)
 			parser.parse(stream, htmlHandler, metadata);
 			String parsedString = htmlHandler.toString();
 			ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
-			jsonUtil.setName(nameFinderFromParsedTextFile(parsedString));
+			String name = nameFinderFromParsedTextFile(parsedString);
+			if(StringUtils.isNotEmpty(name) && name.lastIndexOf(" ") > 0){
+				String firstName = name.substring(0,name.lastIndexOf(" "));
+				String lastName = name.substring(name.lastIndexOf(" ")+1);
+				jsonUtil.setName(firstName+"."+lastName);
+			}
+			else{
+				jsonUtil.setName(name);
+			}
+			
+			
 			jsonUtil.setEmail(emailFinderFromParsedTextFile(parsedString));
 			jsonUtil.setPhoneNumbers(phoneNumberFinderFromParsedTextFile(parsedString));
 		    return toJSON(jsonUtil);
@@ -98,14 +108,31 @@ public  String getCandidateDetailsFromResume(byte[] source)
 		}
 		
 		if(!StringUtils.isNotEmpty(name)){
-			Matcher nameMatcher = Pattern.compile("([A-Z]{1}[A-Z]{1,30}[- ]{0,}|[A-Z]{1}[a-z]{1,30}[- ]{0,}|[A-Z]{1}[- \']{1}[A-Z]{0,1}  [a-z]{1,30}[- ]{0,1}|[a-z]{1,2}[ -\']{1}[A-Z]{1}[a-z]{1,30}){2,}").matcher(firstTenLines);
-			 //Matcher nameMatcher = Pattern.compile("([A-Z]{1,30}[- ]{0,}|[A-Z]{1}[A-Z]{1,30}[- ]{0,}|[A-Z]{1}[a-z]{1,30}[- ]{0,}|[A-Z]{1}[- \']{1}[A-Z]{0,1}  [a-z]{1,30}[- ]{0,1}|[a-z]{1,2}[ -\']{1}[A-Z]{1}[a-z]{1,30}){2,}").matcher(firstTenLines);
-		     while(nameMatcher.find()){
-		    	 if(StringUtils.containsIgnoreCase(nameMatcher.group(), "curriculum") || StringUtils.containsIgnoreCase(nameMatcher.group(), "objective") || StringUtils.containsIgnoreCase(nameMatcher.group(), "resume"))
-		    		 continue;
-		    	 name = nameMatcher.group();
-		    	 break;
-		     }
+			String[] tenLines = firstTenLines.split(System.getProperty("line.separator"));
+			outerloop:{
+			for(String line :tenLines){
+				Matcher nameMatcher = Pattern.compile("([A-Z]{1}[A-Z]{1,30}[- ]{0,}|[A-Z]{1}[a-z]{1,30}[- ]{0,}|[A-Z]{1}[- \']{1}[A-Z]{0,1}  [a-z]{1,30}[- ]{0,1}|[a-z]{1,2}[ -\']{1}[A-Z]{1}[a-z]{1,30}){2,}").matcher(line);
+				//Matcher nameMatcher = Pattern.compile("([A-Z]{1}[a-z]{1,30}[. -\']{1}[A-Z]{1,2}|[A-Z]{1}[A-Z]{1,30}[- ]{0,}|[A-Z]{1}[a-z]{1,30}[- ]{0,}|[A-Z]{1}[- \']{1}[A-Z]{0,1}  [a-z]{1,30}[- ]{0,1}|[A-Z]{1,2}[. -\']{1}[A-Z]{1}[a-z]{1,30}|[a-z]{1,2}[ -\']{1}[A-Z]{1}[a-z]{1,30})").matcher(firstTenLines); 
+				//Matcher nameMatcher = Pattern.compile("([A-Z]{1,30}[- ]{0,}|[A-Z]{1}[A-Z]{1,30}[- ]{0,}|[A-Z]{1}[a-z]{1,30}[- ]{0,}|[A-Z]{1}[- \']{1}[A-Z]{0,1}  [a-z]{1,30}[- ]{0,1}|[a-z]{1,2}[ -\']{1}[A-Z]{1}[a-z]{1,30}){2,}").matcher(firstTenLines);
+			    if(nameMatcher.find()){
+				    	 if(StringUtils.containsIgnoreCase(nameMatcher.group(), "curriculum") || StringUtils.containsIgnoreCase(nameMatcher.group(), "objective") || StringUtils.containsIgnoreCase(nameMatcher.group(), "resume"))
+				    		 continue;
+				    	 name = nameMatcher.group();
+				    	 break outerloop;
+			    }
+			    else{
+			    	  nameMatcher = Pattern.compile("([A-Z]{1}[a-z]{1,30}[. -\']{1}[A-Z]{1,2}|[A-Z]{1,2}[. -\']{1}[A-Z]{1}[a-z]{1,30})").matcher(line);
+			    	  while(nameMatcher.find()){
+				    	 if(StringUtils.containsIgnoreCase(nameMatcher.group(), "curriculum") || StringUtils.containsIgnoreCase(nameMatcher.group(), "objective") || StringUtils.containsIgnoreCase(nameMatcher.group(), "resume"))
+				    		 continue;
+				    	 name = nameMatcher.group();
+				    	 break outerloop;
+				     }
+			    }
+				
+				
+			}
+		   }
 		}
 		return name;
    }
