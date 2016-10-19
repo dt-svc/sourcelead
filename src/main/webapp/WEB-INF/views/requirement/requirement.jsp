@@ -398,24 +398,24 @@ background-color: #ccc;
 	              <div class="input-group">
 	                <div class="input-group-btn selp-custom-min">
 	                  <select class="selectpicker" id="clientCurrencyCode" name="clientCurrencyCode">
-		                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-		                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-		                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-		                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-		                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-		                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+		                 <option  ${requirement.clientCurrencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
+		                 <option  ${requirement.clientCurrencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
+		                 <option  ${requirement.clientCurrencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
+		                 <option  ${requirement.clientCurrencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+		                 <option  ${requirement.clientCurrencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
+		                 <option  ${requirement.clientCurrencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
 	                </select>
 	                
 	                </div>
-	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
+	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
-	                  <select class="selectpicker" id="clientRateType" name="clientRateType">
+	                  <select class="selectpicker"  id="clientRateType" value="${requirement.clientRateType}" name="clientRateType">
 	                    <option value="">Per</option>
-	                    <option value="1hr">1hr</option>
-	                    <option value="2hr">2hr</option>
-	                    <option value="3hr">3hr</option>
-	                    <option value="4hr">4hr</option>
-	                    <option value="Other">Other</option>
+	                    <option ${requirement.clientRateType  == '1hr' ? 'selected' : ''}>1hr</option>
+	                    <option ${requirement.clientRateType  == '2hr' ? 'selected' : ''}>2hr</option>
+	                    <option ${requirement.clientRateType  == '3hr' ? 'selected' : ''}>3hr</option>
+	                    <option ${requirement.clientRateType  == '4hr' ? 'selected' : ''}>4hr</option>
+	                    <option ${requirement.clientRateType  == 'Other' ? 'selected' : ''}>Other</option>
 	                  </select>
 	                </div>
 	              </div>
@@ -1162,12 +1162,12 @@ background-color: #ccc;
           <div class="form-group">
             <label class="col-md-3">Priority<span class="text-danger">*</span></label>
             <div class="col-md-9">
-              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" field-name = "Priority" name="priority">
+              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" field-name = "Priority" >
                 <option value="">Select Priority</option>
-                <option value="Urgent">Urgent</option>
-                <option value="High">High</option>
-                <option value="Medioum">Medioum</option>
-                <option value="Low">Low</option>
+                <option ${requirement.priority  == 'Urgent' ? 'selected' : ''}>Urgent</option>
+                <option ${requirement.priority  == 'High' ? 'selected' : ''}>High</option>
+                <option ${requirement.priority  == 'Medium' ? 'selected' : ''}>Medium</option>
+                <option ${requirement.priority  == 'Low' ? 'selected' : ''}>Low</option>
               </select>
             </div>
           </div>
@@ -1269,7 +1269,7 @@ background-color: #ccc;
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
-		alert("saveType"+saveType);
+		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -1286,7 +1286,7 @@ background-color: #ccc;
       		var formData = new FormData(form); 
 			  //It will escape all the special characters
 			var sourceleadUrl = '${sourceleadUrl}';
-			alert();
+			
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
