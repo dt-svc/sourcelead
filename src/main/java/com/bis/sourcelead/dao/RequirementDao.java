@@ -9,7 +9,7 @@ public interface RequirementDao {
 	
 	public Requirement storeRequirement(Requirement requirement) throws Exception;
 	
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients) throws Exception;
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,Long  userId) throws Exception;
 	
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
 	

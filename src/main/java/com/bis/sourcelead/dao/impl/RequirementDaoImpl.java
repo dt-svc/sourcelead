@@ -1,10 +1,11 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -15,8 +16,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementDao;
-import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -36,6 +38,9 @@ public class RequirementDaoImpl implements RequirementDao {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private UserDao userDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -108,11 +113,52 @@ public class RequirementDaoImpl implements RequirementDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients) throws Exception {
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,Long  userId) throws Exception {
 		 
 		Session session = this.sessionFactory.getCurrentSession();
+		User user = userDao.getUserById(userId);
 		
-		String[] stat = status.split(",");
+				
+		Map<String, Object> params = new HashMap<String,Object>();
+		
+		String from = "from Requirement requirement"; 
+		
+		String subQuery1 = "requirement.createdBy =:loginUserCode";
+		params.put("loginUserCode",user.getUserCode());
+		
+		String subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId =:userId and rah.level = '1' )";
+		params.put("userId",userId);
+		
+		String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId =:approverUserId and rah.level = '2' and (rah.approverUserId =:approverUserId and rah.level = '1' and rah.requirementApproverStatus = 'approved') )";
+		params.put("approverUserId",userId);
+		
+		
+		String subQuery = "";
+		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != ""){
+			subQuery = "where requirement.orgLocationId =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") )";
+			params.put("orgLocationId",orgLocationId);
+		}
+		String whereCondition = subQuery;
+		
+		Query query = session.createQuery(from+" "+whereCondition);
+		for (String str : query.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId")){
+				query.setLong(str, (long) params.get( str ));
+			}else{
+				query.setParameter( str, params.get( str ) );
+			}
+        	
+        }
+		return query.list();
+		
+		
+		/*String query = "from Requirement requirement  where requirement.orgLocationId =:orgLocationId and  ( requirement.createdBy =:loginUserCode  or  )";
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("loginUserCode", user.getUserCode()).setInteger("userId", userId.intValue()).list();
+		*/
+		
+		
+		/*String[] stat = status.split(",");
 		ArrayList<Requirement> requirementList = new ArrayList<Requirement>();
 		String[] client = clients.split(",");
 		Integer ra = stat.length; 
@@ -148,7 +194,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			subQuery2 =  subQuery2 + "  ( requirement.status = 'New' or requirement.status = 'Draft' or requirement.status = 'Waiting for approval' or requirement.status = 'Open' or requirement.status = 'On Hold' or requirement.status = 'Cancelled' )";
 			String query = "from Requirement requirement  where  requirement.orgLocationId =:orgLocationId  and  "+subQuery2+" ";
 			return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
-		}
+		}*/
 	}
 
 	/**

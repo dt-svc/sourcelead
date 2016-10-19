@@ -48,7 +48,7 @@ public class RequirementApproverHierarchy {
 	
 	@Column(name = "STATUS")
 	@Enumerated(EnumType.STRING)
-	private REQUIREMENT_APPROVER_HIERARCHY_STATUS status;
+	private REQUIREMENT_APPROVER_HIERARCHY_STATUS requirementApproverStatus;
 	
 	@Column(name = "REJECTED_REASON")
 	private String rejectedReason;
@@ -105,12 +105,12 @@ public class RequirementApproverHierarchy {
 		this.hierarchyType = hierarchyType;
 	}
 
-	public REQUIREMENT_APPROVER_HIERARCHY_STATUS getStatus() {
-		return status;
+	public REQUIREMENT_APPROVER_HIERARCHY_STATUS getRequirementApproverStatus() {
+		return requirementApproverStatus;
 	}
 
-	public void setStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS status) {
-		this.status = status;
+	public void setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS requirementApproverStatus) {
+		this.requirementApproverStatus = requirementApproverStatus;
 	}
 
 	public String getRejectedReason() {

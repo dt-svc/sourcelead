@@ -114,8 +114,8 @@ function editCandidate(candidateId){
 							result = result + '		        </div>';
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-12">';
-							result = result + '<textarea class="form-control input-sm" placeholder="Summary"  name="summary" rows="2" cols="0">';
-							result = result + ''+json.summary+'</textarea>';
+							result = result + '<textarea class="form-control input-sm" placeholder="Summary"  name="summary" rows="2" cols="0" > '+json.summary+'</textarea>';
+							//result = result + ''+json.summary+'</textarea>';
 							result = result + ' </div>';
 							result = result + '		        </div>';
 							result = result + '		        <div class="clearfix mr">';
@@ -407,7 +407,7 @@ function candidateProfile(candidateId){
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details">';	 
 							result = result +'		<h1>Summary:</h1>';
-							result = result +'	    <textarea placeholder="Enter description">'+json.summary+'</textarea>';
+							result = result +'	    <textarea placeholder="Enter description" readonly>'+json.summary+'</textarea>';
 							result = result +'		<h2>Skills:</h2>';
 							
 							result = result + '	<div class="row select-skills">';
