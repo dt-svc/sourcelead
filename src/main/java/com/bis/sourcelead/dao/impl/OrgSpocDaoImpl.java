@@ -169,4 +169,19 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			return spocsList;
 		}
 
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<OrgSpoc> getAllContactsbyOrgId(Long orgId) throws Exception {
+			
+			logger.debug("In OrgSpocDaoImpl getAllContactsbyOrgId method");
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			List<OrgSpoc> spocsList;
+			 
+			Query query= session.createQuery("from OrgSpoc spoc  left join fetch spoc.orgRelations orgrelation where spoc.status <> '0' "); 
+			spocsList = query.setCacheable(true).list();
+			return spocsList;
+			
+		}
+
 }

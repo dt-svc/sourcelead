@@ -129,7 +129,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		String subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId =:userId and rah.level = '1' )";
 		params.put("userId",userId);
 		
-		String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId =:approverUserId and rah.level = '2' and (rah.approverUserId =:approverUserId and rah.level = '1' and rah.requirementApproverStatus = 'approved') )";
+		String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId =:approverUserId and rah.level = '2' and requirement.id IN (select rah.requirementId from RequirementApproverHierarchy rah1 where rah1.level = '1' and rah1.requirementApproverStatus = 'APPROVED') )";
 		params.put("approverUserId",userId);
 		
 		

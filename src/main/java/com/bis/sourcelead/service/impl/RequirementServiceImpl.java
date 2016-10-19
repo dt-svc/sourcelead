@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
+import com.bis.sourcelead.dao.SubmissionTemplateDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -21,6 +22,7 @@ import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -43,6 +45,8 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	private CommonUtil commonUtil;
 	
+	@Autowired
+	private SubmissionTemplateDao submissionTemplateDao;
 	
 	
 	/**
@@ -160,9 +164,11 @@ public class RequirementServiceImpl implements RequirementService {
 				 requirement.setDocFile(multiFile.getBytes());
 				 requirement.setFileName(multiFile.getOriginalFilename());
 				 requirement.setFileContentType(multiFile.getContentType());
-			 }
+			 }else{
+					requirement.setIsClientJob("N");
+				}
 			 
-			if(jsonObj.has("isClient") && StringUtils.isNotEmpty(jsonObj.getString("isClient"))){
+			if(jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y") && StringUtils.isNotEmpty(jsonObj.getString("isClient"))){
 					requirement.setIsClientJob(jsonObj.getString("isClient"));
 			}
 			if(jsonObj.has("selectClient") && StringUtils.isNotEmpty(jsonObj.getString("selectClient"))){
@@ -184,10 +190,11 @@ public class RequirementServiceImpl implements RequirementService {
 			if(jsonObj.has("clientRateType") && StringUtils.isNotEmpty(jsonObj.getString("clientRateType"))){
 				requirement.setClientRateType(jsonObj.getString("clientRateType"));
 			} 
-			if(jsonObj.has("clientSubmissionForm") && StringUtils.isNotEmpty(jsonObj.getString("clientSubmissionForm"))){
-				SubmissionTemplate submissionTemplate = new SubmissionTemplate();
+			if(jsonObj.getString("isClient").equalsIgnoreCase("Y") && jsonObj.has("isClient") && StringUtils.isNotEmpty(jsonObj.getString("isClient")) && jsonObj.has("clientSubmissionForm") && StringUtils.isNotEmpty(jsonObj.getString("clientSubmissionForm"))){
+				SubmissionTemplate submissionTemplate = submissionTemplateDao.getSubmissionTemplateById(Long.parseLong(jsonObj.getString("clientSubmissionForm")));
 				submissionTemplate.setId(Long.parseLong(jsonObj.getString("clientSubmissionForm")));
 				requirement.setClientSubmissionTemplateId(submissionTemplate);
+				requirement.setClientSubmissionTemplateJsonString(submissionTemplate.getJsonString());
 			}
 			
 			requirement.setStatus(Constants.REQUIREMENT_STATUS);
@@ -197,15 +204,15 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setUpdatedDate(commonUtil.currentDate());
 			
 			//requirement status 
-			if(jsonObj.has("saveType")){
+			if(jsonObj.has("saveType")){            
 				
-				if(jsonObj.getString("saveType").equalsIgnoreCase("Draft")){
+				if(jsonObj.getString("saveType").equalsIgnoreCase("draft")){
 					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.DRAFT);
 				}
-				if(jsonObj.getString("saveType").equalsIgnoreCase("Save")){
+				if(jsonObj.getString("saveType").equalsIgnoreCase("save")){
 					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
 				}
-				if(jsonObj.getString("saveType").equalsIgnoreCase("SubmitForApproval")){
+				if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval")){
 					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED);
 				}
 				
@@ -228,6 +235,7 @@ public class RequirementServiceImpl implements RequirementService {
 						  
 						rah.setRequirementId(requirement);
 						
+						rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
 						rah.setLevel("1");
 						  
 						rah.setCreatedDate(commonUtil.currentDate());
@@ -250,6 +258,7 @@ public class RequirementServiceImpl implements RequirementService {
 					  rah.setApproverUserId(approverUserId);
 					  rah.setRequirementId(requirement);
 					  
+					  rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
 					  rah.setLevel("1");
 					  
 					  rah.setCreatedDate(commonUtil.currentDate());
@@ -269,6 +278,7 @@ public class RequirementServiceImpl implements RequirementService {
 					  
 					  rah.setRequirementId(requirement);
 					  
+					  rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
 					  rah.setLevel("2");
 					  
 					  rah.setCreatedDate(commonUtil.currentDate());

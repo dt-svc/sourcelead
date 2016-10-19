@@ -76,9 +76,9 @@ background-color: #ccc;
 <script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
-			$(".isClient").click(function(){  
+			/*  $(".isClient").click(function(){  
 		        $(".clientDetails").toggleClass('hidden', 500);
-		    });
+		    });  */
 			
 			$(".cd1").click(function(){  
 		        $(".col-md-12 clearfix").toggleClass('hidden', 500);
@@ -90,6 +90,7 @@ background-color: #ccc;
  <script>
 		$(document).ready(function() {
 			document.getElementById("requirement_form").reset();
+			getIsClientVal();
 		});
 	</script>
 <!-- Content Area -->
@@ -316,12 +317,13 @@ background-color: #ccc;
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
 	      <div class="ml">
-            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="" onclick="getIsClientVal(this);">
+            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
+            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
             <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
             &nbsp;&nbsp;
             <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
 		  </div>
-          <div class="clientDetails hidden">
+          <div id="clientDetails" style="display: none;">
             <div class="clearfix">
               <h3>Client Details</h3>
             </div>
@@ -334,10 +336,10 @@ background-color: #ccc;
                     	<option value="">-- Select Client --</option>
 	                    <c:forEach var="report" items="${add_clientList}">
 							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
-			                    	<option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
+			                    	<option value="${report.id},${report.responderLocationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option>
 			                    </c:if>  
 			                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-			                  	 	<option value="${report.id},${report.responderLocationId.id}">${report.locationId.org.orgName}</option>
+			                  	 	<option value="${report.id},${report.responderLocationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
 			                    </c:if>
 						</c:forEach>
                     </select>
@@ -398,24 +400,24 @@ background-color: #ccc;
 	              <div class="input-group">
 	                <div class="input-group-btn selp-custom-min">
 	                  <select class="selectpicker" id="clientCurrencyCode" name="clientCurrencyCode">
-		                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-		                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-		                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-		                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-		                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-		                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+		                 <option  ${requirement.clientCurrencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
+		                 <option  ${requirement.clientCurrencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
+		                 <option  ${requirement.clientCurrencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
+		                 <option  ${requirement.clientCurrencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+		                 <option  ${requirement.clientCurrencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
+		                 <option  ${requirement.clientCurrencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
 	                </select>
 	                
 	                </div>
-	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
+	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
-	                  <select class="selectpicker" id="clientRateType" name="clientRateType">
+	                  <select class="selectpicker"  id="clientRateType" value="${requirement.clientRateType}" name="clientRateType">
 	                    <option value="">Per</option>
-	                    <option value="1hr">1hr</option>
-	                    <option value="2hr">2hr</option>
-	                    <option value="3hr">3hr</option>
-	                    <option value="4hr">4hr</option>
-	                    <option value="Other">Other</option>
+	                    <option ${requirement.clientRateType  == '1hr' ? 'selected' : ''}>1hr</option>
+	                    <option ${requirement.clientRateType  == '2hr' ? 'selected' : ''}>2hr</option>
+	                    <option ${requirement.clientRateType  == '3hr' ? 'selected' : ''}>3hr</option>
+	                    <option ${requirement.clientRateType  == '4hr' ? 'selected' : ''}>4hr</option>
+	                    <option ${requirement.clientRateType  == 'Other' ? 'selected' : ''}>Other</option>
 	                  </select>
 	                </div>
 	              </div>
@@ -980,7 +982,7 @@ background-color: #ccc;
          <div class="form-group parallel" style="display:none;">
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
-                    <select multiple class="chosen-select form-control" name="parallelApprover" field-name="Approver" data-validation="required">
+                    <select multiple class="chosen-select form-control" id="parallelApprover" name="parallelApprover" field-name="Approver" data-validation="required">
                        <option disabled>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
@@ -993,7 +995,7 @@ background-color: #ccc;
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
-                    <select   class="chosen-select form-control" name="sequentialApprover1" field-name="Approver" data-validation="required">
+                    <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required">
                        <option>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
@@ -1162,12 +1164,12 @@ background-color: #ccc;
           <div class="form-group">
             <label class="col-md-3">Priority<span class="text-danger">*</span></label>
             <div class="col-md-9">
-              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" field-name = "Priority" name="priority">
+              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" field-name = "Priority" >
                 <option value="">Select Priority</option>
-                <option value="Urgent">Urgent</option>
-                <option value="High">High</option>
-                <option value="Medioum">Medioum</option>
-                <option value="Low">Low</option>
+                <option ${requirement.priority  == 'Urgent' ? 'selected' : ''}>Urgent</option>
+                <option ${requirement.priority  == 'High' ? 'selected' : ''}>High</option>
+                <option ${requirement.priority  == 'Medium' ? 'selected' : ''}>Medium</option>
+                <option ${requirement.priority  == 'Low' ? 'selected' : ''}>Low</option>
               </select>
             </div>
           </div>
@@ -1252,11 +1254,11 @@ background-color: #ccc;
                 </div>
                 <!-- Modal content Demo Popup: Need to Update ends --> 
   <div class="form-footer clearfix">
-    <div class="col-lg-12">
+    <div class="col-lg-12">   
       <div class="pull-right">
-        <input type="button" value="Submit for Approval" id="submitForApproval" class="btn btn-primary" style="display:none;">
-        <input type="button" value="Draft" id="draft" class="btn btn-danger">
-        <input type="button" value="Save" id="save" onclick="storeRequirement();" class="btn btn-primary" >
+        <input type="button" value="Submit for Approval" id="submitForApproval" onclick="storeRequirement('submitForApproval');" class="btn btn-primary" style="display:none;">
+        <input type="button" value="Draft" id="draft" onclick="storeRequirement('draft');" class="btn btn-danger">
+        <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary" >    
         <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
       </div>
     </div>
@@ -1268,7 +1270,7 @@ background-color: #ccc;
 </section>
 
 <script type="text/javascript">
-	function storeRequirement() {
+	function storeRequirement(saveType) {
 		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -1286,6 +1288,7 @@ background-color: #ccc;
       		var formData = new FormData(form); 
 			  //It will escape all the special characters
 			var sourceleadUrl = '${sourceleadUrl}';
+			
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
@@ -1294,7 +1297,7 @@ background-color: #ccc;
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&json="+con,
+						url : sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType+"&json="+con,
 						success : function(result) {
 								location.replace(sourceleadUrl+"/requirementList");
 						},
@@ -1747,7 +1750,7 @@ function approvalType(type){
 			$("#sequentialApproverDiv").hide();
 			
 			$('#sequential').find('p.jquery_form_error_message').remove();
-			
+			$('#sequentialApprover1').removeAttr('data-validation');
 			
 	  }
 	  if(type == "Sequential"){
@@ -1756,7 +1759,8 @@ function approvalType(type){
 			$("#parallel i").removeClass("apprverReq-active");
 			$("#sequential i").addClass("apprverReq-active");
 			
-			$('#parallel').find('p.jquery_form_error_message').remove();
+			$('#parallel').find('p.jquery_form_error_message').remove(); 
+			$('#parallelApprover').removeAttr('data-validation');
 	  }
 }
 </script>
@@ -1986,16 +1990,31 @@ function getTeamMembers(){
 
 <script>
 function getIsClientVal(){
-	 if (document.getElementById('isClientJob').checked) {
-       $('#addClientId').removeAttr('data-validation-optional');
-	   $('#addClientId').attr("data-validation","required"); 
+var existingValue = document.getElementById('isClientJob').value;
+
+	if (document.getElementById('isClientJob').checked){
+		 $("#isClientJob").val('Y');	
+		 existingValue = document.getElementById('isClientJob').value;
+	}else {
+		 $("#isClientJob").val('N');
+		 existingValue = document.getElementById('isClientJob').value;
+	}
+	 if ((document.getElementById('isClientJob').checked) || (existingValue != null && existingValue != '' && existingValue !='undefined' && existingValue == 'Y') ) {
+		 document.getElementById("clientDetails").style.display="";
+		 $("#isClientJob").val('Y');
+		 
+         $('#addClientId').removeAttr('data-validation-optional');
+	     $('#addClientId').attr("data-validation","required"); 
 	   
-	   $('#selectContact').removeAttr('data-validation-optional');
-	   $('#selectContact').attr("data-validation","required"); 
+	     $('#selectContact').removeAttr('data-validation-optional');
+	     $('#selectContact').attr("data-validation","required"); 
 	   
-	   $('#clientSubmissionForm').removeAttr('data-validation-optional');
-	   $('#clientSubmissionForm').attr("data-validation","required"); 
+	     $('#clientSubmissionForm').removeAttr('data-validation-optional');
+	     $('#clientSubmissionForm').attr("data-validation","required"); 
 	 } else {
+		 document.getElementById("clientDetails").style.display="none";
+		 $("#isClientJob").val('N');
+		 
 		 $('#addClientId').removeAttr('data-validation');
 		 $('#addClientId').attr("data-validation-optional","true"); 
 		 
