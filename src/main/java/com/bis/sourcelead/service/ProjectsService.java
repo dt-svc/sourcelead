@@ -74,5 +74,9 @@ public interface ProjectsService {
         
 		String  storeProject(JSONObject jsonObj) throws Exception;
 		
+		HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() throws Exception;
+		
+		
+		
 		
 }
