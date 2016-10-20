@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementAssignToDao;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 
 @Repository
@@ -40,7 +41,23 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 		
 		
 	}
-	
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public RequirementAssignTo getRequirementAssignToByRequirementIdandAssignToId(Long requirementId,Long teamId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementAssignTo  rato left join fetch rato.requirementId where rato.teamId.id = :teamId and rato.requirementId.id = :requirementId ";
+		List<RequirementAssignTo> requirementAssignToList =  session.createQuery(query.toString()).setLong("teamId", teamId).setLong("requirementId", requirementId)
+				.setCacheable(true).list();
+		
+
+		RequirementAssignTo requirementAssignTo = null;
+		if (requirementAssignToList != null && requirementAssignToList.size() > 0) {
+			requirementAssignTo = (RequirementAssignTo) requirementAssignToList.iterator().next();
+		}
+		return requirementAssignTo;
+	}
     
   }
 

@@ -92,7 +92,31 @@ background-color: #ccc;
 			document.getElementById("requirement_form").reset();
 			getIsClientVal();
 		});
-	</script>
+</script>
+
+<script>
+$(document).ready(function() {
+	
+	var requirementAssignedIds ='${requirementAssignedIds}';
+	alert("requirementAssignedIds"+requirementAssignedIds);
+	if(requirementAssignedIds != null && requirementAssignedIds != 'undefined' && requirementAssignedIds != ''){
+		var result = "";
+		var requirementAssignedToIds = [];
+		requirementAssignedToIds = requirementAssignedIds.split("&");
+		var count = 1;
+		
+		for (i=0;i < requirementAssignedToIds.length;i++)
+        {
+        	 result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+requirementAssignedToIds[i]+"' />";
+        	 count++;
+        }
+		result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
+		alert("result"+result);
+		$("#assignedToSavingDiv").empty();
+		$("#assignedToSavingDiv").append(result); 
+	}	
+});
+</script>
 <!-- Content Area -->
 <section class="content-wraper">
   <section class="content-header clearfix">
@@ -1824,20 +1848,22 @@ function getUserList(){
 		                    for (var i = 0; i < json.length; i++) { 
 		                    	 var opt = json[i]; 
 		                    	 result = result +'<tr>';
-		                    	 var localCheckedStatus = "no";
-		                    	 $(".defaultCheckBox").each(function() {
+		                    	 var localCheckedStatus = "";
+		                    	 $(".defaultCheckBox").each(function() { 
 		         							var localValue = this.value;
-		         							if(localId == opt.id){
-		         								localCheckedStatus = "yes";
+		         							if(localValue == opt.id){
+		         								localCheckedStatus = "checked";
 		         							}  
 		                    	 });
-		                    	 result = result +'             <td><input id="'+opt.id+'" value="'+opt.id+'"  type="checkbox" name="team" class="myCheckbox" ></td>';
+		                    	 result = result +'             <td><input id="'+opt.id+'" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' class="myCheckbox" ></td>';
 		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
 		                    	 result = result +'             <td>'+opt.email+'</td>';
 		                    	 result = result +'             <td>'+opt.id+'</td>';
 		                    	 result = result +'             <td>'+opt.id+'</td>';
 		                    	 result = result +'           </tr>';
+		                    	
 	                     }
+		                    
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
 	                     result = result +'     </div>'; 

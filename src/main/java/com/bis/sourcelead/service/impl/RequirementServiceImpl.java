@@ -190,11 +190,15 @@ public class RequirementServiceImpl implements RequirementService {
 			if(jsonObj.has("clientRateType") && StringUtils.isNotEmpty(jsonObj.getString("clientRateType"))){
 				requirement.setClientRateType(jsonObj.getString("clientRateType"));
 			} 
-			if(jsonObj.getString("isClient").equalsIgnoreCase("Y") && jsonObj.has("isClient") && StringUtils.isNotEmpty(jsonObj.getString("isClient")) && jsonObj.has("clientSubmissionForm") && StringUtils.isNotEmpty(jsonObj.getString("clientSubmissionForm"))){
+			if( jsonObj.has("isClient") && jsonObj.has("clientSubmissionForm")){
+				
+				if(jsonObj.getString("isClient").equalsIgnoreCase("Y") && jsonObj.has("isClient") && StringUtils.isNotEmpty(jsonObj.getString("isClient")) && jsonObj.has("clientSubmissionForm") && StringUtils.isNotEmpty(jsonObj.getString("clientSubmissionForm"))){
+
 				SubmissionTemplate submissionTemplate = submissionTemplateDao.getSubmissionTemplateById(Long.parseLong(jsonObj.getString("clientSubmissionForm")));
 				submissionTemplate.setId(Long.parseLong(jsonObj.getString("clientSubmissionForm")));
 				requirement.setClientSubmissionTemplateId(submissionTemplate);
 				requirement.setClientSubmissionTemplateJsonString(submissionTemplate.getJsonString());
+				}
 			}
 			
 			requirement.setStatus(Constants.REQUIREMENT_STATUS);
@@ -312,7 +316,25 @@ public class RequirementServiceImpl implements RequirementService {
 				if(StringUtils.isNotEmpty(assignedToMaxCount)){
 				int MaxCount = Integer.parseInt(assignedToMaxCount);
 					for (int c = 1; c < MaxCount; c++) {
-						RequirementAssignTo requirementAssignTo = new RequirementAssignTo();
+RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
+						
+						/*RequirementAssignTo  requirementAssignTo = null;
+						 
+						if(jsonObj.has("requirementId")  && jsonObj.has("team") &&  !jsonObj.getString("requirementId").isEmpty()){
+							
+						 requirementAssignTo = requirementAssignToDao.getRequirementAssignToByRequirementIdandAssignToId(Long.parseLong(jsonObj.getString("requirementId")), Long.parseLong(jsonObj.getString("team")));
+						 if(requirementAssignTo.getId() != null){
+								
+								requirementAssignTo.setId(requirementAssignTo.getId());
+							
+							}
+						}else{
+							
+							requirementAssignTo = new RequirementAssignTo();
+						}*/
+						
+						/*Team team = new Team();
+						team.setId(id);*/
 						
 						User assUser = new User();
 						assUser.setId(Long.parseLong(jsonObj.getString("assignUserId"+c)));

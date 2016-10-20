@@ -35,5 +35,11 @@ public class RequirementAssignToServiceImpl implements RequirementAssignToServic
 		return requirementAssignToDao.getRequirementAssignToListByRequirementId(requirementId);
 		
 	}
+
+	@Override
+	public RequirementAssignTo getRequirementAssignToByRequirementIdandAssignToId(Long requirementId, Long assignToId)
+			throws Exception {
+		return requirementAssignToDao.getRequirementAssignToByRequirementIdandAssignToId(requirementId, assignToId);
+	}
 	
 }

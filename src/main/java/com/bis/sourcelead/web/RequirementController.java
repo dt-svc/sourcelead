@@ -18,10 +18,12 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -48,9 +50,13 @@ public class RequirementController {
 	@Autowired
 	OrgRelationsService orgRelationsService;
 	
+	@Autowired
+	RequirementAssignToService requirementAssignToService;
+	
 	@RequestMapping(value = "/requirement")
 	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
 		Requirement requirement ;
+		RequirementAssignTo requirementAssignTo;
 		ModelAndView model = new ModelAndView();
 		
 		if(requirementId != null && !requirementId.isEmpty()){
@@ -63,6 +69,19 @@ public class RequirementController {
 					String[] skillsList = requirement.getSkills().split(",");
 					requirement.setReqSkillsList(skillsList);
 			}
+			String requirementAssignedIds = "";
+			if(requirement.getRequirementAssignTo() != null){
+				List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
+				for(RequirementAssignTo rat : requirementAssignToList){
+					if(requirementAssignedIds != null && !requirementAssignedIds.isEmpty()  && requirementAssignedIds != "" ){
+						requirementAssignedIds = requirementAssignedIds +"&"+rat.getId().toString();
+					}else{
+						requirementAssignedIds =   rat.getId().toString();
+					}
+					
+				}
+			}
+			model.addObject("requirementAssignedIds",requirementAssignedIds);
 			model.addObject("requirement",requirement);
 			model.addObject("requirementId",requirementId);
 		}else{

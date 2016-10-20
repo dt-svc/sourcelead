@@ -177,7 +177,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private  Long  requirementId;
 	
-	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementAssignTo> requirementAssignTo = new HashSet<RequirementAssignTo>(0);
 	
