@@ -2548,6 +2548,15 @@ function requirementPipeline(requirementId){
 							result = result +'</div>';
 							result = result +'</div>';
 							
+							//For Add Interview Div
+							result = result +'<div class="side_mask"><div class="addInterview_close"></div></div>';
+							result = result + '<div class="add_inter_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addInterviewDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Interview Div
+							
 				            result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
 				            result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
 				            result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
@@ -2569,7 +2578,7 @@ function requirementPipeline(requirementId){
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
 				            result = result +'    <li><a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title="" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title="" class="add-interview" onclick="addInterview('+requirementId+');" ><i class="fa fa-plus"></i>&nbsp;Add Interview</a></li>';
 				            result = result +'    <li> <a href="javascript:void(0)" title="" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a> </li>';
 				            result = result +'    <div class="clearfix"></div>';
 				            result = result +'    <div class="collapseDiv_add collapseDiv_styles col-xs-4 addOffer-Req"> <i class="fa fa-close close-div"></i>';
@@ -3007,4 +3016,5 @@ function assignedMemberList(requirementId){
 </script>
 
 <jsp:include page="addApplicant.jsp" />
+<jsp:include page="addInterview.jsp" />
 
