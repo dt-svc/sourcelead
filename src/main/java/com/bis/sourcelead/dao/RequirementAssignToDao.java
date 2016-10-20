@@ -8,4 +8,9 @@ public interface RequirementAssignToDao {
 
 	public List<RequirementAssignTo> getRequirementAssignToListByRequirementId(Long requirementId)throws Exception;
 	
+	public RequirementAssignTo getRequirementAssignToByRequirementIdandAssignToId(Long requirementId,Long teamId)  throws Exception;
+	
+	
+	public boolean deleteRequirementAssignToByRequirementId(Long requirementId)throws Exception;
+	
 }

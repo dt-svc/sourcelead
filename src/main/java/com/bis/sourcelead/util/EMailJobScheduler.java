@@ -54,7 +54,8 @@ public class EMailJobScheduler {
 /**
  * Fires at 7:00 PM Every Day	
  */
-	@Scheduled(cron = "${emailJobScheduler.job.cron.expression}")
+//	@Scheduled(cron = "${emailJobScheduler.job.cron.expression}")
+	@Scheduled(cron = "0 30 19 ? * *")
 	public void runEMailJobScheduler() {
 		String emailJobSchedulerStatus = "";
 		logger.info("##########  E-Mail Job Scheduler started..! ##########");
@@ -64,7 +65,7 @@ public class EMailJobScheduler {
 			for(User user : usrList){
 				if("Admin".equalsIgnoreCase(user.getUserType()))
 					continue;
-				List<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
+				HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
 				projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
 			}
 			emailJobSchedulerStatus = jobSchedulerTestService.schedulerTest(date.toLocaleString());
@@ -77,9 +78,10 @@ public class EMailJobScheduler {
     }
 	
 	/**
-	 * Fires on first Friday on every month
+	 * Fires on first Friday on every month emailJobScheduler.job.cron.everyfriday.expression
 	 */
 	@Scheduled(cron = "0 30 18 ? * FRI")
+//	@Scheduled(cron = "${emailJobScheduler.job.cron.everyfriday.expression}")
 	public void runNotificationJobScheduler() {
 		String notificationJobSchedulerStatus = "";
 		logger.info("******************  Notification Job Scheduler started..! **********");
@@ -87,11 +89,11 @@ public class EMailJobScheduler {
 		try {
 			notificationJobSchedulerStatus = jobSchedulerTestService.notiFicationSchedularTest(date.toLocaleString());
 			logger.info("*********** COMPLETED the Notification Job Scheduler with status as : "+notificationJobSchedulerStatus+" ***********");
-			HashSet<User> usrList = projectsService.getAllUserTimeSheetSubmissionStatus();
+			HashSet<User> usrList = projectsService.getAllUserTimeSheetSubmissionStatusCurrentWeek();
 			for(User user : usrList){
 				if("Admin".equalsIgnoreCase(user.getUserType()))
 					continue;
-				List<TimesheetSubmissions>  timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
+				HashSet<TimesheetSubmissions>  timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
 				projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
 			}
 			

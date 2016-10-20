@@ -129,7 +129,7 @@ function requirementList(){
 		                     if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
 		                    	 result = result +"<td><div>"+opt.jobType+"</div></td>";
 		                     }else{
-		                    	 result = result +"<td><div>No Data</div></td>";
+		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
 		                    
 		                     if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
@@ -140,12 +140,12 @@ function requirementList(){
 		                     if(opt.positions!=null && opt.positions !='' && opt.positions !='undefined'){
 		                    	 result = result +"<td><div>"+opt.positions+"</div></td>";
 		                     }else{
-		                    	 result = result +"<td><div>No Data</div></td>";
+		                    	 result = result +"<td><div>----</div></td>";
 		                     }
-		                     if(opt.managerUserId != null && opt.managerUserId !='' && opt.managerUserId !='undefined'){
+		                     if(opt.managerUserId.firstName != null && opt.managerUserId.firstName !='' && opt.managerUserId.firstName !='undefined'){
 		                    	 result = result +"<td><div>"+opt.managerUserId.firstName+" "+opt.managerUserId.lastName+"</div></td>";
 		                     }else{
-		                    	 result = result +"<td><div>No Data</div></td>";
+		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
 		                     result = result +"<td><div><b class='proj_process'>"+opt.requirementSubmissionStatus+"</b></div></td>";
 		                     result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";

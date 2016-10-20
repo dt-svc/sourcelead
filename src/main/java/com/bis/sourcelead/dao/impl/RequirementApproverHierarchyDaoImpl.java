@@ -75,6 +75,37 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 			}
 			return requirementApproverHierarchy;
 	}
+
+	
+	@Transactional(rollbackFor = { Exception.class })	
+	@Override
+	public Integer getRequirementApproverHierarachyWithHighestLevel(Long requirementId)
+			throws Exception {
+
+		Integer maxLevel = 1;
+		Session session = this.sessionFactory.getCurrentSession();
+		
+	    String query = "select   max(rah.level) from  RequirementApproverHierarchy rah where rah.requirementId.id =:requirementId";
+
+		List results =  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+		if(results != null && !results.isEmpty()){
+			  for(Object result :results){
+					  maxLevel = (Integer) result;
+			  }
+		}
+		return maxLevel;
+	}
+	
+	@Transactional(rollbackFor = { Exception.class })
+	@Override
+	public List<RequirementApproverHierarchy> getRequirementApproverHierarchyListByRequirementId(Long requirementId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementApproverHierarchy rah where rah.requirementId.id =:requirementId ";
+		return session.createQuery(query).setLong("requirementId", requirementId).list();
+	
+	}
 	
     
   }

@@ -581,5 +581,23 @@ public void saveAllProjects(List<Projects> projectsList) throws Exception {
 		}
 	}
 }
+
+@Override
+public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
+      Session session = this.sessionFactory.getCurrentSession(); 
+      Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL); 
+      cal.setLenient(false); 
+      cal.setTime(new Date()); 
+      Date previousDate = CalendarUtil.getCurrentWeekDay("MON"); 
+      java.sql.Date previousDayDate = new java.sql.Date(previousDate.getTime()); 
+      String query = "from User user where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where ts.startDate < :startDate and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))"; List<User> userList = session.createQuery(query.toString()).setDate("startDate", previousDayDate).setCacheable(true).list(); 
+      logger.debug("The Total Employees which are not submitted the Time sheets within a week are : "+userList.size());
+      HashSet<User> userSet  = null;
+		if(userList != null && !userList.isEmpty()){
+			userSet = new HashSet<>(userList);
+		}
+		return userSet;
+
+}
           }
 

@@ -317,7 +317,7 @@ function addDocument(vendorLocationId,orgRelationId) {
 	
 	  /* upload file script to show selected file name*/
 	    document.getElementById("uploadBtn").onchange = function () {
-	    document.getElementById("uploadFile").value = this.value;
+	    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();;
 	    };
 	  
 	$(".edit-details").toggleClass("edit-details-active");

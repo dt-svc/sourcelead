@@ -63,4 +63,6 @@ public interface ProjectsDao {
 	
 	public List<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus() throws Exception;
 
+	public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek();
+
 }

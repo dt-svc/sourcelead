@@ -13,5 +13,10 @@ public interface RequirementApproverHierarchyDao {
 	
 	public RequirementApproverHierarchy storeRequirementApproverHierarchy(RequirementApproverHierarchy requirementApproverHierarchy) throws Exception;
 	
+	public Integer getRequirementApproverHierarachyWithHighestLevel(Long requirementId) throws Exception;
+	
+	public List<RequirementApproverHierarchy> getRequirementApproverHierarchyListByRequirementId(Long requirementId) throws Exception;
+
+	
 }
 

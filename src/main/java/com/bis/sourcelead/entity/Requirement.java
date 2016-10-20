@@ -177,7 +177,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private  Long  requirementId;
 	
-	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementAssignTo> requirementAssignTo = new HashSet<RequirementAssignTo>(0);
 	
@@ -188,6 +188,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private String clientName;
+	
+	@Transient
+	private String requirementApproverHierarchyStatus;
+	
 	
 	@Transient
 	private String spocName;
@@ -627,5 +631,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.clientSubmissionTemplateJsonString = clientSubmissionTemplateJsonString;
 	}
 
-		
+	public String getRequirementApproverHierarchyStatus() {
+		return requirementApproverHierarchyStatus;
+	}
+
+	public void setRequirementApproverHierarchyStatus(String requirementApproverHierarchyStatus) {
+		this.requirementApproverHierarchyStatus = requirementApproverHierarchyStatus;
+	}
+
 }

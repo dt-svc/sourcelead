@@ -435,7 +435,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 
 	@Override
-	public void userEmailNotificationForTimeSheetSubmission(User user,List<TimesheetSubmissions> timesheetSubmissions) throws Exception {
+	public void userEmailNotificationForTimeSheetSubmission(User user,HashSet<TimesheetSubmissions> timesheetSubmissions) throws Exception {
 		
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
@@ -1382,5 +1382,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 				    }
 				return teamMembersList;
 				}
+
+			@Override
+			public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() throws Exception {
+				return projectsDao.getAllUserTimeSheetSubmissionStatusCurrentWeek();
+			}
 			  
 }
