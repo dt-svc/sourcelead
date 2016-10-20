@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,6 +16,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION")
@@ -52,7 +56,8 @@ public class RequirementSubmission {
     private String submissionTemplateJsonStringValue;
 	
 	@Column(name = "SUBMISSION_STATUS")
-	private String submissionStatus;
+	@Enumerated(EnumType.STRING)
+	private ApplicantSubmissionStatus submissionStatus;
 	
 	@Column(name = "STATUS")
     private Integer status;
@@ -133,11 +138,11 @@ public class RequirementSubmission {
 		this.submissionTemplateJsonStringValue = submissionTemplateJsonStringValue;
 	}
 
-	public String getSubmissionStatus() {
+	public ApplicantSubmissionStatus getSubmissionStatus() {
 		return submissionStatus;
 	}
 
-	public void setSubmissionStatus(String submissionStatus) {
+	public void setSubmissionStatus(ApplicantSubmissionStatus submissionStatus) {
 		this.submissionStatus = submissionStatus;
 	}
 
