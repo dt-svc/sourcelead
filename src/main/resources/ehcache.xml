@@ -214,6 +214,11 @@
         <persistence strategy="localTempSwap" />
     </cache>
     
+    <cache name="requirementSubmission"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+    </cache>
+    
     
     
     
