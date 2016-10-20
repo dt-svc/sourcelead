@@ -54,5 +54,7 @@ public interface OrgSpocDao {
 	 */
 	List<OrgSpoc> getAllContactsbyOrgLocationIdAndUserIdForRequirement(Long orgLocationId,Long UserId,String relationType) throws Exception;
 	
+	List<OrgSpoc> getAllContactsbyOrgId(Long orgId) throws Exception;
+	
 	
 }

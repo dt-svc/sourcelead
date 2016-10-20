@@ -20,8 +20,8 @@ function addClientPopUp() {
 	result = result+'          <div class="col-xs-12 col-md-12 col-lg-12">';
 	result = result+'            <div class="form-group">';
 	result = result+'              <label class="col-lg-3">Client Name<span class="text-danger">*</span></label>';
-	result = result+'              <div class="col-lg-9">';
-	result = result+'                <input type="text" id="orgName" name="orgName" class="form-control" value="" field-name="Client Name" data-validation="required validate_Space validate_length length2-250">';
+	result = result+'              <div class="col-lg-9" id="clientNameDiv" >';
+	result = result+'                <input type="text" id="orgName" name="orgName" class="form-control" value="" field-name="Client Name"  onblur="validateClientName();" data-validation="required validate_Space validate_length length2-250">';
 	result = result+'                <input type="hidden" id="orgLocationId" />';
 	result = result+'              </div>';
 	result = result+'            </div>';
@@ -478,6 +478,48 @@ function getClientSubmissionTemplates(local){
  }
  </script>
  
+ 
+ 
+ <script type="text/javascript">
+function validateClientName(){
+	var clientName = document.getElementById("orgName").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
+	if(clientName.match(/^[^\s-](.*)*$/) != null){
+		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+	if (clientName != null && clientName != '') {
+		//$("#save_client").attr("disabled", "disabled");
+		// $( "#save_client" ).addClass('button').val('Processing..');
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName+"&responderType=Client",
+			success : function(data) {
+				var result = data;
+				if (result == true) {
+					//duplicate client
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as client</span>");
+					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as client");
+					
+				}else {
+					//New WebSite class="form-control"
+					//$("#save_client").removeAttr("disabled");
+					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
+					$('input#orgName').attr('class','valid form-control');
+					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+					$("#save_client").click(function() {
+						
+					});
+				}
+			},
+
+		});
+	}
+  }
+}
+</script>   
+
+
 <%-- 
      @author : Venkat Kesav
      this script is for getIsClientVal

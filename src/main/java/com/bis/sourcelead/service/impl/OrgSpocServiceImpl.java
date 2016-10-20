@@ -303,5 +303,24 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		return  contactsList;
 	}
 
+	@Override
+	public List<OrgSpoc> getAllContactsbyOrgId(Long orgId) throws Exception {
+		
+		List<OrgSpoc>  contactsList = orgSpocDao.getAllContactsbyOrgId(orgId);
+		
+		if(contactsList!=null){
+			for(OrgSpoc orgspoc :contactsList){
+				
+				orgspoc.setSpocName(orgspoc.getSpocUser().getFirstName() +""+orgspoc.getSpocUser().getLastName());
+				orgspoc.setSpocEmail(orgspoc.getSpocUser().getEmail());
+				orgspoc.setSpocMobilePhone(orgspoc.getSpocUser().getMobilePhone());
+				orgspoc.setOrgName(orgspoc.getResponderLocationId().getOrg().getOrgName());
+				orgspoc.setStatus(orgspoc.getStatus());
+				
+			}
+		}
+		return  contactsList;
+	}
+
 	
 }

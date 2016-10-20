@@ -142,8 +142,8 @@ function requirementList(){
 		                     }else{
 		                    	 result = result +"<td><div>No Data</div></td>";
 		                     }
-		                     if(opt.managerUserId!=null && opt.managerUserId !='' && opt.managerUserId !='undefined'){
-		                    	 result = result +"<td><div>"+opt.managerUserId.id+"</div></td>";
+		                     if(opt.managerUserId != null && opt.managerUserId !='' && opt.managerUserId !='undefined'){
+		                    	 result = result +"<td><div>"+opt.managerUserId.firstName+" "+opt.managerUserId.lastName+"</div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>No Data</div></td>";
 		                     }
