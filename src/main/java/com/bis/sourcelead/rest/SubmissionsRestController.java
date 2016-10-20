@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,8 +19,10 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.RequirementService;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -34,6 +37,9 @@ public class SubmissionsRestController {
 	
 	@Autowired
 	CandidateService candidateService;
+	
+	@Autowired
+	private RequirementService requirementService;
     
     @RequestMapping(value = "/getCandidateResumes")
     public String getCandidateResumes(@RequestParam(value="candidateId", required=false) Long candidateId,HttpServletRequest request) throws Exception {
@@ -55,6 +61,16 @@ public class SubmissionsRestController {
 		return resultJson;
 		
 	}
+    
+    
+    @RequestMapping(value = "/getRequirmentOrgSubmissionTemplate" , method = RequestMethod.GET)
+	   public String getRequirmentOrgSubmissionTemplate(@RequestParam(value="requirementId", required=false) Long requirementId) throws Exception {
+			
+		    Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		    
+			return requirement.getSubmissionTemplateJsonString();
+	    
+	   }
     
     private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
