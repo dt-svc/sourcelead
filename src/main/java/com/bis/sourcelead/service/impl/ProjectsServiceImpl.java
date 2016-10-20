@@ -11,7 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
@@ -455,7 +459,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			 }
 		 }
 		 if(frequency != null && !frequency.isEmpty()){
-			// globalVarsMap.put("weekFrequency","<br/>"+frequency.stream().collect(Collectors.joining("<br/>"))+"<br/>");
+			 globalVarsMap.put("weekFrequency","<br/>"+frequency.stream().collect(Collectors.joining("<br/>"))+"<br/>");
 		 }
 		 
 		 //setting the Recipient information
