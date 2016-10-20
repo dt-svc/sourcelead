@@ -94,6 +94,24 @@ background-color: #ccc;
 		});
 </script>
 
+ <script>
+$(document).ready(function () {
+   /*  var selectedUserRole = document.getElementById('SelectedUserRole').value; */
+    var approverMode = '${approverMode}';
+    var parallelApproverIds = '${parallelApproverIds}';
+    var sequentialApprover1 = '${sequentialApprover1}';
+    var sequentialApprover2 = '${sequentialApprover2}';
+
+   /*  alert("approverMode"+approverMode);
+    alert("parallelApproverIds"+parallelApproverIds);
+    alert("sequentialApprover1"+sequentialApprover1);
+    alert("sequentialApprover2"+sequentialApprover2);
+     */
+    
+});    
+</script>
+    
+
 <script>
 $(document).ready(function() {
 	
