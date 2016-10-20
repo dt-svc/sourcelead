@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -145,8 +146,8 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		emailNotification.setSubject(emailMessage.getSubject());
 		emailNotification.setBody(emailMessage.getMessageBody());
 		emailNotification.setDeliveryStatus("N");
-		emailNotification.setCreatedDate(new Date());
-		
+	    Date date= new Date();
+		emailNotification.setCreatedDate(new Timestamp(date.getTime()));
 		emailNotificationService.save(emailNotification);
 		
 		return emailNotification.getId();
@@ -155,6 +156,9 @@ public class EmailMessageServiceImpl implements EmailMessageService {
    private void updateEmailInfoWithDeliveryStatus(Long emailNotificationd) throws Exception {
 		EmailNotification emailNotification = emailNotificationService.getById(emailNotificationd);
 		emailNotification.setId(emailNotificationd);
+	     Date date= new Date();
+	   System.out.println("======================================"+new Timestamp(date.getTime()));
+		emailNotification.setSentTime(new Timestamp(date.getTime()));
 		emailNotification.setDeliveryStatus("Y");
 		
 		emailNotificationService.save(emailNotification);

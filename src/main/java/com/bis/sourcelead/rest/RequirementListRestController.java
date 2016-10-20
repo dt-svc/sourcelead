@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -56,6 +58,10 @@ public class RequirementListRestController {
 	 
 	 @Autowired
 	 RequirementAssignToService requirementAssignToService;
+	 
+	 @Autowired
+	 RequirementApproverHierarchyService requirementApproverHierarchyService;
+	 
 	 
 	 /**
 	   * @author sarath kumar
@@ -110,17 +116,24 @@ public class RequirementListRestController {
 			if(requirementId !=null && !requirementId.isEmpty()){
 				Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
 				
-				if(requirement.getSpocId() !=null){
-				requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
-				requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
-				requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
-				requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
-				requirement.setClientSubmissionTemplate(requirement.getClientSubmissionTemplateId().getTemplateName());
-				}
-				if(requirement.getManagerUserId() != null && requirement.getManagerUserId().getFirstName() != null && requirement.getManagerUserId().getLastName() != null ){
-					requirement.setManager(requirement.getManagerUserId().getFirstName()+" "+requirement.getManagerUserId().getLastName());	
-				}
-				resultJson = commonUtil.toJSON(requirement);
+				// to get the RequirementApproverHierarchy to set the Status
+				RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(Long.parseLong(requirementId), user.getId());
+					if(requirementApproverHierarchy!=null){
+						requirement.setRequirementApproverHierarchyStatus(requirementApproverHierarchy.getRequirementApproverStatus().toString());
+					}
+					if(requirement.getSpocId() !=null){
+					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+					requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
+					requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
+					requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
+					requirement.setClientSubmissionTemplate(requirement.getClientSubmissionTemplateId().getTemplateName());
+					}
+					if(requirement.getManagerUserId() != null && requirement.getManagerUserId().getFirstName() != null && requirement.getManagerUserId().getLastName() != null ){
+						requirement.setManager(requirement.getManagerUserId().getFirstName()+" "+requirement.getManagerUserId().getLastName());	
+					}
+					resultJson = commonUtil.toJSON(requirement);
+			
+				
 				 
 			}
 			

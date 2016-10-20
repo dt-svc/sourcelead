@@ -273,7 +273,7 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	
 	  /* upload file script to show selected file name*/
 	    document.getElementById("uploadBtn").onchange = function () {
-	    document.getElementById("uploadFile").value = this.value;
+	    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();;
 	    };
 	    
 	    /* upload file script for size validation 2MB*/

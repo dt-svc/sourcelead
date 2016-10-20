@@ -2041,3 +2041,8 @@ width: 100%;
 .block{ 
 	display: block !important;
 }			 		
+
+.pras {}
+.pras p {
+	position: absolute; left:0px;
+}

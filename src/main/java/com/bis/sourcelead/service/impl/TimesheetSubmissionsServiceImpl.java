@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -1063,7 +1064,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
  * 
  */
 		@Override
-		public List<TimesheetSubmissions> getWeekFrequency(Long userId) throws Exception {
+		public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId) throws Exception {
 			return timesheetSubmissionsDao.getWeekFrequency(userId);
 		}
 
