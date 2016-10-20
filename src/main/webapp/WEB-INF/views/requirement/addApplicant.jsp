@@ -1,4 +1,3 @@
-<jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -6,7 +5,8 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
-
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<link rel="stylesheet" href="resources/css/jquery-ui.css" type="text/css" >
 
 
 <!-- For add New Applicant -->
@@ -20,21 +20,23 @@ function getAddApplicant(requirementId){
 	result = result + '<form id="addApplicant_form" >';
 	result = result + '<h3>Add Applicant</h3>';
 	result = result + '<div class="form-horizontal clearfix">';
+	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
+	
 	result = result + '<div class="row">';
-	result = result + '<div class="col-md-12 mb10">';
+	result = result + '<div class="col-md-5 mb10">';
 	result = result + '<label>Select Candiate</label>';
-	result = result + '<select  onchange="getCandidateResumes();" onclick="getCandidateDetails();" id="candidateId" field-name="Candidate" class="form-control  block">';
+	result = result + '<select  onchange="getCandidateResumes();" onclick="getCandidateDetails();" name="candidateId" id="candidateId" field-name="Candidate" class="form-control  block">';
 	result = result + '<option value="">--Select Candidate--</option>';
 	result = result + '<c:forEach var="option" items='${candidatesList}'>';
 	result = result + '<option value="'+${option.id}+'">${option.firstName} ${option.lastName}</option>';
 	result = result + '</c:forEach>';
 	result = result + '</select>';
 	result = result + '</div>';
-	result = result + '<div class="clearfix text-center text-info mb10">';
-	result = result + '-------------------------------- OR --------------------------------';
+	result = result + '<div class="text-center text-info col-md-2 mb10">';
+	result = result + '------- ( OR ) -------';
 	result = result + '</div>';
 	
-	result = result + '<div class="col-md-12">';
+	result = result + '<div class="col-md-5">';
 	result = result + '<div class="panel-border col-md-12">';
 	result = result + '<div class="col-md-12" id="browseDiv"  style="display: block;">';
 	result = result + '<div class="input-group">';
@@ -48,7 +50,7 @@ function getAddApplicant(requirementId){
 	result = result + '<div class="col-md-12" id="resumesDiv"  style="display: none;">';
 	result = result + '<div class="col-md-12 mt10 mb10 clearfix text-center text-info">';
 	result = result + '</div>';
-	result = result + '<select id="candidateResumesList" field-name="Resume" class="form-control block">';
+	result = result + '<select id="candidateResumesList" name="candidateResume" field-name="Resume" class="form-control block">';
 	result = result + '</select>';
 	result = result + '</div>';
 	result = result + '</div></div>';
@@ -59,9 +61,9 @@ function getAddApplicant(requirementId){
 	
                         
 	result = result + '</div>';
-	result = result + '<div class="clearfix mt10">';
-	result = result + '<div class="pull-right">';
-	result = result + '<button type="submit" id="save_button" class="btn btn-sm btn-primary mr">Submit</button>';
+	 result = result + '<div class="form-footer clearfix">';
+	result = result + '<div class="pull-right mr">';
+	result = result + '<button type="submit" id="save_button"  class="btn btn-sm btn-primary ">SUBMIT</button>';
 	result = result + '</div>';
 	result = result + '</div>';
 	result = result + '</div>';  
@@ -100,26 +102,30 @@ function getAddApplicant(requirementId){
         con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
         var sourceleadUrl ='${sourceleadUrl}';
-        
+        var requirementId = $("#requirementId").val();
+        alert(requirementId);
         $( "#save_button" ).addClass('button').val('Processing..');
-  /*  	    $.ajax({
+        
+    	    $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/saveClientSubmissionTemplate?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+   	    	url : sourceleadUrl+"/saveAddApplicant?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
-	        	if((result == 'home')){
-	        		clientSubmissionTemplate(clientLocationId);  
+	        	if((result == 'success')){
+	        		location.replace(sourceleadUrl+"/requirementSummary?requirementId="+requirementId); 
 		        } 
 	        },
-	    }); */
+	    }); 
         return true;
       }
       else{
       	return false;	
          }
     });
-    	
-   	$('#addApplicant_form').showHelpOnFocus();
-    $('#addApplicant_form').validateOnBlur(false, validationSettings); 
+    
+   	$('body').on('blur', '#addApplicant_form', function() {
+		$("#addApplicant_form").showHelpOnFocus();
+		$("#addApplicant_form").validateOnBlur(false, validationSettings);
+	});
   
   </script>
   
@@ -335,13 +341,11 @@ function init(){
 </script>
 
 <script>
-  $( function() {
-	  
-	  $('#dob').datepicker({
+  function dobDatePicker() {
+	  $('#DOB').datepicker({
 	      dateFormat: 'yy-mm-dd',
 	  });
 	  
-  } );
+  }
 </script>
 
-<jsp:include page="../masterFooter.jsp" />
