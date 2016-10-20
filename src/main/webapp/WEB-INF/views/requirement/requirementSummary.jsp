@@ -2320,8 +2320,6 @@ function requirementDetails(requirementId){
 				            if(json.requirementApproverHierarchyStatus !='APPROVED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
 					            result = result +'<button  class="btn btn-primary pull-right" type="button" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
 					            result = result +'<button  class="btn btn-primary pull-right" type="button" onClick ="updateReuqirementStatus(\''+ REJECTED+ '\');">Reject</button>';
-				            }else if(json.requirementApproverHierarchyStatus =='APPROVED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
-					            result = result +'<button  class="btn btn-primary pull-right" type="button" ><Span id="requirementStatus"></Span></button>';
 				            }
 				            result = result +'     <div class="clearfix row">';
 					        result = result +'     <div class="col-md-10 divskill divsAssigned">';
@@ -2510,7 +2508,7 @@ function updateReuqirementStatus(status){
           			 location.replace(sourceleadUrl+"/errorPage");
           		 }
           		 else{ 
-          			requirementStatus
+          			
           			   alert("success"+data);
           		 }
             }
