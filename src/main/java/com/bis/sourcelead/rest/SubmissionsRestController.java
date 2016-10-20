@@ -14,6 +14,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
@@ -23,11 +24,14 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -37,6 +41,8 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
 public class SubmissionsRestController {
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Autowired
 	CandidateResumesService candidateResumesService;
@@ -49,6 +55,9 @@ public class SubmissionsRestController {
 	
 	@Autowired
 	private RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	private SubmissionTemplateService submissionTemplateService;
     
     @RequestMapping(value = "/getCandidateResumes")
     public String getCandidateResumes(@RequestParam(value="candidateId", required=false) Long candidateId,HttpServletRequest request) throws Exception {
@@ -97,6 +106,15 @@ public class SubmissionsRestController {
 			return "success";
 	    
  }
+    
+    @RequestMapping(value = "/getOrgSubmissionTemplatesList", method = RequestMethod.POST)
+	@ResponseBody String getOrgSubmissionTemplatesList(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationId(orgLocations.getId());
+		
+		return commonUtil.toJSON(submissiontTemplateList);
+	}
+    
     
     private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
