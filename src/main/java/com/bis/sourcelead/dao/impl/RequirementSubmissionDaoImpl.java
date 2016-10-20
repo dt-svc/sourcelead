@@ -44,7 +44,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			}
 			logger.debug("RequirementSubmission Added Successfully");
 		} catch (Exception exception) {
-			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"REQUIRMENT_SUBMISSION"));
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"REQUIREMENT_SUBMISSION"));
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return requirementSubmission;
