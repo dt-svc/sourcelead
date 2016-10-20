@@ -12,4 +12,7 @@ public interface RequirementApproverHierarchyService {
 	public RequirementApproverHierarchy getRequirementApproverHierarchyByRequirementId(Long requirementId,Long approverUserId) throws Exception;
 	
 	public RequirementApproverHierarchy addRequirementApproverHierarchy(RequirementApproverHierarchy requirementApproverHierarchy) throws Exception;
+	
+	public Integer getRequirementApproverHierarachyWithHighestLevel(Long requirementId) throws Exception;
+
 }

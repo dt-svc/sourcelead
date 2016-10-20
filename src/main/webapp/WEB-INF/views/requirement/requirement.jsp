@@ -92,7 +92,29 @@ background-color: #ccc;
 			document.getElementById("requirement_form").reset();
 			getIsClientVal();
 		});
-	</script>
+</script>
+
+<script>
+$(document).ready(function() {
+	
+	var requirementAssignedIds ='${requirementAssignedIds}';
+	if(requirementAssignedIds != null && requirementAssignedIds != 'undefined' && requirementAssignedIds != ''){
+		var result = "";
+		var requirementAssignedToIds = [];
+		requirementAssignedToIds = requirementAssignedIds.split("&");
+		var count = 1;
+		
+		for (i=0;i < requirementAssignedToIds.length;i++)
+        {
+        	 result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+requirementAssignedToIds[i]+"' />";
+        	 count++;
+        }
+		result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
+		$("#assignedToSavingDiv").empty();
+		$("#assignedToSavingDiv").append(result); 
+	}	
+});
+</script>
 <!-- Content Area -->
 <section class="content-wraper">
   <section class="content-header clearfix">
@@ -386,6 +408,10 @@ background-color: #ccc;
                   <div class="form-icon">
                     <select class="chosen-select form-control" name="selectContact" data-validation-optional="true" field-name = "Client Contact" id="selectContact">
                       <option value=''>-- Select Contact --</option>
+                      <c:forEach var="report" items="${clientContactList}">
+			         		<%-- <option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocId.SpocUser.firstName}&nbsp;${report.spocId.SpocUser.lastName}</option> --%>
+			         		<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName}</option> 
+					     </c:forEach>
                     </select>
                     <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i> 
                  	<div id="addContact" class="modal fade" role="dialog">
@@ -982,7 +1008,7 @@ background-color: #ccc;
          <div class="form-group parallel" style="display:none;">
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
-                    <select multiple class="chosen-select form-control" id="parallelApprover" name="parallelApprover" field-name="Approver" data-validation="required">
+                    <select multiple class="chosen-select form-control" id="parallelApprover" name="parallelApprover" field-name="Approver" data-validation="required" data-validation-optional="true">
                        <option disabled>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
@@ -991,22 +1017,32 @@ background-color: #ccc;
                 </div>
          </div>
          
+         
          <div class="form-group sequential" id="addLvl" style="display:none;">
-                <label class="col-md-3">Approver<span class="text-danger">*</span></label>
-                <div class="col-md-9">
-                  <div class="form-icon">
-                    <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required">
-                       <option>Select Approver</option>
+                <label class="col-md-3">Approver1<span class="text-danger">*</span></label>
+                <div class="col-md-9">   
+                    <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required" data-validation-optional="true">
+                       <option value="">Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
 		               </c:forEach>
                     </select>
-                    <span onClick="addLvl();"><i class="fa fa-level-down btn btn-default formic1" data-toggle="tooltip" data-placement="left" title="Add Level"></i></span>
-                    </div>
+                    <!-- <span onClick="addLvl();"><i class="fa fa-level-down btn btn-default formic1" data-toggle="tooltip" data-placement="left" title="Add Level"></i></span> -->
                 </div>
+                
+	            <label class="col-md-3 mt">Approver2<span class="text-danger">*</span></label>
+	            <div class="col-md-9 mt">
+	              		<select   class="chosen-select form-control" id="sequentialApprover2" name="sequentialApprover2" field-name="Approver 2" data-validation="required" data-validation-optional="true">
+	                       <option value="">Select Approver</option>
+	                       <c:forEach var="report" items="${approverList}">
+			                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+			               </c:forEach>
+	                    </select>
+	              </div>
+              
               </div>
               
-              <div class="clearfix lvlTow" id ="sequentialApproverDiv" style="display:none;">
+              <%-- <div class="clearfix lvlTow" id ="sequentialApproverDiv" style="display:none;">
               <div class="form-group">
               <div class="col-md-3">Approver 2</div>
               <div class="col-md-9">
@@ -1016,14 +1052,8 @@ background-color: #ccc;
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
 		               </c:forEach>
                     </select>
-                <!-- <select class="chosen-select form-control">
-                      <option disabled>Select Client</option>
-                      <option>Client-1</option>
-                      <option>Client-2</option>
-                      <option>Client-3</option>
-                    </select> -->
               </div></div>
-          </div>
+          </div> --%>
           <div class="form-group">
             <label class="col-md-3">Manager<span class="text-danger">*</span></label>
             <div class="col-md-9">
@@ -1033,11 +1063,11 @@ background-color: #ccc;
                 <option>Manager-2</option>
                 <option>Manager-3</option>
               </select> -->
-              <select multiple class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager">
-                       <option disabled>Select Approver</option>
+              <select  class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager">
+                       <option value="">Select Manager</option>
                        <c:forEach var="report" items="${approverList}">
-		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-		               </c:forEach>
+		                    <option value="${report.id}" ${report.id  == requirement.managerUserId.id ? 'selected' : ''}>${report.firstName}&nbsp;${report.lastName}</option>
+		               </c:forEach>   
               </select>
             </div>
           </div>
@@ -1727,41 +1757,73 @@ function addLvl(){
 
 <script>
 function approvalType(type){
-
-		if($("#apprverReq").is(':checked')){
+		
+	    if($("#apprverReq").is(':checked')){
 			$("#submitForApproval").removeAttr("style");
 		    $("#save").attr("style","display:none"); 
+		    
+		    $(".parallel, #parallel, .apprverReq").show();
+			$(".sequential").hide();
+			$("#parallel i").addClass("apprverReq-active");
+			$("#sequential i").removeClass("apprverReq-active");
+			
+			
+			if(type == "Default" || type == "Parallel"){
+				
+				$("#parallel i").show();
+			    $("#sequential i").show();
+				 
+			    $(".parallel").show();
+			    $("#parallel i").addClass("apprverReq-active");
+			    
+				$(".sequential").hide();
+				$("#sequential i").removeClass("apprverReq-active"); 
+				
+				$("#sequentialApproverDiv").hide();
+				
+				
+				$('#sequentialApprover1').attr("data-validation-optional","true"); 
+				$('#sequentialApprover2').attr("data-validation-optional","true"); 
+				$('#parallelApprover').removeAttr('data-validation-optional');
+				
+				$('#sequentialApprover1').val('');
+				$('#sequentialApprover2').val('');
+				  
+				
+		  }
+		  if(type == "Sequential"){
+			    $(".parallel").hide();
+			    $("#parallel i").addClass("apprverReq-active");
+			    
+				$(".sequential").show();
+				$("#sequential i").addClass("apprverReq-active");
+				
+				$('#parallelApprover').attr("data-validation-optional","true"); 
+				
+				$('#sequentialApprover1').removeAttr('data-validation-optional');
+				$('#sequentialApprover2').removeAttr('data-validation-optional');
+				
+				$('#parallelApprover').val('');
+		  }
+		  
 		}
 		else{
 			$("#save").removeAttr("style");
 		    $("#submitForApproval").attr("style","display:none"); 
-		}
-	    
-	    $(".parallel, #parallel, .apprverReq").show();
-		$(".sequential").hide();
-		$("#parallel i").addClass("apprverReq-active");
-		$("#sequential i").removeClass("apprverReq-active");
-	  if(type == "Default" || type == "Parallel"){
-		    $(".parallel").show();
-			$(".sequential").hide();
-			$("#parallel i").addClass("apprverReq-active");
-			$("#sequential i").removeClass("apprverReq-active"); 
-			
-			$("#sequentialApproverDiv").hide();
-			
-			$('#sequential').find('p.jquery_form_error_message').remove();
-			$('#sequentialApprover1').removeAttr('data-validation');
-			
-	  }
-	  if(type == "Sequential"){
+		    
 		    $(".parallel").hide();
-			$(".sequential").show();
-			$("#parallel i").removeClass("apprverReq-active");
-			$("#sequential i").addClass("apprverReq-active");
+		    $("#parallel i").hide();
+		    
+		    $(".sequential").hide();
+			$("#sequential i").hide();
 			
-			$('#parallel').find('p.jquery_form_error_message').remove(); 
-			$('#parallelApprover').removeAttr('data-validation');
-	  }
+			$('#sequentialApprover1').attr("data-validation-optional","true"); 
+			$('#sequentialApprover2').attr("data-validation-optional","true"); 
+			$('#parallelApprover').attr("data-validation-optional","true"); 
+			
+			
+		}
+	  
 }
 </script>
 
@@ -1824,20 +1886,22 @@ function getUserList(){
 		                    for (var i = 0; i < json.length; i++) { 
 		                    	 var opt = json[i]; 
 		                    	 result = result +'<tr>';
-		                    	 var localCheckedStatus = "no";
-		                    	 $(".defaultCheckBox").each(function() {
+		                    	 var localCheckedStatus = "";
+		                    	 $(".defaultCheckBox").each(function() { 
 		         							var localValue = this.value;
-		         							if(localId == opt.id){
-		         								localCheckedStatus = "yes";
+		         							if(localValue == opt.id){
+		         								localCheckedStatus = "checked";
 		         							}  
 		                    	 });
-		                    	 result = result +'             <td><input id="'+opt.id+'" value="'+opt.id+'"  type="checkbox" name="team" class="myCheckbox" ></td>';
+		                    	 result = result +'             <td><input id="'+opt.id+'" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' class="myCheckbox" ></td>';
 		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
 		                    	 result = result +'             <td>'+opt.email+'</td>';
 		                    	 result = result +'             <td>'+opt.id+'</td>';
 		                    	 result = result +'             <td>'+opt.id+'</td>';
 		                    	 result = result +'           </tr>';
+		                    	
 	                     }
+		                    
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
 	                     result = result +'     </div>'; 

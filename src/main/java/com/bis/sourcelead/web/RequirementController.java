@@ -16,14 +16,19 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -48,16 +53,26 @@ public class RequirementController {
 	UserService userService;
 	
 	@Autowired
+	OrgSpocService orgSpocService;
+	
+	@Autowired
 	OrgRelationsService orgRelationsService;
 	
 	@Autowired
+	RequirementAssignToService requirementAssignToService;
+
+	@Autowired
 	CandidateService candidateService;
-	
 	
 	@RequestMapping(value = "/requirement")
 	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
 		Requirement requirement ;
+		RequirementAssignTo requirementAssignTo;
 		ModelAndView model = new ModelAndView();
+		
+		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		if(requirementId != null && !requirementId.isEmpty()){
 			requirement = this.requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
@@ -69,15 +84,30 @@ public class RequirementController {
 					String[] skillsList = requirement.getSkills().split(",");
 					requirement.setReqSkillsList(skillsList);
 			}
+			String requirementAssignedIds = "";
+			if(requirement.getRequirementAssignTo() != null){
+				List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
+				for(RequirementAssignTo rat : requirementAssignToList){
+					if(requirementAssignedIds != null && !requirementAssignedIds.isEmpty()  && requirementAssignedIds != "" ){
+						requirementAssignedIds = requirementAssignedIds +"&"+rat.getAssignUserId().getId().toString();
+					}else{
+						requirementAssignedIds =   rat.getAssignUserId().getId().toString();
+					}
+					
+				}
+			}
+			model.addObject("requirementAssignedIds",requirementAssignedIds);
 			model.addObject("requirement",requirement);
 			model.addObject("requirementId",requirementId);
+			List<OrgSpoc> clientContactList  = orgSpocService.getAllSpocsByOrgRelationId(requirement.getClientId().getId(), loginUser.getId(),orgLocations.getId());
+		    model.addObject("clientContactList", clientContactList);
 		}else{
 			requirement = new Requirement();
 		}
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirement");
 		
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		//OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		
