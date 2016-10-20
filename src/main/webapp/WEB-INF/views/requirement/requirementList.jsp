@@ -142,13 +142,13 @@ function requirementList(){
 		                     }else{
 		                    	 result = result +"<td><div>No Data</div></td>";
 		                     }
-		                     if(opt.managerUserId!=null && opt.managerUserId !='' && opt.managerUserId !='undefined'){
-		                    	 result = result +"<td><div>"+opt.managerUserId.id+"</div></td>";
+		                     if(opt.managerUserId != null && opt.managerUserId !='' && opt.managerUserId !='undefined'){
+		                    	 result = result +"<td><div>"+opt.managerUserId.firstName+" "+opt.managerUserId.lastName+"</div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>No Data</div></td>";
 		                     }
-		                     result = result +"<td><div><b class='proj_process'>"+opt.status+"</b></div></td>";
-		                     result = result +"<td><div><a href='#'><i class='fa fa-bullhorn'></i></a></div></td>";
+		                     result = result +"<td><div><b class='proj_process'>"+opt.requirementSubmissionStatus+"</b></div></td>";
+		                     result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
 		                     //<c:url value='/releaseRequirementToClientOrVendors/"+opt.id+"'/>'
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";

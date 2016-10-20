@@ -311,7 +311,15 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	public List<OrgRelations> getAllVendorsFilterByOrgLocationId(Long orgLocationId, String status) throws Exception {
 		logger.debug("In OrgRelations getAllVendorsByOrgLocationId method");
 		Session session = this.sessionFactory.getCurrentSession();
-        String[] level = status.split(",");
+		String level = null;
+		if(status != null && status.contains(",")){
+			String[] levels = status.split(",");
+			for (int i = 0; i < levels.length; i++) {
+				level = levels[i];
+			}
+		}else{
+			level = "";
+		}
 		String subQuery2 = "";
 		String subQuery3  ="";
 
@@ -354,7 +362,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
 		
 		}
-		if(!subQuery3.equalsIgnoreCase("")){ 
+		if(!subQuery3.equalsIgnoreCase("")){
 			subQuery3 = " (" + subQuery3.substring(0, subQuery3.length() - 4) + ")";
 		}
 	
@@ -424,10 +432,10 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			spocInvitationStatus = spocInvitationStatus + "spoc.invitationStatus = 'New' or ";
 		}
 		if (Arrays.asList(invitations).contains("Accepted")) {
-			spocInvitationStatus = spocInvitationStatus + "spoc.invitationStatus = 'Accept' or ";
+			spocInvitationStatus = spocInvitationStatus + "spoc.invitationStatus = 'Accepted' or ";
 		}
 		if (Arrays.asList(invitations).contains("Rejected")) {
-			spocInvitationStatus = spocInvitationStatus + "spoc.invitationStatus = 'Reject' or ";
+			spocInvitationStatus = spocInvitationStatus + "spoc.invitationStatus = 'Rejected' or ";
 		}
 		
 		if(!spocInvitationStatus.equalsIgnoreCase("")){
@@ -437,6 +445,9 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		
 		//vendor length based on vendors List
 		if (client[0] != null && client[0].length() > 0) {
+			if(!spocStatus.equalsIgnoreCase("") && !spocInvitationStatus.equalsIgnoreCase("")){
+				spocStatus = spocStatus +" and ";
+			}
 				for (String clnt : client) {
 					String subquery1 = "";
 					if(spocStatus.equalsIgnoreCase("") && spocInvitationStatus.equalsIgnoreCase("")){
@@ -445,7 +456,6 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 						subquery1 = "orgrelation.id =" + clnt+" and ";
 					}else{
 					    subquery1 = "orgrelation.id =" + clnt+" and ";
-					    spocStatus = spocStatus +" and ";
 					}
 					
 					if (isadmin) {

@@ -79,12 +79,13 @@ public class RequirementListRestController {
 
 		String resultJson;
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients);
+		List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
 		resultJson = commonUtil.toJSON(requirementList);
 		return resultJson;
 	 }
-	 
+	    
 	 
 	 /**
 	 * @author sarath kumar
@@ -108,15 +109,16 @@ public class RequirementListRestController {
 			Org loginOrgCode = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			if(requirementId !=null && !requirementId.isEmpty()){
 				Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
+				
 				if(requirement.getSpocId() !=null){
+				requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
 				requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
 				requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
 				requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
+				requirement.setClientSubmissionTemplate(requirement.getClientSubmissionTemplateId().getTemplateName());
+				}
 				if(requirement.getManagerUserId() != null && requirement.getManagerUserId().getFirstName() != null && requirement.getManagerUserId().getLastName() != null ){
 					requirement.setManager(requirement.getManagerUserId().getFirstName()+" "+requirement.getManagerUserId().getLastName());	
-				}
-				
-				
 				}
 				resultJson = commonUtil.toJSON(requirement);
 				 
@@ -150,7 +152,8 @@ public class RequirementListRestController {
 			       if(requirementAssignToList !=null && !requirementAssignToList.isEmpty()){
 			           for (RequirementAssignTo assing : requirementAssignToList) {
 					       assing.setAssignedUserName(assing.getAssignUserId().getFirstName()+" "+assing.getAssignUserId().getLastName());
-					       assing.setAssignedUserRole(assing.getAssignedUserRole());
+					       assing.setAssignedUserRole(assing.getRoleId().getDisplayName());
+					       assing.setTeamName(assing.getTeamId().getName());
 				      }
 			       }
 					resultJson = commonUtil.toJSON(requirementAssignToList);

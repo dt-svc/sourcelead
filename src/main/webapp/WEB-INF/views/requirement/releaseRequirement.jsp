@@ -173,7 +173,7 @@
       <div class="form-footer clearfix row mt">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" class="btn btn-primary ml" value="Save">
+            <input type="button" class="btn btn-primary ml" onclick="releaseTo();" value="Save">
             <input type="button" class="btn btn-default ml" value="Cancel">
           </div>
         </div>
@@ -188,7 +188,36 @@ $(document).ready(function(){
 	//getVendorContactLists();
 });
 </script>
-
+<script>
+function releaseTo(){
+		
+	    var contactsIds = new Array();
+	    $('input:checkbox[name=contactscheckbox]:checked').each(function() 
+	    {
+	    	contactsIds.push($(this).attr('id'));
+	    });
+	    
+	    var vendorIds = new Array();
+	    $('input:checkbox[name=vendorcheckbox]:checked').each(function() 
+	    {
+	    	vendorIds.push($(this).attr('id'));
+	    });
+	    
+	    
+	    var sourceleadUrl ='${sourceleadUrl}';
+	    var requirementId = '${param.requirementId}';
+	    alert("requirementId"+requirementId);
+		$.ajax({
+	           type : "POST",
+	           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
+	            success :function(data) {
+	            		alert("success");
+	            },
+	    }); 
+	 
+	    
+}
+</script>
 
 
 <%-- 
@@ -202,7 +231,6 @@ $(document).ready(function(){
 
 <script>
 function getContactsLists(){
-	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var requirementId = '0';
@@ -213,7 +241,6 @@ function getContactsLists(){
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
-   	        	
    	        	
                 result = result +'<div class="require_wrap_table release-jobs-tbl">';
                 result = result +'<table >';
@@ -238,7 +265,7 @@ function getContactsLists(){
    	        		
    	        		
    	        		result = result +'<tr>';
-   	        	        result = result +'  <td><input type="checkbox" id="contactscheckbox12"/></td>';
+   	        	        result = result +'  <td><input name="contactscheckbox" type="checkbox" id="'+report.id+'"/></td>';
 	        			result = result +'<td>';
 	        			result = result +'<div><span>'+report.spocName+'</span></div>';
 	        			result = result +'</td>';
@@ -299,7 +326,6 @@ function pagination(){
 
 <script>
 function getVendorLists(){
-	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var requirementId = '0';
@@ -344,7 +370,7 @@ function getVendorLists(){
    	        		}
    	        		
    	        		result = result +'<tr>';
-   	        	    result = result +'  <td><input type="checkbox" id="checkbox12"/></td>';
+   	        	    result = result +'  <td><input name="vendorcheckbox" type="checkbox" id="'+report.id+'" /></td>';
    	        	 
    	        		if( report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
    	        			result = result +'<td>';
@@ -373,7 +399,8 @@ function getVendorLists(){
    	        	result = result +'</table>';
    	        	result = result +' </div>';
    	    	    $("#vendorContacts").empty();  
-   	    	    $("#vendor").append(result)
+   	    	 	$("#vendor").empty();
+   	    	    $("#vendor").append(result);
    	    	    
    		    }
 	 });

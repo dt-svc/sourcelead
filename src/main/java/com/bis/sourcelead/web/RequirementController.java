@@ -112,6 +112,11 @@ public class RequirementController {
 		List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
 		model.addObject("spocOwnersList", userList);
 		
+		//approver list
+		List<User> approverList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		model.addObject("approverList", approverList);
+		
+		
 		return model;
 
 	}

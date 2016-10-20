@@ -21,9 +21,13 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
@@ -47,6 +51,9 @@ public class RequirementRestController {
 	
 	@Autowired
 	private RequirementService requirementService;
+	
+	@Autowired
+	private RequirementApproverHierarchyService requirementApproverHierarchyService;
 	
 	@Autowired
 	UserService userService;
@@ -78,20 +85,61 @@ public class RequirementRestController {
 	*/
 	
 	@RequestMapping(value = "/storeRequirement", method = RequestMethod.POST)
-	public @ResponseBody String storeRequirement(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+	public @ResponseBody String storeRequirement(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request,@RequestParam(value = "saveType", required = false) String saveType) throws Exception {
 		
 		MultipartFile multiFile = null;
 		Iterator<String> itrator = request.getFileNames();
 		if(itrator.hasNext()){
 	        multiFile = request.getFile(itrator.next());
 		}
-	    
+		json = json + ", saveType : "+saveType;
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Requirement requirement = requirementService.storeRequirement(jsonObj,orgLocation,user,multiFile);
+		return "success";
+		
+	}
+	
+	/**
+	 * @author sarath kumaar
+	 * @since  oct 18 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to accept/Reject Requirement in Requirement table.
+	 *  
+	 * @param jsonObj This is the first paramter to storeRequirement method
+	 * @param orgLocations This is the second paramter to storeRequirement method
+	 * @param user This is the third paramter to storeRequirement method
+	 * @param multiFile This is the fourth paramter to storeRequirement method
+	 * 
+	 * @return success msg  
+	 * 
+	 * @throws NullPointer
+	*/
+	
+	@RequestMapping(value = "/requirementAcceptOrReject", method = RequestMethod.POST)
+	public @ResponseBody String requirementAcceptOrReject(@RequestParam(value = "requirementId", required = false) Long requirementId,@RequestParam(value = "status", required = false) String status,HttpServletRequest request) throws Exception {
+		
+	 
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, user.getId());
+		if(status.equalsIgnoreCase("APPROVED")){ 
+			requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.APPROVED);
+			requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+		}
+		if(status.equalsIgnoreCase("REJECTED")){
+			requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
+			requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+		}
+		requirementService.addRequirement(requirement);
+		requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
+		
 		return "success";
 		
 	}

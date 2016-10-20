@@ -83,7 +83,6 @@
             if(typeof attachKeyupEvent == 'undefined') {
                 attachKeyupEvent = true;
             }
-
             var $element = $(this);
             // test if there is custom obj to hold element error msg (id = element name + err_msg)
             var elementErrMsgObj = document.getElementById($element.attr('name')+'_err_msg');
@@ -218,7 +217,6 @@
             // Validate element values
             //
             $form.find('input,textarea,select').each(function() {
-
                 var $el = $(this);
                 var elementType = $el.attr('type');
                 if (!jQueryFormUtils.ignoreInput($el.attr('name'), elementType, config)) {
@@ -988,6 +986,9 @@ jQueryFormUtils.validatefile_image = function(val) {
 jQueryFormUtils.validatefile_doc = function(val) {
     return val.match(/(.*)(docx|doc|pdf|txt)$/) !== null;
 };
+jQueryFormUtils.validatefile_resume = function(val) {
+    return val.match(/(.*)(docx|doc|pdf|rtf)$/) !== null;
+};
 jQueryFormUtils.validatefile_pdf = function(val) {
     return val.match(/(.*)(pdf)$/) !== null;
 };
@@ -1137,6 +1138,11 @@ jQueryFormUtils.validateName = function(val) {
         else if (validationRules.indexOf('validatedoc') > -1 && !jQueryFormUtils.validatefile_doc(value, validationRules)) {
             return validationErrorMsg || language.badDoc;
         }
+        // simple File Doc check
+        else if (validationRules.indexOf('validateResume') > -1 && !jQueryFormUtils.validatefile_resume(value, validationRules)) {
+            return validationErrorMsg || language.badResume;
+        }
+        
         // simple File Pdf check
         else if (validationRules.indexOf('validatepdf') > -1 && !jQueryFormUtils.validatefile_pdf(value, validationRules)) {
             return validationErrorMsg || language.badPdf;
@@ -1321,6 +1327,7 @@ jQueryFormUtils.LANG =  {
 	badAlphaNumber:'Allows Only Alphanumeric and must start with an Alphabet',
 	badImage:'Invalid Image Format Use .jpeg,jpg,gif,png formats only',
 	badDoc:'Invalid Document Type Use .doc,pdf,txt,docx formats only',
+	badResume:'Invalid Resume Type Use .doc,.docx,.pdf,.rtf formats only',
 	badPdf:'Invalid Document Type Use .PDF formats only',
 	badImportFile:'Invalid File Type. Use xls,xlsx and csv formats only',
 	badCsv:'Invalid Document Type Use .csv,txt formats only',

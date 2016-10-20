@@ -48,7 +48,6 @@ function closeCertificatePopup(){
 --%>
 <script type="text/javascript">
 	function candidateEmployersStore(candidateId) {
-
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -140,48 +139,48 @@ function closeCertificatePopup(){
 		result = result + '	               <div class="clearfix mb10">';
 		result = result + '	                 <p class="ml">Start Date</p>';
 		result = result + '	                 <div class="col-md-6">';
-		result = result	+ '	                   <select class="chosen-select"  name="startMonth" id="startMonth">';
+		result = result	+ '	                   <select class="chosen-select"  name="startMonth" id="startMonth" onChange="validYear();">';
 		result = result	+ '	                       <option value="Select Month ">Select Month</option>';
-		result = result	+ '	                       <option value="January">January</option>';
-		result = result	+ '	                       <option value="February">February</option>';
-		result = result	+ '	                       <option value="March">March</option>';
-		result = result	+ '	                       <option value="April">April</option>';
-		result = result + '	                       <option value="May">May</option>';
-		result = result + '	                       <option value="June">June</option>';
-		result = result + '	                       <option value="July">July</option>';
-		result = result	+ '	                       <option value="August">August</option>';
-		result = result	+ '	                       <option value="September">September</option>';
-		result = result	+ '	                       <option value="October">October</option>';
-		result = result	+ '	                       <option value="November">November</option>';
-		result = result	+ '	                       <option value="December">December</option>';
+		result = result	+ ' 					   <option value="1&January">January</option>';
+		result = result	+ '	                       <option value="2&February">February</option>';
+		result = result	+ '	                       <option value="3&March">March</option>';
+		result = result	+ '	                       <option value="4&April">April</option>';
+		result = result	+ '	                       <option value="5&May">May</option>';
+		result = result + '	                       <option value="6&June">June</option> ';
+		result = result + '	                       <option value="7&July">July</option>';
+		result = result	+ '	                       <option value="8&August">August</option>';
+		result = result	+ '	                       <option value="9&September">September</option>';
+		result = result	+ '	                       <option value="10&October">October</option>';
+		result = result	+ '	                       <option value="11&November">November</option>';
+		result = result	+ '	                       <option value="12&December">December</option>';
 		result = result + '	                   </select>';
 		result = result + '	                   </div>';
-		result = result + '	                   <div class="col-md-6">';
-		result = result	+ '	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear" onclick="validYear();"  placeholder="Enter Year"  field-name="Start Date" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true"  >';
+		result = result + '	                   <div class="col-md-6" id="startYearDiv">';
+		result = result	+ '	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear" onblur="validYear();"  placeholder="Enter Year"  field-name="Start Date" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true"  >';
 		result = result + '	                 </div>';
 		result = result + '	                 </div>';
 		result = result + '	                 <div id="endDateDiv">';
 		result = result + '	                 <div class="clearfix mb10 endDate">';
 		result = result + '	                 <p class="ml">End Date</p>';
 		result = result	+ '	                 <div class="col-md-6 id = "endMR"">';
-		result = result	+ '	                    <select class="chosen-select" class="required" name="endMonth" id="endMonth">';
+		result = result	+ '	                    <select class="chosen-select" class="required" name="endMonth" id="endMonth" onChange="validYear();">';
 		result = result	+ '	                       <option value="Select Month">Select Month</option>';
-		result = result	+ '	                       <option value="January">January</option>';
-		result = result	+ '	                       <option value="February">February</option>';
-		result = result	+ '	                       <option value="March">March</option>';
-		result = result	+ '	                       <option value="April">April</option>';
-		result = result	+ '	                       <option value="May">May</option>';
-		result = result + '	                       <option value="June">June</option> ';
-		result = result + '	                       <option value="July">July</option>';
-		result = result	+ '	                       <option value="August">August</option>';
-		result = result	+ '	                       <option value="September">September</option>';
-		result = result	+ '	                       <option value="October">October</option>';
-		result = result	+ '	                       <option value="November">November</option>';
-		result = result	+ '	                       <option value="December">December</option>';
+		result = result	+ '	                       <option value="1&January">January</option>';
+		result = result	+ '	                       <option value="2&February">February</option>';
+		result = result	+ '	                       <option value="3&March">March</option>';
+		result = result	+ '	                       <option value="4&April">April</option>';
+		result = result	+ '	                       <option value="5&May">May</option>';
+		result = result + '	                       <option value="6&June">June</option> ';
+		result = result + '	                       <option value="7&July">July</option>';
+		result = result	+ '	                       <option value="8&August">August</option>';
+		result = result	+ '	                       <option value="9&September">September</option>';
+		result = result	+ '	                       <option value="10&October">October</option>';
+		result = result	+ '	                       <option value="11&November">November</option>';
+		result = result	+ '	                       <option value="12&December">December</option>';
 		result = result + '	                   </select>';
 		result = result + '	                   </div>';
 		result = result + '	                   <div class="col-md-6" >';
-		result = result	+ '	                   <input type="text" max class="form-control" id="endYear" name="endYear" field-name="End Year"  placeholder="Enter Year" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true" >';
+		result = result	+ '	                   <input type="text" max class="form-control" id="endYear" name="endYear" field-name="End Year" onblur="validYear();" placeholder="Enter Year" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true" >';
 		result = result + '	                 </div>';
 		result = result + '	                 </div> ';
 		result = result + '	                 </div> ';
@@ -251,7 +250,7 @@ function closeCertificatePopup(){
 								if (json.isCurrentPosition == 'Y' && json.isCurrentPosition != '' && json.isCurrentPosition !== 'undefined') {
 									result = result	+ '	 <label> <input type="checkbox" id="isCurrentPositionEdit"  value="'+ json.isCurrentPosition+ '"   checked="checked"    onClick ="iscurrentPositionEdit();" name = "isCurrentPosition"> Is Current Position</label>';
 								} else {
-									result = result	+ '	     <label> <input type="checkbox" id="isCurrentPosition"  value="'+ json.isCurrentPosition+ '" onClick ="iscurrentPositionEdit();" name= "isCurrentPosition"> Is Current Position</label>';
+									result = result	+ '	     <label> <input type="checkbox" id="isCurrentPositionEdit"  value="'+ json.isCurrentPosition+ '" onClick ="iscurrentPositionEdit();" name= "isCurrentPosition"> Is Current Position</label>';
 								}
 								result = result + '	                 </div>';
 								result = result + '	               </div>';
@@ -268,72 +267,72 @@ function closeCertificatePopup(){
 								result = result	+ '	               <div class="clearfix mb10">';
 								result = result + '	                 <p class="ml">Start Date</p>';
 								result = result	+ '	                 <div class="col-md-6">';
-								result = result	+ '	                   <select class="chosen-select"  value="'+json.startMonth+'" name="startMonth" id="startMonth">';
+								result = result	+ '	                   <select class="chosen-select"  value="'+json.startMonth+'" name="startMonth" id="startMonth" onchange="validYearEdit();">';
 								result = result	+ '	                       <option value="Select Month ">Select Month</option>';
 								if (json.startMonth == "January") {
 									result = result + '<option selected>January</option>';
 								} else {
-									result = result	+ '<option>January</option>';
+									result = result	+ '<option value="1&January">January</option>';
 								}
 								if (json.startMonth == "February") {
 									result = result	+ '<option selected>February</option>';
 								} else {
-									result = result	+ '<option>February</option>';
+									result = result	+ '<option value="2&February">February</option>';
 								}
 								if (json.startMonth == "March") {
 									result = result	+ '<option selected>March</option>';
 								} else {
-									result = result + '<option>March</option>';
+									result = result + '<option value="3&March">March</option>';
 								}
 								if (json.startMonth == "April") {
 									result = result	+ '<option selected>April</option>';
 								} else {
-									result = result + '<option>April</option>';
+									result = result + '<option value="4&April">April</option>';
 								}
 								if (json.startMonth == "May") {
 									result = result	+ '<option selected>May</option>';
 								} else {
-									result = result + '<option>May</option>';
+									result = result + '<option value="5&May">May</option>';
 								}
 								if (json.startMonth == "June") {
 									result = result	+ '<option selected>June</option>';
 								} else {
-									result = result + '<option>June</option>';
+									result = result + '<option value="6&June">June</option>';
 								}
 								if (json.startMonth == "July") {
 									result = result	+ '<option selected>July</option>';
 								} else {
-									result = result + '<option>July</option>';
+									result = result + '<option value="7&July">July</option>';
 								}
 								if (json.startMonth == "August") {
 									result = result + '<option selected>August</option>';
 								} else {
-									result = result + '<option>August</option>';
+									result = result + '<option value="8&August">August</option>';
 								}
 								if (json.startMonth == "September") {
 									result = result	+ '<option selected>September</option>';
 								} else {
-									result = result	+ '<option>September</option>';
+									result = result	+ '<option value="9&September">September</option>';
 								}
 								if (json.startMonth == "October") {
 									result = result + '<option selected>October</option>';
 								} else {
-									result = result + '<option>October</option>';
+									result = result + '<option value="10&October">October</option>';
 								}
 								if (json.startMonth == "November") {
 									result = result + '<option selected>November</option>';
 								} else {
-									result = result	+ '<option>November</option>';
+									result = result	+ '<option value="11&November">November</option>';
 								}
 								if (json.startMonth == "December") {
 									result = result	+ '<option selected>December</option>';
 								} else {
-									result = result	+ '<option>December</option>';
+									result = result	+ '<option value="12&December">December</option>';
 								}
 								result = result	+'</select>';
 								result = result + '</div>';
 								result = result	+ '<div class="col-md-6">';
-								result = result	+ '<input type="text" max class="form-control" value="'+ json.startYear+ '" id="startYear" name="startYear" onclick="validYear();"  placeholder="Enter Year"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
+								result = result	+ '<input type="text" max class="form-control" value="'+ json.startYear+ '" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Enter Year"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
 								result = result + '</div>';
 								result = result + '</div>';
 								
@@ -341,106 +340,84 @@ function closeCertificatePopup(){
 								result = result	+ '<div class="clearfix mb10 endDate >';
 								result = result	+ '<p class="ml">End Date</p>';
 								result = result	+ '<div class="col-md-6 id = "endMR"">';
-								result = result	+ '<select class="chosen-select" selected  class="required" name="endMonth" id="endMonthEdit">';
+								result = result	+ '<select class="chosen-select" selected  class="required" name="endMonth" id="endMonthEdit" onchange="validYearEdit();>';
 								result = result	+ '<option value="Select Month">Select Month</option>';
 								if (json.endMonth == "January") {
-									result = result
-											+ '<option selected>January</option>';
+									result = result + '<option selected>January</option>';
 								} else {
-									result = result
-											+ '<option>January</option>';
+									result = result	+ '<option value="1&January">January</option>';
 								}
 								if (json.endMonth == "February") {
-									result = result
-											+ '<option selected>February</option>';
+									result = result	+ '<option selected>February</option>';
 								} else {
-									result = result
-											+ '<option>February</option>';
+									result = result	+ '<option value="2&February">February</option>';
 								}
 								if (json.endMonth == "March") {
-									result = result
-											+ '<option selected>March</option>';
+									result = result	+ '<option selected>March</option>';
 								} else {
-									result = result
-											+ '<option>March</option>';
+									result = result + '<option value="3&March">March</option>';
 								}
 								if (json.endMonth == "April") {
-									result = result
-											+ '<option selected>April</option>';
+									result = result	+ '<option selected>April</option>';
 								} else {
-									result = result
-											+ '<option>April</option>';
+									result = result + '<option value="4&April">April</option>';
 								}
 								if (json.endMonth == "May") {
-									result = result
-											+ '<option selected>May</option>';
+									result = result	+ '<option selected>May</option>';
 								} else {
-									result = result
-											+ '<option>May</option>';
+									result = result + '<option value="5&May">May</option>';
 								}
 								if (json.endMonth == "June") {
-									result = result
-											+ '<option selected>June</option>';
+									result = result	+ '<option selected>June</option>';
 								} else {
-									result = result
-											+ '<option>June</option>';
+									result = result + '<option value="6&June">June</option>';
 								}
 								if (json.endMonth == "July") {
-									result = result
-											+ '<option selected>July</option>';
+									result = result	+ '<option selected>July</option>';
 								} else {
-									result = result
-											+ '<option>July</option>';
+									result = result + '<option value="7&July">July</option>';
 								}
 								if (json.endMonth == "August") {
-									result = result
-											+ '<option selected>August</option>';
+									result = result + '<option selected>August</option>';
 								} else {
-									result = result
-											+ '<option>August</option>';
+									result = result + '<option value="8&August">August</option>';
 								}
 								if (json.endMonth == "September") {
-									result = result
-											+ '<option selected>September</option>';
+									result = result	+ '<option selected>September</option>';
 								} else {
-									result = result
-											+ '<option>September</option>';
+									result = result	+ '<option value="9&September">September</option>';
 								}
 								if (json.endMonth == "October") {
-									result = result
-											+ '<option selected>October</option>';
+									result = result + '<option selected>October</option>';
 								} else {
-									result = result
-											+ '<option>October</option>';
+									result = result + '<option value="10&October">October</option>';
 								}
 								if (json.endMonth == "November") {
-									result = result
-											+ '<option selected>November</option>';
+									result = result + '<option selected>November</option>';
 								} else {
-									result = result
-											+ '<option>November</option>';
+									result = result	+ '<option value="11&November">November</option>';
 								}
 								if (json.endMonth == "December") {
-									result = result
-											+ '<option selected>December</option>';
+									result = result	+ '<option selected>December</option>';
 								} else {
-									result = result
-											+ '<option>December</option>';
+									result = result	+ '<option value="12&December">December</option>';
 								}
-								
 								result = result	+ '	                   </select>';
 								result = result	+ '	                   </div>';
-								result = result	+ '	                   <div class="col-md-6" >';
-								if (json.endYear != '' && json.endYear != 'undefined') {
-									
-								result = result + '	                   <input type="text" max class="form-control" value="'+json.endYear+'" id="endYearEdit" name="endYear" field-name="End Year"  placeholder="Enter Year" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true" >';
-								}else{
 								
-									result = result + '	             <input type="text" max class="form-control" value = "" id="endYearEdit" name="endYear" field-name="End Year"  placeholder="Enter Year" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true" >';
-
+								/* result = result	+ '	                   <div class="col-md-6" >';
+								if (json.endYear != '' && json.endYear != 'undefined') {
+								result = result + '	                   <input type="text" max class="form-control" value="'+json.endYear+'" id="endYearEdit" name="endYear" field-name="End Year"  placeholder="Enter Year" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true" onblur="validYearEdit();">';
+								}else{
+								result = result + '	             <input type="text" max class="form-control" value = "" id="endYearEdit" name="endYear" field-name="End Year"  placeholder="Enter Year" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true" onblur="validYearEdit();">';
 								}
-								result = result	+ '	                 </div>';
-						
+								result = result	+ '	                 </div>'; */
+								
+								
+								result = result	+ '<div class="col-md-6">';
+								result = result	+ '<input type="text" max class="form-control" value="'+ json.endYear+'" id="endYearEdit" name="endYear" onblur="validYearEdit();"  placeholder="Enter Year"  field-name="end Date" data-validation="required" data-validation-optional="true" >';
+								result = result + '</div>';
+								result = result + '</div>';
 								result = result + '	                 </div> ';
 								result = result + '	                 </div> ';
 								result = result	+ '	               <div class="clearfix mr">';
@@ -744,3 +721,58 @@ function closeCertificatePopup(){
 	}
 </script>
 
+<script>
+function validYear(){
+	
+	var startYear= document.getElementById("startYear").value;
+	var startMonth= document.getElementById("startMonth").value;
+	
+	var endYear= document.getElementById("endYear").value;
+	var endMonth= document.getElementById("endMonth").value;
+	
+	var SMdata = startMonth.split('&');
+	var sMonthNumber = SMdata[0];
+	
+	var EMdata = endMonth.split('&');
+	var eMonthNumber = EMdata[0];
+	
+	 if((startYear == endYear) && (sMonthNumber > eMonthNumber)){
+		$("input#startYear").parent().after("<p class='jquery_form_error_message'><span>Start Month Should be less then end Month</span></p>");
+		
+	}else if((startYear > endYear )&&(endYear != '' && endYear!=null && endYear!='undefined')){
+		$("input#startYear").parent().after("<p class='jquery_form_error_message'><span>Start Date Should be less then end Date</span></p>");
+	}else{
+		$('#startYearDiv').parent().find('p.jquery_form_error_message').remove(); 
+	}
+}
+
+</script>
+
+
+<script>
+function validYearEdit(){
+	
+	var startYear= document.getElementById("startYear").value;
+	alert(startYear);
+	var startMonth= document.getElementById("startMonth").value;
+	
+	var endYear= document.getElementById("endYear").value;
+	var endMonth= document.getElementById("endMonth").value;
+	
+	var SMdata = startMonth.split('&');
+	var sMonthNumber = SMdata[0];
+	
+	var EMdata = endMonth.split('&');
+	var eMonthNumber = EMdata[0];
+	
+	 if((startYear == endYear) && (sMonthNumber > eMonthNumber)){
+		$("input#startYear").parent().after("<p class='jquery_form_error_message'><span>Start Month Should be less then end Month</span></p>");
+		
+	}else if(startYear > endYear ){
+		$("input#startYear").parent().after("<p class='jquery_form_error_message'><span>Start Date Should be less then end Date</span></p>");
+	}else{
+		$('#startYearDiv').parent().find('p.jquery_form_error_message').remove(); 
+	}
+}
+
+</script>

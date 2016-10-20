@@ -241,7 +241,7 @@ function terminateVendorSpoc(spocId, orgRelationID,vendorLocationId){
 function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocationId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
-	if(reason){
+	if(reason.match(/^[^\s-](.*)*$/) != null){
 		$("#reasonForSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
@@ -253,7 +253,11 @@ function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocation
 		    }
 	   });
 	}else{
-		$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		if(reason){
+			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+		}else{
+			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
 	}
 	  
 }

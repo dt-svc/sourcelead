@@ -13,13 +13,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
+import com.bis.sourcelead.dao.SubmissionTemplateDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -41,6 +45,8 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	private CommonUtil commonUtil;
 	
+	@Autowired
+	private SubmissionTemplateDao submissionTemplateDao;
 	
 	
 	/**
@@ -158,9 +164,11 @@ public class RequirementServiceImpl implements RequirementService {
 				 requirement.setDocFile(multiFile.getBytes());
 				 requirement.setFileName(multiFile.getOriginalFilename());
 				 requirement.setFileContentType(multiFile.getContentType());
-			 }
+			 }else{
+					requirement.setIsClientJob("N");
+				}
 			 
-			if(jsonObj.has("isClient") && StringUtils.isNotEmpty(jsonObj.getString("isClient"))){
+			if(jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y") && StringUtils.isNotEmpty(jsonObj.getString("isClient"))){
 					requirement.setIsClientJob(jsonObj.getString("isClient"));
 			}
 			if(jsonObj.has("selectClient") && StringUtils.isNotEmpty(jsonObj.getString("selectClient"))){
@@ -182,10 +190,11 @@ public class RequirementServiceImpl implements RequirementService {
 			if(jsonObj.has("clientRateType") && StringUtils.isNotEmpty(jsonObj.getString("clientRateType"))){
 				requirement.setClientRateType(jsonObj.getString("clientRateType"));
 			} 
-			if(jsonObj.has("clientSubmissionForm") && StringUtils.isNotEmpty(jsonObj.getString("clientSubmissionForm"))){
-				SubmissionTemplate submissionTemplate = new SubmissionTemplate();
+			if(jsonObj.getString("isClient").equalsIgnoreCase("Y") && jsonObj.has("isClient") && StringUtils.isNotEmpty(jsonObj.getString("isClient")) && jsonObj.has("clientSubmissionForm") && StringUtils.isNotEmpty(jsonObj.getString("clientSubmissionForm"))){
+				SubmissionTemplate submissionTemplate = submissionTemplateDao.getSubmissionTemplateById(Long.parseLong(jsonObj.getString("clientSubmissionForm")));
 				submissionTemplate.setId(Long.parseLong(jsonObj.getString("clientSubmissionForm")));
 				requirement.setClientSubmissionTemplateId(submissionTemplate);
+				requirement.setClientSubmissionTemplateJsonString(submissionTemplate.getJsonString());
 			}
 			
 			requirement.setStatus(Constants.REQUIREMENT_STATUS);
@@ -193,6 +202,109 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setCreatedBy(user.getUserCode());
 			requirement.setUpdatedBy(user.getUserCode());
 			requirement.setUpdatedDate(commonUtil.currentDate());
+			
+			//requirement status 
+			if(jsonObj.has("saveType")){            
+				
+				if(jsonObj.getString("saveType").equalsIgnoreCase("draft")){
+					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.DRAFT);
+				}
+				if(jsonObj.getString("saveType").equalsIgnoreCase("save")){
+					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+				}
+				if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval")){
+					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED);
+				}
+				
+			}
+			
+			//approval mechnism
+			HashSet<RequirementApproverHierarchy> requirementApproverHierarchyList = new HashSet<RequirementApproverHierarchy>();
+			//approval saving for sequential
+			if(jsonObj.has("parallelApprover") && StringUtils.isNotEmpty(jsonObj.getString("parallelApprover"))){
+				  
+				  String approverNames = jsonObj.getString("parallelApprover");
+				  String[] approvers = approverNames.split(",");
+				  for(String approver : approvers){
+					    
+					    RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
+						
+						User approverUserId = new User();
+						approverUserId.setId(Long.parseLong(approver));
+						rah.setApproverUserId(approverUserId);
+						  
+						rah.setRequirementId(requirement);
+						
+						rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
+						rah.setLevel("1");
+						  
+						rah.setCreatedDate(commonUtil.currentDate());
+						rah.setCreatedBy(user.getUserCode());
+						rah.setUpdatedBy(user.getUserCode());
+						rah.setUpdatedDate(commonUtil.currentDate());
+						  
+						requirementApproverHierarchyList.add(rah);
+				  }
+				 
+			} 
+			//approval saving for parallel
+			if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
+				  
+				  if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
+					  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
+					  
+					  User approverUserId = new User();
+					  approverUserId.setId(Long.parseLong(jsonObj.getString("sequentialApprover1")));
+					  rah.setApproverUserId(approverUserId);
+					  rah.setRequirementId(requirement);
+					  
+					  rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
+					  rah.setLevel("1");
+					  
+					  rah.setCreatedDate(commonUtil.currentDate());
+					  rah.setCreatedBy(user.getUserCode());
+					  rah.setUpdatedBy(user.getUserCode());
+					  rah.setUpdatedDate(commonUtil.currentDate());
+					  
+					  requirementApproverHierarchyList.add(rah);
+				  }
+				  
+				  if(jsonObj.has("sequentialApprover2") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover2"))){
+					  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
+					  
+					  User approverUserId = new User();
+					  approverUserId.setId(Long.parseLong(jsonObj.getString("sequentialApprover2")));
+					  rah.setApproverUserId(approverUserId);
+					  
+					  rah.setRequirementId(requirement);
+					  
+					  rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
+					  rah.setLevel("2");
+					  
+					  rah.setCreatedDate(commonUtil.currentDate());
+					  rah.setCreatedBy(user.getUserCode());
+					  rah.setUpdatedBy(user.getUserCode());
+					  rah.setUpdatedDate(commonUtil.currentDate());
+					  
+					  requirementApproverHierarchyList.add(rah);
+				  }
+				 
+			} 
+			requirement.setRequirementApprover(requirementApproverHierarchyList);
+			
+			
+			if(jsonObj.has("manager") && StringUtils.isNotEmpty(jsonObj.getString("manager"))){
+				    User managerUserId = new User();
+				    managerUserId.setId(Long.parseLong(jsonObj.getString("manager")));
+				    requirement.setManagerUserId(managerUserId);
+			} 
+			if(jsonObj.has("priority") && StringUtils.isNotEmpty(jsonObj.getString("priority"))){
+				  requirement.setPriority(jsonObj.getString("priority"));
+			} 
+			/*if(jsonObj.has("applicationFrom") && StringUtils.isNotEmpty(jsonObj.getString("applicationFrom"))){
+				  jsonObj.getString("applicationFrom");
+			} */
+			
 			
 			HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
 			if (jsonObj.has("assignedToMaxCount")){
@@ -248,8 +360,8 @@ public class RequirementServiceImpl implements RequirementService {
 	*/
 
 	@Override
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients) throws Exception {
-		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients);
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,Long  userId) throws Exception {
+		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients, userId);
 	}
 
 	
