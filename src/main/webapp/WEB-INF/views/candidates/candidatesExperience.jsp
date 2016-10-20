@@ -529,25 +529,25 @@ function closeCertificatePopup(){
 									if (opt.designation != null	&& opt.designation && opt.designation != 'undefined') {
 										result = result + '<td><div><span>'+ opt.designation+ '</span></div></td>';
 									} else {
-										result = result	+ '<td><div><span>--</span></div></td>';
+										result = result	+ '<td><div><span>----</span></div></td>';
 									}
 									if (opt.address != null && opt.address	&& opt.address != 'undefined') {
 										result = result + '<td><div><span>'								+ opt.address
 												+ '</span></div></td>';
 									} else {
-										result = result	+ '<td><div><span>--</span></div></td>';
+										result = result	+ '<td><div><span>----</span></div></td>';
 									}
 
 									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
 										result = result + '<td><div><span>'	+ opt.startMonth + ' -'	+ opt.startYear	+ '</span></div></td>';
 									} else {
-										result = result		+ '<td><div><span>--</span></div></td>';
+										result = result		+ '<td><div><span>----</span></div></td>';
 									}
 
 									if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
 										result = result + ' <td><div><span>'+ opt.endMonth + '-'+ opt.endYear+ '</span></div></td>';
 									} else {
-										result = result	+ '<td><div><span>--</span></div></td>';
+										result = result	+ '<td><div><span>----</span></div></td>';
 									}
 									if(window.candidateStatusGlobal == '0'){
 				                   result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';

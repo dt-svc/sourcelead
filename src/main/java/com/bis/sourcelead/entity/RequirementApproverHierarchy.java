@@ -31,7 +31,7 @@ public class RequirementApproverHierarchy {
 	private Long id;
 	
 	@Column(name = "LEVEL")
-	private String level;
+	private Integer level;
 	
 	
 	@ManyToOne
@@ -73,11 +73,11 @@ public class RequirementApproverHierarchy {
 		this.id = id;
 	}
 
-	public String getLevel() {
+	public Integer getLevel() {
 		return level;
 	}
 
-	public void setLevel(String level) {
+	public void setLevel(Integer level) {
 		this.level = level;
 	}
 

@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -47,6 +48,9 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	private SubmissionTemplateDao submissionTemplateDao;
+	
+	@Autowired
+	private RequirementAssignToService requirementAssignToService;
 	
 	
 	/**
@@ -190,11 +194,15 @@ public class RequirementServiceImpl implements RequirementService {
 			if(jsonObj.has("clientRateType") && StringUtils.isNotEmpty(jsonObj.getString("clientRateType"))){
 				requirement.setClientRateType(jsonObj.getString("clientRateType"));
 			} 
-			if(jsonObj.getString("isClient").equalsIgnoreCase("Y") && jsonObj.has("isClient") && StringUtils.isNotEmpty(jsonObj.getString("isClient")) && jsonObj.has("clientSubmissionForm") && StringUtils.isNotEmpty(jsonObj.getString("clientSubmissionForm"))){
+			if( jsonObj.has("isClient") && jsonObj.has("clientSubmissionForm")){
+				
+				if(jsonObj.getString("isClient").equalsIgnoreCase("Y") && jsonObj.has("isClient") && StringUtils.isNotEmpty(jsonObj.getString("isClient")) && jsonObj.has("clientSubmissionForm") && StringUtils.isNotEmpty(jsonObj.getString("clientSubmissionForm"))){
+
 				SubmissionTemplate submissionTemplate = submissionTemplateDao.getSubmissionTemplateById(Long.parseLong(jsonObj.getString("clientSubmissionForm")));
 				submissionTemplate.setId(Long.parseLong(jsonObj.getString("clientSubmissionForm")));
 				requirement.setClientSubmissionTemplateId(submissionTemplate);
 				requirement.setClientSubmissionTemplateJsonString(submissionTemplate.getJsonString());
+				}
 			}
 			
 			requirement.setStatus(Constants.REQUIREMENT_STATUS);
@@ -236,7 +244,7 @@ public class RequirementServiceImpl implements RequirementService {
 						rah.setRequirementId(requirement);
 						
 						rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
-						rah.setLevel("1");
+						rah.setLevel(1);
 						  
 						rah.setCreatedDate(commonUtil.currentDate());
 						rah.setCreatedBy(user.getUserCode());
@@ -259,7 +267,7 @@ public class RequirementServiceImpl implements RequirementService {
 					  rah.setRequirementId(requirement);
 					  
 					  rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
-					  rah.setLevel("1");
+					  rah.setLevel(1);
 					  
 					  rah.setCreatedDate(commonUtil.currentDate());
 					  rah.setCreatedBy(user.getUserCode());
@@ -279,7 +287,7 @@ public class RequirementServiceImpl implements RequirementService {
 					  rah.setRequirementId(requirement);
 					  
 					  rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
-					  rah.setLevel("2");
+					  rah.setLevel(2);
 					  
 					  rah.setCreatedDate(commonUtil.currentDate());
 					  rah.setCreatedBy(user.getUserCode());
@@ -305,14 +313,16 @@ public class RequirementServiceImpl implements RequirementService {
 				  jsonObj.getString("applicationFrom");
 			} */
 			
-			
+			if(requirement.getId() != null){
+				requirementAssignToService.deleteRequirementAssignToByRequirementId(requirement.getId());
+			}
 			HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
 			if (jsonObj.has("assignedToMaxCount")){
 				String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
 				if(StringUtils.isNotEmpty(assignedToMaxCount)){
 				int MaxCount = Integer.parseInt(assignedToMaxCount);
 					for (int c = 1; c < MaxCount; c++) {
-						RequirementAssignTo requirementAssignTo = new RequirementAssignTo();
+						RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
 						
 						User assUser = new User();
 						assUser.setId(Long.parseLong(jsonObj.getString("assignUserId"+c)));
@@ -326,9 +336,6 @@ public class RequirementServiceImpl implements RequirementService {
 						requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
 						
 						requirementAssignToList.add(requirementAssignTo);
-						
-						
-						  
 					}
 				}
 			}

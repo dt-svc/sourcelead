@@ -47,5 +47,20 @@ public class RequirementApproverHierarchyServiceImpl implements RequirementAppro
 			RequirementApproverHierarchy requirementApproverHierarchy) throws Exception {
 			return requirementApproverHierarchyDao.storeRequirementApproverHierarchy(requirementApproverHierarchy);
 	}
+
+	@Override
+	public Integer getRequirementApproverHierarachyWithHighestLevel(Long requirementId)
+			throws Exception {
+		return requirementApproverHierarchyDao.getRequirementApproverHierarachyWithHighestLevel(requirementId);
+
+	}
+
+	@Override
+	public List<RequirementApproverHierarchy> getRequirementApproverHierarchyListByRequirementId(Long requirementId)
+			throws Exception {
+		
+		   return requirementApproverHierarchyDao.getRequirementApproverHierarchyListByRequirementId(requirementId);
+
+	}
 	
 }

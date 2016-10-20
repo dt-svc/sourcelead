@@ -58,7 +58,7 @@ public interface ProjectsService {
 		
 		HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
 		
-		void  userEmailNotificationForTimeSheetSubmission(User user, List<TimesheetSubmissions> timesheetSubmissions) throws Exception;
+		void  userEmailNotificationForTimeSheetSubmission(User user, HashSet<TimesheetSubmissions> timesheetSubmissions) throws Exception;
 		
 		List<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus() throws Exception;
 		
@@ -73,6 +73,10 @@ public interface ProjectsService {
 		String saveProjectByUserOrgLocationsJson(User user,OrgLocations loginOrgLocation,String loginOrgCode,JSONObject jsonObj) throws Exception ;
         
 		String  storeProject(JSONObject jsonObj) throws Exception;
+		
+		HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() throws Exception;
+		
+		
 		
 		
 }
