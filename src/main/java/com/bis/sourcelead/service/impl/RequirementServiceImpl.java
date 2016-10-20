@@ -232,7 +232,10 @@ public class RequirementServiceImpl implements RequirementService {
 			if(jsonObj.has("parallelApprover") && StringUtils.isNotEmpty(jsonObj.getString("parallelApprover"))){
 				  
 				  String approverNames = jsonObj.getString("parallelApprover");
+				  approverNames = approverNames.replaceAll("\\[", "").replaceAll("\\]","");
+				  approverNames = approverNames.replaceAll("\"", "");
 				  String[] approvers = approverNames.split(",");
+			  	  
 				  for(String approver : approvers){
 					    
 					    RequirementApproverHierarchy rah = new RequirementApproverHierarchy();

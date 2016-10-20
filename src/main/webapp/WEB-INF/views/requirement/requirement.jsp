@@ -102,11 +102,36 @@ $(document).ready(function () {
     var sequentialApprover1 = '${sequentialApprover1}';
     var sequentialApprover2 = '${sequentialApprover2}';
 
-   /*  alert("approverMode"+approverMode);
+    alert("approverMode"+approverMode);
     alert("parallelApproverIds"+parallelApproverIds);
     alert("sequentialApprover1"+sequentialApprover1);
     alert("sequentialApprover2"+sequentialApprover2);
-     */
+    if(approverMode == 'Sequential'){
+    	    var str_array = sequentialApprover1.split(',');
+    	    for (var i = 0; i < str_array.length; i++) {
+    	        str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+    	    }
+    	    $("#sequentialApprover1").val(str_array).trigger("chosen:updated");
+    	    
+    	    
+    	    var str_array2 = sequentialApprover2.split(',');
+    	    for (var i = 0; i < str_array2.length; i++) {
+    	    	str_array2[i] = str_array2[i].replace(/^\s*/, "").replace(/\s*$/, "");
+    	    }
+    	    $("#sequentialApprover2").val(str_array2).trigger("chosen:updated");
+    	    
+    } 
+	if(approverMode == 'Parallel'){
+		
+		var str_array = parallelApproverIds.split(',');
+	    for (var i = 0; i < str_array.length; i++) {
+	        str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+	    }
+	    $("#parallelApprover").val(str_array).trigger("chosen:updated");
+    	
+    } 
+    
+    
     
 });    
 </script>
