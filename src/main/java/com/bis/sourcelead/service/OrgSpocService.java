@@ -73,4 +73,8 @@ public interface OrgSpocService {
 	 */
 	List<OrgSpoc> getAllContactsbyOrgLocationIdAndUserIdForRequirement(Long orgLocationId,Long userId,String relationType) throws Exception;
 	
+	
+	List<OrgSpoc> getAllContactsbyOrgId(Long orgId) throws Exception;
+	
+	
 }

@@ -201,7 +201,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                      var fieldType = v['type'];
 
                      //Add the field
-                     $('#sjfb-fields').append(addFieldHTML(fieldType,v['req'],v['label']));
+                     $('#sjfb-fields').append(addFieldHTML(fieldType,v['req'],v['label'],sourceleadUrl));
                      var $currentField = $('#sjfb-fields .sjfb-field').last();
                      
                      var reqSymbol = '';
@@ -260,13 +260,18 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
         	 
         	 
         	  //HTML templates for rendering frontend form fields
-             function addFieldHTML(fieldType,required,label) {
+             function addFieldHTML(fieldType,required,label,sourceleadUrl) {
             	 
             	 var datavalidation = '';	
             	 var novalidation = '';
             	 var datavalidation2 = '';
         		 if(required == 1){
-        			 datavalidation = 'data-validation="required validate_Space validate_length length2-50"';
+        			 if(label == 'Email Id'){
+        				 datavalidation = 'data-validation="required validate_email validate_Space validate_length length2-50"';
+        			 }else{
+        				 datavalidation = 'data-validation="required validate_Space validate_length length2-50"';
+        			 }
+        			 
         			 datavalidation2 = 'data-validation="required"';
         		 }else{
         			 datavalidation = 'data-validation="validate_Space validate_length length2-50"';
@@ -295,21 +300,21 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation+' '+novalidation+' field-name=\''+label+'\' name=\''+label+'\' id="text-' + uniqueID + '">' +
+                             '<input type="text" '+datavalidation+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
                              '</div>';
 
                      case 'textarea':
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-textarea">' +
                              '<label for="textarea-' + uniqueID + '"></label>' +
-                             '<textarea  rows="3" '+datavalidation+' '+novalidation+' name=\''+label+'\' field-name=\''+label+'\' id="textarea-' + uniqueID + '"></textarea>' +
+                             '<textarea  rows="3" '+datavalidation+' '+novalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' id="textarea-' + uniqueID + '"></textarea>' +
                              '</div>';
 
                      case 'select':
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-select">' +
                              '<label for="select-' + uniqueID + '"></label>' +
-                             '<select id="select-' + uniqueID + '" '+datavalidation2+' '+novalidation+' name=\''+label+'\' field-name=\''+label+'\' class="choices choices-select"></select>' +
+                             '<select id="select-' + uniqueID + '" '+datavalidation2+' '+novalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' class="choices choices-select"></select>' +
                              '</div>';
 
                      case 'radio':
@@ -331,7 +336,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label for="calandar-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation2+' name=\''+label+'\' field-name=\''+label+'\' id="text-' + uniqueID + '">' +
+                             '<input type="text" '+datavalidation2+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' id="dob" readonly="readonly">' +
                              '</div>';
                          
                      case 'autocomplete':
@@ -339,31 +344,42 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                     		 return '' +
                              '<div id="sjfb-' + countryUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>Country'+reqSymbol+'</label>' +
-                             '<input type="text" '+datavalidation2+' '+novalidation+' field-name="Country" name="country" id="text-' + countryUniqueID + '">' +
+                             '<select class="chosen-select form-control select-bg"  '+datavalidation2+' '+novalidation+'  name="country" id="country" field-name="Country"  >'+
+                             '<option>--Select--</option>'+
+                             '</select>'+
                              '</div>'+
+                             
                              '<div id="sjfb-' + stateUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>State'+reqSymbol+'</label>' +
-                             '<input type="text" '+datavalidation2+' '+novalidation+' field-name="State" name="state" id="text-' + stateUniqueID + '">' +
+                             '<select class="chosen-select form-control select-bg"  '+datavalidation2+' '+novalidation+'  name="state" id="state" field-name="State"  >'+
+                             '<option>--Select--</option>'+
+                             '</select>'+
                              '</div>'+
+                             
                              '<div id="sjfb-' + cityUniqueID + '" '+novalidation+' class="sjfb-field sjfb-text">' +
                              '<label>City'+reqSymbol+'</label>' +
-                             '<input type="text" '+datavalidation2+' '+novalidation+' field-name="City" name="city" id="text-' + cityUniqueID + '">' +
+                             '<select class="chosen-select form-control select-bg" '+datavalidation2+' '+novalidation+'  name="city" id="city" field-name="State"  >'+
+                             '<option>--Select--</option>'+
+                             '</select>'+
                              '</div>';
+                    		 
+                    		 
                     	 }
                     	 else{
                     		 return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label for="autocomplete-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation2+' '+novalidation+' field-name=\''+label+'\' name=\''+label+'\' id="text-' + uniqueID + '">' +
+                             '<input type="text" '+datavalidation2+' '+novalidation+' field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
                              '</div>';
-                    	 }	 
-                    		 
-                        
-
+                    	 }	
+                    	 
+                    	 
                  }
              }
+             init();
         },
     });
     
-    
 }
+
+

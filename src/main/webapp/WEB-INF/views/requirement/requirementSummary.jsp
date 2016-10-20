@@ -4,7 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
  
  
  
@@ -2312,9 +2311,11 @@ function requirementDetails(requirementId){
 				            result = result +' <div class="require_wrap_details">';
 				           
 				            result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary pull-right" type="button">Edit</button></a>';
-				            result = result +' <a href="#" onClick="updateReuqirementStatus();">Approve</a>';
-				            result = result +' <a href="#" onClick="updateReuqirementStatus();">Reject</a>';
-							
+				            var APPROVED = "APPROVED";     
+				            var REJECTED = "REJECTED";
+				            result = result +'<button  class="btn btn-primary pull-right" type="button" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
+				            result = result +'<button  class="btn btn-primary pull-right" type="button" onClick ="updateReuqirementStatus(\''+ REJECTED+ '\');">Reject</button>';
+				            
 				            result = result +'     <div class="clearfix row">';
 					        result = result +'     <div class="col-md-10 divskill divsAssigned">';
 					        
@@ -2420,8 +2421,13 @@ function requirementDetails(requirementId){
 						    }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Submission Form:</b> <span>Submission Form</span>';
-				            result = result +'       <div class="clearfix"></div>';
+				            if(json.clientSubmissionTemplate != '' && json.clientSubmissionTemplate != null && json.clientSubmissionTemplate != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Submission Form:</b> <span>'+json.clientSubmissionTemplate+'</span>';
+					            }
+					            else{
+						        result = result +'     <div class="require_wrap_details_cta"> <b>Submission Form:</b> <span> --- </span>';
+	  	
+					            }				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
@@ -2481,8 +2487,7 @@ function requirementDetails(requirementId){
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script>
-function updateReuqirementStatus(){
-	alert("accept");
+function updateReuqirementStatus(status){
 	var status = "approved";
 	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementId = '${requirementId}';
@@ -2533,6 +2538,16 @@ function requirementPipeline(requirementId){
             		 else{ 
 							var result ="";
 							
+							//For Add Applicant div
+							result = result +'<div class="side_mask"><div class="addApplicant_close"></div></div>';
+							result = result + '<div class="new_side_wrap">';
+							result = result + '<div class="new_side_wrap_inn">';
+							result = result + '<div class="new_side_wrap_cta">';
+							result = result +'<div id="addApplicantDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
 				            result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
 				            result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
 				            result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
@@ -2553,7 +2568,7 @@ function requirementPipeline(requirementId){
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title="" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a></li>';
+				            result = result +'    <li><a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a></li>';
 				            result = result +'    <li><a href="javascript:void(0)" title="" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a></li>';
 				            result = result +'    <li> <a href="javascript:void(0)" title="" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a> </li>';
 				            result = result +'    <div class="clearfix"></div>';
@@ -2990,4 +3005,6 @@ function assignedMemberList(requirementId){
             }); 
 }
 </script>
+
+<jsp:include page="addApplicant.jsp" />
 
