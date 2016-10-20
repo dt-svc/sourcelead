@@ -20,7 +20,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  *
  */
 @Entity
-@Table(name = "REQUIRMENT_SUBMISSION_TEMPLATE_FIELDS")
+@Table(name = "REQUIREMENT_SUBMISSION_TEMPLATE_FIELDS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementSubmissionTemplateFields")
 public class RequirementSubmissionTemplateFields {
 	
@@ -30,7 +30,7 @@ public class RequirementSubmissionTemplateFields {
     private Long id;
  	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "REQUIRMENT_SUBMISSION_ID")
+	@JoinColumn(name = "REQUIREMENT_SUBMISSION_ID")
    	private RequirementSubmission requirementSubmission;
 	
 	@Column(name = "FIRST_NAME")
