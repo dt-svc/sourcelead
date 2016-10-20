@@ -74,7 +74,41 @@ public class RequirementReleaseRestController {
 				for(String contact   : contacts){
 						
 						Requirement requirement  = new Requirement();
+						//Requirement requirement = (Requirement ) parentRequirement.clone();
+						//requirement= parentRequirement;
+						
 						requirement.setParent_requirement_id(parentRequirement.getId());
+						
+						/*requirement.setOrgLocationId(parentRequirement.getSpocId().getResponderLocationId());
+						requirement.setJobTitle(parentRequirement.getJobTitle());
+						requirement.setJobType(parentRequirement.getJobType());
+						requirement.setJobId(parentRequirement.getJobId());
+						requirement.setPositions(parentRequirement.getPositions());
+						requirement.setEducation(parentRequirement.getEducation());
+						requirement.setMinExp(parentRequirement.getMinExp());
+						requirement.setMaxExp(parentRequirement.getMaxExp());
+						requirement.setCurrencyCode(parentRequirement.getCurrencyCode());
+						requirement.setRate(parentRequirement.getRate());
+						requirement.setRateType(parentRequirement.getRateType());
+						requirement.setCountry(parentRequirement.getCountry());
+						requirement.setState(parentRequirement.getState());
+						requirement.setCity(parentRequirement.getCity());
+						requirement.setSkills(parentRequirement.getSkills());
+						requirement.setDescription(parentRequirement.getDescription());
+						requirement.setDocFile(parentRequirement.getDocFile());
+						requirement.setFileContentType(parentRequirement.getFileContentType());
+						requirement.setFileName(parentRequirement.getFileName());
+						requirement.setIsClientJob(parentRequirement.getIsClientJob());
+						//requirement.set(parentRequirement.getOrgLocationId());
+						//requirement.setSpocId(parentRequirement.getSpocId());
+						//requirement.setSubmissionTemplateId(parentRequirement.getSubmissionTemplateId());
+						requirement.setStatus("OPEN");
+						requirement.setCreatedDate(parentRequirement.getCreatedDate());
+						requirement.setCreatedBy(parentRequirement.getCreatedBy());
+						requirement.setUpdatedDate(parentRequirement.getUpdatedDate());
+						requirement.setUpdatedBy(parentRequirement.getUpdatedBy());*/
+						
+						
 						
 						OrgSpoc orgSpoc = new OrgSpoc();
 						orgSpoc.setId(Long.parseLong(contact));
