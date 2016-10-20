@@ -98,7 +98,6 @@ background-color: #ccc;
 $(document).ready(function() {
 	
 	var requirementAssignedIds ='${requirementAssignedIds}';
-	alert("requirementAssignedIds"+requirementAssignedIds);
 	if(requirementAssignedIds != null && requirementAssignedIds != 'undefined' && requirementAssignedIds != ''){
 		var result = "";
 		var requirementAssignedToIds = [];
@@ -111,7 +110,6 @@ $(document).ready(function() {
         	 count++;
         }
 		result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
-		alert("result"+result);
 		$("#assignedToSavingDiv").empty();
 		$("#assignedToSavingDiv").append(result); 
 	}	
@@ -1010,7 +1008,7 @@ $(document).ready(function() {
          <div class="form-group parallel" style="display:none;">
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
-                    <select multiple class="chosen-select form-control" id="parallelApprover" name="parallelApprover" field-name="Approver" data-validation="required">
+                    <select multiple class="chosen-select form-control" id="parallelApprover" name="parallelApprover" field-name="Approver" data-validation="required" data-validation-optional="true">
                        <option disabled>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
@@ -1019,39 +1017,43 @@ $(document).ready(function() {
                 </div>
          </div>
          
+         
          <div class="form-group sequential" id="addLvl" style="display:none;">
-                <label class="col-md-3">Approver<span class="text-danger">*</span></label>
-                <div class="col-md-9">
-                  <div class="form-icon">
-                    <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required">
-                       <option>Select Approver</option>
+                <label class="col-md-3">Approver1<span class="text-danger">*</span></label>
+                <div class="col-md-9">   
+                    <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required" data-validation-optional="true">
+                       <option disabled>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
 		               </c:forEach>
                     </select>
-                    <span onClick="addLvl();"><i class="fa fa-level-down btn btn-default formic1" data-toggle="tooltip" data-placement="left" title="Add Level"></i></span>
-                    </div>
+                    <!-- <span onClick="addLvl();"><i class="fa fa-level-down btn btn-default formic1" data-toggle="tooltip" data-placement="left" title="Add Level"></i></span> -->
                 </div>
+                
+	            <label class="col-md-3 mt">Approver2<span class="text-danger">*</span></label>
+	            <div class="col-md-9 mt">
+	              		<select   class="chosen-select form-control" id="sequentialApprover2" name="sequentialApprover2" field-name="Approver 2" data-validation="required" data-validation-optional="true">
+	                       <option disabled>Select Addpprover</option>
+	                       <c:forEach var="report" items="${approverList}">
+			                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+			               </c:forEach>
+	                    </select>
+	              </div>
+              
               </div>
               
-              <div class="clearfix lvlTow" id ="sequentialApproverDiv" style="display:none;">
+              <%-- <div class="clearfix lvlTow" id ="sequentialApproverDiv" style="display:none;">
               <div class="form-group">
               <div class="col-md-3">Approver 2</div>
               <div class="col-md-9">
               		<select   class="chosen-select form-control" name="sequentialApprover2" field-name="Approver 2" data-validation="required">
-                       <option>Select Add approver</option>
+                       <option>Select Addpprover</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
 		               </c:forEach>
                     </select>
-                <!-- <select class="chosen-select form-control">
-                      <option disabled>Select Client</option>
-                      <option>Client-1</option>
-                      <option>Client-2</option>
-                      <option>Client-3</option>
-                    </select> -->
               </div></div>
-          </div>
+          </div> --%>
           <div class="form-group">
             <label class="col-md-3">Manager<span class="text-danger">*</span></label>
             <div class="col-md-9">
@@ -1755,41 +1757,73 @@ function addLvl(){
 
 <script>
 function approvalType(type){
-
-		if($("#apprverReq").is(':checked')){
+		
+	    if($("#apprverReq").is(':checked')){
 			$("#submitForApproval").removeAttr("style");
 		    $("#save").attr("style","display:none"); 
+		    
+		    $(".parallel, #parallel, .apprverReq").show();
+			$(".sequential").hide();
+			$("#parallel i").addClass("apprverReq-active");
+			$("#sequential i").removeClass("apprverReq-active");
+			
+			
+			if(type == "Default" || type == "Parallel"){
+				
+				$("#parallel i").show();
+			    $("#sequential i").show();
+				 
+			    $(".parallel").show();
+			    $("#parallel i").addClass("apprverReq-active");
+			    
+				$(".sequential").hide();
+				$("#sequential i").removeClass("apprverReq-active"); 
+				
+				$("#sequentialApproverDiv").hide();
+				
+				
+				$('#sequentialApprover1').attr("data-validation-optional","true"); 
+				$('#sequentialApprover2').attr("data-validation-optional","true"); 
+				$('#parallelApprover').removeAttr('data-validation-optional');
+				
+				$('#sequentialApprover1').val('');
+				$('#sequentialApprover2').val('');
+				  
+				
+		  }
+		  if(type == "Sequential"){
+			    $(".parallel").hide();
+			    $("#parallel i").addClass("apprverReq-active");
+			    
+				$(".sequential").show();
+				$("#sequential i").addClass("apprverReq-active");
+				
+				$('#parallelApprover').attr("data-validation-optional","true"); 
+				
+				$('#sequentialApprover1').removeAttr('data-validation-optional');
+				$('#sequentialApprover2').removeAttr('data-validation-optional');
+				
+				$('#parallelApprover').val('');
+		  }
+		  
 		}
 		else{
 			$("#save").removeAttr("style");
 		    $("#submitForApproval").attr("style","display:none"); 
-		}
-	    
-	    $(".parallel, #parallel, .apprverReq").show();
-		$(".sequential").hide();
-		$("#parallel i").addClass("apprverReq-active");
-		$("#sequential i").removeClass("apprverReq-active");
-	  if(type == "Default" || type == "Parallel"){
-		    $(".parallel").show();
-			$(".sequential").hide();
-			$("#parallel i").addClass("apprverReq-active");
-			$("#sequential i").removeClass("apprverReq-active"); 
-			
-			$("#sequentialApproverDiv").hide();
-			
-			$('#sequential').find('p.jquery_form_error_message').remove();
-			$('#sequentialApprover1').removeAttr('data-validation');
-			
-	  }
-	  if(type == "Sequential"){
+		    
 		    $(".parallel").hide();
-			$(".sequential").show();
-			$("#parallel i").removeClass("apprverReq-active");
-			$("#sequential i").addClass("apprverReq-active");
+		    $("#parallel i").hide();
+		    
+		    $(".sequential").hide();
+			$("#sequential i").hide();
 			
-			$('#parallel').find('p.jquery_form_error_message').remove(); 
-			$('#parallelApprover').removeAttr('data-validation');
-	  }
+			$('#sequentialApprover1').attr("data-validation-optional","true"); 
+			$('#sequentialApprover2').attr("data-validation-optional","true"); 
+			$('#parallelApprover').attr("data-validation-optional","true"); 
+			
+			
+		}
+	  
 }
 </script>
 
