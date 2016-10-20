@@ -41,5 +41,10 @@ public class RequirementAssignToServiceImpl implements RequirementAssignToServic
 			throws Exception {
 		return requirementAssignToDao.getRequirementAssignToByRequirementIdandAssignToId(requirementId, assignToId);
 	}
+
+	@Override
+	public boolean deleteRequirementAssignToByRequirementId(Long requirementId) throws Exception {
+		return requirementAssignToDao.deleteRequirementAssignToByRequirementId(requirementId);
+	}
 	
 }

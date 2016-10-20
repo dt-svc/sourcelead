@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementAssignToDao;
-import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 
 @Repository
@@ -57,6 +57,19 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 			requirementAssignTo = (RequirementAssignTo) requirementAssignToList.iterator().next();
 		}
 		return requirementAssignTo;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public boolean deleteRequirementAssignToByRequirementId(Long requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String hql ="delete from RequirementAssignTo rato where rato.requirementId = :requirementId";
+		
+		Query query = session.createQuery(hql).setLong("requirementId", requirementId);
+		query.executeUpdate();
+		
+		return true;
 	}
     
   }

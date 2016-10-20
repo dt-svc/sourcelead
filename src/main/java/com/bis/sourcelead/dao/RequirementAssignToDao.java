@@ -11,6 +11,6 @@ public interface RequirementAssignToDao {
 	public RequirementAssignTo getRequirementAssignToByRequirementIdandAssignToId(Long requirementId,Long teamId)  throws Exception;
 	
 	
-	
+	public boolean deleteRequirementAssignToByRequirementId(Long requirementId)throws Exception;
 	
 }

@@ -74,9 +74,9 @@ public class RequirementController {
 				List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
 				for(RequirementAssignTo rat : requirementAssignToList){
 					if(requirementAssignedIds != null && !requirementAssignedIds.isEmpty()  && requirementAssignedIds != "" ){
-						requirementAssignedIds = requirementAssignedIds +"&"+rat.getId().toString();
+						requirementAssignedIds = requirementAssignedIds +"&"+rat.getAssignUserId().getId().toString();
 					}else{
-						requirementAssignedIds =   rat.getId().toString();
+						requirementAssignedIds =   rat.getAssignUserId().getId().toString();
 					}
 					
 				}

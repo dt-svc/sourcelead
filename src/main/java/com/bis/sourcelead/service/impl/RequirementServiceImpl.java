@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -47,6 +48,9 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	private SubmissionTemplateDao submissionTemplateDao;
+	
+	@Autowired
+	private RequirementAssignToService requirementAssignToService;
 	
 	
 	/**
@@ -309,32 +313,16 @@ public class RequirementServiceImpl implements RequirementService {
 				  jsonObj.getString("applicationFrom");
 			} */
 			
-			
+			if(requirement.getId() != null){
+				requirementAssignToService.deleteRequirementAssignToByRequirementId(requirement.getId());
+			}
 			HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
 			if (jsonObj.has("assignedToMaxCount")){
 				String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
 				if(StringUtils.isNotEmpty(assignedToMaxCount)){
 				int MaxCount = Integer.parseInt(assignedToMaxCount);
 					for (int c = 1; c < MaxCount; c++) {
-RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
-						
-						/*RequirementAssignTo  requirementAssignTo = null;
-						 
-						if(jsonObj.has("requirementId")  && jsonObj.has("team") &&  !jsonObj.getString("requirementId").isEmpty()){
-							
-						 requirementAssignTo = requirementAssignToDao.getRequirementAssignToByRequirementIdandAssignToId(Long.parseLong(jsonObj.getString("requirementId")), Long.parseLong(jsonObj.getString("team")));
-						 if(requirementAssignTo.getId() != null){
-								
-								requirementAssignTo.setId(requirementAssignTo.getId());
-							
-							}
-						}else{
-							
-							requirementAssignTo = new RequirementAssignTo();
-						}*/
-						
-						/*Team team = new Team();
-						team.setId(id);*/
+						RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
 						
 						User assUser = new User();
 						assUser.setId(Long.parseLong(jsonObj.getString("assignUserId"+c)));
@@ -348,9 +336,6 @@ RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
 						requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
 						
 						requirementAssignToList.add(requirementAssignTo);
-						
-						
-						  
 					}
 				}
 			}
