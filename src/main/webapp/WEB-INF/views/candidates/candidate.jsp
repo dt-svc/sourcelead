@@ -623,6 +623,7 @@ function getCities(){
 						$("#lastName").val(lastName);
 						$("#email").val(json.email);
 						$("#mobilePhone").val(json.phoneNumbers);
+						validateCandidateEmail();
 						$("#loading").removeAttr("style");
 					},
 				});
