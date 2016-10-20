@@ -28,8 +28,8 @@ import org.hibernate.annotations.FetchMode;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	@Entity
-	@Table(name = "REQUIREMENT", catalog = "sourcelead")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement")
+	@Table(name = "INTERVIEW_REMAINDER", catalog = "sourcelead")
+	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "interviewRemainder")
 	public class InterviewRemainder {
 
 	@Id
