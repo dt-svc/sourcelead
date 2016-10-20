@@ -410,6 +410,10 @@ $(document).ready(function() {
                   <div class="form-icon">
                     <select class="chosen-select form-control" name="selectContact" data-validation-optional="true" field-name = "Client Contact" id="selectContact">
                       <option value=''>-- Select Contact --</option>
+                      <c:forEach var="report" items="${clientContactList}">
+			         		<%-- <option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocId.SpocUser.firstName}&nbsp;${report.spocId.SpocUser.lastName}</option> --%>
+			         		<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName}</option> 
+					     </c:forEach>
                     </select>
                     <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i> 
                  	<div id="addContact" class="modal fade" role="dialog">
@@ -1035,7 +1039,7 @@ $(document).ready(function() {
               <div class="col-md-3">Approver 2</div>
               <div class="col-md-9">
               		<select   class="chosen-select form-control" name="sequentialApprover2" field-name="Approver 2" data-validation="required">
-                       <option>Select Addpprover</option>
+                       <option>Select Add approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
 		               </c:forEach>
@@ -1058,10 +1062,10 @@ $(document).ready(function() {
                 <option>Manager-3</option>
               </select> -->
               <select multiple class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager">
-                       <option disabled>Select Approver</option>
+                       <option disabled>Select Manager</option>
                        <c:forEach var="report" items="${approverList}">
-		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-		               </c:forEach>
+		                    <option value="${report.id}" ${report.id  == requirement.managerUserId.id ? 'selected' : ''}>${report.firstName}&nbsp;${report.lastName}</option>
+		               </c:forEach>   
               </select>
             </div>
           </div>

@@ -15,14 +15,17 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
@@ -48,6 +51,9 @@ public class RequirementController {
 	UserService userService;
 	
 	@Autowired
+	OrgSpocService orgSpocService;
+	
+	@Autowired
 	OrgRelationsService orgRelationsService;
 	
 	@Autowired
@@ -58,6 +64,10 @@ public class RequirementController {
 		Requirement requirement ;
 		RequirementAssignTo requirementAssignTo;
 		ModelAndView model = new ModelAndView();
+		
+		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		if(requirementId != null && !requirementId.isEmpty()){
 			requirement = this.requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
@@ -84,13 +94,15 @@ public class RequirementController {
 			model.addObject("requirementAssignedIds",requirementAssignedIds);
 			model.addObject("requirement",requirement);
 			model.addObject("requirementId",requirementId);
+			List<OrgSpoc> clientContactList  = orgSpocService.getAllSpocsByOrgRelationId(requirement.getClientId().getId(), loginUser.getId(),orgLocations.getId());
+		    model.addObject("clientContactList", clientContactList);
 		}else{
 			requirement = new Requirement();
 		}
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirement");
 		
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		//OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		
