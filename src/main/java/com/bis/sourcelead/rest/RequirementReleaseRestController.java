@@ -17,6 +17,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -36,6 +37,9 @@ public class RequirementReleaseRestController {
 	
 	@Autowired
 	RequirementService requirementService;
+	
+	@Autowired
+	RequirementAssignToService requirementAssignToService;
 	
 	@Autowired
 	OrgSpocService orgSpocService;
@@ -64,18 +68,20 @@ public class RequirementReleaseRestController {
 			                                    HttpServletRequest request) throws Exception {
 			
 		
-			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+			Requirement parentRequirement = requirementService.getRequirementByRequirementId(requirementId);
 			String[] contacts = contactsIds.split(",");
 			if(contacts != null &&  contacts.length>0 && contacts[0] != null && contacts[0] != "" ){
 				for(String contact   : contacts){
 						
-						requirement.setParent_requirement_id(requirement.getId());
+						Requirement requirement  = new Requirement();
+						requirement.setParent_requirement_id(parentRequirement.getId());
 						
 						OrgSpoc orgSpoc = new OrgSpoc();
 						orgSpoc.setId(Long.parseLong(contact));
 						requirement.setSpocId(orgSpoc);
 						
 						requirement.setId(null);
+						
 						requirementService.addRequirement(requirement);
 				}
 			}	
@@ -84,12 +90,11 @@ public class RequirementReleaseRestController {
 			if(vendors != null &&  vendors.length>0 && vendors[0] != null && vendors[0] != ""){
 				for(String vendor   : vendors){
 					
-					requirement.setParent_requirement_id(requirement.getId());
-					
 					List<OrgSpoc> orgSpocList = orgSpocService.getAllContactsbyOrgId(Long.parseLong(vendor));
 					for(OrgSpoc orgSpoc : orgSpocList){
+						Requirement requirement  = new Requirement();
+						requirement.setParent_requirement_id(parentRequirement.getId());
 						
-						requirement.setParent_requirement_id(requirement.getId());
 						requirement.setSpocId(orgSpoc);
 						requirement.setId(null);
 						
