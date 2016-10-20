@@ -42,9 +42,20 @@ public class EmailNotification {
 	
 	@Column(name="CREATED_BY")
 	private String createdBy;
+	
+	@Column(name="SENT_TIME")
+	private Date sentTime;
 
 	public Long getId() {
 		return id;
+	}
+
+	public Date getSentTime() {
+		return sentTime;
+	}
+
+	public void setSentTime(Date sentTime) {
+		this.sentTime = sentTime;
 	}
 
 	public void setId(Long id) {
