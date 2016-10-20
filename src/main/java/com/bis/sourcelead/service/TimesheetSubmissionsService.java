@@ -3,6 +3,7 @@ package com.bis.sourcelead.service;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.aop.ThrowsAdvice;
@@ -76,5 +77,5 @@ public interface TimesheetSubmissionsService {
 	
 	public String dynamicTimesheet(User user,String navigation,String startDate,Long memberId,Long projectMemberUserId, Long employeeId) throws Exception ;
 	
-	public List<TimesheetSubmissions> getWeekFrequency(Long userId) throws Exception;
+	public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId) throws Exception;
 }

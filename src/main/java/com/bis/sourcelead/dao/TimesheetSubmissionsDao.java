@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import com.bis.sourcelead.entity.TimesheetSubmissions;
@@ -63,6 +64,6 @@ public interface TimesheetSubmissionsDao {
 
 	public List<TimesheetSubmissions>  getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,String status,Long orgLocationId) throws Exception ;
  
-	public List<TimesheetSubmissions> getWeekFrequency(Long userId) throws Exception;
+	public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId) throws Exception;
 
 }
