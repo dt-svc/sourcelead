@@ -157,7 +157,7 @@ $(document).ready(function() {
 	 </div>
 </div>
 
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt pras">
            <div class="form-group">
 	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
 	         <div class="col-md-9">
