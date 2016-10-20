@@ -1063,8 +1063,8 @@ $(document).ready(function() {
                 <option>Manager-2</option>
                 <option>Manager-3</option>
               </select> -->
-              <select multiple class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager">
-                       <option disabled>Select Manager</option>
+              <select  class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager">
+                       <option value="">Select Manager</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}" ${report.id  == requirement.managerUserId.id ? 'selected' : ''}>${report.firstName}&nbsp;${report.lastName}</option>
 		               </c:forEach>   
