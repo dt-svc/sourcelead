@@ -190,6 +190,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String clientName;
 	
 	@Transient
+	private String requirementApproverHierarchyStatus;
+	
+	
+	@Transient
 	private String spocName;
 	
 	@Transient
@@ -627,5 +631,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.clientSubmissionTemplateJsonString = clientSubmissionTemplateJsonString;
 	}
 
-		
+	public String getRequirementApproverHierarchyStatus() {
+		return requirementApproverHierarchyStatus;
+	}
+
+	public void setRequirementApproverHierarchyStatus(String requirementApproverHierarchyStatus) {
+		this.requirementApproverHierarchyStatus = requirementApproverHierarchyStatus;
+	}
+
 }

@@ -244,7 +244,7 @@ public class RequirementServiceImpl implements RequirementService {
 						rah.setRequirementId(requirement);
 						
 						rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
-						rah.setLevel("1");
+						rah.setLevel(1);
 						  
 						rah.setCreatedDate(commonUtil.currentDate());
 						rah.setCreatedBy(user.getUserCode());
@@ -267,7 +267,7 @@ public class RequirementServiceImpl implements RequirementService {
 					  rah.setRequirementId(requirement);
 					  
 					  rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
-					  rah.setLevel("1");
+					  rah.setLevel(1);
 					  
 					  rah.setCreatedDate(commonUtil.currentDate());
 					  rah.setCreatedBy(user.getUserCode());
@@ -287,7 +287,7 @@ public class RequirementServiceImpl implements RequirementService {
 					  rah.setRequirementId(requirement);
 					  
 					  rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
-					  rah.setLevel("2");
+					  rah.setLevel(2);
 					  
 					  rah.setCreatedDate(commonUtil.currentDate());
 					  rah.setCreatedBy(user.getUserCode());

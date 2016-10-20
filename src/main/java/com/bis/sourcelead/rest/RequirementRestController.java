@@ -129,12 +129,24 @@ public class RequirementRestController {
 		
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, user.getId());
+	    
+		// to get  RequirementApproverHierarchy with maximum Level
+		Integer maxLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirementId);
+
 		if(status.equalsIgnoreCase("APPROVED")){ 
-			requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.APPROVED);
+		    if(maxLevel!=null){
+		    	 if(maxLevel == requirementApproverHierarchy.getLevel()){
+		    		 requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.APPROVED);
+				   } 
+		    }
 			requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
 		}
 		if(status.equalsIgnoreCase("REJECTED")){
-			requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
+			 if(maxLevel!=null){
+		    	 if(maxLevel == requirementApproverHierarchy.getLevel()){
+		    		 requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
+				   }
+		    }
 			requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 		}
 		requirementService.addRequirement(requirement);
