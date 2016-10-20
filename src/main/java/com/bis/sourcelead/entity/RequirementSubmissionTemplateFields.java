@@ -40,13 +40,13 @@ public class RequirementSubmissionTemplateFields {
 	private String lastName;
 	
 	@Column(name = "PHONE_NUMBER")
-	private String phonenUmber;
+	private String phoneNumber;
 	
 	@Column(name = "ALTERNATE_NUMBER")
 	private String alternateNumber;
 	
 	@Column(name = "EMAIL_ID")
-	private String eamilId;
+	private String emailId;
 	
 	@Column(name = "COUNTRY")
 	private String country;
@@ -129,12 +129,13 @@ public class RequirementSubmissionTemplateFields {
 		this.lastName = lastName;
 	}
 
-	public String getPhonenUmber() {
-		return phonenUmber;
+
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 
-	public void setPhonenUmber(String phonenUmber) {
-		this.phonenUmber = phonenUmber;
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 	public String getAlternateNumber() {
@@ -145,12 +146,13 @@ public class RequirementSubmissionTemplateFields {
 		this.alternateNumber = alternateNumber;
 	}
 
-	public String getEamilId() {
-		return eamilId;
+
+	public String getEmailId() {
+		return emailId;
 	}
 
-	public void setEamilId(String eamilId) {
-		this.eamilId = eamilId;
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
 	}
 
 	public String getCountry() {
