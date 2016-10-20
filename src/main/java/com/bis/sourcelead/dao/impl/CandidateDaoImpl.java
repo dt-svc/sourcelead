@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -250,6 +252,17 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId) throws Exception {
+		logger.debug("In getCandidatesByOrgLocationID method");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Candidate> candidatesList = null;
+		Query candidateListQuery= session.createQuery("from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' ");
+		candidatesList = candidateListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return candidatesList;
 	}
 	
 }
