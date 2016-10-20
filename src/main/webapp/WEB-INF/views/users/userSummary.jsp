@@ -985,7 +985,7 @@ function cancelUser(){
 function terminateUser(userId){   
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reason").value;
-	if(reason){
+	if(reason.match(/^[^\s-](.*)*$/) != null){
 		$("#reasonDiv").empty();
 		
 		//getConformation(userId,reason);
@@ -1000,7 +1000,11 @@ function terminateUser(userId){
    		    }
 	   });
 	}else{
-		$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		if(reason){
+			$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+		}else{
+			$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
 	}
 }
 

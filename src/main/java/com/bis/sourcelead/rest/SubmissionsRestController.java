@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,10 +20,15 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -40,6 +46,9 @@ public class SubmissionsRestController {
 	
 	@Autowired
 	private RequirementService requirementService;
+	
+	@Autowired
+	private RequirementSubmissionService requirementSubmissionService;
     
     @RequestMapping(value = "/getCandidateResumes")
     public String getCandidateResumes(@RequestParam(value="candidateId", required=false) Long candidateId,HttpServletRequest request) throws Exception {
@@ -70,7 +79,24 @@ public class SubmissionsRestController {
 		    
 			return requirement.getSubmissionTemplateJsonString();
 	    
-	   }
+    }
+    
+    
+    @RequestMapping(value = "/saveAddApplicant" , method = RequestMethod.POST)
+	   public String saveAddApplicant(@RequestParam(value="jsonData", required=false) String json,
+			   @RequestParam(value="con", required=false) String con,HttpServletRequest request) throws Exception {
+			
+    	    String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			requirementSubmissionService.saveRequirementSubmission(jsonObj, user, orgLocations,con);
+    	    
+    	    
+			return "success";
+	    
+ }
     
     private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

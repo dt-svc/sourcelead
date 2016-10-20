@@ -1212,7 +1212,7 @@ $(document).ready(function() {
                   <option>Client-2</option>
                   <option>Client-3</option>
                 </select> -->
-                <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId" data-validation = "required" field-name = "Application Form">
+                <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId"  field-name = "Application Form">
                     	<option value="">-- Select Client --</option>
 		                <c:forEach var="report" items="${add_clientList}">
 					               <option value="${report.id},${report.responderLocationId.id}">${report.locationId.org.orgName}</option>
