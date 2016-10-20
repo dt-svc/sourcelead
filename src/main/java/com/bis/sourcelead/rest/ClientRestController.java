@@ -621,6 +621,7 @@ public class ClientRestController {
 			   submissionTemplate.setClientLocationId(clientOrgLocation);
 			   submissionTemplate.setOrgLocationId(orgLocations);
 			   submissionTemplate.setJsonString(jsonStringData);
+			   submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
 			   submissionTemplate.setCreatedBy(user.getUserCode());
 			   submissionTemplate.setCreatedDate(new Date());
 			   submissionTemplateService.addSubmissionTemplate(submissionTemplate);

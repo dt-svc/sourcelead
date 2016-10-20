@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -33,6 +34,15 @@ public class OrgSettingsController {
 		    ModelAndView model = new ModelAndView();
  			commonUtil.highLightMenu(Constants.OrgSettings, request);
  			model.setViewName("orgSettings");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			return model;
+ 	}
+	
+	@RequestMapping(value = "/orgSubmissionTemplate")
+ 	public ModelAndView orgSubmissionTemplate(HttpServletRequest request) {
+		    ModelAndView model = new ModelAndView();
+ 			commonUtil.highLightMenu(Constants.OrgSettings, request);
+ 			model.setViewName("orgSubmissionTemplateList");
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			return model;
  	}
