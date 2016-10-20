@@ -224,6 +224,20 @@
         <persistence strategy="localTempSwap" />
     </cache>
     
+    <cache name="requirmentInterview"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+    </cache>
+    
+    <cache name="requirementInterviewer"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+    </cache>
+    
+    <cache name="interviewRemainder"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+    </cache>
     
     <!-- 21600 seconds is 6 hours (6 * 60 * 60) -->
     <cache name="AuthenticateUserCache"
