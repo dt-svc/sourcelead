@@ -87,7 +87,7 @@
           <div class="pull-left">
             <h2>Vendor Contact Details</h2>
           </div>
-          <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Vendor Contact Details</div>
+          <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo;<a href="vendorsList"> Vendor List</a> &raquo; Vendor Contact</div>
         </section>
         <div class="content-area content-new clearfix">
         <div id="loading"></div>
