@@ -157,7 +157,7 @@ $(document).ready(function(){
 <script type="text/javascript">
 
 document.getElementById("uploadBtn").onchange = function () {
-    document.getElementById("uploadFile").value = this.value;
+    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
 };
 </script>
 
@@ -219,6 +219,7 @@ function uploadSave() {
  function checkFile()
     {
      var fsize = $('#uploadBtn')[0].files[0].size;
+     alert("-----------"+fsize);
      $('#clientNameDiv').find('p.jquery_form_error_message').remove();
      var res_field = document.upload_form.elements["uploadFile"].value;   
      var extension = res_field.substr(res_field.lastIndexOf('.') + 1).toLowerCase();
