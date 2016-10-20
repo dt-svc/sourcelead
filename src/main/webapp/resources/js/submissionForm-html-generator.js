@@ -214,10 +214,10 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                     	 $currentField.find('label').text(v['label']+reqSymbol);
                      }
                      
-                     
                      //Any choices?
                      if (v['choices']) {
-
+                    	 
+                    	 var label = v['label'];
                          var uniqueID = Math.floor(Math.random()*999999)+1;
 
                          $.each( v['choices'], function( k, v ) {
@@ -229,14 +229,14 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                              }
 
                              else if (fieldType == 'radio') {
-                                 var selected = v['sel'] ? ' checked' : '';
-                                 var choiceHTML = '<label><input type="radio" name="radio-' + uniqueID + '"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
+                                 var selected = v['sel'] ? ' checked' : 'checked';
+                                 var choiceHTML = '<label><input type="radio" name="'+label+'-' + uniqueID + '"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
                                  $currentField.find(".choices").append(choiceHTML);
                              }
 
                              else if (fieldType == 'checkbox') {
-                                 var selected = v['sel'] ? ' checked' : '';
-                                 var choiceHTML = '<label><input type="checkbox" name="checkbox-' + uniqueID + '[]"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
+                                 var selected = v['sel'] ? ' checked' : 'checked';
+                                 var choiceHTML = '<label><input type="checkbox" name="'+label+'-' + uniqueID + '[]"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
                                  $currentField.find(".choices").append(choiceHTML);
                              }
 
@@ -320,14 +320,14 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                      case 'radio':
                          return '' +
                              '<div id="sjfb-' + uniqueID + '"  class="sjfb-field sjfb-radio">' +
-                             '<label></label>' +
+                             '<label for="radio-' + uniqueID + '"></label>' +
                              '<div class="choices choices-radio"></div>' +
                              '</div>';
 
                      case 'checkbox':
                          return '' +
                              '<div id="sjfb-checkbox-' + uniqueID + '" class="sjfb-field sjfb-checkbox">' +
-                             '<label class="sjfb-label"></label>' +
+                             '<label for="checkbox-' + uniqueID + '"></label>' +
                              '<div class="choices choices-checkbox"></div>' +
                              '</div>';
                          
@@ -336,7 +336,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label for="calandar-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation2+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' id="dob" readonly="readonly">' +
+                             '<input type="text" class="DatePicker dp" '+datavalidation2+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' id=\''+label.replace(/\s+/g, '')+'\' readonly="readonly">' +
                              '</div>';
                          
                      case 'autocomplete':
@@ -377,6 +377,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                  }
              }
              init();
+             $(".DatePicker").datepicker();
         },
     });
     
