@@ -598,15 +598,24 @@ public class ClientServiceImpl implements ClientService{
 					User existingUser = userService.getUserById(Long.parseLong(jsonObj.getString("existingSpocUserId")));
 					if(jsonObj.getString(vendorContactFirstName) != null && !jsonObj.getString(vendorContactFirstName).isEmpty()){
 						existingUser.setFirstName(jsonObj.getString(vendorContactFirstName));
+					}else{
+						existingUser.setFirstName("");
 					}
 					if(jsonObj.getString(vendorContactLastName) != null && !jsonObj.getString(vendorContactLastName).isEmpty()){
 						existingUser.setLastName(jsonObj.getString(vendorContactLastName));
 					}
+					else{
+						existingUser.setLastName("");
+					}
 					if(jsonObj.getString(mobilePhone) != null && !jsonObj.getString(mobilePhone).isEmpty()){
 						existingUser.setMobilePhone(jsonObj.getString(mobilePhone));
+					}else{
+						existingUser.setMobilePhone("");
 					}
 					if(jsonObj.getString(emailId) != null && !jsonObj.getString(emailId).isEmpty()){
 						existingUser.setEmail(jsonObj.getString(emailId));
+					}else{
+						existingUser.setEmail("");
 					}
 					userService.addUser(existingUser);
 				}

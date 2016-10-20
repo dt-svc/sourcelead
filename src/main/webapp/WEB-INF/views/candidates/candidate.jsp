@@ -636,7 +636,7 @@ function getCities(){
 
 /* upload file script */
 document.getElementById("uploadBtn").onchange = function () {
-document.getElementById("uploadFile").value = this.value;
+   document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
 };
  
 </script>

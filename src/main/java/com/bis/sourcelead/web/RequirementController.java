@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
@@ -22,6 +23,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -58,6 +60,9 @@ public class RequirementController {
 	
 	@Autowired
 	RequirementAssignToService requirementAssignToService;
+
+	@Autowired
+	CandidateService candidateService;
 	
 	@RequestMapping(value = "/requirement")
 	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
@@ -149,10 +154,13 @@ public class RequirementController {
 	@RequestMapping(value = "/requirementSummary")
 	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
 		 
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		List<Candidate> candidatesList = candidateService.getCandidatesByOrgLocationID(orgLocations.getId());
 		
 		ModelAndView model = new ModelAndView();
 		model.setViewName("requirement/requirementSummary");
-		
+		model.addObject("candidatesList",candidatesList);
 		model.addObject("requirementId",requirementId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;

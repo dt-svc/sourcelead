@@ -276,7 +276,7 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	
 	  /* upload file script to show selected file name*/
 	    document.getElementById("uploadBtn").onchange = function () {
-	    document.getElementById("uploadFile").value = this.value;
+	    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();;
 	    };
 	    
 	    /* upload file script for size validation 2MB*/
@@ -420,7 +420,8 @@ function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId){
 function saveReason(clientLocationId,orgRelationId,spocName,userId,docId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var terminateReason = document.getElementById("terminateReason").value;
-	if (terminateReason) {
+	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
+		$("#terminateReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateOrgDocumnet?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&terminateReason="+terminateReason, 	   
@@ -439,7 +440,11 @@ function saveReason(clientLocationId,orgRelationId,spocName,userId,docId){
    		    }
 	     });
 	}else{
-		$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		if(terminateReason){
+			$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+		}else{
+			$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
 	}
 }
 </script>
