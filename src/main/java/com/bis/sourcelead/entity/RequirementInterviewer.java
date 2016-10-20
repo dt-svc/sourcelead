@@ -46,7 +46,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
     private User user;
 	
 	@Column(name="STATUS")
-	private String status;
+	private Integer status;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -83,12 +83,13 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setUser(User user) {
 		this.user = user;
 	}
+	
 
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 

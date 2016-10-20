@@ -28,7 +28,7 @@ import org.hibernate.annotations.FetchMode;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	@Entity
-	@Table(name = "REQUIRMENT_INTERVIEW", catalog = "sourcelead")
+	@Table(name = "REQUIREMENT_INTERVIEW", catalog = "sourcelead")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirmentInterview")
 	public class RequirementInterview {
 
@@ -69,10 +69,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String remainedBefore;
 	
 	@Column(name="STATUS")
-	private String status;
-	
-	@Column(name="PRIORITY")
-	private String priority;
+	private Integer status;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -174,21 +171,16 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.remainedBefore = remainedBefore;
 	}
 
-	public String getStatus() {
+	
+
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
-	public String getPriority() {
-		return priority;
-	}
-
-	public void setPriority(String priority) {
-		this.priority = priority;
-	}
 
 	public Date getCreatedDate() {
 		return createdDate;

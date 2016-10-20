@@ -16,7 +16,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-@Table(name = "REQUIRMENT_SUBMISSION")
+@Table(name = "REQUIREMENT_SUBMISSION")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementSubmission")
 public class RequirementSubmission {
 	
@@ -26,7 +26,7 @@ public class RequirementSubmission {
     private Long id;
  	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "REQUIRMENT_ID")
+	@JoinColumn(name = "REQUIREMENT_ID")
    	private Requirement requirement;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

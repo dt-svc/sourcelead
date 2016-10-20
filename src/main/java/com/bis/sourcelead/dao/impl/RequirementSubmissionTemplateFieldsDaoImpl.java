@@ -45,7 +45,7 @@ public class RequirementSubmissionTemplateFieldsDaoImpl implements RequirementSu
 			}
 			logger.debug("RequirementSubmissionTemplateFields Added Successfully");
 		} catch (Exception exception) {
-			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"REQUIRMENT_SUBMISSION_TEMPLATE_FIELDS"));
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"REQUIREMENT_SUBMISSION_TEMPLATE_FIELDS"));
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return requirementSubmissionTemplateFields;
