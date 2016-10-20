@@ -96,6 +96,17 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 		return maxLevel;
 	}
 	
+	@Transactional(rollbackFor = { Exception.class })
+	@Override
+	public List<RequirementApproverHierarchy> getRequirementApproverHierarchyListByRequirementId(Long requirementId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementApproverHierarchy rah where rah.requirementId.id =:requirementId ";
+		return session.createQuery(query).setLong("requirementId", requirementId).list();
+	
+	}
+	
     
   }
 

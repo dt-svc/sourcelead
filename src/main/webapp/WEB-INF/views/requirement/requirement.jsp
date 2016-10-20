@@ -94,6 +94,24 @@ background-color: #ccc;
 		});
 </script>
 
+ <script>
+$(document).ready(function () {
+   /*  var selectedUserRole = document.getElementById('SelectedUserRole').value; */
+    var approverMode = '${approverMode}';
+    var parallelApproverIds = '${parallelApproverIds}';
+    var sequentialApprover1 = '${sequentialApprover1}';
+    var sequentialApprover2 = '${sequentialApprover2}';
+
+   /*  alert("approverMode"+approverMode);
+    alert("parallelApproverIds"+parallelApproverIds);
+    alert("sequentialApprover1"+sequentialApprover1);
+    alert("sequentialApprover2"+sequentialApprover2);
+     */
+    
+});    
+</script>
+    
+
 <script>
 $(document).ready(function() {
 	
@@ -157,7 +175,7 @@ $(document).ready(function() {
 	 </div>
 </div>
 
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt pras">
            <div class="form-group">
 	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
 	         <div class="col-md-9">
