@@ -21,10 +21,13 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
@@ -48,6 +51,9 @@ public class RequirementRestController {
 	
 	@Autowired
 	private RequirementService requirementService;
+	
+	@Autowired
+	private RequirementApproverHierarchyService requirementApproverHierarchyService;
 	
 	@Autowired
 	UserService userService;
@@ -122,13 +128,18 @@ public class RequirementRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-		if(status.equalsIgnoreCase("approved")){
+		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, user.getId());
+		if(status.equalsIgnoreCase("APPROVED")){ 
 			requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.APPROVED);
+			requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
 		}
-		if(status.equalsIgnoreCase("rejected")){
+		if(status.equalsIgnoreCase("REJECTED")){
 			requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
+			requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 		}
 		requirementService.addRequirement(requirement);
+		requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
+		
 		return "success";
 		
 	}
@@ -214,5 +225,6 @@ public class RequirementRestController {
 		resultJson = commonUtil.toJSON(teamsList);
 		return resultJson;
 	}
+	
 	
 }

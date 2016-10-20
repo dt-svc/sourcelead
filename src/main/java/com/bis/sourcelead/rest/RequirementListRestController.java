@@ -115,11 +115,10 @@ public class RequirementListRestController {
 				requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
 				requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
 				requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
+				requirement.setClientSubmissionTemplate(requirement.getClientSubmissionTemplateId().getTemplateName());
+				}
 				if(requirement.getManagerUserId() != null && requirement.getManagerUserId().getFirstName() != null && requirement.getManagerUserId().getLastName() != null ){
 					requirement.setManager(requirement.getManagerUserId().getFirstName()+" "+requirement.getManagerUserId().getLastName());	
-				}
-				
-				
 				}
 				resultJson = commonUtil.toJSON(requirement);
 				 

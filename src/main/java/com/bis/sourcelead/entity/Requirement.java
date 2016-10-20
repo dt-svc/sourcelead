@@ -169,6 +169,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String updatedBy;
 	
 	@Transient
+	private String clientSubmissionTemplate;
+	
+	@Transient
 	private String requirementCreatedDateToString;
 
 	@Transient
@@ -242,6 +245,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setJobType(String jobType) {
 		this.jobType = jobType;
+	}
+
+	public String getClientSubmissionTemplate() {
+		return clientSubmissionTemplate;
+	}
+
+	public void setClientSubmissionTemplate(String clientSubmissionTemplate) {
+		this.clientSubmissionTemplate = clientSubmissionTemplate;
 	}
 
 	public String getJobId() {
