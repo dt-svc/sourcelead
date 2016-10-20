@@ -223,7 +223,7 @@ public class UserDaoImpl implements UserDao {
 	public List<User> getUsersByUserRolesAndOrgLocationId(Long orgLocationsId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where (userRole.roles = '3') and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' ";
+	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where (userRole.roles = '3' OR userRole.roles = '9') and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' ";
 	    List<User> userRoleList = session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
         return userRoleList;
         
@@ -302,6 +302,9 @@ public class UserDaoImpl implements UserDao {
 		}
 		else if(roleType != null && !"".equals(roleType) && "8".equals(roleType)){
 			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager' OR user.userType = 'Account Manager' OR user.userType = 'Sales Manager' OR user.userType = 'Recruiter')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "9".equals(roleType)){
+			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager' OR user.userType = 'Project Manager')";
 		}
 		
 	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' "+subQuery+" ";
