@@ -1829,14 +1829,14 @@ function approvalType(type){
 				$('#sequentialApprover2').attr("data-validation-optional","true"); 
 				$('#parallelApprover').removeAttr('data-validation-optional');
 				
-				$('#sequentialApprover1').val('');
-				$('#sequentialApprover2').val('');
+				$('#sequentialApprover1').val('').trigger('chosen:updated');
+				$('#sequentialApprover2').val('').trigger('chosen:updated');
 				  
 				
 		  }
 		  if(type == "Sequential"){
 			    $(".parallel").hide();
-			    $("#parallel i").addClass("apprverReq-active");
+			    $("#parallel i").removeClass("apprverReq-active");
 			    
 				$(".sequential").show();
 				$("#sequential i").addClass("apprverReq-active");
@@ -1846,11 +1846,12 @@ function approvalType(type){
 				$('#sequentialApprover1').removeAttr('data-validation-optional');
 				$('#sequentialApprover2').removeAttr('data-validation-optional');
 				
-				$('#parallelApprover').val('');
+				$('#parallelApprover').val('').trigger('chosen:updated');
 		  }
 		  
 		}
 		else{
+		    
 			$("#save").removeAttr("style");
 		    $("#submitForApproval").attr("style","display:none"); 
 		    

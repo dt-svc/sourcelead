@@ -2999,8 +2999,17 @@ function assignedMemberList(requirementId){
 						    var report = json[i];
 						    result = result +'         <tr>';
 						    result = result +'         <td><div class="tbldata-dotdot-me">'+report.assignedUserName+'</div></td>';
-						    result = result +'         <td><div class="tbldata-dotdot-sm">'+report.assignedUserRole+'</div></td>';
-						    result = result +'         <td><div class="tbldata-dotdot-sm">'+report.teamName+'</div></td>';
+						    if(report.assignedUserRole != null && report.assignedUserRole !='' && report.assignedUserRole !='undefined'){
+						    	result = result +'         <td><div class="tbldata-dotdot-sm">'+report.assignedUserRole+'</div></td>';
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
+						     
+						     if(report.teamName != null && report.teamName !='' && report.teamName !='undefined'){
+						    	 result = result +'         <td><div class="tbldata-dotdot-sm">'+report.teamName+'</div></td>';
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
 						    result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
 						    result = result +'         </tr>';
 			   				}
