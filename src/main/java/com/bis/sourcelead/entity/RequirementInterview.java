@@ -44,6 +44,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "INTERVIEW_TYPE")
 	private String interviewType;
 	
+	@Column(name = "DATE_OF_INTERVIEW")
+	private Date dateOfInterview;
+	
 	@Column(name = "START_TIME")
 	private String startTime;
 	
@@ -82,6 +85,15 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+
+	
+	public Date getDateOfInterview() {
+		return dateOfInterview;
+	}
+
+	public void setDateOfInterview(Date dateOfInterview) {
+		this.dateOfInterview = dateOfInterview;
+	}
 
 	public Long getId() {
 		return id;
