@@ -70,6 +70,6 @@ public interface CandidateService {
 	public Candidate saveOrUpdateCandidate(Candidate candidate) throws Exception;
 	
 	
-	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId) throws Exception;
+	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId) throws Exception;
 	
 }
