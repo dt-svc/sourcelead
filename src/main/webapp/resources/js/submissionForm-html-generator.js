@@ -265,9 +265,12 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             	 var datavalidation = '';	
             	 var novalidation = '';
             	 var datavalidation2 = '';
+            	 var validationCheck = '';
         		 if(required == 1){
         			 if(label == 'Email Id'){
         				 datavalidation = 'data-validation="required validate_email validate_Space validate_length length2-50"';
+        				 validationCheck = 'onblur="validateCandidateEmail();"';
+        				 
         			 }else{
         				 datavalidation = 'data-validation="required validate_Space validate_length length2-50"';
         			 }
@@ -300,7 +303,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
+                             '<input type="text" '+datavalidation+' '+validationCheck+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
                              '</div>';
 
                      case 'textarea':
@@ -377,7 +380,9 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                  }
              }
              init();
-             $(".DatePicker").datepicker();
+             $(".DatePicker").datepicker({
+            	 dateFormat: 'yy-mm-dd',
+             });
         },
     });
     
