@@ -22,6 +22,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
+import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
@@ -66,6 +67,7 @@ public class RequirementRestController {
 	
 	 @Autowired
 	 CommonUtil commonUtil;
+	 
 	
 	/**
 	 * @author prasad k
@@ -181,6 +183,10 @@ public class RequirementRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 //		List<User> usersList = userService.getOwnersByOrgLocationId(orgLocation.getId());
 		List<User> usersList = userService.getUsersByTeamType(orgLocation.getId(),teamType);
+		for(User user : usersList){
+			List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId());
+			user.setAssignJobCount(assign.size());
+		}
 		resultJson = commonUtil.toJSON(usersList);
 		return resultJson;
 	}

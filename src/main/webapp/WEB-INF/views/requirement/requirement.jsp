@@ -1939,8 +1939,8 @@ function getUserList(teamType){
 		                    	 result = result +'             <td><input id="'+opt.id+'" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' class="myCheckbox" ></td>';
 		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
 		                    	 result = result +'             <td>'+opt.email+'</td>';
-		                    	 result = result +'             <td>'+opt.id+'</td>';
-		                    	 result = result +'             <td>'+opt.id+'</td>';
+		                    	 result = result +'             <td>'+opt.userType+'</td>';
+		                    	 result = result +'             <td>'+opt.assignJobCount+'</td>';
 		                    	 result = result +'           </tr>';
 		                    	
 	                     }
@@ -1997,8 +1997,8 @@ function getTeamsList(){
 				output = output +'           <option value="All">All</option>';
 				output = output +'           <option value="Admin">Admin</option>';
 				output = output +'           <option value="Account Manager">Account Manager</option>';
-				output = output +'           <option value="Recruiting Manager">Recruiting Manager</option>';
-				output = output +'           <option value="Hiring Manager">Hiring Manager</option>';
+				output = output +'           <option value="Recruiter">Recruiter</option>';
+				output = output +'           <option value="HR Manager">HR Manager</option>';
 				
 				for (var i = 0; i < json.length; i++) {
 					var opt = json[i];
