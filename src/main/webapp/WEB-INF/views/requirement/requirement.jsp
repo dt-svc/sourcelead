@@ -1881,12 +1881,12 @@ function approvalType(type){
 --%>
 
 <script>
-function getUserList(){  
+function getUserList(teamType){  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}&teamType="+teamType,    
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
@@ -1908,7 +1908,7 @@ function getUserList(){
 	                		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
 	                		result = result +'       </div>';
 	                		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
-	                		result = result +'          <select id="rolesDiv" class="selectpicker form-control" style="display:block !important">';
+	                		result = result +'          <select id="rolesDiv" onchange="filterTeamMembers();" class="selectpicker form-control" style="display:block !important">';
 	                		result = result +'          </select>';
 	                		result = result +'     </div>';
 	                		result = result +'     </div>';
@@ -2133,6 +2133,13 @@ var existingValue = document.getElementById('isClientJob').value;
 	 }
 }
 
+</script>
+
+<script type="text/javascript">
+function filterTeamMembers(){
+	var teamType = $("#rolesDiv").val();
+	getUserList(teamType);
+}
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
