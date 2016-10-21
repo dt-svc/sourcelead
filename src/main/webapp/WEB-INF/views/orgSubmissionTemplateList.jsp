@@ -15,7 +15,7 @@
 <script src="resources/js/bootstrap-select.min.js"></script>
 <script src="resources/js/chosen.jquery.min.js"></script> 	
 <script src="resources/js/jquery-ui.min.js" ></script>
-
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
 <script type="text/javascript">
 //On document ready
@@ -23,6 +23,7 @@ $(function(){
 	submissionTemplateList();
 });
 </script>
+
 
 
 <script type="text/javascript">
@@ -36,6 +37,7 @@ $(function(){
 			var result = "";
 	      
 				var result = "";
+				result = result +"<table id='templatePagination' class='display' cellspacing='0' width='100%' >"; 
 	        	result = result +'<thead>';
 	        	result = result +'<tr>';
 	        	result = result + '<th>Template Name</th>';
@@ -60,8 +62,9 @@ $(function(){
 				}  
 	        		
 	        	result = result +'</tbody>';
+	        	result = result +"</table>";
     	       $("#clientSubmissionTemplateList").append(result); 
-    	       
+    	       templatepagination();
     	  
 	        },
 	    });
@@ -310,7 +313,33 @@ function templatepagination(){
   </script>
   
 
-
+<script type="text/javascript">
+function validateTemplateName(){
+	var templateName = document.getElementById("templateName").value; 
+	if(templateName){
+		var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/validateTemplateNameByOrg?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName, 
+	        success: function(result) {
+	        	if (result == 'invalid') {
+	        		$("#save_button").attr("disabled", "disabled");
+	        		$('#templateNameDiv').find('p.jquery_form_error_message').remove();
+	        		$("input#templateName").after( "<p class='jquery_form_error_message'>" + templateName + " is Already Existed</span>");
+					document.getElementById("templateName").setAttribute( 'record-exist', 'yes');
+					document.getElementById("templateName").setAttribute( 'record-exist-errorMsg', templateName +"  already existed");
+	        	}else{
+	        		$('input#templateName').removeAttr("class record-exist record-exist-errormsg");
+					$('input#templateName').attr('class','valid form-control');
+					$('#templateNameDiv').find('p.jquery_form_error_message').remove();
+					
+	        		$("#save_button").removeAttr("disabled")
+	        	}
+	        }
+		 });
+	}
+}
+</script>
  
  
  <script type="text/javascript">
@@ -350,7 +379,7 @@ function templatepagination(){
     <div class="pull-left">
       <h2>Submission Templates</h2>
     </div>
-    <div class="pull-right brud-crum">Home » Vendor » Client Contact Details</div>
+    <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="orgSubmissionTemplate">Submission Template</a></div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -360,13 +389,9 @@ function templatepagination(){
 	          <div class="clearfix"></div>
 	        </ul>
 	        <div class="clearfix"></div>
-	        <div class="remove_search">
-	          <input placeholder="search" type="text">
-	        </div>
 	      </div>
-      
 	       <div class="project_tabs_inn_table vendor_wrap_inn_table">
-	          <table id="clientSubmissionTemplateList" class="display" cellspacing="0" width="100%"> </table>
+	          <div id="clientSubmissionTemplateList"></div>
 	       </div> 
 	       
 	       <div id="templateList"></div>
