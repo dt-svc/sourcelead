@@ -56,7 +56,7 @@ function editCandidate(candidateId){
 							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
 							result = result + '		      <div class="form-horizontal clearfix">';
-							
+							result = result + '<input type="hidden" class="form-control input-sm" name="candidateId"  value="'+candidateId+'">';
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-6">';
 							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="validate_Space required">';
@@ -99,7 +99,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							result = result + '</div>';
 							
-							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="clearfix mb10 mt10">';
 							result = result + '<div class="col-md-12">';
 							result = result + '<textarea class="form-control input-sm" placeholder="Summary"  name="summary" rows="2" cols="0" > '+json.summary+'</textarea>';
 							//result = result + ''+json.summary+'</textarea>';
@@ -431,6 +431,7 @@ function reActivateCandidateAlertMessage(candidateId){
 function candidateProfile(candidateId){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
+	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
