@@ -1896,7 +1896,7 @@ function getUserList(teamType){
                			 location.replace(sourceleadUrl+"/errorPage");
                		 }
                		 else{
-               			 getTeamsList();
+               			 getTeamsList(teamType);
 			    	     $("#userList").removeAttr("style");
 	                	    var result = '';
 	                	    result = result +'<div class="modal-body clearfix">';
@@ -1985,7 +1985,7 @@ function getUserList(teamType){
 </script>
 
 <script>
-function getTeamsList(){  
+function getTeamsList(teamType){  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",
@@ -1994,15 +1994,37 @@ function getTeamsList(){
             	var json = JSON.parse(data);
 				var output = "";
 				output = output +'          <option selected disabled>Select Role</option>';
-				output = output +'           <option value="All">All</option>';
-				output = output +'           <option value="Admin">Admin</option>';
-				output = output +'           <option value="Account Manager">Account Manager</option>';
-				output = output +'           <option value="Recruiter">Recruiter</option>';
-				output = output +'           <option value="HR Manager">HR Manager</option>';
 				
+				if(teamType == 'All'){
+					output = output +'           <option value="All" selected>All</option>';
+				}else{
+					output = output +'           <option value="All">All</option>';
+				}
+				if(teamType == 'Admin'){
+					output = output +'           <option value="Admin" selected>Admin</option>';
+				}else{
+					output = output +'           <option value="Admin">Admin</option>';
+				}
+				if(teamType == 'Account Manager'){
+					output = output +'           <option value="Account Manager" selected>Account Manager</option>';
+				}else{
+					output = output +'           <option value="Account Manager">Account Manager</option>';
+				}if(teamType == 'Recruiter'){
+					output = output +'           <option value="Recruiter" selected>Recruiter</option>';
+				}else{
+					output = output +'           <option value="Recruiter">Recruiter</option>';
+				} if(teamType == 'HR Manager'){
+					output = output +'           <option value="HR Manager" selected>HR Manager</option>';
+				}else{
+					output = output +'           <option value="HR Manager">HR Manager</option>';
+				} 
 				for (var i = 0; i < json.length; i++) {
 					var opt = json[i];
-					output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";
+					if(teamType == opt.id){
+						output = output + "<option value='"+opt.id+"' selected>"+ opt.name + "</option>";
+					}else{
+						output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";	
+					}
 				}
 				$("#rolesDiv").empty();
 			    $("#rolesDiv").append(output);
