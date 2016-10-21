@@ -2746,7 +2746,7 @@ input:checked + .slider:before {
 	width: 50%;
 	float: left;
 	margin: 0;
-	min-height: 54px;
+	min-height: 50px;
 }
 .myForm h3 {
 	margin-left: 15px;
@@ -2812,7 +2812,8 @@ input:checked + .slider:before {
 	position: relative;
 }
 .reminder-div {
-	background: #fff none repeat scroll 0 0;
+	display:none; width:80%; background-color:#f1f1f1; border-radius:5px; padding:20px; box-sizing:border-box; margin:10px 0px 20px 0px; position:relative;
+/*	background: #fff none repeat scroll 0 0;
 	border: 1px solid #909090;
 	border-radius: 5px;
 	bottom: -20px;
@@ -2825,12 +2826,16 @@ input:checked + .slider:before {
 	text-align: left;
 	transition: all 0.6s ease 0s;
 	z-index: 8;
-	transform: translateY(150px);
+	transform: translateY(150px);*/
 }
-.reminder-div.reminder-div-active {
+/*.reminder-div.reminder-div-active {
 	opacity: 1;
 	transform: translateY(0px);
-}
+}*/
+.reminder-div:after {
+	bottom: 100%; left: 8%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute; border-color: rgba(241, 241, 241, 0);
+	border-bottom-color: #f1f1f1; border-width: 13px; margin-left: -13px;
+	}
 .div-close {
 	background: #f60 none repeat scroll 0 0;
 	border: 1px solid #f60;
@@ -3168,6 +3173,9 @@ color:#101010 ! Important;
 }
 .export_pop ul, .approved_pop ul {
       min-width:150px;
+}
+.canprofile-popright {
+       right:100px !important;
 }
 @media (max-width: 320px) {
 .hidden-xs {
