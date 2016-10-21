@@ -181,6 +181,7 @@ function getAddApplicant(requirementId){
 		 document.getElementById("browseDiv").style.display="none";
 		 $("#uploadFile").removeAttr("data-validation");
 		 $("#uploadFile").removeAttr("data-validation");
+		 $('.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
@@ -443,7 +444,7 @@ function validate_fileupload(fileName)
 		         	if(data == 'true'){
 		         		  $("#save_button").attr("disabled", "disabled");
 			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
-		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+			        	  $('.jquery_form_error_message').remove();
 		        		  $("input[name=EmailId]").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
 		        		  $("input[name=EmailId]").setAttribute('record-exist','yes');
 		        		  $("input[name=EmailId]").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
@@ -451,7 +452,7 @@ function validate_fileupload(fileName)
 		        	else{
 		        		$("#save_button").removeAttr("disabled");
 		        		$("input[name=EmailId]").removeAttr( "record-exist record-exist-errormsg");
-		        		$('#emailDiv').find('p.jquery_form_error_message').remove(); 
+		        		$('.jquery_form_error_message').remove();
 		        		
 		        	} 
 		        },
