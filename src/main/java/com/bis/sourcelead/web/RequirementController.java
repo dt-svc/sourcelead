@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -32,6 +33,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -68,6 +70,11 @@ public class RequirementController {
 	
 	@Autowired
 	RequirementApproverHierarchyService requirementApproverHierarchyService;
+	
+	@Autowired
+	SubmissionTemplateService submissionTemplateService;
+	
+	
 	
 	@RequestMapping(value = "/requirement")
 	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
@@ -115,17 +122,17 @@ public class RequirementController {
 			String approverMode = "noApprovers";
 			Long sequentialApprover1 = null;
 			Long sequentialApprover2 = null;
-			int[] parallelApproverIds = new int[requirementApproverHierarchyList.size()];
+			String parallelApproverIds = null ;
 			Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(requirementId));
-			if(maxLevel >1){
+			if(maxLevel != null && maxLevel >1){
 				approverMode = "Sequential";
 				for(RequirementApproverHierarchy requirementApproverHierarchy :requirementApproverHierarchyList){
 					 
 					if(requirementApproverHierarchy.getLevel() == 1){
-						sequentialApprover1 = requirementApproverHierarchy.getId();
+						sequentialApprover1 = requirementApproverHierarchy.getApproverUserId().getId();
 					}
 					if(requirementApproverHierarchy.getLevel() == 2){
-						sequentialApprover2 = requirementApproverHierarchy.getId();
+						sequentialApprover2 = requirementApproverHierarchy.getApproverUserId().getId();
 					}
 					
 				}
@@ -133,7 +140,11 @@ public class RequirementController {
 				approverMode = "Parallel";
 				int i = 0;
 				for(RequirementApproverHierarchy requirementApproverHierarchy :requirementApproverHierarchyList){
-					parallelApproverIds[i] =  requirementApproverHierarchy.getId().intValue();
+					if(parallelApproverIds != null && parallelApproverIds != ""){
+						parallelApproverIds =  parallelApproverIds +","+ requirementApproverHierarchy.getApproverUserId().getId().toString();
+					}else{
+						parallelApproverIds =  requirementApproverHierarchy.getApproverUserId().getId().toString();
+					}
 					i++;
 				}
 			}
@@ -187,7 +198,11 @@ public class RequirementController {
 		List<User> approverList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		model.addObject("approverList", approverList);
 		
+		//approver list
+		List<SubmissionTemplate>   submissionTempletesList = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationId(orgLocations.getId());
+				model.addObject("submissionTempletesList", submissionTempletesList);
 		
+
 		return model;
 
 	}

@@ -1,10 +1,12 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+ <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
+<script src="resources/js/formvalidator.js"></script>
 
 
 <jsp:include page="candidatesProfile.jsp"></jsp:include>
@@ -116,8 +118,8 @@
 	                     }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
-	                     $("#candidateList").append(result); 
-	                     pagination(); 
+	                     $("#candidateList").append(result);
+	                     cpagination(); 
 			    	} 
                  }else{
                 	 $("#candidateList").removeAttr("style");
@@ -143,8 +145,8 @@
      1.usage     : used in candidateList() function.
 --%>
 
-<script>
-function pagination(){  
+<!-- <script>
+function cpagination(){  
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
@@ -152,11 +154,26 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     	"sSearch": ""
      	}
     } );
 }
 </script>
+ -->
+<script>
+function cpagination(){ 
+    $('#candidatePagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    } );
+}
+</script>
+
+
+
 
 <%-- 
      @author : sarath kumar.

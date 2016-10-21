@@ -179,14 +179,17 @@ public class RequirementListRestController {
 				List<RequirementAssignTo> requirementAssignToList = null;
 				if(requirementId !=null && !requirementId.isEmpty()){
 			       requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
-			      if(requirementAssignToList !=null && !requirementAssignToList.isEmpty()){
-			          /* for (RequirementAssignTo assing : requirementAssignToList) {
+
+			       if(requirementAssignToList !=null && !requirementAssignToList.isEmpty()){
+			           for (RequirementAssignTo assing : requirementAssignToList) { 
 					       assing.setAssignedUserName(assing.getAssignUserId().getFirstName()+" "+assing.getAssignUserId().getLastName());
-					       if(assing.getRoleId() != null){
-					    	   assing.setAssignedUserRole(assing.getRoleId().getDisplayName());   
+					       if(assing.getRoleId() != null ){
+					    	   assing.setAssignedUserRole(assing.getRoleId().getDisplayName());
 					       }
-					       assing.setTeamName(assing.getTeamId().getName());
-				      }*/
+					       if(assing.getTeamId() != null ){
+					    	   assing.setTeamName(assing.getTeamId().getName());
+					       }
+				      }
 			       }
 					resultJson = commonUtil.toJSON(requirementAssignToList);
 				}else{

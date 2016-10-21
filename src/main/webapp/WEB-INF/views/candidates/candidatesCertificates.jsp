@@ -1,5 +1,6 @@
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
+
 <style>
 .clsDatePicker {
 	z-index: 100000 !important;
@@ -23,7 +24,7 @@ function candidateCertificate(candidateId){
 	if(window.candidateStatusGlobal == '0'){
 		 result  = result + '   	<a href="javascript:void(0)" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a> ';
 	 }else{
-		 result  = result + '   	<a href="javascript:void(0)" id="newCandidate" onClick="addCertification('+candidateId+');flushCandiadate();" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a> ';
+		 result  = result + '   	<span class="pad-sea"> <a href="javascript:void(0)" id="newCandidate" onClick="addCertification('+candidateId+');flushCandiadate();" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a></span> ';
 	 }
 	result = result  +'     <div id="popUpDivEmp" class="edit-details col-md-4" > ';
 	result = result  +'     </div>  ';
@@ -170,14 +171,14 @@ function candidateCertificateList(candidateId){
 	                	 result = result +"<table id='candidateCertificatePagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result  = result +'           <th>Name</th>';
-	                 	result  = result + '           <th>Provider</th>';
-	                 	result  = result + '           <th>Score</th>';
-	                 	result  = result + '           <th>Score Type</th>';
-	                 	result  = result + '           <th>Description</th>';
-	                 	result  = result + '           <th>Valid from</th>';
-	                 	result  = result + '           <th>Valid to</th>';
-	                 	result  = result + '           <th>Action</th>';
+	                     result  = result +"           <th>Name</th>";
+	                 	result  = result + "           <th>Provider</th>";
+	                 	result  = result + "           <th>Score</th>";
+	                 	result  = result + "           <th>Score Type</th>";
+	                 	result  = result + "           <th>Description</th>";
+	                 	result  = result + "           <th>Valid from</th>";
+	                 	result  = result + "           <th>Valid to</th>";
+	                 	result  = result + "           <th>Action</th>";
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -238,7 +239,7 @@ function candidateCertificateList(candidateId){
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
 	                     $("#candidateCertificateList").append(result); 
-	                     pagination(); 
+	                     certificationPagination(); 
 			    	} 
                }else{
 	    	         var result ="";
@@ -262,6 +263,22 @@ function candidateCertificateList(candidateId){
           
      }); 
 }
+</script>
+
+<script>
+function certificationPagination(){  
+    $('#candidateCertificatePagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+ 
+ }
 </script>
 
 <%-- 

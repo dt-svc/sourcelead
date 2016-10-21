@@ -292,5 +292,178 @@ public class VendorRestController {
 			
 		 	  return "success";
 		    }
+	
+	
+	
+	
+	/**
+	 * @author Laxman
+	 * this is method is using Vendor List
+	 * @param request
+	 * @return json
+	 * @throws Exception
+	 */
+	 
+	@RequestMapping(value = "/getVendorLists")
+	public @ResponseBody String getVendorLists(@RequestParam(value="values", required=false) String status,HttpServletRequest request) throws Exception {
+
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    String resultJson;
+	    
+	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),status);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    //List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+ 
+			
+		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
+				
+				if(orgRelation.getLocationId().getId() == orgLocations.getId()){
+					orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
+					orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+					orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
+					orgRelation.setState(orgRelation.getResponderLocationId().getState());
+					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
+					orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
+					List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
+					orgRelation.setNoOfContatcs(contactsList.size()); 
+					if(orgRelation.getInitiatorLevel()!=null){
+						orgRelation.setLevel(orgRelation.getInitiatorLevel());
+					}
+					else{
+						orgRelation.setLevel("");
+					}
+					
+				}
+				
+				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
+					orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
+					orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
+					orgRelation.setCountry(orgRelation.getLocationId().getCountry());
+					orgRelation.setState(orgRelation.getLocationId().getState());
+					orgRelation.setCity(orgRelation.getLocationId().getCity());
+					orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
+					List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
+					orgRelation.setNoOfContatcs(contactsList.size()); 
+					if(orgRelation.getResponderLevel()!=null){
+						orgRelation.setLevel(orgRelation.getResponderLevel());
+					}
+					else{
+						orgRelation.setLevel("");
+					}
+					
+				}
+				
+				
+			}
+		    
+		    
+			 resultJson = commonUtil.toJSON(vandorsListByOrgLocationId);
+			 return resultJson;
+		}
+	
+	
+	   /**
+	    * @author Rajashekar
+	    * @param request
+	    * @return JSON
+	    * @throws Exception
+	    */
+	   
+	@RequestMapping(value = "/getVendorContactLists")
+	   @ResponseBody
+		public  String getVendorContactLists(@RequestParam(value="vendorStatus", required=false) String status,@RequestParam(value="vendorId", required=false) String vendorIds,@RequestParam(value="invitationStatus", required=false) String invitationStatus,HttpServletRequest request) throws Exception {
+
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
+		    String resultJson;
+		   
+		    List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(loginUser.getId(),orgLocations.getId(), "Client",status,vendorIds,invitationStatus);
+		    
+		    //List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactListByOrgLocationId(loginUser.getId(),orgLocations.getId(), "Client");
+		
+			
+			for (OrgSpoc orgSpoc : vandorsContactListByOrgLocationId) {
+				if(orgSpoc.getSpocUser().getId() == loginUser.getId() || orgSpoc.getOwnerUser().getId() == loginUser.getId()){
+					//if login user is spoc
+					if(orgSpoc.getSpocUser().getId() == loginUser.getId()){
+	    				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+	    				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+	    				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+	    				 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+	    				// orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+	    				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+	    				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+					}
+					//if login user is Owner
+					else if(orgSpoc.getOwnerUser().getId() == loginUser.getId()){
+							 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+							 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+							 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+							 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+							 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+							 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+							 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+						}
+						
+					 
+				}else{
+					if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
+						 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+						 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+						 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+						 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+						 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+						 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+					 }
+					if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
+					 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+					 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+					 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+					 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+					 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+					 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+					}
+				}
+				if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
+					orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
+					orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
+				}
+				if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
+					orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
+					orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
+				}
+				
+				orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
+				orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
+				orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());
+			}
+			
+			 resultJson = commonUtil.toJSON(vandorsContactListByOrgLocationId);
+			 return resultJson;
+		}
+	
+	   
+	   // this method is used to re-send email to Spoc
+	   @RequestMapping(value = "/resendSpocInvitationEmail" , method = RequestMethod.POST)
+		  public @ResponseBody  String resendInvitationEmail(@RequestParam(value="spocUserId", required=false) String spocUserId, HttpServletRequest request,String responderType, Long orgRelationID) throws Exception {
+			    
+			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			    Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			    OrgRelations orgRelations = orgRelationsService.getRespondingPartyDetailsById(orgRelationID);
+			    //get user by userId
+			    User user = userService.getUserById(Long.parseLong(spocUserId));
+			    
+			    String password = null;
+		 		if(null != user  && null != orgRelations){
+		 		    //to update spoc invitation status
+		 			OrgSpoc spoc = orgSpocService.getSpocUserByUserId(Long.parseLong(spocUserId));
+		 			spoc.setInvitationStatus(Constants.MAIL_SENT);
+		 			orgSpocService.addOrgSpoc(spoc);
+		 			
+		 			userService.sendEmailToClientOrVendor(user, loginUser, password, responderType, loginOrg,orgRelations.getResponderLocationId().getOrg(),orgRelations.getResponderLocationId());
+		 		}
+			
+		 	  return "success";
+		    }
 	   
 }
