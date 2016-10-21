@@ -240,7 +240,7 @@ function templatepagination(){
 		           $("#tab-4").empty();  
 		           $("#tab-4-addTemplate").empty();
 		           $("#tab-4").append(result); 
-		           customizeFields(clientLocationId,templateId,sourceleadUrl);
+		           customizeFields(templateId,sourceleadUrl);
 		  
 	}
 </script>	

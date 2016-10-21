@@ -1323,7 +1323,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     text-align:right; padding:0px;
     }  
 .vendor_wrap .timesheet_head ul li a {
-    font-size: 14px; font-weight: 500; color: #333;
+    font-size: 14px; font-weight: 500; color: #333; cursor: pointer;
     }
 .vendor_wrap .timesheet_head ul li a:hover {
     color:#368ee0;

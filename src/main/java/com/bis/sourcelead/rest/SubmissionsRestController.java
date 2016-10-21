@@ -133,3 +133,58 @@ public class SubmissionsRestController {
     }
 
 }
+    @RequestMapping(value = "/saveOrgSubmissionTemplate" , method = RequestMethod.POST)
+	   public String saveClientSubmissionTemplate(@RequestParam(value="jsonData", required=false) String json,
+			   @RequestParam(value="templateId", required=false) String templateId,
+			   @RequestParam(value="jsonStringData", required=false) String jsonStringData,HttpServletRequest request) throws Exception {
+			
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
+		    
+		    String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+			
+			
+		   try {
+			   SubmissionTemplate submissionTemplate = null;
+			   if(!isNullOrEmpty(templateId)){
+				   submissionTemplate = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
+				}else{
+					submissionTemplate = new SubmissionTemplate();
+				}
+			   
+			   submissionTemplate.setTemplateName(jsonObj.getString("templateName"));
+			   submissionTemplate.setDescription(jsonObj.getString("description"));
+			   submissionTemplate.setOrgLocationId(orgLocations);
+			   submissionTemplate.setJsonString(jsonStringData);
+			   submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+			   submissionTemplate.setCreatedBy(user.getUserCode());
+			   submissionTemplate.setCreatedDate(new Date());
+			   submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+				
+			} catch (Exception e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e)); 
+			}
+			   return "home";
+	    
+	   }
+    
+    private String toJSON(Object obj){
+        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+            public HierarchicalStreamWriter createWriter(Writer writer) {
+                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+            }
+        });
+        return xstream.toXML(obj);
+    }
+
+	/**
+	 * check given string empty or null
+	 * @param str
+	 * @return boolean
+	 */
+	protected static boolean isNullOrEmpty(String str) {
+		return str == null || "".equals(str.trim());
+	}
+}
+
