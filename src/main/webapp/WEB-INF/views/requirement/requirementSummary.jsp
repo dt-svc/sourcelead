@@ -2935,30 +2935,6 @@ function requirementPipeline(requirementId){
 						           result = result + '             </select>';
 						           result = result + '             </span></div></td>';
 						           
-						           
-									result = result +'<label class="labl">Status&nbsp;<b class="text-danger">*</b></label>';
-									result = result +'<span>';
-									result = result +'<select id="status" name="status">';
-									if(json.qcStatus == "New"){
-										result = result +'  <option selected >'+json.qcStatus+'</option>';
-										result = result +'  <option>Inprogress</option>';
-										result = result +' <option>Completed</option>'; 
-									}
-									if(json.qcStatus == "Inprogress"){
-										result = result +'  <option selected >'+json.qcStatus+'</option>';
-										result = result +'  <option>New</option>';
-										result = result +' <option>Completed</option>'; 
-									}
-									if(json.qcStatus == "Completed"){
-										result = result +'  <option selected >'+json.qcStatus+'</option>';
-										result = result +'  <option>New</option>';
-										result = result +' <option>Inprogress</option>'; 
-									}
-									result = result +'</select>';
-									result = result +'</span> </div>';
-						           
-						           
-						           
 						           result = result + '       </tr>';
 			   				}
 				           
