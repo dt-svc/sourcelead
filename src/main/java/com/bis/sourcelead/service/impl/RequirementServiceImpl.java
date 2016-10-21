@@ -407,6 +407,25 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	
 	/**
+	 * @author Venkat Kesav
+	 * @since  oct 21 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to get the Requirement is released for contact or not .
+	 *  
+	 * @return true or false 
+	 * 
+	 * @throws NullPointer
+	 */
+	
+	@Override
+	public Boolean getRequirementByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception {
+		Boolean flag = requirementDao.getRequirementByParentRequirementIdAndSpocId(requirementId, spocId);
+		return flag;
+	}
+	
+	
+	/**
 	 * @author prasad k
 	 * @since  sep 14 2016
 	 * @version 0.0.1

@@ -240,6 +240,29 @@ public class RequirementDaoImpl implements RequirementDao {
 		return requirement;
 	
 	}
+	
+	
+	/**
+	 * @author venkat kesav
+	 * @since  oct 21 2016
+	 * @version 0.0.1
+	 * This method for validate requirement by requirementId and SpocId. It returns boolean value
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Boolean getRequirementByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 if(requirementId != null && spocId != null){
+				String query = "from Requirement requirement where requirement.parent_requirement_id = :requirementId and requirement.spocId = :spocId ";
+				List<Requirement> requirementList = session.createQuery(query).setLong("requirementId", requirementId).setLong("spocId", spocId).setCacheable(true).list();
+				if (requirementList != null && requirementList.size() > 0) {
+					flag = true;
+				}
+		 }
+		return flag;
+	}
+	
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
