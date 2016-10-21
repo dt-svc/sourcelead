@@ -5,10 +5,12 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -253,7 +255,8 @@ public class ClientServiceImpl implements ClientService{
 				}
 			}
 			if(jsonObj.has("owner")){
-				String ownersId = jsonObj.getString("owner");
+				JSONArray jsonArray = jsonObj.getJSONArray("owner");
+				String ownersId = jsonArray.toString();
 				ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]","");
 				String[] owners = ownersId.split(",");
 				

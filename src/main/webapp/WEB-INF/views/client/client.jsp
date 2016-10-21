@@ -408,6 +408,7 @@ function getOrgDetails()
 			var frm = $('#client_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
+			alert(con);
 			  //It will escape all the special characters
 	        var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';

@@ -2310,6 +2310,7 @@ function requirementDetails(requirementId){
 							var result ="";
 				            result = result +' <div class="require_wrap_details">';
 				           
+				            result = result+'<div id="rejectRequirementAlert" ></div>  ';
 				            
 				            result = result +' <div class="clearfix">';
 				            
@@ -2328,7 +2329,7 @@ function requirementDetails(requirementId){
 
 				             if(json.requirementApproverHierarchyStatus !='APPROVED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
                					            result = result +'<button  class="btn btn-success mr" type="button" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
-               					            result = result +'<button  class="btn btn-danger mr" type="button" onClick ="updateReuqirementStatus(\''+ REJECTED+ '\');">Reject</button>';
+               					          result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
    				           	 }else if(json.requirementApproverHierarchyStatus == 'APPROVED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
       						              result = result +'<button  id="requirementStatus" class="btn btn-success pull-right mr" type="button">'+json.requirementApproverHierarchyStatus+'</button>';
     				         }
@@ -2513,10 +2514,13 @@ function updateReuqirementStatus(status){
 	
 	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementId = '${requirementId}';
+	
+	var reason = document.getElementById("rejectReason").value;
+	
+	
 	$.ajax({
       type : "POST",
-       url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,        
-       success :function(data) {  
+      url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason,               success :function(data) {  
             if(data != null && data != 'undefined' && data != ""){  
           		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
@@ -2531,6 +2535,44 @@ function updateReuqirementStatus(status){
             }
        },
 	  }); 
+}
+</script>
+
+
+
+
+<%-- 
+     @author : Venkat Kesav
+     this script is for close alert popup.
+     1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
+--%>
+<script type="text/javascript">
+function rejectRequirementAlertMessage(status){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatus(\""+ status+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +"	</div>";
+	$("#rejectRequirementAlert").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+
+
+
+<%-- 
+     @author : Venkat Kesav
+     this script is for Delete Candidate alert
+     1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
+--%>
+<script type="text/javascript">
+function cancelAlert(){ 
+	$("#rejectRequirementAlert").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 

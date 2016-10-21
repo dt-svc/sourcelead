@@ -121,7 +121,7 @@ public class RequirementRestController {
 	*/
 	
 	@RequestMapping(value = "/requirementAcceptOrReject", method = RequestMethod.POST)
-	public @ResponseBody String requirementAcceptOrReject(@RequestParam(value = "requirementId", required = false) Long requirementId,@RequestParam(value = "status", required = false) String status,HttpServletRequest request) throws Exception {
+	public @ResponseBody String requirementAcceptOrReject(@RequestParam(value = "requirementId", required = false) Long requirementId,@RequestParam(value = "status", required = false)  String status, @RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception {
 		
 	 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -148,6 +148,7 @@ public class RequirementRestController {
 				   }
 		    }
 			requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+			requirementApproverHierarchy.setRejectedReason(reason);
 		}
 		requirementService.addRequirement(requirement);
 		requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
