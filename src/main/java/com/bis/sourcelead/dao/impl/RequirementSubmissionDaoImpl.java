@@ -1,7 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -11,14 +13,25 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
+import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
 public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private UserRoleDao userRoleDao;
+	
+	@Autowired
+	private RequirementDao requirementDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -32,6 +45,24 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	private String duplicateValue;
 	
 	private static final Logger logger = LoggerFactory.getLogger(RequirementSubmissionDaoImpl.class);
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception{
+		Session session = this.sessionFactory.getCurrentSession();	
+		RequirementSubmission submission = session.load(RequirementSubmission.class, new Long(submissionId));
+		logger.info("RequirementSubmission loaded successfully, RequirementSubmission details="+submission);
+		return submission;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId, Long requirementId) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+	     String query = "from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and rs.submissionStatus = 'SUBMISSION' ";
+	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setLong( "requirementId", requirementId).setCacheable(true).list();
+	     return shortListCandidatesList;
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -48,6 +79,21 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return requirementSubmission;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmission> getSubmissionsByRequirementId(Long requirementId,User user, OrgLocations loginOrgLocation) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		/*Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
+		
+		if(requirement.getManagerUserId().getId()==user.getId()){
+			
+			
+		}*/
+		
+		String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId";
+		return session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
 	}
 	
 	

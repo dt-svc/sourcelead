@@ -83,7 +83,6 @@
                   <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
 				  <i class="fa fa-trash"></i></button>
 				  </c:if>
-				  
 				  </div>
 				  </div>
 				 </div> 

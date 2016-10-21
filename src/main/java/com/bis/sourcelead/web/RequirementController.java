@@ -208,11 +208,11 @@ public class RequirementController {
 	}
 	
 	@RequestMapping(value = "/requirementSummary")
-	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
+	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementId", required=false)Long requirementId) throws Exception {
 		 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		List<Candidate> candidatesList = candidateService.getCandidatesByOrgLocationID(orgLocations.getId());
+		List<Candidate> candidatesList = candidateService.getCandidatesByOrgLocationID(orgLocations.getId(),requirementId);
 		
 		ModelAndView model = new ModelAndView();
 		model.setViewName("requirement/requirementSummary");

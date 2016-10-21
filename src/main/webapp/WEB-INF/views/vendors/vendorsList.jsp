@@ -81,8 +81,8 @@
 									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Level-1"  onclick="getVendorLists();"><label>Level-1</label></li>
 									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Level-2"  onclick="getVendorLists();"><label>Level-2</label></li>
 									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-3"  onclick="getVendorLists();"><label>Level-3</label></li>
-		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-4"  onclick="getVendorLists();"><label>Level-4</label></li>
-		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Level-5"  onclick="getVendorLists();"><label>Level-5</label></li>
+		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Level-4"  onclick="getVendorLists();"><label>Level-4</label></li>
+		               				<li><input id="c10"  type="checkbox" name="clinetLevel" value ="Level-5"  onclick="getVendorLists();"><label>Level-5</label></li>
 		                        </ul>
 		                    </div>                	
 		                </li>          
@@ -131,10 +131,10 @@ function getVendorLists(){
 			values.push($(this).val());
     });
 	var sourceleadUrl ='${sourceleadUrl}';
-	var loginOrgLocId = '${loginOrgLocId}';
+	//var loginOrgLocId = '${loginOrgLocId}';
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getVendorLists?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
+		    url: sourceleadUrl+"/getVendorFilterLists?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
@@ -193,7 +193,7 @@ function getVendorLists(){
    	        			result = result +'<td><div>--</div></td>';
    	        		}
 	       		
-	       		result = result +'<td><div>20</div></td>';
+	       		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
 	       		result = result +' <td><div>10</div></td>';
 	       		result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.level+'">'+report.level+'</span>';
 	       		/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
@@ -422,7 +422,7 @@ function saveReason1(spocId, orgRelationID){
 		$("#reasonForSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		   // url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
+		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);

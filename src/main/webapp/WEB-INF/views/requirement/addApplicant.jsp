@@ -17,7 +17,7 @@ function getAddApplicant(requirementId){
 	generateOrgSubmissionForm(sourceleadUrl,requirementId)
 	var candidatesList ='${candidatesList}';
 	var result = "";
-	result = result + '<form id="addApplicant_form" >';
+	result = result + '<form id="addApplicant_form" name="addApplicant_form" enctype="multipart/form-data" method="post">';
 	result = result + '<h3>Add Applicant</h3>';
 	result = result + '<div class="form-horizontal clearfix">';
 	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
@@ -42,9 +42,9 @@ function getAddApplicant(requirementId){
 	result = result + '<div class="" id="browseDiv"  style="display: block;">';
 	result = result + '<div class="input-group">';
 	result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-	result = result + '<input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">';
+	result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload">';
 	result = result + '</span> </label>';
-	result = result + '<input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Resume *">';
+	result = result + '<input type="text" class="form-control" data-validation="required" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
 	result = result + '</div>';
 	result = result + '</div>';
 	result = result + '</div>';	
@@ -55,7 +55,7 @@ function getAddApplicant(requirementId){
 	result = result + '</div>';
 	result = result + '</div></div>';
 	
-	result = result + '<div id="sjfb-fields" class="viewTemplate">';
+	result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="loading"></div> <div id="emailDiv"></div>';
 	
 	result = result + '</div>';
 	
@@ -103,11 +103,20 @@ function getAddApplicant(requirementId){
         var jsonData = encodeURIComponent(con);
         var sourceleadUrl ='${sourceleadUrl}';
         var requirementId = $("#requirementId").val();
-        alert(requirementId);
-        $( "#save_button" ).addClass('button').val('Processing..');
+        
+        var form = $('#addApplicant_form')[0];
+ 		var formData = new FormData(form);
+ 		
+ 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
         
     	    $.ajax({
 	    	type: "POST",
+	    	data: formData,
+   	        contentType : 'application/json; charset=utf-8',
+   	        enctype: 'multipart/form-data',
+	        processData: false,
+	        contentType:false,
+   	        dataType : 'json',
    	    	url : sourceleadUrl+"/saveAddApplicant?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
 	        	if((result == 'success')){
@@ -170,6 +179,9 @@ function getAddApplicant(requirementId){
 		 $("#candidateResumesList").attr("data-validation", "required");
 		 document.getElementById("resumesDiv").style.display="";
 		 document.getElementById("browseDiv").style.display="none";
+		 $("#uploadFile").removeAttr("data-validation");
+		 $("#uploadFile").removeAttr("data-validation");
+		 $('.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
@@ -193,6 +205,7 @@ function getAddApplicant(requirementId){
      	 $("#candidateResumesList").removeAttr("data-validation");
 		 document.getElementById("resumesDiv").style.display="none";
 		 document.getElementById("browseDiv").style.display="";
+		 $("#uploadFile").attr("data-validation", "required");
 	     $("#candidateResumesList").append(output);
 	 }
 	
@@ -349,3 +362,101 @@ function init(){
   }
 </script>
 
+
+ <script>
+ $(document.body).on('change', '#uploadBtn' ,function(){
+	 $('#uploadFile').val(this.value.split( '\\' ).pop());
+	 $("#uploadFile").focus();
+ 	 if(validate_fileupload(this.value)){
+ 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		var form = $('#addApplicant_form')[0];
+  		var formData = new FormData(form); 
+		var sourceleadUrl = '${sourceleadUrl}';
+		   $.ajax({
+				    type: "POST",
+			    	data: formData,
+		   	        contentType : 'application/json; charset=utf-8',
+		   	        enctype: 'multipart/form-data',
+			        processData: false,
+			        contentType:false,
+		   	        dataType : 'json',
+					url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}",
+					success : function(data) {
+						var json = JSON.parse(data);
+						var name = json.name;
+						var firstName = '';
+						var lastName = '';
+						if(name != null && name != 'undefined' && name != ''){
+							 firstName = name.split(".")[0]; 
+							 lastName = name.split(".")[1]; 
+							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
+									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
+								 firstName = name;
+							 }
+						}
+						
+						
+						 $("input[name=FirstName]").val(firstName);
+			        	 $("input[name=LastName]").val(lastName);
+			        	 $("input[name=EmailId]").val(json.email);
+			        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
+						 validateCandidateEmail();
+						 $("#loading").removeAttr("style");
+					},
+				});
+ 	 }
+ });
+
+</script> 
+
+
+<!-- Country,State,City Script Starts Here -->
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
+    var allowed_extensions = new Array("docx","doc","pdf","rtf");
+    var file_extension = fileName.split('.').pop(); // split function will split the filename by dot(.), and pop function will pop the last element from the array which will give you the extension as well. If there will be no extension then it will return the filename.
+
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i]==file_extension)
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
+}
+</script>
+
+
+<script type="text/javascript">
+ function validateCandidateEmail() {
+	 var email =   $("input[name=EmailId]").val();
+	$('#emailDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(email != null && email != ""){
+		
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email, 
+		        success: function(data) {
+		         	if(data == 'true'){
+		         		  $("#save_button").attr("disabled", "disabled");
+			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
+			        	  $('.jquery_form_error_message').remove();
+		        		  $("input[name=EmailId]").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+		        		  $("input[name=EmailId]").setAttribute('record-exist','yes');
+		        		  $("input[name=EmailId]").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+		        	}
+		        	else{
+		        		$("#save_button").removeAttr("disabled");
+		        		$("input[name=EmailId]").removeAttr( "record-exist record-exist-errormsg");
+		        		$('.jquery_form_error_message').remove();
+		        		
+		        	} 
+		        },
+		    });
+	 }
+ }
+ </script>   
