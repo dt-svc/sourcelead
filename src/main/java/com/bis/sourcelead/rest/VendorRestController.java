@@ -167,7 +167,7 @@ public class VendorRestController {
 	
 	
 	
-	@RequestMapping(value = "/getAllContactsbyOrgLocationIdAndUserIdForRequirement")
+	/*@RequestMapping(value = "/getAllContactsbyOrgLocationIdAndUserIdForRequirement")
 	public @ResponseBody String getAllContactsbyOrgLocationIdAndUserIdForRequirement(@RequestParam(value="values", required=false) String status,HttpServletRequest request) throws Exception {
 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -185,7 +185,7 @@ public class VendorRestController {
 			}
 			 resultJson = commonUtil.toJSON(contactsList);
 			 return resultJson;
-	}
+	}*/
 	
 	/**
 	 * @author Laxman
