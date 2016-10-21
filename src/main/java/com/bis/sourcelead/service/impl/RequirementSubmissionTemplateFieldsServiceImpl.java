@@ -32,4 +32,9 @@ public class RequirementSubmissionTemplateFieldsServiceImpl implements Requireme
 		logger.debug("In RequirementSubmissionTemplateFieldsServiceImpl class saveProject method...");
 		return requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(requirementSubmissionTemplateFields);
 	}
+
+	@Override
+	public RequirementSubmissionTemplateFields getSubmissionsTemplateFieldsByRequirementSubmissionsId(Long requirementSubmissionsId) {
+		return requirementSubmissionTemplateFieldsDao.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmissionsId);
+	}
 }
