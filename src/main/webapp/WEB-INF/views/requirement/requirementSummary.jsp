@@ -2514,12 +2514,21 @@ function updateReuqirementStatus(status){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementId = '${requirementId}';
 	
-	var reason = document.getElementById("rejectReason").value;
-	alert("ddd"+reason);
 	
+	 
+	 var reason;
+	 if ($('#rejectReason').length)
+	 {
+		 reason = document.getElementById("rejectReason").value; 
+	 }
+	 else
+	 {
+		 reason = '';
+	 }
 	$.ajax({
       type : "POST",
-      url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason,               success :function(data) {  
+      url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason, 
+    		  success :function(data) {  
             if(data != null && data != 'undefined' && data != ""){  
           		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
