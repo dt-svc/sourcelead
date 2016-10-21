@@ -2,11 +2,8 @@ package com.bis.sourcelead.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-<<<<<<< HEAD
 import java.util.List;
-=======
 import java.util.HashSet;
->>>>>>> fc293ea83903a8e989446ed1d7a2baf11ffc992e
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
