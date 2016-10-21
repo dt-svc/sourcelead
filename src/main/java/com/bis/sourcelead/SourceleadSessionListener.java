@@ -25,53 +25,41 @@ import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.UserLoginLogoutSessionServiceImpl;
 import com.bis.sourcelead.service.impl.UserServiceImpl;
+
 public class SourceleadSessionListener implements HttpSessionListener {
-	
-		@Configuration
-		static class UserServiceContextConfiguration {
-			@Bean
-			public UserService userService() {
-				return new UserServiceImpl();
-			}
+
+	@Configuration
+	static class UserLoginLogoutServiceContextConfiguration {
+		@Bean
+		public UserLoginLogoutSessionService userLoginLogoutSessionService() {
+			return new UserLoginLogoutSessionServiceImpl();
 		}
-		@Configuration
-		static class UserLoginLogoutServiceContextConfiguration {
-			@Bean
-			public UserLoginLogoutSessionService userLoginLogoutSessionService() {
-				return new UserLoginLogoutSessionServiceImpl();
-			}
-		}
-	
-	  private static final Logger logger = LoggerFactory.getLogger(SourceleadSessionListener.class);
-	 
-	  
-	   @Override
-		public void sessionCreated(HttpSessionEvent event) {
-	 		logger.debug("@@@@@ Session is created @@@@@ ");
-			event.getSession().setMaxInactiveInterval(30*60);
-		}
+	}
+
+	private static final Logger logger = LoggerFactory.getLogger(SourceleadSessionListener.class);
+
+	@Override
+	public void sessionCreated(HttpSessionEvent event) {
+		logger.debug("@@@@@ Session is created @@@@@ ");
+		event.getSession().setMaxInactiveInterval(30 * 60);
+	}
+
+	@Override
+	public void sessionDestroyed(HttpSessionEvent event) {
 		
-		@Override
-		public void sessionDestroyed(HttpSessionEvent event) {
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			HttpSession session = event.getSession();
-	        ApplicationContext ctx =WebApplicationContextUtils.getWebApplicationContext(session.getServletContext());
-	        UserService userService = (UserService) ctx.getBean("userService");
-	        UserLoginLogoutSessionService userLoginLogoutSessionService = (UserLoginLogoutSessionService) ctx.getBean("userLoginLogoutSessionService");
-	          
-			User loginUser = userService.findByUserName(auth.getName());
-			
-				UserLoginLogoutSession userLoginSession =(UserLoginLogoutSession)event.getSession().getAttribute("userLoginSession");
-				if(userLoginSession == null){
-					if(loginUser != null){
-						userLoginSession = userLoginLogoutSessionService.getLastLoginRecord(loginUser.getId());
-					}
-				}
-				if(userLoginSession != null){
-					userLoginSession.setLogoutTime(new Date());
-					userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
-				}
-				
-			   logger.debug("@@@@@ Session is Destroyed @@@@@ ");
+		HttpSession session = event.getSession();
+		ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(session.getServletContext());
+		UserLoginLogoutSessionService userLoginLogoutSessionService = (UserLoginLogoutSessionService) ctx
+				.getBean("userLoginLogoutSessionService");
+
+		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) event.getSession()
+				.getAttribute("userLoginSession");
+
+		if (userLoginSession != null) {
+			userLoginSession.setLogoutTime(new Date());
+			userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
 		}
+
+		logger.debug("@@@@@ Session is Destroyed @@@@@ ");
+	}
 }
