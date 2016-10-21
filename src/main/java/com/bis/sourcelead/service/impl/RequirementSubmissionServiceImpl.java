@@ -52,7 +52,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Autowired
 	private RequirementSubmissionTemplateFieldsDao  requirementSubmissionTemplateFieldsDao;
-	
+		
+		
 	@Autowired
 	private CandidateDao candidateDao;
 	
@@ -65,7 +66,17 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Autowired
 	private CandidateEmployersDao candidateEmployersDao;
 	
+	@Override
+	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
+		return requirementSubmissionDao.getRequirementSubmissionById(submissionId);
+	}
+	
+	@Override
+	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId,Long requirementId) throws Exception {
+		return requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocationsId,requirementId);
+	}
 
+	
 	@Override
 	public RequirementSubmission storeRequirementSubmission(RequirementSubmission requirementSubmission) throws Exception {
 		logger.debug("In ProjectsServiceImpl class saveProject method...");

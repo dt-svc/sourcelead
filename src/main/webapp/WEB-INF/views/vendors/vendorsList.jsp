@@ -81,8 +81,8 @@
 									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Level-1"  onclick="getVendorLists();"><label>Level-1</label></li>
 									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Level-2"  onclick="getVendorLists();"><label>Level-2</label></li>
 									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-3"  onclick="getVendorLists();"><label>Level-3</label></li>
-		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-4"  onclick="getVendorLists();"><label>Level-4</label></li>
-		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Level-5"  onclick="getVendorLists();"><label>Level-5</label></li>
+		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Level-4"  onclick="getVendorLists();"><label>Level-4</label></li>
+		               				<li><input id="c10"  type="checkbox" name="clinetLevel" value ="Level-5"  onclick="getVendorLists();"><label>Level-5</label></li>
 		                        </ul>
 		                    </div>                	
 		                </li>          
@@ -131,10 +131,10 @@ function getVendorLists(){
 			values.push($(this).val());
     });
 	var sourceleadUrl ='${sourceleadUrl}';
-	var loginOrgLocId = '${loginOrgLocId}';
+	//var loginOrgLocId = '${loginOrgLocId}';
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getVendorLists?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
+		    url: sourceleadUrl+"/getVendorFilterLists?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
