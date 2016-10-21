@@ -200,9 +200,20 @@ public class RequirementServiceImpl implements RequirementService {
 
 				SubmissionTemplate submissionTemplate = submissionTemplateDao.getSubmissionTemplateById(Long.parseLong(jsonObj.getString("clientSubmissionForm")));
 				submissionTemplate.setId(Long.parseLong(jsonObj.getString("clientSubmissionForm")));
+				
 				requirement.setClientSubmissionTemplateId(submissionTemplate);
 				requirement.setClientSubmissionTemplateJsonString(submissionTemplate.getJsonString());
+				//saving submission Temmplate of Client to  InternalDetails Submission Template  defaultly 
+				requirement.setSubmissionTemplateId(submissionTemplate);
+				requirement.setSubmissionTemplateJsonString(submissionTemplate.getJsonString());
+				
 				}
+			}else if(jsonObj.has("applicationFrom") && StringUtils.isNotEmpty(jsonObj.getString("applicationFrom"))){
+				
+				SubmissionTemplate submissionTemplate = submissionTemplateDao.getSubmissionTemplateById(Long.parseLong(jsonObj.getString("applicationFrom")));
+				submissionTemplate.setId(Long.parseLong(jsonObj.getString("applicationFrom")));
+				requirement.setSubmissionTemplateId(submissionTemplate);
+				requirement.setSubmissionTemplateJsonString(submissionTemplate.getJsonString());
 			}
 			
 			requirement.setStatus(Constants.REQUIREMENT_STATUS);
@@ -312,9 +323,7 @@ public class RequirementServiceImpl implements RequirementService {
 			if(jsonObj.has("priority") && StringUtils.isNotEmpty(jsonObj.getString("priority"))){
 				  requirement.setPriority(jsonObj.getString("priority"));
 			} 
-			/*if(jsonObj.has("applicationFrom") && StringUtils.isNotEmpty(jsonObj.getString("applicationFrom"))){
-				  jsonObj.getString("applicationFrom");
-			} */
+			
 			
 			if(requirement.getId() != null){
 				requirementAssignToService.deleteRequirementAssignToByRequirementId(requirement.getId());

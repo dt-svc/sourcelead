@@ -2310,16 +2310,34 @@ function requirementDetails(requirementId){
 							var result ="";
 				            result = result +' <div class="require_wrap_details">';
 				           
+				            
+				            result = result +' <div class="clearfix">';
+				            
+				            result = result +' <div class="pull-left">';
+				            result = result +' <h2>Assigned Members</h2>'; 
+				            result = result +' </div>';
+				            
+				            result = result +' <div class="pull-right">';
+				            
 				            if(json.requirementApproverHierarchyStatus !='APPROVED'  && json.requirementApproverHierarchyStatus !='REJECTED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){ 
-					            result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary pull-right" type="button">Edit</button></a>';
-				            } 
+					            result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
+				             } 
 				            var APPROVED = "APPROVED";     
 				            var REJECTED = "REJECTED";
 				            
-				            if(json.requirementApproverHierarchyStatus !='APPROVED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){ 
-					            result = result +'<button  class="btn btn-primary pull-right" type="button" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
-					            result = result +'<button  class="btn btn-primary pull-right" type="button" onClick ="updateReuqirementStatus(\''+ REJECTED+ '\');">Reject</button>';
-				            } 
+
+				             if(json.requirementApproverHierarchyStatus !='APPROVED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
+               					            result = result +'<button  class="btn btn-success mr" type="button" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
+               					            result = result +'<button  class="btn btn-danger mr" type="button" onClick ="updateReuqirementStatus(\''+ REJECTED+ '\');">Reject</button>';
+   				           	 }else if(json.requirementApproverHierarchyStatus == 'APPROVED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
+      						              result = result +'<button  id="requirementStatus" class="btn btn-success pull-right mr" type="button">'+json.requirementApproverHierarchyStatus+'</button>';
+    				         }
+   				             else if(json.requirementApproverHierarchyStatus == 'REJECTED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
+					              result = result +'<button  id="requirementStatus" class="btn btn-danger pull-right mr" type="button">'+json.requirementApproverHierarchyStatus+'</button>';
+		                     }
+				             result = result +'     </div>';
+				             result = result +'     </div>';
+				             
 				            result = result +'     <div class="clearfix row">';
 					        result = result +'     <div class="col-md-10 divskill divsAssigned">';
 					        
@@ -2492,6 +2510,7 @@ function requirementDetails(requirementId){
 --%>
 <script>
 function updateReuqirementStatus(status){
+	
 	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementId = '${requirementId}';
 	$.ajax({
@@ -2499,7 +2518,6 @@ function updateReuqirementStatus(status){
        url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,        
        success :function(data) {  
             if(data != null && data != 'undefined' && data != ""){  
-            	var json = JSON.parse(data);
           		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
@@ -2508,7 +2526,7 @@ function updateReuqirementStatus(status){
           		 }
           		 else{ 
           			
-          			   alert("success"+data);
+          			requirementDetails(requirementId)
           		 }
             }
        },
@@ -2965,8 +2983,7 @@ function assignedMemberList(requirementId){
             		 }
             		 else{ 
 							var result = '';
-							result = result +'     <h2>Assigned Members</h2> ';
-						    result = result +'     <div class="heightScroll mt10 mb">';
+							result = result +'     <div class="heightScroll mt10 mb">';
 						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
 						    result = result +'         <thead>';
 						    result = result +'         <tr>';

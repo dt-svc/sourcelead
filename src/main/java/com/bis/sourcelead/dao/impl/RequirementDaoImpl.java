@@ -126,19 +126,22 @@ public class RequirementDaoImpl implements RequirementDao {
 		String subQuery1 = "requirement.createdBy =:loginUserCode";
 		params.put("loginUserCode",user.getUserCode());
 		
-		String subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId =:userId and rah.level = '1' )";
+		String subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level ) or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and requirement.requirementSubmissionStatus = 'APPROVED') ";
 		params.put("userId",userId);
+		params.put("level",1);
 		
-		String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId =:approverUserId and rah.level = '2' and requirement.id IN (select rah.requirementId from RequirementApproverHierarchy rah1 where rah1.level = '1' and rah1.requirementApproverStatus = 'APPROVED') )";
+		String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2 and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'APPROVED'))  or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and requirement.requirementSubmissionStatus = 'APPROVED') )";
 		params.put("approverUserId",userId);
+		params.put("level1",1);
+		params.put("level2",2);
 		
-		String subQuery4 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId =:userId  ) and requirement.requirementSubmissionStatus = 'APPROVED'";
-		params.put("userId",userId);
+		/*String subQuery4 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and requirement.requirementSubmissionStatus = 'APPROVED' ";
+		params.put("userId",userId);*/
 		
 		
 		String subQuery = "";
-		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != ""){
-			subQuery = "where requirement.orgLocationId =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery4+")  )";
+		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
+			subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") )";
 			params.put("orgLocationId",orgLocationId);
 		}
 		String whereCondition = subQuery;
@@ -148,11 +151,17 @@ public class RequirementDaoImpl implements RequirementDao {
         {
 			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId")){
 				query.setLong(str, (long) params.get( str ));
-			}else{
+			}
+			if(str.equalsIgnoreCase("level") || str.equalsIgnoreCase("level1") || str.equalsIgnoreCase("level2")){
+				query.setInteger(str, (int) params.get( str ));
+			}
+			
+			else{
 				query.setParameter( str, params.get( str ) );
 			}
         	
         }
+		
 		return query.list();
 		
 		

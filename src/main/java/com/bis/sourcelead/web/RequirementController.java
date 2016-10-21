@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -32,6 +33,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -68,6 +70,11 @@ public class RequirementController {
 	
 	@Autowired
 	RequirementApproverHierarchyService requirementApproverHierarchyService;
+	
+	@Autowired
+	SubmissionTemplateService submissionTemplateService;
+	
+	
 	
 	@RequestMapping(value = "/requirement")
 	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
@@ -191,7 +198,11 @@ public class RequirementController {
 		List<User> approverList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		model.addObject("approverList", approverList);
 		
+		//approver list
+		List<SubmissionTemplate>   submissionTempletesList = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationId(orgLocations.getId());
+				model.addObject("submissionTempletesList", submissionTempletesList);
 		
+
 		return model;
 
 	}
