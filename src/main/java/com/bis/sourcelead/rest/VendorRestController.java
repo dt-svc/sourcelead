@@ -126,7 +126,6 @@ public class VendorRestController {
 					orgRelation.setState(orgRelation.getResponderLocationId().getState());
 					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
 					orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
-					//orgRelation.setNoOfContatcs(noOfContatcs); 
 					List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
 					orgRelation.setNoOfContatcs(contactsList.size()); 
 					if(orgRelation.getInitiatorLevel()!=null){
