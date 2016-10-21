@@ -21,7 +21,7 @@ public interface RequirementSubmissionService {
 	
 	RequirementSubmission getRequirementSubmissionById(Long submissionId)throws Exception;
 	
-	List<RequirementSubmission> getAllAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId, Long requirementId) throws Exception;
+	List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId, Long requirementId) throws Exception;
 	
 	RequirementSubmission storeRequirementSubmission(RequirementSubmission requirementSubmission)throws Exception;
 

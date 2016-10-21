@@ -66,7 +66,7 @@ public class RequirementInterviewRestController {
 	public @ResponseBody String getAllShortListCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson = null;
-		List<RequirementSubmission> shortListCandidatesList = requirementSubmissionService.getAllAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations.getId(), requirementId);
+		List<RequirementSubmission> shortListCandidatesList = requirementSubmissionService.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations.getId(), requirementId);
 		for (RequirementSubmission sub : shortListCandidatesList) {
 			String candidateName = "";
  		   if(StringUtils.isNotEmpty(sub.getCandidate().getFirstName())){
