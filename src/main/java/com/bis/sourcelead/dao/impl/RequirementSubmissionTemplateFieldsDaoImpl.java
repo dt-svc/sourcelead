@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
+import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -47,6 +49,22 @@ public class RequirementSubmissionTemplateFieldsDaoImpl implements RequirementSu
 		} catch (Exception exception) {
 			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"REQUIREMENT_SUBMISSION_TEMPLATE_FIELDS"));
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return requirementSubmissionTemplateFields;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementSubmissionTemplateFields getSubmissionsTemplateFieldsByRequirementSubmissionsId(
+			Long requirementSubmissionsId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmissionTemplateFields reqSubTemp where reqSubTemp.requirementSubmission.id =:requirementSubmissionsId";
+		List<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList =  session.createQuery(query.toString()).setLong("requirementSubmissionsId", requirementSubmissionsId)
+				.setCacheable(true).list();
+		
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = null;
+		if (requirementSubmissionTemplateFieldsList != null && requirementSubmissionTemplateFieldsList.size() > 0) {
+			requirementSubmissionTemplateFields = (RequirementSubmissionTemplateFields) requirementSubmissionTemplateFieldsList.iterator().next();
 		}
 		return requirementSubmissionTemplateFields;
 	}

@@ -13,4 +13,6 @@ import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 public interface RequirementSubmissionTemplateFieldsService {
 	
 	RequirementSubmissionTemplateFields storeRequirementSubmissionTemplateFields(RequirementSubmissionTemplateFields requirementSubmissionTemplateFields)throws Exception;
+
+	RequirementSubmissionTemplateFields getSubmissionsTemplateFieldsByRequirementSubmissionsId(Long id);
 }
