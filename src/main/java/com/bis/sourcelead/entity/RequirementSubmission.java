@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -73,6 +74,94 @@ public class RequirementSubmission {
     
     @Column(name = "UPDATED_BY")
     private String updatedBy;
+
+    @Transient
+	private String userName;
+    
+    @Transient
+	private String candidateName;
+	
+    @Transient
+	private String candidateEmail;
+	
+    @Transient
+	private String phoneNumber;
+    
+    @Transient
+	private String expectedCTC;
+    
+    @Transient
+	private String workExperience;
+    
+    @Transient
+   	private String createdDateStr;
+    
+    @Transient
+   	private String resumeName;
+    
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getResumeName() {
+		return resumeName;
+	}
+
+	public void setResumeName(String resumeName) {
+		this.resumeName = resumeName;
+	}
+
+	public String getCreatedDateStr() {
+		return createdDateStr;
+	}
+
+	public void setCreatedDateStr(String createdDateStr) {
+		this.createdDateStr = createdDateStr;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public String getCandidateEmail() {
+		return candidateEmail;
+	}
+
+	public void setCandidateEmail(String candidateEmail) {
+		this.candidateEmail = candidateEmail;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getExpectedCTC() {
+		return expectedCTC;
+	}
+
+	public void setExpectedCTC(String expectedCTC) {
+		this.expectedCTC = expectedCTC;
+	}
+
+	public String getWorkExperience() {
+		return workExperience;
+	}
+
+	public void setWorkExperience(String workExperience) {
+		this.workExperience = workExperience;
+	}
 
 	public Long getId() {
 		return id;
