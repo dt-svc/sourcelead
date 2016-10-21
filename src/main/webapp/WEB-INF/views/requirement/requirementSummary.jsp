@@ -2325,9 +2325,8 @@ function requirementDetails(requirementId){
 				             } 
 				            var APPROVED = "APPROVED";     
 				            var REJECTED = "REJECTED";
-				            
 
-				             if(json.requirementApproverHierarchyStatus !='APPROVED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
+				             if(json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
                					            result = result +'<button  class="btn btn-success mr" type="button" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
                					          result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
    				           	 }else if(json.requirementApproverHierarchyStatus == 'APPROVED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
@@ -2346,10 +2345,10 @@ function requirementDetails(requirementId){
 					        
 				            result = result +'   <h1>Description:</h1>';
 				            if(json.description != null && json.description != '' && json.description != 'undefined'){
-					            result = result +'   <textarea placeholder="Enter description">'+json.description+'</textarea>';
-					           }
+					           	 result = result +'   <textarea placeholder="Enter description">'+json.description+'</textarea>';
+					         }
 					         else{
-					            result = result +'   <textarea placeholder="Enter description"> NO DATA</textarea>';
+					           	 result = result +'   <textarea placeholder="Enter description"> NO DATA</textarea>';
 				    	        }
 				            result = result +'   <h2>Other details:</h2>';
 				            result = result +'   <div class="require_one">';
@@ -2516,7 +2515,7 @@ function updateReuqirementStatus(status){
 	var requirementId = '${requirementId}';
 	
 	var reason = document.getElementById("rejectReason").value;
-	
+	alert("ddd"+reason);
 	
 	$.ajax({
       type : "POST",
@@ -2529,7 +2528,6 @@ function updateReuqirementStatus(status){
           			 location.replace(sourceleadUrl+"/errorPage");
           		 }
           		 else{ 
-          			
           			requirementDetails(requirementId)
           		 }
             }

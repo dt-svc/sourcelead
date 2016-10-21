@@ -255,8 +255,14 @@ public class ClientServiceImpl implements ClientService{
 				}
 			}
 			if(jsonObj.has("owner")){
-				JSONArray jsonArray = jsonObj.getJSONArray("owner");
-				String ownersId = jsonArray.toString();
+				String ownersId =null;
+				try{
+					JSONArray jsonArray = jsonObj.getJSONArray("owner");
+					ownersId = jsonArray.toString();
+				}
+				catch(JSONException e){
+					ownersId =jsonObj.getString("owner");
+				}
 				ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]","");
 				String[] owners = ownersId.split(",");
 				
