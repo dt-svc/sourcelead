@@ -422,7 +422,7 @@ function saveReason1(spocId, orgRelationID){
 		$("#reasonForSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		   // url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
+		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
