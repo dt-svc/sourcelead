@@ -106,8 +106,8 @@ public class VendorRestController {
 	 * @throws Exception
 	 */
 	 
-	@RequestMapping(value = "/getVendorLists")
-	public @ResponseBody String getVendorLists(@RequestParam(value="values", required=false) String status,HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/getVendorFilterLists", method = RequestMethod.POST)
+	public @ResponseBody String getVendorFilterLists(@RequestParam(value="values", required=false) String status,HttpServletRequest request) throws Exception {
 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    String resultJson;
