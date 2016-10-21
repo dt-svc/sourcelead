@@ -1,31 +1,18 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
-import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	@Entity
 	@Table(name = "REQUIREMENT_INTERVIEW", catalog = "sourcelead")
@@ -53,14 +40,8 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "END_TIME")
 	private String endTime;
 	
-	@Column(name = "COUNTRY")
-	private String country;
-	
-	@Column(name = "STATE")
-	private String state;
-	
-	@Column(name = "CITY")
-	private String city;
+	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
+	private String location;
 	
 	@Column(name="NOTIFICATION_TO_APPLICANT")
 	private String notificationToApplicant;
@@ -135,28 +116,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.endTime = endTime;
 	}
 
-	public String getCountry() {
-		return country;
+	public String getLocation() {
+		return location;
 	}
 
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
 	public String getNotificationToApplicant() {

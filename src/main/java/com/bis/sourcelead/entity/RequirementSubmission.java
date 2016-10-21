@@ -74,7 +74,7 @@ public class RequirementSubmission {
     
     @Column(name = "UPDATED_BY")
     private String updatedBy;
-
+    
     @Transient
 	private String userName;
     
