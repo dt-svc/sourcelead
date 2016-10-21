@@ -277,7 +277,7 @@ $(document).ready(function() {
 function pagination(){  
     $('#example').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[1, 15, 20, -1], [1, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
