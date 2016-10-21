@@ -425,6 +425,12 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementDao.getJobTitleByJobTemplateStatusAndOrgLocationId(orgLocationId);
 	}
 
+	@Override
+	public List<RequirementAssignTo> getUserAssignJobCount(Long userId) throws Exception {
+		return requirementDao.getUserAssignJobCount(userId);
+	}
+
+
 
 	
 	

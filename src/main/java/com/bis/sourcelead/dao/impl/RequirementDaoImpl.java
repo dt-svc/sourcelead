@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -249,6 +250,17 @@ public class RequirementDaoImpl implements RequirementDao {
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementAssignTo> getUserAssignJobCount(Long userId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementAssignTo reqassignto where reqassignto.assignUserId.id =:userId";
+		return session.createQuery(query).setLong("userId", userId).list();
+	}
+
+
+
 	
 
 	
