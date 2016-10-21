@@ -5,8 +5,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,6 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateEducationDao;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -154,7 +155,14 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	public HashSet<CandidateEducation> getCandidateEducationDetails(JSONObject jsonObj,OrgLocations orgLocations,Candidate candidate,String userCode) throws JSONException {
 		    HashSet<CandidateEducation> candidateEducationList = new HashSet<CandidateEducation>(); 
 		    if(jsonObj.has("candidateEducation")){
-		    	  String education = jsonObj.getString("candidateEducation");
+		    	  String education = null;
+		    	  try{
+		    		   JSONArray jsonArray = jsonObj.getJSONArray("candidateEducation");
+		    		   education = jsonArray.toString();
+		    	  }
+		    	  catch(JSONException e){
+		    		  education= jsonObj.getString("candidateEducation");
+		    	  }
 		    	  education = education.replaceAll("\\[", "").replaceAll("\\]","");
 		  	      String[] educations = education.split(",");
 		    	  for (String edu : educations) {
