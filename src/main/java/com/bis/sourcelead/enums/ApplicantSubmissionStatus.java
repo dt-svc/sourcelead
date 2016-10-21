@@ -3,6 +3,7 @@ package com.bis.sourcelead.enums;
 public enum ApplicantSubmissionStatus {
 
 	SUBMISSION("submission"),
+	SHORTLIST("shortList"),
 	INTERVIEW("interview"),
 	OFFER("offer"),
 	REJECTED("rejected");

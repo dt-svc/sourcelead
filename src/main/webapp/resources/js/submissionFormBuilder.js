@@ -5,7 +5,7 @@
  * SJFB may be freely distributed under the included MIT license (license.txt).
  */
 
-function customizeFields(clientLocationId,templateId,sourceleadUrl){
+function customizeFields(templateId,sourceleadUrl){
 
     //If loading a saved form from your database, put the ID here. Example id is "1".
     //Adds new field with animation
@@ -63,13 +63,11 @@ function customizeFields(clientLocationId,templateId,sourceleadUrl){
         $('.choices ul').sortable();
     });
 
-    
-
     //load saved form
     if(null != templateId && templateId != undefined){
     	 loadSavedForm(templateId,sourceleadUrl);
     }else{
-    	 loadForm(clientLocationId,sourceleadUrl,templateId);
+    	 loadForm(sourceleadUrl,templateId);
     }
    
 
@@ -267,10 +265,10 @@ function addChoice(labelValue) {
 }
 
 //Loads a saved form from your database into the builder
-function loadForm(clientLocationId,sourceleadUrl,templateId) {
+function loadForm(sourceleadUrl,templateId) {
         $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/loadSubmissionTemplate?clientLocationId="+clientLocationId, 
+	        url: sourceleadUrl+"/loadSubmissionTemplate", 
 	        success: function(data) {
 	        	 var data = eval(data);
 	        	 if (data) {

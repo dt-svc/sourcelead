@@ -1,0 +1,1 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_INTERVIEW','DATE_OF_INTERVIEW','DATE NULL AFTER `SUBMISSION_ID`');

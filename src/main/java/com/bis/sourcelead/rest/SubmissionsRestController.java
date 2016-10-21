@@ -1,13 +1,13 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.json.JSONArray;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -16,12 +16,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.Countries;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SubmissionTemplate;
@@ -93,14 +94,22 @@ public class SubmissionsRestController {
     
     @RequestMapping(value = "/saveAddApplicant" , method = RequestMethod.POST)
 	   public String saveAddApplicant(@RequestParam(value="jsonData", required=false) String json,
-			   @RequestParam(value="con", required=false) String con,HttpServletRequest request) throws Exception {
+			   @RequestParam(value="con", required=false) String con,MultipartHttpServletRequest request,
+			   @RequestParam(value="locationMapFile", required=false) CommonsMultipartFile locationMapFileData) throws Exception {
 			
     	    String json1 = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(json1);
 			
+			
+			MultipartFile multiFile = null;
+			Iterator<String> itrator = request.getFileNames();
+			if(itrator.hasNext()){
+		        multiFile = request.getFile(itrator.next());
+			}
+			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			requirementSubmissionService.saveRequirementSubmission(jsonObj, user, orgLocations,con);
+			requirementSubmissionService.saveRequirementSubmission(jsonObj, user, orgLocations,con,multiFile);
     	    
     	    
 			return "success";
@@ -115,6 +124,43 @@ public class SubmissionsRestController {
 		return commonUtil.toJSON(submissiontTemplateList);
 	}
     
+
+
+    @RequestMapping(value = "/saveOrgSubmissionTemplate" , method = RequestMethod.POST)
+	   public String saveClientSubmissionTemplate(@RequestParam(value="jsonData", required=false) String json,
+			   @RequestParam(value="templateId", required=false) String templateId,
+			   @RequestParam(value="jsonStringData", required=false) String jsonStringData,HttpServletRequest request) throws Exception {
+			
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
+		    
+		    String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+			
+			
+		   try {
+			   SubmissionTemplate submissionTemplate = null;
+			   if(!isNullOrEmpty(templateId)){
+				   submissionTemplate = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
+				}else{
+					submissionTemplate = new SubmissionTemplate();
+				}
+			   
+			   submissionTemplate.setTemplateName(jsonObj.getString("templateName"));
+			   submissionTemplate.setDescription(jsonObj.getString("description"));
+			   submissionTemplate.setOrgLocationId(orgLocations);
+			   submissionTemplate.setJsonString(jsonStringData);
+			   submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+			   submissionTemplate.setCreatedBy(user.getUserCode());
+			   submissionTemplate.setCreatedDate(new Date());
+			   submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+				
+			} catch (Exception e) {
+				e.printStackTrace(); 
+			}
+			   return "home";
+	    
+	   }
     
     private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
@@ -125,4 +171,13 @@ public class SubmissionsRestController {
         return xstream.toXML(obj);
     }
 
+	/**
+	 * check given string empty or null
+	 * @param str
+	 * @return boolean
+	 */
+	protected static boolean isNullOrEmpty(String str) {
+		return str == null || "".equals(str.trim());
+	}
 }
+

@@ -134,15 +134,17 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
         	result = result + '<input type="hidden" name="startDateStr" id="startDateStr" value="'+startDateStr+'" >';
         	result = result + '    	<div class="project_tabs_inn_head">';
     		if(projectStatus != 'Completed' &&  projectStatus != '' &&  projectStatus != 'undefined' ){
+    		result = result	+ '<span class="pad-sea">';
     		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
     		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
+    		result = result	+ '</span>';
         	}
     		result = result + '		</div>';
     		result = result + '        <div class="project_tabs_inn_table">';
     	    result = result + '        <div id="employeesLoadingImg"></div>';
     		if(json.projectMembersList.length!=null && json.projectMembersList.length!=''){
-    	    result = result + '	<table>';
-    		result = result + '	<tbody>';
+    	    result = result + '	<table id="projectEmployeePagination" class="display" cellspacing="0" width="100%">';
+    		result = result + '	<thead>';
     		result = result + '		<tr>';
             result = result + '	 	<th>Emp name</th>';
             result = result + '	     <th>Start Date</th>';
@@ -153,6 +155,8 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
             result = result + '	     <th>Saved hrs</th>';
             result = result + '	     <th>Action</th>';
             result = result + '	 </tr>';
+            result = result + '	</thead>';
+            result = result + '	<tbody>';
         	for (var i=0; i<json.projectMembersList.length; i++)
 			{      
 	        		var opt = json.projectMembersList[i];
@@ -215,6 +219,9 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
     	    $("#employeesLoadingImg").empty();
     	    $("#tab-1").append(result);  
     	    
+    	    //pagination function
+    	    projectEmployeePagination();
+    	    
     	    $("#tab-1").show();
     		$(".project-tabs-menu a").click(function(event) {
     		     event.preventDefault();
@@ -261,6 +268,20 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
     
     
     }	
+</script>
+<script>
+function projectEmployeePagination(){
+    $('#projectEmployeePagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
 </script>
 <!-- this script is for Employee EndDate Inline functionality at Projects screen -->
 <script> 

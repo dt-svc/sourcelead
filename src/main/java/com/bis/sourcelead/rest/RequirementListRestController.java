@@ -12,17 +12,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -51,10 +59,17 @@ public class RequirementListRestController {
 	 @Autowired
 	 CommonUtil commonUtil;
 	 
+	 @Autowired
+	 UserService userService;
 
 	 @Autowired
 	 RequirementService requirementService;
 	 
+	 @Autowired
+	 RequirementSubmissionService requirementSubmissionService;
+	 
+	 @Autowired
+	 CandidateResumesService candidateResumesService;
 	 
 	 @Autowired
 	 RequirementAssignToService requirementAssignToService;
@@ -62,6 +77,8 @@ public class RequirementListRestController {
 	 @Autowired
 	 RequirementApproverHierarchyService requirementApproverHierarchyService;
 	 
+	 @Autowired
+	 RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
 	 
 	 /**
 	   * @author sarath kumar
@@ -162,6 +179,7 @@ public class RequirementListRestController {
 				List<RequirementAssignTo> requirementAssignToList = null;
 				if(requirementId !=null && !requirementId.isEmpty()){
 			       requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
+
 			       if(requirementAssignToList !=null && !requirementAssignToList.isEmpty()){
 			           for (RequirementAssignTo assing : requirementAssignToList) { 
 					       assing.setAssignedUserName(assing.getAssignUserId().getFirstName()+" "+assing.getAssignUserId().getLastName());
@@ -180,5 +198,40 @@ public class RequirementListRestController {
 				return resultJson;
 	     }
 	 	   
-		
+		 /**
+		  * @author Prasanna vadla
+		  * @param requirementId
+		  * @param request
+		  * @return
+		  * @throws Exception
+		  */
+		 
+		 @RequestMapping(value = "/getSubmissionsByRequirementId" , method = RequestMethod.POST)
+		 @ResponseBody  String getSubmissionsByRequirementId(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
+				String resultJson = null;
+				 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+					if(requirementId !=null && !requirementId.isEmpty()){
+						List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+						for (RequirementSubmission requirementSubmission : requirementSubmissions) {
+							CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+							RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+							requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName()+" "+requirementSubmissionTemplateFields.getLastName());
+							requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
+							requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
+							requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
+							requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+							if(requirementSubmission.getCreatedDate() != null){
+								requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
+							}
+							User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+							requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
+							requirementSubmission.setResumeName(candidateResumes.getFileName());
+						}
+						
+						
+						resultJson = commonUtil.toJSON(requirementSubmissions);
+					}
+				return resultJson;
+		 }
 }
