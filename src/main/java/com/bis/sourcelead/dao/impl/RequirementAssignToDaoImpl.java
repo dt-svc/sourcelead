@@ -1,0 +1,76 @@
+package com.bis.sourcelead.dao.impl;
+
+import java.util.List;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.bis.sourcelead.dao.RequirementAssignToDao;
+import com.bis.sourcelead.entity.RequirementAssignTo;
+
+@Repository
+public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
+	
+	@Autowired
+	private SessionFactory sessionFactory;
+    
+    @Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
+	
+	
+	@Transactional(rollbackFor = { Exception.class })	
+	@Override
+	public List<RequirementAssignTo> getRequirementAssignToListByRequirementId(Long requirementId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementAssignTo rat where rat.requirementId.id =:requirementId";
+		return session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+		
+		
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public RequirementAssignTo getRequirementAssignToByRequirementIdandAssignToId(Long requirementId,Long teamId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementAssignTo  rato left join fetch rato.requirementId where rato.teamId.id = :teamId and rato.requirementId.id = :requirementId ";
+		List<RequirementAssignTo> requirementAssignToList =  session.createQuery(query.toString()).setLong("teamId", teamId).setLong("requirementId", requirementId)
+				.setCacheable(true).list();
+		
+
+		RequirementAssignTo requirementAssignTo = null;
+		if (requirementAssignToList != null && requirementAssignToList.size() > 0) {
+			requirementAssignTo = (RequirementAssignTo) requirementAssignToList.iterator().next();
+		}
+		return requirementAssignTo;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public boolean deleteRequirementAssignToByRequirementId(Long requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String hql ="delete from RequirementAssignTo rato where rato.requirementId = :requirementId";
+		
+		Query query = session.createQuery(hql).setLong("requirementId", requirementId);
+		query.executeUpdate();
+		
+		return true;
+	}
+    
+  }
+

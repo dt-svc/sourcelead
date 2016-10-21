@@ -1,0 +1,52 @@
+package com.bis.sourcelead.service;
+
+
+import java.util.Collection;
+import java.util.Set;
+
+import java.util.List;
+
+
+import org.json.JSONObject;
+
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
+
+public interface OrgRelationsService {
+	
+	public OrgRelations addOrgRelations(OrgRelations OrgRelations)throws Exception;
+	
+	public OrgRelations getOrgRelationIdByOrgLocationIdAndClientLocationId(Long orgLocationId,Long clientOrgLocationId)throws Exception;
+   
+//	public Collection<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId)throws Exception;
+	
+	public List<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	public OrgRelations getClientByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	public Long getNumberOfProjectsPerClient(Long orgLocationId) throws Exception;
+	
+	public Long getProjectsCountByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId)throws Exception;
+	
+	Set<OrgRelations> orgRelationsListByJson(JSONObject jsonObj, OrgLocations clientOrgLocation, OrgLocations orgLocations, String loginUserCode,String responderType) throws Exception;
+	
+	List<OrgRelations> getAllVendorsListByOrgLocationId(Long id);
+
+	OrgRelations getClientAndVendorOrgDeatilsById(Long orgLocationId, Long orgRelationId);
+	
+	OrgRelations getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId(Long orgLocationId, Long orgRelationId, Long loginOrgLocationId);
+	
+	OrgRelations getOrRelationsById(Long orgRelationId)  throws Exception;
+
+	List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long id, Long orgLocationId, String relationType) throws Exception;
+	
+	OrgRelations getRespondingPartyDetailsById(Long id) throws Exception;
+	
+	List<OrgRelations> getAllClientsFilterByOrgLocationId(Long orgLocationId,String status, Long loginUserId) throws Exception;
+	
+	List<OrgRelations> getAllVendorsFilterByOrgLocationId(Long id,String status) throws Exception;
+
+	List<OrgSpoc> getAllVendorsContactFilterListByOrgLocationId(Long id, Long orgLocationId, String relationType,String vendorStatus,String vendorIds,String vendorInvitationStatus) throws Exception;
+
+}

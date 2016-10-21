@@ -1,15 +1,11 @@
 package com.bis.sourcelead.web;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
-import org.json.JSONArray;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,16 +16,22 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.service.LoginService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+
 
 /**
  * This class is used for...
@@ -39,12 +41,11 @@ import com.bis.sourcelead.service.OrgService;
  */
 
 @Controller
-@RestController
-@PropertySource(value = { "classpath:config/application.properties" })
+@PropertySource("${propertyLocation:app.properties}")
+@ControllerAdvice
 public class HomeController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-
 	@Autowired
 	public LoginService loginService;
 	
@@ -52,14 +53,18 @@ public class HomeController {
 	@Autowired
 	private OrgService orgService;
 	
+	@Autowired
+	private UserService userService;
 	
 	@Value("${jdbc.username}")
 	private String user;
 	
+	@Value("${sourceLeadBlockedSocialDomains}")
+	private String sourceLeadBlockedSocialDomains;
+	
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
-	
 	
 	@Autowired
 	private ApplicationContext applicationContext;
@@ -67,44 +72,62 @@ public class HomeController {
 	@Autowired
 	private DataSource dataSource;
 	
+	protected boolean isNullOrEmpty(String str) {
+		return str == null || "".equals(str.trim());
+	}
+	
+	
 	@PostConstruct
 	public void init() {
-		System.out.println(" *** HomeController init with: " + applicationContext);
+		logger.debug(" *** HomeController init with: " + applicationContext);
 	}
 
-   @RequestMapping(value = { "/", "/welcome**" }, method = RequestMethod.GET)
-	public ModelAndView defaultPage() {
-
-			ModelAndView model = new ModelAndView();
-			model.setViewName("login");
-			return model;
-
+	@RequestMapping(value = { "/", "/welcome**" }, method = RequestMethod.GET)
+	public String defaultPage() {
+		 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		 if(auth != null && auth.getPrincipal() != null){
+				return "redirect:/dashboard";
+		 }
+		 else{
+				return "redirect:/login";
+		 }
 	}
-   
-   
-   @RequestMapping(value = "/registration")
-	public ModelAndView registration() {
-		ModelAndView model = new ModelAndView();
-		model.setViewName("registration");
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		return model;
-
+	
+	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+	public String customExceptionPage(HttpRequestMethodNotSupportedException exception){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		 logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(exception));
+		if(auth != null && auth.getPrincipal() != null){
+				return "redirect:/dashboard";
+		 }
+		 else{
+				return "redirect:/login";
+		 }
 	}
+   @RequestMapping(value = "/forgotPassword")
+ 	public ModelAndView forgotPassword() {
+ 			ModelAndView model = new ModelAndView();
+ 			model.setViewName("forgotPassword");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			return model;
+ 	}
    
-  
    
-   
-   
-   @RequestMapping(value = { "/home"}, method = RequestMethod.GET)
-  	public ModelAndView homePage() {
-
+   @RequestMapping(value = "/resetPassword")
+  	public ModelAndView resetPassword(HttpServletRequest request) {
   			ModelAndView model = new ModelAndView();
-  			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-  			model.setViewName("home");
+  			model.setViewName("resetPassword");
+  			model.addObject("sourceleadUrl", sourceleadUrl);
+  			
+  			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPasswordMsg");
+  			if(!isNullOrEmpty(msg)){
+  				model.addObject("msg", msg);
+  				SourceLeadSessionManager.removeSessionAttribute(request, "resetPasswordMsg");
+  			}
+  			
   			return model;
-
   	}
-   
+    
    
 
 	@RequestMapping(value = "/admin**", method = RequestMethod.GET)
@@ -119,19 +142,32 @@ public class HomeController {
 
 	}
 
-	@RequestMapping(value = "/login")
-	public ModelAndView login(@RequestParam(value = "logout", required = false) String logout, HttpServletRequest request) {
+	@RequestMapping(value = "/login",  method = { RequestMethod.GET, RequestMethod.POST })
+	public ModelAndView loginPage(@RequestParam(value = "logout", required = false) String logout,HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
-
-		if (logout != null) {
-			model.addObject("msg", "You've been logged out successfully.");
-		}
-		model.setViewName("login");
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if(auth != null && auth.getPrincipal() != null && !(auth instanceof AnonymousAuthenticationToken) && !StringUtils.isNotEmpty(logout)){
+			return new ModelAndView("redirect:/dashboard");
+	    }
+		 else{
+			 if (logout != null) {
+					model.addObject("msg", "You've been logged out successfully.");
+			 }
+			 
+			 String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPasswordSucessfulMsg");
+	  			if(!isNullOrEmpty(msg)){
+	  				model.addObject("msg", msg);
+	  				SourceLeadSessionManager.removeSessionAttribute(request, "resetPasswordSucessfulMsg");
+	  			}
+			 model.setViewName("login");
+		    	 
+		 }
 		return model;
-
 	}
 	
 	
+			
 	 @RequestMapping(value = { "/ehCacheTest"}, method = RequestMethod.GET)
 	  	public ModelAndView ehCachePage() {
 	  			ModelAndView model = new ModelAndView();
@@ -164,7 +200,34 @@ public class HomeController {
 		return name;
 	}
 
+	/**
+	 * Returns File upload jsp
+	 * @param request
+	 * @return ModelAndView
+	 */
 	
-	
-	
+	 @RequestMapping(value = "/uploadForm")
+		public ModelAndView fileUploadForm(HttpServletRequest request) {
+		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Users);
+			
+			request.getSession().setAttribute("sessionData",sessionData);
+			ModelAndView model = new ModelAndView();
+			model.setViewName("upload/uploadForm");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+
+		}
+	 
+	    @RequestMapping(value = "/errorPage",method = RequestMethod.GET)
+		public ModelAndView displayErrorPage() {
+			ModelAndView model = new ModelAndView();
+			model.setViewName("errorPage");
+			return model;
+
+		}
 }

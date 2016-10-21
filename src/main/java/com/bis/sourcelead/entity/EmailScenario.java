@@ -8,9 +8,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name="EMAIL_SCENARIO")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL ,region="emailscenario")
 public class EmailScenario {
 	
 	@Id
@@ -20,6 +25,9 @@ public class EmailScenario {
 	
 	@Column(name="SCENARIO_NAME")
 	private String scenarioName;
+	
+	@Column(name = "ENTITY_TYPE", nullable = false)
+	private String entityType;
 	
 	@Column(name="UNIQUE_SCENARIO_NAME")
 	private String uniqueScenarioName;
@@ -65,6 +73,9 @@ public class EmailScenario {
 	
 	@Column(name="DISCLAIMER_TEXT", columnDefinition = "TEXT default NULL")
 	private String disclaimerText;
+	
+	@Transient
+	private String UUID;
 
 	public Long getId() {
 		return id;
@@ -80,6 +91,14 @@ public class EmailScenario {
 
 	public void setScenarioName(String scenarioName) {
 		this.scenarioName = scenarioName;
+	}
+
+	public String getEntityType() {
+		return entityType;
+	}
+
+	public void setEntityType(String entityType) {
+		this.entityType = entityType;
 	}
 
 	public String getUniqueScenarioName() {
@@ -200,5 +219,13 @@ public class EmailScenario {
 
 	public void setDisclaimerText(String disclaimerText) {
 		this.disclaimerText = disclaimerText;
+	}
+
+	public String getUUID() {
+		return UUID;
+	}
+
+	public void setUUID(String uUID) {
+		UUID = uUID;
 	}
 }

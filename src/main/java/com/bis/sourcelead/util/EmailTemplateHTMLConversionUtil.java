@@ -13,66 +13,83 @@ import com.bis.sourcelead.entity.Org;
  */
 public class EmailTemplateHTMLConversionUtil implements Serializable {
 	
-	
 	private static final long serialVersionUID = -3317550653234933840L;
-
+	
 	public static String convertBodyOfEmailTemplateToHTML(String body , String signature ,String callToActionText , String ButtonText , String url, EmailMessage emailMessage, Org org) {	
 		 
 		StringBuilder tempHTML = new StringBuilder();
+		/*
+		 * need to replace image location
+		 * src='"+url+"/resources/images/mail-logo.png'
+		 * 
+		 * src='http://vannamnew.xp3.biz/html/images/mail-logo.png'
+		 */
 		
-		  tempHTML.append("<table width='100%' border='s0' cellspacing='0' cellpadding='10'  style='font-size:14px; border-left: 15px solid #f2f2f2; border-right: 15px solid #f2f2f2; border-bottom: 30px solid #f2f2f2'>");
-		     tempHTML.append("<tr>");
-				 /* if(org.getFileName() != null) {
-					 tempHTML.append("<td bgcolor='#378ad0' style='border-top:1px solid #0094D2; border-left:1px solid #0094D2 '><img style='color:#FFFFFF;' src='"+img+"'  height='50' width='80'  border='0' /></a></td>");
-				  }else{
-					 tempHTML.append("<td bgcolor='#378ad0' style='border-top:1px solid #0094D2; border-left:1px solid #0094D2 '><font style='color:#FFFFFF;' height='50' width='80' border='0' />"+org.getOrgName()+"</font></a></td>");
-				  /*}*/
-		     tempHTML.append("<td bgcolor='#378ad0' style='border-top:1px solid #0094D2; border-left:1px solid #0094D2 '><font style='color:#FFFFFF;' height='50' width='80' border='0' />SourceLead</font></a></td>");  
-		     tempHTML.append("</tr>");
-		     
-		     tempHTML.append("<tr>");
-		     tempHTML.append("<td style='border: 1px solid #fff;'><table width='100%' border='0' cellspacing='0' cellpadding='20'>");
-		     tempHTML.append("<tr>");
-		     tempHTML.append("<td bgcolor='#FFFFFF'>");
-		     tempHTML.append(body);
-		          
-          	 if(!isNullOrEmpty(callToActionText)){
-          		tempHTML.append(callToActionText+"<br/><br/>");
-          	 }
-			 if(!isNullOrEmpty(url)){
-				tempHTML.append("<center><a target='_blank'  href='"+url+"' style='border-radius:3px;color:white;font-size:15px;padding:14px 7px 14px 7px;max-width:150px;font-family:\"Open Sans\",\"Lucida Grande\",\"Segoe UI\",arial,verdana,\"Lucida Sans Unicode\",tahoma,sans-serif;border:1px #1373b5 solid;text-align:center;text-decoration:none;width:280px;margin:6px auto;display:block;background-color:#378ad0'>"+ButtonText+"</a></center><br/><br/><br/>");
-			 }
-			 if(!isNullOrEmpty(signature)){
-				tempHTML.append("<hr />");
-			 }
-		          
-		     tempHTML.append("<table width='100%' border='0' cellspacing='0' cellpadding='0'>");
-		     tempHTML.append("<tr>");
-		     tempHTML.append("<td style='line-height:22px; padding-top:12px;'>");
-				 if(!isNullOrEmpty(signature)){
-					tempHTML.append(signature);
-				 }
-		     tempHTML.append("</td>");
-		     tempHTML.append("</tr>");
-		     tempHTML.append("</table>");
-		     tempHTML.append("</td>");
-		     tempHTML.append("</tr>");
-		     tempHTML.append("</table>");
-		     tempHTML.append("</td>");
-		     tempHTML.append("</tr>");
-		     
-		     tempHTML.append("<tr>");
-			     tempHTML.append("<td  style='color:rgb(126, 117, 117); background-color:#f2f2f2; border: 1px solid #F2F2F2;'>");
-			     tempHTML.append("<a href='#' target='_blank' style='color:rgb(126, 117, 117)'>About SourceLead</a> |");
-			     tempHTML.append("<a href='#' target='_blank' style='color:rgb(126, 117, 117)'> Contact Us</a> |");
-			     tempHTML.append("<a href='#' target='_blank' style='color:rgb(126, 117, 117)'> Legal Notices</a> |");
-			     tempHTML.append("<a href='#' target='_blank' style='color:rgb(126, 117, 117)'> Terms of Use</a> |");
-			     tempHTML.append("<a href='#' target='_blank' style='color:rgb(126, 117, 117)'> Your Privacy Rights</a>");
-			     tempHTML.append("<p>For more information about SourceLead, go to <a href='#' target='_blank' style='color:rgb(126, 117, 117)'>sourcelead.com</a></p>");
-			     tempHTML.append("</td>");
-		     tempHTML.append("</tr>");
+		
+		tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' cellspacing='0' style='background-color:#F9F9F9;'>");
+				tempHTML.append("<tr>");
+						tempHTML.append("<td>");
+								tempHTML.append("<table width='100%' align='center' cellpadding='0' cellspacing='0' style='padding:10px 0px 10px 0px; background-color:#10a0e2;'>");
+										tempHTML.append("<tr>");
+												tempHTML.append("<td>");
+												  tempHTML.append("<table width='600' align='center'>");
+												      tempHTML.append("<tr>");
+												           tempHTML.append("<td><img src='"+url+"/resources/images/mail-logo.png' width='300px' height='71px'></td>");
+										             tempHTML.append("</tr>");
+								                 tempHTML.append("</table>");
+						                      tempHTML.append("</td>");
+				                         tempHTML.append("</tr>");
+		                          tempHTML.append("</table> ");
+		
+		tempHTML.append("<table width='600'  bgcolor='#F9F9F9' align='center' style='background-color:#F9F9F9; margin:0px auto 12px auto; padding:25px 0px 10px 20px'  cellpadding='0' cellspacing='0'>");
+				tempHTML.append("<tr>");
+						tempHTML.append("<td>");
+					  	      tempHTML.append("<table width='600' style='margin:38px auto; font-family:'Segoe UI'; align='center' cellpadding='0' cellspacing='0' >");
+						           tempHTML.append("<tr>");
+						                 tempHTML.append("<td>");
+						                         tempHTML.append("<div style='font-size:14px; color:#333333;'>");
+		                                         tempHTML.append(body);
+		                                         tempHTML.append(" </div>");
+		                                         
+		                                         if(!isNullOrEmpty(signature)){
+									                    tempHTML.append("<div style='font-size:14px; color:#333333; '><br/><br/>");
+														tempHTML.append(signature);
+													    tempHTML.append(" </div>");		
+												 }
+					                            								
+					                     tempHTML.append("</td>");
+					          tempHTML.append("</tr>");
+					      tempHTML.append("</table>");
+					  tempHTML.append(" </td>");
+			    tempHTML.append("</tr>");
 		tempHTML.append("</table>");
-		 
+		
+		tempHTML.append("<table width='100%' bgcolor='#ddd' align='center' cellpadding='0' cellspacing='0' style='padding:10px 0px 10px 0px; background-color:#ddd; font-family:'Segoe UI';'>");
+			  tempHTML.append("<tr>");
+					  tempHTML.append("<td>");
+					       tempHTML.append("<table bgcolor='#ddd'  width='600' align='center' style='background-color:#ddd; padding:15px 0px;'>");
+					           tempHTML.append("<tr>");
+					                 tempHTML.append("<td>");
+					                   tempHTML.append("<p style='color:#214b90; text-transform: uppercase; padding:5px 0px; margin:0px 0px; font-size:25px; font-weight:700;'>get started!</p>");
+					                   tempHTML.append("<p style='padding:0px 0px 15px 0px; margin:0px 0px; font-weight:600;'>For more information about SourceLead, go to <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#fff; display:inline-block;background-color:#e74c51; padding:6px 25px 8px; border-radius:15px; margin:0px 0px 0px 20px;'>sourcelead.com</a></p>");
+					                 tempHTML.append("</td>");
+					            tempHTML.append("</tr>");
+					         
+					            tempHTML.append("<tr>");
+					                  tempHTML.append("<td>");
+					                       tempHTML.append("<p style='text-align:center; padding:10px 0px; margin:0px 0px; font-size:13px; font-weight:600; border-top:1px solid #333;'>");
+					                       tempHTML.append("<a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>About SourceLead</a> | <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>Contact Us</a> | <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>Legal Notices</a> | <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>Terms of Use</a> | <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>Your Privacy Rights</a></p>");
+					                  tempHTML.append("</td>");
+					            tempHTML.append("</tr>");
+					       tempHTML.append("</table>");
+					 tempHTML.append("</td>");
+			    tempHTML.append("</tr>");
+        tempHTML.append("</table>"); 
+        
+	tempHTML.append("</td>");
+ tempHTML.append("</tr>");
+tempHTML.append("</table>");
+
 		 return tempHTML.toString();
 	}
 	

@@ -1,21 +1,25 @@
 package com.bis.sourcelead.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailMessageService;
 import com.bis.sourcelead.service.EmailScenarioService;
-import com.bis.sourcelead.util.EmailMessageBodyConverter;
-import com.bis.sourcelead.util.EmailTemplateHTMLConversionUtil;
+import com.bis.sourcelead.service.NotificationsService;
 
 /**
  * This class is for covert subject,body,signature
@@ -33,7 +37,9 @@ public class EmailScenerioUtil {
 	
 	@Autowired
 	EmailMessageService emailMessageService;
-
+	
+	@Autowired
+	NotificationsService notificationsService;
   
 	public String bulidSubject(String subject,Map<String, String> globalVarsMap) throws Exception{
 		
@@ -45,6 +51,13 @@ public class EmailScenerioUtil {
 		body = body.replaceAll("\n", "<br/>");
 		body = body.replaceAll(" ", "&nbsp;");
 		body = emailMessageBodyConverter.convertBodyOfEmailTemplate(body,globalVarsMap);
+		return body ;
+	}
+	
+	public String buildTempBody(String body,Map<String, String> globalVarsMap) throws Exception{
+		body = body.replaceAll("\n", "<br/>");
+		body = body.replaceAll(" ", "&nbsp;");
+		body = emailMessageBodyConverter.convertTempBodyOfEmailTemplate(body,globalVarsMap);
 		return body ;
 	}
 	
@@ -60,41 +73,70 @@ public class EmailScenerioUtil {
 		return emailTemplate ;
 	} 
 	
-	public void sendEmail(EmailMessage emailMessage, ArrayList<EmailRecipient> emailRecipientList,List<EmailAttachment> attachmentList){
-		
-		   //storeEmailInfoInDB(emailTemplate , emailMessage , emailScenario);
+	public void sendEmail(EmailMessage emailMessage, ArrayList<EmailRecipient> emailRecipientList,List<EmailAttachment> attachmentList) throws Exception{
 			emailMessageService.sendEmail(emailMessage,emailRecipientList,attachmentList);
 		}
 	
 	
-public EmailScenario validateEmailscenerioExists(String uniqueScenarioName,String orgCode,String locationCode , EmailMessage message , String userCode) throws Exception{
+public EmailScenario validateEmailscenerioExists(String uniqueScenarioName,String entityType,String orgCode,String locationCode , EmailMessage message , String userCode) throws Exception{
 	
-	EmailScenario scenarioTemplates = emailScenarioService.getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode(uniqueScenarioName, orgCode, locationCode);
+	EmailScenario scenarioTemplates = emailScenarioService.getEmailScenarioByUniqueNameAndEntityTypeAndOrgCodeAndLocationsCode(uniqueScenarioName, entityType, orgCode, locationCode);
 	    
-		EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueNameAndOrgCodeAndLocationsCode(uniqueScenarioName, Constants.SOURCELEAD_ORGCODE, Constants.SOURCELEAD_LOCATIONCODE_IN);
+		EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueNameAndEntityTypeAndOrgCodeAndLocationsCode(uniqueScenarioName, entityType, Constants.SOURCELEAD_ORGCODE, Constants.SOURCELEAD_LOCATIONCODE_IN);
 		
-		/*if(scenarioTemplates == null){
+		if(scenarioTemplates == null){
 			
 			EmailScenario scenario = new EmailScenario();
 			
-			scenario.setBody(emailScenario.getBody());
+			scenario.setScenarioName(emailScenario.getScenarioName());
+			scenario.setUniqueScenarioName(emailScenario.getUniqueScenarioName());
+			scenario.setDescription(emailScenario.getDescription());
 			scenario.setSubject(emailScenario.getSubject());
+			scenario.setTemplateType("Org");
 			scenario.setSignature(emailScenario.getSignature());
+			scenario.setBody(emailScenario.getBody());
+			scenario.setIsTemplateModified("N");
 			scenario.setCallToActionText(emailScenario.getCallToActionText());
 			scenario.setButtonText(emailScenario.getButtonText());
-			scenario.setFromCompanyEmail(user.getEmail());
     		scenario.setLocationCode(locationCode);
     		scenario.setUseLogo("Yes");
-    		scenario.setConfigureTemplate("N");
+    		scenario.setDisclaimerText(emailScenario.getDisclaimerText());
     		scenario.setCreatedDate(new Date());
     		scenario.setCreatedBy(userCode);
     		scenario.setOrgCode(orgCode);
 			
-			orgEmailScenarioTemplatesDao.store(scenario);
+    		emailScenarioService.save(scenario);
 			
 			scenarioTemplates = scenario;
-		}*/
+		}
 		
 		return scenarioTemplates;
 	}
+
+
+public void sendNotification(String actionLink,User loginUser,User toUser, OrgLocations loginOrgLocation, EmailScenario emailScenario) throws Exception{
+	
+	//new Notification logic
+	Notifications notification = new Notifications();
+	notification.setActionLink(actionLink);
+	notification.setBody(emailScenario.getBody());
+	notification.setNotificationFrom(loginUser);
+	notification.setNotificationTo(toUser);
+	notification.setNotificationScenarioId(emailScenario);
+	notification.setMode(Constants.NOTIFICATION_UNREAD);
+	notification.setCreatedBy(loginUser.getUserCode());
+	notification.setCreatedDate(new Date());
+	notification.setLocationCode(loginOrgLocation.getLocationCode());
+	notification.setOrgCode(loginOrgLocation.getOrg().getOrgCode());
+	notification.setUserNotificationStatus("Sent");
+	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
+	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){
+		notification.setUUID(emailScenario.getUUID());
+	}
+	
+	Notifications notification1 = notificationsService.saveNotification(notification);
+	
+	}
+
+
 }

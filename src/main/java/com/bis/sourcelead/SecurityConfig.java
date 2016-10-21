@@ -11,15 +11,13 @@ import org.springframework.core.annotation.Order;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -34,7 +32,8 @@ import org.springframework.stereotype.Controller;
 @EnableWebSecurity
 @ComponentScan(excludeFilters = { @Filter(type = FilterType.ANNOTATION, value = Controller.class),
 @Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebAppConfig.class) })
-@PropertySource(value = { "classpath:config.properties" })
+@PropertySource(value = { "${propertyLocation:app.properties}" })
+@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class SecurityConfig  {
 	
     @Configuration
@@ -90,21 +89,30 @@ public class SecurityConfig  {
         	http
     		.authorizeRequests()                                                                
     			.antMatchers("/login").permitAll() 
-    			.antMatchers("/registration").permitAll() 
-    			.antMatchers("/companyRegistration").permitAll() 
+    			/*.antMatchers("/registration").permitAll() 
+    			.antMatchers("/companyRegistration").permitAll() */
+    			.antMatchers("/forgotPassword").permitAll() 
+    			.antMatchers("/resetPasswordWithUserName").permitAll() 
+    			.antMatchers("/resetPassword").permitAll() 
+    			.antMatchers("/ws/**").permitAll() 
+    			.antMatchers("/verifyResetPassword").permitAll() 
+    			.antMatchers("/acceptClientOrVendorInvitation").permitAll() 
     			.antMatchers("/resources/**/**").permitAll() 
-    			.antMatchers("/**").access("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')") 
+    			/*.antMatchers("/**").access("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER') OR hasRole('ROLE_APPROVER') OR hasRole('ROLE_SOURCELEAD_ADMIN') OR hasRole('ROLE_HR_MANAGER') OR hasRole('ROLE_ACCOUNT_MANAGER') OR hasRole('ROLE_SALES_MANAGER') OR hasRole('ROLE_RECRUITER') ")*/ 
+    			.antMatchers("/**").fullyAuthenticated()
     			.anyRequest().authenticated()                                                   
     			.and()
     		    .formLogin().loginPage("/login")
-    			.usernameParameter("username")
+      			.usernameParameter("username")
     			.passwordParameter("password")
     			.failureHandler(sourceleadAuthenticationFailureHandler)
     			.successHandler(sourceleadAuthenticationSuccessHandler)
-    			.and().logout().logoutSuccessUrl("/logout")
+    			.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/logout.done").deleteCookies("JSESSIONID")
     			.invalidateHttpSession(true)
     			.and().csrf()
     			.and().exceptionHandling().accessDeniedPage("/403");
+    			
+    			
         }
      }
 	@Bean

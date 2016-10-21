@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -24,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "TIMESHEET_ENTRIES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheetEntries")
 public class TimesheetEntries {
 	
 	 
@@ -35,9 +36,13 @@ public class TimesheetEntries {
 	private Long Id;
 	
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="TIMESHEET_SUBMISSION_ID") 
 	private TimesheetSubmissions timesheetSubmissions;
+	
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name = "PROJECT_TASK")
+	private ProjectTasks projectTask;
 	
 	@NotNull
     @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
@@ -60,80 +65,53 @@ public class TimesheetEntries {
 	private String entryStatus;
 	
 	 
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "MON_TASK")
-	private Tasks monTask;
-	 
 	@Column(name = "MON_HOURS")
-    private Integer monHours;
+    private String monHours;
 	  
 	@Column(name = "MON_COMMENTS")
 	@Type(type="text")
     private String moncomments;
 	 
-	 
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "TUE_TASK")
-	private Tasks tueTask;
 	  
 	@Column(name = "TUE_HOURS")
-	private Integer tueHours;
+	private String tueHours;
 	  
 	@Column(name = "TUE_COMMENTS")
 	@Type(type="text")
 	private String tuecomments;
 	  
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "WED_TASK")
-	private Tasks wedTask;
 	  
 	@Column(name = "WED_HOURS")
-	private Integer wedHours;
+	private String wedHours;
 	  
 	@Column(name = "WED_COMMENTS")
 	@Type(type="text")
 	private String wedcomments;
 	  
-	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "THU_TASK")
-	private Tasks thuTask;
 	  
 	@Column(name = "THU_HOURS")
-	private Integer thuHours;
+	private String thuHours;
 	  
 	@Column(name = "THU_COMMENTS")
 	@Type(type="text")
 	private String thucomments;
 	  
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "FRI_TASK")
-	private Tasks friTask;
-	  
 	@Column(name = "FRI_HOURS")
-	private Integer friHours;
+	private String friHours;
 	  
 	@Column(name = "FRI_COMMENTS")
 	@Type(type="text")
 	private String fricomments;
 	  
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "SAT_TASK")
-	private Tasks satTask;
-	  
 	@Column(name = "SAT_HOURS")
-	private Integer satHours;
+	private String satHours;
 	  
 	@Column(name = "SAT_COMMENTS")
 	@Type(type="text")
 	private String satcomments;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "SUN_TASK")
-	private Tasks sunTask;
-	  
 	@Column(name = "SUN_HOURS")
-	private Integer sunHours;
+	private String sunHours;
 	  
 	@Column(name = "SUN_COMMENTS")
 	@Type(type="text")
@@ -148,7 +126,7 @@ public class TimesheetEntries {
 	@NotNull
     @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = "CREATED_DATE")
-    private Date createdDate; 
+	private Date createdDate;
 		
     @Column(name = "CREATED_BY")
 	private String createdBy;
@@ -160,7 +138,23 @@ public class TimesheetEntries {
 		
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
 
+    @Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] docFile;
+		
+	@Column(name = "FILE_CONTENT_TYPE")
+	private String fileContentType;
+	
+	@Column(name = "FILE_NAME")
+	private String fileName;
+	
+	
+	@Column(name = "WEEK_COMMENTS")
+	@Type(type="text")
+	private String weekcomments;
+	
 	public Long getId() {
 		return Id;
 	}
@@ -169,7 +163,6 @@ public class TimesheetEntries {
 		Id = id;
 	}
 
-
 	@JsonIgnore
 	public TimesheetSubmissions getTimesheetSubmissions() {
 		return timesheetSubmissions;
@@ -177,6 +170,15 @@ public class TimesheetEntries {
 
 	public void setTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions) {
 		this.timesheetSubmissions = timesheetSubmissions;
+	}
+    
+	@JsonIgnore
+	public ProjectTasks getProjectTask() {
+		return projectTask;
+	}
+
+	public void setProjectTask(ProjectTasks projectTask) {
+		this.projectTask = projectTask;
 	}
 
 	public Date getStartDate() {
@@ -219,20 +221,11 @@ public class TimesheetEntries {
 		this.entryStatus = entryStatus;
 	}
 
-	@JsonIgnore
-	public Tasks getMonTask() {
-		return monTask;
-	}
-
-	public void setMonTask(Tasks monTask) {
-		this.monTask = monTask;
-	}
-
-	public Integer getMonHours() {
+	public String getMonHours() {
 		return monHours;
 	}
 
-	public void setMonHours(Integer monHours) {
+	public void setMonHours(String monHours) {
 		this.monHours = monHours;
 	}
 
@@ -244,12 +237,11 @@ public class TimesheetEntries {
 		this.moncomments = moncomments;
 	}
 
-
-	public Integer getTueHours() {
+	public String getTueHours() {
 		return tueHours;
 	}
 
-	public void setTueHours(Integer tueHours) {
+	public void setTueHours(String tueHours) {
 		this.tueHours = tueHours;
 	}
 
@@ -261,11 +253,11 @@ public class TimesheetEntries {
 		this.tuecomments = tuecomments;
 	}
 
-	public Integer getWedHours() {
+	public String getWedHours() {
 		return wedHours;
 	}
 
-	public void setWedHours(Integer wedHours) {
+	public void setWedHours(String wedHours) {
 		this.wedHours = wedHours;
 	}
 
@@ -277,11 +269,11 @@ public class TimesheetEntries {
 		this.wedcomments = wedcomments;
 	}
 
-	public Integer getThuHours() {
+	public String getThuHours() {
 		return thuHours;
 	}
 
-	public void setThuHours(Integer thuHours) {
+	public void setThuHours(String thuHours) {
 		this.thuHours = thuHours;
 	}
 
@@ -293,12 +285,11 @@ public class TimesheetEntries {
 		this.thucomments = thucomments;
 	}
 
-
-	public Integer getFriHours() {
+	public String getFriHours() {
 		return friHours;
 	}
 
-	public void setFriHours(Integer friHours) {
+	public void setFriHours(String friHours) {
 		this.friHours = friHours;
 	}
 
@@ -310,11 +301,11 @@ public class TimesheetEntries {
 		this.fricomments = fricomments;
 	}
 
-	public Integer getSatHours() {
+	public String getSatHours() {
 		return satHours;
 	}
 
-	public void setSatHours(Integer satHours) {
+	public void setSatHours(String satHours) {
 		this.satHours = satHours;
 	}
 
@@ -326,11 +317,11 @@ public class TimesheetEntries {
 		this.satcomments = satcomments;
 	}
 
-	public Integer getSunHours() {
+	public String getSunHours() {
 		return sunHours;
 	}
 
-	public void setSunHours(Integer sunHours) {
+	public void setSunHours(String sunHours) {
 		this.sunHours = sunHours;
 	}
 
@@ -389,53 +380,38 @@ public class TimesheetEntries {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	@JsonIgnore
-	public Tasks getTueTask() {
-		return tueTask;
+
+	public byte[] getDocFile() {
+		return docFile;
 	}
 
-	public void setTueTask(Tasks tueTask) {
-		this.tueTask = tueTask;
-	}
-	@JsonIgnore
-	public Tasks getWedTask() {
-		return wedTask;
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
 	}
 
-	public void setWedTask(Tasks wedTask) {
-		this.wedTask = wedTask;
-	}
-	@JsonIgnore
-	public Tasks getThuTask() {
-		return thuTask;
+	public String getFileContentType() {
+		return fileContentType;
 	}
 
-	public void setThuTask(Tasks thuTask) {
-		this.thuTask = thuTask;
-	}
-	@JsonIgnore
-	public Tasks getFriTask() {
-		return friTask;
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
 	}
 
-	public void setFriTask(Tasks friTask) {
-		this.friTask = friTask;
-	}
-	@JsonIgnore
-	public Tasks getSatTask() {
-		return satTask;
+	public String getFileName() {
+		return fileName;
 	}
 
-	public void setSatTask(Tasks satTask) {
-		this.satTask = satTask;
-	}
-	@JsonIgnore
-	public Tasks getSunTask() {
-		return sunTask;
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
-	public void setSunTask(Tasks sunTask) {
-		this.sunTask = sunTask;
+	public String getWeekcomments() {
+		return weekcomments;
 	}
+
+	public void setWeekcomments(String weekcomments) {
+		this.weekcomments = weekcomments;
+	}
+	 
 	 
 }

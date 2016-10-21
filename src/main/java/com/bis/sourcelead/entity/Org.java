@@ -1,7 +1,9 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,10 +13,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 
@@ -24,44 +36,74 @@ import com.bis.sourcelead.enums.Status;
  */
 @Entity
 @Table(name="ORG")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="org")
 public class Org {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="ID", nullable = false)
 	private Long id;
 	
-	@Column(name = "ORG_NAME", nullable = false)
+	@Column(name = "ORG_NAME")
 	private String orgName;
 	
-	@Column(name = "WEBSITE", nullable = false)
+	@Column(name = "WEBSITE")
 	private String webSite;
 	
-	@Column(name = "ORG_TYPE", nullable = false)
+	@Column(name = "ORG_TYPE")
 	private String orgType;
 	
-	@Column(name = "ORG_CODE",nullable = false)
+	@Column(name = "ORG_CODE")
 	private String orgCode;
 	
-	@Column(name = "STATUS",nullable = false)
+	@Column(name = "STATUS")
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID", nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID")
     private User user;
 	
-	@Column(name = "CREATED_DATE",nullable = false)
+	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
-	@Column(name = "CREATED_BY",nullable = false)
+	@Column(name = "CREATED_BY")
     private String createdBy;
 	
-	@Column(name = "UPDATED_DATE",nullable = false)
+	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
-	@Column(name = "UPDATED_BY",nullable = false)
+	@Column(name = "UPDATED_BY")
 	private String updatedBy;
-
+	
+	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] docFile;
+		
+	@Column(name = "FILE_CONTENT_TYPE")
+	private String fileContentType;
+	
+	@Column(name = "ORG_DESCRIPTION")
+	@Type(type="text")
+	private String orgDescription;
+	
+	
+	@Column(name = "ATS")
+	@Enumerated(EnumType.STRING)
+	private Status ats;
+	
+	@Column(name = "VMS")
+	@Enumerated(EnumType.STRING)
+	private Status vms;
+	
+	@Column(name = "TIMESHEET")
+	@Enumerated(EnumType.STRING)
+	private Status timeSheet;
+	
+	@OneToMany(mappedBy="org",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+    @Fetch(FetchMode.SELECT)
+    private Set<OrgLocations> orgLocationsList;
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -150,7 +192,61 @@ public class Org {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	
-	
+
+	public byte[] getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
+	}
+
+	public String getFileContentType() {
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
+	}
+
+	public String getOrgDescription() {
+		return orgDescription;
+	}
+
+	public void setOrgDescription(String orgDescription) {
+		this.orgDescription = orgDescription;
+	}
+
+	public Status getAts() {
+		return ats;
+	}
+
+	public void setAts(Status ats) {
+		this.ats = ats;
+	}
+
+	public Status getVms() {
+		return vms;
+	}
+
+	public void setVms(Status vms) {
+		this.vms = vms;
+	}
+
+	public Status getTimeSheet() {
+		return timeSheet;
+	}
+
+	public void setTimeSheet(Status timeSheet) {
+		this.timeSheet = timeSheet;
+	}
+
+	public Set<OrgLocations> getOrgLocationsList() {
+		return orgLocationsList;
+	}
+
+	public void setOrgLocationsList(Set<OrgLocations> orgLocationsList) {
+		this.orgLocationsList = orgLocationsList;
+	}
 
 }

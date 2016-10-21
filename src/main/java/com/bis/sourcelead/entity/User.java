@@ -9,13 +9,19 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
@@ -24,6 +30,7 @@ import com.bis.sourcelead.enums.Status;
 
 @Entity
 @Table(name = "USER", catalog = "sourcelead")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "user")
 public class User {
 
 	@Id
@@ -65,6 +72,21 @@ public class User {
 	@Column(name = "STATUS")
 	private String status;
 	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "REPORTING_MANAGER_ID")
+	private User reportingManager;
+	
+	@Column(name = "IS_MAIL_SENT")
+	@Enumerated(EnumType.STRING)
+	private Status isMailSent;
+	
+	@Column(name = "JOB_TITLE")
+	private String jobTitle;
+	
+	@Column(name = "LOCATION")
+	@Type(type="text")
+	private String location;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -78,8 +100,16 @@ public class User {
 	private String updatedBy;
 	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-	@Fetch(FetchMode.JOIN)
+	@Fetch(FetchMode.SELECT)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
+	
+	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+	private Set<Employees> employee = new HashSet<Employees>(0);
+	
+	@OneToMany(mappedBy="user",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    private Set<PasswordResets> passwordResets;
 	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	@Lob
@@ -88,8 +118,27 @@ public class User {
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
+	@Column(name = "TERMINATE_REASON", columnDefinition = "TEXT default NULL")
+	private String terminateReason;
+	
+	@Column(name = "PREVIOUS_USER_STATE")
+	@Enumerated(EnumType.STRING)
+	private Status previousUserState;
+	
+	
 	
 
+	public Status getPreviousUserState() {
+		return previousUserState;
+	}
+
+	public void setPreviousUserState(Status previousUserState) {
+		this.previousUserState = previousUserState;
+	}
+
+	@Transient
+    private String fullName;
+	
 	public Long getId() {
 		return id;
 	}
@@ -187,6 +236,14 @@ public class User {
 		this.status = status;
 	}
 	
+	public Status getIsMailSent() {
+		return isMailSent;
+	}
+
+	public void setIsMailSent(Status isMailSent) {
+		this.isMailSent = isMailSent;
+	}
+
 	public byte[] getDocFile() {
 		return docFile;
 	}
@@ -201,6 +258,14 @@ public class User {
 
 	public void setFileContentType(String fileContentType) {
 		this.fileContentType = fileContentType;
+	}
+
+	public String getTerminateReason() {
+		return terminateReason;
+	}
+
+	public void setTerminateReason(String terminateReason) {
+		this.terminateReason = terminateReason;
 	}
 
 	public Date getCreatedDate() {
@@ -242,6 +307,53 @@ public class User {
 	public void setUserRole(Set<UserRole> userRole) {
 		this.userRole = userRole;
 	}
-	
 
+	
+	public Set<Employees> getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Set<Employees> employee) {
+		this.employee = employee;
+	}
+
+	public Set<PasswordResets> getPasswordResets() {
+		return passwordResets;
+	}
+
+	public void setPasswordResets(Set<PasswordResets> passwordResets) {
+		this.passwordResets = passwordResets;
+	}
+
+	public String getJobTitle() {
+		return jobTitle;
+	}
+
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public User getReportingManager() {
+		return reportingManager;
+	}
+
+	public void setReportingManager(User reportingManager) {
+		this.reportingManager = reportingManager;
+	}
 }

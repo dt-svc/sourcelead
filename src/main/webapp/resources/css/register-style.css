@@ -45,11 +45,11 @@ body {
 	width:48.5%; display:block; box-sizing: content-box; margin:0px 5px; float:left;
 	}	
 .signin_wrap b {
-	width:1px; height:2px; background-color:#2980b9; position:absolute; top:44px; left:0px; right:0px; display:block;
+	width:1px; height:2px; background-color:#2980b9; position:absolute; top:44px; left:0px; right:0px; display:block; z-index:1000;
 	margin:0px auto; opacity:0; transition:0.3s all ease-in-out; -webkit-transition:0.3s all ease-in-out; -moz-transition:0.3s all ease-in-out;
 	}
 .signin_wrap i {
-	position:absolute; font-size:20px; padding:12px 0px 0px 15px; color:#74767c;
+	position:absolute; font-size:20px; padding:12px 0px 0px 15px; color:#74767c; z-index:1000;
 	}	
 .signin_wrap i.si-pass { font-size:18px;}	
 .signin_wrap label {
@@ -96,7 +96,7 @@ body {
 	box-shadow:0px 0px 0px #146193; margin:2px 5px 0px 5px;
 	}	
 .signin_wrap p {
-	padding:0px; margin:0px; font-size:12px; color:#f12929; font-weight:500; display:none;
+	padding:0px; margin:0px; font-size:12px; color:#f12929; font-weight:500; 
 	}
 .for-pas-text {
 	text-align:right; color:#333;
@@ -155,7 +155,17 @@ body {
     overflow: hidden;
 	}					
 	
-	
+.reset_wrap_a label{
+left:12px
+}	 
+
+.reset_wrap_a p{
+    display: block;
+ }
+ .reset_wrap_a .signin_fild{
+    padding: 5px 5px 0 10px;
+ }
+
 
 @media screen and (max-width: 767px){
 .regis_wrap.regis_wrap_a {

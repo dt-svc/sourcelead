@@ -4,18 +4,17 @@ package com.bis.sourcelead;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.Ordered;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -29,7 +28,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 /**
- * 
  * This class is used to configure the spring framework context.
  * 
  * @author: Srinivas Vemula
@@ -39,7 +37,7 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 @Configuration
 @ComponentScan(basePackages = "com.bis.sourcelead")
-@PropertySource(value = { "classpath:config/application.properties" })
+@PropertySource({"${propertyLocation:app.properties}", "classpath:exception.properties"})
 @EnableTransactionManagement
 public class WebAppConfig extends WebMvcConfigurationSupport {
 
@@ -61,6 +59,17 @@ public class WebAppConfig extends WebMvcConfigurationSupport {
 		viewResolver.setPrefix("/WEB-INF/views/");
 		viewResolver.setSuffix(".jsp");
 		return viewResolver;
+	}
+	
+	@Bean
+	public CommonsMultipartResolver multipartResolver() {
+	    CommonsMultipartResolver resolver=new CommonsMultipartResolver();
+	    resolver.setDefaultEncoding("utf-8");
+	// max upload size in bytes 
+	    resolver.setMaxUploadSize(20971520); // 20 MB
+	    // max size of file in memory (in bytes)
+	    resolver.setMaxInMemorySize(1048576); // 1 MB
+	    return resolver;
 	}
 
 	/*

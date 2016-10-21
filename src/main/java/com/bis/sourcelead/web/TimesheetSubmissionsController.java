@@ -2,110 +2,68 @@ package com.bis.sourcelead.web;
 
 
 import java.util.Collection;
-import java.util.Date;
+import java.util.List;
 
-import javax.sql.DataSource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
-@RestController 
-@RequestMapping("/TimesheetSubmissions")
+@Controller 
 public class TimesheetSubmissionsController {
 	
 	 
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
 	@Autowired
 	public TimesheetSubmissionsService timesheetSubmissionsService;
 	
+		
 	
-	@Autowired
-	private ApplicationContext applicationContext;
-	
-	@Autowired
-	private DataSource dataSource;
+	@RequestMapping(value = "/timesheetApproval")
+	public ModelAndView timesheetApproval(HttpServletRequest request) throws Exception {
+			ModelAndView model = new ModelAndView();
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.TimeSheetApproval);
+			
+			request.getSession().setAttribute("sessionData",sessionData);
+			
+			Collection<TimesheetSubmissions> timesheetSubmissionsList =  timesheetSubmissionsService.getApprovalTimesheetSubmissions(user.getId());
+			model.addObject("sourcelead_timesheetSubmissionsList",timesheetSubmissionsList);
+			
+			
+			List<TimesheetSubmissions> thslist = timesheetSubmissionsService.getSubmissionApproverHierarchyForEmployeeList(user.getId());
+			for(TimesheetSubmissions ths : thslist ){
+				ths.setFullName(ths.getProjectMembers().getEmployee().getUser().getFirstName() +""+ths.getProjectMembers().getEmployee().getUser().getLastName());
+				ths.setEmployeeId(ths.getProjectMembers().getEmployee().getId().toString());
+			}
+			model.addObject("thslist",thslist);
 
-	
-	
-	@RequestMapping(value = "/saveOrUpdate", method = RequestMethod.GET)
-	public @ResponseBody  TimesheetSubmissions addTimesheetSubmissions() throws Exception
-			 
-	{
-		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
-		
-		ProjectMembers projectMembers = new ProjectMembers();
-		projectMembers.setId(1l);
-		timesheetSubmissions.setProjectMembers(projectMembers);
-		timesheetSubmissions.setStartDate(new Date());
-		timesheetSubmissions.setEndDate(new Date());
-		timesheetSubmissions.setSubmissionStatus("ok");
-		timesheetSubmissions.setStatus("Active");
-		timesheetSubmissions.setCreatedDate(new Date());
-		timesheetSubmissions.setCreatedBy("prasad");
-		timesheetSubmissions.setUpdatedDate(new Date());
-		timesheetSubmissions.setUpdatedBy("venket");
-		
-		TimesheetSubmissions savedTimesheetSubmissionss = timesheetSubmissionsService.addTimesheetSubmissions(timesheetSubmissions);
-		return savedTimesheetSubmissionss; 
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("timesheet/timesheetApproval");
+	        return model;
 	}
 	
-	
-	@RequestMapping(value = "/update", method = RequestMethod.GET)
-	public @ResponseBody  TimesheetSubmissions updateTimesheetSubmissions() throws Exception
-			 
-	{
-		TimesheetSubmissions timesheetSubmissions = new TimesheetSubmissions();
-		timesheetSubmissions.setId((long) 1);
-		ProjectMembers projectMembers = new ProjectMembers();
-		projectMembers.setId(1l);
-		timesheetSubmissions.setProjectMembers(projectMembers);
-		timesheetSubmissions.setStartDate(new Date());
-		timesheetSubmissions.setEndDate(new Date());
-		timesheetSubmissions.setSubmissionStatus("False");
-		timesheetSubmissions.setStatus("Reject");
-		timesheetSubmissions.setCreatedDate(new Date());
-		timesheetSubmissions.setCreatedBy("Sri");
-		timesheetSubmissions.setUpdatedDate(new Date());
-		timesheetSubmissions.setUpdatedBy("Sai");
-		
-		TimesheetSubmissions updtaeTimesheetSubmissionss = timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
-		return updtaeTimesheetSubmissionss; 
-	}
-	
-	
-/*	@RequestMapping(value = "/getTimesheetEntries", method = RequestMethod.GET)
-	public @ResponseBody  TimesheetEntries getTimesheetEntries(@RequestParam String id) throws Exception
-			 
-	{
-		TimesheetEntries savedTimesheetEntries = timesheetEntriesService.getTimesheetEntries(id);
-		return savedTimesheetEntries; 
-	}*/
-	
-	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-	public @ResponseBody  Boolean deleteTimesheetSubmissions(@PathVariable String id) throws Exception
-			 
-	{
-		Boolean status = timesheetSubmissionsService.deleteTimesheetSubmissions(id);
-		return status; 
-	}
-	
-	
-	@RequestMapping(value = "/getAll", method = RequestMethod.GET)
-	public @ResponseBody Collection<TimesheetSubmissions> getAllTimesheetSubmissions() throws Exception
-			 
-	{
-		  Collection<TimesheetSubmissions> timesheetSubmissionsList = timesheetSubmissionsService.getAllTimesheetSubmissions();
-		  return timesheetSubmissionsList;
-	}
-     
-	
+	 public static boolean isNullOrEmpty(String str) {
+			return str == null || "".equals(str.trim());
+		}
  
 }

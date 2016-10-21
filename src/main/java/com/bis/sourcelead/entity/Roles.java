@@ -8,9 +8,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "ROLES", catalog = "sourcelead")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="roles")
 public class Roles {
 	
 	@Id
@@ -21,6 +26,8 @@ public class Roles {
 	@Column(name = "ROLE_NAME")
 	private String roleName;
 	
+	@Column(name = "DISPLAY_NAME")
+	private String displayName;
 	
 	@Column(name = "STATUS")
 	private String status;
@@ -36,6 +43,9 @@ public class Roles {
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	private Integer rolesCount;
 	
 	
 	
@@ -96,6 +106,22 @@ public class Roles {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	public Integer getRolesCount() {
+		return rolesCount;
+	}
+
+	public void setRolesCount(Integer rolesCount) {
+		this.rolesCount = rolesCount;
 	}
 
 	

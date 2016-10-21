@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.service.EmployeesService;
 
 @Service
@@ -44,6 +46,27 @@ public class EmployeesServiceImpl implements EmployeesService {
 		Boolean flag = employeesDao.deleteEmployee(id);
 		return flag;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.bis.sourcelead.service.EmployeesService#getEmployeeByUserId(java.lang.String)
+	 */
+	@Override
+	public Employees getEmployeeByUserId(Long userId) throws Exception {
+		return employeesDao.getEmployeeByUserId(userId);
+	}
+	
+	@Override
+	public Boolean validateEmployeeId(String employeeId, Long orgLocationsId) throws Exception {
+		Boolean flag = employeesDao.validateEmployeeId(employeeId,orgLocationsId);
+		return flag;
+	}
+	
+	@Override
+	public Employees getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId(String employeeId, Long userId, Long orgLocationsId)
+			throws Exception {
+		return employeesDao.getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId(employeeId,userId,orgLocationsId);
+	}
 
 	@Override
 	public List<Employees> getAllEmployees() throws Exception {
@@ -51,7 +74,38 @@ public class EmployeesServiceImpl implements EmployeesService {
 		List<Employees> emplist= employeesDao.getAllEmployees();
 		return emplist;
 	}
+	
+	@Override
+	public List<Employees> getEmployeesExcludeTeamMembers(Long projectId, Long orgLocationsId) throws Exception {
+		logger.debug("In EmployeesServiceImpl class getEmployeesExcludeTeamMembers method...");
+		List<Employees> emplist= employeesDao.getEmployeesExcludeTeamMembers(projectId,orgLocationsId);
+		return emplist;
+	}
 
+	@Override
+	public Collection<Employees> getAllEmployeesByOrgLocationId(Long orgLocationId,Long level1Manager,Long level2Manager) throws Exception {
+		Collection<Employees> employeeList = employeesDao.getAllEmployeesByOrgLocationId(orgLocationId,level1Manager,level2Manager);
+		return employeeList;
+	}
+
+	@Override
+	public Boolean validateEmployeeEmailId(Long userId, String emailId) {
+		return employeesDao.validateEmployeeEmailId(userId,emailId);
+	}
+
+	@Override
+	public Collection<Employees> getAllEmployeesByOrgLocationIdAndSearchByName(Long orgLocationId, Long level1Manager,
+			Long level2Manager, String searchByName) throws Exception {
+		Collection<Employees> employeeList = employeesDao.getAllEmployeesByOrgLocationIdAndSearchByName(orgLocationId, level1Manager, level2Manager, searchByName);
+		return employeeList;
+	}
+
+	@Override
+	public List<Employees> getEmployeesExcludeTeamMembersBySearchByName(Long projectId, Long orgLocationsId,
+			String searchByName) throws Exception {
+		List<Employees> emplist= employeesDao.getEmployeesExcludeTeamMembersBySearchByName(projectId, orgLocationsId, searchByName);
+		return emplist;
+	}
 
 	
 }

@@ -1,10 +1,13 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import javax.mail.Authenticator;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -17,12 +20,15 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailNotification;
 import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.service.EmailMessageService;
+import com.bis.sourcelead.service.EmailNotificationService;
 
 /**
  * 
@@ -32,11 +38,20 @@ import com.bis.sourcelead.service.EmailMessageService;
 @Service
 public class EmailMessageServiceImpl implements EmailMessageService {
 	
+	@Autowired
+	EmailNotificationService emailNotificationService;
+	
 	@Override
-	public String sendEmail(EmailMessage emailMessage, ArrayList<EmailRecipient> emailRecipientList, List<EmailAttachment> attachmentList) {
+	public String sendEmail(EmailMessage emailMessage, ArrayList<EmailRecipient> emailRecipientList, List<EmailAttachment> attachmentList) throws Exception {
 		if(emailMessage != null)
 		{
-				sendMessage(emailMessage,emailRecipientList,attachmentList);
+			    // store to db with send flag false
+			    Long emailNotificationd = storeEmailInfoInDB(emailMessage,emailRecipientList);
+				
+			    sendMessage(emailMessage,emailRecipientList,attachmentList);
+			    
+			 // update send flag true if the no exception, to Email Value
+				updateEmailInfoWithDeliveryStatus(emailNotificationd);
 		}
 		return "success";
 	}
@@ -45,24 +60,34 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	{
 		
 		Properties props = new Properties();
-		props.put("mail.smtp.host", "smtp.gmail.com");
-		props.put("mail.smtp.socketFactory.port", "465");
-		props.put("mail.smtp.socketFactory.class",
-				"javax.net.ssl.SSLSocketFactory");
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.port", "465");
+		
+		
+        props.put("mail.smtp.host", "secure.emailsrvr.com");
+        props.put("mail.smtp.localhost", "localhost");
+        props.put("mail.stmp.user", "qatimesheets@microinfoinc.com");          
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.password", "password");
+        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.port", "465");
+	        
+	        
+        Session session = Session.getDefaultInstance(props, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                String username = "qatimesheets@microinfoinc.com";
+                String password = "Welcome1";
+                return new PasswordAuthentication(username,password); 
+            }
+        });
 
-		Session session = Session.getDefaultInstance(props,
-			new javax.mail.Authenticator() {
-				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication("peopleaxisindia@gmail.com","Peopleaxis!123");
-				}
-			});
 
 		try {
 
 			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("peopleaxisindia@gmail.com", emailMessage.getFirstName()+" "+emailMessage.getLastName()));
+			message.setFrom(new InternetAddress("qatimesheets@microinfoinc.com", emailMessage.getFromName()));
 			
             ArrayList<String> recipientList = new ArrayList<String>();
 			
@@ -107,6 +132,37 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+   private Long storeEmailInfoInDB(EmailMessage emailMessage, ArrayList<EmailRecipient> emailRecipientList) throws Exception {
+		
+		EmailNotification emailNotification = new EmailNotification();
+		ArrayList<String> recipientList = new ArrayList<String>();
+		for(EmailRecipient recipient : emailRecipientList){
+			recipientList.add(recipient.getEmail());
+		}
+		emailNotification.setEmailTo(recipientList.toString());
+		emailNotification.setEmailFrom(emailMessage.getFromEmail());
+		emailNotification.setSubject(emailMessage.getSubject());
+		emailNotification.setBody(emailMessage.getMessageBody());
+		emailNotification.setDeliveryStatus("N");
+	    Date date= new Date();
+		emailNotification.setCreatedDate(new Timestamp(date.getTime()));
+		emailNotificationService.save(emailNotification);
+		
+		return emailNotification.getId();
+	}
+   
+   private void updateEmailInfoWithDeliveryStatus(Long emailNotificationd) throws Exception {
+		EmailNotification emailNotification = emailNotificationService.getById(emailNotificationd);
+		emailNotification.setId(emailNotificationd);
+	     Date date= new Date();
+	   System.out.println("======================================"+new Timestamp(date.getTime()));
+		emailNotification.setSentTime(new Timestamp(date.getTime()));
+		emailNotification.setDeliveryStatus("Y");
+		
+		emailNotificationService.save(emailNotification);
+		
 	}
 	
 }

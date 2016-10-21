@@ -1,27 +1,56 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.TimesheetSubmissionsDao;
-import com.bis.sourcelead.entity.TimesheetEntries;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
+import com.bis.sourcelead.enums.Submission_ApprovalStatus;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
+import com.bis.sourcelead.util.CalendarUtil;
 
 @Repository
 public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
 
+	@Autowired
+	private SubmissionApproverHierarchyDao submissionApproverHierarchyDao;
+	
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetSubmissionsDaoImpl.class);
 	
 	@Override
@@ -29,20 +58,50 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	public TimesheetSubmissions addTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			session.save(timesheetSubmissions);
+			session.saveOrUpdate(timesheetSubmissions);
 		}
-		catch(HibernateException exception)	{
+		catch(Exception exception)	{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"TIMESHEET_SUBMISSIONS"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return timesheetSubmissions;
 		
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
+				for(TimesheetSubmissions timesheetSubmissions : timesheetSubmissionsList){
+					session.saveOrUpdate(timesheetSubmissions);
+				}
+				
+			}
+			
+		}
+		catch(Exception exception)	{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"TIMESHEET_SUBMISSIONS"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
+	}
+	
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public TimesheetSubmissions updateTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions) throws Exception {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
-	    session.update(timesheetSubmissions);
+	   if(timesheetSubmissions != null){
+		   session.update(timesheetSubmissions);
+	   }
+	   if(timesheetSubmissions == null){
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"TIMESHEET_SUBMISSIONS"));
+			throw new SourceLeadObjectNotFoundException(message.toString());
+	   }
+		
 	    return timesheetSubmissions;
 		
 	}
@@ -52,7 +111,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	public TimesheetSubmissions getTimesheetSubmissions(String id) throws Exception {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
-		return (TimesheetSubmissions) session.get(TimesheetSubmissions.class, id);
+		return (TimesheetSubmissions) session.get(TimesheetSubmissions.class, Long.parseLong(id));
 	}
 
 	@Override
@@ -66,23 +125,661 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		session.update(timesheetSubmissions);
 		logger.info("Successfully deleted !!!");
 		return null;
-		/*Query query = session.createQuery("delete Cities where id = :ID");
-		query.setParameter("ID", new Long(18));
-		 
-		int result = query.executeUpdate();
-		return null;*/
+	
+	}
+	
+	
+	/**
+	 * This method gives startDate of coming week from the existing submission records if exists
+	 *
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Date getNextMondayByProjectMemberId(Long pojectMemberId) {
+		Session session = this.sessionFactory.getCurrentSession();
+         String query = "select MAX(ts.startDate) from TimesheetSubmissions ts  where ts.projectMembers.id =:pojectMemberId and ts.status = '1' ";
+         List<java.sql.Timestamp>  wtsList = (List<java.sql.Timestamp>)session.createQuery(query).setLong("pojectMemberId", pojectMemberId).list();
+         Date date = null;
+          if(wtsList != null && !wtsList.isEmpty()){
+            java.sql.Timestamp sqlDate = wtsList.iterator().next();
+         	if(sqlDate != null){
+         		Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+				startCal.setLenient(false);
+				startCal.setTime(new Date(sqlDate.getTime()));
+				Calendar monday = CalendarUtil.getNextWeekDayByCalendar(startCal, "MON");
+				date = monday.getTime();
+         	}
+          }
+          return date;
+	}
+
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TimesheetSubmissions> getApprovalTimesheetSubmissions(Long userId) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();  
+			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user user where user.userState != 'INACTIVE'  and  ts.status != '0' and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:approverUserId))  GROUP BY emp.id";   
+			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("approverUserId", userId).list();
+		    for(TimesheetSubmissions ts : timesheetSubmissionsList){
+				HashMap<String, Date> submissionDateRange =	 getMinAndMaxTimesheetSubmissionDatesForApprover(userId,ts.getProjectMembers().getEmployee().getUser().getId());
+				Date employeeStartDate = submissionDateRange.get("STARTDATE");
+				Date employeeEndDate = submissionDateRange.get("ENDDATE");
+				HashMap<String,Date> dateList =  new HashMap<String,Date>(); 
+				dateList.put("STARTDATE",employeeStartDate);
+				dateList.put("ENDDATE",employeeEndDate);
+			    ts.setDateList(dateList);
+			}
+			return timesheetSubmissionsList;
+	}
+	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<TimesheetSubmissions> getTimesheetSubmissionsByAproverId(Long projectMemberId, Long userId,Date startDate)
+			throws Exception {
+		// TODO Auto-generated method stub
 		
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sDate = new java.sql.Date(startDate.getTime());
+		String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and ts.status = '1' and ts.startDate =:startDate and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";
+		List<TimesheetSubmissions> timesheetSubmissionsList1 = session.createQuery(query1)
+																		  .setLong("empId", projectMemberId)	
+					                                                      .setLong("userId", userId)
+					                                                      .setParameter("startDate", startDate).list();
+		  return timesheetSubmissionsList1;
+   }
+   
+   @Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+		String query = "from  TimesheetSubmissions ts   left join fetch ts.projectMembers pm   left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and  ts.submissionApprovalStatus = :approvalStatus)" ;
+		List<TimesheetSubmissions> tslist =session.createQuery(query.toString()).setLong("userId", userId).setString("approvalStatus", approvalStatus).list(); 
+		      
+		
+	    return tslist.size();
+		  
+		
+	}
+
+
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissions(Date startDate,Date endDate,Long  userId) throws Exception {
+			
+		    // TODO Auto-generated method stub
+			Session session = this.sessionFactory.getCurrentSession();
+			java.sql.Date sqlStartDate = null;
+			if(startDate != null){
+				sqlStartDate = new java.sql.Date(startDate.getTime());
+			}
+			
+			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.projects pr  left join fetch pm.employee emp left join fetch emp.user where ( pm.id IN(select pmh.projectMemberId.id from ProjectMembersHistory pmh where  pmh.projectTerminationDate IS NULL OR (pmh.projectTerminationDate >= :startDate) ) ) and emp.user.id = :userId and ts.status ='1' and ts.startDate = :startDate  order by pr.id ";  
+			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("userId", userId).setParameter("startDate", sqlStartDate).list();
+			return timesheetSubmissionsList;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public TimesheetSubmissions getAllApprovalEmployeeTimesheetSubmissions(Date startDate,Date endDate,Long  userId) throws Exception {
+			
+	    // TODO Auto-generated method stub
+		Session session = this.sessionFactory.getCurrentSession();  
+		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))  and ts.status = '1'  and ts.startDate =:startDate GROUP BY emp.id,ts.startDate";   
+		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setInteger("userId", userId.intValue()).setParameter("startDate", startDate).list();
+		
+		
+		for(TimesheetSubmissions ts : timesheetSubmissionsList){
+			Float combinedTotalHours = 0f ; 
+			Date sDate = ts.getStartDate();
+			Long empId = ts.getProjectMembers().getEmployee().getId();
+			
+			
+			 List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(empId, userId, sDate);
+			 
+			/*String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and ts.startDate =:startDate and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";
+			List<TimesheetSubmissions> timesheetSubmissionsList1 = session.createQuery(query1)
+																		  .setInteger("empId", empId)	
+					                                                      .setInteger("userId", userId.intValue())
+					                                                      .setParameter("startDate", sDate).list();*/
+		    Boolean isRejected = false; 
+		    Boolean isAPPROVED = false; 
+		    Boolean isSUBMITTEDFORAPPROVAL = false; 
+		    Boolean isNEW = false;
+		    String status = "";
+			
+		    
+			for(SubmissionApproverHierarchy sah : sahList){
+				if(sah.getSubmissionId().getTotalHours()!=null && !sah.getSubmissionId().getTotalHours().isEmpty()){
+					combinedTotalHours = combinedTotalHours + Float.parseFloat(sah.getSubmissionId().getTotalHours());
+					}
+					if( sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
+						isRejected   = true;  
+						status = "REJECTED";
+					}
+					else if(!isRejected  && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
+						 isNEW   = true;  
+						 status = "NEW";
+					}
+					else if(!isRejected && !isNEW &&  sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
+						 isSUBMITTEDFORAPPROVAL   = true;  
+						 status = "SUBMITTED FOR APPROVAL";
+					}
+					else if(!isRejected && !isNEW&& !isSUBMITTEDFORAPPROVAL && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED ){
+						 isAPPROVED   = true;  
+						 status = "APPROVED";
+					}
+				
+			
+			ts.setCombinedTotalHours(combinedTotalHours.toString());
+			ts.setCombinedStatus(status);
+		}
+		}
+		TimesheetSubmissions timesheetSubmissions = null;
+		if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
+			timesheetSubmissions = timesheetSubmissionsList.iterator().next();
+		}
+		return timesheetSubmissions;
+
+	}
+	
+	
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public TimesheetSubmissions getAllApprovalEmployeeTimesheetSubmissionsByEmployeeUserId(Date startDate,Date endDate,Long  userId,Long  empUserId,Long employeeId) throws Exception {
+			
+	    // TODO Auto-generated method stub
+		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
+		Session session = this.sessionFactory.getCurrentSession();  
+		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where  ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :empUserId)  and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))  and ts.status = '1' and ts.startDate =:startDate GROUP BY emp.id,ts.startDate";   
+		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("userId", userId).setLong("empUserId", empUserId).setParameter("startDate", sqlStartDate).list();
+		
+		
+		for(TimesheetSubmissions ts : timesheetSubmissionsList){
+			Float combinedTotalHours = 0f ; 
+			java.sql.Date sDate = new java.sql.Date(ts.getStartDate().getTime());
+			Long empId = ts.getProjectMembers().getEmployee().getId();
+			
+		    List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(employeeId, userId, startDate);
+			 
+
+		    Boolean isRejected = false; 
+		    Boolean isAPPROVED = false; 
+		    Boolean isSUBMITTEDFORAPPROVAL = false; 
+		    Boolean isNEW = false;
+		    String status = "";
+			
+		    
+		    
+		    for(SubmissionApproverHierarchy sah : sahList){
+				if(sah.getSubmissionId().getTotalHours()!=null && !sah.getSubmissionId().getTotalHours().isEmpty()){
+				combinedTotalHours = combinedTotalHours + Float.parseFloat(sah.getSubmissionId().getTotalHours());
+				}
+					if( sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
+						isRejected   = true;  
+						status = "REJECTED";
+					}
+					else if(!isRejected  && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
+						 isNEW   = true;  
+						 status = "NEW";
+					}
+					else if(!isRejected && !isNEW &&  sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
+						 isSUBMITTEDFORAPPROVAL   = true;  
+						 status = "SUBMITTED FOR APPROVAL";
+					}
+					else if(!isRejected && !isNEW&& !isSUBMITTEDFORAPPROVAL && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED ){
+						 isAPPROVED   = true;  
+						 status = "APPROVED";
+					}
+				
+			   DecimalFormat formatter = new DecimalFormat("#0.00");
+			   ts.setCombinedTotalHours(formatter.format(combinedTotalHours));
+			   ts.setCombinedStatus(status);
+			   ts.setRejectedReason(sah.getRejectedReason());
+		    }
+		    
+		    
+			/*for(TimesheetSubmissions ts1 : timesheetSubmissionsList1){
+				if(ts1.getTotalHours()!=null && !ts1.getTotalHours().isEmpty()){
+				combinedTotalHours = combinedTotalHours + Float.parseFloat(ts1.getTotalHours());
+				}
+					if( ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
+						isRejected   = true;  
+						status = "REJECTED";
+					}
+					else if(!isRejected  && ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
+						 isNEW   = true;  
+						 status = "NEW";
+					}
+					else if(!isRejected && !isNEW &&  ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
+						 isSUBMITTEDFORAPPROVAL   = true;  
+						 status = "SUBMITTED FOR APPROVAL";
+					}
+					else if(!isRejected && !isNEW&& !isSUBMITTEDFORAPPROVAL && ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED ){
+						 isAPPROVED   = true;  
+						 status = "APPROVED";
+					}
+				
+			
+			ts.setCombinedTotalHours(combinedTotalHours.toString());
+			ts.setCombinedStatus(status);
+		}*/
+		}
+		TimesheetSubmissions timesheetSubmissions = null;
+		if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
+			timesheetSubmissions = timesheetSubmissionsList.iterator().next();
+		}
+		return timesheetSubmissions;
+
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public HashMap<String,Date> getMinAndMaxTimesheetSubmissionDatesForEmployee(Long  userId) throws Exception {
+		
+		//(ts.projectMembers.projectEndDate IS NULL OR  (ts.projectMembers.projectEndDate > ts.startDate))
+		
+		  Session session = this.sessionFactory.getCurrentSession();
+		  String query = "select  distinct min(ts.startDate),max(ts.endDate) from TimesheetSubmissions ts  where ts.status = '1' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)";
+		  List results = session.createQuery(query).setLong("userId", userId).list();
+													
+		  HashMap<String,Date> dateList =  new HashMap<String,Date>();;
+		  if(results != null && !results.isEmpty()){
+			  for(Object result :results){
+				  Object[] list = (Object[])result;
+				  java.sql.Timestamp startDateTimeStamp = (java.sql.Timestamp)list[0];
+				  java.sql.Timestamp endDateTimeStamp = (java.sql.Timestamp)list[1];
+				  
+				  Date utilStartDate = null ;
+				  Date utilEndDate = null ;
+				  if(startDateTimeStamp != null){
+					   utilStartDate = new Date(startDateTimeStamp.getTime());
+				  }
+				  if(endDateTimeStamp != null){
+					   utilEndDate = new Date(endDateTimeStamp.getTime());
+				  }
+				 
+				  dateList.put("STARTDATE",utilStartDate);
+				  dateList.put("ENDDATE",utilEndDate);
+			  }
+		  }
+		 return dateList;
 	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<TimesheetSubmissions> getAllTimesheetSubmissions() throws Exception {
-		// TODO Auto-generated method stub
+	public Float getTotalApprovedOrRejectedHoursByuserId(Long userId, String approvalStatus) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<TimesheetSubmissions> timesheetSubmissionsList = null;
-		Query timesheetSubmissionsListQuery= session.createQuery("from TimesheetSubmissions");
-		timesheetSubmissionsList=timesheetSubmissionsListQuery.list();;
+		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and  ts.submissionApprovalStatus = :approvalStatus)" ;
+		List<TimesheetSubmissions> tslist =session.createQuery(query.toString()).setLong("userId", userId).setString("approvalStatus", approvalStatus).list(); 
+		Float totalHours = 0.0F;
+		if(tslist !=null){
+		   for (int i = 0; i < tslist.size(); i++) {
+			   if(tslist.get(i).getTotalHours() != null && ! "".equalsIgnoreCase(tslist.get(i).getTotalHours())){
+				   totalHours = totalHours + Float.parseFloat(tslist.get(i).getTotalHours());
+			   }
+		   }
+	   }
+		return totalHours;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Float getTotalDraftAndSubmittedHoursByuserId(Long userId, String submissionStatus) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and  ts.submissionStatus = :submissionStatus)" ;
+		List<TimesheetSubmissions> tslist =session.createQuery(query.toString()).setLong("userId", userId).setString("submissionStatus", submissionStatus).list(); 
+		Float totalHours = 0.0F;
+		if(tslist !=null){
+		   for (int i = 0; i < tslist.size(); i++) {
+			   if(tslist.get(i).getTotalHours() != null && ! "".equalsIgnoreCase(tslist.get(i).getTotalHours())){
+				   totalHours = totalHours + Float.parseFloat(tslist.get(i).getTotalHours());
+			   }
+		   }  
+	   }
+		return totalHours;
+	}
+		
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsListByStatus(Long userId, String approvalStatus)
+			throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+		String query = "from  TimesheetSubmissions ts   left join fetch ts.projectMembers pm  left join fetch pm.projects pr   left join fetch pm.employee emp where "
+				+ subQueryForUserIdChecking + " and  ts.submissionApprovalStatus = :approvalStatus)";
+		List<TimesheetSubmissions> tslist = session.createQuery(query.toString()).setLong("userId", userId)
+				.setString("approvalStatus", approvalStatus).list();
+
+		return tslist;
+
+	}
+
+
+
+@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<TimesheetSubmissions> getProjectsBasedOnUserIdAndStatusAndClientForFilters(Long userId,
+			String clientId,String values) throws Exception {
+		
+
+	    Collection<TimesheetSubmissions> tslist = null;
+        Session session = this.sessionFactory.getCurrentSession();
+        String subQuery2 = "";
+		String[] tokens = values.split(",");
+		ArrayList<TimesheetSubmissions> timesheetSubmissions = new ArrayList<TimesheetSubmissions>();
+		String[] clients = clientId.split(",");
+		if(clients[0].length()>0){
+			
+				for(String client :clients){
+						if(Arrays.asList(tokens).contains("All")){
+							subQuery2 = subQuery2+ "ts.submissionApprovalStatus = 'All' or ";
+						}
+						  
+						if(Arrays.asList(tokens).contains("Approved")){
+							subQuery2 = subQuery2+ "ts.submissionApprovalStatus = 'Approved' or ";
+						}
+						
+						if(Arrays.asList(tokens).contains("Draft")){
+							subQuery2 = subQuery2 + "ts.submissionApprovalStatus = 'Draft' or ";
+						}
+						if(Arrays.asList(tokens).contains("Rejected")){
+							subQuery2 = subQuery2 + "ts.submissionApprovalStatus = 'Rejected' or ";
+						}
+						
+						if (tokens[0] != null && tokens[0].length() > 0){
+							subQuery2 = "and (" + subQuery2.substring(0,subQuery2.length() - 4)+")";
+						}
+					 String subquery1 ="pm.projects.orgRelationId ="+client;
+					 String subQueryForUserIdChecking = "pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+					 String query = "from  TimesheetSubmissions ts   left join fetch ts.projectMembers pm   left join fetch pm.employee emp where "+subQueryForUserIdChecking+"  "+subQuery2+" and "+subquery1+" )" ;
+					 tslist = session.createQuery(query.toString()).setLong("userId", userId).list(); 
+					 
+					 timesheetSubmissions.addAll(tslist);
+		}	
+		}else{
+			
+			if(Arrays.asList(tokens).contains("All")){
+				subQuery2 = subQuery2+ "ts.submissionApprovalStatus = 'All' or ";
+			}
+			  
+			if(Arrays.asList(tokens).contains("Approved")){
+				subQuery2 = subQuery2+ "ts.submissionApprovalStatus = 'Approved' or ";
+			}
+			
+			if(Arrays.asList(tokens).contains("Draft")){
+				subQuery2 = subQuery2 + "ts.submissionApprovalStatus = 'Draft' or ";
+			}
+			if(Arrays.asList(tokens).contains("Rejected")){
+				subQuery2 = subQuery2 + "ts.submissionApprovalStatus = 'Rejected' or ";
+			}
+			
+			if (tokens[0] != null && tokens[0].length() > 0){
+				subQuery2 = "and (" + subQuery2.substring(0,subQuery2.length() - 4)+")";
+			}
+		
+		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+		String query = "from  TimesheetSubmissions ts   left join fetch ts.projectMembers pm   left join fetch pm.employee emp where "+subQueryForUserIdChecking+"  "+subQuery2+" )" ;
+		tslist = session.createQuery(query.toString()).setLong("userId", userId).list();
+			
+			
+			
+		}
+		
+		Collection<TimesheetSubmissions> userCollection = new HashSet<TimesheetSubmissions>(timesheetSubmissions);
+		return userCollection;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getUsersTimeSheetSubmissionsCountBasedOnStatus(Long userId, String approvalStatus,Long orgLocationId) throws Exception {
+	
+	Session session = this.sessionFactory.getCurrentSession();
+	
+	String query = "from TimesheetSubmissions ts left join fetch ts.projectMembers pm left join fetch pm.employee emp left join fetch emp.orgLocations "
+			+ "where (emp.id IN(select emp.id from Employees emp where emp.user.id = :userId and emp.orgLocations.id = :orgLocationId ))"
+			+ " and ts.submissionApprovalStatus = :approvalStatus)" ;
+	List<TimesheetSubmissions> tslist =session.createQuery(query.toString()).setLong("userId", userId)
+			.setString("approvalStatus", approvalStatus).setLong("orgLocationId", orgLocationId).list(); 
+	      
+	return tslist.size();
+	  
+
+}
+	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TimesheetSubmissions> getSubmissionApproverHierarchyForEmployeeList(Long approverUserId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();  
+		String query = "from TimesheetSubmissions   ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:approverUserId))  GROUP BY emp.id";   
+		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setInteger("approverUserId", approverUserId.intValue()).list();
+		
 		return timesheetSubmissionsList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public TimesheetSubmissions getTimesheetSubmissionsByMemberIdAndStartDate(Long memberId, Date startDate)
+			throws Exception {
+        // TODO Auto-generated method stub
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = null;
+		if(startDate != null){
+			sqlStartDate = new java.sql.Date(startDate.getTime());
+		}
+		
+		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.projects pr  left join fetch pm.employee emp left join fetch emp.user where pm.id = :memberId and ts.startDate = :startDate ";  
+		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("memberId", memberId).setParameter("startDate", sqlStartDate).list();
+		TimesheetSubmissions ts = null;
+		if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
+			ts = timesheetSubmissionsList.iterator().next();
+		}
+		return ts;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TimesheetSubmissions> getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId(Long memberId, Date terminatedDate)
+			throws Exception {
+        // TODO Auto-generated method stub
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlTerminatedDate = null;
+		if(terminatedDate != null){
+			sqlTerminatedDate = new java.sql.Date(terminatedDate.getTime());
+		}
+		
+		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.projects pr  left join fetch pm.employee emp left join fetch emp.user where pm.id = :memberId and ts.startDate > :terminatedDate ";  
+		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("memberId", memberId).setParameter("terminatedDate", sqlTerminatedDate).list();
+		return timesheetSubmissionsList;
+	}
+
+
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TimesheetSubmissions> getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,
+			String status, Long orgLocationId) throws Exception {
+		
+
+        Session session = this.sessionFactory.getCurrentSession();
+        
+        String subquery =   " ts.id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = :status) ";
+		String query = "from  TimesheetSubmissions   ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp where "+subquery+" and emp.orgLocations.id = :orgLocationId and  emp.user.id = :userId order by pm.projects.id ASC)" ;
+		@SuppressWarnings("unchecked")
+		List<TimesheetSubmissions> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId",orgLocationId).setString("status", status).setCacheable(true).list(); 
+		
+		return tslist;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public HashMap<String, Date> getMinAndMaxTimesheetSubmissionDatesForApprover(Long approverUserId, Long empUserId)
+			throws Exception {
+		  Session session = this.sessionFactory.getCurrentSession();
+		  String query = "select  distinct min(ts.startDate),max(ts.endDate) from TimesheetSubmissions ts  where ts.status = '1' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :empUserId)  and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :approverUserId))";
+		  List results = session.createQuery(query).setLong("empUserId", empUserId).setLong("approverUserId", approverUserId).list();
+													
+		  HashMap<String,Date> dateList =  new HashMap<String,Date>();
+		  if(results != null && !results.isEmpty()){
+			  for(Object result :results){
+				  Object[] list = (Object[])result;
+				  java.sql.Timestamp startDateTimeStamp = (java.sql.Timestamp)list[0];
+				  java.sql.Timestamp endDateTimeStamp = (java.sql.Timestamp)list[1];
+				  
+				  Date utilStartDate = null ;
+				  Date utilEndDate = null ;
+				  if(startDateTimeStamp != null){
+					   utilStartDate = new Date(startDateTimeStamp.getTime());
+				  }
+				  if(endDateTimeStamp != null){
+					   utilEndDate = new Date(endDateTimeStamp.getTime());
+				  }
+				 
+				  dateList.put("STARTDATE",utilStartDate);
+				  dateList.put("ENDDATE",utilEndDate);
+			  }
+		  }
+		 return dateList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Date getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(Long userId, Date currentStartDate) {
+		java.sql.Date sqlCurrentStartDate = null;
+		if(currentStartDate != null){
+			sqlCurrentStartDate = new java.sql.Date(currentStartDate.getTime());
+		}  
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "select  distinct max(ts.startDate) from TimesheetSubmissions ts   where ts.startDate < :currentStartDate and  ts.status = '1' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)";
+		List results = session.createQuery(query).setLong("userId", userId).setParameter("currentStartDate", sqlCurrentStartDate).list();
+													
+		  Date leftNavStartDate=  null;
+		  if(results != null && !results.isEmpty()){
+			  for(Object result :results){
+				  java.sql.Timestamp startDateTimeStamp  = (Timestamp) result;
+				  if(startDateTimeStamp != null){
+					  leftNavStartDate = new Date(startDateTimeStamp.getTime());
+				  }
+			  }
+		    }
+		  return leftNavStartDate;
+    }
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Date getRightNavStartDateForEmployeeBasedOnCurrentStartDate(Long userId, Date currentStartDate) {
+		  Session session = this.sessionFactory.getCurrentSession();
+		  java.sql.Date sqlCurrentStartDate = null;
+		  if(currentStartDate != null){
+			 sqlCurrentStartDate = new java.sql.Date(currentStartDate.getTime());
+		  } 
+		  String query = "select  distinct min(ts.startDate) from TimesheetSubmissions  ts where ts.startDate > :currentStartDate and ts.status = '1' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)";
+		  List results = session.createQuery(query).setLong("userId", userId).setParameter("currentStartDate", sqlCurrentStartDate).list();
+													
+		  Date rightNavStartDate=  null;
+		  if(results != null && !results.isEmpty()){
+			  for(Object result :results){
+				  java.sql.Timestamp startDateTimeStamp = (java.sql.Timestamp)result;
+				  if(startDateTimeStamp != null){
+					  rightNavStartDate = new Date(startDateTimeStamp.getTime());
+				  }
+			  }
+		    }
+		  return rightNavStartDate;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Date getLeftNavStartDateForApproverBasedOnCurrentStartDate(Long approverUserId, Long empUserId,
+			Date currentStartDate) {
+		  Session session = this.sessionFactory.getCurrentSession();
+		  java.sql.Date sqlCurrentStartDate = null;
+		  if(currentStartDate != null){
+			 sqlCurrentStartDate = new java.sql.Date(currentStartDate.getTime());
+		  } 
+		  String query = "select  distinct max(ts.startDate) from TimesheetSubmissions ts  where   ts.startDate < :currentStartDate and ts.status = '1' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :empUserId)  and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :approverUserId))";
+		  List results = session.createQuery(query).setLong("empUserId", empUserId).setLong("approverUserId", approverUserId).setParameter("currentStartDate", sqlCurrentStartDate).list();
+													
+		  Date leftNavStartDate=  null;
+		  if(results != null && !results.isEmpty()){
+			  for(Object result :results){
+				  java.sql.Timestamp startDateTimeStamp = (java.sql.Timestamp)result;
+				  if(startDateTimeStamp != null){
+					  leftNavStartDate = new Date(startDateTimeStamp.getTime());
+				  }
+			  }
+		    }
+		  return leftNavStartDate;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Date getRightNavStartDateForApproverBasedOnCurrentStartDate(Long approverUserId, Long empUserId,
+			Date currentStartDate) {
+		   Session session = this.sessionFactory.getCurrentSession();
+		  java.sql.Date sqlCurrentStartDate = null;
+		  if(currentStartDate != null){
+			 sqlCurrentStartDate = new java.sql.Date(currentStartDate.getTime());
+		  } 
+		  String query = "select  distinct min(ts.startDate) from TimesheetSubmissions ts  where  ts.startDate > :currentStartDate and ts.status = '1' and ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :empUserId)  and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :approverUserId))";
+		  List results = session.createQuery(query).setLong("empUserId", empUserId).setLong("approverUserId", approverUserId).setParameter("currentStartDate", sqlCurrentStartDate).list();
+													
+		  Date rightNavStartDate=  null;
+		  if(results != null && !results.isEmpty()){
+			  for(Object result :results){
+				  java.sql.Timestamp startDateTimeStamp = (java.sql.Timestamp)result;
+				  if(startDateTimeStamp != null){
+					  rightNavStartDate = new Date(startDateTimeStamp.getTime());
+				  }
+			  }
+		    }
+		  return rightNavStartDate;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId) throws Exception {
+		
+		Date currentWeekStartDate = CalendarUtil.getCurrentWeekDay("MON");
+		java.sql.Date  currentWeekStartDayDate = new java.sql.Date(currentWeekStartDate.getTime());
+		
+		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		cal.setLenient(false);
+		cal.setTime(new Date());
+		
+		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+		
+		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
+		Date previousWeekStartDate = previousMonday.getTime();
+		java.sql.Date  previousWeekStartDayDate = new java.sql.Date(previousWeekStartDate.getTime());
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from TimesheetSubmissions tss left join fetch tss.projectMembers tm left join fetch tm.employee emp left join fetch emp.user usr where  usr.id = :userID and  tss.startDate >= :frmDate and tss.endDate < :endsDate order by tss.startDate desc";
+		//String query = "from TimesheetSubmissions tss left join fetch tss.projectMembers tm left join fetch tm.employee emp left join fetch emp.user usr where  usr.id = :userID and  tss.startDate BETWEEN :frmDate AND :endDate";
+		List<TimesheetSubmissions> timeSheetSubmissions  = session.createQuery(query).setLong("userID",userId ).setDate("frmDate", previousWeekStartDayDate).setDate("endsDate", currentWeekStartDayDate).setCacheable(true).list();
+		HashSet<TimesheetSubmissions> tsSet = null;
+		if(timeSheetSubmissions != null && !timeSheetSubmissions.isEmpty()){
+			tsSet = new HashSet<>(timeSheetSubmissions);
+		}
+		return tsSet;
+	}
+
 
 }

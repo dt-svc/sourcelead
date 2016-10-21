@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.bis.sourcelead.entity.ClassField;
 import com.bis.sourcelead.service.ClassFieldService;
@@ -19,7 +19,7 @@ import com.bis.sourcelead.service.ClassFieldService;
  * @author Prasad salina
  *
  */
-@Component
+@Repository
 public class EmailMessageBodyConverter {
 	
 	@Autowired 
@@ -67,6 +67,55 @@ public class EmailMessageBodyConverter {
 		return tempStr.toString();
 	}
 	
+	
+public String convertTempBodyOfEmailTemplate(String body,Map<String, String> globalVarsMap) throws Exception {
+		
+		Matcher matcher = Pattern.compile("(\\{\\{)(.*?)(\\}\\})").matcher(body);
+		List<String> delimitStr = new ArrayList<String>();
+		StringBuilder tempStr = new StringBuilder(body);
+		while (matcher.find())
+		{
+			String delimeter = matcher.group();
+		    if(!isNullOrEmpty(delimeter)) {
+			    ClassField classField = classFieldService.getClassFieldByDelimiterStr(delimeter);
+			    if(classField != null) {
+				    String temp = classField.getFieldName();
+				    delimitStr.add(temp);
+			    }
+		    }
+		}
+		if(delimitStr != null && !delimitStr.isEmpty()) {
+			
+			StringBuilder sb = new StringBuilder();
+			Matcher matches = Pattern.compile("(\\{\\{)(.*?)(\\}\\})").matcher(body);
+			
+			for(String test : delimitStr) {
+				String flag = globalVarsMap.get(test);
+				if(!isNullOrEmpty(flag)){
+					sb.append(flag).append(" ");
+				}
+				if(matches.find()) {
+				String tests = matches.group();
+				
+				int first = tests.indexOf(tests);
+				int last = tests.indexOf(tests)+tests.length();
+				
+				tempStr.replace(tempStr.indexOf(tests), tempStr.indexOf(tests)+tests.length(), sb.toString());
+				System.out.println(tempStr);
+				
+				if(test != null && test != "" && ("loginURL".equals(test) || ("userEmailId".equals(test)) || "acceptURL".equals(test) || ("userName".equals(test)) )){
+					sb.delete(0, sb.length());
+					sb.setLength(0);
+				}
+				else{
+					sb.delete(first, last);
+				 }
+				}
+			}
+		}
+		
+		return tempStr.toString();
+	}
 	
    public static String convertTaskBody(String taskBody,HashMap<String,String> delimitMap) {
 	   StringBuilder tempStr = new StringBuilder(taskBody);

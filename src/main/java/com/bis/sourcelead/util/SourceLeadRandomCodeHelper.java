@@ -12,4 +12,19 @@ public class SourceLeadRandomCodeHelper {
 		String orgCode = RandomStringUtils.randomAlphanumeric(4);
 		return orgCode;
 	}
+	
+	public static String generateRandomVerificationCode() {
+		String verificatinCode = RandomStringUtils.randomAlphabetic(5);
+		return verificatinCode;
+	}
+	
+	public static String generateRandomPassword() {
+		String password = RandomStringUtils.randomAlphabetic(6);
+		return password;
+	}
+	
+	public static String generateUUID() {
+		String UUID = RandomStringUtils.randomAlphabetic(15);
+		return UUID;
+	}
 }

@@ -4,8 +4,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,11 +11,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
-import com.bis.sourcelead.enums.Primary;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "USER_ROLE", catalog = "sourcelead")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="userRole")
 public class UserRole{
 	
 	@Id
@@ -25,15 +26,15 @@ public class UserRole{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User user;
 	
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
    	@JoinColumn(name = "ROLE_ID", nullable = false)
 	private Roles roles;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
    	@JoinColumn(name = "ORG_LOCATIONS_ID", nullable = false)
 	private OrgLocations orgLocations;
     
@@ -54,6 +55,29 @@ public class UserRole{
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	private String userRoleName;
+	
+	
+	@Transient
+	private Integer projectsCount;
+	
+	
+	@Transient
+	private Integer openTimeSheetsCount;
+	
+	
+	@Transient
+	private Integer approvedTimeSheetsCount;
+	
+	
+	@Transient
+	private Integer rejectedTimeSheetsCount;
+	
+	
+	@Transient
+	private Integer waitingTimeSheetsCount;
 
 	public Long getId() {
 		return id;
@@ -137,8 +161,55 @@ public class UserRole{
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
-	
+
+	public String getUserRoleName() {
+		return userRoleName;
+	}
+
+	public void setUserRoleName(String userRoleName) {
+		this.userRoleName = userRoleName;
+	}
+
+	public Integer getProjectsCount() {
+		return projectsCount;
+	}
+
+	public void setProjectsCount(Integer projectsCount) {
+		this.projectsCount = projectsCount;
+	}
+
+	public Integer getOpenTimeSheetsCount() {
+		return openTimeSheetsCount;
+	}
+
+	public void setOpenTimeSheetsCount(Integer openTimeSheetsCount) {
+		this.openTimeSheetsCount = openTimeSheetsCount;
+	}
+
+	public Integer getApprovedTimeSheetsCount() {
+		return approvedTimeSheetsCount;
+	}
+
+	public void setApprovedTimeSheetsCount(Integer approvedTimeSheetsCount) {
+		this.approvedTimeSheetsCount = approvedTimeSheetsCount;
+	}
+
+	public Integer getRejectedTimeSheetsCount() {
+		return rejectedTimeSheetsCount;
+	}
+
+	public void setRejectedTimeSheetsCount(Integer rejectedTimeSheetsCount) {
+		this.rejectedTimeSheetsCount = rejectedTimeSheetsCount;
+	}
+
+	public Integer getWaitingTimeSheetsCount() {
+		return waitingTimeSheetsCount;
+	}
+
+	public void setWaitingTimeSheetsCount(Integer waitingTimeSheetsCount) {
+		this.waitingTimeSheetsCount = waitingTimeSheetsCount;
+	}
+
 	
 	
 

@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 /**
- * This class is used to configure the caching with ehcache.
+ * This class is used to configure the caching with ehcache..
  * 
  * 
  * @author: Srinivas Vemula
@@ -22,20 +22,18 @@ import org.springframework.core.io.ClassPathResource;
  */
 @Configuration
 @EnableCaching
-@ComponentScan(basePackages = "com.bis.sourcelead")
 public class CacheConfig {
 	
-    @Bean
+    @Bean 
     public EhCacheManagerFactoryBean ehCacheManagerFactoryBean() {
         EhCacheManagerFactoryBean ehCacheManagerFactoryBean = new EhCacheManagerFactoryBean();
         ehCacheManagerFactoryBean.setCacheManagerName("SourceLeadCache");
         ehCacheManagerFactoryBean.setConfigLocation(new ClassPathResource("ehcache.xml"));
-        ehCacheManagerFactoryBean.isSingleton();
         ehCacheManagerFactoryBean.setShared(true);
         return ehCacheManagerFactoryBean;
     }
 
-    @Bean
+    @Bean 
     public EhCacheCacheManager ehCacheCacheManager() {
       return new EhCacheCacheManager(ehCacheManagerFactoryBean().getObject());
     }
