@@ -1,9 +1,3 @@
-<script>
-		$(document).ready(function() {
-			cscInit();
-		});
-</script>
-
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/chosen.jquery.min.js"></script> 
@@ -11,13 +5,11 @@
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 
-<!-- these files for autocomplete with tagit -->
 
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="resources/css/chosen.min.css">
 
+<script src="resources/js/jquery-fun.js"></script> 
+<script src="resources/js/chosen.jquery.min.js"></script> 
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%-- 
@@ -61,7 +53,7 @@ function editCandidate(candidateId){
             		 }
             		 else{   
 							var result ='';
-							result = result + '		    <div class="edit-details col-md-8 edit-candaite"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
+							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
 							result = result + '		      <div class="form-horizontal clearfix">';
 							
@@ -82,38 +74,33 @@ function editCandidate(candidateId){
 							result = result + '<input type="text" class="form-control input-sm" name="mobilePhone"  value="'+json.mobilePhone+'" placeholder="Mobile">';
 							result = result + '</div>';
 							
-							result = result + '		        </div>';
+							result = result + '</div>';
 							
-						    /* 	  
-							result = result + '  <div class="col-md-9">';
-							result = result + '    <input type="hidden" class="form-control" id="CountryAutocomplete" name="country"';
-							result = result + '				name="country" field-name="Country" value="'+loginCountryName+'" data-validation="validate_Space" disabled="disabled" data-validation-optional="true" />'; 
-							result = result + '	<ul id="country" class="form-control" onkeypress="getAllCountries('+sourceleadUrl+');"></ul>';
-							result = result + '  </div>'; */
-					        
-					        
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<input type="hidden" class="form-control" id="CountryAutocomplete" name="country"';
-							result = result + 'name="country" field-name="Country" value="'+json.country+'" data-validation="validate_Space" disabled="disabled" data-validation-optional="true" />'; 
-							result = result + '	<ul id="country" class="form-control" onkeypress="getAllCountries(\''+sourceleadUrl+'\');"></ul>';
+							result = result + '<select class="chosen-select form-control select-bg" name="country" id="country" value="'+json.country+'" field-name="Country">';
+							result = result + '</select>';
 							result = result + '</div>';
-							result = result + '		          <div class="col-md-6 custom-fields select-arrow">';
-								result = result + '	<input type="hidden" id="stateAutoComplete" name="state"';
-								result = result + '	field-name="State" class="form-control" value="'+json.state+'" data-validation="validate_Space" data-validation-optional="true">';
-								result = result + '	 <ul id="state"  onkeypress="getStates(\''+sourceleadUrl+'\');"></ul>';
-							result = result + '		          </div>';
-							result = result + '		        </div>';
-							result = result + '		        <div class="clearfix mb10">';
-							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="hidden"  name="candidateId" value="'+candidateId+'" >';
-							/* result = result + '		            <input type="text" class="form-control input-sm"  name="city" value="'+json.city+'" placeholder="City">'; */
-								result = result + '	 <input type="hidden" id="cityAutoComplete" name="city" field-name="State" class="form-control" value="'+json.city+'" data-validation="validate_Space" data-validation-optional="true">';
-								result = result + '	   <ul id="city"  onkeypress="getCities(\''+sourceleadUrl+'\');"></ul>';
-							result = result + '		          </div>';
-							result = result + '		        </div>';
-							result = result + '		        <div class="clearfix mb10">';
-							result = result + '		          <div class="col-md-12">';
+							
+							 
+							result = result + '<input type="hidden" name="updateState" id="updateState" value="'+json.state+'" />'; 
+							result = result + '<input type="hidden" name="updateCountry" id="updateCountry" value='+json.country+' />';
+							result = result + '<input type="hidden" name="updateCity" id="updateCity" value='+json.city+' />';
+							
+							result = result + '<div class="col-md-6 custom-fields select-arrow">';
+							result = result + '<select  class="chosen-select form-control select-bg" name="state" value="'+json.state+'" id="state" field-name="State">';
+							result = result + '</select>';
+							result = result + '</div>';
+							result = result + '</div>';
+							
+							result = result + '<div class="col-md-6 custom-fields">';
+							result = result + '<select  class="chosen-select form-control select-bg" name="city" id="city" value="'+json.city+'" field-name="City">';
+							result = result + '</select>';
+							result = result + '</div>';
+							result = result + '</div>';
+							
+							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="col-md-12">';
 							result = result + '<textarea class="form-control input-sm" placeholder="Summary"  name="summary" rows="2" cols="0" > '+json.summary+'</textarea>';
 							//result = result + ''+json.summary+'</textarea>';
 							result = result + ' </div>';
@@ -137,38 +124,31 @@ function editCandidate(candidateId){
 							$(".collapse-div").removeClass("edit-details-active");
 							
 							
-							 $('#country').tagit({
-							       singleField: true,
-							       singleFieldNode: $('#CountryAutocomplete')
-							       ,tagLimit:1
-							       ,placeholderText:""
-						           ,afterTagRemoved: function(evt, ui){
-						                   $('#multiState').tagit('removeAll');
-						                   $('#multiCity').tagit('removeAll');
-						                   $('#state').tagit('removeAll');
-						                   $('#city').tagit('removeAll');
-						                   return false;
-						           }
-							   });
-							 
-							  $('#state').tagit({
-							       singleField: true,
-							       singleFieldNode: $('#stateAutoComplete')
-							       ,tagLimit:1
-							       ,placeholderText:""
-							       ,afterTagRemoved: function(evt, ui){
-						                 $('#city').tagit('removeAll');
-						                 return false;
-						         }
-							   });
-							 
-							  $('#city').tagit({
-							       singleField: true,
-							       singleFieldNode: $('#cityAutoComplete')
-							       ,tagLimit:1
-							       ,placeholderText:""
-							  });
-							 
+							$(function(){
+							    var config = {
+									  '.chosen-select'           : {},
+									  '.chosen-select-deselect'  : {allow_single_deselect:true},
+									  '.chosen-select-no-single' : {disable_search_threshold:10},
+									  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+									  '.chosen-select-width'     : {width:"95%"}
+									}
+							    $("#country").chosen();
+							    $("#state").chosen();
+							    $("#city").chosen();
+							    
+							    $("#country").on('change', function (e) {
+							 	   getStates();
+							    });
+							   
+							    $("#state").on('change', function (e) {
+							 	   getCities();
+							    });
+							   
+							    $('.chosen-select').each(function() {
+										var $this = $(this);
+										$this.next().css({'width': '100%'});
+								  })
+							});
             		 
             		 }
                 }else{
@@ -190,78 +170,147 @@ function editCandidate(candidateId){
                    
               }); 
 		 }
+        getAllCountries(); 
 }
 </script> 
 
 <!-- Country,State,City Script Starts Here -->
 
-<script>
-function getAllCountries(sourceleadUrl){
+<script type="text/javascript">
+function getAllCountries(){
+	setTimeout(function(){ 
+	var countryName = $("#updateCountry").val();
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: sourceleadUrl+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
-        	$('#country').tagit({
-        		  allowSpaces: false,
-        		  availableTags: json
-	       	}); 
+        	$('#country').empty();
+        	$('#country').append('<option value="">---select---</option>');
+            for(var i=0;i<json.length;i++){
+            	if(json[i] == '${loginCountryName}'){
+            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            	}
+            	else{
+            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+            	}
+            	
+            }
+            $('#country').trigger("chosen:updated");
+            getStates();
         },
         error: function(e){
         }
-    }); 
-}
-</script> 
+    });
+	}, 100);
+} 
+</script>
+
 
 <script>
-function getStates(sourceleadUrl){
-	var countryName = document.getElementById("CountryAutocomplete").value;
+function getStates(){
+	var countryName = $("#updateCountry").val();
+	
+	//to set existing state value(Auto populate)
+	var stateName = $("#updateState").val();
+	
+	//end state Auto populate
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: sourceleadUrl+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	$('#state').tagit({
-	        		allowSpaces: false,
-	        		availableTags: json
-	        		
-		       	 	});
+	        	$('#state').empty();
+	        	$('#state').append('<option value="">---select---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	if(json[i] == stateName){
+	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            	}
+	            	else{ 
+	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	} 
+	            }
+	            $('#state').trigger("chosen:updated");
+	            getCities();
 	        },
 	        error: function(e){
 	        }
 	    });
+	}else{
+		$('#state').empty();
+    	$('#state').append('<option value="">---select---</option>');
+    	$('#state').trigger("chosen:updated");
+    	$('#city').empty();
+    	$('#city').append('<option value="">---select---</option>');
+        $('#city').trigger("chosen:updated");
 	}
 }
 </script> 
 
 
 <script>
-function getCities(sourceleadUrl){
-	var countryName = document.getElementById("CountryAutocomplete").value;
-	var stateName = document.getElementById("stateAutoComplete").value;
+function getCities(){
+	
+   var countryName = $("#updateCountry").val();
+	
+	//to set existing state value(Auto populate)
+	var stateName = $("#updateState").val();
+	
+	//to set existing city value(Auto populate)
+	var cityName = $("#updateCity").val();
+	//end city Auto populate
+	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: sourceleadUrl+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	$('#city').tagit({
-	        		allowSpaces: false,
-	        		availableTags: json
-	        		
-		       	 	});
+	        	$('#city').empty();
+	        	$('#city').append('<option value="">---select---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	if(json[i] == cityName){
+	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            	}
+	            	else{ 
+	            		$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	} 
+	            }
+	            $('#city').trigger("chosen:updated");
 	        },
 	        error: function(e){
 	        }
 	    });
+	}else{
+		$('#city').empty();
+    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').trigger("chosen:updated");
 	}
 }
-  
 </script>
+
+<!-- <script>
+function updateValues(){
+	var str_array = sequentialApprover1.split(',');
+	for (var i = 0; i < str_array.length; i++) {
+	    str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+	}
+	$("#sequentialApprover1").val(str_array).trigger("chosen:updated");
+}
+</script> -->
+
+
+    	    
+
+
+
+<!-- Country,State,City Script Ends Here -->
+
+
 
 <%-- 
      @author : Venkat Kesav
@@ -412,11 +461,7 @@ function candidateProfile(candidateId){
 							
 							result = result + '	<div class="row select-skills">';
 							result = result + '    <div class="divskill col-md-8"> ';
-							if(window.candidateStatusGlobal == '0'){
-							result = result + '      <div class="addSkills"> <a href="#" title="Add Skills"> <i class="fa fa-code"></i>Add Skills </a>';
-							}else{
 							result = result + '      <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills"> <i class="fa fa-code"></i>Add Skills </a>';
-							}
 							result = result + '        <div class="col-md-7 add-skills" style="display:none;"> <i class="fa fa-close close-div" onClick ="removeSkillPopUp('+candidateId+');"></i>';
 							result = result + '          <div class="form-horizontal clearfix">';
 							result = result + '            <div class="clearfix div-padding">';
@@ -738,11 +783,7 @@ function candidateSkillsList(candidateId){
 		                			result = result + '<option>6</option>';
 		                		}
 		                		result = result + '              </select></td>';
-		                		if(window.candidateStatusGlobal == '0'){
-		                		result = result + '<td><div class="text-center"><a href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
-		                		}else{
-			                	result = result + '<td><div class="text-center"><a onclick="removeSkillById('+candidateId+', '+opt.id+');" href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
-		                		}
+		                		result = result + '            <td><div class="text-center"><a onclick="removeSkillById('+candidateId+', '+opt.id+');" href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
 		                		result = result + '          </tr>';
 	                      } 
 	                     result = result +" </tbody>";
@@ -832,25 +873,6 @@ function removeSkillById(candidateId, skillId){
 </script> 
 
 
-<!-- Eductions and Skills Autocomplete Scripts Starts Here -->
-<script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				})
-				
-</script> 
-<!-- Eductions and Skills Autocomplete Scripts End Here -->
 
 
 
