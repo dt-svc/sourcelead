@@ -74,6 +74,9 @@ public class RequirementSubmission {
     
     @Column(name = "UPDATED_BY")
     private String updatedBy;
+    
+    @Transient
+	private String candidateName;
 
     @Transient
 	private String userName;
@@ -273,5 +276,13 @@ public class RequirementSubmission {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
 	}
 }

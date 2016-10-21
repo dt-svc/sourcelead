@@ -1,10 +1,9 @@
 package com.bis.sourcelead.dao;
 
-import java.util.List;
-
-import com.bis.sourcelead.entity.ActionRoles;
-import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.RequirementInterview;
 
 public interface RequirementInterviewDao {
+	
+	RequirementInterview storeRequirementInterview(RequirementInterview requirementInterview)throws Exception;
 
 }

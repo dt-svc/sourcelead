@@ -19,6 +19,10 @@ import com.bis.sourcelead.entity.User;
 
 public interface RequirementSubmissionService {
 	
+	RequirementSubmission getRequirementSubmissionById(Long submissionId)throws Exception;
+	
+	List<RequirementSubmission> getAllAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId, Long requirementId) throws Exception;
+	
 	RequirementSubmission storeRequirementSubmission(RequirementSubmission requirementSubmission)throws Exception;
 
 	List<RequirementSubmission> getSubmissionsByRequirementId(Long requirementId, User user, OrgLocations loginOrgLocation) throws Exception;
