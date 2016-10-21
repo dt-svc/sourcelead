@@ -85,17 +85,17 @@
 	                    	 if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
 	                    		 mobilePhone = opt.mobilePhone;
 				            	}else{
-				            		mobilePhone = "NO DATA";
+				            		mobilePhone = "----";
 				            	}
 				            	if(opt.designation != null && opt.designation != 'undefined' && opt.designation != ""){
 				            		designation = opt.designation;
 				            	}else{
-				            		designation = "NO DATA";
+				            		designation = "----";
 				            	}
 				            	if(opt.address != null && opt.address != 'undefined' && opt.address != ""){
 				            		address = opt.address;
 				            	}else{
-				            		address = "NO DATA";
+				            		address = "----";
 				            	}
 				            	
 		                     result = result +"<tr>";
@@ -106,7 +106,7 @@
 			                	 {
 			                      result = result +"  <td><div>"+opt.designationType+"</div></td>";
 			                	 }else{
-			                		 result = result +"  <td><div>No Data</div></td>"; 
+			                		 result = result +"  <td><div>----</div></td>"; 
 			                	 }
 			                 result = result +"  <td><div ><span>"+opt.email+"</span></div></td>";
 			                 result = result +"  <td><div>"+mobilePhone+"</div></td>";
@@ -244,7 +244,7 @@ function clientSideBar(candidateId){
 			             result = result+'                         <li>Experience - '+json.experienceYears+' years '+json.experienceMonths+' months </li>';
               		                                                  }else{
               		                                                	  
-              		     result = result+'                          <li>Experience - No Data </li>';  
+              		     result = result+'                          <li>Experience - ----</li>';  
               		                                                  }
 			             result = result+'                       </ul>';
 			             
@@ -283,22 +283,22 @@ function clientSideBar(candidateId){
 			             result = result+'                   <li><i class="fa fa-phone"></i>+'+json.mobilePhone+'</li>';
 			                                                  }else{
 			                                                	  
-			             result = result+'                   <li><i class="fa fa-phone"></i>No Data</li>';         	  
+			             result = result+'                   <li><i class="fa fa-phone"></i>----</li>';         	  
 			                                                  }
 			                                                  if(json.address != null && json.address != '' && json.address != 'undefined'){
 			             result = result+'                   <li><i class="fa fa-location-arrow"></i>'+json.address+'</li>';
 			                                                  }else{
-			             result = result+'                   <li><i class="fa fa-location-arrow"></i>No Data</li>';                                  	  
+			             result = result+'                   <li><i class="fa fa-location-arrow"></i>----</li>';                                  	  
 			                                                  }
 			                                                  if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
 			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.currentRate+'/Per Hour - Current Rate / Salary</li>';
 			                                                  }else{
-			             result = result+'                   <li><i class="fa fa-rupee"></i>No Data </li>';                                    
+			             result = result+'                   <li><i class="fa fa-rupee"></i>----</li>';                                    
 			                                                  }
 			                                                  if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
 			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.expectedRate+'/Per Hour - Expected Rate / Salary</li>';
 			                                                  }else{
-			             result = result+'                   <li><i class="fa fa-rupee"></i>No Data </li>';                                  	  
+			             result = result+'                   <li><i class="fa fa-rupee"></i>----</li>';                                  	  
 			                                                  }
 			             result = result+'                 </ul>';
 			             result = result+'               </div>';

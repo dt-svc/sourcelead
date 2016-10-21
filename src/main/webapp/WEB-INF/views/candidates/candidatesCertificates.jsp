@@ -192,27 +192,27 @@ function candidateCertificateList(candidateId){
 				            	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
 				            		score = opt.score;
 				            	}else{
-				            		score = "--";
+				            		score = "----";
 				            	}
 				            	if(opt.scoreType != null && opt.scoreType != 'undefined' && opt.scoreType != ""){
 				            		scoreType = opt.scoreType;
 				            	}else{
-				            		scoreType = "--";
+				            		scoreType = "----";
 				            	}
 				            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
 				            		description = opt.description;
 				            	}else{
-				            		description = "--";
+				            		description = "----";
 				            	}
 				            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
 				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
 				            	}else{
-				            		candidatevalidFromDateToString = "--";
+				            		candidatevalidFromDateToString = "----";
 				            	}
 				            	if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
 				            		candidatevalidToDateToString = opt.candidatevalidToDateToString;
 				            	}else{
-				            		candidatevalidToDateToString = "--";
+				            		candidatevalidToDateToString = "----";
 				            	}
 	                    	 result  = result + '         <tr>';
 	                    	 result  = result + '           <td><div><span>'+opt.name+'</span></div></td>';

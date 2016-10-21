@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css" type="text/css" >
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
@@ -240,11 +240,13 @@
 	                     <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
 	                 
 	                     <li><a href="<c:url value="/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>Enroll Org</a></li>
+	                     
+	                     <%--  <li><a href="<c:url value="/orgSubmissionTemplate" />"><i class="fa fa-cubes" aria-hidden="true"></i>Template</a></li> --%>
+	                     
 	              </ul>
 	            </div>
 	          </li>
           </c:if>
-          
           <c:if test="${SourceLeadWeb_orgSettingsVisible == 'Y' && SourceLeadWeb_enrollOrgVisible != 'Y'}">
 	          <li><a href="<c:url value="/orgSettings" />" title="Org Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a></li>
           </c:if>

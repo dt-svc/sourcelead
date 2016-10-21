@@ -46,7 +46,7 @@ public class SubmissionTemplate {
 	private String description;
 	
 	@Column(name = "STATUS")
-	private String status;
+	private Integer status;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -113,11 +113,11 @@ public class SubmissionTemplate {
 		this.description = description;
 	}
 
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 

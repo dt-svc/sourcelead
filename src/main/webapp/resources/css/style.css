@@ -405,5 +405,16 @@ padding: 0px 0px 20px 0px; margin: 0px; font-size: 18px; font-weight: 500; color
 .dp {
 	background-image:url(../images/calendar.png) !important; background-repeat:no-repeat; background-position:96% center; background-size:20px;
 }
-
+.venk {
+	background-color: #f1f1f1; padding: 13px 10px; border-radius:3px;
+}
+.venk .panel-border {
+	padding: 20px 0px 0px 0px; border: none; margin: 0px; min-height: 0px;
+}
+.venk .panel-border_a {
+	padding: 0px 0px 0px 0px; border: none; margin: 0px; min-height: 0px;
+}
+.venk .text-info {
+	margin-top: 30px;	
+}
 

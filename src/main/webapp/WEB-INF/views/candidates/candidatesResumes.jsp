@@ -294,12 +294,12 @@ function addResume(candidateId) {
 					            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
 					            		description = opt.description;
 					            	}else{
-					            		description = 'NO DATA';
+					            		description = '----';
 					            	}
 					            	if(opt.createdBy != null && opt.createdBy != 'undefined' && opt.createdBy != ""){
 					            		createdBy = opt.createdBy;
 					            	}else{
-					            		createdBy = 'NO DATA';
+					            		createdBy = '----';
 					            	}
 					            	
 					            	result = result+'	          <tr>';

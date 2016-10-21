@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -29,9 +31,6 @@ import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.impl.TimesheetSubmissionsServiceImpl;
-import static org.junit.Assert.*;
-
-import gherkin.lexer.Is;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -307,7 +306,7 @@ public class TimesheetSubmissionsServiceTest {
 	
 	@Test 
 	public void getWeekFrequencyTest() throws Exception{
-	      List<TimesheetSubmissions> tms = timesheetSubmissionsService.getWeekFrequency(32l);
+	      HashSet<TimesheetSubmissions> tms = timesheetSubmissionsService.getWeekFrequency(32l);
 		assertNotNull(tms);
 	}
 	

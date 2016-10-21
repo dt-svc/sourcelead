@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,36 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 		
 		
 	}
-	
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public RequirementAssignTo getRequirementAssignToByRequirementIdandAssignToId(Long requirementId,Long teamId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementAssignTo  rato left join fetch rato.requirementId where rato.teamId.id = :teamId and rato.requirementId.id = :requirementId ";
+		List<RequirementAssignTo> requirementAssignToList =  session.createQuery(query.toString()).setLong("teamId", teamId).setLong("requirementId", requirementId)
+				.setCacheable(true).list();
+		
+
+		RequirementAssignTo requirementAssignTo = null;
+		if (requirementAssignToList != null && requirementAssignToList.size() > 0) {
+			requirementAssignTo = (RequirementAssignTo) requirementAssignToList.iterator().next();
+		}
+		return requirementAssignTo;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public boolean deleteRequirementAssignToByRequirementId(Long requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String hql ="delete from RequirementAssignTo rato where rato.requirementId = :requirementId";
+		
+		Query query = session.createQuery(hql).setLong("requirementId", requirementId);
+		query.executeUpdate();
+		
+		return true;
+	}
     
   }
 

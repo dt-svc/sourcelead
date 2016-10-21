@@ -200,7 +200,7 @@ public class ProjectsServiceTest {
 		for(User user : usrList){
 			if("Admin".equalsIgnoreCase(user.getUserType()))
 				continue;
-			List<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
+			HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
 			projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
 			logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+usrList.size());
 			

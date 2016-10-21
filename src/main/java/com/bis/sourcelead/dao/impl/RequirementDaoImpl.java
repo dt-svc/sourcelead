@@ -132,10 +132,13 @@ public class RequirementDaoImpl implements RequirementDao {
 		String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId =:approverUserId and rah.level = '2' and requirement.id IN (select rah.requirementId from RequirementApproverHierarchy rah1 where rah1.level = '1' and rah1.requirementApproverStatus = 'APPROVED') )";
 		params.put("approverUserId",userId);
 		
+		String subQuery4 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId =:userId  ) and requirement.requirementSubmissionStatus = 'APPROVED'";
+		params.put("userId",userId);
+		
 		
 		String subQuery = "";
-		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != ""){
-			subQuery = "where requirement.orgLocationId =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") )";
+		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != ""){
+			subQuery = "where requirement.orgLocationId =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery4+")  )";
 			params.put("orgLocationId",orgLocationId);
 		}
 		String whereCondition = subQuery;
@@ -215,6 +218,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
+		
 		String query = "from Requirement requirement where requirement.id =:requirementId";
 		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
 		

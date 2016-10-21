@@ -23,7 +23,8 @@ function getAddApplicant(requirementId){
 	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 	
 	result = result + '<div class="row">';
-	result = result + '<div class="col-md-5 mb10">';
+	result = result + '<div class="venk clearfix">';
+	result = result + '<div class="col-md-5">';
 	result = result + '<label>Select Candiate</label>';
 	result = result + '<select  onchange="getCandidateResumes();" onclick="getCandidateDetails();" name="candidateId" id="candidateId" field-name="Candidate" class="form-control  block">';
 	result = result + '<option value="">--Select Candidate--</option>';
@@ -31,14 +32,14 @@ function getAddApplicant(requirementId){
 	result = result + '<option value="'+${option.id}+'">${option.firstName} ${option.lastName}</option>';
 	result = result + '</c:forEach>';
 	result = result + '</select>';
-	result = result + '</div>';
-	result = result + '<div class="text-center text-info col-md-2 mb10">';
+	result = result + '</div>';		
+	result = result + '<div class="text-center text-info col-md-2">';
 	result = result + '------- ( OR ) -------';
 	result = result + '</div>';
 	
 	result = result + '<div class="col-md-5">';
 	result = result + '<div class="panel-border col-md-12">';
-	result = result + '<div class="col-md-12" id="browseDiv"  style="display: block;">';
+	result = result + '<div class="" id="browseDiv"  style="display: block;">';
 	result = result + '<div class="input-group">';
 	result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '<input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">';
@@ -46,10 +47,9 @@ function getAddApplicant(requirementId){
 	result = result + '<input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Resume *">';
 	result = result + '</div>';
 	result = result + '</div>';
+	result = result + '</div>';	
                     
-	result = result + '<div class="col-md-12" id="resumesDiv"  style="display: none;">';
-	result = result + '<div class="col-md-12 mt10 mb10 clearfix text-center text-info">';
-	result = result + '</div>';
+	result = result + '<div class="panel-border_a col-md-12" id="resumesDiv"  style="display: none;">';
 	result = result + '<select id="candidateResumesList" name="candidateResume" field-name="Resume" class="form-control block">';
 	result = result + '</select>';
 	result = result + '</div>';

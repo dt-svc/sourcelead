@@ -754,7 +754,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<TimesheetSubmissions> getWeekFrequency(Long userId) throws Exception {
+	public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId) throws Exception {
 		
 		Date currentWeekStartDate = CalendarUtil.getCurrentWeekDay("MON");
 		java.sql.Date  currentWeekStartDayDate = new java.sql.Date(currentWeekStartDate.getTime());
@@ -774,7 +774,11 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		String query = "from TimesheetSubmissions tss left join fetch tss.projectMembers tm left join fetch tm.employee emp left join fetch emp.user usr where  usr.id = :userID and  tss.startDate >= :frmDate and tss.endDate < :endsDate order by tss.startDate desc";
 		//String query = "from TimesheetSubmissions tss left join fetch tss.projectMembers tm left join fetch tm.employee emp left join fetch emp.user usr where  usr.id = :userID and  tss.startDate BETWEEN :frmDate AND :endDate";
 		List<TimesheetSubmissions> timeSheetSubmissions  = session.createQuery(query).setLong("userID",userId ).setDate("frmDate", previousWeekStartDayDate).setDate("endsDate", currentWeekStartDayDate).setCacheable(true).list();
-		return timeSheetSubmissions;
+		HashSet<TimesheetSubmissions> tsSet = null;
+		if(timeSheetSubmissions != null && !timeSheetSubmissions.isEmpty()){
+			tsSet = new HashSet<>(timeSheetSubmissions);
+		}
+		return tsSet;
 	}
 
 
