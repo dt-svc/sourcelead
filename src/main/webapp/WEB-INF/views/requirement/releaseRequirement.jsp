@@ -206,7 +206,6 @@ function releaseTo(){
 	    
 	    var sourceleadUrl ='${sourceleadUrl}';
 	    var requirementId = '${param.requirementId}';
-	    alert("requirementId"+requirementId);
 		$.ajax({
 	           type : "POST",
 	           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    

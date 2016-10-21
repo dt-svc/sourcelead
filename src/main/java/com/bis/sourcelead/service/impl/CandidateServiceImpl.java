@@ -90,6 +90,9 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("candidateId")));
 		}else{
 			candidate = new Candidate();
+			candidate.setCreatedDate(commonUtil.currentDate());
+			candidate.setCreatedBy(user.getUserCode());
+			
 		}
         
 		if(orgLocations != null){
@@ -163,8 +166,7 @@ public class CandidateServiceImpl implements CandidateService {
 		HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
 		candidate.setCandidateResumes(candidateResumesList);
 		
-		candidate.setCreatedDate(commonUtil.currentDate());
-		candidate.setCreatedBy(user.getUserCode());
+		
 		candidate.setUpdatedBy(user.getUserCode());
 		candidate.setUpdatedDate(commonUtil.currentDate());
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);

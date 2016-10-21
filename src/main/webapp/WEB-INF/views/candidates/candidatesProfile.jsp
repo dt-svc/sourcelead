@@ -412,7 +412,11 @@ function candidateProfile(candidateId){
 							
 							result = result + '	<div class="row select-skills">';
 							result = result + '    <div class="divskill col-md-8"> ';
+							if(window.candidateStatusGlobal == '0'){
+							result = result + '      <div class="addSkills"> <a href="#" title="Add Skills"> <i class="fa fa-code"></i>Add Skills </a>';
+							}else{
 							result = result + '      <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills"> <i class="fa fa-code"></i>Add Skills </a>';
+							}
 							result = result + '        <div class="col-md-7 add-skills" style="display:none;"> <i class="fa fa-close close-div" onClick ="removeSkillPopUp('+candidateId+');"></i>';
 							result = result + '          <div class="form-horizontal clearfix">';
 							result = result + '            <div class="clearfix div-padding">';
@@ -734,7 +738,11 @@ function candidateSkillsList(candidateId){
 		                			result = result + '<option>6</option>';
 		                		}
 		                		result = result + '              </select></td>';
-		                		result = result + '            <td><div class="text-center"><a onclick="removeSkillById('+candidateId+', '+opt.id+');" href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
+		                		if(window.candidateStatusGlobal == '0'){
+		                		result = result + '<td><div class="text-center"><a href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
+		                		}else{
+			                	result = result + '<td><div class="text-center"><a onclick="removeSkillById('+candidateId+', '+opt.id+');" href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
+		                		}
 		                		result = result + '          </tr>';
 	                      } 
 	                     result = result +" </tbody>";

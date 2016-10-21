@@ -115,17 +115,17 @@ public class RequirementController {
 			String approverMode = "noApprovers";
 			Long sequentialApprover1 = null;
 			Long sequentialApprover2 = null;
-			int[] parallelApproverIds = new int[requirementApproverHierarchyList.size()];
+			String parallelApproverIds = null ;
 			Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(requirementId));
-			if(maxLevel >1){
+			if(maxLevel != null && maxLevel >1){
 				approverMode = "Sequential";
 				for(RequirementApproverHierarchy requirementApproverHierarchy :requirementApproverHierarchyList){
 					 
 					if(requirementApproverHierarchy.getLevel() == 1){
-						sequentialApprover1 = requirementApproverHierarchy.getId();
+						sequentialApprover1 = requirementApproverHierarchy.getApproverUserId().getId();
 					}
 					if(requirementApproverHierarchy.getLevel() == 2){
-						sequentialApprover2 = requirementApproverHierarchy.getId();
+						sequentialApprover2 = requirementApproverHierarchy.getApproverUserId().getId();
 					}
 					
 				}
@@ -133,7 +133,11 @@ public class RequirementController {
 				approverMode = "Parallel";
 				int i = 0;
 				for(RequirementApproverHierarchy requirementApproverHierarchy :requirementApproverHierarchyList){
-					parallelApproverIds[i] =  requirementApproverHierarchy.getId().intValue();
+					if(parallelApproverIds != null && parallelApproverIds != ""){
+						parallelApproverIds =  parallelApproverIds +","+ requirementApproverHierarchy.getApproverUserId().getId().toString();
+					}else{
+						parallelApproverIds =  requirementApproverHierarchy.getApproverUserId().getId().toString();
+					}
 					i++;
 				}
 			}

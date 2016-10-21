@@ -101,12 +101,38 @@ $(document).ready(function () {
     var parallelApproverIds = '${parallelApproverIds}';
     var sequentialApprover1 = '${sequentialApprover1}';
     var sequentialApprover2 = '${sequentialApprover2}';
-
-   /*  alert("approverMode"+approverMode);
-    alert("parallelApproverIds"+parallelApproverIds);
-    alert("sequentialApprover1"+sequentialApprover1);
-    alert("sequentialApprover2"+sequentialApprover2);
-     */
+	if(approverMode != null && approverMode != '' && approverMode != 'undefined'){
+			/*  $("#apprverReq").prop('checked', true); */
+			$('#apprverReq').click();
+			
+		    if(approverMode == 'Sequential'){
+		    	    approvalType('Sequential');     
+		    	    var str_array = sequentialApprover1.split(',');
+		    	    for (var i = 0; i < str_array.length; i++) {
+		    	        str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+		    	    }
+		    	    $("#sequentialApprover1").val(str_array).trigger("chosen:updated");
+		    	    
+		    	    
+		    	    var str_array2 = sequentialApprover2.split(',');
+		    	    for (var i = 0; i < str_array2.length; i++) {
+		    	    	str_array2[i] = str_array2[i].replace(/^\s*/, "").replace(/\s*$/, "");
+		    	    }
+		    	    $("#sequentialApprover2").val(str_array2).trigger("chosen:updated");
+		    	    
+		    } 
+			if(approverMode == 'Parallel'){
+				
+				approvalType('Parallel');
+				var str_array = parallelApproverIds.split(',');
+			    for (var i = 0; i < str_array.length; i++) {
+			        str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+			    }
+			    $("#parallelApprover").val(str_array).trigger("chosen:updated");
+		    	
+		    } 
+	}
+    
     
 });    
 </script>
@@ -1775,7 +1801,6 @@ function addLvl(){
 
 <script>
 function approvalType(type){
-		
 	    if($("#apprverReq").is(':checked')){
 			$("#submitForApproval").removeAttr("style");
 		    $("#save").attr("style","display:none"); 
@@ -1856,12 +1881,12 @@ function approvalType(type){
 --%>
 
 <script>
-function getUserList(){  
+function getUserList(teamType){  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}&teamType="+teamType,    
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
@@ -1883,7 +1908,7 @@ function getUserList(){
 	                		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
 	                		result = result +'       </div>';
 	                		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
-	                		result = result +'          <select id="rolesDiv" class="selectpicker form-control" style="display:block !important">';
+	                		result = result +'          <select id="rolesDiv" onchange="filterTeamMembers();" class="selectpicker form-control" style="display:block !important">';
 	                		result = result +'          </select>';
 	                		result = result +'     </div>';
 	                		result = result +'     </div>';
@@ -2108,6 +2133,13 @@ var existingValue = document.getElementById('isClientJob').value;
 	 }
 }
 
+</script>
+
+<script type="text/javascript">
+function filterTeamMembers(){
+	var teamType = $("#rolesDiv").val();
+	getUserList(teamType);
+}
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
