@@ -1,11 +1,13 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -122,17 +124,8 @@ public class SubmissionsRestController {
 		return commonUtil.toJSON(submissiontTemplateList);
 	}
     
-    
-    private String toJSON(Object obj){
-        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-            public HierarchicalStreamWriter createWriter(Writer writer) {
-                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-            }
-        });
-        return xstream.toXML(obj);
-    }
 
-}
+
     @RequestMapping(value = "/saveOrgSubmissionTemplate" , method = RequestMethod.POST)
 	   public String saveClientSubmissionTemplate(@RequestParam(value="jsonData", required=false) String json,
 			   @RequestParam(value="templateId", required=false) String templateId,
@@ -163,7 +156,7 @@ public class SubmissionsRestController {
 			   submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 				
 			} catch (Exception e) {
-				logger.error(ExceptionUtils.getFullStackTrace(e)); 
+				e.printStackTrace(); 
 			}
 			   return "home";
 	    
