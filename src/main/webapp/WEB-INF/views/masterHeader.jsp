@@ -239,7 +239,7 @@
 	              <ul class="list-unstyled">
 	                     <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
 	                     <li><a href="<c:url value="/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>Enroll Org</a></li>
-	                     <li><a href="<c:url value="/orgSubmissionTemplate" />"><i class="fa fa-cubes" aria-hidden="true"></i>Template</a></li>
+	                     <li><a href="<c:url value="/orgSubmissionTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
 	                     
 	              </ul>
 	            </div>
@@ -250,7 +250,7 @@
 	            <div class="setting-area">
 	              <ul class="list-unstyled">
                      <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
-                     <li><a href="<c:url value="/orgSubmissionTemplate" />"><i class="fa fa-cubes" aria-hidden="true"></i>Template</a></li>
+                     <li><a href="<c:url value="/orgSubmissionTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
 	                     
 	              </ul>
 	            </div>
