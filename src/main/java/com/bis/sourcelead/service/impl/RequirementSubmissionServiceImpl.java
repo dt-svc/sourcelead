@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -44,7 +45,16 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Autowired
 	private RequirementSubmissionTemplateFieldsDao  requirementSubmissionTemplateFieldsDao;
 	
-
+	@Override
+	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
+		return requirementSubmissionDao.getRequirementSubmissionById(submissionId);
+	}
+	
+	@Override
+	public List<RequirementSubmission> getAllAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId,Long requirementId) throws Exception {
+		return requirementSubmissionDao.getAllAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocationsId,requirementId);
+	}
+	
 	@Override
 	public RequirementSubmission storeRequirementSubmission(RequirementSubmission requirementSubmission) throws Exception {
 		logger.debug("In ProjectsServiceImpl class saveProject method...");
