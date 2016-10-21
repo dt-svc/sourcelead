@@ -159,6 +159,7 @@ function templatepagination(){
 		var result = "";
 		
 		result = result + '<section class="clearfix createTemplate">';
+		result = result + '<div class="close-btn2" onclick="clientSubmissionTemplate('+clientLocationId+')"><i class="fa fa-close"></i></div>';
 		
 		result = result + '<div class="clearfix">';
 		result = result + '<h2>Template Details</h2>';
@@ -240,7 +241,7 @@ function templatepagination(){
 		           $("#tab-4").empty();  
 		           $("#tab-4-addTemplate").empty();
 		           $("#tab-4").append(result); 
-		           customizeFields(clientLocationId,templateId,sourceleadUrl);
+		           customizeFields(templateId,sourceleadUrl);
 		  
 	}
 </script>	
