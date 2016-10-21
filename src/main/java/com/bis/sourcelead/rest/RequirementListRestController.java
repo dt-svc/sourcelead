@@ -163,7 +163,7 @@ public class RequirementListRestController {
 				if(requirementId !=null && !requirementId.isEmpty()){
 			       requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
 			       if(requirementAssignToList !=null && !requirementAssignToList.isEmpty()){
-			           for (RequirementAssignTo assing : requirementAssignToList) {
+			           for (RequirementAssignTo assing : requirementAssignToList) { 
 					       assing.setAssignedUserName(assing.getAssignUserId().getFirstName()+" "+assing.getAssignUserId().getLastName());
 					       if(assing.getRoleId() != null ){
 					    	   assing.setAssignedUserRole(assing.getRoleId().getDisplayName());
