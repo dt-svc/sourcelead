@@ -76,9 +76,6 @@ public class RequirementSubmission {
     private String updatedBy;
     
     @Transient
-	private String candidateName;
-
-    @Transient
 	private String userName;
     
     @Transient
@@ -276,13 +273,5 @@ public class RequirementSubmission {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
-	}
-
-	public String getCandidateName() {
-		return candidateName;
-	}
-
-	public void setCandidateName(String candidateName) {
-		this.candidateName = candidateName;
 	}
 }

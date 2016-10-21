@@ -75,7 +75,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				}
 				
 				if(jsonObj.has(c+"location") && !jsonObj.getString(c+"location").isEmpty()){
-					requirementInterview.setCountry(jsonObj.getString(c+"location"));
+					requirementInterview.setLocation(jsonObj.getString(c+"location"));
 				}
 				
 			   requirementInterview.setStatus(Constants.RECORD_ACTIVE);

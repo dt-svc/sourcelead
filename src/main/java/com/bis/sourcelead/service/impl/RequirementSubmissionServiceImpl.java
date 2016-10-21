@@ -72,8 +72,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	@Override
-	public List<RequirementSubmission> getAllAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId,Long requirementId) throws Exception {
-		return requirementSubmissionDao.getAllAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocationsId,requirementId);
+	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId,Long requirementId) throws Exception {
+		return requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocationsId,requirementId);
 	}
 
 	
