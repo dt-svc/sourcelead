@@ -193,7 +193,7 @@ function getVendorLists(){
    	        			result = result +'<td><div>--</div></td>';
    	        		}
 	       		
-	       		result = result +'<td><div>20</div></td>';
+	       		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
 	       		result = result +' <td><div>10</div></td>';
 	       		result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.level+'">'+report.level+'</span>';
 	       		/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
@@ -422,7 +422,7 @@ function saveReason1(spocId, orgRelationID){
 		$("#reasonForSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		   // url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
+		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);

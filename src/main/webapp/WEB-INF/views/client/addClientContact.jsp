@@ -167,7 +167,7 @@ function getOrgDetails()
           <div class="pull-left">
             <h2>Client Contact Details</h2>
           </div>
-          <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Vendor Contact Details</div>
+              <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo;<a href="clientDashboard"> Clients List</a> &raquo; Client Contact Details</div>
         </section>
         <div class="content-area content-new clearfix">
         <div id="loading"></div> 

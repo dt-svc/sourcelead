@@ -315,6 +315,20 @@ public class ClientRestController {
 		
 	}
 	
+
+	@RequestMapping(value = "/validateTemplateNameByOrg", method = RequestMethod.POST)
+	@ResponseBody String validateTemplateNameByOrg(@RequestParam(value = "templateName", required = false) String templateName) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		SubmissionTemplate submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(orgLocations.getId(), templateName);
+		if(null != submissiontTemplate){
+			return "invalid";
+		}else{
+			return "valid";
+		}
+		
+	}
+	
 	
 	
 	
@@ -638,7 +652,7 @@ public class ClientRestController {
 	
 	
 	@RequestMapping(value = "/loadSubmissionTemplate" , method = RequestMethod.GET)
-	   public String loadSubmissionTemplate(@RequestParam(value="clientLocationId", required=false) Long clientLocationId) throws Exception {
+	   public String loadSubmissionTemplate() throws Exception {
 			
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    SubmissionTemplate submissionTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
