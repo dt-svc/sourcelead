@@ -98,9 +98,11 @@ public class RequirementReleaseRestController {
 	}
 
 	private void releaseJobToVendorOrContacts(Requirement requirement, Requirement parentRequirement, OrgSpoc orgSpoc) throws Exception {
-
+		
+		//requirement = parentRequirement;
+		
 		requirement.setParent_requirement_id(parentRequirement.getId());
-		requirement.setOrgLocationId(parentRequirement.getSpocId().getResponderLocationId());
+		requirement.setOrgLocationId(orgSpoc.getResponderLocationId());
 		requirement.setJobTitle(parentRequirement.getJobTitle());
 		requirement.setJobType(parentRequirement.getJobType());
 		requirement.setJobId(parentRequirement.getJobId());
@@ -119,7 +121,7 @@ public class RequirementReleaseRestController {
 		requirement.setDocFile(parentRequirement.getDocFile());
 		requirement.setFileContentType(parentRequirement.getFileContentType());
 		requirement.setFileName(parentRequirement.getFileName());
-		requirement.setIsClientJob(parentRequirement.getIsClientJob());
+		requirement.setIsClientJob("Y");
 		
 		requirement.setSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
 		requirement.setClientSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());

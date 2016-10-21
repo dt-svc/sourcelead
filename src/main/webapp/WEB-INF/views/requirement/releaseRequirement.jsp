@@ -211,6 +211,7 @@ function releaseTo(){
 	           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
 	            success :function(data) {
 	            		alert("success");
+						location.replace(sourceleadUrl+"/requirementList");
 	            },
 	    }); 
 	 
