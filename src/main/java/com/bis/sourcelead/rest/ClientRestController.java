@@ -638,7 +638,7 @@ public class ClientRestController {
 	
 	
 	@RequestMapping(value = "/loadSubmissionTemplate" , method = RequestMethod.GET)
-	   public String loadSubmissionTemplate(@RequestParam(value="clientLocationId", required=false) Long clientLocationId) throws Exception {
+	   public String loadSubmissionTemplate() throws Exception {
 			
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    SubmissionTemplate submissionTemplate = submissionTemplateService.getSubmissionTemplateById(1L);

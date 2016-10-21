@@ -418,3 +418,10 @@ padding: 0px 0px 20px 0px; margin: 0px; font-size: 18px; font-weight: 500; color
 	margin-top: 30px;	
 }
 
+.close-btn2 {
+	position: absolute; right:-12px; background-color: #fff; width: 30px; height: 30px; text-align: center; border-radius:50%;
+	box-sizing:border-box; padding: 5px 0px 0px 0px; cursor: pointer; top: -14px;
+	box-shadow: 0 0px 4px rgba(0,0,0,0.4);
+}
+.close-btn2 i { color: red; font-size: 17px;}
+
