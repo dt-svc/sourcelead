@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.HashSet;
 
 import org.json.JSONObject;
@@ -284,6 +285,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(templateFields);
 		
+	}
+
+	@Override
+	public List<RequirementSubmission> getSubmissionsByRequirementId(Long requirementId,User user, OrgLocations loginOrgLocation) throws Exception {
+		return requirementSubmissionDao.getSubmissionsByRequirementId(requirementId,user, loginOrgLocation);
 	}
 
 }

@@ -2529,7 +2529,7 @@ function requirementPipeline(requirementId){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
+         url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
          success :function(data) {  
               if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
@@ -2830,7 +2830,7 @@ function requirementPipeline(requirementId){
 				           result = result + '     <div class="clearfix"></div>';
 				           result = result + '   </div>';
 				           result = result + '   <div class="require_wrap_table">';
-				           result = result + '     <table>';
+				           result = result + '     <table id="requirementsPagination">';
 				           result = result + '       <tbody>';
 				           result = result + '       <thead>';
 				           result = result + '         <tr>';
@@ -2846,50 +2846,123 @@ function requirementPipeline(requirementId){
 				           result = result + '           <th>Status</th>';
 				           result = result + '         </tr>';
 				           result = result + '       </thead>';
-				           result = result + '       <tr>';
-				           result = result + '         <td><input type="checkbox" id="checkbox1"/></td>';
-				           result = result + '         <td><div><span>Vannam vannam vannam vannam</span></div></td>';
-				           result = result + '         <td><div><span>Vannam vannam vannam vannam</span></div></td>';
-				           result = result + '         <td><div><span>9000 000 000</span></div></td>';
-				           result = result + '         <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>';
-				           result = result + '         <td><div><span>08/08/2016</span></div></td>';
-				           result = result + '         <td><div><span>12345678</span></div></td>';
-				           result = result + '         <td><div><span>Careers</span></div></td>';
-				           result = result + '         <td><div>3.4 Years</div></td>';
-				           result = result + '         <td><div><span>';
-				           result = result + '             <select>';
-				           result = result + '               <option>Interview</option>';
-				           result = result + '               <option>Submit</option>';
-				           result = result + '               <option>Joined</option>';
-				           result = result + '               <option>Screening</option>';
-				           result = result + '               <option>Offer</option>';
-				           result = result + '             </select>';
-				           result = result + '             </span></div></td>';
-				           result = result + '       </tr>';
-				           result = result + '       <tr>';
-				           result = result + '         <td><input type="checkbox" id="checkbox1"/></td>';
-				           result = result + '         <td><div><span>Vannam vannam vannam vannam</span></div></td>';
-				           result = result + '         <td><div><span>Vannam vannam vannam vannam</span></div></td>';
-				           result = result + '         <td><div>9000 000 000</div></td>';
-				           result = result + '         <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>';
-				           result = result + '         <td><div><span>08/08/2016</span></div></td>';
-				           result = result + '         <td><div><span>12345678</span></div></td>';
-				           result = result + '         <td><div>Careers</div></td>';
-				           result = result + '         <td><div>3.4 Years</div></td>';
-				           result = result + '         <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>';
-				           result = result + '       </tr>';
-				           result = result + '       <tr>';
-				           result = result + '         <td><input type="checkbox" id="checkbox1"/></td>';
-				           result = result + '         <td><div><span>Vannam vannam vannam vannam</span></div></td>';
-				           result = result + '         <td><div><span>Vannam vannam vannam vannam</span></div></td>';
-				           result = result + '         <td><div>9000 000 000</div></td>';
-				           result = result + '         <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>';
-				           result = result + '         <td><div><span>08/08/2016</span></div></td>';
-				           result = result + '         <td><div><span>12345678</span></div></td>';
-				           result = result + '         <td><div>Careers</div></td>';
-				           result = result + '         <td><div>3.4 Years</div></td>';
-				           result = result + '         <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>';
-				           result = result + '       </tr>';
+				           
+				           for (var i=0; i<json.length; i++)
+			   				{  
+			   	        		
+			   	        		var report = json[i];
+						           result = result + '       <tr>';
+						           result = result + '         <td><input type="checkbox" id="checkbox1"/></td>';
+						           result = result + '         <td><div><span>'+report.candidateName+'</span></div></td>';
+						           
+						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.candidateEmail+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           
+						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.phoneNumber+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
+						        	   result = result + '         <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a>'+report.resumeName+'</div></td>';
+							           }
+							       else{
+							    	   result = result + '         <td><div>--</div></td>';
+						    	     }
+						           
+						           if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.expectedCTC+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.userName+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           result = result + '         <td><div><span>';
+						           result = result +'			<select>';
+							       
+									if(report.submissionStatus == "INTERVIEW"){
+										result = result +'  <option selected >interview</option>';
+										result = result +'  <option>submission</option>';
+										result = result +' <option>offer</option>'; 
+										result = result +' <option>rejected</option>'; 
+									}
+									if(report.submissionStatus == "SUBMISSION"){
+										result = result +'  <option selected >submission</option>';
+										result = result +'  <option>interview</option>';
+										result = result +' <option>offer</option>'; 
+										result = result +' <option>rejected</option>';
+									}
+									if(report.submissionStatus == "OFFER"){
+										result = result +'  <option selected >offer</option>';
+										result = result +'  <option>submission</option>';
+										result = result +' <option>interview</option>'; 
+										result = result +' <option>rejected</option>';
+									}
+									if(report.submissionStatus == "REJECTED"){
+										result = result +'  <option selected >rejected</option>';
+										result = result +'  <option>submission</option>';
+										result = result +' <option>interview</option>'; 
+										result = result +' <option>offer</option>';
+									}
+						           result = result + '             </select>';
+						           result = result + '             </span></div></td>';
+						           
+						           
+									result = result +'<label class="labl">Status&nbsp;<b class="text-danger">*</b></label>';
+									result = result +'<span>';
+									result = result +'<select id="status" name="status">';
+									if(json.qcStatus == "New"){
+										result = result +'  <option selected >'+json.qcStatus+'</option>';
+										result = result +'  <option>Inprogress</option>';
+										result = result +' <option>Completed</option>'; 
+									}
+									if(json.qcStatus == "Inprogress"){
+										result = result +'  <option selected >'+json.qcStatus+'</option>';
+										result = result +'  <option>New</option>';
+										result = result +' <option>Completed</option>'; 
+									}
+									if(json.qcStatus == "Completed"){
+										result = result +'  <option selected >'+json.qcStatus+'</option>';
+										result = result +'  <option>New</option>';
+										result = result +' <option>Inprogress</option>'; 
+									}
+									result = result +'</select>';
+									result = result +'</span> </div>';
+						           
+						           
+						           
+						           result = result + '       </tr>';
+			   				}
+				           
+				           
 				           result = result + '       </tbody>';
 				           result = result + '     </table>';
 				           result = result + '   </div>';
@@ -2938,6 +3011,21 @@ function requirementPipeline(requirementId){
                },
                  
             }); 
+}
+</script>
+
+<script>
+function documentpagination(){  
+    $('#requirementsPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
 }
 </script>
 
