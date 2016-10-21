@@ -9,19 +9,19 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-@Table(name = "CITIES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Table(name = "cities")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="cities")
 public class Cities {
 
 	@Id
-    @Column(name = "COUNTRY_CODE", nullable = false)
+    @Column(name = "countryCode", nullable = false)
 	private String countryCode;
 	
 	
-	@Column(name = "STATE_CODE")
+	@Column(name = "stateCode")
 	private String stateCode;
 	
-	@Column(name = "CITY_NAME")
+	@Column(name = "cityName")
 	private String cityName;
 	
 	
