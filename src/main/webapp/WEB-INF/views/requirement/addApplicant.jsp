@@ -103,7 +103,6 @@ function getAddApplicant(requirementId){
         var jsonData = encodeURIComponent(con);
         var sourceleadUrl ='${sourceleadUrl}';
         var requirementId = $("#requirementId").val();
-        alert(requirementId);
         $( "#save_button" ).addClass('button').val('Processing..');
         
     	    $.ajax({

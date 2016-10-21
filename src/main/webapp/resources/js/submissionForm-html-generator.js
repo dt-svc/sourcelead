@@ -230,13 +230,13 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
 
                              else if (fieldType == 'radio') {
                                  var selected = v['sel'] ? ' checked' : 'checked';
-                                 var choiceHTML = '<label><input type="radio" name="'+label+'-' + uniqueID + '"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
+                                 var choiceHTML = '<label><input type="radio" name="'+label+'"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
                                  $currentField.find(".choices").append(choiceHTML);
                              }
 
                              else if (fieldType == 'checkbox') {
                                  var selected = v['sel'] ? ' checked' : 'checked';
-                                 var choiceHTML = '<label><input type="checkbox" name="'+label+'-' + uniqueID + '[]"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
+                                 var choiceHTML = '<label><input type="checkbox" name="'+label+'"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
                                  $currentField.find(".choices").append(choiceHTML);
                              }
 
