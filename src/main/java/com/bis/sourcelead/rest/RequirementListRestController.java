@@ -165,8 +165,12 @@ public class RequirementListRestController {
 			       if(requirementAssignToList !=null && !requirementAssignToList.isEmpty()){
 			           for (RequirementAssignTo assing : requirementAssignToList) {
 					       assing.setAssignedUserName(assing.getAssignUserId().getFirstName()+" "+assing.getAssignUserId().getLastName());
-					       assing.setAssignedUserRole(assing.getRoleId().getDisplayName());
-					       assing.setTeamName(assing.getTeamId().getName());
+					       if(assing.getRoleId() != null ){
+					    	   assing.setAssignedUserRole(assing.getRoleId().getDisplayName());
+					       }
+					       if(assing.getTeamId() != null ){
+					    	   assing.setTeamName(assing.getTeamId().getName());
+					       }
 				      }
 			       }
 					resultJson = commonUtil.toJSON(requirementAssignToList);
