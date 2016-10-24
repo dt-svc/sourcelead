@@ -41,19 +41,23 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
-		
-		User loginUser = userService.findByUserName(authentication.getName());
-	    if(loginUser != null){
-	    	UserLoginLogoutSession userLoginSession = new UserLoginLogoutSession();
-	    	String ipAddress = getClientIpAddr(request);
-	    	userLoginSession.setIpaddress(ipAddress);
-		    userLoginSession.setUserId(loginUser);
-		    userLoginSession.setLoginTime(new Date());
-		    userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
-		    request.getSession().setAttribute("userLoginSession", userLoginSession);
+		try{
+			User loginUser = userService.findByUserName(authentication.getName());
+		    if(loginUser != null){
+		    	UserLoginLogoutSession userLoginSession = new UserLoginLogoutSession();
+		    	String ipAddress = getClientIpAddr(request);
+		    	userLoginSession.setIpaddress(ipAddress);
+			    userLoginSession.setUserId(loginUser);
+			    userLoginSession.setLoginTime(new Date());
+			    userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
+			    request.getSession().setAttribute("userLoginSession", userLoginSession);
+		    }
+		}
+	    finally{
+	    	response.sendRedirect("/sourcelead/dashboard");
 	    }
 	    
-		response.sendRedirect("/sourcelead/dashboard");
+		
 	}
 
 	public static String getClientIpAddr(HttpServletRequest request) {  
@@ -91,6 +95,15 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
 	        ip = request.getRemoteAddr();  
 	    }  
+        if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
+            InetAddress localip = null;
+			try {
+				localip = java.net.InetAddress.getLocalHost();
+			} catch (UnknownHostException e) {
+			}
+			if(localip != null)
+            ip = localip.getHostAddress();
+        }
 	    return ip;  
 	}
 }
