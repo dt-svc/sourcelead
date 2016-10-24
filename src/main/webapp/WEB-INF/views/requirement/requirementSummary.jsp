@@ -2232,7 +2232,7 @@ function sideBar(requirementId){
               			var result = '';
               			
               			result = result+'    <div class="profile_details requirement_details clearfix">';
-				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">SL 201 - Business Analyst - Full Time<i></i></h4></a>';
+				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
 				        result = result+'<div class="hide-row">';
 				        
 				       /*  result = result+'    <div class="profile_details requirement_details clearfix">'; */
@@ -2245,7 +2245,7 @@ function sideBar(requirementId){
 				        result = result+'</div>';
 				        result = result+'<div class="col-md-9">';
 				        result = result+'<div class="canDetails clearfix">';
-				        result = result+'<h4>SL 201 - Business Analyst - Full Time</h4>';
+				        result = result+'<h4>'+json.jobTitle+'-'+json.jobType+'</h4>';
 				        result = result+'<div class="row">';
 				        result = result+'<div class="col-md-6">';
 				        result = result+'<ul class="list-unstyled can-perdt">';
@@ -2760,6 +2760,18 @@ function requirementPipeline(requirementId){
 							result = result +'</div>'; 
 							//end Add Interview Div
 							
+							
+							//For Submit to Client Div
+							result = result +'<div class="side_mask"><div class="submitToClient_close"></div></div>';
+							result = result +'<div class="submitnew-wrap">';
+							result = result +' <div class="new_side_wrap_inn">';
+							result = result +'<div class="add_inter">';
+							result = result + '<div id="submitToClientDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							//For Submit to Client Div
+							
 				            result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
 				            result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
 				            result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
@@ -2780,9 +2792,22 @@ function requirementPipeline(requirementId){
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title="" class="add-interview" onclick="addInterview('+requirementId+');" ><i class="fa fa-plus"></i>&nbsp;Add Interview</a></li>';
-				            result = result +'    <li> <a href="javascript:void(0)" title="" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a> </li>';
+				           
+				            
+				            result = result +' <li><a href="javascript:void(0)" onclick="getActions();" class="action"> Action <i class="fa fa-caret-down"></i></a>';
+				            result = result +'<div class="action-pop">';
+				            result = result +'	<span>';
+				            result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
+				            result = result +'    <a href="javascript:void(0)" title="" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
+				            result = result +'   <a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+				            result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
+				            result = result +'    <a href="javascript:void(0)" title="" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            result = result +'    </span>';
+				            result = result +' </div>';	
+				            result = result +' </li>';
+				            
+				            
+				            
 				            result = result +'    <div class="clearfix"></div>';
 				            result = result +'    <div class="collapseDiv_add collapseDiv_styles col-xs-4 addOffer-Req"> <i class="fa fa-close close-div"></i>';
 				            result = result +'     <div class="form-horizontal clearfix">';
@@ -3033,7 +3058,6 @@ function requirementPipeline(requirementId){
 				           result = result + '       <tbody>';
 				           result = result + '       <thead>';
 				           result = result + '         <tr>';
-				           result = result + '           <th><input type="checkbox" id="checkbox1"/></th>';
 				           result = result + '           <th>Name</th>';
 				           result = result + '           <th>Email</th>';
 				           result = result + '           <th>Ph. No</th>';
@@ -3051,7 +3075,6 @@ function requirementPipeline(requirementId){
 			   	        		
 			   	        		var report = json[i];
 						           result = result + '       <tr>';
-						           result = result + '         <td><input type="checkbox" id="checkbox1"/></td>';
 						           result = result + '         <td><div><span>'+report.candidateName+'</span></div></td>';
 						           
 						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
@@ -3290,12 +3313,26 @@ function assignedMemberList(requirementId){
 }
 </script>
 
+
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
 	alert("Hai"+requirementId);
+
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
+
 }
 </script>
 
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />
+<jsp:include page="submitToClient.jsp" />
 

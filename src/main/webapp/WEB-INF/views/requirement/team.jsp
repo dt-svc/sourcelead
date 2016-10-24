@@ -69,8 +69,9 @@ function teamList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
+	                    	
 				             result = result +"<td><div><span>"+opt.name+"</span></div></td>";
-				             result = result +"<td><div><span>V"+opt.ownerUserId.firstName+"</span></div></td>";
+				             result = result +"<td><div><span>"+opt.ownerUserId.firstName+"</span></div></td>";
 				             result = result +"<td><div><span>"+opt.name+"</span></div></td>";
 				             result = result +"<td><div class='tblicons'><i class='glyphicon glyphicon-pencil' onclick='sideBar("+opt.id+");'></i><i class='glyphicon glyphicon-trash' onclick='deleteTeam("+opt.id+");'></i></div></td>";
 				             result = result +"</tr>";
@@ -348,10 +349,10 @@ function projectMemberList(teamId){
 		                     for (var i = 0; i < json.length; i++) { 
 		                    	 var opt = json[i]; 
 		                    	 result = result+ '              <tr>';
-		                    	 result = result+ '                <td><div><span>Rajashekar</span></div></td>';
-		                    	 result = result+ '                <td><div><span>rajashekar@bis.com</span></div></td>';
-		                    	 result = result+ '                <td><div><span>Employee</span></div></td>';
-		                    	 result = result+ '                <td><div><span>Requirement</span></div></td>';
+		                    	 result = result+ '                <td><div><span>'+opt.memberUserId.firstName+'</span></div></td>';
+		                    	 result = result+ '                <td><div><span>'+opt.memberUserId.email+'</span></div></td>';
+		                    	 result = result+ '                <td><div><span>'+opt.memberUserId.userType+'</span></div></td>';
+		                    	 result = result+ '                <td><div><span>'+opt.memberUserId.jobTitle+'</span></div></td>';
 		                    	 result = result+ '                <td><div><span>Requirement</span></div></td>';
 		                    	 result = result+ '                <td><div><i class="glyphicon glyphicon-trash" onclick="removeProjectMemberAlertMessage('+opt.id+');"></i></div></td>';
 		                    	 result = result+ '              </tr>';

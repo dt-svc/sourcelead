@@ -291,12 +291,14 @@ $(document).ready(function() {
                 <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker" id="rateType" name="rateType">
-                    <option ${requirement.rateType  == 'c2c' ? 'selected' : ''}>Per</option>
-                    <option ${requirement.rateType  == '1hr' ? 'selected' : ''}>1hr</option>
-                    <option ${requirement.rateType  == '2hr' ? 'selected' : ''}>2hr</option>
-                    <option ${requirement.rateType  == '3hr' ? 'selected' : ''}>3hr</option>
-                    <option ${requirement.rateType  == '4hr' ? 'selected' : ''}>4hr</option>
+                    
+                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+                    <option ${requirement.rateType  == 'Biweekly' ? 'selected' : ''}>Biweekly</option>
+                    <option ${requirement.rateType  == 'SemiMonthly' ? 'selected' : ''}>SemiMonthly</option>
+                    <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+                    <option ${requirement.rateType  == 'BiMonthly' ? 'selected' : ''}>BiMonthly</option>
                     <option ${requirement.rateType  == 'others' ? 'selected' : ''}>Other</option>
+                 
                   </select>
                 </div>
               </div>
