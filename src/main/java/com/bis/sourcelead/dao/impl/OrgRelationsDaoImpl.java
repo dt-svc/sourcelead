@@ -311,7 +311,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	public List<OrgRelations> getAllVendorsFilterByOrgLocationId(Long orgLocationId, String status) throws Exception {
 		logger.debug("In OrgRelations getAllVendorsByOrgLocationId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String level = null;
+	/*	String level = null;
 		if(status != null && status.contains(",")){
 			String[] levels = status.split(",");
 			for (int i = 0; i < levels.length; i++) {
@@ -319,7 +319,8 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			}
 		}else{
 			level = "";
-		}
+		}*/
+		String[] level = status.split(",");
 		String subQuery2 = "";
 		String subQuery3  ="";
 

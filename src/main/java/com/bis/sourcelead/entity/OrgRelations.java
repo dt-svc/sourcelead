@@ -108,6 +108,9 @@ public class OrgRelations {
 	private Integer noOfContatcs;
 	
 	@Transient
+	private Integer noOfNonReleasedContacts;
+	
+	@Transient
 	private String locationOrgname;
 	
 	@Transient
@@ -355,6 +358,14 @@ public class OrgRelations {
 
 	public void setNoOfContatcs(Integer noOfContatcs) {
 		this.noOfContatcs = noOfContatcs;
+	}
+
+	public Integer getNoOfNonReleasedContacts() {
+		return noOfNonReleasedContacts;
+	}
+
+	public void setNoOfNonReleasedContacts(Integer noOfNonReleasedContacts) {
+		this.noOfNonReleasedContacts = noOfNonReleasedContacts;
 	}
 
 	public String getLocationOrgname() {

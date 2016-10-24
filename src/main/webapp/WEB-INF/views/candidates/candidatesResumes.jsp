@@ -197,7 +197,8 @@ function addResume(candidateId) {
 				var form = $('#candidateResume_form')[0];
 	      		var formData = new FormData(form); 
 				var sourceleadUrl = '${sourceleadUrl}';
-				$("#candidateResume_form").attr("disabled", "disabled");
+				$("#add_resume").attr("disabled", "disabled");
+         		$("#add_resume" ).addClass('button').val('Processing..');
 				//It will escape all the special characters
 		        var jsonData = encodeURIComponent(con);
 				$.ajax({

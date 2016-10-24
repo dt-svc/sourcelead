@@ -57,9 +57,7 @@ public class EMailJobScheduler {
 //	@Scheduled(cron = "${emailJobScheduler.job.cron.expression}")
 	@Scheduled(cron = "0 30 19 ? * *")
 	public void runEMailJobScheduler() {
-		String emailJobSchedulerStatus = "";
 		logger.info("##########  E-Mail Job Scheduler started..! ##########");
-		Date date = new Date();
 		try {
 			List<User> usrList = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus();
 			for(User user : usrList){
@@ -67,9 +65,9 @@ public class EMailJobScheduler {
 					continue;
 				HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
 				projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
+				logger.info("########## Mail Sent to: "+user.getEmail()+" ##########");
 			}
-			emailJobSchedulerStatus = jobSchedulerTestService.schedulerTest(date.toLocaleString());
-			logger.info("########## COMPLETED the E-Mail Job Scheduler with status as : "+emailJobSchedulerStatus+" ##########");
+			
 			
 		} catch (Exception e) {
 			logger.error("ERROR in " + e.getMessage());
@@ -90,12 +88,16 @@ public class EMailJobScheduler {
 			notificationJobSchedulerStatus = jobSchedulerTestService.notiFicationSchedularTest(date.toLocaleString());
 			logger.info("*********** COMPLETED the Notification Job Scheduler with status as : "+notificationJobSchedulerStatus+" ***********");
 			HashSet<User> usrList = projectsService.getAllUserTimeSheetSubmissionStatusCurrentWeek();
-			for(User user : usrList){
-				if("Admin".equalsIgnoreCase(user.getUserType()))
-					continue;
-				HashSet<TimesheetSubmissions>  timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
-				projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
+			if(usrList != null && !usrList.isEmpty()){
+				for(User user : usrList){
+					if("Admin".equalsIgnoreCase(user.getUserType()))
+						continue;
+					HashSet<TimesheetSubmissions>  timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
+					projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
+					logger.info("########## Mail Sent to: "+user.getEmail()+" ##########");
+				}
 			}
+			
 			
 		} catch (Exception e) {
 			logger.error("ERROR in " + e.getMessage());

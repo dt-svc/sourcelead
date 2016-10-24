@@ -38,6 +38,9 @@ public class Constants {
 	public static final String CITY = "City";
 	public static final String LEVEL = "Level";
 	public static final String VENDOR_NAME = "Vendor Name*";
+
+	public static final Integer RECORD_ACTIVE = 1;
+	public static final Integer RECORD_INACTIVE = 1;
 	   
 	public static transient DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static transient DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");
@@ -151,7 +154,7 @@ public class Constants {
 
 	public static String[] RATEPER_LIST = {"Daily","Hourly","Weekly","Bi-Weekly","Semi-Monthly","Monthly","Yearly"};
 	
-	public static String[] ROLE_LIST = {"Admin","Employee","Approver"};
+	public static String[] ROLE_LIST = {"Admin","Employee","Project Manager","Team Lead"};
 	
 	public static String[] INVOICE_FREQUENCY_LIST = {"Weekly","Bi-Weekly","Semi-Monthly","Monthly"};
 	
