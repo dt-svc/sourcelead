@@ -366,6 +366,8 @@ function closePopup(){
 				var frm = $('#document_form').serializeFormJSON();
 				var con = JSON.stringify(frm);
 				con = con.replace(/[{}]/g, "");
+				$("#save_button").attr("disabled", "disabled");
+				$("#save_button" ).addClass('button').val('Processing..');
 				var form = $('#document_form')[0];
 	      		var formData = new FormData(form); 
 				var sourceleadUrl = '${sourceleadUrl}';
