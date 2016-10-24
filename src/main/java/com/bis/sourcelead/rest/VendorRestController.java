@@ -165,8 +165,6 @@ public class VendorRestController {
 		}
 	
 	
-
-	
 	/**
 	 * @author Laxman
 	 * this is method is using Vendor List
