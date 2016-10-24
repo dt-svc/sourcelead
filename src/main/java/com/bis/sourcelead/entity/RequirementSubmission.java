@@ -97,6 +97,10 @@ public class RequirementSubmission {
    	private String createdDateStr;
     
     @Transient
+   	private String candidateId;
+    
+    
+    @Transient
    	private String resumeName;
     
 	public String getUserName() {
@@ -275,4 +279,13 @@ public class RequirementSubmission {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+
+	public String getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(String candidateId) {
+		this.candidateId = candidateId;
+	}
+	
 }
