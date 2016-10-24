@@ -18,18 +18,22 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -67,6 +71,12 @@ public class RequirementRestController {
 	
 	 @Autowired
 	 CommonUtil commonUtil;
+	 
+	 @Autowired
+	 RequirementSubmissionService requirementSubmissionService;
+	 
+	 @Autowired
+	 CandidateSkillsService candidateSkillsService;
 	 
 	
 	/**
@@ -260,5 +270,22 @@ public class RequirementRestController {
 		return resultJson;
 	}
 	
-	
+	@RequestMapping(value = "/getRequirementRecommendationsByRequirementId", method = RequestMethod.POST)
+	public @ResponseBody String getRequirementRecommendationsByRequirementId(@RequestParam(value="requirementId",required = false) Long requirementId,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<RequirementSubmission> requirementRecommendationList = requirementSubmissionService.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocation.getId(), requirementId);
+		
+		for(RequirementSubmission reqsub : requirementRecommendationList){
+			List<CandidateSkills> candidateSkillList  = candidateSkillsService.getSkillByCandidateId(reqsub.getCandidate().getId());
+			logger.info("---candidateSkills size--------------------"+candidateSkillList.size()+"  candidate id is "+reqsub.getCandidate().getId());
+			for(CandidateSkills candidateSkills : candidateSkillList){
+				logger.info("==========================="+candidateSkills.getName());
+			}
+			Requirement requirement = reqsub.getRequirement();
+			logger.info("==========================="+requirement.getSkills());
+		}
+		
+		return "success";
+		
+	}
 }

@@ -3325,7 +3325,15 @@ function assignedMemberList(requirementId){
 
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
-	alert("Hai"+requirementId);
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  $.ajax({
+    type : "POST",
+     url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
+     success :function(data) { 
+  	     alert("Hai"+data);
+           },
+             
+        }); 
 </script>
 
 <script>
@@ -3337,7 +3345,6 @@ function getActions(){
 	$(".action, .action-pop").click(function(e){
 	 	e.stopPropagation();
  	});	
-
 }
 </script>
 
