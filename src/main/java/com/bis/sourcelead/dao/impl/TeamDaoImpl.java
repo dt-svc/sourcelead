@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -15,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.TeamDao;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Team;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -112,6 +115,22 @@ public class TeamDaoImpl  implements TeamDao{
 		logger.debug("In Team getTeamByTeamId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		return (Team) session.get(Team.class, teamId);
+	}
+
+	@Override
+	public Boolean getTeamOwnersListByUserId(User user) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Team> teamList = new ArrayList<>();
+		teamList = session.createQuery("from Team team where team.ownerUserId.id =:userId")
+						   .setLong("userId", user.getId())
+						   .setCacheable(true).list();
+		
+		Boolean flag = false;
+		if (teamList.size() > 0) {
+			flag = true;
+		} 
+		return flag;
+		
 	}
 
 

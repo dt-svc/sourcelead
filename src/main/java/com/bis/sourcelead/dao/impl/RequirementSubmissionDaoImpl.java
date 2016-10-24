@@ -1,9 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -15,12 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
+import com.bis.sourcelead.dao.TeamDao;
+import com.bis.sourcelead.dao.TeamMemberDao;
 import com.bis.sourcelead.dao.UserDao;
-import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.RequirementAssignToService;
@@ -35,6 +37,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	
 	@Autowired
 	private RequirementDao requirementDao;
+	
+	@Autowired
+	TeamDao teamDao;
+	
+	@Autowired
+	TeamMemberDao teamMemberDao;
 	
 	@Autowired
 	RequirementAssignToService requirementAssignToService;
@@ -98,6 +106,27 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId";
 			 requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
 		}
+		
+		Boolean teamFlag = teamDao.getTeamOwnersListByUserId(user);
+		if(requirement.getManagerUserId().getId()!=user.getId()&& teamFlag){
+			for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
+				if(requirementAssignTo.getTeamId().getId()!=null){
+					if(requirementAssignTo.getTeamId().getId()==user.getId()){
+						List<TeamMembers> teamMembers =  teamMemberDao.getTeamMembersListByTeamID(requirementAssignTo.getTeamId().getId());
+						List<String> userCodes = new ArrayList<>();
+						userCodes.add(user.getUserCode());
+						for (TeamMembers teamMember : teamMembers) {
+							User usercode= userDao.getUserById(teamMember.getMemberUserId().getId());
+							userCodes.add(usercode.getUserCode());
+						}
+						
+						String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId";
+						  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setParameterList("usercode", userCodes).setLong("requirementId", requirementId).list();
+					}
+				}
+			}
+			
+		}
 		boolean flag = false;
 		for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
 			if(requirementAssignTo.getAssignUserId().getId()==user.getId()){
@@ -105,7 +134,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			}
 		}
 		
-		if(requirement.getManagerUserId().getId()!=user.getId()&& flag==true){
+		if(requirement.getManagerUserId().getId()!=user.getId()&& flag){
 			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId";
 		  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).list();
 		}
