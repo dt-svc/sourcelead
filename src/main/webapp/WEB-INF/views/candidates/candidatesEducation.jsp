@@ -25,7 +25,7 @@ function candidateEducation(candidateId){
 	if(window.candidateStatusGlobal == '0'){
 		result = result  +'    	<a href="javascript:void(0)"  class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a>                                                            ';
 	}else{
-		result = result  +'    	<a href="javascript:void(0)"  onClick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a>                                                            ';
+		result = result  +'    	<span class="pad-sea"><a href="javascript:void(0)"  onClick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>                                                            ';
 	}
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
@@ -149,7 +149,7 @@ function candidateEducationList(candidateId){
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
 	                     $("#candidateEducationList").append(result); 
-	                     pagination(); 
+	                     educationPagination(); 
 			    	} 
                }else{
 	    	         var result ="";
@@ -179,7 +179,7 @@ function candidateEducationList(candidateId){
 --%>
 
 <script>
-function pagination(){  
+function educationPagination(){  
     $('#candidateEducationPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],

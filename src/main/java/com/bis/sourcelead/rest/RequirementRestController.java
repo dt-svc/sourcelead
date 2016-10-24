@@ -22,6 +22,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
+import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
@@ -66,6 +67,7 @@ public class RequirementRestController {
 	
 	 @Autowired
 	 CommonUtil commonUtil;
+	 
 	
 	/**
 	 * @author prasad k
@@ -121,7 +123,7 @@ public class RequirementRestController {
 	*/
 	
 	@RequestMapping(value = "/requirementAcceptOrReject", method = RequestMethod.POST)
-	public @ResponseBody String requirementAcceptOrReject(@RequestParam(value = "requirementId", required = false) Long requirementId,@RequestParam(value = "status", required = false) String status,HttpServletRequest request) throws Exception {
+	public @ResponseBody String requirementAcceptOrReject(@RequestParam(value = "requirementId", required = false) Long requirementId,@RequestParam(value = "status", required = false)  String status, @RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception {
 		
 	 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -148,6 +150,7 @@ public class RequirementRestController {
 				   }
 		    }
 			requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+			requirementApproverHierarchy.setRejectedReason(reason);
 		}
 		requirementService.addRequirement(requirement);
 		requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
@@ -175,11 +178,16 @@ public class RequirementRestController {
 	*/
 	
 	@RequestMapping(value = "/getUserList", method = RequestMethod.POST)
-	public @ResponseBody String getUserList(HttpServletRequest request) throws Exception {
+	public @ResponseBody String getUserList(@RequestParam(value="teamType",required = false) String teamType,HttpServletRequest request) throws Exception {
 		
 		String resultJson;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<User> usersList = userService.getOwnersByOrgLocationId(orgLocation.getId());
+//		List<User> usersList = userService.getOwnersByOrgLocationId(orgLocation.getId());
+		List<User> usersList = userService.getUsersByTeamType(orgLocation.getId(),teamType);
+		for(User user : usersList){
+			List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId());
+			user.setAssignJobCount(assign.size());
+		}
 		resultJson = commonUtil.toJSON(usersList);
 		return resultJson;
 	}

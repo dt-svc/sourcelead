@@ -126,7 +126,8 @@ public class User {
 	private Status previousUserState;
 	
 	
-	
+	@Transient
+    private int assignJobCount;
 
 	public Status getPreviousUserState() {
 		return previousUserState;
@@ -356,4 +357,13 @@ public class User {
 	public void setReportingManager(User reportingManager) {
 		this.reportingManager = reportingManager;
 	}
+
+	public int getAssignJobCount() {
+		return assignJobCount;
+	}
+
+	public void setAssignJobCount(int assignJobCount) {
+		this.assignJobCount = assignJobCount;
+	}
+	
 }
