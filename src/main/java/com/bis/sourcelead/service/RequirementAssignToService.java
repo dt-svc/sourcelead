@@ -11,4 +11,6 @@ public interface RequirementAssignToService {
 	public RequirementAssignTo getRequirementAssignToByRequirementIdandAssignToId(Long requirementId,Long assignToId)  throws Exception;
 	
 	public boolean deleteRequirementAssignToByRequirementId(Long requirementId)throws Exception;
+	
+	public Integer getAssignedTeamMembersCountByTeamMemberUserId(Long assignUserId, String jobType);
 }

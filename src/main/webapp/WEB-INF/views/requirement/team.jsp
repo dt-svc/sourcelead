@@ -182,7 +182,8 @@ function addTeam(){
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '                <div class="col-md-12">';
 	outPut = outPut + '<select   class="form-control" name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">';
-	            <c:forEach var="report" items="${usersList}">
+	 outPut = outPut + ' <option value="">Select Team Lead</option>';            
+	           <c:forEach var="report" items="${usersList}">
 			         outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
 			   </c:forEach>
     outPut = outPut + '</select>';
@@ -349,13 +350,25 @@ function projectMemberList(teamId){
 		                     for (var i = 0; i < json.length; i++) { 
 		                    	 var opt = json[i]; 
 		                    	 result = result+ '              <tr>';
-		                    	 result = result+ '                <td><div><span>'+opt.memberUserId.firstName+'</span></div></td>';
-		                    	 result = result+ '                <td><div><span>'+opt.memberUserId.email+'</span></div></td>';
+		                    	 if(opt.memberUserId.firstName != null && opt.memberUserId.firstName != '' && opt.memberUserId.firstName !="undefined"){
+		                    	 result = result+ '<td><div><span>'+opt.memberUserId.firstName+'</span></div></td>';
+		                    	 }else{
+		                    		 result = result+ '<td><div><span>-----</span></div></td>'; 
+		                    	 }
+		                    	 if(opt.memberUserId.email != null && opt.memberUserId.email != '' && opt.memberUserId.email !="undefined"){
+		                    	 result = result+ '<td><div><span>'+opt.memberUserId.email+'</span></div></td>';
+		                    	 }else{
+		                    		 result = result+ '<td><div><span>-----</span></div></td>'; 
+		                    	 }
+		                    	 if(opt.memberUserId.userType != null && opt.memberUserId.email != '' && opt.memberUserId.userType !="undefined"){
 		                    	 result = result+ '                <td><div><span>'+opt.memberUserId.userType+'</span></div></td>';
-		                    	 result = result+ '                <td><div><span>'+opt.memberUserId.jobTitle+'</span></div></td>';
-		                    	 result = result+ '                <td><div><span>Requirement</span></div></td>';
-		                    	 result = result+ '                <td><div><i class="glyphicon glyphicon-trash" onclick="removeProjectMemberAlertMessage('+opt.id+');"></i></div></td>';
-		                    	 result = result+ '              </tr>';
+		                    	 }else{
+		                    		 result = result+ '<td><div><span>-----</span></div></td>'; 
+		                    	 }
+		                    	 result = result+ '<td><div><span>'+opt.teamMemberRequirementAssignedCount+'</span></div></td>';
+		                    	 result = result+ '<td><div><span>'+opt.teamMemberRequirementAssignedOpenCount+'</span></div></td>';
+		                    	 result = result+ '<td><div><i class="glyphicon glyphicon-trash" onclick="removeProjectMemberAlertMessage('+opt.id+');"></i></div></td>';
+		                    	 result = result+ '</tr>';
 		                     }
 		                     result = result +" </tbody>";
 		                     result = result +"</table>"; 
