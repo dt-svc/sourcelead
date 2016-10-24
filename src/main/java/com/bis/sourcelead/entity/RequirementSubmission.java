@@ -40,7 +40,7 @@ public class RequirementSubmission {
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SOURCE_SUBMISSION_ID")
-   	private RequirementSubmission requirementSubmission;
+   	private RequirementSubmission sourceSubmission;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "CANDIDATE_RESUEME_ID")
@@ -187,12 +187,13 @@ public class RequirementSubmission {
 		this.candidate = candidate;
 	}
 
-	public RequirementSubmission getRequirementSubmission() {
-		return requirementSubmission;
+
+	public RequirementSubmission getSourceSubmission() {
+		return sourceSubmission;
 	}
 
-	public void setRequirementSubmission(RequirementSubmission requirementSubmission) {
-		this.requirementSubmission = requirementSubmission;
+	public void setSourceSubmission(RequirementSubmission sourceSubmission) {
+		this.sourceSubmission = sourceSubmission;
 	}
 
 	public CandidateResumes getCandidateResumes() {
