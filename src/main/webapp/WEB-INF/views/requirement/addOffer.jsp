@@ -15,9 +15,6 @@
 <script src="resources/js/jquery.timepicker.js"></script> 
 
 
-
-
-
 <!-- For add New Interview -->
 <script>
 function addOffer(requirementId){
@@ -46,7 +43,7 @@ function addOffer(requirementId){
 	
 	
 	result= result + '	                <tr id="divTsRow0">';
-	result= result + '	                  <td><select multiple class="chosen-select" id="1applicant"  name="1applicant">';
+	result= result + '	                  <td><select multiple class="chosen-select" id="1applicant"  name="1applicant" field-name="Applicant" data-validation="required">';
 	result= result + '	                      <option>India</option>';
 	result= result + '	                      <option>USA</option>';
 	result= result + '	                      <option>UK</option>';
@@ -55,27 +52,27 @@ function addOffer(requirementId){
 	result= result + '	                      <option>Austrlia</option>';
 	result= result + '	                    </select></td>';
 	result= result + '	                  <td><div class="positionRelative date">';
-	result= result + '	                      <input type="text" value="" id="1dateOfJoining"  name="1dateOfJoining"  class="form-control input-sm Datepicker" placeholder="Date">';
+	result= result + '	                      <input type="text" value="" id="1dateOfJoining"  name="1dateOfJoining"  class="form-control input-sm Datepicker" placeholder="Date" field-name="DateOfJoining"  data-validation="required">';
 	result= result + '	                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 	result= result + '	                      </div>';
 	result= result + '	                  </td>';
 	
 	result= result + '	                  <td class="clearfix">';
 	result= result + '	                  	  <div class="positionRelative float">';
-	result= result + '	                          <select class="form-control" id="1PaymentType"  name="1PaymentType">';
+	result= result + '	                          <select class="form-control" id="1PaymentType"  name="1PaymentType" field-name="PaymentType"  data-validation="required">';
 	result= result + '	                          <option>Rupee</option>';
 	result= result + '	                          <option>Dollar</option>';
 	result= result + '	                          </select>';
 	result= result + '	                      </div>';
-	result= result + '	                      <div class="positionRelative float"><input type="text" value="" class="form-control input-sm" id="1Amount"  name="1Amount" ></div>';
+	result= result + '	                      <div class="positionRelative float"><input type="text" value="" class="form-control input-sm" id="1Amount"  name="1Amount" field-name="Amount"  data-validation="required" ></div>';
 	result= result + '	                  	  <div class="positionRelative float">';
-	result= result + '	                          <select class="form-control" id="1PaymentMode"  name="1PaymentMode">';
+	result= result + '	                          <select class="form-control" id="1PaymentMode"  name="1PaymentMode"  field-name="PaymentMode"  data-validation="required" >';
 	result= result + '	                          <option>Yearly</option>';
 	result= result + '	                          <option>Monthly</option>';
 	result= result + '	                          </select>';
 	result= result + '	                      </div>';
 	result= result + '					  </td>   ';               
-	result= result + '	                  <td><select class="form-control" id="1PositionType"  name="1PositionType">';
+	result= result + '	                  <td><select class="form-control" id="1PositionType"  name="1PositionType" field-name="PositionType"  data-validation="required" >';
 	result= result + '	                      <option>Fulltime</option>';
 	result= result + '	                      <option>Parttime</option>';
 	result= result + '	                      <option>C2C</option>';
@@ -86,7 +83,7 @@ function addOffer(requirementId){
 	result= result + '	                      	<label class="input-group-btn"> <span class="btn btn-primary file-btn"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result= result + '	                        	<input type="file" style="display: none;" multiple id="uploadBtn"  class="upload"></span>';
 	result= result + '							</label>';
-	result= result + '							<input type="text" id="1OfferAttachment"  name="1OfferAttachment" class="form-control file1" readonly id="uploadFile" placeholder="Files are not selected...">';
+	result= result + '							<input type="text" id="1OfferAttachment"  name="1OfferAttachment" field-name="OfferAttachment"  data-validation="required" class="form-control file1" readonly id="uploadFile" placeholder="Files are not selected...">';
 	result= result + '	                     </div>    ';              
 	result= result + '	                  </td>';
 	result= result + '	                </tr>';  
@@ -341,6 +338,7 @@ function cancelAddInterviewDiv(){
 	    	type: "POST",
 	        url: sourceleadUrl+"/saveOffer?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
 	        success: function(result) {
+	        		
 	        	    $(".add_inter_wrap").removeClass("add_inter_wrap_active");
 	        		$(".side_mask").fadeOut(200);
 	        		$("body").css('overflow-y', 'auto');
@@ -357,12 +355,10 @@ function cancelAddInterviewDiv(){
     $('#addOffer_form').validateOnBlur(false, validationSettings);  
   
   </script>
-<!--  
+ 
 <script type="text/javascript">
  function getShortListCandidates(rowId) {
-	// var existingInterviewers = $("#"+rowId+"location").val();
 	 var existingInterviewers = document.getElementById("1applicant").value;
-	// alert("existingInterviewers"+existingInterviewers);
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#reqId").val();
      
@@ -388,33 +384,4 @@ function cancelAddInterviewDiv(){
  }
 </script>    
   
-  
-  
-  
-<script type="text/javascript">
- function getInterviewers(rowId) {
-	 
-	 var sourceleadUrl ='${sourceleadUrl}';
-	  $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/getAllInterviewers?${_csrf.parameterName}=${_csrf.token}", 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var output = "";
-		        	
-		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
-					}
-		        	$("#"+rowId+"interviewer").empty();
-		        	$("#"+rowId+"interviewer").append(output);
-		        	$("#"+rowId+"interviewer").trigger("chosen:updated");
-			       
-		        },
-		    });
-	
- }
-</script>  
- -->
 <jsp:include page="../masterFooter.jsp" />
