@@ -266,7 +266,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	 public Projects  saveProject(Registration registration,OrgLocations orgLocations,User approverUser,Employees employee) throws Exception {
 		 			 	
 	    	Projects projects = new Projects();
-	    	projects.setProjectSequeneNumber(registration.getCompanyName()+"_Project01");
+	    	projects.setProjectSequeneNumber("Project001");
 	    	projects.setProjectName(registration.getCompanyName()+"_Project");
 	    	projects.setDescription(registration.getCompanyName()+"_Project");
 	    	projects.setStartDate(new Date());

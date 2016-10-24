@@ -1,6 +1,8 @@
 package com.bis.sourcelead.util;
 
 import java.io.Writer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -510,6 +512,22 @@ public class CommonUtil {
 		}
 		sessionData.setNav(menuName);
 		request.getSession().setAttribute("sessionData",sessionData);
+	}
+	
+	/**
+	 * Return String Date in Date format
+	 * @param dateString
+	 * @return
+	 */
+	public  Date  getDateFormat(String dateString){
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+	    Date date = null;
+	    try {
+	        date = df.parse(dateString);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+		return date;
 	}
 	
 	

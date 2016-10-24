@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,20 +149,37 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			
 			if(jsonObj.has("skills")){
-			
-			  String skills = jsonObj.getString("skills");
-			  skills = skills.replaceAll("\\[", "").replaceAll("\\]","");
-			  skills = skills.replaceAll("\"", "");
-		  	  requirement.setSkills(skills);
+				
+				String skillId =null;
+				try{
+					JSONArray jsonArray = jsonObj.getJSONArray("skills");
+					skillId = jsonArray.toString();
+				}
+				catch(JSONException e){
+					skillId =jsonObj.getString("skills");
+				}
+				skillId = skillId.replaceAll("\\[", "").replaceAll("\\]","");
+				
+				
+				skillId = skillId.replaceAll("\"", "");
+		  	   requirement.setSkills(skillId);
 			
 			}
 			
 			if(jsonObj.has("education")){
-		      
-		      String education = jsonObj.getString("education");
-	    	  education = education.replaceAll("\\[", "").replaceAll("\\]","");
-	    	  education = education.replaceAll("\"", "");
-		  	  requirement.setEducation(education);
+				
+             String educationId =null;
+				try{
+					JSONArray jsonArray = jsonObj.getJSONArray("education");
+					educationId = jsonArray.toString();
+				}
+				catch(JSONException e){
+					educationId =jsonObj.getString("education");
+				}
+				educationId = educationId.replaceAll("\\[", "").replaceAll("\\]","");
+				educationId = educationId.replaceAll("\"", "");
+				
+		  	  requirement.setEducation(educationId);
 			
 			 }
 			
@@ -200,9 +219,20 @@ public class RequirementServiceImpl implements RequirementService {
 
 				SubmissionTemplate submissionTemplate = submissionTemplateDao.getSubmissionTemplateById(Long.parseLong(jsonObj.getString("clientSubmissionForm")));
 				submissionTemplate.setId(Long.parseLong(jsonObj.getString("clientSubmissionForm")));
+				
 				requirement.setClientSubmissionTemplateId(submissionTemplate);
 				requirement.setClientSubmissionTemplateJsonString(submissionTemplate.getJsonString());
+				//saving submission Temmplate of Client to  InternalDetails Submission Template  defaultly 
+				requirement.setSubmissionTemplateId(submissionTemplate);
+				requirement.setSubmissionTemplateJsonString(submissionTemplate.getJsonString());
+				
 				}
+			}else if(jsonObj.has("applicationFrom") && StringUtils.isNotEmpty(jsonObj.getString("applicationFrom"))){
+				
+				SubmissionTemplate submissionTemplate = submissionTemplateDao.getSubmissionTemplateById(Long.parseLong(jsonObj.getString("applicationFrom")));
+				submissionTemplate.setId(Long.parseLong(jsonObj.getString("applicationFrom")));
+				requirement.setSubmissionTemplateId(submissionTemplate);
+				requirement.setSubmissionTemplateJsonString(submissionTemplate.getJsonString());
 			}
 			
 			requirement.setStatus(Constants.REQUIREMENT_STATUS);
@@ -229,12 +259,21 @@ public class RequirementServiceImpl implements RequirementService {
 			//approval mechnism
 			HashSet<RequirementApproverHierarchy> requirementApproverHierarchyList = new HashSet<RequirementApproverHierarchy>();
 			//approval saving for sequential
-			if(jsonObj.has("parallelApprover") && StringUtils.isNotEmpty(jsonObj.getString("parallelApprover"))){
-				  
-				  String approverNames = jsonObj.getString("parallelApprover");
-				  approverNames = approverNames.replaceAll("\\[", "").replaceAll("\\]","");
-				  approverNames = approverNames.replaceAll("\"", "");
-				  String[] approvers = approverNames.split(",");
+
+              if(jsonObj.has("parallelApprover")){
+				
+				String parallelApprovers =null;
+				try{
+					JSONArray jsonArray = jsonObj.getJSONArray("parallelApprover");
+					parallelApprovers = jsonArray.toString();
+				}
+				catch(JSONException e){
+					parallelApprovers =jsonObj.getString("parallelApprover");
+				}
+				parallelApprovers = parallelApprovers.replaceAll("\\[", "").replaceAll("\\]","");
+				parallelApprovers = parallelApprovers.replaceAll("\"", "");
+				
+			     String[] approvers = parallelApprovers.split(",");
 			  	  
 				  for(String approver : approvers){
 					    
@@ -312,9 +351,7 @@ public class RequirementServiceImpl implements RequirementService {
 			if(jsonObj.has("priority") && StringUtils.isNotEmpty(jsonObj.getString("priority"))){
 				  requirement.setPriority(jsonObj.getString("priority"));
 			} 
-			/*if(jsonObj.has("applicationFrom") && StringUtils.isNotEmpty(jsonObj.getString("applicationFrom"))){
-				  jsonObj.getString("applicationFrom");
-			} */
+			
 			
 			if(requirement.getId() != null){
 				requirementAssignToService.deleteRequirementAssignToByRequirementId(requirement.getId());
@@ -398,6 +435,25 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	
 	/**
+	 * @author Venkat Kesav
+	 * @since  oct 21 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to get the Requirement is released for contact or not .
+	 *  
+	 * @return true or false 
+	 * 
+	 * @throws NullPointer
+	 */
+	
+	@Override
+	public Boolean getRequirementByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception {
+		Boolean flag = requirementDao.getRequirementByParentRequirementIdAndSpocId(requirementId, spocId);
+		return flag;
+	}
+	
+	
+	/**
 	 * @author prasad k
 	 * @since  sep 14 2016
 	 * @version 0.0.1
@@ -415,6 +471,12 @@ public class RequirementServiceImpl implements RequirementService {
 	public List<Requirement> getJobTitleByJobTemplateStatusAndOrgLocationId(Long orgLocationId) throws Exception {
 		return requirementDao.getJobTitleByJobTemplateStatusAndOrgLocationId(orgLocationId);
 	}
+
+	@Override
+	public List<RequirementAssignTo> getUserAssignJobCount(Long userId) throws Exception {
+		return requirementDao.getUserAssignJobCount(userId);
+	}
+
 
 
 	

@@ -2310,16 +2310,34 @@ function requirementDetails(requirementId){
 							var result ="";
 				            result = result +' <div class="require_wrap_details">';
 				           
+				            result = result+'<div id="rejectRequirementAlert" ></div>  ';
+				            
+				            result = result +' <div class="clearfix">';
+				            
+				            result = result +' <div class="pull-left">';
+				            result = result +' <h2>Assigned Members</h2>'; 
+				            result = result +' </div>';
+				            
+				            result = result +' <div class="pull-right">';
+				            
 				            if(json.requirementApproverHierarchyStatus !='APPROVED'  && json.requirementApproverHierarchyStatus !='REJECTED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){ 
-					            result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary pull-right" type="button">Edit</button></a>';
-				            } 
+					            result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
+				             } 
 				            var APPROVED = "APPROVED";     
 				            var REJECTED = "REJECTED";
-				            
-				            if(json.requirementApproverHierarchyStatus !='APPROVED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){ 
-					            result = result +'<button  class="btn btn-primary pull-right" type="button" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
-					            result = result +'<button  class="btn btn-primary pull-right" type="button" onClick ="updateReuqirementStatus(\''+ REJECTED+ '\');">Reject</button>';
-				            } 
+
+				             if(json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
+               					            result = result +'<button  class="btn btn-success mr" type="button" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
+               					          result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
+   				           	 }else if(json.requirementApproverHierarchyStatus == 'APPROVED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
+      						              result = result +'<button  id="requirementStatus" class="btn btn-success pull-right mr" type="button">'+json.requirementApproverHierarchyStatus+'</button>';
+    				         }
+   				             else if(json.requirementApproverHierarchyStatus == 'REJECTED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
+					              result = result +'<button  id="requirementStatus" class="btn btn-danger pull-right mr" type="button">'+json.requirementApproverHierarchyStatus+'</button>';
+		                     }
+				             result = result +'     </div>';
+				             result = result +'     </div>';
+				             
 				            result = result +'     <div class="clearfix row">';
 					        result = result +'     <div class="col-md-10 divskill divsAssigned">';
 					        
@@ -2327,10 +2345,10 @@ function requirementDetails(requirementId){
 					        
 				            result = result +'   <h1>Description:</h1>';
 				            if(json.description != null && json.description != '' && json.description != 'undefined'){
-					            result = result +'   <textarea placeholder="Enter description">'+json.description+'</textarea>';
-					           }
+					           	 result = result +'   <textarea placeholder="Enter description">'+json.description+'</textarea>';
+					         }
 					         else{
-					            result = result +'   <textarea placeholder="Enter description"> NO DATA</textarea>';
+					           	 result = result +'   <textarea placeholder="Enter description"> NO DATA</textarea>';
 				    	        }
 				            result = result +'   <h2>Other details:</h2>';
 				            result = result +'   <div class="require_one">';
@@ -2492,14 +2510,26 @@ function requirementDetails(requirementId){
 --%>
 <script>
 function updateReuqirementStatus(status){
+	
 	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementId = '${requirementId}';
+	
+	
+	 
+	 var reason;
+	 if ($('#rejectReason').length)
+	 {
+		 reason = document.getElementById("rejectReason").value; 
+	 }
+	 else
+	 {
+		 reason = '';
+	 }
 	$.ajax({
       type : "POST",
-       url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,        
-       success :function(data) {  
+      url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason, 
+    		  success :function(data) {  
             if(data != null && data != 'undefined' && data != ""){  
-            	var json = JSON.parse(data);
           		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
@@ -2507,12 +2537,49 @@ function updateReuqirementStatus(status){
           			 location.replace(sourceleadUrl+"/errorPage");
           		 }
           		 else{ 
-          			
-          			   alert("success"+data);
+          			requirementDetails(requirementId)
           		 }
             }
        },
 	  }); 
+}
+</script>
+
+
+
+
+<%-- 
+     @author : Venkat Kesav
+     this script is for close alert popup.
+     1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
+--%>
+<script type="text/javascript">
+function rejectRequirementAlertMessage(status){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatus(\""+ status+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +"	</div>";
+	$("#rejectRequirementAlert").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+
+
+
+<%-- 
+     @author : Venkat Kesav
+     this script is for Delete Candidate alert
+     1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
+--%>
+<script type="text/javascript">
+function cancelAlert(){ 
+	$("#rejectRequirementAlert").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 
@@ -2529,7 +2596,7 @@ function requirementPipeline(requirementId){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
+         url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
          success :function(data) {  
               if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
@@ -2561,6 +2628,18 @@ function requirementPipeline(requirementId){
 							result = result +'</div>'; 
 							//end Add Interview Div
 							
+							
+							//For Submit to Client Div
+							result = result +'<div class="side_mask"><div class="submitToClient_close"></div></div>';
+							result = result +'<div class="submitnew-wrap">';
+							result = result +' <div class="new_side_wrap_inn">';
+							result = result +'<div class="add_inter">';
+							result = result + '<div id="submitToClientDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							//For Submit to Client Div
+							
 				            result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
 				            result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
 				            result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
@@ -2581,9 +2660,22 @@ function requirementPipeline(requirementId){
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title="" class="add-interview" onclick="addInterview('+requirementId+');" ><i class="fa fa-plus"></i>&nbsp;Add Interview</a></li>';
-				            result = result +'    <li> <a href="javascript:void(0)" title="" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a> </li>';
+				           
+				            
+				            result = result +' <li><a href="javascript:void(0)" onclick="getActions();" class="action"> Action <i class="fa fa-caret-down"></i></a>';
+				            result = result +'<div class="action-pop">';
+				            result = result +'	<span>';
+				            result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
+				            result = result +'    <a href="javascript:void(0)" title="" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
+				            result = result +'   <a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+				            result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
+				            result = result +'    <a href="javascript:void(0)" title="" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            result = result +'    </span>';
+				            result = result +' </div>';	
+				            result = result +' </li>';
+				            
+				            
+				            
 				            result = result +'    <div class="clearfix"></div>';
 				            result = result +'    <div class="collapseDiv_add collapseDiv_styles col-xs-4 addOffer-Req"> <i class="fa fa-close close-div"></i>';
 				            result = result +'     <div class="form-horizontal clearfix">';
@@ -2830,11 +2922,10 @@ function requirementPipeline(requirementId){
 				           result = result + '     <div class="clearfix"></div>';
 				           result = result + '   </div>';
 				           result = result + '   <div class="require_wrap_table">';
-				           result = result + '     <table>';
+				           result = result + '     <table id="requirementsPagination">';
 				           result = result + '       <tbody>';
 				           result = result + '       <thead>';
 				           result = result + '         <tr>';
-				           result = result + '           <th><input type="checkbox" id="checkbox1"/></th>';
 				           result = result + '           <th>Name</th>';
 				           result = result + '           <th>Email</th>';
 				           result = result + '           <th>Ph. No</th>';
@@ -2846,50 +2937,98 @@ function requirementPipeline(requirementId){
 				           result = result + '           <th>Status</th>';
 				           result = result + '         </tr>';
 				           result = result + '       </thead>';
-				           result = result + '       <tr>';
-				           result = result + '         <td><input type="checkbox" id="checkbox1"/></td>';
-				           result = result + '         <td><div><span>Vannam vannam vannam vannam</span></div></td>';
-				           result = result + '         <td><div><span>Vannam vannam vannam vannam</span></div></td>';
-				           result = result + '         <td><div><span>9000 000 000</span></div></td>';
-				           result = result + '         <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>';
-				           result = result + '         <td><div><span>08/08/2016</span></div></td>';
-				           result = result + '         <td><div><span>12345678</span></div></td>';
-				           result = result + '         <td><div><span>Careers</span></div></td>';
-				           result = result + '         <td><div>3.4 Years</div></td>';
-				           result = result + '         <td><div><span>';
-				           result = result + '             <select>';
-				           result = result + '               <option>Interview</option>';
-				           result = result + '               <option>Submit</option>';
-				           result = result + '               <option>Joined</option>';
-				           result = result + '               <option>Screening</option>';
-				           result = result + '               <option>Offer</option>';
-				           result = result + '             </select>';
-				           result = result + '             </span></div></td>';
-				           result = result + '       </tr>';
-				           result = result + '       <tr>';
-				           result = result + '         <td><input type="checkbox" id="checkbox1"/></td>';
-				           result = result + '         <td><div><span>Vannam vannam vannam vannam</span></div></td>';
-				           result = result + '         <td><div><span>Vannam vannam vannam vannam</span></div></td>';
-				           result = result + '         <td><div>9000 000 000</div></td>';
-				           result = result + '         <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>';
-				           result = result + '         <td><div><span>08/08/2016</span></div></td>';
-				           result = result + '         <td><div><span>12345678</span></div></td>';
-				           result = result + '         <td><div>Careers</div></td>';
-				           result = result + '         <td><div>3.4 Years</div></td>';
-				           result = result + '         <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>';
-				           result = result + '       </tr>';
-				           result = result + '       <tr>';
-				           result = result + '         <td><input type="checkbox" id="checkbox1"/></td>';
-				           result = result + '         <td><div><span>Vannam vannam vannam vannam</span></div></td>';
-				           result = result + '         <td><div><span>Vannam vannam vannam vannam</span></div></td>';
-				           result = result + '         <td><div>9000 000 000</div></td>';
-				           result = result + '         <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>';
-				           result = result + '         <td><div><span>08/08/2016</span></div></td>';
-				           result = result + '         <td><div><span>12345678</span></div></td>';
-				           result = result + '         <td><div>Careers</div></td>';
-				           result = result + '         <td><div>3.4 Years</div></td>';
-				           result = result + '         <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>';
-				           result = result + '       </tr>';
+				           
+				           for (var i=0; i<json.length; i++)
+			   				{  
+			   	        		
+			   	        		var report = json[i];
+						           result = result + '       <tr>';
+						           result = result + '         <td><div><span>'+report.candidateName+'</span></div></td>';
+						           
+						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.candidateEmail+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           
+						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.phoneNumber+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
+						        	   result = result + '         <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a>'+report.resumeName+'</div></td>';
+							           }
+							       else{
+							    	   result = result + '         <td><div>--</div></td>';
+						    	     }
+						           
+						           if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.expectedCTC+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.userName+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           result = result + '         <td><div><span>';
+						           result = result +'			<select>';
+							       
+									if(report.submissionStatus == "INTERVIEW"){
+										result = result +'  <option selected >interview</option>';
+										result = result +'  <option>submission</option>';
+										result = result +' <option>offer</option>'; 
+										result = result +' <option>rejected</option>'; 
+									}
+									if(report.submissionStatus == "SUBMISSION"){
+										result = result +'  <option selected >submission</option>';
+										result = result +'  <option>interview</option>';
+										result = result +' <option>offer</option>'; 
+										result = result +' <option>rejected</option>';
+									}
+									if(report.submissionStatus == "OFFER"){
+										result = result +'  <option selected >offer</option>';
+										result = result +'  <option>submission</option>';
+										result = result +' <option>interview</option>'; 
+										result = result +' <option>rejected</option>';
+									}
+									if(report.submissionStatus == "REJECTED"){
+										result = result +'  <option selected >rejected</option>';
+										result = result +'  <option>submission</option>';
+										result = result +' <option>interview</option>'; 
+										result = result +' <option>offer</option>';
+									}
+						           result = result + '             </select>';
+						           result = result + '             </span></div></td>';
+						           
+						           result = result + '       </tr>';
+			   				}
+				           
+				           
 				           result = result + '       </tbody>';
 				           result = result + '     </table>';
 				           result = result + '   </div>';
@@ -2941,6 +3080,21 @@ function requirementPipeline(requirementId){
 }
 </script>
 
+<script>
+function documentpagination(){  
+    $('#requirementsPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+
 <%-- 
      @author : sarath kumar.
      this script is for edit Candidate.
@@ -2965,8 +3119,7 @@ function assignedMemberList(requirementId){
             		 }
             		 else{ 
 							var result = '';
-							result = result +'     <h2>Assigned Members</h2> ';
-						    result = result +'     <div class="heightScroll mt10 mb">';
+							result = result +'     <div class="heightScroll mt10 mb">';
 						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
 						    result = result +'         <thead>';
 						    result = result +'         <tr>';
@@ -2982,8 +3135,17 @@ function assignedMemberList(requirementId){
 						    var report = json[i];
 						    result = result +'         <tr>';
 						    result = result +'         <td><div class="tbldata-dotdot-me">'+report.assignedUserName+'</div></td>';
-						    result = result +'         <td><div class="tbldata-dotdot-sm">'+report.assignedUserRole+'</div></td>';
-						    result = result +'         <td><div class="tbldata-dotdot-sm">'+report.teamName+'</div></td>';
+						    if(report.assignedUserRole != null && report.assignedUserRole !='' && report.assignedUserRole !='undefined'){
+						    	result = result +'         <td><div class="tbldata-dotdot-sm">'+report.assignedUserRole+'</div></td>';
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
+						     
+						     if(report.teamName != null && report.teamName !='' && report.teamName !='undefined'){
+						    	 result = result +'         <td><div class="tbldata-dotdot-sm">'+report.teamName+'</div></td>';
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
 						    result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
 						    result = result +'         </tr>';
 			   				}
@@ -3019,6 +3181,20 @@ function assignedMemberList(requirementId){
 }
 </script>
 
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
+}
+</script>
+
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />
+<jsp:include page="submitToClient.jsp" />
 

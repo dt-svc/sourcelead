@@ -106,6 +106,73 @@ public class VendorRestController {
 	 * @throws Exception
 	 */
 	 
+	@RequestMapping(value = "/getVendorFilterLists", method = RequestMethod.POST)
+	public @ResponseBody String getVendorFilterLists(@RequestParam(value="values", required=false) String status,HttpServletRequest request) throws Exception {
+
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    String resultJson;
+	    
+	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),status);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    //List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+ 
+			
+		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
+				
+				if(orgRelation.getLocationId().getId() == orgLocations.getId()){
+					orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
+					orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+					orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
+					orgRelation.setState(orgRelation.getResponderLocationId().getState());
+					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
+					orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
+					//orgRelation.setNoOfContatcs(noOfContatcs); 
+					List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
+					orgRelation.setNoOfContatcs(contactsList.size()); 
+					if(orgRelation.getInitiatorLevel()!=null){
+						orgRelation.setLevel(orgRelation.getInitiatorLevel());
+					}
+					else{
+						orgRelation.setLevel("");
+					}
+					
+				}
+				
+				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
+					orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
+					orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
+					orgRelation.setCountry(orgRelation.getLocationId().getCountry());
+					orgRelation.setState(orgRelation.getLocationId().getState());
+					orgRelation.setCity(orgRelation.getLocationId().getCity());
+					orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
+					List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
+					orgRelation.setNoOfContatcs(contactsList.size()); 
+					if(orgRelation.getResponderLevel()!=null){
+						orgRelation.setLevel(orgRelation.getResponderLevel());
+					}
+					else{
+						orgRelation.setLevel("");
+					}
+					
+				}
+				
+				
+			}
+		    
+		    
+			 resultJson = commonUtil.toJSON(vandorsListByOrgLocationId);
+			 return resultJson;
+		}
+	
+	
+	/**
+	 * @author Laxman
+	 * this is method is using Vendor List
+	 * @param request
+	 * @return json
+	 * @throws Exception
+	 */
+	 
 	@RequestMapping(value = "/getVendorLists")
 	public @ResponseBody String getVendorLists(@RequestParam(value="values", required=false) String status,HttpServletRequest request) throws Exception {
 
@@ -164,30 +231,6 @@ public class VendorRestController {
 		}
 	
 	
-	
-	
-	@RequestMapping(value = "/getAllContactsbyOrgLocationIdAndUserIdForRequirement")
-	public @ResponseBody String getAllContactsbyOrgLocationIdAndUserIdForRequirement(@RequestParam(value="values", required=false) String status,HttpServletRequest request) throws Exception {
-
-	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	    String resultJson;
-	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),status);
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<OrgSpoc>  contactsList = null;	
-		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
-				if(orgRelation.getLocationId().getId() == orgLocations.getId()){
-					contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
-				}
-				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
-					contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
-				}
-			}
-			 resultJson = commonUtil.toJSON(contactsList);
-			 return resultJson;
-		}
-	   
-	   
-	   
 	   /**
 	    * @author Rajashekar
 	    * @param request

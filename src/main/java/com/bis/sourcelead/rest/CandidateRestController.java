@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -84,7 +85,8 @@ public class CandidateRestController {
 	}
 	
 	@RequestMapping(value = "/parseResume", method = RequestMethod.POST)
-	public @ResponseBody String parseResume(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+	public @ResponseBody String parseResume(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request,
+			 @RequestParam(value="locationMapFile", required=false) CommonsMultipartFile locationMapFileData) throws Exception {
 		
 		MultipartFile multiFile = null;
 		Iterator<String> itrator = request.getFileNames();
@@ -92,14 +94,10 @@ public class CandidateRestController {
 	        multiFile = request.getFile(itrator.next());
 		}
 		SourceleadResumeParser resumeParser = new SourceleadResumeParser();
-		String resumeDetails = resumeParser.getCandidateDetailsFromResume(multiFile.getBytes());
-		/*//multiFile.getBytes()
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
-		
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Candidate candidate = candidateService.storeCandidate(jsonObj,orgLocation,user,multiFile);*/
+		String resumeDetails = null;
+		if(multiFile != null){
+			resumeDetails = resumeParser.getCandidateDetailsFromResume(multiFile.getBytes());
+		}
 		return resumeDetails;
 	}
 	 /**
