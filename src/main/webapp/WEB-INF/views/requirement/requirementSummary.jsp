@@ -2101,7 +2101,7 @@ function sideBar(requirementId){
               			var result = '';
               			
               			result = result+'    <div class="profile_details requirement_details clearfix">';
-				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">SL 201 - Business Analyst - Full Time<i></i></h4></a>';
+				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
 				        result = result+'<div class="hide-row">';
 				        
 				       /*  result = result+'    <div class="profile_details requirement_details clearfix">'; */
@@ -2114,7 +2114,7 @@ function sideBar(requirementId){
 				        result = result+'</div>';
 				        result = result+'<div class="col-md-9">';
 				        result = result+'<div class="canDetails clearfix">';
-				        result = result+'<h4>SL 201 - Business Analyst - Full Time</h4>';
+				        result = result+'<h4>'+json.jobTitle+'-'+json.jobType+'</h4>';
 				        result = result+'<div class="row">';
 				        result = result+'<div class="col-md-6">';
 				        result = result+'<ul class="list-unstyled can-perdt">';
