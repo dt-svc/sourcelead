@@ -1,3 +1,6 @@
+
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
 <%-- 
      @author : David Sammeta.
      this script is for upDate Candidate Details .
@@ -12,7 +15,7 @@
 		if(window.candidateStatusGlobal == '0'){
 		result = result	+ '   	<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a>                                                            ';
 		}else{
-			result = result	+ '   	<a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a>                                                            ';	
+			result = result	+ '   	<span class="pad-sea"><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a> </span> ';	
 		}
 		result = result	+ '     <div id="popUpDivEmp" class="edit-details col-md-4"> ';
 		result = result + '     </div>  ';
@@ -504,7 +507,7 @@ function closeCertificatePopup(){
 							} else {
 								$("#candidateEmployersList").empty();
 								var result = "";
-								result = result	+ "<table id='candidateCertificatePagination' class='display' cellspacing='0' width='100%' >";
+								result = result	+ "<table id='candidateEmployersPagination' class='display' cellspacing='0' width='100%' >";
 								result = result + "<thead>";
 								result = result + "  <tr>";
 								result = result	+ '           <th>Employer</th>';
@@ -563,7 +566,7 @@ function closeCertificatePopup(){
 								result = result + " </tbody>";
 								result = result + "</table>";
 								$("#candidateEmployersList").append(result);
-								pagination();
+								employeePagination();
 							}
 						} else {
 							var result = "";
@@ -588,6 +591,24 @@ function closeCertificatePopup(){
 				});
 	}
 </script>
+
+
+<script>
+function employeePagination(){  
+    $('#candidateEmployersPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+ 
+ }
+</script>
+
 
 
 <%-- 

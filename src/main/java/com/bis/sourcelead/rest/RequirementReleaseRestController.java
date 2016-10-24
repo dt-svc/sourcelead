@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
@@ -57,6 +59,118 @@ public class RequirementReleaseRestController {
 	@Autowired
 	UserService userService;
 	
+	
+	/**
+	 * @author Venkat Kesav
+	 * this is method is using contacts List
+	 * @param request
+	 * @return json
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getAllContactsbyOrgLocationIdAndUserIdForRequirement")
+	public @ResponseBody String getAllContactsbyOrgLocationIdAndUserIdForRequirement(String requirementId, String status, HttpServletRequest request) throws Exception {
+
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    String resultJson;
+	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),status);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<OrgSpoc>  contactsList = null;	
+		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
+				if(orgRelation.getLocationId().getId() == orgLocations.getId()){
+					contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
+				}
+				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
+					contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
+				}
+			}
+		    
+		    for(OrgSpoc contact : contactsList){
+		    	Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), contact.getId());
+		    	contact.setReleasedRequirement(isJobReleased.toString());
+			}
+			 resultJson = commonUtil.toJSON(contactsList);
+			 return resultJson;
+		}
+	   
+	
+	/**
+	 * @author Venkat Kesav
+	 * this is method is using Vendor List
+	 * @param request
+	 * @return json
+	 * @throws Exception
+	 */
+	 
+	@RequestMapping(value = "/getVendorListsForReleaseRequirement")
+	public @ResponseBody String getVendorListsForReleaseRequirement(String requirementId, String status,HttpServletRequest request) throws Exception {
+
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    String resultJson;
+	    
+	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),status);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    //List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+ 
+		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
+				
+				if(orgRelation.getLocationId().getId() == orgLocations.getId()){
+					orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
+					orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+					orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
+					orgRelation.setState(orgRelation.getResponderLocationId().getState());
+					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
+					orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
+					//List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
+					List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
+					int nonAssignedCount = 0;
+					for(OrgSpoc orgSpoc : contactsList){
+						Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), orgSpoc.getId());
+						if(isJobReleased.toString().equalsIgnoreCase("false")){
+							nonAssignedCount = nonAssignedCount + 1;
+						}
+					}
+					orgRelation.setNoOfNonReleasedContacts(nonAssignedCount);
+					orgRelation.setNoOfContatcs(contactsList.size()); 
+					if(orgRelation.getInitiatorLevel()!=null){
+						orgRelation.setLevel(orgRelation.getInitiatorLevel());
+					}
+					else{
+						orgRelation.setLevel("");
+					}
+				}
+				
+				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
+					orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
+					orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
+					orgRelation.setCountry(orgRelation.getLocationId().getCountry());
+					orgRelation.setState(orgRelation.getLocationId().getState());
+					orgRelation.setCity(orgRelation.getLocationId().getCity());
+					orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
+					//List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
+					List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
+					int nonAssignedCount = 0;
+					for(OrgSpoc orgSpoc : contactsList){
+						Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), orgSpoc.getId());
+						if(isJobReleased.toString().equalsIgnoreCase("false")){
+							nonAssignedCount = nonAssignedCount + 1;
+						}
+					}
+					orgRelation.setNoOfNonReleasedContacts(nonAssignedCount);
+					orgRelation.setNoOfContatcs(contactsList.size()); 
+					if(orgRelation.getResponderLevel()!=null){
+						orgRelation.setLevel(orgRelation.getResponderLevel());
+					}
+					else{
+						orgRelation.setLevel("");
+					}
+				}
+			}
+		    
+			 resultJson = commonUtil.toJSON(vandorsListByOrgLocationId);
+			 return resultJson;
+		}
+	
+	
 	/**
 	 * Handles Vendor Contacts 
 	 * @param json
@@ -76,53 +190,9 @@ public class RequirementReleaseRestController {
 			String[] contacts = contactsIds.split(",");
 			if(contacts != null &&  contacts.length>0 && contacts[0] != null && contacts[0] != "" ){
 				for(String contact   : contacts){
-						
-						Requirement requirement  = new Requirement();
-						
-						requirement.setParent_requirement_id(parentRequirement.getId());
-						
-						requirement.setOrgLocationId(parentRequirement.getSpocId().getResponderLocationId());
-						requirement.setJobTitle(parentRequirement.getJobTitle());
-						requirement.setJobType(parentRequirement.getJobType());
-						requirement.setJobId(parentRequirement.getJobId());
-						requirement.setPositions(parentRequirement.getPositions());
-						requirement.setEducation(parentRequirement.getEducation());
-						requirement.setMinExp(parentRequirement.getMinExp());
-						requirement.setMaxExp(parentRequirement.getMaxExp());
-						requirement.setCurrencyCode(parentRequirement.getCurrencyCode());
-						requirement.setRate(parentRequirement.getRate());
-						requirement.setRateType(parentRequirement.getRateType());
-						requirement.setCountry(parentRequirement.getCountry());
-						requirement.setState(parentRequirement.getState());
-						requirement.setCity(parentRequirement.getCity());
-						requirement.setSkills(parentRequirement.getSkills());
-						requirement.setDescription(parentRequirement.getDescription());
-						requirement.setDocFile(parentRequirement.getDocFile());
-						requirement.setFileContentType(parentRequirement.getFileContentType());
-						requirement.setFileName(parentRequirement.getFileName());
-						requirement.setIsClientJob(parentRequirement.getIsClientJob());
-						
-						requirement.setSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
-						requirement.setClientSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
-						
-						requirement.setStatus(Constants.TEAM_ACTIVE);
-						requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
-						
 						OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(contact));
-						if(orgSpoc != null){
-							requirement.setSpocId(orgSpoc);
-							requirement.setClientId(orgSpoc.getOrgRelations());
-							requirement.setUpdatedBy(orgSpoc.getSpocUser().getUserCode());
-							requirement.setCreatedBy(orgSpoc.getSpocUser().getUserCode());
-						}
-						
-						requirement.setCreatedDate(commonUtil.currentDate());
-						requirement.setUpdatedDate(commonUtil.currentDate());
-						
-						
-						requirement.setId(null);
-						
-						requirementService.addRequirement(requirement);
+						Requirement requirement  = new Requirement();
+						releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc);
 				}
 			}	
 			
@@ -132,60 +202,62 @@ public class RequirementReleaseRestController {
 					
 					List<OrgSpoc> orgSpocList = orgSpocService.getAllContactsbyOrgId(Long.parseLong(vendor));
 					for(OrgSpoc orgSpoc : orgSpocList){
-						Requirement requirement  = new Requirement();
-						/*requirement.setParent_requirement_id(parentRequirement.getId());
 						
-						requirement.setSpocId(orgSpoc);*/
-						
-				requirement.setParent_requirement_id(parentRequirement.getId());
-						
-						requirement.setOrgLocationId(parentRequirement.getSpocId().getResponderLocationId());
-						requirement.setJobTitle(parentRequirement.getJobTitle());
-						requirement.setJobType(parentRequirement.getJobType());
-						requirement.setJobId(parentRequirement.getJobId());
-						requirement.setPositions(parentRequirement.getPositions());
-						requirement.setEducation(parentRequirement.getEducation());
-						requirement.setMinExp(parentRequirement.getMinExp());
-						requirement.setMaxExp(parentRequirement.getMaxExp());
-						requirement.setCurrencyCode(parentRequirement.getCurrencyCode());
-						requirement.setRate(parentRequirement.getRate());
-						requirement.setRateType(parentRequirement.getRateType());
-						requirement.setCountry(parentRequirement.getCountry());
-						requirement.setState(parentRequirement.getState());
-						requirement.setCity(parentRequirement.getCity());
-						requirement.setSkills(parentRequirement.getSkills());
-						requirement.setDescription(parentRequirement.getDescription());
-						requirement.setDocFile(parentRequirement.getDocFile());
-						requirement.setFileContentType(parentRequirement.getFileContentType());
-						requirement.setFileName(parentRequirement.getFileName());
-						requirement.setIsClientJob(parentRequirement.getIsClientJob());
-						
-						requirement.setSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
-						requirement.setClientSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
-						
-						requirement.setStatus(Constants.TEAM_ACTIVE);
-						requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
-						
-						if(orgSpoc != null){
-							requirement.setSpocId(orgSpoc);
-							requirement.setClientId(orgSpoc.getOrgRelations());
-							requirement.setUpdatedBy(orgSpoc.getSpocUser().getUserCode());
-							requirement.setCreatedBy(orgSpoc.getSpocUser().getUserCode());
-						}
-						
-						requirement.setCreatedDate(commonUtil.currentDate());
-						requirement.setUpdatedDate(commonUtil.currentDate());
-						
-						requirement.setId(null);
-						
-						requirementService.addRequirement(requirement);
+					    Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(requirementId, orgSpoc.getId());
+					    if(isJobReleased.toString().equalsIgnoreCase("false")){
+					    	Requirement requirement  = new Requirement();
+							releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc);
+					    }
 					}
 				}
 			}
 			
-			
 			return "vendorsList";
 	}
 
-	   
+	private void releaseJobToVendorOrContacts(Requirement requirement, Requirement parentRequirement, OrgSpoc orgSpoc) throws Exception {
+		
+		//requirement = parentRequirement;
+		
+		requirement.setParent_requirement_id(parentRequirement.getId());
+		requirement.setOrgLocationId(orgSpoc.getResponderLocationId());
+		requirement.setJobTitle(parentRequirement.getJobTitle());
+		requirement.setJobType(parentRequirement.getJobType());
+		requirement.setJobId(parentRequirement.getJobId());
+		requirement.setPositions(parentRequirement.getPositions());
+		requirement.setEducation(parentRequirement.getEducation());
+		requirement.setMinExp(parentRequirement.getMinExp());
+		requirement.setMaxExp(parentRequirement.getMaxExp());
+		requirement.setCurrencyCode(parentRequirement.getCurrencyCode());
+		requirement.setRate(parentRequirement.getRate());
+		requirement.setRateType(parentRequirement.getRateType());
+		requirement.setCountry(parentRequirement.getCountry());
+		requirement.setState(parentRequirement.getState());
+		requirement.setCity(parentRequirement.getCity());
+		requirement.setSkills(parentRequirement.getSkills());
+		requirement.setDescription(parentRequirement.getDescription());
+		requirement.setDocFile(parentRequirement.getDocFile());
+		requirement.setFileContentType(parentRequirement.getFileContentType());
+		requirement.setFileName(parentRequirement.getFileName());
+		requirement.setIsClientJob("Y");
+		
+		requirement.setSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
+		requirement.setClientSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
+		
+		requirement.setStatus(Constants.TEAM_ACTIVE);
+		requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+		
+		if(orgSpoc != null){
+			requirement.setSpocId(orgSpoc);
+			requirement.setClientId(orgSpoc.getOrgRelations());
+			requirement.setUpdatedBy(orgSpoc.getSpocUser().getUserCode());
+			requirement.setCreatedBy(orgSpoc.getSpocUser().getUserCode());
+		}
+		
+		requirement.setCreatedDate(commonUtil.currentDate());
+		requirement.setUpdatedDate(commonUtil.currentDate());
+		
+		requirement.setId(null);
+		requirementService.addRequirement(requirement);
+	}
 }

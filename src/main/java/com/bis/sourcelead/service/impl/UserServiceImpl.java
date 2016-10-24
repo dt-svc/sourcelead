@@ -726,6 +726,11 @@ public class UserServiceImpl implements UserService {
 		 
 		 emailScenerioUtil.sendNotification(actionLink, loginUser, user, respondingPartyOrgLocation, noificationEmailScenario);
 	}
+
+	@Override
+	public List<User> getUsersByTeamType(Long id, String teamType) throws Exception {
+		return userDao.getUsersByTeamType(id,teamType);
+	}
 	
 	
 	
