@@ -143,6 +143,16 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		return requirementSubmission;
 		
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmission> getAllSubmissionListByRequirementIdAndSubmissionStage(Long orgLocationsId,
+			Long requirementId,String submissionStatus) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+	     String query = "from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and rs.submissionStatus = :submissionStatus and (rs.sourceSubmission.id IS NULL or rs.sourceSubmission.id = '') ";
+	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setLong( "requirementId", requirementId).setString("submissionStatus", submissionStatus).setCacheable(true).list();
+	     return shortListCandidatesList;
+	}
 	
 	
     
