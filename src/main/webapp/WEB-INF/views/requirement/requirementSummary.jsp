@@ -2760,6 +2760,15 @@ function requirementPipeline(requirementId){
 							result = result +'</div>'; 
 							//end Add Interview Div
 							
+							//For Add Offer Div
+							result = result +'<div class="side_mask"><div class="addOffer_close"></div></div>';
+							result = result + '<div class="add_offer_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addOfferDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Offer Div  
+							
 							
 							//For Submit to Client Div
 							result = result +'<div class="side_mask"><div class="submitToClient_close"></div></div>';
@@ -2801,7 +2810,7 @@ function requirementPipeline(requirementId){
 				            result = result +'    <a href="javascript:void(0)" title="" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
 				            result = result +'   <a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
 				            result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
-				            result = result +'    <a href="javascript:void(0)" title="" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
 				            result = result +'    </span>';
 				            result = result +' </div>';	
 				            result = result +' </li>';
