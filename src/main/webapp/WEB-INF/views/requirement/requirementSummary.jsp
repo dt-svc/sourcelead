@@ -3326,7 +3326,7 @@ function assignedMemberList(requirementId){
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
 	alert("Hai"+requirementId);
-
+</script>
 
 <script>
 function getActions(){
@@ -3344,4 +3344,4 @@ function getActions(){
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />
 <jsp:include page="submitToClient.jsp" />
-
+<jsp:include page="addOffer.jsp" />
