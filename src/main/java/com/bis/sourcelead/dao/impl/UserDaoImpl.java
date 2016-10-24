@@ -410,5 +410,33 @@ public class UserDaoImpl implements UserDao {
 	     return userRoleList;
 	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<User> getUsersByTeamType(Long orgLocationsId, String teamType) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String subQuery = "";
+		if("undefined".equalsIgnoreCase(teamType) || "All".equalsIgnoreCase(teamType)){
+			 subQuery = "userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.orgLocations=:orgLocationsId";
+		 }
+		 else if("Account Manager".equalsIgnoreCase(teamType)){
+			 subQuery = "userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.roles.id IN(select roles.id from Roles roles where roles.displayName = 'Account Manager') and userRole.orgLocations=:orgLocationsId";
+		 }
+		 else if("HR Manager".equalsIgnoreCase(teamType)){
+			 subQuery = "userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.roles.id IN(select roles.id from Roles roles where roles.displayName = 'HR Manager') and userRole.orgLocations=:orgLocationsId";
+		 }
+		 else if("Recruiter".equalsIgnoreCase(teamType)){
+			 subQuery = "userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.roles.id IN(select roles.id from Roles roles where roles.displayName = 'Recruiter') and userRole.orgLocations=:orgLocationsId";
+		 }
+		 else if("Admin".equalsIgnoreCase(teamType)){
+			 subQuery = "userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.roles.id IN(select roles.id from Roles roles where roles.displayName = 'Admin') and userRole.orgLocations=:orgLocationsId";
+		 }else{
+			 Long teamId = Long.parseLong(teamType);
+			 subQuery = "teamMembers.memberUserId.id from TeamMembers teamMembers where teamMembers.teamId.id ="+teamId+" and teamMembers.teamId.orgLocationsId.id=:orgLocationsId"; 
+		 }
+		String query = "from User user where user.id IN (select "+subQuery+" ) and user.userState != 'INACTIVE' ";
+	     List<User> userRoleList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+	     return userRoleList; 
+	}
+	
 
 }

@@ -2,12 +2,15 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/chosen.jquery.min.js"></script>
+
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
+ 
 
 
 
@@ -25,6 +28,7 @@ function addInterview(requirementId){
 	result = result + '<div class="add_inter">';
 	result = result + '<form id="addInterview_form" name="addInterview_form" >';
 	result = result + '<input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
+	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
 	result = result + '<div class="add_inter_head"> <span>Add Interview</span><a href="javascript:void(0)" onClick="addInterviewRow(this);"><i class="fa fa-plus"></i> Add row</a>';
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</div>';
@@ -33,8 +37,8 @@ function addInterview(requirementId){
 	result = result + '<tbody>';
 		result = result + '<tr id="divTsRow0">';
 			result = result + '<th>Applicant</th>';
-			result = result + '<th>Interview Date</th>';
 			result = result + '<th>Inteview Type</th>';
+			result = result + '<th>Interview Date</th>';
 			result = result + '<th>Time</th>';
 			result = result + '<th>Location</th>';
 			result = result + '<th>Interviewer</th>';
@@ -79,7 +83,7 @@ function addInterview(requirementId){
 	result = result + '</div>';
 	result = result + '<div class="col-md-4 pad1">';
 	result = result + '<button type="submit" id="add_interview" class="btn btn-sm btn-primary mr">Submit</button>';
-	result = result + '<button type="submit" class="btn btn-sm btn-danger">Cancel</button>';
+	result = result + '<button type="button" class="btn btn-sm btn-danger" onClick="cancelAddInterviewDiv();">Cancel</button>';
 	result = result + '</div>';
 	result = result + '</div>';
 
@@ -87,20 +91,7 @@ function addInterview(requirementId){
 	result = result + '</div>';   
 	result = result + '</form>';
 	
-	var config = {
-				  '.chosen-select'           : {},
-				  '.chosen-select-deselect'  : {allow_single_deselect:true},
-				  '.chosen-select-no-single' : {disable_search_threshold:10},
-				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-				  '.chosen-select-width'     : {width:"95%"}
-				}
-				for (var selector in config) {
-				  $(selector).chosen(config[selector]);
-				}
-				$('.chosen-select').each(function() {
-					var $this = $(this);
-					$this.next().css({'width': '100%'});
-	});
+	
 				
 	$("#addInterviewDiv").empty();
 	$("#addInterviewDiv").append(result);
@@ -127,20 +118,11 @@ function loadRemiderDiv(){
 }
 </script>
 
-<!-- <script type="text/javascript">
-  function TimePickerFn() {
-	  alert("hello");
-	  $('#1startTime').timepicker();
-	  alert("2");
-    }
-</script> -->
 
 
 <div id="divTaskTd1" style="display: none; float: left;">
        <select multiple class="chosen-select" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required">
-			 <%-- <c:forEach var="opt" items="${applicantsList}">
-				<option value="${opt.id}">${opt.materialName}</option>
-			</c:forEach> --%>
+			
 	  </select>
 </div>
 
@@ -149,7 +131,6 @@ function loadRemiderDiv(){
 		<option value="">--Select Type--</option>
 		<option value="F2F">F2F</option>
 		<option value="Telephonic">Telephonic</option>
-		<option value="Skype Call">Skype Call</option>
 	</select>
 </div>
 
@@ -159,10 +140,8 @@ function loadRemiderDiv(){
 </div> 
 
 <div id="divTaskTd6" style="display: none; float: left;">
-		  <select multiple class="chosen-select" id="REPLACEROWIDinterviewer" name="REPLACEROWIDinterviewer" field-name="Interviewer" data-validation="required">
-			 <%-- <c:forEach var="opt" items="${applicantsList}">
-				<option value="${opt.id}">${opt.materialName}</option>
-			</c:forEach> --%>
+		  <select multiple class="chosen-select" id="REPLACEROWIDinterviewer" name="REPLACEROWIDinterviewer" field-name="Interviewer" >
+			
 	  </select>
 </div> 
 
@@ -189,18 +168,20 @@ function loadRemiderDiv(){
 	    divTsTd1Str = divTsTd1Str.replace(/ROWNUMBERVALUE/g, ("")); 
 		cell0.innerHTML = divTsTd1Str;
 		
+		
 		var cell1 = row.insertCell(1);
-		cell1.innerHTML = "<div class='positionRelative date'><input class='form-control input-sm Datepicker' placeholder='Date' name='"+maxRowNum+"dateOfInterview' id='"+maxRowNum+"dateOfInterview'  readonly='readonly'  type='text' data-validation='required' field-name='Interview Date' > <span class='input-group-addon input-groupAddon'><i class='fa fa-calendar'></i></span> </div>";
-		$(".Datepicker").datepicker();
-
-		var cell2 = row.insertCell(2);
 		var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
 		divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell2.innerHTML = divTsTd3Str;
+		cell1.innerHTML = divTsTd3Str;
+		
+		var cell2 = row.insertCell(2);
+		cell2.innerHTML = "<div class='positionRelative date'><input class='form-control input-sm Datepicker' placeholder='Date' name='"+maxRowNum+"dateOfInterview' id='"+maxRowNum+"dateOfInterview'  readonly='readonly'  type='text' data-validation='required' field-name='Interview Date' > <span class='input-group-addon input-groupAddon'><i class='fa fa-calendar'></i></span> </div>";
+		$(".Datepicker").datepicker();
+
 		
 		var cell3 = row.insertCell(3);
-		cell3.innerHTML = "<div class='positionRelative'><input class='form-control input-sm timepicker' placeholder='Start Time' onclick='TimePickerFn();' name='"+maxRowNum+"startTime' id='"+maxRowNum+"startTime'  readonly='readonly'  type='text' data-validation='required' field-name='Start Time' ><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span></div> ";
-		cell3.innerHTML = cell3.innerHTML + "<div class='positionRelative'><input class='form-control input-sm timepicker' placeholder='End Time' name='"+maxRowNum+"endTime' id='"+maxRowNum+"endTime'  readonly='readonly' type='text' field-name='End Time' ><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span> </div>";
+		cell3.innerHTML = "<div class='positionRelative'><input class='form-control input-sm timepicker' placeholder='Start Time' name='"+maxRowNum+"startTime' id='"+maxRowNum+"startTime'  type='text' data-validation='required' field-name='Start Time' ><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span></div> ";
+		cell3.innerHTML = cell3.innerHTML + "<div class='positionRelative'><input class='form-control input-sm timepicker' placeholder='End Time' name='"+maxRowNum+"endTime' id='"+maxRowNum+"endTime'  type='text' field-name='End Time' ><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span> </div>";
 		$(".timepicker").timepicker();
 		
 		var cell4 = row.insertCell(4);
@@ -218,6 +199,29 @@ function loadRemiderDiv(){
 		var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
 		divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 		cell6.innerHTML = divTsTd7Str;
+		
+		getInterviewers(maxRowNum);
+		getShortListCandidates(maxRowNum);
+		$(".chosen-select").chosen('destroy');
+		    var config = {
+				  '.chosen-select'           : {},
+				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  '.chosen-select-width'     : {width:"95%"}
+				 }
+		
+	
+				for (var selector in config) {
+				  $(selector).chosen(config[selector]);
+				}
+				$('.chosen-select').each(function() {
+					var $this = $(this);
+					$this.next().css({'width': '100%'});
+					
+	             
+				$(".chosen-select").chosen();
+				});
 }		
 </script>
 
@@ -267,6 +271,15 @@ function loadRemiderDiv(){
 	})(jQuery);
 </script>
 
+<script>
+function cancelAddInterviewDiv(){
+	 $(".add_inter_wrap").removeClass("add_inter_wrap_active");
+	 $(".side_mask").fadeOut(200);
+ 	 $("body").css('overflow-y', 'auto');
+}
+
+</script>
+
 <script type="text/javascript">
    	$('body').on('submit', '#addInterview_form', function(e){
 	  if ($(this).validate(false, validationSettings)){
@@ -277,16 +290,18 @@ function loadRemiderDiv(){
         var jsonData = encodeURIComponent(con);
         var sourceleadUrl ='${sourceleadUrl}';
         
-        $( "#add_interview" ).addClass('button').val('Processing..');
-  /*  	    $.ajax({
+        $("#add_interview").attr("disabled", "disabled");
+ 		$("#add_interview" ).addClass('button').val('Processing..');
+ 		
+   	    $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/saveInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData, 
+	        url: sourceleadUrl+"/saveInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
 	        success: function(result) {
-	        	if((result == 'home')){
-	        		clientSubmissionTemplate(clientLocationId);  
-		        } 
+	        	    $(".add_inter_wrap").removeClass("add_inter_wrap_active");
+	        		$(".side_mask").fadeOut(200);
+	        		$("body").css('overflow-y', 'auto');
 	        },
-	    }); */
+	    });  
         return true;
       }
       else{
@@ -298,5 +313,64 @@ function loadRemiderDiv(){
     $('#addInterview_form').validateOnBlur(false, validationSettings); 
   
   </script>
+  
+<script type="text/javascript">
+ function getShortListCandidates(rowId) {
+	// var existingInterviewers = $("#"+rowId+"location").val();
+	 var existingInterviewers = document.getElementById("1applicant").value;
+	// alert("existingInterviewers"+existingInterviewers);
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var requirementId = $("#reqId").val();
+     
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
+					}
+		        	$("#"+rowId+"applicant").empty();
+		        	$("#"+rowId+"applicant").append(output);
+		        	$("#"+rowId+"applicant").trigger("chosen:updated");
+			       
+		        },
+		    });
+	
+ }
+</script>    
+  
+  
+  
+  
+<script type="text/javascript">
+ function getInterviewers(rowId) {
+	 
+	 var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllInterviewers?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#"+rowId+"interviewer").empty();
+		        	$("#"+rowId+"interviewer").append(output);
+		        	$("#"+rowId+"interviewer").trigger("chosen:updated");
+			       
+		        },
+		    });
+	
+ }
+</script>  
 
 <jsp:include page="../masterFooter.jsp" />

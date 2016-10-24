@@ -109,6 +109,14 @@ public interface UserService  {
 	 * @return List<User> 
 	 */
 	List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId ,Long orgLocationsId) throws Exception;
+
+	/**
+	 * Rajashekar
+	 * @param id
+	 * @param teamType
+	 * @return List<User>
+	 */
+	List<User> getUsersByTeamType(Long id, String teamType)throws Exception;
 	
 	
 	

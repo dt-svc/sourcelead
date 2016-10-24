@@ -178,8 +178,8 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			List<OrgSpoc> spocsList;
 			 
-			Query query= session.createQuery("from OrgSpoc spoc  left join fetch spoc.orgRelations orgrelation where spoc.status <> '0' "); 
-			spocsList = query.setCacheable(true).list();
+			Query query= session.createQuery("from OrgSpoc spoc  left join fetch spoc.orgRelations orgrelation where spoc.orgRelations.id=:orgId and spoc.status <> '0' "); 
+			spocsList = query.setLong("orgId", orgId).setCacheable(true).list();
 			return spocsList;
 			
 		}
