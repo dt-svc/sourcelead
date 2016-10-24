@@ -101,12 +101,38 @@ $(document).ready(function () {
     var parallelApproverIds = '${parallelApproverIds}';
     var sequentialApprover1 = '${sequentialApprover1}';
     var sequentialApprover2 = '${sequentialApprover2}';
-
-   /*  alert("approverMode"+approverMode);
-    alert("parallelApproverIds"+parallelApproverIds);
-    alert("sequentialApprover1"+sequentialApprover1);
-    alert("sequentialApprover2"+sequentialApprover2);
-     */
+	if(approverMode != null && approverMode != '' && approverMode != 'undefined'){
+			/*  $("#apprverReq").prop('checked', true); */
+			$('#apprverReq').click();
+			
+		    if(approverMode == 'Sequential'){
+		    	    approvalType('Sequential');     
+		    	    var str_array = sequentialApprover1.split(',');
+		    	    for (var i = 0; i < str_array.length; i++) {
+		    	        str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+		    	    }
+		    	    $("#sequentialApprover1").val(str_array).trigger("chosen:updated");
+		    	    
+		    	    
+		    	    var str_array2 = sequentialApprover2.split(',');
+		    	    for (var i = 0; i < str_array2.length; i++) {
+		    	    	str_array2[i] = str_array2[i].replace(/^\s*/, "").replace(/\s*$/, "");
+		    	    }
+		    	    $("#sequentialApprover2").val(str_array2).trigger("chosen:updated");
+		    	    
+		    } 
+			if(approverMode == 'Parallel'){
+				
+				approvalType('Parallel');
+				var str_array = parallelApproverIds.split(',');
+			    for (var i = 0; i < str_array.length; i++) {
+			        str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+			    }
+			    $("#parallelApprover").val(str_array).trigger("chosen:updated");
+		    	
+		    } 
+	}
+    
     
 });    
 </script>
@@ -1221,7 +1247,7 @@ $(document).ready(function() {
               </select>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group" id="internalSubmissionFrom">
             <label class="col-md-3">Application Form<span class="text-danger">*</span></label>
             <div class="col-md-9">
                 <!-- <select class="chosen-select form-control">
@@ -1230,12 +1256,12 @@ $(document).ready(function() {
                   <option>Client-2</option>
                   <option>Client-3</option>
                 </select> -->
-                <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId"  field-name = "Application Form">
-                    	<option value="">-- Select Client --</option>
-		                <c:forEach var="report" items="${add_clientList}">
-					               <option value="${report.id},${report.responderLocationId.id}">${report.locationId.org.orgName}</option>
+               <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId"  field-name = "Application Form">
+                    	<option value="">-- Select Form --</option>
+		                <c:forEach var="report" items="${submissionTempletesList}">
+					               <option value="${report.id}">${report.templateName}</option>
 						</c:forEach>
-               </select>						
+               </select>					
           </div>
         </div>
       </div>
@@ -1775,7 +1801,6 @@ function addLvl(){
 
 <script>
 function approvalType(type){
-		
 	    if($("#apprverReq").is(':checked')){
 			$("#submitForApproval").removeAttr("style");
 		    $("#save").attr("style","display:none"); 
@@ -1804,14 +1829,14 @@ function approvalType(type){
 				$('#sequentialApprover2').attr("data-validation-optional","true"); 
 				$('#parallelApprover').removeAttr('data-validation-optional');
 				
-				$('#sequentialApprover1').val('');
-				$('#sequentialApprover2').val('');
+				$('#sequentialApprover1').val('').trigger('chosen:updated');
+				$('#sequentialApprover2').val('').trigger('chosen:updated');
 				  
 				
 		  }
 		  if(type == "Sequential"){
 			    $(".parallel").hide();
-			    $("#parallel i").addClass("apprverReq-active");
+			    $("#parallel i").removeClass("apprverReq-active");
 			    
 				$(".sequential").show();
 				$("#sequential i").addClass("apprverReq-active");
@@ -1821,11 +1846,12 @@ function approvalType(type){
 				$('#sequentialApprover1').removeAttr('data-validation-optional');
 				$('#sequentialApprover2').removeAttr('data-validation-optional');
 				
-				$('#parallelApprover').val('');
+				$('#parallelApprover').val('').trigger('chosen:updated');
 		  }
 		  
 		}
 		else{
+		    
 			$("#save").removeAttr("style");
 		    $("#submitForApproval").attr("style","display:none"); 
 		    
@@ -1856,12 +1882,12 @@ function approvalType(type){
 --%>
 
 <script>
-function getUserList(){  
+function getUserList(teamType){  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}&teamType="+teamType,    
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
@@ -1871,7 +1897,7 @@ function getUserList(){
                			 location.replace(sourceleadUrl+"/errorPage");
                		 }
                		 else{
-               			 getTeamsList();
+               			 getTeamsList(teamType);
 			    	     $("#userList").removeAttr("style");
 	                	    var result = '';
 	                	    result = result +'<div class="modal-body clearfix">';
@@ -1883,7 +1909,7 @@ function getUserList(){
 	                		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
 	                		result = result +'       </div>';
 	                		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
-	                		result = result +'          <select id="rolesDiv" class="selectpicker form-control" style="display:block !important">';
+	                		result = result +'          <select id="rolesDiv" onchange="filterTeamMembers();" class="selectpicker form-control" style="display:block !important">';
 	                		result = result +'          </select>';
 	                		result = result +'     </div>';
 	                		result = result +'     </div>';
@@ -1914,8 +1940,8 @@ function getUserList(){
 		                    	 result = result +'             <td><input id="'+opt.id+'" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' class="myCheckbox" ></td>';
 		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
 		                    	 result = result +'             <td>'+opt.email+'</td>';
-		                    	 result = result +'             <td>'+opt.id+'</td>';
-		                    	 result = result +'             <td>'+opt.id+'</td>';
+		                    	 result = result +'             <td>'+opt.userType+'</td>';
+		                    	 result = result +'             <td>'+opt.assignJobCount+'</td>';
 		                    	 result = result +'           </tr>';
 		                    	
 	                     }
@@ -1960,7 +1986,7 @@ function getUserList(){
 </script>
 
 <script>
-function getTeamsList(){  
+function getTeamsList(teamType){  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",
@@ -1969,15 +1995,37 @@ function getTeamsList(){
             	var json = JSON.parse(data);
 				var output = "";
 				output = output +'          <option selected disabled>Select Role</option>';
-				output = output +'           <option value="All">All</option>';
-				output = output +'           <option value="Admin">Admin</option>';
-				output = output +'           <option value="Account Manager">Account Manager</option>';
-				output = output +'           <option value="Recruiting Manager">Recruiting Manager</option>';
-				output = output +'           <option value="Hiring Manager">Hiring Manager</option>';
 				
+				if(teamType == 'All'){
+					output = output +'           <option value="All" selected>All</option>';
+				}else{
+					output = output +'           <option value="All">All</option>';
+				}
+				if(teamType == 'Admin'){
+					output = output +'           <option value="Admin" selected>Admin</option>';
+				}else{
+					output = output +'           <option value="Admin">Admin</option>';
+				}
+				if(teamType == 'Account Manager'){
+					output = output +'           <option value="Account Manager" selected>Account Manager</option>';
+				}else{
+					output = output +'           <option value="Account Manager">Account Manager</option>';
+				}if(teamType == 'Recruiter'){
+					output = output +'           <option value="Recruiter" selected>Recruiter</option>';
+				}else{
+					output = output +'           <option value="Recruiter">Recruiter</option>';
+				} if(teamType == 'HR Manager'){
+					output = output +'           <option value="HR Manager" selected>HR Manager</option>';
+				}else{
+					output = output +'           <option value="HR Manager">HR Manager</option>';
+				} 
 				for (var i = 0; i < json.length; i++) {
 					var opt = json[i];
-					output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";
+					if(teamType == opt.id){
+						output = output + "<option value='"+opt.id+"' selected>"+ opt.name + "</option>";
+					}else{
+						output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";	
+					}
 				}
 				$("#rolesDiv").empty();
 			    $("#rolesDiv").append(output);
@@ -2080,11 +2128,22 @@ var existingValue = document.getElementById('isClientJob').value;
 	}else {
 		 $("#isClientJob").val('N');
 		 existingValue = document.getElementById('isClientJob').value;
+		 
+    // Adding the Internal  Submission Form  as we are Unselecting the Client
+		 document.getElementById("internalSubmissionFrom").style.display = '';
+		 $("#applicationFrom").attr("data-validation", "required");
+		 
 	}
 	 if ((document.getElementById('isClientJob').checked) || (existingValue != null && existingValue != '' && existingValue !='undefined' && existingValue == 'Y') ) {
 		 document.getElementById("clientDetails").style.display="";
 		 $("#isClientJob").val('Y');
 		 
+		 
+		//to remove the  Internal  Submission Form  as we are selecting the Client 
+		 document.getElementById("internalSubmissionFrom").style.display = 'none';
+	     $('#applicationFrom').removeAttr('data-validation');
+	     
+	     
          $('#addClientId').removeAttr('data-validation-optional');
 	     $('#addClientId').attr("data-validation","required"); 
 	   
@@ -2108,6 +2167,13 @@ var existingValue = document.getElementById('isClientJob').value;
 	 }
 }
 
+</script>
+
+<script type="text/javascript">
+function filterTeamMembers(){
+	var teamType = $("#rolesDiv").val();
+	getUserList(teamType);
+}
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

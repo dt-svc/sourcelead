@@ -122,7 +122,6 @@ function requirementList(){
 	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
-	                    	 
 	                    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
 		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show'><span>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 		                     result = result +"<td><div><span>Client</span></div></td>";
@@ -142,14 +141,17 @@ function requirementList(){
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
 		                     }
-		                     if(opt.managerUserId.firstName != null && opt.managerUserId.firstName !='' && opt.managerUserId.firstName !='undefined'){
+	                    	 result = result +"<td><div>-----</div></td>";
+
+		                     /* f(opt.managerUserId.firstName != null && opt.managerUserId.firstName !='' && opt.managerUserId.firstName !='undefined'){
 		                    	 result = result +"<td><div>"+opt.managerUserId.firstName+" "+opt.managerUserId.lastName+"</div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
-		                     }
+		                     } */
+		                     
+		                     
 		                     result = result +"<td><div><b class='proj_process'>"+opt.requirementSubmissionStatus+"</b></div></td>";
 		                     result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
-		                     //<c:url value='/releaseRequirementToClientOrVendors/"+opt.id+"'/>'
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";
 	                     }

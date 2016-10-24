@@ -119,6 +119,9 @@ public class OrgSpoc {
 	
 	@Transient
 	private Long tempSpocId;
+	
+	@Transient
+	private String releasedRequirement;
 
 	public Long getSpocLocationId() {
 		return spocLocationId;
@@ -357,5 +360,13 @@ public class OrgSpoc {
 
 	public void setTempSpocId(Long tempSpocId) {
 		this.tempSpocId = tempSpocId;
+	}
+
+	public String getReleasedRequirement() {
+		return releasedRequirement;
+	}
+
+	public void setReleasedRequirement(String releasedRequirement) {
+		this.releasedRequirement = releasedRequirement;
 	}
 }

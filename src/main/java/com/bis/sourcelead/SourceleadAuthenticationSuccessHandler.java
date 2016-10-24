@@ -1,17 +1,25 @@
 package com.bis.sourcelead;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Date;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserLoginLogoutSession;
+import com.bis.sourcelead.service.UserLoginLogoutSessionService;
+import com.bis.sourcelead.service.UserService;
 
 /**
  * Custom AuthenticationSuccessHandler
@@ -24,9 +32,30 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan(basePackages = "com.bis.sourcelead")
 public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuccessHandler{
 
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	UserLoginLogoutSessionService userLoginLogoutSessionService;
+	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
+		
+		User loginUser = userService.findByUserName(authentication.getName());
+	    if(loginUser != null){
+	    	UserLoginLogoutSession userLoginSession = new UserLoginLogoutSession();
+		    try{
+		    	InetAddress ipAddr = InetAddress.getLocalHost();
+		    	userLoginSession.setIpaddress(ipAddr.getHostAddress());
+		    }catch (UnknownHostException ex) {
+	        }
+		    userLoginSession.setUserId(loginUser);
+		    userLoginSession.setLoginTime(new Date());
+		    userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
+		    request.getSession().setAttribute("userLoginSession", userLoginSession);
+	    }
+	    
 		response.sendRedirect("/sourcelead/dashboard");
 	}
 }

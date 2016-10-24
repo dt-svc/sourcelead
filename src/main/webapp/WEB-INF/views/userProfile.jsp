@@ -295,7 +295,7 @@
     	output.src = URL.createObjectURL(event.target.files[0]);
     	
     	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
- 		var msg = "."+extensionName+" extension not allowed";
+ 		var msg = "."+extensionName+" extension not supported";
  		alertMessage(msg);
  		document.getElementById("errorImage").style.display=""; 
  		$("#profile_submit").attr("disabled", "disabled");

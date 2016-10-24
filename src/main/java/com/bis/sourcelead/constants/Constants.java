@@ -154,7 +154,7 @@ public class Constants {
 
 	public static String[] RATEPER_LIST = {"Daily","Hourly","Weekly","Bi-Weekly","Semi-Monthly","Monthly","Yearly"};
 	
-	public static String[] ROLE_LIST = {"Admin","Employee","Approver"};
+	public static String[] ROLE_LIST = {"Admin","Employee","Project Manager","Team Lead"};
 	
 	public static String[] INVOICE_FREQUENCY_LIST = {"Weekly","Bi-Weekly","Semi-Monthly","Monthly"};
 	

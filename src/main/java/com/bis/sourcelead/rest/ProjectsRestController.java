@@ -204,7 +204,7 @@ public class ProjectsRestController {
 	  }
 	 
  
-	 @RequestMapping(value = "/notification", method = RequestMethod.GET,headers="Accept=application/json")
+	/* @RequestMapping(value = "/notification", method = RequestMethod.GET,headers="Accept=application/json")
 	 public void getNotification() throws Exception{
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIME_SHEET_SUBMISSION,Constants.ENTITY_TYPE_NOTIFICATION);
 		 Map<String, String> globalVarsMap = new HashMap<>();
@@ -216,7 +216,7 @@ public class ProjectsRestController {
 			User user = new User();
 			OrgLocations loginOrgLocation = new OrgLocations();
 			emailScenerioUtil.sendNotification(actionLink, user, user, loginOrgLocation, emailScenario);
-	}
+	}*/
 	 
 	 //to  validate user email
 	 @RequestMapping(value = "/getEmailVerification" , method = RequestMethod.POST)
