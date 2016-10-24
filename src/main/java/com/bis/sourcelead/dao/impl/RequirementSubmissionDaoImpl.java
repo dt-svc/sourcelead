@@ -22,6 +22,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -107,11 +108,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
 		}
 		
-		Boolean teamFlag = teamDao.getTeamOwnersListByUserId(user);
+		Boolean teamFlag = teamDao.getTeamOwnersListByUserId(user,loginOrgLocation.getId());
 		if(requirement.getManagerUserId().getId()!=user.getId()&& teamFlag){
 			for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
 				if(requirementAssignTo.getTeamId().getId()!=null){
-					if(requirementAssignTo.getTeamId().getId()==user.getId()){
+					Team team = teamDao.getTeamByTeamId(requirementAssignTo.getTeamId().getId());
+					if(team.getId()==user.getId()){
 						List<TeamMembers> teamMembers =  teamMemberDao.getTeamMembersListByTeamID(requirementAssignTo.getTeamId().getId());
 						List<String> userCodes = new ArrayList<>();
 						userCodes.add(user.getUserCode());
@@ -120,7 +122,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 							userCodes.add(usercode.getUserCode());
 						}
 						
-						String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId";
+						String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.createdBy IN (:usercode) and reqSub.requirement.id =:requirementId";
 						  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setParameterList("usercode", userCodes).setLong("requirementId", requirementId).list();
 					}
 				}
