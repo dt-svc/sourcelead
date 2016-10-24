@@ -213,11 +213,19 @@ public class RequirementController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		List<Candidate> candidatesList = candidateService.getCandidatesByOrgLocationID(orgLocations.getId(),requirementId);
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		
 		ModelAndView model = new ModelAndView();
 		model.setViewName("requirement/requirementSummary");
 		model.addObject("candidatesList",candidatesList);
 		model.addObject("requirementId",requirementId);
+		
+		if(requirement.getIsClientJob() != null && requirement.getIsClientJob().equalsIgnoreCase("Y")){
+			model.addObject("clientSubmissions","Y");
+		}else{
+			model.addObject("clientSubmissions","N");
+		}
+		
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -25,13 +26,18 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
@@ -59,6 +65,14 @@ public class SubmissionsRestController {
 	
 	@Autowired
 	private SubmissionTemplateService submissionTemplateService;
+	
+	@Autowired
+	private RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
+	
+	@Autowired
+	private UserService userService;
+
+	 
     
     @RequestMapping(value = "/getCandidateResumes")
     public String getCandidateResumes(@RequestParam(value="candidateId", required=false) Long candidateId,HttpServletRequest request) throws Exception {
@@ -161,6 +175,74 @@ public class SubmissionsRestController {
 			   return "home";
 	    
 	   }
+    
+    
+    @RequestMapping(value = "/getSubmissionCandidates" , method = RequestMethod.POST)
+	   public String getSubmissionCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
+			   @RequestParam(value="status", required=false) String status,HttpServletRequest request) throws Exception {
+			
+    	 String resultJson = null;
+    	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+     	 List<RequirementSubmission> shortlistedList = requirementSubmissionService.getAllSubmissionListByRequirementIdAndSubmissionStage(orgLocations.getId(), requirementId,status);    
+     	 ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
+     	 
+     	 for (RequirementSubmission requirementSubmission : shortlistedList) {
+			CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+			requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName()+" "+requirementSubmissionTemplateFields.getLastName());
+			requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
+			requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
+			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
+			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+			if(requirementSubmission.getCreatedDate() != null){
+				requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
+			}
+			User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+			requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
+			requirementSubmission.setResumeName(candidateResumes.getFileName());
+			candidatesList.add(requirementSubmission);
+		  }
+     	 resultJson = toJSON(candidatesList);
+		 return resultJson;
+	    
+    }
+    
+    
+    @RequestMapping(value = "/submitShortlistedToClient" , method = RequestMethod.POST)
+	   public String submitShortlistedToClient(@RequestParam(value="requirementId", required=false) Long requirementId,
+			   @RequestParam(value="submissionsList", required=false) String submissionsList,HttpServletRequest request) throws Exception {
+    	
+    	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+    	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+    	
+    	 requirementSubmissionService.storeClientSubmission(requirementId, user, orgLocations, submissionsList);
+    	
+    	return "success";
+    }
+    
+    
+    @RequestMapping(value = "/candidateShortList" , method = RequestMethod.POST)
+	   public String candidateShortList(@RequestParam(value="requirementId", required=false) Long requirementId,
+			   @RequestParam(value="submissionsList", required=false) String submissionsList,HttpServletRequest request) throws Exception {
+ 	
+ 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+ 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+ 	
+ 	 
+ 	 String[] submissionId = submissionsList.split(",");
+ 	 
+ 	 for(int i=0; i < submissionId.length; i++){
+ 		 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
+ 		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST);
+ 		 submission.setUpdatedBy(user.getUserCode());
+ 		 submission.setUpdatedDate(new Date());
+ 		 requirementSubmissionService.storeRequirementSubmission(submission);
+ 	 }
+ 	
+ 	return "success";
+ }
+    
+    
     
     private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
