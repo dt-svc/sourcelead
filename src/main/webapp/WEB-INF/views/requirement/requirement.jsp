@@ -1359,7 +1359,6 @@ $(document).ready(function() {
 			var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
-			
 			var form = $('#requirement_form')[0];
       		var formData = new FormData(form); 
 			  //It will escape all the special characters
@@ -1902,6 +1901,7 @@ function getUserList(teamType){
                			 getTeamsList(teamType);
 			    	     $("#userList").removeAttr("style");
 	                	    var result = '';
+	                	    result = result+"<input type='hidden' name='assignedTeamId' id='assignedTeamId' value='"+teamType+"'/>";
 	                	    result = result +'<div class="modal-body clearfix">';
 	                		result = result +'<div class="form-horizontal custom-form">';
 	                		result = result +'     <div class="row">';

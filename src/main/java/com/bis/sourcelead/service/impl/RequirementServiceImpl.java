@@ -23,11 +23,13 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -54,6 +56,8 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	private RequirementAssignToService requirementAssignToService;
 	
+	@Autowired
+	private TeamService teamService;
 	
 	/**
 	 * @author prasad k
@@ -359,6 +363,16 @@ public class RequirementServiceImpl implements RequirementService {
 			HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
 			if (jsonObj.has("assignedToMaxCount")){
 				String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
+				String assignedTeamId = jsonObj.getString("assignedTeamId");
+				Long teamId = 0L;
+				Team team = null;
+			if (!"undefined".equalsIgnoreCase(assignedTeamId) && !"All".equalsIgnoreCase(assignedTeamId)
+					&& !"Account Manager".equalsIgnoreCase(assignedTeamId)
+					&& !"HR Manager".equalsIgnoreCase(assignedTeamId) && !"Recruiter".equalsIgnoreCase(assignedTeamId)
+					&& !"Admin".equalsIgnoreCase(assignedTeamId)) {
+				    teamId = Long.parseLong(assignedTeamId);
+				     team = teamService.getTeamByTeamId(teamId);
+				}
 				if(StringUtils.isNotEmpty(assignedToMaxCount)){
 				int MaxCount = Integer.parseInt(assignedToMaxCount);
 					for (int c = 1; c < MaxCount; c++) {
@@ -374,7 +388,7 @@ public class RequirementServiceImpl implements RequirementService {
 						requirementAssignTo.setCreatedBy(user.getUserCode());
 						requirementAssignTo.setUpdatedBy(user.getUserCode());
 						requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
-						
+						requirementAssignTo.setTeamId(team);
 						requirementAssignToList.add(requirementAssignTo);
 					}
 				}
