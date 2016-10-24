@@ -113,7 +113,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
 				if(requirementAssignTo.getTeamId().getId()!=null){
 					Team team = teamDao.getTeamByTeamId(requirementAssignTo.getTeamId().getId());
-					if(team.getId()==user.getId()){
+					if(team.getOwnerUserId().getId()==user.getId()){
 						List<TeamMembers> teamMembers =  teamMemberDao.getTeamMembersListByTeamID(requirementAssignTo.getTeamId().getId());
 						List<String> userCodes = new ArrayList<>();
 						userCodes.add(user.getUserCode());
@@ -136,7 +136,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			}
 		}
 		
-		if(requirement.getManagerUserId().getId()!=user.getId()&& flag){
+		if(requirement.getManagerUserId().getId()!=user.getId()&& flag && !teamFlag ){
 			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId";
 		  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).list();
 		}
