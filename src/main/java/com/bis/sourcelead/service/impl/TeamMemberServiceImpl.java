@@ -90,7 +90,7 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 		userList = userList.replaceAll("\\[", "").replaceAll("\\]","");
 		userList = userList.replaceAll("\"", "");
 		String[] usersIds = userList.split(",");
-		for(int i=0;usersIds[0].length() >= i ;i++){
+		for(int i=0; i < usersIds.length  ;i++){
 			User user = new User();
 			user.setId(Long.parseLong(usersIds[i]));
 			teamMembers.setMemberUserId(user);
