@@ -715,7 +715,138 @@ $(document).ready(function() {
         </div> -->
               
         
-      </div>    
+      </div>   
+      
+      <!-- Addede by Rajashekar -->
+      <div id="tab-3" class="project_tabs_inn">
+              <div class="timesheet_head candidateHead recruitmentHead">
+                <div class="rec_head"></div>
+              </div>
+              <div class="require_wrap_table recommend_table">
+                <table>
+                  <tbody>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Ph. No</th>
+                      <th>Resume</th>
+                      <th>No of views</th>
+                      <th>Score</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span>
+                        <select>
+                          <option>Interview</option>
+                          <option>Submit</option>
+                          <option>Joined</option>
+                          <option>Screening</option>
+                          <option>Offer</option>
+                        </select>
+                        </span></div>
+                  </td>
+                  </tr>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span><b>Offer</b><i class=" fa fa-edit"></i></span></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span><b>Offer</b><i class=" fa fa-edit"></i></span></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span><b class="proj_closed">Submit</b><i class=" fa fa-edit"></i></span></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span><b class="proj_closed">Submit</b><i class=" fa fa-edit"></i></span></div></td>
+                  </tr>
+                  </tbody>
+                  
+                </table>
+              </div>
+              <nav>
+                <ul id="paging" class="pagination">
+                  <li><a href="#">Previous</a></li>
+                  <li><a href="#">2</a></li>
+                  <li><a href="#">3</a></li>
+                  <li class="disabled"><a href="#">6</a></li>
+                  <li data-page="last"><a href="#">Next</a></li>
+                </ul>
+                <div class="clearfix"></div>
+              </nav>
+            </div>            
+            
+          </div>
+    
+    <div class="side_mask">
+      <div class="proj_close"></div>
+    </div>
+      
+      <!-- End Raj --> 
     
     
     <div class="side_mask">
@@ -2229,6 +2360,7 @@ function sideBar(requirementId){
 					    result = result+'    <ul class="project-tabs-menu">';
 					    result = result+'      <li class="current"><a href="#tab-1" onclick="requirementDetails('+requirementId+');">Details</a></li>';
 					    result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+');">Pipeline</a></li>';
+					    result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
 					    result = result+'      <div class="clearfix"></div>';
 					    result = result+'    </ul>';
 					    result = result+'    <div class="project_tabs">';
@@ -3155,6 +3287,12 @@ function assignedMemberList(requirementId){
                },
                  
             }); 
+}
+</script>
+
+<script type="text/javascript">
+function requirementRecommendations(requirementId){
+	alert("Hai"+requirementId);
 }
 </script>
 
