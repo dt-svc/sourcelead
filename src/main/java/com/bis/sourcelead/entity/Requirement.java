@@ -118,12 +118,11 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	
 	@ManyToOne
-    @JoinColumn(name="SUBMISSION_TEMPLATE_ID", nullable=false )        
+    @JoinColumn(name="SUBMISSION_TEMPLATE_ID" )        
     private SubmissionTemplate submissionTemplateId;
 	
-	
 	@ManyToOne
-    @JoinColumn(name="CLIENT_SUBMISSION_TEMPLATE_ID", nullable=false )        
+    @JoinColumn(name="CLIENT_SUBMISSION_TEMPLATE_ID" )        
     private SubmissionTemplate clientSubmissionTemplateId;
 	
 	@ManyToOne
@@ -150,8 +149,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String clientSubmissionTemplateJsonString;
 	
 	
-	@Column(name="PARENT_REQUIREMENT_ID")
-	private Long parent_requirement_id;
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="PARENT_REQUIREMENT_ID")        
+    private Requirement parentRequirement;
 	
 	@Column(name="PRIORITY")
 	private String priority;
@@ -495,12 +495,13 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.requirementSubmissionStatus = requirementSubmissionStatus;
 	}
 
-	public Long getParent_requirement_id() {
-		return parent_requirement_id;
+
+	public Requirement getParentRequirement() {
+		return parentRequirement;
 	}
 
-	public void setParent_requirement_id(Long parent_requirement_id) {
-		this.parent_requirement_id = parent_requirement_id;
+	public void setParentRequirement(Requirement parentRequirement) {
+		this.parentRequirement = parentRequirement;
 	}
 
 	public String getPriority() {
