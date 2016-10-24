@@ -84,7 +84,7 @@
 	  <!-- Accordion First Tab Ends -->
 
       <!-- Accordion second Tab -->
-        <div class="clearfix">
+        <!-- <div class="clearfix">
           <h2>Job boards, Social Networks &amp; Career Portal</h2>
           <div class="content clearfix">
             <div class="row">
@@ -167,7 +167,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       <!-- Accordion second Tab Ends -->
       </div>
       <div class="form-footer clearfix row mt">
@@ -209,7 +209,6 @@ function releaseTo(){
 	           type : "POST",
 	           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
 	            success :function(data) {
-	            		alert("success");
 						location.replace(sourceleadUrl+"/requirementList");
 	            },
 	    }); 
@@ -251,7 +250,6 @@ function getContactsLists(){
    	        	result = result +'  <th>Email</th>';
    	        	result = result +' <th>Ph</th>';
    	        	result = result +' <th>Vendor</th>';
-   	        	result = result +' <th>Status</th>';
    	        	result = result +' <th>Release</th>';
    	        	result = result +'</tr>';
    	        	result = result +'</thead>';
@@ -280,11 +278,8 @@ function getContactsLists(){
 	        			result = result +'<div><span>'+report.orgName+'</span></div>';
 	        			result = result +'</td>';
 	        			result = result +'<td>';
-	        			result = result +'<div><b class="proj_active">'+report.status+'</b></div>';
-	        			result = result +'</td>';
-	        			result = result +'<td>';
 	        		if(report.releasedRequirement =="true"){
-	        			result = result +'<div>Released</div>';
+	        			result = result +'<div><b class="proj_active">Released</b></div>';
 	        		}
 					if(report.releasedRequirement =="false"){
 						result = result +'<div><a href="javascript:void(0)"><i class="fa fa-bullhorn"></i></a></div>';
@@ -333,7 +328,6 @@ function getVendorLists(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var requirementId = '${param.requirementId}';
-	alert(requirementId);
 	
 	  $.ajax({
 		   	type: "GET",
@@ -369,7 +363,12 @@ function getVendorLists(){
    	        		}
    	        		
    	        		result = result +'<tr>';
-   	        	    result = result +'  <td><input name="vendorcheckbox" type="checkbox" id="'+report.id+'" /></td>';
+   	        	    
+   	        	 	if(report.noOfNonReleasedContacts == 0){
+   	        	 		result = result +'  <td><input type="checkbox" checked disabled readonly id="'+report.id+'" /></td>';
+	        		}else{
+	        			result = result +'  <td><input name="vendorcheckbox" type="checkbox" id="'+report.id+'" /></td>';
+	        		}
    	        	 
    	        		if( report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
    	        			result = result +'<td>';
@@ -391,8 +390,13 @@ function getVendorLists(){
    	        			result = result +'<td><div>--</div></td>';
    	        		}
 	       		result = result +'<td><div class="tbldata-dotdot-sm text-left">'+report.noOfContatcs+'</div></td>';
-	       		result = result +' <td><div class="tbldata-dotdot-sm text-left"><span  title="'+report.level+'">'+report.level+'</span>';
-   	        		result = result +'</tr>';
+	       		result = result +' <td><div class="tbldata-dotdot-sm text-left"><span  title="'+report.level+'">'+report.level+'</span></td>';
+	       		result = result +'<td>';
+	       		if(report.noOfNonReleasedContacts == 0){
+        			result = result +'<div><b class="proj_active">Released</b></div>';
+        		}
+        		result = result +'</td>';
+   	        	result = result +'</tr>';
    				}
    	        	result = result +'</tbody>';
    	        	result = result +'</table>';
