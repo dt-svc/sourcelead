@@ -101,8 +101,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	public List<RequirementSubmission> getAllSubmissionListByRequirementIdAndSubmissionStage(Long orgLocationsId,
 			Long requirementId,String submissionStatus) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
-	     String query = "from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and rs.submissionStatus = :submissionStatus and (rs.sourceSubmission.id IS NULL or rs.sourceSubmission.id = '') ";
-	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setLong( "requirementId", requirementId).setString("submissionStatus", submissionStatus).setCacheable(true).list();
+		 
+		 String submissionStages = "";
+		 
+		 if(submissionStatus.equalsIgnoreCase("SUBMISSION")){
+			 submissionStages = "and rs.submissionStatus = 'SUBMISSION' ";
+		 }
+		 
+		 else if(submissionStatus.equalsIgnoreCase("SHORTLIST")){
+			 submissionStages = "and rs.submissionStatus <> 'SUBMISSION' and rs.submissionStatus <> 'SUBMIT_TO_CLIENT' ";
+		 }
+		 
+	     String query = "from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and (rs.sourceSubmission.id IS NULL or rs.sourceSubmission.id = '') "+submissionStages+" ";
+	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setLong( "requirementId", requirementId).setCacheable(true).list();
 	     return shortListCandidatesList;
 	}
 	
