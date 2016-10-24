@@ -19,4 +19,6 @@ public interface SubmissionTemplateService {
 	SubmissionTemplate getSubmissionTemplateByLabelName(Long templateId,String labelName) throws Exception;
 	
 	List<SubmissionTemplate> getOrgSubmissionTemplatesByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	SubmissionTemplate getSubmissionTemplateByTemplateNameByOrg(Long orgLocationId,String templateName) throws Exception;
 }

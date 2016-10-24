@@ -12,6 +12,7 @@
     border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;
     box-shadow:0px 0px 1px 0px rgba(0,0,0,0.3);
     background:#f5f5f5;
+    position: relative;
 
 }
 .createTemplate h2{
@@ -418,3 +419,23 @@ padding: 0px 0px 20px 0px; margin: 0px; font-size: 18px; font-weight: 500; color
 	margin-top: 30px;	
 }
 
+.close-btn2 {
+	position: absolute; right:-12px; background-color: #fff; width: 30px; height: 30px; text-align: center; border-radius:50%;
+	box-sizing:border-box; padding: 5px 0px 0px 0px; cursor: pointer; top: -14px;
+	box-shadow: 0 0px 4px rgba(0,0,0,0.4);
+}
+.close-btn2 i { color: red; font-size: 17px;}
+
+#templateList .createTemplate {
+	margin: 0px; border: 0px; box-shadow:0px 0px 0px #000;
+}
+
+#browseDiv{
+position: relative;
+}
+#browseDiv p {
+position: absolute; left: 110px; bottom: -14px;
+}
+ #remove_user_pop {
+position: fixed !important;
+}

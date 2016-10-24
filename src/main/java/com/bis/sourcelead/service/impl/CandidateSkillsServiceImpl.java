@@ -3,6 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.util.HashSet;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,16 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 			
 		 HashSet<CandidateSkills> candidateSkillsList = new HashSet<CandidateSkills>();
 		 if(jsonObj.has("candidateSkills")){
-	    	  String skills = jsonObj.getString("candidateSkills");
+			
+			 String skills = null;
+			 try{
+	    		   JSONArray jsonArray = jsonObj.getJSONArray("candidateSkills");
+	    		   skills = jsonArray.toString();
+	    	  }
+	    	  catch(JSONException e){
+	    		  skills= jsonObj.getString("candidateSkills");
+	    	  }
+			 
 	    	  skills = skills.replaceAll("\\[", "").replaceAll("\\]","");
 	  	      String[] candSkills = skills.split(",");
 	    	  for (String skill : candSkills) {

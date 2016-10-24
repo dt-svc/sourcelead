@@ -43,7 +43,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@ManyToOne
     @JoinColumn(name="INTERVIEWER_USER_ID", nullable=false )        
-    private User user;
+    private User interviewerUser;
 	
 	@Column(name="STATUS")
 	private Integer status;
@@ -76,14 +76,13 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.requirementInterview = requirementInterview;
 	}
 
-	public User getUser() {
-		return user;
+	public User getInterviewerUser() {
+		return interviewerUser;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setInterviewerUser(User interviewerUser) {
+		this.interviewerUser = interviewerUser;
 	}
-	
 
 	public Integer getStatus() {
 		return status;

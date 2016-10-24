@@ -94,17 +94,20 @@
 						result = result + '<div class="project_tabs_inn_head">';
 						if (status != 'COMPLETED' && status != ''
 								&& status != 'undefined' && status != null) {
+							result = result	+ '<span class="pad-sea">';
 							result = result	+ '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask" onclick="flushTasks();"><i class="glyphicon glyphicon-plus"></i>Add Task</a>';
+							result = result	+ '</span>';
 						}
 						result = result	+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
 						result = result	+ '<div id="tasksLoadingImg"></div>';
-						result = result + '<table>';
-						result = result + '<tbody>';
+						result = result + '<table id="projectTaskPagination" class="display" cellspacing="0" width="100%">';
+						result = result + '<thead>';
 						result = result + '<tr id="projectTaskTableId">';
 						result = result + '<th>Task name</th>';
 						result = result + '<th>Task description</th>';
 						result = result + '</tr>';
-
+						result = result + '</thead>';
+						result = result + '<tbody>';
 						for (var i = 0; i < json.length; i++) {
 							var opt = json[i];
 							result = result + '<tr>';
@@ -135,6 +138,7 @@
 						$("#tab-2").empty();
 						$("#tasksLoadingImg").empty();
 						$("#tab-2").append(result);
+						taskPagination();
 
 					}
 				});
@@ -299,12 +303,9 @@
 		//It will escape all the special characters
 		var jsonData = encodeURIComponent(con);
 
-		$
-				.ajax({
+		$.ajax({
 					type : "POST",
-					url : sourceleadUrl
-							+ "/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&json="
-							+ jsonData + "&projectId=" + projectId,
+					url : sourceleadUrl + "/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&projectId=" + projectId,
 					success : function(data) {
 						var json = JSON.parse(data);
 						var result = "";
@@ -333,8 +334,23 @@
 						result = result + '</div>';
 						$("#tab-2").empty();
 						$("#tab-2").append(result);
+						
 					},
 				});
 
 	}
+</script>
+<script>
+function taskPagination(){  
+    $('#projectTaskPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
 </script>

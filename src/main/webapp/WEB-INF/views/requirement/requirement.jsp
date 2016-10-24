@@ -1247,7 +1247,7 @@ $(document).ready(function() {
               </select>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group" id="internalSubmissionFrom">
             <label class="col-md-3">Application Form<span class="text-danger">*</span></label>
             <div class="col-md-9">
                 <!-- <select class="chosen-select form-control">
@@ -1256,12 +1256,12 @@ $(document).ready(function() {
                   <option>Client-2</option>
                   <option>Client-3</option>
                 </select> -->
-                <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId"  field-name = "Application Form">
-                    	<option value="">-- Select Client --</option>
-		                <c:forEach var="report" items="${add_clientList}">
-					               <option value="${report.id},${report.responderLocationId.id}">${report.locationId.org.orgName}</option>
+               <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId"  field-name = "Application Form">
+                    	<option value="">-- Select Form --</option>
+		                <c:forEach var="report" items="${submissionTempletesList}">
+					               <option value="${report.id}">${report.templateName}</option>
 						</c:forEach>
-               </select>						
+               </select>					
           </div>
         </div>
       </div>
@@ -1829,14 +1829,14 @@ function approvalType(type){
 				$('#sequentialApprover2').attr("data-validation-optional","true"); 
 				$('#parallelApprover').removeAttr('data-validation-optional');
 				
-				$('#sequentialApprover1').val('');
-				$('#sequentialApprover2').val('');
+				$('#sequentialApprover1').val('').trigger('chosen:updated');
+				$('#sequentialApprover2').val('').trigger('chosen:updated');
 				  
 				
 		  }
 		  if(type == "Sequential"){
 			    $(".parallel").hide();
-			    $("#parallel i").addClass("apprverReq-active");
+			    $("#parallel i").removeClass("apprverReq-active");
 			    
 				$(".sequential").show();
 				$("#sequential i").addClass("apprverReq-active");
@@ -1846,11 +1846,12 @@ function approvalType(type){
 				$('#sequentialApprover1').removeAttr('data-validation-optional');
 				$('#sequentialApprover2').removeAttr('data-validation-optional');
 				
-				$('#parallelApprover').val('');
+				$('#parallelApprover').val('').trigger('chosen:updated');
 		  }
 		  
 		}
 		else{
+		    
 			$("#save").removeAttr("style");
 		    $("#submitForApproval").attr("style","display:none"); 
 		    
@@ -2127,11 +2128,22 @@ var existingValue = document.getElementById('isClientJob').value;
 	}else {
 		 $("#isClientJob").val('N');
 		 existingValue = document.getElementById('isClientJob').value;
+		 
+    // Adding the Internal  Submission Form  as we are Unselecting the Client
+		 document.getElementById("internalSubmissionFrom").style.display = '';
+		 $("#applicationFrom").attr("data-validation", "required");
+		 
 	}
 	 if ((document.getElementById('isClientJob').checked) || (existingValue != null && existingValue != '' && existingValue !='undefined' && existingValue == 'Y') ) {
 		 document.getElementById("clientDetails").style.display="";
 		 $("#isClientJob").val('Y');
 		 
+		 
+		//to remove the  Internal  Submission Form  as we are selecting the Client 
+		 document.getElementById("internalSubmissionFrom").style.display = 'none';
+	     $('#applicationFrom').removeAttr('data-validation');
+	     
+	     
          $('#addClientId').removeAttr('data-validation-optional');
 	     $('#addClientId').attr("data-validation","required"); 
 	   

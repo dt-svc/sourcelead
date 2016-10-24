@@ -14,6 +14,8 @@ public interface RequirementDao {
 	
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
 	
+	public Boolean getRequirementByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception;
+	
 	public List<Requirement> getJobTitleByJobTemplateStatusAndOrgLocationId(Long orgLocationId)throws Exception;
 
 	public List<RequirementAssignTo> getUserAssignJobCount(Long userId)throws Exception;
