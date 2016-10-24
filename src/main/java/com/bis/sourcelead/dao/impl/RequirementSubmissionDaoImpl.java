@@ -15,12 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.service.RequirementAssignToService;
 
 @Repository
 public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
@@ -28,10 +31,13 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	private SessionFactory sessionFactory;
 	
 	@Autowired
-	private UserRoleDao userRoleDao;
+	private UserDao userDao;
 	
 	@Autowired
 	private RequirementDao requirementDao;
+	
+	@Autowired
+	RequirementAssignToService requirementAssignToService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -67,15 +73,26 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementSubmission> getSubmissionsByRequirementId(Long requirementId,User user, OrgLocations loginOrgLocation) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		/*Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
-		
+		Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
+		List<RequirementAssignTo> requirementAssignToList =  requirementAssignToService.getRequirementAssignToListByRequirementId(requirementId);
+		List<RequirementSubmission>  requirementSubmission = null;
 		if(requirement.getManagerUserId().getId()==user.getId()){
-			
-			
-		}*/
+			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId";
+			 requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
+		}
+		boolean flag = false;
+		for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
+			if(requirementAssignTo.getAssignUserId().getId()==user.getId()){
+				flag = true;
+			}
+		}
 		
-		String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId";
-		return session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
+		if(requirement.getManagerUserId().getId()!=user.getId()&& flag==true){
+			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId";
+		  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).list();
+		}
+		return requirementSubmission;
+		
 	}
 	
 	
