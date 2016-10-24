@@ -2648,9 +2648,22 @@ function requirementPipeline(requirementId){
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title="" class="add-interview" onclick="addInterview('+requirementId+');" ><i class="fa fa-plus"></i>&nbsp;Add Interview</a></li>';
-				            result = result +'    <li> <a href="javascript:void(0)" title="" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a> </li>';
+				           
+				            
+				            result = result +' <li><a href="javascript:void(0)" onclick="getActions();" class="action"> Action <i class="fa fa-caret-down"></i></a>';
+				            result = result +'<div class="action-pop">';
+				            result = result +'	<span>';
+				            result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
+				            result = result +'    <a href="javascript:void(0)" title="" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
+				            result = result +'   <a href="javascript:void(0)" title="" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+				            result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
+				            result = result +'    <a href="javascript:void(0)" title="" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            result = result +'    </span>';
+				            result = result +' </div>';	
+				            result = result +' </li>';
+				            
+				            
+				            
 				            result = result +'    <div class="clearfix"></div>';
 				            result = result +'    <div class="collapseDiv_add collapseDiv_styles col-xs-4 addOffer-Req"> <i class="fa fa-close close-div"></i>';
 				            result = result +'     <div class="form-horizontal clearfix">';
@@ -3155,6 +3168,19 @@ function assignedMemberList(requirementId){
                },
                  
             }); 
+}
+</script>
+
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
 }
 </script>
 
