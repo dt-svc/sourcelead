@@ -5,13 +5,13 @@
  
  
 <script>
-function getCandidateProfile(applicantId){
+function getCandidateProfile(candidateId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  
 	  $.ajax({
       type : "POST",
-       url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+applicantId,        
+       url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
        success :function(data) {  
             if(data != null && data != 'undefined' && data != ""){  
             	var json = JSON.parse(data);
@@ -34,7 +34,7 @@ function getCandidateProfile(applicantId){
 							result = result + '	<div class="row select-skills">';
 							result = result + '    <div class="divskill col-md-8"> ';
 							result = result + '      <div class="addSkills">';
-							result = result + '        <div class="col-md-7 add-skills" style="display:none;"> <i class="fa fa-close close-div" onClick ="removeSkillPopUp('+applicantId+');"></i>';
+							result = result + '        <div class="col-md-7 add-skills" style="display:none;"> <i class="fa fa-close close-div" onClick ="removeSkillPopUp('+candidateId+');"></i>';
 							result = result + '          <div class="form-horizontal clearfix">';
 							result = result + '            <div class="clearfix div-padding">';
 							result = result + '              <div class="col-md-10">';
@@ -47,7 +47,7 @@ function getCandidateProfile(applicantId){
 							/* result = result + '                <input type="text" id="skillName" placeholder="Skill..." value="" class="form-control input-sm">'; */
 							result = result + '              </div>';
 							result = result + '              <div class="col-md-2">';
-							result = result + '                <button class="btn btn-sm btn-primary pull-right" type="submit" onClick="saveSkils('+applicantId+');" >Add</button>';   
+							result = result + '                <button class="btn btn-sm btn-primary pull-right" type="submit" onClick="saveSkils('+candidateId+');" >Add</button>';   
 							result = result + '              </div>';
 							result = result + '            </div>';
 							result = result + '          </div>';
@@ -64,16 +64,7 @@ function getCandidateProfile(applicantId){
 							$("#tabb-2").empty(); 
 							$("#tabb-2").append(result);  
 							    
-							candidateSkillsList(applicantId);
-							$("#tabb-2").show();
-							$(".project-tabs-menu a").click(function(event) {
-							     event.preventDefault();
-							     $(this).parent().addClass("current");
-							     $(this).parent().siblings().removeClass("current");
-							     var tab = $(this).attr("href");
-							     $(".project_tabs_inn").not(tab).css("display", "none");
-							     $(tab).fadeIn();
-							 });
+							candidateSkillsList(candidateId);
 								
 								$(".btn-addskills").click(function(){
 									$(".add-skills").css({"display":"block","opacity":"1"});
@@ -131,11 +122,11 @@ function getCandidateProfile(applicantId){
 </script>
 
 <script>
-function candidateSkillsList(applicantId){  
+function candidateSkillsList(candidateId){  
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidatesSkillsBycandidateID?${_csrf.parameterName}=${_csrf.token}&candidateId="+applicantId,        
+          url: sourceleadUrl+"/getCandidatesSkillsBycandidateID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(data) {
                if(data != null && data != 'undefined' && data != "" && data != '[]'){
              		 if( data.indexOf('Sign In') >= 0){
@@ -229,7 +220,7 @@ function candidateSkillsList(applicantId){
 		                			result = result + '<option>6</option>';
 		                		}
 		                		result = result + '              </select></td>';
-		                		result = result + '            <td><div class="text-center"><a onclick="removeSkillById('+applicantId+', '+opt.id+');" href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
+		                		result = result + '            <td><div class="text-center"><a onclick="removeSkillById('+candidateId+', '+opt.id+');" href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
 		                		result = result + '          </tr>';
 	                      } 
 	                     result = result +" </tbody>";

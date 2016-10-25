@@ -5,7 +5,7 @@
  
 
 <script>
-function getCandidateResume(applicantId){
+function getCandidateResume(candidateId){
 	var result ="";
 	result = result+'	    <div class="project_tabs_inn_head addUser-org">';
 		result = result  +'     <div id="popUpDivResume" class="edit-details col-md-4"> ';
@@ -20,30 +20,21 @@ function getCandidateResume(applicantId){
 	$("#tabb-3").empty();
 	$("#tabb-3").append(result);
 	
-	candidateResumeById(applicantId);
+	candidateResumeById(candidateId);
 	
-	$("#tabb-3").show();
-	$(".project-tabs-menu a").click(function(event) {
-	     event.preventDefault();
-	     $(this).parent().addClass("current");
-	     $(this).parent().siblings().removeClass("current");
-	     var tab = $(this).attr("href");
-	     $(".project_tabs_inn").not(tab).css("display", "none");
-	     $(tab).fadeIn();
-	 });
     
 }
 </script>
 
 <script>
-function candidateResumeById(applicantId){
+function candidateResumeById(candidateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	  var candidateId = candidateId;
 	  var result = "";
 	  var resumesCount = 0;
 	  $.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/candidateResumesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+applicantId,
+			url : sourceleadUrl+"/candidateResumesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 			success : function(data) {
 				var json = JSON.parse(data);
 				if( data.indexOf('Sign In') >= 0){
