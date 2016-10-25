@@ -243,6 +243,19 @@ public class SubmissionsRestController {
  }
     
     
+    @RequestMapping(value = "/getSubmissionDetails" , method = RequestMethod.POST)
+	   public String getSubmissionDetails(@RequestParam(value="submissionId", required=false) Long submissionId,HttpServletRequest request) throws Exception {
+    	 
+    	 String resultJson = null;
+    	 
+    	 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+    	 
+    	 resultJson = toJSON(submission);
+		 return resultJson;
+    	
+    }
+    
+    
     
     private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
