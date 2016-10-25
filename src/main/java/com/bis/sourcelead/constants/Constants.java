@@ -59,6 +59,7 @@ public class Constants {
 	public static String ACCEPT_VENDOR_INVITATION = "Accept Vendor Invitation";
 	
 	public static String APPLICANT_INTERVIEW = "Applicant Interview";
+	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
 	
 	public static String MAIL_PROJECT_MANAGER_TIMESHEET = "Mail To Manager At Timesheet Submission";
 	public static String MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET = "Timesheet Approved By Approver";
