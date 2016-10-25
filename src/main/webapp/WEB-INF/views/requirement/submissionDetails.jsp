@@ -3,9 +3,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  
+ <jsp:include page="employeeSubmissionDetails.jsp" />
+ <jsp:include page="educationSubmissionDetails.jsp" />
+ <jsp:include page="certificationSubmissionDetails.jsp" />
  
 <script>
-function getSubmissionDetailsSideBar(applicantId){
+function getSubmissionDetailsSideBar(candidateId){
 	var result = "";
 	       
 	          result = result + ' <div class="req_hide">';
@@ -60,13 +63,22 @@ function getSubmissionDetailsSideBar(applicantId){
 			       result = result + ' <li class="current"><a href="#tabb-1">Details</a></li>';
 			       result = result + ' <li><a href="#tabb-2">Profile</a></li>';
 			       result = result + ' <li><a href="#tabb-3">Resume</a></li>';
-			       result = result + '<li><a href="#tabb-4">Employer</a></li>';
-			       result = result + '<li><a href="#tabb-5">Education</a></li>';
-			       result = result + '<li><a href="#tabb-6">Certifications</a></li>';
+			       result = result + '<li><a href="#tabb-4" onclick="employeeSubmissionDetails('+candidateId+');">Employer</a></li>';
+			       result = result + '<li><a href="#tabb-5" onclick="educationSubmissionDetails('+candidateId+');">Education</a></li>';
+			       result = result + '<li><a href="#tabb-6" onclick="certificationSubmissionDetails('+candidateId+');">Certifications</a></li>';
 			       result = result + '<li><a href="#tabb-7">Activities</a></li>';
 			       result = result + '<div class="clearfix"></div>';
 			       result = result + '</ul>';
 			       result = result + '<div class="project_tabs">';
+			       
+			       result = result + '<div id="tabb-4" class="new-tabs_inn" style="display: block;">';
+			       result = result + '</div>';
+			       
+			       result = result + '<div id="tabb-5" class="new-tabs_inn" style="display: block;">';
+			       result = result + '</div>';
+			       
+			       result = result + '<div id="tabb-6" class="new-tabs_inn" style="display: block;">';
+			       result = result + '</div>';
 			       
 			       result = result + '<div id="tabb-1" class="new-tabs_inn" style="display: block;">';
 	
@@ -222,8 +234,6 @@ function getSubmissionDetailsSideBar(applicantId){
 			                result = result + '</div>';
 			       
 			       
-			       
-			       
 			       result = result + '</div>';
 			       result = result + '</div>';
 	       
@@ -251,6 +261,26 @@ function getSubmissionDetailsSideBar(applicantId){
 		$("body").css('overflow-y', 'auto');
 	});	
 </script>
+
+
+<script>
+$(document).ready(function() {
+	$("#tabb-1").show()
+    $(".new-tabs a").click(function(event) {
+        event.preventDefault();
+        $(this).parent().addClass("current");
+        $(this).parent().siblings().removeClass("current");
+        var tab = $(this).attr("href");
+        $(".new-tabs_inn").not(tab).css("display", "none");
+        $(tab).fadeIn();
+    });
+});
+
+</script>
+
+
+
+
 
 
 
