@@ -46,15 +46,14 @@ function candidateResumeById(applicantId){
 			url : sourceleadUrl+"/candidateResumesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+applicantId,
 			success : function(data) {
 				var json = JSON.parse(data);
-				alert("json data........"+json);
 				if( data.indexOf('Sign In') >= 0){
 		    		location.replace(sourceleadUrl);
 		    	 }
        		 else if (data.indexOf('exception') >= 0) {
        			 location.replace(sourceleadUrl+"/errorPage");
        		 }
-       		 else{alert("1")
-					if(json.length<=0 || (data == null && data == 'undefined' && data == "")){alert("2")
+       		 else{
+					if(json.length<=0 || (data == null && data == 'undefined' && data == "")){
 							result = result+"   <div class='row'>"; 
 						 	result = result+"	<div class='col-lg-12'>"; 
 						 	result = result+"		<div class='content-area clearfix'>"; 
@@ -65,7 +64,7 @@ function candidateResumeById(applicantId){
 						 	result = result+"		</div>"; 
 						 	result = result+"	</div>"; 
 						 	result = result+"  </div> "; 
-						}else{alert("3")
+						}else{
 							result = result+'	      <table>';
 							result = result+'	        <tbody>';
 							result = result+'	          <tr>';
