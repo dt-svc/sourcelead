@@ -46,5 +46,10 @@ public class RequirementAssignToServiceImpl implements RequirementAssignToServic
 	public boolean deleteRequirementAssignToByRequirementId(Long requirementId) throws Exception {
 		return requirementAssignToDao.deleteRequirementAssignToByRequirementId(requirementId);
 	}
+
+	@Override
+	public Integer getAssignedTeamMembersCountByTeamMemberUserId(Long assignUserId,String jobType) {
+		return requirementAssignToDao.getAssignedTeamMembersCountByTeamMemberUserId(assignUserId, jobType);
+	}
 	
 }

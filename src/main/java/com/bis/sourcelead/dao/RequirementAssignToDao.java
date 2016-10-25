@@ -13,4 +13,6 @@ public interface RequirementAssignToDao {
 	
 	public boolean deleteRequirementAssignToByRequirementId(Long requirementId)throws Exception;
 	
+	public Integer getAssignedTeamMembersCountByTeamMemberUserId(Long assignUserId,String jobType);
+	
 }
