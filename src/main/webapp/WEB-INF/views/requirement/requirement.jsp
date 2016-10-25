@@ -1129,7 +1129,7 @@ $(document).ready(function() {
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
                   <input type="text" value="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
-                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="getTeamOwners();getTeamMembers();"></i> </span>
+                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="getTeamOwners();"></i> </span>
                   </div>
                 <!-- Modal content Assign To -->
                 <div role="dialog" id="assignTeam"   class="modal fade">
@@ -2095,7 +2095,7 @@ function getTeamOwners(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
-		        	output = output + "<option>-Select Team Owners-</option>"; 
+		        	output = output + "<option value=''>-Select Team Owners-</option>"; 
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
@@ -2104,25 +2104,12 @@ function getTeamOwners(){
 		        	$("#ownerUserId").empty();
 			        $("#ownerUserId").append(output);
 			        $("#ownerUserId").trigger("chosen:updated");
+			        getTeamMembers(); 
 		        },
 		        error: function(e){
 		            
 		        }
-		    });
-	 /* $(function(){
-		    var config = {
-				  '.chosen-select'           : {},
-				  '.chosen-select-deselect'  : {allow_single_deselect:true},
-				  '.chosen-select-no-single' : {disable_search_threshold:10},
-				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-				  '.chosen-select-width'     : {width:"95%"}
-				}
-		   
-		    $('.chosen-select').each(function() {
-					var $this = $(this);
-					$this.next().css({'width': '100%'});
-			  })
-		}); */
+		    });  
 } 
 </script>
 
@@ -2151,20 +2138,6 @@ function getTeamMembers(){
 		            
 		        }
 		    });
-	 /* $(function(){
-		    var config = {
-				  '.chosen-select'           : {},
-				  '.chosen-select-deselect'  : {allow_single_deselect:true},
-				  '.chosen-select-no-single' : {disable_search_threshold:10},
-				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-				  '.chosen-select-width'     : {width:"95%"}
-				}
-		   
-		    $('.chosen-select').each(function() {
-					var $this = $(this);
-					$this.next().css({'width': '100%'});
-			  })
-		}); */
 } 
 </script>
 

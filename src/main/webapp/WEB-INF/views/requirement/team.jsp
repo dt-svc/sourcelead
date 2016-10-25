@@ -5,6 +5,9 @@
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 
@@ -20,6 +23,8 @@
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+
+
 <!-- end files for autocomplete with tagit -->
 <script>
  window.onload = function() { 
@@ -106,16 +111,13 @@ function teamList(){
 --%>
 
 <script>
-function pagination(){ 
+function pagination(){  alert("hai");
     $('#teamPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[2, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[1, 15, 20, -1], [1, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": ""
-     	}
     } );
 }
 </script>
@@ -182,7 +184,7 @@ function addTeam(){
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '                <div class="col-md-12">';
 	outPut = outPut + '<select   class="form-control" name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">';
-	outPut = outPut + ' <option>--Select Team Lead--</option>';            
+				/* outPut = outPut + ' <option value="">--Select Team Lead--</option>';  */           
 	           /* <c:forEach var="report" items="${usersList}">
 			         outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
 			   </c:forEach> */
@@ -193,7 +195,7 @@ function addTeam(){
 	outPut = outPut+ '                <div class="col-md-12">';
 	outPut = outPut+ '                <label>Team Member<b class="text-danger">*</b> </label>';
 	outPut = outPut + '<select multiple class="chosen-select form-control" name="memberUserId" id="memberUserId" placeholder="Team Member *" data-validation="required validate_Space" field-name="Team Member">';
-		outPut = outPut + ' <option disabled >--Select Team Member--</option>';        
+		/* outPut = outPut + ' <option disabled >--Select Team Member--</option>';      */   
 		/* <c:forEach var="report" items="${usersList}">
 	         outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
 	     </c:forEach> */
@@ -565,13 +567,13 @@ function TeamMemberpagination(){
               </ul>
             </div>
           </li>
-          <li><a href="#" onclick="addTeam();getTeamOwners();getTeamMembers();" title=""><i class="fa fa-plus"></i>Add Team</a></li>
+          <li><a href="#" onclick="addTeam();getTeamOwners();" title=""><i class="fa fa-plus"></i>Add Team</a></li>
           <div class="clearfix"></div>
         </ul>
         <div class="clearfix"></div>
-        <div class="remove_search">
+        <!-- <div class="remove_search">
           <input type="text" placeholder="search" />
-        </div>
+        </div> -->
       </div>
       <div class="project_tabs_inn_table vendor_wrap_inn_table">
        			<div id="popUpDivTeamParent" class="edit-details col-md-4"></div>  
@@ -664,7 +666,7 @@ function getTeamOwners(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
-		        	output = output + "<option>-Select Team Owners-</option>"; 
+		        	output = output + "<option value=''>-Select Team Owners-</option>"; 
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
@@ -673,6 +675,8 @@ function getTeamOwners(){
 		        	$("#ownerUserId").empty();
 			        $("#ownerUserId").append(output);
 			        $("#ownerUserId").trigger("chosen:updated");
+			        
+			        getTeamMembers();
 		        },
 		        error: function(e){
 		            
@@ -683,7 +687,7 @@ function getTeamOwners(){
 
 
 <script type="text/javascript">
-function getTeamMembers(){ 
+function getTeamMembers(){  
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var teamOwnerUserId = document.getElementById("ownerUserId").value;
 		 $.ajax({
