@@ -118,11 +118,12 @@ public class TeamDaoImpl  implements TeamDao{
 	}
 
 	@Override
-	public Boolean getTeamOwnersListByUserId(User user) {
+	public Boolean getTeamOwnersListByUserId(User user,Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Team> teamList = new ArrayList<>();
-		teamList = session.createQuery("from Team team where team.ownerUserId.id =:userId")
+		teamList = session.createQuery("from Team team where team.ownerUserId.id =:userId and team.orgLocationsId =:orgLocationId and team.status <> 0")
 						   .setLong("userId", user.getId())
+						   .setLong("orgLocationId", orgLocationId)
 						   .setCacheable(true).list();
 		
 		Boolean flag = false;
