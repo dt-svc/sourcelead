@@ -197,7 +197,7 @@ function loadRemiderDiv(){
 
  <div id="divOfferTd6" style="display: none; float: left;">
 	 <div>
-         <a href="#" onclick="removeInterviewRow(REPLACEROWID);"><i class="glyphicon glyphicon-trash deme"></i></a>
+         <a href="#" onclick="removeOfferRow(REPLACEROWID);"><i class="glyphicon glyphicon-trash deme"></i></a>
     </div>
 </div> 
 	
@@ -250,20 +250,20 @@ function loadRemiderDiv(){
 		$("body").css('overflow-y', 'hidden');
 		
 		
-		getShortListCandidates(maxRowNum);
+		getShortListAndSubmittedAndInterviewedCandidates(maxRowNum);
 		
 
 	    $("#"+maxRowNum+"applicant").chosen();
 		
 	    $("#"+maxRowNum+"applicant").on('change', function (e) {
-	    	  getUpdatedShortListCandidates();
+	    	  getUpdatedSubmittedAndShortListedAndInterviewedCandidates();
 	    }); 
 		
 }		
 </script>
 
 <script type="text/javascript">
-	function removeInterviewRow(rowId) {
+	function removeOfferRow(rowId) {
 		var rowNum = $("#divTsRow"+rowId).val();
 		var maxRowNum = parseInt(rowNum);
 		 document.getElementById("divTsRow"+rowId).style.display = 'none';
@@ -355,7 +355,7 @@ function cancelAddInterviewDiv(){
   </script>
  
 <script type="text/javascript">
- function getShortListCandidates(rowId) { 
+ function getShortListAndSubmittedAndInterviewedCandidates(rowId) { 
 	 var existingApplicantsIds = [];    
 	 for(i=rowId ; i > 0; i--){
 		 var applicant = $("#"+(i)+"applicant").val();
@@ -369,7 +369,7 @@ function cancelAddInterviewDiv(){
      
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
+		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -390,7 +390,7 @@ function cancelAddInterviewDiv(){
 </script> 
 
 <script type="text/javascript">
- function getUpdatedShortListCandidates() { 
+ function getUpdatedSubmittedAndShortListedAndInterviewedCandidates() { 
 	 var rowId = $("#maxOfferRowNum").val();
 	 var existingApplicantsIds = [];    
 	 for(i=rowId ; i > 0; i--){
@@ -404,7 +404,7 @@ function cancelAddInterviewDiv(){
      
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
+		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
