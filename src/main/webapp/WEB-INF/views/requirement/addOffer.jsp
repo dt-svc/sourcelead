@@ -43,60 +43,12 @@ function addOffer(requirementId){
 	result = result + '<th class="action">Action</th>';
 	result= result + '	                </tr>';
 	
-	
-	/* result= result + '	                <tr id="divTsRow0">';
-	result= result + '	                  <td><select multiple class="chosen-select" id="1applicant"  name="1applicant" field-name="Applicant" data-validation="required">';
-	result= result + '	                      <option>India</option>';
-	result= result + '	                      <option>USA</option>';
-	result= result + '	                      <option>UK</option>';
-	result= result + '	                      <option>Jaipan</option>';
-	result= result + '	                      <option>China</option>';
-	result= result + '	                      <option>Austrlia</option>';
-	result= result + '	                    </select></td>';
-	result= result + '	                  <td><div class="positionRelative date">';
-	result= result + '	                      <input type="text" value="" id="1dateOfJoining"  name="1dateOfJoining"  class="form-control input-sm Datepicker" placeholder="Date" field-name="DateOfJoining"  data-validation="required">';
-	result= result + '	                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
-	result= result + '	                      </div>';
-	result= result + '	                  </td>';
-	
-	result= result + '	                  <td class="clearfix">';
-	result= result + '	                  	  <div class="positionRelative float">';
-	result= result + '	                          <select class="form-control" id="1PaymentType"  name="1PaymentType" field-name="PaymentType"  data-validation="required">';
-	result= result + '	                          <option>Rupee</option>';
-	result= result + '	                          <option>Dollar</option>';
-	result= result + '	                          </select>';
-	result= result + '	                      </div>';
-	result= result + '	                      <div class="positionRelative float"><input type="text" value="" class="form-control input-sm" id="1Amount"  name="1Amount" field-name="Amount"  data-validation="required" ></div>';
-	result= result + '	                  	  <div class="positionRelative float">';
-	result= result + '	                          <select class="form-control" id="1PaymentMode"  name="1PaymentMode"  field-name="PaymentMode"  data-validation="required" >';
-	result= result + '	                          <option>Yearly</option>';
-	result= result + '	                          <option>Monthly</option>';
-	result= result + '	                          </select>';
-	result= result + '	                      </div>';
-	result= result + '					  </td>   ';               
-	result= result + '	                  <td><select class="form-control" id="1PositionType"  name="1PositionType" field-name="PositionType"  data-validation="required" >';
-	result= result + '	                      <option>Fulltime</option>';
-	result= result + '	                      <option>Parttime</option>';
-	result= result + '	                      <option>C2C</option>';
-	result= result + '	                    </select>';
-	result= result + '	                  </td>';
-	result= result + '					  <td>';
-	result= result + '						  <div class="input-group">';
-	result= result + '	                      	<label class="input-group-btn"> <span class="btn btn-primary file-btn"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-	result= result + '	                        	<input type="file" style="display: none;" multiple id="uploadBtn"  class="upload"></span>';
-	result= result + '							</label>';
-	result= result + '							<input type="text" id="1OfferAttachment"  name="1OfferAttachment" field-name="OfferAttachment"  data-validation="required" class="form-control file1" readonly id="uploadFile" placeholder="Files are not selected...">';
-	result= result + '	                     </div>    ';              
-	result= result + '	                  </td>';
-	result= result + '	                </tr>';   */
-	
 	result= result + '	              </tbody>';
 	result= result + '	            </table>';
 	
 	result= result + '	          <div class="row pad2">';
 	result= result + '	            <div class="col-md-12 pad1">';
 	result = result +'				  <button type="submit" id="add_offer" class="btn btn-sm btn-primary mr">Submit</button>';
-	/* result= result + '	              <button type="submit" class="btn btn-sm btn-primary mr">Submit</button>'; */
 	result= result + '	              <button type="submit" class="btn btn-sm btn-danger" onclick="cancelAddOffer();" >Cancel</button>';
 	result= result + '	            </div>';
 	result= result + '	          </div>';
@@ -112,6 +64,9 @@ function addOffer(requirementId){
 	$(".add_offer_wrap").addClass("add_offer_wrap_active");
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
+	
+	addOfferRow();
+	
 }
 </script>
 
