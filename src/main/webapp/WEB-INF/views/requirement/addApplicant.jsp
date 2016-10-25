@@ -109,18 +109,40 @@ $('body').on('submit', '#addApplicant_form', function(e){
       //Loop through fields and save field data to array
       var fields = [];
       $('.sjfb-field').each(function() { 
-      	  var $this = $(this);  
+      	  var $this = $(this); 
+      	  var divId = $(this).attr('id');  
       	  var fieldLabel = $this.find('label:first').text().replace("*","");
       	  var inputValue = $this.find('input[type="radio"]:checked').val();
+      	  
+      	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+    		   inputValue = $this.find('input[type="checkbox"]:checked').val();
+    		   if(inputValue != null){
+    			   var selected = [];
+               	$this.find('input[type="checkbox"]:checked').each(function() {
+      		        selected.push($(this).val()); 
+      		       });
+               	inputValue = selected.toString()
+    		   }
+    		   
+      	 }
+      	 
+      	
       	  if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
       		  inputValue = $this.find('input').val();
       	  }
+      	  
+      	   
+    	  
      	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
      	    	 inputValue = $this.find('select').val();
      	      }
+     	      
+     	    
+     	     
      	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
      	    	inputValue = '';
      	      }
+     	      
      	      
      	      
 	       	  var name = $this.find('input[type="radio"]:checked').attr('name');
@@ -142,10 +164,12 @@ $('body').on('submit', '#addApplicant_form', function(e){
        });
       var con = JSON.stringify(fields);
       con = encodeURIComponent(con);
-		
-		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
       
-  	    $.ajax({
+      
+		
+       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+      
+  	     $.ajax({
 	    	type: "POST",
 	    	data: formData,
  	        contentType : 'application/json; charset=utf-8',
@@ -159,7 +183,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	        		location.replace(sourceleadUrl+"/requirementSummary?requirementId="+requirementId); 
 		        } 
 	        },
-	    });  
+	    }); 
       return true; 
     }
     else{

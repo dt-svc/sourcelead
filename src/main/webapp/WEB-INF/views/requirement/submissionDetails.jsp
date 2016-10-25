@@ -9,20 +9,6 @@
  <jsp:include page="submissionCandidateProfile.jsp" />
  <jsp:include page="submissionCandidateResume.jsp" />
  
- <style type="text/css">
- .sub-details .formgroup {
- padding:5px 0;
- }
- .sub-details .formgroup:nth-child(odd){
- background: #fff;
- }
- .sub-details .col-md-7 {
- word-break: break-all;
- }
- .sub-details .content{
- padding: 10px 0px !important;
- }
- </style>
  
 <script>
 function getSubmissionDetailsSideBar(submissionId,candidateId){
@@ -57,19 +43,30 @@ function getSubmissionDetailsSideBar(submissionId,candidateId){
 	    		   submissionDetails = submissionDetails + '</div>';
 	    	   }); 
 	    	   
+	    	   var designation = '';
+	    	   var experience = '';
+	    	   
+	    	   if(json.candidate.designation != null && json.candidate.designation != '' && json.candidate.designation !='undefined'){
+	    		   designation = json.candidate.designation;
+	    	   }
+	    	   
+	    	   if(json.candidate.experienceYears != null && json.candidate.experienceYears != '' && json.candidate.experienceYears !='undefined'){
+	    		   experience = 'Experience -'+json.candidate.experienceYears+ 'Years';
+	    	   }
+	    	   
 	    	   var result = "";
           	   result = result + ' <div class="req_hide">';
                result = result + '<div class="profile_details clearfix">';
                result = result + '<div class="col-md-6">';
                result = result + ' <div class="media">';
                result = result + '<div class="media-left image-parent">';
-               result = result + '<div class="imageParent"><img src="./images/24.jpg" alt="candidate" title="Candidate"></div>';
+               result = result + '<div class="imageParent"><img onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+json.candidate.id+'"/>" alt="candidate" title="Candidate"></div>';
                result = result + ' </div>';
                result = result + ' <div class="media-body candidate-details">';
-               result = result + ' <h4 class="media-heading">Jaden Smith</h4>';
+               result = result + ' <h4 class="media-heading">'+json.candidate.firstName+' '+json.candidate.lastName+'</h4>';
                result = result + ' <ul class="list-unstyled">';
-               result = result + ' <li><strong>Business Analyst - Full Time</strong></li>';
-               result = result + ' <li>Experience - 4 years</li>';
+               result = result + ' <li><strong>'+designation+'</strong></li>';
+               result = result + ' <li>'+experience+'</li>';
                result = result + ' </ul>';
                result = result + '</div>';
                result = result + '</div>';
@@ -96,8 +93,8 @@ function getSubmissionDetailsSideBar(submissionId,candidateId){
                result = result + '</div>';
 		       result = result + ' <div class="col-md-6">';
 		       result = result + '<ul class="list-unstyled can-perdt">';
-		       result = result + ' <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">jadensmith@hotmail.com</a></li>';
-		       result = result + '<li><i class="fa fa-phone"></i>+91 9900223355</li>';
+		       result = result + ' <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.candidate.email+'</a></li>';
+		       result = result + '<li><i class="fa fa-phone"></i>'+json.candidate.mobilePhone+'</li>';
 		       result = result + '<li><i class="fa fa-location-arrow"></i>Hyderabad, TS, India</li>';
 		       result = result + '<li><i class="fa fa-rupee"></i>200/Per Hour - Current Rate / Salary</li>';
 		       result = result + '<li><i class="fa fa-rupee"></i>300/Per Hour - Expected Rate / Salary</li>';
