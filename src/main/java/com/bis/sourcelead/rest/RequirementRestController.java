@@ -145,7 +145,7 @@ public class RequirementRestController {
 				    	for(RequirementApproverHierarchy rah :list1){
 				    		if(maxLevel.equals(rah.getLevel())){
 								User approverUser = userService.getUserById(rah.getApproverUserId().getId());
-								requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null,null);
+								requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null);
 							   } 
 				    	} 
 		    }
