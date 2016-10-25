@@ -99,18 +99,7 @@ function certificationSubmissionDetailsList(candidateId){
 	                    	 result  = result + '           <td><div><span>'+description+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidFromDateToString+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidToDateToString+'</span></div></td>';
-	                    	 if(window.candidateStatusGlobal == '0'){
-	                    		 result = result  +'	            <td><div class="tblicons"><a a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
-	                    	}else{
-	                    		result = result  +'	            <td><div class="tblicons"><a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');"></a>';
-	                    	}
-	                    	 
-	                    	 if(window.candidateStatusGlobal == '0'){
-	                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i></div></td>';
-	                    	}else{
-	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate"></i></div></td>';
-	                    	}
-	                    	 result  = result + '         </tr>';
+	                     result  = result + '         </tr>';
 	                      } 
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
