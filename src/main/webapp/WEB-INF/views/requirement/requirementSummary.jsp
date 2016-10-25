@@ -1978,7 +1978,7 @@ function requirementPipeline(requirementId){
 			   	        		
 			   	        		var report = json[i];
 						           result = result + '       <tr>';
-						           result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.candidateId+');"><span>'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+');"><span>'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 						           
 						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.candidateEmail+'</span></div></td>';

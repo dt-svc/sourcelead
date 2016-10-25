@@ -34,6 +34,8 @@ public interface UserService  {
 	
 	public User findByEmail(String email)  throws Exception;
 	
+	public User findByEmailAndOrgLocationsId(String email, Long orgLocationsId)  throws Exception;
+	
 	public User saveUserProfile(UserProfile userProfile,MultipartFile multiFile,User user) throws Exception;
 	
 	/**

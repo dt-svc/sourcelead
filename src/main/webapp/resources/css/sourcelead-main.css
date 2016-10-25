@@ -814,7 +814,7 @@ s
 .content-dashboard {
 	min-height: 100%;
 	border-radius: 5px;
-	min-height: 250px;
+	min-height:100px;
 	padding: 0;
 	-moz-transition: all ease-in-out 0.3s;
 	-ms-transition: all ease-in-out 0.3s;
@@ -1791,28 +1791,27 @@ custom scroll bar ends*/
 }
 /*Dashboard Styles */
 .info-box {
-	background: #fff none repeat scroll 0 0;
-	border-radius: 2px;
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+	background: #f5f5f5;
+	border-radius: 3px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 	display: block;
-	margin-bottom: 15px;
-	min-height: 90px;
+	margin-bottom: 0;
+	min-height:175px;
 	width: 100%;
 }
 .info-box-icon {
-	/*  background: rgba(0, 0, 0, 0.2) none repeat scroll 0 0; */
-	border-radius: 2px 0 0 2px;
 	display: block;
-	float: left;
 	font-size: 45px;
-	height: 90px;
+/*	float: left;
+    height: 90px;
 	line-height: 90px;
-	text-align: center;
-	width: 90px;
+*/	text-align: center;
+	width:100%;
+	padding:15px 0;
 }
 .info-box-content {
-	margin-left: 90px;
-	padding: 5px 10px;
+/*	margin-left: 90px;
+*/	padding: 5px;
 }
 .bg-green {
 	background: #1ab394;
@@ -1850,7 +1849,7 @@ custom scroll bar ends*/
 }
 .db-widget-sm .info-box-number {
 	text-align: center;
-	font-size: 30px;
+	font-size: 20px;
 	font-weight: 600;
 }
 .db-widget-sm .info-box p {
@@ -2026,6 +2025,9 @@ div.pages-404.width {
 }
 .tblminwidth-150 {
 	min-width: 150px !important;
+}
+.tblminwidth-100 {
+	min-width: 100px !important;
 }
 .tbldata-dotdot {
 	overflow: hidden;
@@ -3177,6 +3179,277 @@ color:#101010 ! Important;
 .canprofile-popright {
        right:100px !important;
 }
+.boostrap-datetimepicker-widget table{
+	background:#f60;
+}
+.canprofile-popright {
+       right:100px !important;
+}
+.dashboard-widget {
+	background:#fff;
+	box-shadow:0 1px 1px rgba(0,0,0,0.1);
+	border-radius:5px;
+	min-height:50px;
+	padding:15px;
+}
+/*.dashboard-widget span{
+	max-width:100%;
+}
+*/.dashboard-widget h4{
+	margin:0 0 10px 0;
+}
+.dashboard-widget table{
+	border:1px solid #eae6e6;
+	border-top:none;
+}
+.dashboard-widget .pagination{
+	margin:0;
+	margin-top:15px;
+}
+
+.dash-requirmnt .info-box-icon {
+    display: block;
+    font-size: 30px;
+	font-weight:600;
+    padding: 5px 0;
+    text-align: center;
+    width: 100%;
+	border-radius:3px;
+}
+.dash-requirmnt .info-box{
+	background:#efebe9;
+}
+.dash-requirmnt .info-box-text a {
+	font-weight:600;
+    font-size: 18px;
+	color:#3e2723;
+}
+.dash-requirmnt p {
+	margin:0;
+	padding:10px 0;
+}
+.dash-requirmnt .info-box-text a .fa{
+	padding-right:10px;
+	font-size:20px;
+}
+.dashboard-widget .nav-tabs li.active > a, .dashboard-widget .nav-tabs li.active > a:focus {
+    background: #f60;
+	border:none;
+    color:#fff;
+	position: relative;
+    cursor:default;
+	border-radius:0;
+}
+.dashboard-widget .nav-tabs li.active > a:after {
+	top: 100%;
+	left: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(255, 102, 0, 0);
+	border-top-color: #f60;
+	border-width:8px;
+	margin-left:-10px;
+}
+.dashboard-widget .nav-tabs {
+	border-bottom:1px solid #f60;
+}
+.dashboard-widget .nav-tabs > li > a{
+border-bottom:none;	
+}
+.dashboard-widget .nav > li > a:focus, .dashboard-widget .nav > li > a:hover {
+	border:1px solid #f60;
+	border-bottom:none;
+	border-radius:0;
+	background:none;
+	color:#2F2F2F;
+}
+.dashboard-widget .action-btns ul{
+	margin:0;
+	position:relative;
+	top:-5px;
+	font-size:25px;
+}
+.dashboard-widget .action-btns ul li {
+	padding:0 10px;
+}
+a.collpase-div .fa-angle-down{
+	font-size:20px;
+	color:#1ab394;
+	padding:0px 4px;
+	background-color:#f5f5f5;
+}
+a.collpase-div .fa-angle-down:hover{
+	background-color:#DCDBDA;
+	color:#333;
+}
+.addTask {
+	position:absolute;
+	top:80px;
+	right:10px;
+}
+.addTask .icon-addTask{
+	background:linear-gradient(#2196f3,#1565c0);
+	padding:5px 10px;
+	color:#fff;
+	cursor:pointer;
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;
+	-ms-border-radius:5px;
+	border-radius:5px;
+}
+.addTasUl {
+	background-color:#ff6f00;
+    border-radius:5px;
+    position: absolute;
+    right: -1000px;
+    right:0px;
+    width: 105px;
+	top:30px;
+	-webkit-transition: all 0.3s ease-in-out 0s;
+	-ms-transition: all 0.3s ease-in-out 0s;
+	-moz-transition: all 0.3s ease-in-out 0s;
+	transition: all 0.3s ease-in-out 0s;
+}
+.addTasUl:after {
+	bottom: 100%;
+	left: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(255, 111, 0, 0);
+	border-bottom-color: #ff6f00;
+	border-width: 8px;
+	margin-left:25px;
+}
+ul.addTasUl li{
+    padding: 0 2px;
+	cursor:pointer;
+	padding:5px 10px;
+	line-height:18px;
+	color:#fff;
+	transition:all 0.3s ease-in-out;
+	border-bottom:1px solid #ff8f00;
+}
+ul.addTasUl li:hover{
+	background-color:#ff8f00;
+	border-radius:5px;
+}
+ul.addTasUl li:last-child{
+	border-bottom:none;
+}
+ul.addTasUl li .fa{
+	padding-right:5px;
+	width:20px;
+}
+.addTasUl.addTasUl-active {
+	right: 0;
+}
+/* Add Task widget styles */
+.addTask-widget {
+	background-color:#424242;
+	border-radius:5px;
+    position: absolute;
+    right:0px;
+	top:35px;
+	-webkit-transition: all 0.3s ease-in-out 0s;
+	-ms-transition: all 0.3s ease-in-out 0s;
+	-moz-transition: all 0.3s ease-in-out 0s;
+	transition: all 0.3s ease-in-out 0s;
+	width:950px;
+	padding:10px;
+	z-index:99999;
+	box-shadow: 0 0 5px #000000;
+}
+.addTask-widget:after {
+	bottom: 100%;
+	right:2%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(255, 111, 0, 0);
+	border-bottom-color: #424242;
+	border-width:10px;
+}
+.addTask-widget.addTask-widget-active {
+	right:0px;
+}
+.addTask-widget .nav-tabs li a{
+	color:#fff;
+}
+.addTask-widget .nav-tabs  li.active a{
+	background:#fff;
+	color:#424242;
+}
+.addTask-widget .nav li a:hover {
+	 color:#424242;
+}
+.addTask-widget table tr th {
+	background:#c86636 !important;
+	border-right:1px solid #ad572d !important;
+}
+.addTask-widget table tr td{
+	height:50px;
+}
+.dropdown-select select {
+    width:100%;  height:32px; border:none; padding:0px 10px; -webkit-border-radius:3px; -moz-border-radius:3px; -ms-border-radius:3px; -ms-border-radius:3px; border-radius:3px;
+    box-sizing:border-box; -webkit-appearance:none; appearance:none; background: #fff url("../images/arrow-d-g.png") no-repeat 90% center;
+    background-size: 10px; -moz-appearance:none; -webkit-appearance:none;
+	border:1px solid #ccc;
+}
+.dropdown-select select option{
+	padding:2px 10px;
+}
+.dropdown-select select::-ms-expand{
+  display:none;
+}
+.addTask-widget .tab-content{
+	background:#fff;
+	padding:10px;
+	box-sizing:border-box;
+}
+.addtsk-btn {
+	position:absolute;
+	top:10px;
+	right:1%;
+}
+.newTask-widget {
+	padding:10px;
+	margin:2px;
+	box-sizing:border-box;
+	border-radius:3px;
+	background-color:#FFF;
+	display:flex;
+}
+.newTask-widget div.form-group{
+	width:40%;
+	float:left;
+	margin-left:15px;
+}
+.sub-details .formgroup {
+ padding:5px 0;
+ }
+ .sub-details .formgroup:nth-child(odd){
+ background: #fff;
+ }
+ .sub-details .col-md-7 {
+ word-break: break-all;
+ }
+ .sub-details .content{
+ padding: 10px 0px !important;
+ }
+ .ui-datepicker select.ui-datepicker-month, .ui-datepicker select.ui-datepicker-year{
+	 color:#202020;
+ }
 @media (max-width: 320px) {
 .hidden-xs {
 	display: none !important;
