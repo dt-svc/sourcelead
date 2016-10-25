@@ -97,7 +97,7 @@ function addOffer(requirementId){
 	result= result + '	            <div class="col-md-12 pad1">';
 	result = result +'				  <button type="submit" id="add_offer" class="btn btn-sm btn-primary mr">Submit</button>';
 	/* result= result + '	              <button type="submit" class="btn btn-sm btn-primary mr">Submit</button>'; */
-	result= result + '	              <button type="submit" class="btn btn-sm btn-danger">Cancel</button>';
+	result= result + '	              <button type="submit" class="btn btn-sm btn-danger" onclick="cancelAddOffer();" >Cancel</button>';
 	result= result + '	            </div>';
 	result= result + '	          </div>';
 	
@@ -112,28 +112,6 @@ function addOffer(requirementId){
 	$(".add_offer_wrap").addClass("add_offer_wrap_active");
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
-	
-	/* $(".chosen-select").chosen('destroy');
-    var config = {
-		  '.chosen-select'           : {},
-		  '.chosen-select-deselect'  : {allow_single_deselect:true},
-		  '.chosen-select-no-single' : {disable_search_threshold:10},
-		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-		  '.chosen-select-width'     : {width:"95%"}
-		 }
-
-
-		for (var selector in config) {
-		  $(selector).chosen(config[selector]);
-		}
-		$('.chosen-select').each(function() {
-			var $this = $(this);
-			$this.next().css({'width': '100%'});
-			
-         
-		$(".chosen-select").chosen();
-		});
-	 */
 }
 </script>
 
@@ -309,8 +287,8 @@ function loadRemiderDiv(){
 </script>
 
 <script>
-function cancelAddInterviewDiv(){
-	 $(".add_inter_wrap").removeClass("add_inter_wrap_active");
+function cancelAddOffer(){
+	 $(".add_offer_wrap").removeClass("add_offer_wrap_active");
 	 $(".side_mask").fadeOut(200);
  	 $("body").css('overflow-y', 'auto');
 }
@@ -337,7 +315,7 @@ function cancelAddInterviewDiv(){
 	        url: sourceleadUrl+"/saveOffer?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
 	        success: function(result) {
 	        		
-	        	    $(".add_inter_wrap").removeClass("add_inter_wrap_active");
+	        	    $(".add_inter_wrap").removeClass("add_offer_wrap_active");
 	        		$(".side_mask").fadeOut(200);
 	        		$("body").css('overflow-y', 'auto');
 	        },
