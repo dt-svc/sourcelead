@@ -135,6 +135,7 @@ var validationSettings = {
         		var form = $('#resetPassword_form').serializeFormJSON();
               	var con = JSON.stringify(form);
   			    con = con.replace(/[{}]/g, ""); 
+  			    var jsonData = encodeURIComponent(con);
           		var sourceleadUrl ='${sourceleadUrl}';
           		 $("#submit_button").attr("disabled", "disabled");
           		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); 
@@ -142,7 +143,7 @@ var validationSettings = {
               	      type: "GET",
               	      contentType : 'application/json; charset=utf-8',
               	      dataType : 'json',
-                    	  url: sourceleadUrl+"/verifyResetPassword?${_csrf.parameterName}=${_csrf.token}&json="+con,
+                    	  url: sourceleadUrl+"/verifyResetPassword?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
                       	success: function(result) {
                       		if((result == 'Invalid')){
   	                   			 $('#passwordDiv').find('span.jquery_form_error_message').remove();

@@ -210,6 +210,7 @@
 <script type="text/javascript">
 	 function validateCurrentPassword() {   
 		var currentPassword = $('input#currentPassword').val();
+		currentPassword = encodeURIComponent(currentPassword);
 		if(currentPassword != null  && currentPassword != '' && currentPassword != 'undefined'){
 			var sourceleadUrl ='${sourceleadUrl}';
 			
@@ -444,6 +445,9 @@ var validationSettings = {
             		var frm = $('#passwordSettings_form').serializeFormJSON();
                 	var con = JSON.stringify(frm);
     			    con = con.replace(/[{}]/g, ""); 
+    			    
+    			    //It will escape all the special characters
+    		        var jsonData = encodeURIComponent(con);
             		
             		var sourceleadUrl ='${sourceleadUrl}';
             		
@@ -453,7 +457,7 @@ var validationSettings = {
                 	      type: "POST",
                 	      contentType : 'application/json; charset=utf-8',
                 	      dataType : 'json',
-                      	  url: sourceleadUrl+"/passwordSettings?${_csrf.parameterName}=${_csrf.token}&json="+con,
+                      	  url: sourceleadUrl+"/passwordSettings?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
                         	success: function(result) {
     			        	 if(result == 'home'){
     			        		location.replace(sourceleadUrl+"/dashboard");  
