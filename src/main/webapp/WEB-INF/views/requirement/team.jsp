@@ -182,7 +182,7 @@ function addTeam(){
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '                <div class="col-md-12">';
 	outPut = outPut + '<select   class="form-control" name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">';
-	 outPut = outPut + ' <option value="">Select Team Lead</option>';            
+	outPut = outPut + ' <option>--Select Team Lead--</option>';            
 	           <c:forEach var="report" items="${usersList}">
 			         outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
 			   </c:forEach>
@@ -193,9 +193,10 @@ function addTeam(){
 	outPut = outPut+ '                <div class="col-md-12">';
 	outPut = outPut+ '                <label>Team Member<b class="text-danger">*</b> </label>';
 	outPut = outPut + '<select multiple class="chosen-select form-control" name="memberUserId" id="memberUserId" placeholder="Team Member *" data-validation="required validate_Space" field-name="Team Member">';
-    <c:forEach var="report" items="${usersList}">
-         outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
-   </c:forEach>
+		outPut = outPut + ' <option disabled >--Select Team Member--</option>';        
+		<c:forEach var="report" items="${usersList}">
+	         outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
+	     </c:forEach>
     outPut = outPut + '</select>';
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '              </div> ';
@@ -470,7 +471,7 @@ function removeProjectMemberAlertMessage(teamId){
 	result = result +"		<b href='#'><input id='confirm-id' type='button' value='Ok' onclick='deleteTeamMember("+teamId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
 	result = result +"	</div>";
 	$("#removeCandidateAlert").append(result);
-	$("#remove_user_pop").slideDown(200);
+	$("#remove_user_pop").slideDown(200); 
 	$(".project_inn_mask").fadeIn(200);
 }
 </script>
@@ -665,8 +666,8 @@ function getTeamMembers(){
 		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?${_csrf.parameterName}=${_csrf.token}&teamOwnerUserId="+teamOwnerUserId,
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	
-		        	output = output + "<option value=''>-Select Team Members-</option>"; 
+		        	var output;
+		        	output = output + "<option disabled >-Select Team Members-</option>"; 
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
@@ -674,6 +675,7 @@ function getTeamMembers(){
 					}
 		        	$("#memberUserId").empty();
 			        $("#memberUserId").append(output);
+			        $("#memberUserId").trigger("chosen:updated");
 		        },
 		        error: function(e){
 		            
