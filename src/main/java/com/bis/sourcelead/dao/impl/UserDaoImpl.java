@@ -81,6 +81,23 @@ public class UserDaoImpl implements UserDao {
 		}
    	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public User findByEmailAndOrgLocationsId(String email, Long orgLocationsId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<User> users = new ArrayList<User>();
+		logger.debug("findByEmailAndOrgLocationsId start");
+		users = session.createQuery("from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id =:orgLocationsId) and user.email=:email" ).setString("email", email ).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		logger.debug("findByEmailAndOrgLocationsId end");
+		if (users.size() > 0) {
+			return users.get(0);
+		} else {
+			return null;
+		}
+   	}
+	
 	
 	
 
