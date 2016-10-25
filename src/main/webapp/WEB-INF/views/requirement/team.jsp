@@ -2,11 +2,13 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
@@ -114,10 +116,13 @@ function teamList(){
 function pagination(){  alert("hai");
     $('#teamPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[1, 15, 20, -1], [1, 15, 20, "All"]],
+    	"lengthMenu": [[2, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
     } );
 }
 </script>
@@ -580,8 +585,8 @@ function TeamMemberpagination(){
       			<div id="teamList"></div>
       			
               </div>
+        </div>      
   
-    </div>
     
     <!-- Compnay details -->
     <div class="side_mask"><div class="proj_close"></div></div>
