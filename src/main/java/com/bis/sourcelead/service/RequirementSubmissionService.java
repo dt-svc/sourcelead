@@ -29,4 +29,6 @@ public interface RequirementSubmissionService {
 
 	void saveRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,MultipartFile multiFile) throws Exception;
 
+	List<RequirementSubmission> getRequirementPerCandidate(Long candudateId) throws Exception;
+
 }

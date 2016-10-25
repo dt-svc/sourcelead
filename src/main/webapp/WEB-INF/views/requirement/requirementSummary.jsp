@@ -4,6 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+ <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
  
  
  
@@ -719,7 +720,8 @@ $(document).ready(function() {
       
       <!-- Addede by Rajashekar -->
       <div id="tab-3" class="project_tabs_inn">
-              <div class="timesheet_head candidateHead recruitmentHead">
+      <div id="recommendationsList"></div>
+              <!-- <div class="timesheet_head candidateHead recruitmentHead">
                 <div class="rec_head"></div>
               </div>
               <div class="require_wrap_table recommend_table">
@@ -837,9 +839,9 @@ $(document).ready(function() {
                   <li data-page="last"><a href="#">Next</a></li>
                 </ul>
                 <div class="clearfix"></div>
-              </nav>
+              </nav> -->
+              
             </div>            
-            
           </div>
     
     <div class="side_mask">
@@ -2360,7 +2362,7 @@ function sideBar(requirementId){
 					    result = result+'    <ul class="project-tabs-menu">';
 					    result = result+'      <li class="current"><a href="#tab-1" onclick="requirementDetails('+requirementId+');">Details</a></li>';
 					    result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+');">Pipeline</a></li>';
-					    result = result+'      <li><a href="#tab-3" onclick="requirementRecommendationswww('+requirementId+');">Recommendations</a></li>';
+					    result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
 					    result = result+'      <div class="clearfix"></div>';
 					    result = result+'    </ul>';
 					    result = result+'    <div class="project_tabs">';
@@ -3324,17 +3326,76 @@ function assignedMemberList(requirementId){
 
 
 <script type="text/javascript">
-function requirementRecommendationswww(requirementId){
-	alert("requirementId");
+function requirementRecommendations(requirementId){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
      success :function(data) { 
-  	     alert("Hai"+data);
+    	 var json = JSON.parse(data);
+    	    var result = '';
+    	    result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
+		    result = result +'<div class="rec_head"></div>';
+		    result = result +'</div>';
+		    result = result +'<div class=" project_tabs_inn_table vendor_wrap_inn_table">';
+		    result = result +'<table id="recommendationTable" class="display" cellspacing="0" width="100%"">';
+		    result = result +'<thead>';
+		    result = result +'<tr>';
+		    result = result +'<th>Name</th>';
+		    result = result +'<th>Ph. No</th>';
+		    result = result +'<th>Resume</th>';
+		    result = result +'<th>Number of req</th>';
+		    result = result +'<th>Score</th>';
+		    result = result +'<th>Action</th>';
+		    result = result +'</tr>';
+		    result = result +'</thead>';
+		    result = result +'<tbody>';
+    	 for (var i=0; i<json.length; i++)
+			{
+		    var report = json[i];
+		    result = result +'<tr>';
+		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		    result = result +'<td><div><span>'+report.mobilePhone+'</span></div></td>';
+		    result = result +'<td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt">'+report.title+'</i></a></div></td>';
+		    result = result +'<td><div><span>'+report.noOfReq+'</span></div></td>';
+		    result = result +'<td><div><span>'+report.candidateScore+'%</span></div></td>';
+		    result = result +'<td><div><span>';
+		    result = result +'<select>';
+		    result = result +'<option>Interview</option>';
+		    result = result +'<option>Submit</option>';
+		    result = result +' <option>Joined</option>';
+		    result = result +'<option>Screening</option>';
+		    result = result +'<option>Offer</option>';
+		    result = result +'</select>';
+		    result = result +'</span></div>';
+		    result = result +'</td>';
+		    result = result +'</tr>';
+		   
+			}
+    	    result = result +'</tbody>';
+		    result = result +' </table>';
+		    result = result +'</div>';
+		    $("#recommendationsList").empty();
+			$("#recommendationsList").append(result); 
+			recommendationpagination();
            },
              
         }); 
+}
+</script>
+
+<script>
+function recommendationpagination(){  
+    $('#recommendationTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
 }
 </script>
 

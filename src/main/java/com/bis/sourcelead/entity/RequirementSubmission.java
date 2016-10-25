@@ -99,6 +99,8 @@ public class RequirementSubmission {
     @Transient
    	private String resumeName;
     
+   
+    
 	public String getUserName() {
 		return userName;
 	}
@@ -274,4 +276,5 @@ public class RequirementSubmission {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+	
 }

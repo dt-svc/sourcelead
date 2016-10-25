@@ -277,5 +277,10 @@ public class CandidateServiceImpl implements CandidateService {
 	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId) throws Exception {
 		return candidateDao.getCandidatesByOrgLocationID(orgLocationId,requirementId);
 	}
+
+	@Override
+	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId) throws Exception {
+		return candidateDao.getAllCandidatesByLocation(orgLocationId);
+	}
 	
 }

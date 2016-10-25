@@ -20,5 +20,7 @@ public interface RequirementSubmissionDao {
 	RequirementSubmission storeRequirementSubmission(RequirementSubmission requirementSubmission)throws Exception;
 
 	List<RequirementSubmission> getSubmissionsByRequirementId(Long requirementId, User user, OrgLocations loginOrgLocation) throws Exception;
+
+	List<RequirementSubmission> getRequirementPerCandidate(Long candudateId)throws Exception;
 	
 }
