@@ -146,14 +146,14 @@ public class RequirementRestController {
 				    		if(maxLevel.equals(rah.getLevel())){
 								User approverUser = userService.getUserById(rah.getApproverUserId().getId());
 								requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null,null);
-				    			
 							   } 
 				    	} 
 		    }
-		    	
-		    }
+  }
 		    
 			requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+			User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
+			requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement);
 			
 		}
 		if(status.equalsIgnoreCase("REJECTED")){

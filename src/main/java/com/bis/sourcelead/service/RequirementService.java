@@ -36,6 +36,8 @@ public interface RequirementService {
 	public void  approverEmailScenario(User user,User approverUser,Requirement requirement, StringBuilder location,String requirementClientName) throws Exception;
 
 	public void  approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location, String client) throws Exception;
+	
+	public void acceptEmailScenario(User loginUser, User approverUser, Requirement requirement) throws Exception;
 
 
 	

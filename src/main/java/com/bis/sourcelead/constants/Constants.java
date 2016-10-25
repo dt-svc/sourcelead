@@ -86,6 +86,7 @@ public class Constants {
 	public static String  PROJECT_MEMBER_HISTORY_CLOSED= "CLOSED";
 	public static String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
 	public static String REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION = "Approval Mechanism Sequential";
+	public static String APPROVED_EMAIL_NOTIFICATION = "Approved Requirement";
 	
 	public static String  WEEK_TIME_SHEET_SUBMISSION= "Week Time Sheet Submission";
 	public static String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";

@@ -643,6 +643,52 @@ public class RequirementServiceImpl implements RequirementService {
 
 	}
 
+	@Override
+	public void acceptEmailScenario(User loginUser, User intiatorUser, Requirement requirement) throws Exception {
+		
+		EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(loginUser.getFirstName());
+		 emailMessage.setLastName(loginUser.getLastName());
+		 emailMessage.setToEmail(intiatorUser.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+//		 user = (User) SourceLeadSessionManager.getSessionAttribute("user");
+		 globalVarsMap.put("requirementName", requirement.getJobTitle());
+		 globalVarsMap.put("requirementId-Name", requirement.getJobId());
+		 globalVarsMap.put("approverName", loginUser.getFirstName());
+		 globalVarsMap.put("jobInitiatorName", loginUser.getFirstName());
+		 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
+		 globalVarsMap.put("role", loginUser.getUserType());
+		 
+		 
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVED_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+
+	}
 
 
 	
