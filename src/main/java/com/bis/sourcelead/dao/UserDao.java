@@ -24,6 +24,8 @@ public interface UserDao {
 	
 	User findByEmail(String email);
 	
+	public User findByEmailAndOrgLocationsId(String email, Long orgLocationsId)  throws Exception;
+	
 	/**
 	 * This method to fetch only Admin role users
 	 * @param orgLocationsId
