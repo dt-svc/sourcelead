@@ -263,10 +263,12 @@ $(document).ready(function() {
             <div class="col-md-9">
               <div class="row">
                 <div class="col-md-6">
-                   <input type="text" class="form-control" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
+                 <input type="text" class="form-control" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
+                   
                 </div>
                 <div class="col-md-6">
-                  <input type="text" class="form-control" id="maxExp" name="maxExp" value="${requirement.maxExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
+                 
+                <input type="text" class="form-control" id="maxExp" name="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
                 </div>
               </div>
             </div>
@@ -440,7 +442,7 @@ $(document).ready(function() {
                           </div>
                         </div>
                         <div class="modal-footer">
-                          <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
+                          <button data-dismiss="modal" class="btn btn-primary" type="button" >Save</button>
                           <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
                         </div>
                       </div>
@@ -1310,7 +1312,6 @@ $(document).ready(function() {
                             <label class="col-lg-4">Team Members <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                              <select multiple class="chosen-select form-control select-bg" name="memberUserId" id="memberUserId" placeholder="Team Member *" data-validation="required validate_Space" field-name="Team Member">
-			                    		<option value=''>-- Select Team --</option>
 					                    <c:forEach var="report" items="${all_users_List}">
 							                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
 								       </c:forEach>
@@ -1321,8 +1322,8 @@ $(document).ready(function() {
                         </div>
                       </div>
                       <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="storeTeam();" >Save</button>
-                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                        <button data-dismiss="modal" class="btn btn-primary" type="button" id="team_form" onclick="storeTeam();flushStoreTeam()" >Save</button>
+                        <button data-dismiss="modal" class="btn btn-default" id="team_form" onclick="flushStoreTeam();" type="button">Cancel</button>
                       </div>
                     </div>
                     </form>
@@ -1647,7 +1648,7 @@ function setTemplateValues(){
 			    	$("#positions").val(json.positions);
 			    	
 			    	$("#minExp").val(json.minExp);
-			    	$("#maxExp").val(json.minExp);
+			    	$("#maxExp").val(json.maxExp);
 			    	
 			    	var country = '';
 					 var state = '';
@@ -2076,7 +2077,12 @@ function assignMembers() {
 </script>
 
 
-
+<script type="text/javascript">
+	function flushStoreTeam() {
+		document.getElementById("team_form").reset();
+		$('#memberUserId').val('').trigger('chosen:updated');
+	}
+</script>
 <script type="text/javascript">
 function getTeamMembers(){
 	
@@ -2177,5 +2183,7 @@ function filterTeamMembers(){
 	getUserList(teamType);
 }
 </script>
+
+
 
 <jsp:include page="../masterFooter.jsp" />
