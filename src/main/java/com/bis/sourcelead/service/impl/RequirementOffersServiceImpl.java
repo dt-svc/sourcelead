@@ -108,7 +108,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
                                MultipartFile  multiFile = (MultipartFile)files.get(c+"OfferAttachment");
                                requirementOffers.setDocFile(multiFile.getBytes());
 							   requirementOffers.setFileName(multiFile.getOriginalFilename());
-							   /*requirementOffers.setFileContentType(multiFile.getContentType());*/
+							   requirementOffers.setFileContentType(multiFile.getContentType());
 							  
 								requirementOffers.setStatus(Constants.RECORD_ACTIVE);
 								requirementOffers.setCreatedDate(new Date());
