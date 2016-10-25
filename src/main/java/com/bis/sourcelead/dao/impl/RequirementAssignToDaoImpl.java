@@ -71,6 +71,34 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 		
 		return true;
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getAssignedTeamMembersCountByTeamMemberUserId(Long assignUserId, String JobType) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		if("open".equalsIgnoreCase(JobType)){
+			String query ="select count(*)from RequirementAssignTo rato where rato.assignUserId = :assignUserId and rato.requirementId IN(select req.id from Requirement req where req.requirementSubmissionStatus = 'open') ";
+			List<Long> requirementAssignToCount = session.createQuery(query.toString()).setLong("assignUserId", assignUserId).list();
+				Integer count = 0;
+				if(requirementAssignToCount != null && !requirementAssignToCount.isEmpty()){
+						count = requirementAssignToCount.get(0).intValue();
+				}
+				return count;
+		}
+		else{
+			String query ="select count(*)from RequirementAssignTo rato where rato.assignUserId = :assignUserId";
+			List<Long> requirementAssignToCount = session.createQuery(query.toString()).setLong("assignUserId", assignUserId).list();
+				Integer count = 0;
+				if(requirementAssignToCount != null && !requirementAssignToCount.isEmpty()){
+						count = requirementAssignToCount.get(0).intValue();
+				}
+				return count;
+		}
+	
+	}
     
   }
 

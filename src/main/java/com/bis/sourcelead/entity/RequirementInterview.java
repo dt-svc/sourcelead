@@ -48,6 +48,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Column(name="NOTIFICATION_TO_SPOC")
 	private String notificationToSpoc;
+	
+	@Column(name="NOTIFICATION_TO_OTHERS")
+	private String notificationToOthers;
+	
+	@Column(name="NOTIFICATION_TO_OTHERS_EMAILS", columnDefinition = "TEXT default NULL")
+	private String notificationToOthersEmails;
 
 	@Column(name="REMAINED_BEFORE")
 	private String remainedBefore;
@@ -138,6 +144,22 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 	public void setNotificationToSpoc(String notificationToSpoc) {
 		this.notificationToSpoc = notificationToSpoc;
+	}
+
+	public String getNotificationToOthers() {
+		return notificationToOthers;
+	}
+
+	public void setNotificationToOthers(String notificationToOthers) {
+		this.notificationToOthers = notificationToOthers;
+	}
+
+	public String getNotificationToOthersEmails() {
+		return notificationToOthersEmails;
+	}
+
+	public void setNotificationToOthersEmails(String notificationToOthersEmails) {
+		this.notificationToOthersEmails = notificationToOthersEmails;
 	}
 
 	public String getRemainedBefore() {

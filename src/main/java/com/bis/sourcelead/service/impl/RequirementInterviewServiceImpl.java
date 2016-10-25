@@ -50,65 +50,93 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		RequirementInterview requirementInterview  = null;
 		
 		for (long c = 1; c < maxCount; c++) {
-			if(jsonObj.has(c+"applicant") && !jsonObj.getString(c+"applicant").isEmpty()){
-				requirementInterview  = new RequirementInterview();
 				if(jsonObj.has(c+"applicant") && !jsonObj.getString(c+"applicant").isEmpty()){
-					   RequirementSubmission submission = new RequirementSubmission();
-					   submission.setId(Long.parseLong(jsonObj.getString(c+"applicant")));
-					   requirementInterview.setSubmissionId(submission);
-				}
-				
-				if(jsonObj.has(c+"dateOfInterview") && jsonObj.getString(c+"dateOfInterview") != null && !"".equalsIgnoreCase(jsonObj.getString(c+"dateOfInterview"))){
-					requirementInterview.setDateOfInterview(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")));
-				}
-				
-				if(jsonObj.has(c+"interviewType") && !jsonObj.getString(c+"interviewType").isEmpty()){
-					requirementInterview.setInterviewType(jsonObj.getString(c+"interviewType"));
-				}
-				
-				if(jsonObj.has(c+"startTime") && !jsonObj.getString(c+"startTime").isEmpty()){
-					requirementInterview.setStartTime(jsonObj.getString(c+"startTime"));
-				}
-				
-				if(jsonObj.has(c+"endTime") && !jsonObj.getString(c+"endTime").isEmpty()){
-					requirementInterview.setEndTime(jsonObj.getString(c+"endTime"));
-				}
-				
-				if(jsonObj.has(c+"location") && !jsonObj.getString(c+"location").isEmpty()){
-					requirementInterview.setLocation(jsonObj.getString(c+"location"));
-				}
-				
-			   requirementInterview.setStatus(Constants.RECORD_ACTIVE);
-	           requirementInterview.setCreatedDate(new Date());
-	           requirementInterview.setCreatedBy(user.getUserCode());
-	           requirementInterview.setUpdatedDate(new Date());
-	           requirementInterview.setUpdatedBy(user.getUserCode());
-	           requirementInterviewDao.storeRequirementInterview(requirementInterview);
-	           
-	           RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(jsonObj.getString(c+"applicant")));
-	           requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW);
-	           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-	           
-	           //to store RequirementInterviewers
-	           if(jsonObj.has(c+"interviewer") && !jsonObj.getString(c+"interviewer").isEmpty()){
-	        	    String interviewerIds = jsonObj.getString(c+"interviewer");
-	        	    interviewerIds = interviewerIds.replaceAll("\\[", "").replaceAll("\\]","");
-					String[] interviewers = interviewerIds.split(",");
+						String applicantIds = jsonObj.getString(c+"applicant");
+						applicantIds = applicantIds.replaceAll("\\[", "").replaceAll("\\]","");
+						String[] applicants = applicantIds.split(",");
 					
-					for(int i=0 ;i<interviewers.length;i++ ){
-						 RequirementInterviewer interviewer = new RequirementInterviewer();
-				         interviewer.setRequirementInterview(requirementInterview);
-						 User interviewerUser = userService.getUserById(Long.parseLong(interviewers[i].replace("\"", "")));
-						 interviewer.setInterviewerUser(interviewerUser);
-						 interviewer.setStatus(Constants.RECORD_ACTIVE);
-				         interviewer.setCreatedDate(new Date());
-				         interviewer.setCreatedBy(user.getUserCode());
-				         interviewer.setUpdatedDate(new Date());
-			             interviewer.setUpdatedBy(user.getUserCode());
-				         requirementInterviewerDao.storeRequirementInterviewer(interviewer);
-					}
-	           }
-			}
+					     for(int i=0 ;i<applicants.length;i++ ){
+								requirementInterview  = new RequirementInterview();
+								RequirementSubmission submission = new RequirementSubmission();
+								submission.setId(Long.parseLong(applicants[i].replace("\"", "")));
+								requirementInterview.setSubmissionId(submission);
+								
+								if(jsonObj.has(c+"dateOfInterview") && jsonObj.getString(c+"dateOfInterview") != null && !"".equalsIgnoreCase(jsonObj.getString(c+"dateOfInterview"))){
+									requirementInterview.setDateOfInterview(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")));
+								}
+								
+								if(jsonObj.has(c+"interviewType") && !jsonObj.getString(c+"interviewType").isEmpty()){
+									requirementInterview.setInterviewType(jsonObj.getString(c+"interviewType"));
+								}
+								
+								if(jsonObj.has(c+"startTime") && !jsonObj.getString(c+"startTime").isEmpty()){
+									requirementInterview.setStartTime(jsonObj.getString(c+"startTime"));
+								}
+								
+								if(jsonObj.has(c+"endTime") && !jsonObj.getString(c+"endTime").isEmpty()){
+									requirementInterview.setEndTime(jsonObj.getString(c+"endTime"));
+								}
+								
+								if(jsonObj.has(c+"location") && !jsonObj.getString(c+"location").isEmpty()){
+									requirementInterview.setLocation(jsonObj.getString(c+"location"));
+								}
+								
+								if(jsonObj.has("notificationToApplicant") && !jsonObj.getString("notificationToApplicant").isEmpty()){
+									requirementInterview.setNotificationToApplicant(jsonObj.getString("notificationToApplicant"));
+								}
+								
+								if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty()){
+									requirementInterview.setNotificationToSpoc(jsonObj.getString("notificationToSpoc"));
+								}
+								
+								if(jsonObj.has("notificationToOthers") && !jsonObj.getString("notificationToOthers").isEmpty()){
+									requirementInterview.setNotificationToOthers(jsonObj.getString("notificationToOthers"));
+								}
+								
+								if(jsonObj.has("notificationToOthersEmails") && !jsonObj.getString("notificationToOthersEmails").isEmpty()){
+									requirementInterview.setNotificationToOthersEmails(jsonObj.getString("notificationToOthersEmails"));
+								}
+								
+								if(jsonObj.has("reminderHours") && !jsonObj.getString("reminderHours").isEmpty() && jsonObj.has("reminderMinutes") && !jsonObj.getString("reminderMinutes").isEmpty()){
+									Float reminderHours = Float.parseFloat(jsonObj.getString("reminderHours"));
+									Float reminderMinutes = Float.parseFloat(jsonObj.getString("reminderMinutes"));
+									Float remainedBefore = ((reminderHours*60) + reminderMinutes);
+									
+									requirementInterview.setRemainedBefore(remainedBefore.toString());
+								}
+								
+							   requirementInterview.setStatus(Constants.RECORD_ACTIVE);
+					           requirementInterview.setCreatedDate(new Date());
+					           requirementInterview.setCreatedBy(user.getUserCode());
+					           requirementInterview.setUpdatedDate(new Date());
+					           requirementInterview.setUpdatedBy(user.getUserCode());
+					           requirementInterviewDao.storeRequirementInterview(requirementInterview);
+					           
+					           RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
+					           requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW);
+					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+					           
+					           //to store RequirementInterviewers
+					           if(jsonObj.has(c+"interviewer") && !jsonObj.getString(c+"interviewer").isEmpty()){
+					        	    String interviewerIds = jsonObj.getString(c+"interviewer");
+					        	    interviewerIds = interviewerIds.replaceAll("\\[", "").replaceAll("\\]","");
+									String[] interviewers = interviewerIds.split(",");
+									
+									for(int j=0 ;j<interviewers.length;j++ ){
+										 RequirementInterviewer interviewer = new RequirementInterviewer();
+								         interviewer.setRequirementInterview(requirementInterview);
+										 User interviewerUser = userService.getUserById(Long.parseLong(interviewers[j].replace("\"", "")));
+										 interviewer.setInterviewerUser(interviewerUser);
+										 interviewer.setStatus(Constants.RECORD_ACTIVE);
+								         interviewer.setCreatedDate(new Date());
+								         interviewer.setCreatedBy(user.getUserCode());
+								         interviewer.setUpdatedDate(new Date());
+							             interviewer.setUpdatedBy(user.getUserCode());
+								         requirementInterviewerDao.storeRequirementInterviewer(interviewer);
+									}
+					           }
+							}
+				}
 			continue;
 		}
 	}

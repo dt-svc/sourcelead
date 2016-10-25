@@ -66,7 +66,7 @@ function addInterview(requirementId){
 	
 	result = result + '<div class="row mb10" id="notifyOthersDiv" style="display: none;">';
 	result = result + '<div class="col-md-12">';
-	result = result + '<input type="text" class="form-control input-sm" value="" data-validation="validate_Space validate_email" data-validation-optional="true" placeholder="Enter emails with comma(,) separated">';
+	result = result + '<input type="text" class="form-control input-sm" value="" id="notificationToOthersEmails" name="notificationToOthersEmails" data-validation="validate_Space" data-validation-optional="true" placeholder="Enter emails with comma(,) separated">';
 	result = result + '</div>';
 	result = result + '</div>';
 	

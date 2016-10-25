@@ -99,17 +99,13 @@ public class OrgDaoImpl implements OrgDao {
 	public Org findOrgByID(Long id) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		Org org = null;
-		if (id != null) {
-			org = session.get(Org.class, id);
+		logger.debug("findOrgByID start");
+		List<Org> orgList = session.createQuery("from Org where id=:id" ).setCacheable(true).setLong( "id", id ).setCacheable(true).list();
+		return orgList.get(0);
 		}
-		if(org == null)
-		{
-			StringBuilder message= new StringBuilder(MessageFormat.format(notFound,"ORG", id));
-			throw new SourceLeadObjectNotFoundException(message.toString());
-		}
-		return org;
-	}
+		
+		
+		//return org;
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
