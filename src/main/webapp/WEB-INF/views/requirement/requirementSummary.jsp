@@ -2360,7 +2360,7 @@ function sideBar(requirementId){
 					    result = result+'    <ul class="project-tabs-menu">';
 					    result = result+'      <li class="current"><a href="#tab-1" onclick="requirementDetails('+requirementId+');">Details</a></li>';
 					    result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+');">Pipeline</a></li>';
-					    result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
+					    result = result+'      <li><a href="#tab-3" onclick="requirementRecommendationswww('+requirementId+');">Recommendations</a></li>';
 					    result = result+'      <div class="clearfix"></div>';
 					    result = result+'    </ul>';
 					    result = result+'    <div class="project_tabs">';
@@ -3324,7 +3324,8 @@ function assignedMemberList(requirementId){
 
 
 <script type="text/javascript">
-function requirementRecommendations(requirementId){
+function requirementRecommendationswww(requirementId){
+	alert("requirementId");
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({
     type : "POST",
@@ -3334,6 +3335,7 @@ function requirementRecommendations(requirementId){
            },
              
         }); 
+}
 </script>
 
 <script>
