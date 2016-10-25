@@ -75,6 +75,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId,Long requirementId, List<Long> existingApplicantsIds) throws Exception {
 		return requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocationsId,requirementId,existingApplicantsIds);
 	}
+	
+	@Override
+	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(Long orgLocationsId,Long requirementId, List<Long> existingApplicantsIds) throws Exception {
+		return requirementSubmissionDao.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocationsId,requirementId,existingApplicantsIds);
+	}
 
 	
 	@Override
@@ -325,8 +330,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 
     		 if(requirement.getParentRequirement() != null){
     			 clientSubmission.setRequirement(requirement.getParentRequirement());
+    			 clientSubmission.setOrgLocations(requirement.getParentRequirement().getOrgLocationId());
         	 }else{
         		 clientSubmission.setRequirement(requirement);
+        		 clientSubmission.setOrgLocations(loginOrgLocation);
         	 }
     		 clientSubmission.setCandidate(submission.getCandidate());
     		 clientSubmission.setCandidateResumes(submission.getCandidateResumes());

@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -52,6 +53,13 @@ public class TeamMembers {
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	
+	@Transient
+    private int teamMemberRequirementAssignedCount;
+	
+	@Transient
+    private int teamMemberRequirementAssignedOpenCount;
 	
 	
 	public Long getId() {
@@ -117,4 +125,22 @@ public class TeamMembers {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+
+	public int getTeamMemberRequirementAssignedCount() {
+		return teamMemberRequirementAssignedCount;
+	}
+
+	public void setTeamMemberRequirementAssignedCount(int teamMemberRequirementAssignedCount) {
+		this.teamMemberRequirementAssignedCount = teamMemberRequirementAssignedCount;
+	}
+
+	public int getTeamMemberRequirementAssignedOpenCount() {
+		return teamMemberRequirementAssignedOpenCount;
+	}
+
+	public void setTeamMemberRequirementAssignedOpenCount(int teamMemberRequirementAssignedOpenCount) {
+		this.teamMemberRequirementAssignedOpenCount = teamMemberRequirementAssignedOpenCount;
+	}
+	
+	
 }
