@@ -330,8 +330,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 
     		 if(requirement.getParentRequirement() != null){
     			 clientSubmission.setRequirement(requirement.getParentRequirement());
+    			 clientSubmission.setOrgLocations(requirement.getParentRequirement().getOrgLocationId());
         	 }else{
         		 clientSubmission.setRequirement(requirement);
+        		 clientSubmission.setOrgLocations(loginOrgLocation);
         	 }
     		 clientSubmission.setCandidate(submission.getCandidate());
     		 clientSubmission.setCandidateResumes(submission.getCandidateResumes());
