@@ -1483,8 +1483,9 @@ function requirementPipeline(requirementId){
             		 else{ 
 							var result ="";
 							
+							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close"></div></div>';
+							 
 							//For Add Applicant div
-							result = result +'<div class="side_mask"><div class="addApplicant_close"></div></div>';
 							result = result + '<div class="new_side_wrap">';
 							result = result + '<div class="new_side_wrap_inn">';
 							result = result + '<div class="new_side_wrap_cta">';
@@ -1494,7 +1495,6 @@ function requirementPipeline(requirementId){
 							result = result +'</div>';
 							
 							//For Add Interview Div
-							result = result +'<div class="side_mask"><div class="addInterview_close"></div></div>';
 							result = result + '<div class="add_inter_wrap">';
 							result = result +      '<div class="new_side_wrap_inn">';
 							result = result +              '<div id="addInterviewDiv"></div>';
@@ -1504,7 +1504,6 @@ function requirementPipeline(requirementId){
 							
 							
 							//For Submit to Client Div
-							result = result +'<div class="side_mask"><div class="submitToClient_close"></div></div>';
 							result = result +'<div class="submitnew-wrap">';
 							result = result +' <div class="new_side_wrap_inn">';
 							result = result +'<div class="add_inter">';
@@ -1525,7 +1524,6 @@ function requirementPipeline(requirementId){
 							result = result +'</div>';
 							
                              //Candidate submissions details Div
-							 result = result +'<div class="side_mask"><div class="viewCandidate_close"></div></div>';
 							 result = result +' <div class="clients_side_wrap">';
 							 result = result +'<div class="clients_side_wrap_inn">';
 							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
@@ -1839,7 +1837,7 @@ function requirementPipeline(requirementId){
 			   	        		
 			   	        		var report = json[i];
 						           result = result + '       <tr>';
-						           result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.candidateId+');"><span>'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+');"><span>'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 						           
 						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.candidateEmail+'</span></div></td>';

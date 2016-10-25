@@ -53,7 +53,6 @@ function educationSubmissionDetailsList(candidateId){
 	                 	 result  = result + '           <th>score Type</th>';
 	                 	 result  = result + '           <th>Institute/University</th>';
 	                 	 result  = result + '           <th>Address</th>';
-	                 	 result  = result + '           <th>Action</th>';
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -101,19 +100,7 @@ function educationSubmissionDetailsList(candidateId){
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
-	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
-	                    		 if(window.candidateStatusGlobal == '0'){
-	                    			 result = result+' <td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
-	                    		 }
-	                    		 else{
-	                    			 result = result+' <td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');"></a>';	 
-	                    		 }
-	                    		 if(window.candidateStatusGlobal == '0'){
-									result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
-	                    		 }else{
-	                    			 result = result+'<i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');"></i></div></td>'; 
-	                    		 }
-	                    	}
+	                    
 	                    	 result  = result + '</tr>';
 	                      } 
 	                     result = result +" </tbody>";
@@ -128,7 +115,7 @@ function educationSubmissionDetailsList(candidateId){
 					 result = result+"		<div class='content-area clearfix'>"; 
 					 result = result+"			<div class='blank-pages'>";
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No CandidatesCertifications Found</p>";
+					 result = result+"			        <p>No SubmissionEducation Found</p>";
 					 result = result+"			 </div>";
 					 result = result+"		</div>"; 
 					 result = result+"	</div>"; 
