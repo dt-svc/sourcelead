@@ -11,6 +11,7 @@
 		result = result	+ '<div class="project_tabs_inn_head"> <input class="vendorfild" ></div>';
 		result = result + '   <div id="employeeSubmissionDetailsList" ></div>';
 		result = result + '   </div>';
+		result = result + '<div class="clearfix"></div>';
 		
 		$("#tabb-1").empty();
 		$("#tabb-2").empty();
@@ -51,7 +52,6 @@
 								result = result + '           <th>Address</th>';
 								result = result	+ '           <th>Start date</th>';
 								result = result	+ '           <th>End date</th>';
-								result = result + '           <th>Action</th>';
 								result = result + "  </tr>";
 								result = result + "</thead>";
 								result = result + "<tbody>";
@@ -88,15 +88,6 @@
 									} else {
 										result = result	+ '<td><div><span>----</span></div></td>';
 									}
-									if(window.candidateStatusGlobal == '0'){
-				                   result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
-									}else{
-										result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');"></a>';	
-									}if(window.candidateStatusGlobal == '0'){
-										result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
-									}else{
-										result = result+'<i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></div></td>';
-									}
 									result = result + '</tr>';
 								}
 								result = result + " </tbody>";
@@ -114,7 +105,7 @@
 							result = result
 									+ "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 							result = result
-									+ "			        <p>No CandidatesCertifications Found</p>";
+									+ "			        <p>No SubmissonEmployees Found</p>";
 							result = result + "			 </div>";
 							result = result + "		</div>";
 							result = result + "	</div>";
