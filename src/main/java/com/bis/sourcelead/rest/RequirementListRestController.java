@@ -213,22 +213,24 @@ public class RequirementListRestController {
 					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 					if(requirementId !=null && !requirementId.isEmpty()){
 						List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
-						for (RequirementSubmission requirementSubmission : requirementSubmissions) {
-							CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
-							RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
-							requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName()+" "+requirementSubmissionTemplateFields.getLastName());
-							requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
-							requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
-							requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
-							requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
-							if(requirementSubmission.getCreatedDate() != null){
-								requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
+						if(requirementSubmissions != null){
+							for (RequirementSubmission requirementSubmission : requirementSubmissions) {
+								CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+								RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+								requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName()+" "+requirementSubmissionTemplateFields.getLastName());
+								requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
+								requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
+								requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
+								requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
+								requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+								if(requirementSubmission.getCreatedDate() != null){
+									requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
+								}
+								User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+								requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
+								requirementSubmission.setResumeName(candidateResumes.getFileName());
 							}
-							User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-							requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
-							requirementSubmission.setResumeName(candidateResumes.getFileName());
 						}
-						
 						
 						resultJson = commonUtil.toJSON(requirementSubmissions);
 					}

@@ -311,65 +311,60 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	public List<OrgRelations> getAllVendorsFilterByOrgLocationId(Long orgLocationId, String status) throws Exception {
 		logger.debug("In OrgRelations getAllVendorsByOrgLocationId method");
 		Session session = this.sessionFactory.getCurrentSession();
-	/*	String level = null;
-		if(status != null && status.contains(",")){
-			String[] levels = status.split(",");
-			for (int i = 0; i < levels.length; i++) {
-				level = levels[i];
-			}
-		}else{
-			level = "";
-		}*/
-		String[] level = status.split(",");
+		String[] level=null;
+		if(status != null){
+			level = status.split(",");
+		}
+		
 		String subQuery2 = "";
 		String subQuery3  ="";
-
-		if (Arrays.asList(level).contains("Level-1")) {
-			subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-1' or ";
+		if(level != null){
+			if (Arrays.asList(level).contains("Level-1")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-1' or ";
+			}
+			if (Arrays.asList(level).contains("Level-1")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-1' or ";
+			}
+			
+			if (Arrays.asList(level).contains("Level-2")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-2' or ";
+			}
+			
+			if (Arrays.asList(level).contains("Level-2")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-2' or ";
+			}
+			
+			if (Arrays.asList(level).contains("Level-3")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-3' or ";
+			}
+			if (Arrays.asList(level).contains("Level-3")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-3' or ";
+			}
+			
+			if (Arrays.asList(level).contains("Level-4")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-4' or ";
+			}
+			if (Arrays.asList(level).contains("Level-4")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-4' or ";
+			}
+			
+			if (Arrays.asList(level).contains("Level-5")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-5' or ";
+			}
+			if (Arrays.asList(level).contains("Level-5")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-5' or ";
+			}
+			if(!subQuery2.equalsIgnoreCase("")){
+			subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
+			
+			}
+			if(!subQuery3.equalsIgnoreCase("")){
+				subQuery3 = " (" + subQuery3.substring(0, subQuery3.length() - 4) + ")";
+			}
 		}
-		if (Arrays.asList(level).contains("Level-1")) {
-			subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-1' or ";
-		}
-		
-		if (Arrays.asList(level).contains("Level-2")) {
-			subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-2' or ";
-		}
-		
-		if (Arrays.asList(level).contains("Level-2")) {
-			subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-2' or ";
-		}
-		
-		if (Arrays.asList(level).contains("Level-3")) {
-			subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-3' or ";
-		}
-		if (Arrays.asList(level).contains("Level-3")) {
-			subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-3' or ";
-		}
-		
-		if (Arrays.asList(level).contains("Level-4")) {
-			subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-4' or ";
-		}
-		if (Arrays.asList(level).contains("Level-4")) {
-			subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-4' or ";
-		}
-		
-		if (Arrays.asList(level).contains("Level-5")) {
-			subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-5' or ";
-		}
-		if (Arrays.asList(level).contains("Level-5")) {
-			subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-5' or ";
-		}
-		if(!subQuery2.equalsIgnoreCase("")){
-		subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
-		
-		}
-		if(!subQuery3.equalsIgnoreCase("")){
-			subQuery3 = " (" + subQuery3.substring(0, subQuery3.length() - 4) + ")";
-		}
-	
 		
 		List<OrgRelations> vandorsList = null;
-		if(Arrays.asList(level).contains("")){
+		if(level == null){
 			Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )");
 			vandorsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		}else{
