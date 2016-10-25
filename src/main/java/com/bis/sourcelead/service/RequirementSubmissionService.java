@@ -21,12 +21,17 @@ public interface RequirementSubmissionService {
 	
 	RequirementSubmission getRequirementSubmissionById(Long submissionId)throws Exception;
 	
-	List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId, Long requirementId) throws Exception;
+	List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId, Long requirementId, List<Long> existingApplicantsIds) throws Exception;
 	
 	RequirementSubmission storeRequirementSubmission(RequirementSubmission requirementSubmission)throws Exception;
 
 	List<RequirementSubmission> getSubmissionsByRequirementId(Long requirementId, User user, OrgLocations loginOrgLocation) throws Exception;
 
 	void saveRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,MultipartFile multiFile) throws Exception;
+	
+	List<RequirementSubmission> getAllSubmissionListByRequirementIdAndSubmissionStage(Long orgLocationsId, Long requirementId,String submissionStatus) throws Exception;
+	
+	void storeClientSubmission(Long requirementId, User user, OrgLocations loginOrgLocation,String submissionIds) throws Exception;
+	
 
 }

@@ -219,7 +219,7 @@ public class RequirementReleaseRestController {
 		
 		//requirement = parentRequirement;
 		
-		requirement.setParent_requirement_id(parentRequirement.getId());
+		requirement.setParentRequirement(parentRequirement);
 		requirement.setOrgLocationId(orgSpoc.getResponderLocationId());
 		requirement.setJobTitle(parentRequirement.getJobTitle());
 		requirement.setJobType(parentRequirement.getJobType());

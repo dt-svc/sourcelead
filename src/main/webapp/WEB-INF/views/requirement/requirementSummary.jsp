@@ -1515,6 +1515,15 @@ function requirementPipeline(requirementId){
 							//For Submit to Client Div
 							
 							
+							
+							result = result +'<div class="shortlist-wrap">';
+							result = result +'<div class="new_side_wrap_inn">';
+							result = result +'<div class="add_inter">';
+							result = result + '<div id="shortlistDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
                              //Candidate submissions details Div
 							 result = result +'<div class="side_mask"><div class="viewCandidate_close"></div></div>';
 							 result = result +' <div class="clients_side_wrap">';
@@ -1553,7 +1562,7 @@ function requirementPipeline(requirementId){
 				            result = result +'<div class="action-pop">';
 				            result = result +'	<span>';
 				            result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
-				            result = result +'    <a href="javascript:void(0)" title="" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
+				            result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
 				            result = result +'   <a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
 				            result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
 				            result = result +'    <a href="javascript:void(0)" title="" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
@@ -1830,7 +1839,7 @@ function requirementPipeline(requirementId){
 			   	        		
 			   	        		var report = json[i];
 						           result = result + '       <tr>';
-						           result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+');"><span>'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.candidateId+');"><span>'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 						           
 						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.candidateEmail+'</span></div></td>';
@@ -1848,7 +1857,7 @@ function requirementPipeline(requirementId){
 						    	     }
 						           
 						           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
-						        	   result = result + '         <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a>'+report.resumeName+'</div></td>';
+						        	   result = result + '         <td><div><span><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;</a>'+report.resumeName+'</span></div></td>';
 							           }
 							       else{
 							    	   result = result + '         <td><div>--</div></td>';
@@ -2084,5 +2093,6 @@ function getActions(){
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />
 <jsp:include page="submitToClient.jsp" />
+<jsp:include page="shortlist.jsp" />
 <jsp:include page="submissionDetails.jsp" />
 
