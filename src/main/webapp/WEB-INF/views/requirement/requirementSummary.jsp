@@ -1353,7 +1353,7 @@ function requirementDetails(requirementId){
 					         else{
 					           	 result = result +'   <textarea placeholder="Enter description"> NO DATA</textarea>';
 				    	        }
-				            result = result +'   <h2>Other details:</h2>';
+				            result = result +'   <h2> Details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            if(json.positions != null && json.positions != '' && json.positions != 'undefined'){
 				            result = result +'     <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>'+json.positions+'</span>';
@@ -1371,15 +1371,25 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-					            result = result +'     <div class="require_wrap_details_cta"> <b>Attachment:</b> <span>'+json.fileName+'<i class="glyphicon glyphicon-save"></i></span>';
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Attachment:</b> <span>'+json.fileName+'</span>';
 					            }
 					            else{
 					            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
 					            }				            
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
+				            if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Skills:</b> <span>'+json.skills+'</span>';
+					            }
+					            else{
+					            result = result +'<div class="require_wrap_details_cta"> <b>Skills:</b> <span> -- </span>';	
+					            }				   
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
+				            result = result +'     <div class="clearfix"></div>';
+				            result = result +'   </div>';
+				            if(json.isClientJob  == 'Y')
+				            	{
 				            result = result +'   <h2>Client details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            
@@ -1452,16 +1462,26 @@ function requirementDetails(requirementId){
 					            else{
 						        result = result +'     <div class="require_wrap_details_cta"> <b>Submission Form:</b> <span> --- </span>';
 	  	
-					            }				            result = result +'       <div class="clearfix"></div>';
+					            }				            
+				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
+				            	}
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
+				            if(json.isClientJob  == 'N'){
 				            result = result +'   <h2>Internal details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            //result = result +'     <div class="require_wrap_details_cta"> <b>Manager:</b> <span>Manager</span>';
 				            result = result +'       <div class="clearfix"></div>';
+				            if(json.clientSubmissionTemplate != '' && json.clientSubmissionTemplate != null && json.clientSubmissionTemplate != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span>'+json.clientSubmissionTemplate+'</span>';
+					            }
+					            else{
+						        result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span> --- </span>';
+	  	
+					            }
 				            result = result +'     </div>';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span>Business Analyst </span>';
+				            }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="clearfix"></div>';
