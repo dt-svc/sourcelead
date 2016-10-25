@@ -6,6 +6,8 @@
  <jsp:include page="employeeSubmissionDetails.jsp" />
  <jsp:include page="educationSubmissionDetails.jsp" />
  <jsp:include page="certificationSubmissionDetails.jsp" />
+ <jsp:include page="submissionCandidateProfile.jsp" />
+<jsp:include page="submissionCandidateResume.jsp" />
  
 <script>
 function getSubmissionDetailsSideBar(candidateId){
@@ -61,8 +63,8 @@ function getSubmissionDetailsSideBar(candidateId){
 			       result = result + ' <div class="project_side_wrap_inn_tabs">';
 			       result = result + '<ul class="new-tabs">';
 			       result = result + ' <li class="current"><a href="#tabb-1">Details</a></li>';
-			       result = result + ' <li><a href="#tabb-2">Profile</a></li>';
-			       result = result + ' <li><a href="#tabb-3">Resume</a></li>';
+			       result = result + ' <li><a href="#tabb-2" onClick="getCandidateProfile('+candidateId+');">Profile</a></li>';
+			       result = result + ' <li><a href="#tabb-3" onClick="getCandidateResume('+candidateId+');">Resume</a></li>';
 			       result = result + '<li><a href="#tabb-4" onclick="employeeSubmissionDetails('+candidateId+');">Employer</a></li>';
 			       result = result + '<li><a href="#tabb-5" onclick="educationSubmissionDetails('+candidateId+');">Education</a></li>';
 			       result = result + '<li><a href="#tabb-6" onclick="certificationSubmissionDetails('+candidateId+');">Certifications</a></li>';
@@ -79,6 +81,13 @@ function getSubmissionDetailsSideBar(candidateId){
 			       
 			       result = result + '<div id="tabb-6" class="new-tabs_inn" style="display: block;">';
 			       result = result + '</div>';
+			       
+			       result = result + '<div id="tabb-2" class="new-tabs_inn" style="display: block;">';
+			       result = result + '</div>';
+			       
+			       result = result + '<div id="tabb-3" class="new-tabs_inn" style="display: block;">';
+			       result = result + '</div>';
+			       
 			       
 			       result = result + '<div id="tabb-1" class="new-tabs_inn" style="display: block;">';
 	
@@ -247,7 +256,15 @@ function getSubmissionDetailsSideBar(candidateId){
  $(".side_mask").fadeIn(200);
  $("body").css('overflow-y', 'hidden');
   
-  
+  $("#tabb-1").show()
+ $(".new-tabs a").click(function(event) {
+     event.preventDefault();
+     $(this).parent().addClass("current");
+     $(this).parent().siblings().removeClass("current");
+     var tab = $(this).attr("href");
+     $(".new-tabs_inn").not(tab).css("display", "none");
+     $(tab).fadeIn();
+ }); 
 	
 
 }
@@ -263,7 +280,7 @@ function getSubmissionDetailsSideBar(candidateId){
 </script>
 
 
-<script>
+<!-- <script>
 $(document).ready(function() {
 	$("#tabb-1").show()
     $(".new-tabs a").click(function(event) {
@@ -277,7 +294,7 @@ $(document).ready(function() {
 });
 
 </script>
-
+ -->
 
 
 

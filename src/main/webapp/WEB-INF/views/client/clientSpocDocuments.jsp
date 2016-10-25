@@ -332,6 +332,8 @@ function closePopup(){
 		 if ($('#document_form_spoc').validate(false, validationSettings)){
 			var frm = $('#document_form_spoc').serializeFormJSON();
 			var con = JSON.stringify(frm);
+			$("#save_button").attr("disabled", "disabled");
+			$("#save_button" ).addClass('button').val('Processing..');
 			con = con.replace(/[{}]/g, "");
 			var form = $('#document_form_spoc')[0];
       		var formData = new FormData(form); 
