@@ -1129,7 +1129,7 @@ $(document).ready(function() {
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
                   <input type="text" value="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
-                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1"></i> </span>
+                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="getTeamOwners();getTeamMembers();"></i> </span>
                   </div>
                 <!-- Modal content Assign To -->
                 <div role="dialog" id="assignTeam"   class="modal fade">
@@ -1301,10 +1301,10 @@ $(document).ready(function() {
                             <label class="col-lg-4">Team Owner <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                              <select class="form-control"  name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">
-			                    	<option value=''>-- Select Owner Id --</option>
+			                    	<%-- <option value=''>-- Select Owner Id --</option>
 				                    <c:forEach var="report" items="${all_users_List}">
 						                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-									</c:forEach>
+									</c:forEach> --%>
 			                  </select>
                               </div>
                             </div>
@@ -1312,9 +1312,10 @@ $(document).ready(function() {
                             <label class="col-lg-4">Team Members <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                              <select multiple class="chosen-select form-control select-bg" name="memberUserId" id="memberUserId" placeholder="Team Member *" data-validation="required validate_Space" field-name="Team Member">
+					                   <%--  <option disabled >-Select Team Members-</option>
 					                    <c:forEach var="report" items="${all_users_List}">
 							                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-								       </c:forEach>
+								       </c:forEach> --%>
 		                       </select>
                               </div>
                             </div>
@@ -2083,33 +2084,32 @@ function assignMembers() {
 		$('#memberUserId').val('').trigger('chosen:updated');
 	}
 </script>
+
 <script type="text/javascript">
-function getTeamMembers(){
-	
+function getTeamOwners(){ 
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 var teamOwnerUserId = document.getElementById("teamOwnerId").value;
-	 if(teamOwnerUserId != null && teamOwnerUserId != ''  && teamOwnerUserId != 'undefined'){
-		 $.ajax({
+	 var teamMemberUserId = document.getElementById("memberUserId").value;
+     $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?${_csrf.parameterName}=${_csrf.token}&teamOwnerUserId="+teamOwnerUserId,
+		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?${_csrf.parameterName}=${_csrf.token}&teamOwnerUserId="+teamMemberUserId,
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
-		        	output = output + "<option value=''>-Select Team Members-</option>"; 
+		        	output = output + "<option>-Select Team Owners-</option>"; 
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
 			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
 					}
-		        	$("#teamMembersId").empty();
-			        $("#teamMembersId").append(output);
+		        	$("#ownerUserId").empty();
+			        $("#ownerUserId").append(output);
+			        $("#ownerUserId").trigger("chosen:updated");
 		        },
 		        error: function(e){
 		            
 		        }
 		    });
-	 }
-	 $(function(){
+	 /* $(function(){
 		    var config = {
 				  '.chosen-select'           : {},
 				  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -2122,7 +2122,49 @@ function getTeamMembers(){
 					var $this = $(this);
 					$this.next().css({'width': '100%'});
 			  })
-		});
+		}); */
+} 
+</script>
+
+
+<script type="text/javascript">
+function getTeamMembers(){ 
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var teamOwnerUserId = document.getElementById("ownerUserId").value;
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?${_csrf.parameterName}=${_csrf.token}&teamOwnerUserId="+teamOwnerUserId,
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option disabled >-Select Team Members-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#memberUserId").empty();
+			        $("#memberUserId").append(output);
+			        $("#memberUserId").trigger("chosen:updated");
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	 /* $(function(){
+		    var config = {
+				  '.chosen-select'           : {},
+				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  '.chosen-select-width'     : {width:"95%"}
+				}
+		   
+		    $('.chosen-select').each(function() {
+					var $this = $(this);
+					$this.next().css({'width': '100%'});
+			  })
+		}); */
 } 
 </script>
 
