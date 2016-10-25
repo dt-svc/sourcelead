@@ -3,9 +3,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  
+ <jsp:include page="employeeSubmissionDetails.jsp" />
+ <jsp:include page="educationSubmissionDetails.jsp" />
+ <jsp:include page="certificationSubmissionDetails.jsp" />
+ <jsp:include page="submissionCandidateProfile.jsp" />
+<jsp:include page="submissionCandidateResume.jsp" />
  
 <script>
-function getSubmissionDetailsSideBar(applicantId){
+function getSubmissionDetailsSideBar(candidateId){
 	var result = "";
 	       
 	          result = result + ' <div class="req_hide">';
@@ -56,20 +61,35 @@ function getSubmissionDetailsSideBar(applicantId){
 			       result = result + '</div>';
 	       		
 			       result = result + ' <div class="project_side_wrap_inn_tabs">';
-			       result = result + '<ul class="new-tabs">';
-			       result = result + ' <li class="current"><a href="#tabb-1">Details</a></li>';
-			       result = result + ' <li><a href="#tabb-2">Profile</a></li>';
-			       result = result + ' <li><a href="#tabb-3">Resume</a></li>';
-			       result = result + '<li><a href="#tabb-4">Employer</a></li>';
-			       result = result + '<li><a href="#tabb-5">Education</a></li>';
-			       result = result + '<li><a href="#tabb-6">Certifications</a></li>';
+			       result = result + '<ul class="project-tabs-menu">';
+			       result = result + ' <li class="current"><a href="#tabb-1" >Details</a></li>';
+			       result = result + ' <li><a href="#tabb-2" onClick="getCandidateProfile('+candidateId+')">Profile</a></li>'; 
+			       result = result + ' <li><a href="#tabb-3" onClick="getCandidateResume('+candidateId+')">Resume</a></li>';			       
+			       result = result + '<li><a href="#tabb-4" onclick="employeeSubmissionDetails('+candidateId+');">Employer</a></li>';
+			       result = result + '<li><a href="#tabb-5" onclick="educationSubmissionDetails('+candidateId+');">Education</a></li>';
+			       result = result + '<li><a href="#tabb-6" onclick="certificationSubmissionDetails('+candidateId+');">Certifications</a></li>';
 			       result = result + '<li><a href="#tabb-7">Activities</a></li>';
 			       result = result + '<div class="clearfix"></div>';
 			       result = result + '</ul>';
 			       result = result + '<div class="project_tabs">';
 			       
+				   result = result + ' <div id="tabb-2" class="project_tabs_inn">';
+				   result = result + '</div>';
+				   
+				   result = result + ' <div id="tabb-3" class="project_tabs_inn">';
+				   result = result + '</div>';
+				   
+			       result = result + '<div id="tabb-1" class="project_tabs_inn" style="display: block;">';
+			       result = result + '<div id="tabb-4" class="new-tabs_inn" style="display: block;">';
+			       result = result + '</div>';
+			       
+			       result = result + '<div id="tabb-5" class="new-tabs_inn" style="display: block;">';
+			       result = result + '</div>';
+			       
+			       result = result + '<div id="tabb-6" class="new-tabs_inn" style="display: block;">';
+			       result = result + '</div>';
+			       
 			       result = result + '<div id="tabb-1" class="new-tabs_inn" style="display: block;">';
-	
 			       result = result + '<div class="require_wrap_details">';
 			       result = result + '<div class="clearfix">';
 			       result = result + '<div class="new-tabs_inn_head addUser-org"> <a href="javascript:void(0)" class="mr"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
@@ -222,8 +242,6 @@ function getSubmissionDetailsSideBar(applicantId){
 			                result = result + '</div>';
 			       
 			       
-			       
-			       
 			       result = result + '</div>';
 			       result = result + '</div>';
 	       
@@ -252,5 +270,33 @@ function getSubmissionDetailsSideBar(applicantId){
 	});	
 </script>
 
+<script> 
+$(document).ready(function() {
+    $(".proj_show").click(function(){  
+		$(".clients_side_wrap").addClass("clients_side_wrap_active");
+		$(".side_mask").fadeIn(200);
+		$("body").css('overflow-y', 'hidden');
+	});
+    $(".proj_close, .side_mask").click(function(){
+		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+	});	
+}); 
+</script> 
 
+<script>
+$(document).ready(function() {
+	$("#tabb-1").show()
+    $(".new-tabs a").click(function(event) {
+        event.preventDefault();
+        $(this).parent().addClass("current");
+        $(this).parent().siblings().removeClass("current");
+        var tab = $(this).attr("href");
+        $(".new-tabs_inn").not(tab).css("display", "none");
+        $(tab).fadeIn();
+    });
+});
+
+</script>
 

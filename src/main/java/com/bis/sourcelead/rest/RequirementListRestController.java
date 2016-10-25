@@ -221,6 +221,7 @@ public class RequirementListRestController {
 								requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
 								requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 								requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
+								requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 								requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 								if(requirementSubmission.getCreatedDate() != null){
 									requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
