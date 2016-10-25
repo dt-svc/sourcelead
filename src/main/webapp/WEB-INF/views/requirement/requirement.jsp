@@ -371,7 +371,7 @@ $(document).ready(function() {
            <div class="form-group">
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
-             <textarea rows="2" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true">${requirement.description}</textarea>
+             <textarea rows="2" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description" data-validation="validate_length length2-5000" data-validation-optional="true">${requirement.description}</textarea>
             </div>
           </div>
           
