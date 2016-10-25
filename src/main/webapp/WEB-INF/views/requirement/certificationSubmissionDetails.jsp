@@ -55,7 +55,6 @@ function certificationSubmissionDetailsList(candidateId){
 	                 	result  = result + "           <th>Description</th>";
 	                 	result  = result + "           <th>Valid from</th>";
 	                 	result  = result + "           <th>Valid to</th>";
-	                 	result  = result + "           <th>Action</th>";
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -125,7 +124,7 @@ function certificationSubmissionDetailsList(candidateId){
 					 result = result+"		<div class='content-area clearfix'>"; 
 					 result = result+"			<div class='blank-pages'>";
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No CandidatesCertifications Found</p>";
+					 result = result+"			        <p>No SubmissionCertifications Found</p>";
 					 result = result+"			 </div>";
 					 result = result+"		</div>"; 
 					 result = result+"	</div>"; 

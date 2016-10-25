@@ -5,7 +5,7 @@
  
 
 <script>
-function getCandidateResume(applicantId){
+function getCandidateResume(candidateId){
 	var result ="";
 	result = result+'	    <div class="project_tabs_inn_head addUser-org">';
 		result = result  +'     <div id="popUpDivResume" class="edit-details col-md-4"> ';
@@ -20,41 +20,31 @@ function getCandidateResume(applicantId){
 	$("#tabb-3").empty();
 	$("#tabb-3").append(result);
 	
-	candidateResumeById(applicantId);
+	candidateResumeById(candidateId);
 	
-	$("#tabb-3").show();
-	$(".project-tabs-menu a").click(function(event) {
-	     event.preventDefault();
-	     $(this).parent().addClass("current");
-	     $(this).parent().siblings().removeClass("current");
-	     var tab = $(this).attr("href");
-	     $(".project_tabs_inn").not(tab).css("display", "none");
-	     $(tab).fadeIn();
-	 });
     
 }
 </script>
 
 <script>
-function candidateResumeById(applicantId){
+function candidateResumeById(candidateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	  var candidateId = candidateId;
 	  var result = "";
 	  var resumesCount = 0;
 	  $.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/candidateResumesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+applicantId,
+			url : sourceleadUrl+"/candidateResumesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 			success : function(data) {
 				var json = JSON.parse(data);
-				alert("json data........"+json);
 				if( data.indexOf('Sign In') >= 0){
 		    		location.replace(sourceleadUrl);
 		    	 }
        		 else if (data.indexOf('exception') >= 0) {
        			 location.replace(sourceleadUrl+"/errorPage");
        		 }
-       		 else{alert("1")
-					if(json.length<=0 || (data == null && data == 'undefined' && data == "")){alert("2")
+       		 else{
+					if(json.length<=0 || (data == null && data == 'undefined' && data == "")){
 							result = result+"   <div class='row'>"; 
 						 	result = result+"	<div class='col-lg-12'>"; 
 						 	result = result+"		<div class='content-area clearfix'>"; 
@@ -65,7 +55,7 @@ function candidateResumeById(applicantId){
 						 	result = result+"		</div>"; 
 						 	result = result+"	</div>"; 
 						 	result = result+"  </div> "; 
-						}else{alert("3")
+						}else{
 							result = result+'	      <table>';
 							result = result+'	        <tbody>';
 							result = result+'	          <tr>';
