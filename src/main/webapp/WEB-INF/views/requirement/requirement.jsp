@@ -293,14 +293,14 @@ $(document).ready(function() {
                 <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker" id="rateType" name="rateType">
+                    <option value="">Rate Per</option>
                     <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
                     <option ${requirement.rateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
                     <option ${requirement.rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
                     <option ${requirement.rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-                    <option ${requirement.rateType  == 'others' ? 'selected' : ''}>Other</option>
-                 
+                    <option ${requirement.rateType  == 'others' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
               </div>
@@ -363,9 +363,12 @@ $(document).ready(function() {
                        <input type="file" name="uploadBtn" id="uploadBtn"  class="hidden upload">
                   </span>
                 </label>
+                
                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file" name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_Space validatedoc" data-validation-optional="true">
+              <div class="clearfix"></div> <div class="clearfix"></div>
               </div>
             </div>
+            <div class="clearfix"></div>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work --> 
           </div>
            <div class="form-group">
@@ -1356,6 +1359,15 @@ $(document).ready(function() {
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
+		
+		var rate = document.getElementById("rate").value; 
+		 if(rate != null && rate != ""){
+			 $('#rateType').removeAttr('data-validation-optional');
+			 $('#rateType').attr("data-validation","required"); 
+		 }else{
+			 $('#rateType').removeAttr('data-validation');
+			 $('#ratePer').attr("data-validation-optional","true"); 
+		 }
 		
 		  if ($('#requirement_form').validate(false, validationSettings)){  
 			var frm = $('#requirement_form').serializeFormJSON();
