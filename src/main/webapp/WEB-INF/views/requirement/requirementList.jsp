@@ -151,7 +151,13 @@ function requirementList(){
 		                     
 		                     
 		                     result = result +"<td><div><b class='proj_process'>"+opt.requirementSubmissionStatus+"</b></div></td>";
-		                     result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
+		                     if(opt.requirementSubmissionStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN'){
+			                     result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
+
+		                     }else{
+			                     result = result +"<td><div>--</div></td>";
+ 
+		                     }
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";
 	                     }

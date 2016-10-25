@@ -24,7 +24,7 @@ function addOffer(requirementId){
     
 	result= result + '	          <div class="add_inter">';
 	
-	result = result + '<form id="addOffer_form" name="addOffer_form" >';
+	result = result + '<form id="addOffer_form" name="addOffer_form" enctype="multipart/form-data" method="post" >';
 	result = result + '<input type="hidden" id="maxOfferRowNum" name="maxOfferRowNum" value="1" />';
 	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
 	
@@ -121,10 +121,10 @@ function loadRemiderDiv(){
 </div>	              
 <div id="divOfferTd5" style="display: none; float: left;">
 	<div class="input-group">
-                  	<label class="input-group-btn"> <span class="btn btn-primary file-btn"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                    	<input type="file" style="display: none;" multiple id="uploadBtn"  class="upload"></span>
-		</label>
-		<input type="text" class="form-control file1" readonly id="uploadFile" placeholder="Files are not selected..." id="REPLACEROWIDOfferAttachment" name="REPLACEROWIDOfferAttachment" >
+        <label class="input-group-btn"> <span class="btn btn-primary file-btn"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+          <input type="file" style="display: none;"  multiple id="uploadBtn"  class="upload" id="REPLACEROWIDOfferAttachment" name="REPLACEROWIDOfferAttachment"></span>
+		</label> 
+		<input type="text" class="form-control file1" readonly id="uploadFile" placeholder="Files are not selected..."  >
      </div>                 
 </div>
 
@@ -252,6 +252,7 @@ function cancelAddOffer(){
 
 
 <script type="text/javascript">
+
    	$('body').on('submit', '#addOffer_form', function(e){  
 	 if ($(this).validate(false, validationSettings)){
         e.preventDefault();
@@ -263,10 +264,18 @@ function cancelAddOffer(){
        
         $("#add_offer").attr("disabled", "disabled");
  		$("#add_offer" ).addClass('button').val('Processing..'); 
- 		
+ 		var form = $('#addOffer_form')[0];
+  		var formData = new FormData(form); 
+  		alert("formData"+formData);
  		
    	    $.ajax({
 	    	type: "POST",
+    	    data: formData,
+    	    contentType : 'application/json; charset=utf-8',
+    	    enctype: 'multipart/form-data',
+	        processData: false,
+	        contentType:false,
+    	    dataType : 'json',
 	        url: sourceleadUrl+"/saveOffer?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
 	        success: function(result) {
 	        		
