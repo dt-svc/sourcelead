@@ -175,6 +175,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				}
 			continue;
 		}
+		  if(jsonObj.has("notificationToOthersEmails") && !jsonObj.getString("notificationToOthersEmails").isEmpty()){
+			  
+		  }
+		
 	}
 	
 	
