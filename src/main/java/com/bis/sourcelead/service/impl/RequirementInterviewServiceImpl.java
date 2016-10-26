@@ -140,7 +140,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					           
 					           RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
 					           requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW);
-					          // requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					           
 					           
 					           
@@ -175,6 +175,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				}
 			continue;
 		}
+		  if(jsonObj.has("notificationToOthersEmails") && !jsonObj.getString("notificationToOthersEmails").isEmpty()){
+			  
+		  }
+		
 	}
 	
 	

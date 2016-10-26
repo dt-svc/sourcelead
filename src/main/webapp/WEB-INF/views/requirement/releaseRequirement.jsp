@@ -173,7 +173,7 @@
       <div class="form-footer clearfix row mt">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" class="btn btn-primary ml" onclick="releaseTo();" value="Save">
+            <input type="button" class="btn btn-primary ml" onclick="releaseTo();" value="Release">
             <input type="button" class="btn btn-default ml" value="Cancel">
           </div>
         </div>
@@ -212,8 +212,12 @@ function releaseTo(){
 						location.replace(sourceleadUrl+"/requirementList");
 	            },
 	    }); 
-	 
-	    
+}
+
+function releaseToOneContact(contactscheckboxId){
+	$('input:checkbox[name="contactscheckbox"]').prop('checked',false);
+	$("#" + contactscheckboxId).prop('checked', true);
+	releaseTo();
 }
 </script>
 
@@ -282,7 +286,7 @@ function getContactsLists(){
 	        			result = result +'<div><b class="proj_active">Released</b></div>';
 	        		}
 					if(report.releasedRequirement =="false"){
-						result = result +'<div><a href="javascript:void(0)"><i class="fa fa-bullhorn"></i></a></div>';
+						result = result +'<div><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneContact('+report.id+');"></i></a></div>';
 	        		}
 	        			result = result +'</td>';
    	        		    result = result +'</tr>';

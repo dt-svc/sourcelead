@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
@@ -60,6 +61,9 @@ public class TeamRestController {
 	 
 	 @Autowired
 	 TeamMembersService teamMembersService;
+	 
+	 @Autowired
+	 RequirementAssignToService requirementAssignToService;
 	 
 	 @Autowired
 	 UserService userService;
@@ -110,6 +114,14 @@ public class TeamRestController {
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByTeamID(Long.parseLong(teamId));
+		for(TeamMembers  teamMembers : teamMembersList){
+			 Integer teamMemberRequirementAssignedCount =  requirementAssignToService.getAssignedTeamMembersCountByTeamMemberUserId(teamMembers.getMemberUserId().getId(), "all");
+			 teamMembers.setTeamMemberRequirementAssignedCount(teamMemberRequirementAssignedCount);
+			
+			 Integer teamMemberRequirementAssignedOpenCount =  requirementAssignToService.getAssignedTeamMembersCountByTeamMemberUserId(teamMembers.getMemberUserId().getId(), "open");
+			 teamMembers.setTeamMemberRequirementAssignedOpenCount(teamMemberRequirementAssignedOpenCount);
+		}
+		
 		resultJson = commonUtil.toJSON(teamMembersList);
 		return resultJson;
 	 } 

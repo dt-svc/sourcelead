@@ -1,7 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -10,12 +13,18 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
+import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -23,12 +32,18 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.TeamService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 
 /**
  * 
@@ -54,6 +69,23 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	private RequirementAssignToService requirementAssignToService;
 	
+	@Autowired
+	private TeamService teamService;
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	OrgService orgService;
+	
+	@Value("${sourceleadUrl}")
+    private String sourceleadUrl;
 	
 	/**
 	 * @author prasad k
@@ -78,7 +110,11 @@ public class RequirementServiceImpl implements RequirementService {
 	public Requirement storeRequirement(JSONObject jsonObj,OrgLocations orgLocations,User user,MultipartFile multiFile) throws Exception {
 		
 		    Requirement requirement = new Requirement();
-	        
+	        String client="";
+	        String requirementClient="";
+	        StringBuilder location = new StringBuilder();
+
+		    
 		    if (jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())){
 				requirement.setId(Long.parseLong(jsonObj.getString("requirementId")));
 			}
@@ -104,14 +140,20 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			if(jsonObj.has("country")){
 			requirement.setCountry(jsonObj.getString("country"));
+			location.append(jsonObj.getString("country"));
+			location.append(",");
 			}
 			
 			if(jsonObj.has("state")){
 			requirement.setState(jsonObj.getString("state"));
+			location.append(jsonObj.getString("state"));
+			location.append(",");
 			}
 			
 			if(jsonObj.has("city")){
 			requirement.setCity(jsonObj.getString("city"));
+			location.append(jsonObj.getString("city"));
+			location.append(",");
 			}
 			
 			if(jsonObj.has("maxExp")){
@@ -194,11 +236,14 @@ public class RequirementServiceImpl implements RequirementService {
 			if(jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y") && StringUtils.isNotEmpty(jsonObj.getString("isClient"))){
 					requirement.setIsClientJob(jsonObj.getString("isClient"));
 			}
-			if(jsonObj.has("selectClient") && StringUtils.isNotEmpty(jsonObj.getString("selectClient"))){
-				OrgRelations orgRelations = new OrgRelations();
-				orgRelations.setId(Long.parseLong(jsonObj.getString("selectClient").split(",")[0]));
-				requirement.setClientId(orgRelations);
-			}
+		if(jsonObj.has("selectClient") && StringUtils.isNotEmpty(jsonObj.getString("selectClient")) &&  jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y")){
+		requirementClient = (jsonObj.getString("isClient"));
+		OrgRelations orgRelations = new OrgRelations();
+		orgRelations.setId(Long.parseLong(jsonObj.getString("selectClient").split(",")[0]));
+		requirement.setClientId(orgRelations);
+		client = jsonObj.getString("selectClient").split(",")[0];
+		
+	}
 			if(jsonObj.has("selectContact") && StringUtils.isNotEmpty(jsonObj.getString("selectContact"))){
 				OrgSpoc orgSpoc = new OrgSpoc();
 				orgSpoc.setId(Long.parseLong(jsonObj.getString("selectContact")));
@@ -278,7 +323,7 @@ public class RequirementServiceImpl implements RequirementService {
 				  for(String approver : approvers){
 					    
 					    RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
-						
+					    User approverUser = userService.getUserById(Long.parseLong(approver));
 						User approverUserId = new User();
 						approverUserId.setId(Long.parseLong(approver));
 						rah.setApproverUserId(approverUserId);
@@ -294,13 +339,16 @@ public class RequirementServiceImpl implements RequirementService {
 						rah.setUpdatedDate(commonUtil.currentDate());
 						  
 						requirementApproverHierarchyList.add(rah);
+						  approverEmailScenario(user,approverUser,requirement,location,client);
+
 				  }
 				 
 			} 
 			//approval saving for parallel
 			if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
-				  
+				 String approverNames = jsonObj.getString("sequentialApprover1");
 				  if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
+					  User approverUser = userService.getUserById(Long.parseLong(approverNames));
 					  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
 					  
 					  User approverUserId = new User();
@@ -317,6 +365,8 @@ public class RequirementServiceImpl implements RequirementService {
 					  rah.setUpdatedDate(commonUtil.currentDate());
 					  
 					  requirementApproverHierarchyList.add(rah);
+						approverEmailScenario(user, approverUser ,requirement,location,client);
+
 				  }
 				  
 				  if(jsonObj.has("sequentialApprover2") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover2"))){
@@ -359,6 +409,16 @@ public class RequirementServiceImpl implements RequirementService {
 			HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
 			if (jsonObj.has("assignedToMaxCount")){
 				String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
+				String assignedTeamId = jsonObj.getString("assignedTeamId");
+				Long teamId = 0L;
+				Team team = null;
+			if (!"undefined".equalsIgnoreCase(assignedTeamId) && !"All".equalsIgnoreCase(assignedTeamId)
+					&& !"Account Manager".equalsIgnoreCase(assignedTeamId)
+					&& !"HR Manager".equalsIgnoreCase(assignedTeamId) && !"Recruiter".equalsIgnoreCase(assignedTeamId)
+					&& !"Admin".equalsIgnoreCase(assignedTeamId)) {
+				    teamId = Long.parseLong(assignedTeamId);
+				     team = teamService.getTeamByTeamId(teamId);
+				}
 				if(StringUtils.isNotEmpty(assignedToMaxCount)){
 				int MaxCount = Integer.parseInt(assignedToMaxCount);
 					for (int c = 1; c < MaxCount; c++) {
@@ -374,7 +434,7 @@ public class RequirementServiceImpl implements RequirementService {
 						requirementAssignTo.setCreatedBy(user.getUserCode());
 						requirementAssignTo.setUpdatedBy(user.getUserCode());
 						requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
-						
+						requirementAssignTo.setTeamId(team);
 						requirementAssignToList.add(requirementAssignTo);
 					}
 				}
@@ -477,6 +537,158 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementDao.getUserAssignJobCount(userId);
 	}
 
+	
+	@Override
+	public void approverEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location, String client) throws Exception {
+		Org org = orgService.findOrgByID(Long.parseLong(client));
+		
+		EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(loginUser.getFirstName());
+		 emailMessage.setLastName(loginUser.getLastName());
+		 emailMessage.setToEmail(approverUser.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+//		 user = (User) SourceLeadSessionManager.getSessionAttribute("user");
+		 globalVarsMap.put("requirementName", requirement.getJobTitle());
+		 globalVarsMap.put("requirementLocation", location.toString());
+		 globalVarsMap.put("requirementRate", requirement.getRate());
+		 globalVarsMap.put("client", org.getOrgName());
+		 globalVarsMap.put("approverName", approverUser.getFirstName());
+		 globalVarsMap.put("lastName",emailMessage.getLastName());
+		 globalVarsMap.put("jobInitiatorName", loginUser.getFirstName());
+		 globalVarsMap.put("userEmailId",approverUser.getEmail()); //
+		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+		 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
+		 globalVarsMap.put("role", loginUser.getUserType());
+		 
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+	}
+
+	
+	
+	
+	@Override
+	public void approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location, String client) throws Exception {
+		
+		EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(loginUser.getFirstName());
+		 emailMessage.setLastName(loginUser.getLastName());
+		 emailMessage.setToEmail(approverUser.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+//		 user = (User) SourceLeadSessionManager.getSessionAttribute("user");
+		 globalVarsMap.put("requirementName", requirement.getJobTitle());
+		 globalVarsMap.put("requirementLocation",  requirement.getCountry());
+		 globalVarsMap.put("requirementRate", requirement.getRate());
+		 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+		 globalVarsMap.put("approverName", approverUser.getFirstName());
+		 globalVarsMap.put("jobInitiatorName", loginUser.getFirstName());
+		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+		 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
+		 globalVarsMap.put("role", loginUser.getUserType());
+		 globalVarsMap.put("approverOne", loginUser.getFirstName());
+		 
+		 
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+
+	}
+
+	@Override
+	public void acceptEmailScenario(User loginUser, User intiatorUser, Requirement requirement) throws Exception {
+		
+		EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(loginUser.getFirstName());
+		 emailMessage.setLastName(loginUser.getLastName());
+		 emailMessage.setToEmail(intiatorUser.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+//		 user = (User) SourceLeadSessionManager.getSessionAttribute("user");
+		 globalVarsMap.put("requirementName", requirement.getJobTitle());
+		 globalVarsMap.put("requirementId-Name", requirement.getJobId());
+		 globalVarsMap.put("approverName", loginUser.getFirstName());
+		 globalVarsMap.put("jobInitiatorName", loginUser.getFirstName());
+		 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
+		 globalVarsMap.put("role", loginUser.getUserType());
+		 
+		 
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVED_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+
+	}
 
 
 	

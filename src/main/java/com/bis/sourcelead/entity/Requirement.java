@@ -83,7 +83,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "SKILLS")
 	private String skills;
 	
-	@Column(name = "DESCRIPTION")
+	@Column(name = "DESCRIPTION" , columnDefinition = "TEXT default NULL")
 	private String description;
 	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")

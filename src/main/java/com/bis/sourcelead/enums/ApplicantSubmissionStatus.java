@@ -5,9 +5,13 @@ public enum ApplicantSubmissionStatus {
 	SUBMISSION("submission"),
 	SHORTLIST("shortList"),
 	INTERVIEW("interview"),
-	OFFER("offer"),
+	/*OFFER("offer"),*/
 	REJECTED("rejected"),
-    SUBMIT_TO_CLIENT("submit_to_client");
+    SUBMIT_TO_CLIENT("submit_to_client"),
+    OFFERMADE("offer_made"),
+    OFFERACCEPTED("offer_accepted"),
+    OFFERREJECTED("offer_rejected"),
+    OFFERHIRED("hired");
 	
     private String value;
 	private ApplicantSubmissionStatus(String value){
