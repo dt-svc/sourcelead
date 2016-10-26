@@ -1,6 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
@@ -31,15 +36,19 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.service.CandidateResumesService;
+import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -83,6 +92,15 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	OrgService orgService;
+	
+	 @Autowired
+	 private  RequirementSubmissionService requirementSubmissionService;
+	 
+	 @Autowired
+	 private CandidateSkillsService candidateSkillsService;
+	 
+	 @Autowired
+	 private CandidateResumesService candidateResumeSerivce;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -145,15 +163,24 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			
 			if(jsonObj.has("state")){
-			requirement.setState(jsonObj.getString("state"));
-			location.append(jsonObj.getString("state"));
-			location.append(",");
+				if(!jsonObj.getString("state").isEmpty()){
+					requirement.setState(jsonObj.getString("state"));
+					location.append(jsonObj.getString("state"));
+					location.append(",");
+				}else{
+					location.append("--"+",");
+				}
+			
 			}
 			
-			if(jsonObj.has("city")){
-			requirement.setCity(jsonObj.getString("city"));
-			location.append(jsonObj.getString("city"));
-			location.append(",");
+			if (jsonObj.has("city")) {
+				if (!jsonObj.getString("state").isEmpty()) {
+					requirement.setCity(jsonObj.getString("city"));
+					location.append(jsonObj.getString("city"));
+					location.append(",");
+				} else {
+					location.append("--"+".");
+				}
 			}
 			
 			if(jsonObj.has("maxExp")){
@@ -704,6 +731,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	}
 
+
 	@SuppressWarnings("unused")
 	@Override
 	public void acceptEmailScenario(User loginUser, User intiatorUser, Requirement requirement) throws Exception {
@@ -773,6 +801,150 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
 
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	/**
+	 * calculating the score of Resume per candidate
+	 * 
+	 */
+	@Override
+	public List<Candidate> getRecommendationsWithScore(List<Candidate> candidateList, Requirement requirement) throws Exception {
+		float expPercentage = 0; //  experience = 20%
+		float locationPercentage = 0; // location 10%
+		float ratePercentage = 0;    // rate 20 %
+		float skillPercentage = 0; // skill = 50%
+		float percentPerSkill = 0;
+		List<Candidate> CandidateListcopy = new ArrayList<>();
+		String reqSkills = "";
+		if(requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())){
+		     reqSkills = requirement.getSkills();
+			String [] reqMaxSkills = reqSkills.split(",");
+			 percentPerSkill = 50/(float)reqMaxSkills.length;
+		}
+		int reqMinExp = 0;
+		int reqMaxExp = 0;
+		float percentPerMonthExp = 0;
+		if(requirement.getMinExp() !=null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
+			 reqMinExp = Integer.parseInt(requirement.getMinExp());
+			 reqMaxExp = Integer.parseInt(requirement.getMaxExp());
+			int reqExp = reqMaxExp *12 ;
+			 percentPerMonthExp = 20/(float)reqExp;
+		}
+		String reqCity = "";
+		if(requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())){
+			 reqCity = requirement.getCity();
+		}
+		float reqPerMonthSal = 0;
+		if(requirement.getRate() !=null && !"".equalsIgnoreCase(requirement.getRate())){
+			int reqRate = Integer.parseInt(requirement.getRate());
+			String reqRateType = requirement.getRateType();
+			if("Hourly".equalsIgnoreCase(reqRateType)){
+				int perDaySal = reqRate *24;
+				reqPerMonthSal = perDaySal * 30;
+			}else if("Weekly".equalsIgnoreCase(reqRateType)){
+				int perDaySal = reqRate /7;
+				reqPerMonthSal = perDaySal * 30;
+			}else if("Bi-weekly".equalsIgnoreCase(reqRateType)){
+				int perDaySal = reqRate /14;
+				reqPerMonthSal = perDaySal * 30;
+			}else if("Semi-Monthly".equalsIgnoreCase(reqRateType)){
+				int perDaySal = reqRate /15;
+				reqPerMonthSal = perDaySal * 30;
+			}else if("Monthly".equalsIgnoreCase(reqRateType)){
+				reqPerMonthSal = reqRate;
+			}else if("Bi-Monthly".equalsIgnoreCase(reqRateType)){
+				int perDaySal = reqRate /60;
+				reqPerMonthSal = perDaySal * 30;
+			}else{
+				reqPerMonthSal = reqRate /12;
+			}
+		}
+		
+		for(Candidate candidate : candidateList){
+			int matchedSkillCount = 0;
+			List<CandidateSkills> candidateSkillList  = candidateSkillsService.getSkillByCandidateId(candidate.getId());
+			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
+			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
+			if(candidateSkillList != null && candidateSkillList.size() >0){
+				for(CandidateSkills candidateSkills : candidateSkillList){
+					if(candidateSkills.getName() !=null && !"".equalsIgnoreCase(candidateSkills.getName())){
+						if(reqSkills.contains(candidateSkills.getName())){
+							matchedSkillCount++;
+						}
+						
+					}
+				}
+			}
+			skillPercentage = matchedSkillCount*percentPerSkill;
+			if(candidate.getExperienceYears() != null && !"".equalsIgnoreCase(candidate.getExperienceYears()) && candidate.getExperienceMonths()!=null && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
+				int  candidateExpMonths = Integer.parseInt(candidate.getExperienceYears())*12 + Integer.parseInt(candidate.getExperienceMonths());
+				if(candidateExpMonths < reqMinExp *12){
+					expPercentage = 0;
+				}else if(candidateExpMonths >= reqMinExp *12 && candidateExpMonths <= reqMaxExp *12){
+					expPercentage = percentPerMonthExp*(float)candidateExpMonths;
+				}else{
+					expPercentage = 20;
+				}
+			}
+			if(candidate.getCity() != null && !"".equalsIgnoreCase(candidate.getCity())){
+				if(candidate.getCity().equalsIgnoreCase(reqCity)){
+					locationPercentage = 10;
+				}
+			}
+			
+			String candidateRateType = candidate.getRateType();
+			int reqRate = 200;
+			float perMonthCandidateSal = 0;
+			if("Hourly".equalsIgnoreCase(candidateRateType)){
+				int perDaySal = reqRate *24;
+				perMonthCandidateSal = perDaySal * 30;
+			}else if("Weekly".equalsIgnoreCase(candidateRateType)){
+				int perDaySal = reqRate /7;
+				perMonthCandidateSal = perDaySal * 30;
+			}else if("Bi-weekly".equalsIgnoreCase(candidateRateType)){
+				int perDaySal = reqRate /14;
+				perMonthCandidateSal = perDaySal * 30;
+			}else if("Semi-Monthly".equalsIgnoreCase(candidateRateType)){
+				int perDaySal = reqRate /15;
+				perMonthCandidateSal = perDaySal * 30;
+			}else if("Monthly".equalsIgnoreCase(candidateRateType)){
+				perMonthCandidateSal = reqRate;
+			}else if("Bi-Monthly".equalsIgnoreCase(candidateRateType)){
+				int perDaySal = reqRate /60;
+				perMonthCandidateSal = perDaySal * 30;
+			}else{
+				perMonthCandidateSal = reqRate /12;
+			}
+			
+			if(perMonthCandidateSal<=reqPerMonthSal){
+				ratePercentage = 20;
+			}
+			float totalPercentage = skillPercentage+expPercentage+locationPercentage+ratePercentage;
+			double roundOff = Math.round(totalPercentage * 100.0) / 100.0;
+			String candidateScore = String.valueOf(roundOff);
+			candidate.setCandidateScore(candidateScore);
+			candidate.setNoOfReq(reqList.size());
+			if(candidateResume.getTitle() !=null && !"".equalsIgnoreCase(candidateResume.getTitle())){
+				candidate.setCandidateResume(candidateResume.getTitle());
+			}else{
+				candidate.setCandidateResume(candidateResume.getFileName());
+			}
+			
+			if(skillPercentage !=0 && totalPercentage !=0 ){
+				CandidateListcopy.add(candidate);
+			}
+		}
+		 Collections.sort(CandidateListcopy, new Comparator() {  
+	            @Override  
+	            public int compare(Object obj1, Object obj2) {  
+	            	Candidate candidate1 = (Candidate)obj1;  
+	            	Candidate candidate2 = (Candidate)obj2; 
+	            	return candidate2.getCandidateScore().compareToIgnoreCase(candidate1.getCandidateScore());  
+	            }  
+	        });
+		return CandidateListcopy;
+	}
 
 	
 	@SuppressWarnings("unused")
@@ -821,14 +993,14 @@ public class RequirementServiceImpl implements RequirementService {
 				 globalVarsMap.put("Experience","--"); 
 			 }
 		 if(loginUser.getFirstName()+" "+loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()+" "+loginUser.getLastName())){
-			 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
+			 globalVarsMap.put("LoginUser",loginUser.getFirstName()+" "+loginUser.getLastName());
 			 }else{
-				 globalVarsMap.put("loginUserName","--"); 
+				 globalVarsMap.put("LoginUser","--"); 
 			 }
 		 if(loginUser.getUserType()!= null && !"".equalsIgnoreCase(loginUser.getUserType())){
-			 globalVarsMap.put("role", loginUser.getUserType());
+			 globalVarsMap.put("Role", loginUser.getUserType());
 			 }else{
-				 globalVarsMap.put("role","--"); 
+				 globalVarsMap.put("Role","--"); 
 			 }
 		 
 		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
@@ -938,14 +1110,14 @@ public class RequirementServiceImpl implements RequirementService {
 
 
 	@Override
-	public void rejectedEmailScenario(User loginUser, User approverUser, Requirement requirement,
-			StringBuilder location, String requirementClientName, String client, String rejectedReason)
+	public void rejectedEmailScenario(User loginUser, User initiatorUser, Requirement requirement,
+			StringBuilder location,String rejectedReason)
 			throws Exception {
 
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(loginUser.getFirstName());
 		emailMessage.setLastName(loginUser.getLastName());
-		emailMessage.setToEmail(approverUser.getEmail());
+		emailMessage.setToEmail(initiatorUser.getEmail());
 		emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		emailMessage.setFromName(loginUser.getFirstName() + " " + loginUser.getLastName());
 
@@ -961,9 +1133,9 @@ public class RequirementServiceImpl implements RequirementService {
 		} else {
 			globalVarsMap.put("loginUserName", "--");
 		}
-		if (approverUser.getFirstName() + " " + approverUser.getLastName() != null
-				&& !"".equalsIgnoreCase(approverUser.getFirstName() + " " + approverUser.getLastName()))  {
-			globalVarsMap.put("approverName", approverUser.getFirstName() + " " + approverUser.getLastName());
+		if (loginUser.getFirstName() + " " + loginUser.getLastName() != null
+				&& !"".equalsIgnoreCase(loginUser.getFirstName() + " " + loginUser.getLastName()))  {
+			globalVarsMap.put("approverName", loginUser.getFirstName() + " " + loginUser.getLastName());
 		} else {
 			globalVarsMap.put("approverName", "--");
 		}
@@ -973,12 +1145,12 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("role", "--");
 		}
 		if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
-			globalVarsMap.put("requirementId-Name", requirement.getJobId());
+			globalVarsMap.put("requirementId-Name",requirement.getJobId()+"-"+requirement.getJobTitle());
 		} else {
 			globalVarsMap.put("requirementId-Name", "--");
 		}
 		if (loginUser.getUserName() != null && !"".equalsIgnoreCase(loginUser.getUserName()) ) {
-			globalVarsMap.put("jobInitiatorName", loginUser.getFirstName());
+			globalVarsMap.put("jobInitiatorName", initiatorUser.getFirstName());
 		} else {
 			globalVarsMap.put("jobInitiatorName", "--");
 		}

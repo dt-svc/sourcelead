@@ -154,6 +154,15 @@ public class Candidate {
 	
 	@Transient
 	private String candidateUpdateDateToString;
+	
+	 @Transient
+	 private String candidateScore;
+	    
+	 @Transient
+	 private int noOfReq;
+	 
+	 @Transient
+	 private String candidateResume;
 
 	public Long getId() {
 		return id;
@@ -535,6 +544,7 @@ public class Candidate {
 	}
 
 
+
 	public String getRateType() {
 		return rateType;
 	}
@@ -542,6 +552,34 @@ public class Candidate {
 
 	public void setRateType(String rateType) {
 		this.rateType = rateType;
+	}
+	public String getCandidateScore() {
+		return candidateScore;
+	}
+
+
+	public void setCandidateScore(String candidateScore) {
+		this.candidateScore = candidateScore;
+	}
+
+
+	public int getNoOfReq() {
+		return noOfReq;
+	}
+
+
+	public void setNoOfReq(int noOfReq) {
+		this.noOfReq = noOfReq;
+	}
+
+
+	public String getCandidateResume() {
+		return candidateResume;
+	}
+
+
+	public void setCandidateResume(String candidateResume) {
+		this.candidateResume = candidateResume;
 	}
 
 	

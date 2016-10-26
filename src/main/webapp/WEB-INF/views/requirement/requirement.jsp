@@ -168,6 +168,7 @@ $(document).ready(function() {
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Requirement List  </a>&raquo; Add Requirement </div>
   </section>
   <div class="content-area content-new clearfix">
+  <div id="loading"></div>
    <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
     <div class="form-horizontal req-dtls myForm row">
       <div class="clearfix">
@@ -300,7 +301,7 @@ $(document).ready(function() {
                     <option ${requirement.rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
                     <option ${requirement.rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-                    <option ${requirement.rateType  == 'others' ? 'selected' : ''}>Yearly</option>
+                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
               </div>
@@ -488,16 +489,18 @@ $(document).ready(function() {
 	                </div>
 	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
-	                  <select class="selectpicker"  id="clientRateType" value="${requirement.clientRateType}" name="clientRateType">
-	                    <option value="">Per</option>
-	                    <option ${requirement.clientRateType  == '1hr' ? 'selected' : ''}>1hr</option>
-	                    <option ${requirement.clientRateType  == '2hr' ? 'selected' : ''}>2hr</option>
-	                    <option ${requirement.clientRateType  == '3hr' ? 'selected' : ''}>3hr</option>
-	                    <option ${requirement.clientRateType  == '4hr' ? 'selected' : ''}>4hr</option>
-	                    <option ${requirement.clientRateType  == 'Other' ? 'selected' : ''}>Other</option>
+	                 <select class="selectpicker"  id="clientRateType" value="${requirement.clientRateType}" name="clientRateType">
+	                    
+			                <option value="">Rate Per</option>
+		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+		                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+		                    <option ${requirement.clientRateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
+		                    <option ${requirement.clientRateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+		                    <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+		                    <option ${requirement.clientRateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
+		                    <option ${requirement.clientRateType  == 'others' ? 'selected' : ''}>Yearly</option>
+		                    
 	                  </select>
-	                </div>
-	              </div>
            		</div>
               </div>
               <div class="form-group">
@@ -1352,7 +1355,7 @@ $(document).ready(function() {
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
-		alert("hi");
+		
 		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -1371,16 +1374,16 @@ $(document).ready(function() {
 		 }
 		 */
 		  if ($('#requirement_form').validate(false, validationSettings)){  
-			  alert("validated");
 			var frm = $('#requirement_form').serializeFormJSON();
-			alert(frm);
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			var form = $('#requirement_form')[0];
       		var formData = new FormData(form); 
 			  //It will escape all the special characters
 			var sourceleadUrl = '${sourceleadUrl}';
-			alert(sourceleadUrl);
+			$( "#submitForApproval" ).addClass('button').val('Processing..');
+     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		
 			$.ajax({
 						type : "POST",
 		        	    data: formData,

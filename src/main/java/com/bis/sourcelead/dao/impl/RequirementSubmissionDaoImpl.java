@@ -213,6 +213,15 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			}
 			return count;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmission> getRequirementPerCandidate(Long candudateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+	     String query = "from RequirementSubmission rs where rs.candidate.id = :candudateId and rs.submissionStatus = 'SUBMISSION' ";
+	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "candudateId", candudateId).setCacheable(true).list();
+	     return shortListCandidatesList;
+	}
 	
 	
     
