@@ -877,7 +877,8 @@ public class RequirementServiceImpl implements RequirementService {
 					locationPercentage = 10;
 				}
 			}
-			String candidateRateType = "Hourly";
+			
+			String candidateRateType = candidate.getRateType();
 			int reqRate = 200;
 			float perMonthCandidateSal = 0;
 			if("Hourly".equalsIgnoreCase(candidateRateType)){
@@ -909,7 +910,12 @@ public class RequirementServiceImpl implements RequirementService {
 			String candidateScore = String.valueOf(roundOff);
 			candidate.setCandidateScore(candidateScore);
 			candidate.setNoOfReq(reqList.size());
-			candidate.setCandidateResume(candidateResume.getTitle());
+			if(candidateResume.getTitle() !=null && !"".equalsIgnoreCase(candidateResume.getTitle())){
+				candidate.setCandidateResume(candidateResume.getTitle());
+			}else{
+				candidate.setCandidateResume(candidateResume.getFileName());
+			}
+			
 			if(skillPercentage !=0 && totalPercentage !=0 ){
 				CandidateListcopy.add(candidate);
 			}
