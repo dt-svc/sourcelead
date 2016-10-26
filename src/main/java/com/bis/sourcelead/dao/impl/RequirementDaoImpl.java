@@ -136,8 +136,6 @@ public class RequirementDaoImpl implements RequirementDao {
 		params.put("level1",1);
 		params.put("level2",2);
 		
-		/*String subQuery4 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and requirement.requirementSubmissionStatus = 'APPROVED' ";
-		params.put("userId",userId);*/
 		
 		
 		String subQuery = "";

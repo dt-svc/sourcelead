@@ -250,6 +250,14 @@ public class RequirementReleaseRestController {
 		requirement.setSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
 		requirement.setClientSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
 		
+		if(parentRequirement.getClientSubmissionTemplateId()!=null){
+			requirement.setClientSubmissionTemplateId(parentRequirement.getClientSubmissionTemplateId());
+		}
+		if(parentRequirement.getSubmissionTemplateId()!=null){
+			requirement.setSubmissionTemplateId(parentRequirement.getSubmissionTemplateId());
+		}
+		
+		
 		requirement.setStatus(Constants.TEAM_ACTIVE);
 		requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.NEW);
 		
