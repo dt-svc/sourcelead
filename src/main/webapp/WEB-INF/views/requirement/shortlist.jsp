@@ -33,7 +33,7 @@ function candidateShortList(requirementId){
 	           result = result + '     <table id="shortlistedPagination"  class="display" cellspacing="0" width="100%">';
 	           result = result + '       <thead>';
 	           result = result + '         <tr>';
-	           result = result + ' <th><input type="checkbox" onclick="selectAll();"  id="selectall" ></th>';
+	           result = result + ' <th><input type="checkbox" onclick="selectAllShortlisted();"  id="selectallSL" ></th>';
 	           result = result + '           <th>Name</th>';
 	           result = result + '           <th>Email</th>';
 	           result = result + '           <th>Ph. No</th>';
@@ -161,9 +161,9 @@ function pagination(){
 
 
 <script>
-function selectAll(){
+function selectAllShortlisted(){
 	
-	var checked = document.getElementById("selectall").checked  
+	var checked = document.getElementById("selectallSL").checked  
 	
         if(checked) {
             $('.submissionsChecks').each(function() {
