@@ -220,6 +220,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 candidateName=candidateName+" "+candidate.getLastName();
 		 }
 		 
+		 String interviewTypeValue="--";
+		 if(interviewType!=null){
+			 interviewTypeValue = interviewType;
+		 }
+		 
 		 String dateOfInterviewValue = dateOfInterview+" "+time;
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -228,7 +233,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("loginUser", emailMessage.getFromName());
 			 globalVarsMap.put("requirementTitle", requirementSubmission.getRequirement().getJobTitle());
 			 globalVarsMap.put("interviewDate", dateOfInterviewValue);
-			 globalVarsMap.put("interviewType",interviewType);
+			 globalVarsMap.put("interviewType",interviewTypeValue);
 			 globalVarsMap.put("applicantName",candidateName);
 			 globalVarsMap.put("Location",location);
 			 
@@ -284,6 +289,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 if(endTime!=null){
 			  time=time+" "+endTime;
 		 }
+		 String interviewTypeValue="--";
+		 if(interviewType!=null){
+			 interviewTypeValue = interviewType;
+		 }
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("applicantFirstName", emailMessage.getFirstName());
@@ -293,7 +302,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("loginOrgName",loginOrg.getOrgName());
 			 globalVarsMap.put("interviewDate", dateOfInterview);
 			 globalVarsMap.put("interviewTime",time);
-			 globalVarsMap.put("interviewType",interviewType);
+			 globalVarsMap.put("interviewType",interviewTypeValue);
 			 globalVarsMap.put("Location",location);
 			 globalVarsMap.put("acceptURL","<a href="+sourceleadUrl+"/"+"acceptOrRejectInterview?actionLink=acceptOrRejectInterview&interviewStatus=Attending&requirementSubmissionId="+requirementSubmission.getId()+">Attending</a>");
 			 globalVarsMap.put("rejectURL","<a href="+sourceleadUrl+"/"+"acceptOrRejectInterview?actionLink=acceptOrRejectInterview&interviewStatus=NotAttending&requirementSubmissionId="+requirementSubmission.getId()+">Not Attending</a>");
