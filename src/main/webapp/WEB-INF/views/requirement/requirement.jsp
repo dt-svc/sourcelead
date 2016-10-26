@@ -168,6 +168,7 @@ $(document).ready(function() {
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Requirement List  </a>&raquo; Add Requirement </div>
   </section>
   <div class="content-area content-new clearfix">
+  <div id="loading"></div>
    <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
     <div class="form-horizontal req-dtls myForm row">
       <div class="clearfix">
@@ -1352,7 +1353,7 @@ $(document).ready(function() {
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
-		alert("hi");
+		
 		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -1371,16 +1372,16 @@ $(document).ready(function() {
 		 }
 		 */
 		  if ($('#requirement_form').validate(false, validationSettings)){  
-			  alert("validated");
 			var frm = $('#requirement_form').serializeFormJSON();
-			alert(frm);
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			var form = $('#requirement_form')[0];
       		var formData = new FormData(form); 
 			  //It will escape all the special characters
 			var sourceleadUrl = '${sourceleadUrl}';
-			alert(sourceleadUrl);
+			$( "#submitForApproval" ).addClass('button').val('Processing..');
+     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		
 			$.ajax({
 						type : "POST",
 		        	    data: formData,

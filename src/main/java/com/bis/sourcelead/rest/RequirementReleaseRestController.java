@@ -192,6 +192,7 @@ public class RequirementReleaseRestController {
 			String[] contacts = contactsIds.split(",");
 			if(contacts != null &&  contacts.length>0 && contacts[0] != null && contacts[0] != "" ){
 				for(String contact   : contacts){
+						releasetype = Constants.CONTACTS;
 						OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(contact));
 						Requirement requirement  = new Requirement();
 						releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc);
@@ -210,6 +211,7 @@ public class RequirementReleaseRestController {
 					    Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(requirementId, orgSpoc.getId());
 					    if(isJobReleased.toString().equalsIgnoreCase("false")){
 					    	Requirement requirement  = new Requirement();
+					    	releasetype = Constants.VENDORSTYPE;
 							releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc);
 							requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype);
 

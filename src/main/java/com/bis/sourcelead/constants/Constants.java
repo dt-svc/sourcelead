@@ -139,6 +139,7 @@ public class Constants {
 
 
 	public static String CONTACTS = "CONTACTS";
+	public static String VENDORSTYPE = "VENDORS";
 	/**Constants values for notifications **/
 	
 	public static String NOTIFICATION_UNREAD = "unread";
