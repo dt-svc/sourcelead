@@ -251,10 +251,12 @@ function templatepagination(){
                     //choice selected
                     var choiceSel = $thisChoice.hasClass('selected') ? 1 : 0;
 
-                    choices.push({
-                        label: choiceLabel,
-                        sel: choiceSel
-                    });
+                    if($thisChoice.find('.choice-label').val() != null && $thisChoice.find('.choice-label').val() != '' && $thisChoice.find('.choice-label').val() != 'undefined'){
+	                    choices.push({
+	                        label: choiceLabel,
+	                        sel: choiceSel
+	                    });
+                    }
 
                 });
             }
