@@ -5,40 +5,40 @@ ALTER TABLE `sourcelead`.`TIMESHEET_ENTRIES`
        
   
 ALTER TABLE `sourcelead`.`TIMESHEET_ENTRIES` 
-       DROP FOREIGN KEY `TIMESHEET_ENTRIES_ibfk_2`, 
+       DROP FOREIGN KEY `timesheet_entries_ibfk_2`, 
        DROP COLUMN `MON_TASK`,
        DROP INDEX `MON_TASK`;
        
   
 ALTER TABLE `sourcelead`.`TIMESHEET_ENTRIES` 
-       DROP FOREIGN KEY `TIMESHEET_ENTRIES_ibfk_3`, 
+       DROP FOREIGN KEY `timesheet_entries_ibfk_3`, 
        DROP COLUMN `TUE_TASK`,
        DROP INDEX `TUE_TASK`;
         
        
 ALTER TABLE `sourcelead`.`TIMESHEET_ENTRIES` 
-       DROP FOREIGN KEY `TIMESHEET_ENTRIES_ibfk_4`, 
+       DROP FOREIGN KEY `timesheet_entries_ibfk_4`, 
        DROP COLUMN `WED_TASK`,
        DROP INDEX `WED_TASK`;       
  
        
 ALTER TABLE `sourcelead`.`TIMESHEET_ENTRIES` 
-       DROP FOREIGN KEY `TIMESHEET_ENTRIES_ibfk_5`, 
+       DROP FOREIGN KEY `timesheet_entries_ibfk_5`, 
        DROP COLUMN `THU_TASK`,
        DROP INDEX `THU_TASK`;       
        
 ALTER TABLE `sourcelead`.`TIMESHEET_ENTRIES` 
-       DROP FOREIGN KEY `TIMESHEET_ENTRIES_ibfk_6`, 
+       DROP FOREIGN KEY `timesheet_entries_ibfk_6`, 
        DROP COLUMN `FRI_TASK`,
        DROP INDEX `FRI_TASK`;  
        
 ALTER TABLE `sourcelead`.`TIMESHEET_ENTRIES` 
-       DROP FOREIGN KEY `TIMESHEET_ENTRIES_ibfk_7`, 
+       DROP FOREIGN KEY `timesheet_entries_ibfk_7`, 
        DROP COLUMN `SAT_TASK`,
        DROP INDEX `SAT_TASK`; 
        
 ALTER TABLE `sourcelead`.`TIMESHEET_ENTRIES` 
-       DROP FOREIGN KEY `TIMESHEET_ENTRIES_ibfk_8`, 
+       DROP FOREIGN KEY `timesheet_entries_ibfk_8`, 
        DROP COLUMN `SUN_TASK`,
        DROP INDEX `SUN_TASK`;   
        

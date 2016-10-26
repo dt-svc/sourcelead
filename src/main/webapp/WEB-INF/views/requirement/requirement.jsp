@@ -293,14 +293,14 @@ $(document).ready(function() {
                 <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker" id="rateType" name="rateType">
+                    <option value="">Rate Per</option>
                     <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
                     <option ${requirement.rateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
                     <option ${requirement.rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
                     <option ${requirement.rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-                    <option ${requirement.rateType  == 'others' ? 'selected' : ''}>Other</option>
-                 
+                    <option ${requirement.rateType  == 'others' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
               </div>
@@ -363,9 +363,12 @@ $(document).ready(function() {
                        <input type="file" name="uploadBtn" id="uploadBtn"  class="hidden upload">
                   </span>
                 </label>
+                
                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file" name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_Space validatedoc" data-validation-optional="true">
+              <div class="clearfix"></div> <div class="clearfix"></div>
               </div>
             </div>
+            <div class="clearfix"></div>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work --> 
           </div>
            <div class="form-group">
@@ -1129,7 +1132,7 @@ $(document).ready(function() {
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
                   <input type="text" placeholder="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
-                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1"></i> </span>
+                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="getTeamOwners();"></i> </span>
                   </div>
                 <!-- Modal content Assign To -->
                 <div role="dialog" id="assignTeam"   class="modal fade">
@@ -1301,10 +1304,10 @@ $(document).ready(function() {
                             <label class="col-lg-4">Team Owner <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                              <select class="form-control"  name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">
-			                    	<option value=''>-- Select Owner Id --</option>
+			                    	<%-- <option value=''>-- Select Owner Id --</option>
 				                    <c:forEach var="report" items="${all_users_List}">
 						                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-									</c:forEach>
+									</c:forEach> --%>
 			                  </select>
                               </div>
                             </div>
@@ -1312,9 +1315,10 @@ $(document).ready(function() {
                             <label class="col-lg-4">Team Members <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                              <select multiple class="chosen-select form-control select-bg" name="memberUserId" id="memberUserId" placeholder="Team Member *" data-validation="required validate_Space" field-name="Team Member">
+					                   <%--  <option disabled >-Select Team Members-</option>
 					                    <c:forEach var="report" items="${all_users_List}">
 							                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-								       </c:forEach>
+								       </c:forEach> --%>
 		                       </select>
                               </div>
                             </div>
@@ -1364,6 +1368,15 @@ $(document).ready(function() {
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
+		
+		var rate = document.getElementById("rate").value; 
+		 if(rate != null && rate != ""){
+			 $('#rateType').removeAttr('data-validation-optional');
+			 $('#rateType').attr("data-validation","required"); 
+		 }else{
+			 $('#rateType').removeAttr('data-validation');
+			 $('#ratePer').attr("data-validation-optional","true"); 
+		 }
 		
 		  if ($('#requirement_form').validate(false, validationSettings)){  
 			var frm = $('#requirement_form').serializeFormJSON();
@@ -2092,46 +2105,60 @@ function assignMembers() {
 		$('#memberUserId').val('').trigger('chosen:updated');
 	}
 </script>
+
 <script type="text/javascript">
-function getTeamMembers(){
-	
+function getTeamOwners(){ 
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 var teamOwnerUserId = document.getElementById("teamOwnerId").value;
-	 if(teamOwnerUserId != null && teamOwnerUserId != ''  && teamOwnerUserId != 'undefined'){
+	 var teamMemberUserId = document.getElementById("memberUserId").value;
+     $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?${_csrf.parameterName}=${_csrf.token}&teamOwnerUserId="+teamMemberUserId,
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-Select Team Owners-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#ownerUserId").empty();
+			        $("#ownerUserId").append(output);
+			        $("#ownerUserId").trigger("chosen:updated");
+			        getTeamMembers(); 
+		        },
+		        error: function(e){
+		            
+		        }
+		    });  
+} 
+</script>
+
+
+<script type="text/javascript">
+function getTeamMembers(){ 
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var teamOwnerUserId = document.getElementById("ownerUserId").value;
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?${_csrf.parameterName}=${_csrf.token}&teamOwnerUserId="+teamOwnerUserId,
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
-		        	output = output + "<option value=''>-Select Team Members-</option>"; 
+		        	output = output + "<option disabled >-Select Team Members-</option>"; 
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
 			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
 					}
-		        	$("#teamMembersId").empty();
-			        $("#teamMembersId").append(output);
+		        	$("#memberUserId").empty();
+			        $("#memberUserId").append(output);
+			        $("#memberUserId").trigger("chosen:updated");
 		        },
 		        error: function(e){
 		            
 		        }
 		    });
-	 }
-	 $(function(){
-		    var config = {
-				  '.chosen-select'           : {},
-				  '.chosen-select-deselect'  : {allow_single_deselect:true},
-				  '.chosen-select-no-single' : {disable_search_threshold:10},
-				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-				  '.chosen-select-width'     : {width:"95%"}
-				}
-		   
-		    $('.chosen-select').each(function() {
-					var $this = $(this);
-					$this.next().css({'width': '100%'});
-			  })
-		});
 } 
 </script>
 

@@ -1,10 +1,14 @@
 package com.bis.sourcelead.rest;
 
+import java.io.File;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +18,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -45,10 +53,22 @@ public class RequirementOfferRestController {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	RequirementOffersService requirementOffersService;
+	
 	
 	@RequestMapping(value = "/saveOffer" , method = RequestMethod.POST)
-	   public String saveOffer(@RequestParam(value="jsonData", required=false) String json, HttpServletRequest request) throws Exception {
+	public String saveOffer(@RequestParam(value="jsonData", required=false) String json,MultipartHttpServletRequest request) throws Exception {
+			   					 
 			
+
+		    String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+			
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			requirementOffersService.saveRequirementOffers(jsonObj, user, orgLocations,request);
 			return "success";
 	    
 	}

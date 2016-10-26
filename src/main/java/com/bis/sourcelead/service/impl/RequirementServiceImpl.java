@@ -339,7 +339,7 @@ public class RequirementServiceImpl implements RequirementService {
 						rah.setUpdatedDate(commonUtil.currentDate());
 						  
 						requirementApproverHierarchyList.add(rah);
-						  approverEmailScenario(user,approverUser,requirement,location,client);
+						  approverEmailScenario(user,approverUser,requirement,location);
 
 				  }
 				 
@@ -365,7 +365,7 @@ public class RequirementServiceImpl implements RequirementService {
 					  rah.setUpdatedDate(commonUtil.currentDate());
 					  
 					  requirementApproverHierarchyList.add(rah);
-						approverEmailScenario(user, approverUser ,requirement,location,client);
+						approverEmailScenario(user, approverUser ,requirement,location);
 
 				  }
 				  
@@ -436,6 +436,8 @@ public class RequirementServiceImpl implements RequirementService {
 						requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
 						requirementAssignTo.setTeamId(team);
 						requirementAssignToList.add(requirementAssignTo);
+						AssignToTeamMembersEmail(user, assUser, requirement,location);
+
 					}
 				}
 			}
@@ -443,6 +445,7 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
+		mailRequirementtoManager(user,user,requirement,location);
 		return savedRequirement;
 	}
 
@@ -537,10 +540,9 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementDao.getUserAssignJobCount(userId);
 	}
 
-	
+
 	@Override
-	public void approverEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location, String client) throws Exception {
-		Org org = orgService.findOrgByID(Long.parseLong(client));
+	public void approverEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location) throws Exception {
 		
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
@@ -551,18 +553,58 @@ public class RequirementServiceImpl implements RequirementService {
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-//		 user = (User) SourceLeadSessionManager.getSessionAttribute("user");
-		 globalVarsMap.put("requirementName", requirement.getJobTitle());
-		 globalVarsMap.put("requirementLocation", location.toString());
-		 globalVarsMap.put("requirementRate", requirement.getRate());
-		 globalVarsMap.put("client", org.getOrgName());
-		 globalVarsMap.put("approverName", approverUser.getFirstName());
-		 globalVarsMap.put("lastName",emailMessage.getLastName());
-		 globalVarsMap.put("jobInitiatorName", loginUser.getFirstName());
-		 globalVarsMap.put("userEmailId",approverUser.getEmail()); //
+		 
+		 if(requirement.getJobTitle()!= null && !"".equalsIgnoreCase(requirement.getJobTitle())){
+			 globalVarsMap.put("requirementName", requirement.getJobTitle());
+			 }else{
+				 globalVarsMap.put("requirementName","NO DATA");
+			 }
+		 if(location!= null){
+			 globalVarsMap.put("requirementLocation", location.toString());
+			 }else{
+				 globalVarsMap.put("requirementLocation","NO DATA");
+			 }
+		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
+			 globalVarsMap.put("requirementRate", requirement.getRate());
+			 }else{
+				 globalVarsMap.put("requirementRate","NO DATA");
+			 }
+		if(requirement.getClientId().getResponderLocationId().getOrg().getOrgName()!=null && !"".equalsIgnoreCase(requirement.getClientId().getResponderLocationId().getOrg().getOrgName())){
+			 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+		}else{
+			globalVarsMap.put("client","NO DATA");
+			 }
+		if(approverUser.getFirstName()!= null && !"".equalsIgnoreCase(approverUser.getFirstName())){
+			globalVarsMap.put("approverName", approverUser.getFirstName());
+		}else{
+			globalVarsMap.put("approverName","NO DATA");
+		}
+		if(emailMessage.getLastName()!=null && !"".equalsIgnoreCase(emailMessage.getLastName())){
+			globalVarsMap.put("lastName",emailMessage.getLastName());	
+		}else{
+			globalVarsMap.put("lastName","NO DATA");
+		}
+		if(loginUser.getFirstName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName())){
+			globalVarsMap.put("jobInitiatorName", loginUser.getFirstName());
+			}else{
+			globalVarsMap.put("jobInitiatorName","NO DATA");
+		}
+		if(approverUser.getEmail()!=null && !"".equalsIgnoreCase(approverUser.getEmail())){
+			globalVarsMap.put("userEmailId",approverUser.getEmail());
+			}else{
+				globalVarsMap.put("userEmailId","NO DATA");
+		}
 		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
-		 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
-		 globalVarsMap.put("role", loginUser.getUserType());
+		 if(loginUser.getFirstName()+" "+loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()+" "+loginUser.getLastName())){
+			 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
+			 }else{
+				 globalVarsMap.put("loginUserName","NO DATA");
+			}
+		 if(loginUser.getUserType()!=null && !"".equalsIgnoreCase(loginUser.getUserType())){
+			 globalVarsMap.put("role", loginUser.getUserType());
+			 }else{
+				 globalVarsMap.put("role","NO DATA");
+			}
 		 
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
@@ -587,13 +629,13 @@ public class RequirementServiceImpl implements RequirementService {
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
-	}
-
+	
+}
 	
 	
 	
 	@Override
-	public void approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location, String client) throws Exception {
+	public void approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location) throws Exception {
 		
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
@@ -604,13 +646,32 @@ public class RequirementServiceImpl implements RequirementService {
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-//		 user = (User) SourceLeadSessionManager.getSessionAttribute("user");
 		 globalVarsMap.put("requirementName", requirement.getJobTitle());
-		 globalVarsMap.put("requirementLocation",  requirement.getCountry());
+		 if(location != null){
+		 globalVarsMap.put("requirementLocation", location.toString());
+		 }else{
+		 globalVarsMap.put("requirementLocation","NO DATA");
+		 }
+		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
 		 globalVarsMap.put("requirementRate", requirement.getRate());
+		 }else{
+		 globalVarsMap.put("requirementRate","NO DATA");
+		 }
+		 if(requirement.getClientId().getResponderLocationId().getOrg().getOrgName()!= null && !"".equalsIgnoreCase(requirement.getClientId().getResponderLocationId().getOrg().getOrgName())){
 		 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+		 }else{
+		 globalVarsMap.put("client","NO DATA");
+		 }
+		 if(approverUser.getFirstName()!= null && !"".equalsIgnoreCase(approverUser.getFirstName())){
 		 globalVarsMap.put("approverName", approverUser.getFirstName());
+		 }else{
+		 globalVarsMap.put("approverName","NO DATA");
+		 }
+		 if(loginUser.getFirstName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName())){
 		 globalVarsMap.put("jobInitiatorName", loginUser.getFirstName());
+		 }else{
+		 globalVarsMap.put("jobInitiatorName", loginUser.getFirstName());	 
+		 }
 		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 		 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
 		 globalVarsMap.put("role", loginUser.getUserType());
@@ -643,6 +704,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public void acceptEmailScenario(User loginUser, User intiatorUser, Requirement requirement) throws Exception {
 		
@@ -655,14 +717,36 @@ public class RequirementServiceImpl implements RequirementService {
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-//		 user = (User) SourceLeadSessionManager.getSessionAttribute("user");
-		 globalVarsMap.put("requirementName", requirement.getJobTitle());
-		 globalVarsMap.put("requirementId-Name", requirement.getJobId());
-		 globalVarsMap.put("approverName", loginUser.getFirstName());
-		 globalVarsMap.put("jobInitiatorName", loginUser.getFirstName());
+		 if(requirement.getJobTitle()!= null  && !"".equalsIgnoreCase(requirement.getJobTitle())){
+		 globalVarsMap.put("requirementName", requirement.getJobTitle()); 
+		 }else{
+		 globalVarsMap.put("requirementName", "NO DATA");	 
+		 }
+		 if( requirement.getJobId()!= null  && !"".equalsIgnoreCase( requirement.getJobId())){
+		 globalVarsMap.put("requirementId-Name", requirement.getJobId());	 
+		 }else{
+	     globalVarsMap.put("requirementId-Name","NO DATA"); 
+		 }
+		 if(loginUser.getFirstName()!= null  && !"".equalsIgnoreCase(loginUser.getFirstName())){
+		 globalVarsMap.put("approverName", loginUser.getFirstName());	 
+		 }else{
+		 globalVarsMap.put("approverName","NO DATA"); 
+		 }
+		 if(loginUser.getFirstName()!= null  && !"".equalsIgnoreCase(loginUser.getFirstName())){
+		 globalVarsMap.put("jobInitiatorName", loginUser.getFirstName()); 
+		 }else{
+		 globalVarsMap.put("jobInitiatorName","NO DATA"); 
+		 }
+		 if(loginUser.getFirstName()+" "+loginUser.getLastName()!= null  && !"".equalsIgnoreCase( loginUser.getFirstName()+" "+loginUser.getLastName())){
 		 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
+		 }else{
+		 globalVarsMap.put("loginUserName","NO DATA"); 
+		 }
+		 if(loginUser.getUserType()!= null  && !"".equalsIgnoreCase(loginUser.getUserType())){
 		 globalVarsMap.put("role", loginUser.getUserType());
-		 
+		 }else{
+		 globalVarsMap.put("role","NO DATA"); 
+		 }
 		 
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
@@ -673,6 +757,168 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVED_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+
+	}
+
+	
+	@SuppressWarnings("unused")
+	@Override
+	public void mailRequirementtoManager(User loginUser, User managerUser, Requirement requirement,StringBuilder location) throws Exception {
+	
+		 managerUser = userService.getUserById(requirement.getManagerUserId().getId());
+		
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(loginUser.getFirstName());
+		 emailMessage.setLastName(loginUser.getLastName());
+		 emailMessage.setToEmail(managerUser.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 if(managerUser.getFirstName()!= null  && !"".equalsIgnoreCase(managerUser.getFirstName())){
+			 globalVarsMap.put("OwnerName", managerUser.getFirstName());
+			 }else{
+				 globalVarsMap.put("OwnerName","NO DATA"); 
+			 }
+		 if(loginUser.getFirstName()!= null  && !"".equalsIgnoreCase(loginUser.getFirstName())){
+			 globalVarsMap.put("JobInitiator", loginUser.getFirstName());
+			 }else{
+				 globalVarsMap.put("JobInitiator","NO DATA"); 
+			 }
+		 if(requirement.getJobTitle()!= null  && !"".equalsIgnoreCase(requirement.getJobTitle())){
+			 globalVarsMap.put("RequirementTitle", requirement.getJobTitle());
+			 }else{
+				 globalVarsMap.put("RequirementTitle","NO DATA"); 
+			 }
+		 if(location!= null){
+			 globalVarsMap.put("RequirementLocation", location.toString());
+			 }else{
+				 globalVarsMap.put("RequirementLocation","NO DATA"); 
+			 }
+		 if(requirement.getRate()!= null  && !"".equalsIgnoreCase(requirement.getRate())){
+			 globalVarsMap.put("RequirementRate", requirement.getRate());
+			 }else{
+				 globalVarsMap.put("RequirementRate","NO DATA"); 
+			 }
+		 if(requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp())){
+			 globalVarsMap.put("Experience", requirement.getMaxExp());
+			 }else{
+				 globalVarsMap.put("Experience","NO DATA"); 
+			 }
+		 if(loginUser.getFirstName()+" "+loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()+" "+loginUser.getLastName())){
+			 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
+			 }else{
+				 globalVarsMap.put("loginUserName","NO DATA"); 
+			 }
+		 if(loginUser.getUserType()!= null && !"".equalsIgnoreCase(loginUser.getUserType())){
+			 globalVarsMap.put("role", loginUser.getUserType());
+			 }else{
+				 globalVarsMap.put("role","--"); 
+			 }
+		 
+		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAILREQUIREMENTTOMANAGER,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	public void AssignToTeamMembersEmail(User loginUser, User assUser, Requirement requirement,StringBuilder location) throws Exception {
+			assUser= userService.getUserById(assUser.getId());
+
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(loginUser.getFirstName());
+		 emailMessage.setLastName(loginUser.getLastName());
+		 emailMessage.setToEmail(assUser.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 if(assUser.getFirstName()!= null && !"".equalsIgnoreCase(assUser.getFirstName())){
+			 globalVarsMap.put("OwnerName", assUser.getFirstName());
+			 }else{
+				 globalVarsMap.put("OwnerName","--"); 
+			 }
+		 if( requirement.getJobTitle()!= null && !"".equalsIgnoreCase(requirement.getJobTitle())){
+			 globalVarsMap.put("RequirementTitle", requirement.getJobTitle());
+			 }else{
+				 globalVarsMap.put("RequirementTitle","--"); 
+			 }
+		 if(location!= null){
+			 globalVarsMap.put("RequirementLocation", location.toString());
+			 }else{
+				 globalVarsMap.put("RequirementLocation","--"); 
+			 }
+		 if( requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
+			 globalVarsMap.put("RequirementRate", requirement.getRate());
+			 }else{
+				 globalVarsMap.put("RequirementRate","--"); 
+			 }
+		 if( requirement.getMaxExp()!= null && !"".equalsIgnoreCase( requirement.getMaxExp())){
+			 globalVarsMap.put("Experience", requirement.getMaxExp());
+			 }else{
+				 globalVarsMap.put("Experience","--"); 
+			 }
+		 if( loginUser.getFirstName()+" "+loginUser.getLastName()!= null ||!"".equalsIgnoreCase( loginUser.getFirstName()+" "+loginUser.getLastName())){
+			 globalVarsMap.put("LoginUser",loginUser.getFirstName()+" "+loginUser.getLastName());
+			 }else{
+				 globalVarsMap.put("LoginUser","--"); 
+			 }
+		 if( loginUser.getUserType() != null && !"".equalsIgnoreCase(loginUser.getUserType())){
+			 globalVarsMap.put("Role", loginUser.getUserType());
+			 }else{
+				 globalVarsMap.put("Role","--"); 
+			 }
+		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ASSIGNTEAMMEMBERSFORREQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
 		
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
