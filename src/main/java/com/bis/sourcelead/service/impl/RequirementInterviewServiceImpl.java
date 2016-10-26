@@ -151,8 +151,12 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					        	   sendEmailToApplicants(candidate,requirementSubmission, user, jsonObj.getString(c+"startTime"), jsonObj.getString(c+"endTime"), loginOrg, jsonObj.getString(c+"dateOfInterview"), jsonObj.getString(c+"location"),jsonObj.getString(c+"interviewType"));
 					           }
 					           
-					           
-					           
+
+					           if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty()&& jsonObj.getString("notificationToSpoc").equalsIgnoreCase("Y")){
+					        	   sendEmailToVendors(candidate,requirementSubmission, user, jsonObj.getString(c+"startTime"), jsonObj.getString(c+"endTime"), loginOrg, jsonObj.getString(c+"dateOfInterview"), jsonObj.getString(c+"location"),jsonObj.getString(c+"interviewType"));
+					           }
+
+	           
 					           if(jsonObj.has("notificationToOthersEmails") && !jsonObj.getString("notificationToOthersEmails").isEmpty()){
 									String[] othersEmails = jsonObj.getString("notificationToOthersEmails").split(",");
 									for (String emailId : othersEmails) {
@@ -163,6 +167,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 									
 									
 							  }
+
 					           //to store RequirementInterviewers
 					           if(jsonObj.has(c+"interviewer") && !jsonObj.getString(c+"interviewer").isEmpty()){
 					        	    String interviewerIds = jsonObj.getString(c+"interviewer");
@@ -318,6 +323,66 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = null;
 			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_INTERVIEW,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 
+	}	
+	
+	
+	
+	
+	
+	
+	
+	//vendors mail sending the private method
+
+	public void sendEmailToVendors(Candidate candidate, RequirementSubmission requirementSubmission, User loginUser, String startTime, String endTime,Org loginOrg,String dateOfInterview,String location, String interviewType)	throws Exception {
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(candidate.getFirstName());
+		 emailMessage.setLastName(candidate.getLastName());
+		 emailMessage.setToEmail(candidate.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 
+		 String time=startTime;
+		 if(endTime!=null){
+			  time=time+" "+endTime;
+		 }
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("vendorFirstName", emailMessage.getFirstName());
+			 globalVarsMap.put("vendorLastName",emailMessage.getLastName());
+			 globalVarsMap.put("loginUser", emailMessage.getFromName());
+			 globalVarsMap.put("requirementName", requirementSubmission.getRequirement().getJobTitle());
+			 globalVarsMap.put("loginOrgName",loginOrg.getOrgName());
+			 globalVarsMap.put("interviewDate", dateOfInterview);
+			 globalVarsMap.put("interviewTime",time);
+			 globalVarsMap.put("interviewType",interviewType);
+			 globalVarsMap.put("location",location);
+			 globalVarsMap.put("applicantName",emailMessage.getFirstName() +" "+emailMessage.getLastName());
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = null;
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_INTERVIEW,Constants.ENTITY_TYPE_EMAIL);
 		
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);

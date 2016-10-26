@@ -165,9 +165,12 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
 		candidate.setCandidateResumes(candidateResumesList);
-		if(multiFile.getOriginalFilename()!=null){
-			candidate.setFileName(multiFile.getOriginalFilename());
+		if(multiFile != null){
+			if(multiFile.getOriginalFilename()!=null){
+				candidate.setFileName(multiFile.getOriginalFilename());
+			}
 		}
+		
 		candidate.setUpdatedBy(user.getUserCode());
 		candidate.setUpdatedDate(commonUtil.currentDate());
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
