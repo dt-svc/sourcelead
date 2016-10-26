@@ -185,7 +185,9 @@ public class RequirementReleaseRestController {
 			                                    @RequestParam(value="vendorIds", required=false) String vendorIds,
 			                                    HttpServletRequest request) throws Exception {
 			
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	String releasetype = null;
 			Requirement parentRequirement = requirementService.getRequirementByRequirementId(requirementId);
 			String[] contacts = contactsIds.split(",");
 			if(contacts != null &&  contacts.length>0 && contacts[0] != null && contacts[0] != "" ){
@@ -193,6 +195,8 @@ public class RequirementReleaseRestController {
 						OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(contact));
 						Requirement requirement  = new Requirement();
 						releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc);
+						requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype);
+
 				}
 			}	
 			
@@ -207,6 +211,8 @@ public class RequirementReleaseRestController {
 					    if(isJobReleased.toString().equalsIgnoreCase("false")){
 					    	Requirement requirement  = new Requirement();
 							releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc);
+							requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype);
+
 					    }
 					}
 				}

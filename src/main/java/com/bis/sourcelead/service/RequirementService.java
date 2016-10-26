@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
@@ -42,6 +43,11 @@ public interface RequirementService {
 	public void mailRequirementtoManager(User loginUser, User intiatorUser, Requirement requirement,StringBuilder location) throws Exception;
 	
 	public void AssignToTeamMembersEmail(User loginUser, User managerUser, Requirement requirement,StringBuilder location) throws Exception;
+
+	void rejectedEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location,
+			String requirementClientName, String client, String rejectedReason) throws Exception;
+
+	void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc, OrgLocations loginOrgLocation,String releasetype) throws Exception;
 
 
 
