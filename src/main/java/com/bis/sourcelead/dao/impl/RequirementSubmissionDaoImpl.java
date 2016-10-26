@@ -182,7 +182,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 submissionStages = "and rs.submissionStatus <> 'SUBMISSION' and rs.submissionStatus <> 'SUBMIT_TO_CLIENT' ";
 		 }
 		 
-	     String query = "from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and (rs.sourceSubmission.id IS NULL or rs.sourceSubmission.id = '') "+submissionStages+" ";
+	     String query = "from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId  "+submissionStages+" ";
 	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setLong( "requirementId", requirementId).setCacheable(true).list();
 	     return shortListCandidatesList;
 	}
