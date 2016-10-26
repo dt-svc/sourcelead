@@ -715,7 +715,138 @@ $(document).ready(function() {
         </div> -->
               
         
-      </div>    
+      </div>   
+      
+      <!-- Addede by Rajashekar -->
+      <div id="tab-3" class="project_tabs_inn">
+              <div class="timesheet_head candidateHead recruitmentHead">
+                <div class="rec_head"></div>
+              </div>
+              <div class="require_wrap_table recommend_table">
+                <table>
+                  <tbody>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Ph. No</th>
+                      <th>Resume</th>
+                      <th>No of views</th>
+                      <th>Score</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span>
+                        <select>
+                          <option>Interview</option>
+                          <option>Submit</option>
+                          <option>Joined</option>
+                          <option>Screening</option>
+                          <option>Offer</option>
+                        </select>
+                        </span></div>
+                  </td>
+                  </tr>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span><b>Offer</b><i class=" fa fa-edit"></i></span></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span><b>Offer</b><i class=" fa fa-edit"></i></span></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span><b class="proj_closed">Submit</b><i class=" fa fa-edit"></i></span></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="proj_show"><span>Vannam vannam vannam vannam</span><i class="fa fa-binoculars"></i></div></td>
+                    <td><div><span>9000 000 000</span></div></td>
+                    <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>
+                    <td><div><span>44</span></div></td>
+                    <td><div><span>100</span></div></td>
+                    <td><div><span><b class="proj_closed">Submit</b><i class=" fa fa-edit"></i></span></div></td>
+                  </tr>
+                  </tbody>
+                  
+                </table>
+              </div>
+              <nav>
+                <ul id="paging" class="pagination">
+                  <li><a href="#">Previous</a></li>
+                  <li><a href="#">2</a></li>
+                  <li><a href="#">3</a></li>
+                  <li class="disabled"><a href="#">6</a></li>
+                  <li data-page="last"><a href="#">Next</a></li>
+                </ul>
+                <div class="clearfix"></div>
+              </nav>
+            </div>            
+            
+          </div>
+    
+    <div class="side_mask">
+      <div class="proj_close"></div>
+    </div>
+      
+      <!-- End Raj --> 
     
     
     <div class="side_mask">
@@ -975,7 +1106,7 @@ function sideBar(requirementId){
               			var result = '';
               			
               			result = result+'    <div class="profile_details requirement_details clearfix">';
-				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">SL 201 - Business Analyst - Full Time<i></i></h4></a>';
+				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
 				        result = result+'<div class="hide-row">';
 				        
 				       /*  result = result+'    <div class="profile_details requirement_details clearfix">'; */
@@ -988,18 +1119,15 @@ function sideBar(requirementId){
 				        result = result+'</div>';
 				        result = result+'<div class="col-md-9">';
 				        result = result+'<div class="canDetails clearfix">';
-				        result = result+'<h4>SL 201 - Business Analyst - Full Time</h4>';
+				        result = result+'<h4>'+json.jobTitle+'-'+json.jobType+'</h4>';
 				        result = result+'<div class="row">';
 				        result = result+'<div class="col-md-6">';
 				        result = result+'<ul class="list-unstyled can-perdt">';
-				        if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined'&& json.minExp != null && json.minExp != '')
+				        if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined' && json.minExp != null && json.minExp != '' && json.minExp != 'undefined')
 				        	{
-				       	result = result+'<li><i class="fa fa-black-tie"></i><span>Experience : '+json.maxExp+' years</span></li>';
+				       	result = result+'<li><i class="fa fa-black-tie"></i><span>Experience: '+json.minExp+'-'+json.maxExp+' years</span></li>';
 				        	}
-					    else if(json.minExp != null && json.minExp != '' && json.minExp !='undefined'){
-						result = result+' <li><i class="fa fa-black-tie"></i><span>Experience : '+json.minExp+' years</span></li>';
-	
-					        }
+					   
 				        else{
 					    result = result+'<li><i class="fa fa-black-tie"></i><span>Experience : --</span></li>';
 				        }
@@ -1103,6 +1231,7 @@ function sideBar(requirementId){
 					    result = result+'    <ul class="project-tabs-menu">';
 					    result = result+'      <li class="current"><a href="#tab-1" onclick="requirementDetails('+requirementId+');">Details</a></li>';
 					    result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+');">Pipeline</a></li>';
+					    result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
 					    result = result+'      <div class="clearfix"></div>';
 					    result = result+'    </ul>';
 					    result = result+'    <div class="project_tabs">';
@@ -1194,21 +1323,24 @@ function requirementDetails(requirementId){
 				            
 				            result = result +' <div class="pull-right">';
 				            
-				            if(json.requirementApproverHierarchyStatus !='APPROVED'  && json.requirementApproverHierarchyStatus !='REJECTED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){ 
+                            if(json.requirementSubmissionStatus  == "DRAFT"  && json.createdBy == '${SourceLeadWeb_userCode}' ){ 
 					            result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
-				             } 
+				             }else if(json.requirementSubmissionStatus  !='DRAFT' && json.requirementApproverHierarchyStatus !='APPROVED'  && json.requirementApproverHierarchyStatus !='REJECTED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){ 
+				            	result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
+				            }
 				            var APPROVED = "APPROVED";     
 				            var REJECTED = "REJECTED";
 
-				             if(json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
-               					            result = result +'<button  class="btn btn-success mr" type="button" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
-               					          result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
+				             if(json.requirementSubmissionStatus  !='DRAFT'  &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
+               					 result = result +'<button  class="btn btn-success mr" type="button" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
+               		             result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
    				           	 }else if(json.requirementApproverHierarchyStatus == 'APPROVED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
       						              result = result +'<button  id="requirementStatus" class="btn btn-success pull-right mr" type="button">'+json.requirementApproverHierarchyStatus+'</button>';
-    				         }
-   				             else if(json.requirementApproverHierarchyStatus == 'REJECTED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
+    				         }else if( json.requirementSubmissionStatus  !='DRAFT'  && json.requirementApproverHierarchyStatus == 'REJECTED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
 					              result = result +'<button  id="requirementStatus" class="btn btn-danger pull-right mr" type="button">'+json.requirementApproverHierarchyStatus+'</button>';
 		                     }
+				             
+				             
 				             result = result +'     </div>';
 				             result = result +'     </div>';
 				             
@@ -1224,7 +1356,7 @@ function requirementDetails(requirementId){
 					         else{
 					           	 result = result +'   <textarea placeholder="Enter description"> NO DATA</textarea>';
 				    	        }
-				            result = result +'   <h2>Other details:</h2>';
+				            result = result +'   <h2> Details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            if(json.positions != null && json.positions != '' && json.positions != 'undefined'){
 				            result = result +'     <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>'+json.positions+'</span>';
@@ -1242,15 +1374,25 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-					            result = result +'     <div class="require_wrap_details_cta"> <b>Attachment:</b> <span>'+json.fileName+'<i class="glyphicon glyphicon-save"></i></span>';
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Attachment:</b> <span>'+json.fileName+'</span>';
 					            }
 					            else{
 					            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
 					            }				            
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
+				            if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Skills:</b> <span>'+json.skills+'</span>';
+					            }
+					            else{
+					            result = result +'<div class="require_wrap_details_cta"> <b>Skills:</b> <span> -- </span>';	
+					            }				   
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
+				            result = result +'     <div class="clearfix"></div>';
+				            result = result +'   </div>';
+				            if(json.isClientJob  == 'Y')
+				            	{
 				            result = result +'   <h2>Client details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            
@@ -1323,16 +1465,26 @@ function requirementDetails(requirementId){
 					            else{
 						        result = result +'     <div class="require_wrap_details_cta"> <b>Submission Form:</b> <span> --- </span>';
 	  	
-					            }				            result = result +'       <div class="clearfix"></div>';
+					            }				            
+				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
+				            	}
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
+				            if(json.isClientJob  == 'N'){
 				            result = result +'   <h2>Internal details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            //result = result +'     <div class="require_wrap_details_cta"> <b>Manager:</b> <span>Manager</span>';
 				            result = result +'       <div class="clearfix"></div>';
+				            if(json.clientSubmissionTemplate != '' && json.clientSubmissionTemplate != null && json.clientSubmissionTemplate != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span>'+json.clientSubmissionTemplate+'</span>';
+					            }
+					            else{
+						        result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span> --- </span>';
+	  	
+					            }
 				            result = result +'     </div>';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span>Business Analyst </span>';
+				            }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="clearfix"></div>';
@@ -1502,6 +1654,15 @@ function requirementPipeline(requirementId){
 							result = result +'</div>'; 
 							//end Add Interview Div
 							
+							//For Add Offer Div
+							result = result +'<div class="side_mask"><div class="addOffer_close"></div></div>';
+							result = result + '<div class="add_offer_wrap">';
+							result = result +      '<div class="new_side_wrap_inn">';
+							result = result +              '<div id="addOfferDiv"></div>';
+							result = result +       '</div>';
+							result = result +'</div>'; 
+							//end Add Offer Div  
+							
 							
 							//For Submit to Client Div
 							result = result +'<div class="submitnew-wrap">';
@@ -1563,7 +1724,7 @@ function requirementPipeline(requirementId){
 				            result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
 				            result = result +'   <a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
 				            result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
-				            result = result +'    <a href="javascript:void(0)" title="" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
 				            result = result +'    </span>';
 				            result = result +' </div>';	
 				            result = result +' </li>';
@@ -2076,6 +2237,12 @@ function assignedMemberList(requirementId){
 </script>
 
 
+<script type="text/javascript">
+function requirementRecommendations(requirementId){
+	alert("Hai"+requirementId);
+}
+</script>
+
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
@@ -2085,12 +2252,15 @@ function getActions(){
 	$(".action, .action-pop").click(function(e){
 	 	e.stopPropagation();
  	});	
+
 }
 </script>
 
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />
 <jsp:include page="submitToClient.jsp" />
+
+<jsp:include page="addOffer.jsp" />
 <jsp:include page="shortlist.jsp" />
 <jsp:include page="submissionDetails.jsp" />
 

@@ -14,6 +14,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -33,6 +34,9 @@ public class TeamController {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	RequirementAssignToService requirementAssignToService;
+	
 	@RequestMapping(value = "/team")
 	public ModelAndView newRequirement(HttpServletRequest request) throws Exception {
 		
@@ -42,8 +46,8 @@ public class TeamController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<User> allusersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
-		
-		model.addObject("usersList", allusersList);
+		model.addObject("usersList", allusersList); 
+		 
 		return model;
 
 	}

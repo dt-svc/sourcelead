@@ -17,6 +17,13 @@
 <link rel="stylesheet" href="resources/css/jquery.timepicker.css">
 <script src="resources/js/jquery.timepicker.js"></script> 
 
+<!-- these files for autocomplete with tagit -->
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- end files for autocomplete with tagit -->
+
 
 <style type="text/css">
 .add_inter .chosen-container{
@@ -27,6 +34,7 @@ padding:0!important;
 }
 </style>
 <!-- For add New Interview -->
+
 <script>
 function addInterview(requirementId){
 	
@@ -36,7 +44,7 @@ function addInterview(requirementId){
 	result = result + '<form id="addInterview_form" name="addInterview_form" >';
 	result = result + '<input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
 	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
-	result = result + '<div class="add_inter_head"> <span>Add Interview</span><a href="javascript:void(0)" onClick="addInterviewRow(this);"><i class="fa fa-plus"></i> Add row</a>';
+	result = result + '<div class="add_inter_head"> <span>Add Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>';
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</div>';
 	
@@ -46,7 +54,7 @@ function addInterview(requirementId){
 			result = result + '<th>Applicant</th>';
 			result = result + '<th>Inteview Type</th>';
 			result = result + '<th>Interview Date</th>';
-			result = result + '<th>Time</th>';
+			result = result + '<th>Start Time/End Time</th>';
 			result = result + '<th>Location</th>';
 			result = result + '<th>Interviewer</th>';
 			result = result + '<th class="action">Action</th>';
@@ -56,24 +64,25 @@ function addInterview(requirementId){
 	
 	
 	result = result + '<div class="row pad2">';
-	result = result + '<div class="col-md-8 mt10">';
-	//result = result + '<label> Set Reminder &nbsp;<i class="fa fa-gear reminder" title="Click here" onClick="loadRemiderDiv();"></i></label>';
+	result = result + '<div class="col-md-12 mt10">';
 	result = result + '<div class="ne-ch">';
 	result = result + '<label><input type="checkbox" name="notificationToApplicant" value="Y" checked="checked" ><b>Notify to Applicants</b></label>';
 	result = result + '<label><input type="checkbox" name="notificationToSpoc" value="Y" checked="checked"><b>Notify to Vendors</b></label>';
 	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" value="Y" onClick="showOthersDiv();"><b>Notify to Others</b></label>';
 	result = result + '</div>';
 	
-	result = result + '<div class="row mb10" id="notifyOthersDiv" style="display: none;">';
-	result = result + '<div class="col-md-12">';
-	result = result + '<input type="text" class="form-control input-sm" value="" id="notificationToOthersEmails" name="notificationToOthersEmails" data-validation="validate_Space" data-validation-optional="true" placeholder="Enter emails with comma(,) separated">';
+	result = result + '<div class="mb10 mt clearfix" id="notifyOthersDiv" style="display: none;">';
+	result = result + '<div class="col-md-6">';
+	result = result + '<input type="hidden" class="form-control input-sm mt10" value="" id="notificationToOthersEmails" name="notificationToOthersEmails">';
+	result = result + '<ul id="mails" class="form-control" ></ul>';
 	result = result + '</div>';
 	result = result + '</div>';
 	
-	result = result + '<div class="row mb10">';
-	result = result + '<div class="col-md-12">';
-	result = result + '<label>Remainder Before</lable>';
-	result = result + '<select class="form-control" id="reminderHours" name="reminderHours">';
+	result = result + '<div class="mb10 mt clearfix">';
+	result = result + '<strong class="clearfix col-md-12 mb">Remainder Before</strong>';
+	result = result + '<div class="col-md-3">';
+	result = result + '<span>Hours</span>';
+	result = result + '<select class="form-control mt10" id="reminderHours" name="reminderHours">';
 	result = result + '<c:forEach begin="0" end="24" var="hour">';
 	result = result +     '<option value="${hour}">';
 	result = result +         '<fmt:formatNumber value="${hour}" type="number" minIntegerDigits="2"/>';
@@ -83,10 +92,10 @@ function addInterview(requirementId){
 	result = result + '</div>';
 	
 	
-	result = result + '<div class="col-md-12">';
-	result = result + '<label>Minutes</lable>';
-	result = result + '<select class="form-control" id="reminderMinutes" name="reminderMinutes">';
-	result = result + '<c:forEach begin="5" end="55" step="5" var="minute">';
+	result = result + '<div class="col-md-3">';
+	result = result + '<span>Minutes</span>';
+	result = result + '<select class="form-control mt10" id="reminderMinutes" name="reminderMinutes">';
+	result = result + '<c:forEach begin="0" end="55" step="5" var="minute">';
 	result = result +     '<option value="${minute}" ${minute  == 30 ? "selected" : ''}>';
 	result = result +         '<fmt:formatNumber value="${minute}" type="number" minIntegerDigits="2"/>';
 	result = result +     '</option>';
@@ -113,7 +122,7 @@ function addInterview(requirementId){
 				
 	$("#addInterviewDiv").empty();
 	$("#addInterviewDiv").append(result);
-	
+	addInterviewRow();
 	$(".add_inter_wrap").addClass("add_inter_wrap_active");
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
@@ -135,11 +144,59 @@ function showOthersDiv(){
 	var isNofityToOthers = document.getElementById("notificationToOthers").checked;
 	if (isNofityToOthers) {
 		document.getElementById("notifyOthersDiv").style.display = '';
+		 $('#mails').tagit({
+		       singleField: true,
+		       singleFieldNode: $('#notificationToOthersEmails')
+		       ,placeholderText:"Enter emails"
+		       ,allowDuplicates: false
+		    	,afterTagAdded: function(evt, ui){
+			              checkEmails();
+			              return false;
+			    }
+		       ,afterTagRemoved: function(evt, ui){
+	              checkEmails();
+	              return false;
+	         }
+		   });
 	}else {
 		document.getElementById("notifyOthersDiv").style.display = 'none';
+		$('#mails').tagit('removeAll');
 	}
 }
 </script>
+
+<script language="javascript">
+function checkEmail(email) {
+   var regExp = /^.+@.+\..{2,3}$/
+   return regExp.test(email);
+}
+
+function checkEmails(){
+	var emails = document.getElementById("notificationToOthersEmails").value;
+	var emailArray = emails.split(",");
+	var invEmails = "";
+	for(i = 0; i <= (emailArray.length - 1); i++){
+		if(checkEmail(emailArray[i])){
+			//Do what ever with the email.
+		}else{
+			invEmails += "'" +emailArray[i]+ "'"+ "\n";
+		}
+	}
+	
+	
+	if(invEmails != "" && invEmails.length != 3 && invEmails != null && invEmails !="undefined" && invEmails !="\n"){
+	      $("#add_interview").attr("disabled", "disabled");
+		  $('#notifyOthersDiv').find('p.jquery_form_error_message').remove();
+		  $("input#notificationToOthersEmails").after("<p class='jquery_form_error_message'>"  +invEmails+" Invalid emails</span>");
+		  document.getElementById("notificationToOthersEmails").setAttribute('record-exist','yes');
+		  document.getElementById("notificationToOthersEmails").setAttribute('record-exist-errorMsg',invEmails+' Invalid emails'); 
+	}else{
+		$('input#notificationToOthersEmails').removeAttr( "record-exist record-exist-errormsg");
+		$('#notifyOthersDiv').find('p.jquery_form_error_message').remove(); 
+        $("#add_interview").removeAttr("disabled");
+	}
+}
+</script> 
 
 
 <div id="divTaskTd1" style="display: none; float: left;">
@@ -153,6 +210,8 @@ function showOthersDiv(){
 		<option value="">--Select Type--</option>
 		<option value="F2F">F2F</option>
 		<option value="Telephonic">Telephonic</option>
+		<option value="Technical">Technical</option>
+		<option value="Screening">Screening</option>
 	</select>
 </div>
 
@@ -203,8 +262,7 @@ function showOthersDiv(){
 
 		
 		var cell3 = row.insertCell(3);
-		cell3.innerHTML = " <div class='pull-left mr'> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='Start Time' name='"+maxRowNum+"startTime' id='"+maxRowNum+"startTime'  type='text' data-validation='required' field-name='Start Time' ><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span></span> ";
-		cell3.innerHTML = cell3.innerHTML + "<span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='End Time' name='"+maxRowNum+"endTime' id='"+maxRowNum+"endTime'  type='text' field-name='End Time' ><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span></span> </div>";
+		cell3.innerHTML = "<div class='pull-left mr' id='"+maxRowNum+"timeDiv'> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='Start Time' name='"+maxRowNum+"startTime' id='"+maxRowNum+"startTime'  type='text' data-validation='required' field-name='Start Time'/><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span></span> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='End Time' name='"+maxRowNum+"endTime' id='"+maxRowNum+"endTime'  type='text' field-name='End Time' /><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span></span> </div> ";
 		$(".timepicker").timepicker();
 		
 		var cell4 = row.insertCell(4);
@@ -227,13 +285,13 @@ function showOthersDiv(){
 		getShortListCandidates(maxRowNum);
 		
 
-	      $("#"+maxRowNum+"applicant").chosen();
-	      $("#"+maxRowNum+"interviewer").chosen();
+	    $("#"+maxRowNum+"applicant").chosen();
+	    $("#"+maxRowNum+"interviewer").chosen();
 		
 		
-	      $("#"+maxRowNum+"applicant").on('change', function (e) {
-	    	  getUpdatedShortListCandidates();
-	       }); 
+	    $("#"+maxRowNum+"applicant").on('change', function (e) {
+	    	getUpdatedShortListCandidates();
+	    }); 
 		    
 		    
 				
@@ -315,7 +373,7 @@ function cancelAddInterviewDiv(){
 	        		$(".side_mask").fadeOut(200);
 	        		$("body").css('overflow-y', 'auto');
 	        },
-	    });  
+	    });   
         return true;
       }
       else{
@@ -431,7 +489,34 @@ function cancelAddInterviewDiv(){
 		    });
 	
  }
-</script>  
+</script> 
+
+<script>
+function validateTime(rowId){
+	
+	//onBlur='validateTime(\""+maxRowNum+"\");'
+	var startTime = $("#"+(rowId)+"startTime").val();
+	var endTime = $("#"+(rowId)+"endTime").val();
+	
+	var startTimeIntergerVal = startTime.substring(0, (startTime.length)-2);
+	var startTimeMedium = startTime.substring((startTime.length)-2, startTime.length);
+	
+	var endTimeIntergerVal = endTime.substring(0, (endTime.length)-2);
+	var endTimeMedium = endTime.substring((endTime.length)-2, endTime.length);
+	
+	 $("#"+(rowId)+"timeDiv").find('p.jquery_form_error_message').remove();
+	if((endTimeIntergerVal != "" && startTimeIntergerVal != "") && (parseInt(endTimeIntergerVal) < parseInt(startTimeIntergerVal)) && startTimeMedium == endTimeMedium){
+        $("#add_interview").attr("disabled", "disabled");
+        $("input#" + rowId + "endTime").after("<p class='jquery_form_error_message'>End Time should greater than Start Time</span>");
+    }
+    else{
+         $("#"+(rowId)+"timeDiv").find('p.jquery_form_error_message').remove();
+         $("#add_interview").removeAttr("disabled");
+   }
+}
+
+</script>
+ 
 <script type="text/javascript">
 $(function(){
 	       var config = {
