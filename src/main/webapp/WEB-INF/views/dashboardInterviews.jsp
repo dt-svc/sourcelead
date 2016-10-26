@@ -1,20 +1,4 @@
-<jsp:include page="masterHeader.jsp" />
-<jsp:include page="masterSideNav.jsp" />
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
-
-<!-- Content Area -->
-  <section class="content-wraper">
-    <section class="content-header clearfix">
-      <div class="pull-left">
-        <h2>Dashboard</h2>
-      </div>
-      <div class="pull-right brud-crum">Home &raquo; Dashboard</div>
-    </section>
-   <!-- Requirement Approvals and Interview Row --> 
-    <div class="clearfix row mb"> 
-      <!-- Inteviews -->
+ <!-- Inteviews -->
       <div class="col-md-6">
         <div class="clients_wrap_table dashboard-widget">
           <h4 class="pull-left">Interviews &nbsp;&nbsp;<a href="#" class="pull-right" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a></h4>
@@ -167,7 +151,3 @@
         <!-- Pagenation Ends --> 
       </div>
       <!-- Inteviews Ends --> 
-    </div>
-    <!-- Requirement Approvals and Interview Row ends --> 
-  </section>
-  <!-- Content Area Ends-->
