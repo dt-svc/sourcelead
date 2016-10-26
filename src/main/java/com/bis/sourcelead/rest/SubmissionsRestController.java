@@ -1,6 +1,10 @@
 package com.bis.sourcelead.rest;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Writer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -8,7 +12,12 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -24,6 +33,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -39,6 +51,8 @@ import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -71,8 +85,10 @@ public class SubmissionsRestController {
 	
 	@Autowired
 	private UserService userService;
-
-	 
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
+	
     
     @RequestMapping(value = "/getCandidateResumes")
     public String getCandidateResumes(@RequestParam(value="candidateId", required=false) Long candidateId,HttpServletRequest request) throws Exception {
@@ -216,6 +232,56 @@ public class SubmissionsRestController {
     	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
     	
     	 requirementSubmissionService.storeClientSubmission(requirementId, user, orgLocations, submissionsList);
+    	 
+    	/* Workbook createExcelworkbook =  new XSSFWorkbook();
+ 		 Sheet createExcelsheet = createExcelworkbook.createSheet("submissions");
+ 		 createExcelsheet = setExcelHeader(submissionsList,createExcelsheet);
+ 		
+    	 String[] submissionId = submissionsList.split(",");
+    	 for(int i=0; i < submissionId.length; i++){
+    		 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
+    		 String data = submission.getSubmissionTemplateJsonStringValue();
+    		 try {
+    		     // create the json array from String rules
+    		     JSONArray jsonRules = new JSONArray(data);
+    		     System.out.println(jsonRules.length());
+    		     // iterate over the rules 
+    		     Row writeRow = createExcelsheet.createRow(i+1);
+    		     for (int j=0; j<jsonRules.length();j++){
+    		         JSONObject obj = (JSONObject) jsonRules.get(j);
+    		         createXlsSheet(createExcelsheet,writeRow,j,obj.getString("value"));
+    		     }
+    		     
+    		 } catch (JSONException e){
+    		     e.printStackTrace();
+    		 }
+    	 }
+    	 
+    	 
+    	 DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+    	 
+    	 String data = "/home/bis88/xls/Submission"+SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode()+""+dateFormat.format(new Date())+".xls";
+    	 FileOutputStream fos =  new FileOutputStream(data);
+		 createExcelworkbook.write(fos);
+		 fos.close();
+		 
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setToEmail("ivenkat07@gmail.com");
+		 emailMessage.setSubject("hiiiiiii");
+		 
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipientList.add(emailRecipient);
+		 
+		
+		 ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+		 EmailAttachment emailAttachment = new EmailAttachment();
+		 emailAttachment.setName(data);
+		 attachmentList.add(emailAttachment);
+		 
+		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,attachmentList);*/
     	
     	return "success";
     }
@@ -274,5 +340,39 @@ public class SubmissionsRestController {
 	protected static boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
 	}
+	
+	
+   private Sheet setExcelHeader(String submissionsList,Sheet createExcelsheet) throws Exception {
+    	   
+    	    Row excelHeader = createExcelsheet.createRow(0);
+    	    String[] submissionId = submissionsList.split(",");
+      	    for(int i=0; i < submissionId.length; i++){
+      		 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
+      		 String data = submission.getSubmissionTemplateJsonStringValue();
+      		 try {
+      		     JSONArray jsonRules = new JSONArray(data);
+      		     System.out.println(jsonRules.length());
+      		     for (int j=0; j<jsonRules.length();j++){
+      		         JSONObject obj = (JSONObject) jsonRules.get(j);
+      		         excelHeader.createCell(j).setCellValue(obj.getString("label"));
+      		     }
+      		 } catch (JSONException e){
+      		     e.printStackTrace();
+      		 }
+      	 }
+		
+      	  return createExcelsheet;
+	}
+   
+   private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,String value) throws IOException {
+	   createExcelsheet.setColumnWidth(column, 5000);
+	   if(!isNullOrEmpty(value)){ 
+			writeRow.createCell(column).setCellValue(value);
+		} else {
+			 writeRow.createCell(column).setCellValue("No Data");
+		}
+	   
+   }
+	
 }
 
