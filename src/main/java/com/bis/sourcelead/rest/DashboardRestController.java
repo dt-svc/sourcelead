@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -50,6 +51,9 @@ public class DashboardRestController {
 	
 	 @Autowired
 	 RequirementService requirementService;
+	 
+	 @Autowired
+	 RequirementSubmissionService requirementSubmissionService;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -123,6 +127,20 @@ public class DashboardRestController {
 		resultJson = commonUtil.toJSON(requirementList);
 		return resultJson;
 	 }
+	 
+		@RequestMapping(value = "/getRequirementSubmissionsCount" , method = RequestMethod.GET)
+		 public @ResponseBody void getRequirementSubmissionsCount(HttpServletRequest request) throws Exception {
+			
+
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+		    int reqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION");
+		    int reqinterviewscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"INTERVIEW");
+		    int reqOfferscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"OFFERMADE");
+			
+		   }
+
 	
 	
 

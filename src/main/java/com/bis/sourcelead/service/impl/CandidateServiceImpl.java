@@ -133,6 +133,11 @@ public class CandidateServiceImpl implements CandidateService {
 		if(jsonObj.has("expectedRate") && jsonObj.getString("expectedRate") !=null ){
 		candidate.setExpectedRate(jsonObj.getString("expectedRate"));
 		}
+		
+		if(jsonObj.has("rateType") && jsonObj.getString("rateType") !=null ){
+			candidate.setRateType(jsonObj.getString("rateType"));
+			}
+		
 		if(jsonObj.has("expectedRateCurrencey") && jsonObj.getString("expectedRateCurrencey") !=null ){
 			candidate.setExpectedRateCurrencey(jsonObj.getString("expectedRateCurrencey"));
 		}
