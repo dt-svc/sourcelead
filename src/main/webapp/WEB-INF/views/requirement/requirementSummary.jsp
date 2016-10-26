@@ -3356,7 +3356,7 @@ function requirementRecommendations(requirementId){
 		    result = result +'<tr>';
 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>';
 		    result = result +'<td><div><span>'+report.mobilePhone+'</span></div></td>';
-		    result = result +'<td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt">'+report.title+'</i></a></div></td>';
+		    result = result +'<td><div><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><b class="glyphicon glyphicon-list-alt">&nbsp;'+report.candidateResume+'</b></a></div></td>';
 		    result = result +'<td><div><span>'+report.noOfReq+'</span></div></td>';
 		    result = result +'<td><div><span>'+report.candidateScore+'%</span></div></td>';
 		    result = result +'<td><div><span>';
@@ -3408,6 +3408,18 @@ function getActions(){
 	$(".action, .action-pop").click(function(e){
 	 	e.stopPropagation();
  	});	
+}
+</script>
+
+<script>
+function downloadCandidateResume(candidateId){
+	 var sourceleadUrl = '${sourceleadUrl}';
+	  $.ajax({
+      type : "GET",
+      url: sourceleadUrl+"/downloadCandidateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+      success :function(data) { 
+          },
+       }); 
 }
 </script>
 

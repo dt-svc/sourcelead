@@ -1,7 +1,9 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -79,16 +81,9 @@ public class RequirementRestController {
 	 CommonUtil commonUtil;
 	 
 	 @Autowired
-	 private  RequirementSubmissionService requirementSubmissionService;
-	 
-	 @Autowired
-	 private CandidateSkillsService candidateSkillsService;
-	 
-	 @Autowired
 	 private CandidateService candidateService;
 	 
-	 @Autowired
-	 private CandidateResumesService candidateResumeSerivce;
+	 
 	 
 	
 	/**
@@ -289,114 +284,18 @@ public class RequirementRestController {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/getRequirementRecommendationsByRequirementId", method = RequestMethod.POST)
 	public @ResponseBody String getRequirementRecommendationsByRequirementId(@RequestParam(value="requirementId",required = false) Long requirementId,HttpServletRequest request) throws Exception {
 		String resultJson;
-		
-		float expPercentage = 0;
-		float locationPercentage = 0;
-		float ratePercentage = 0;
-		float skillPercentage = 0;
-		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<Candidate> candidateList = candidateService.getAllCandidatesByLocation(orgLocation.getId());
-//		List<RequirementSubmission> requirementRecommendationList = requirementSubmissionService.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocation.getId(), requirementId);
+		
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-		String reqSkills = requirement.getSkills();
-		String [] reqMaxSkills = reqSkills.split(",");
-		float percentPerSkill = 30/(float)reqMaxSkills.length;
 		
-		String reqMinExp = requirement.getMinExp();
-		String reqMaxExp = requirement.getMaxExp();
-		int reqExp = Integer.parseInt(reqMaxExp) *12 ;
-		float percentPerMonthExp = 20/(float)reqExp;
+		List<Candidate> candidateListCopy = requirementService.getRecommendationsWithScore(candidateList,requirement);
 		
-		String reqCity = requirement.getCity();
-		
-		int reqRate = Integer.parseInt(requirement.getRate());
-		String reqRateType = requirement.getRateType();
-		float reqPerMonthSal = 0;
-		if("Hourly".equalsIgnoreCase(reqRateType)){
-			int perDaySal = reqRate *24;
-			reqPerMonthSal = perDaySal * 30;
-		}else if("Weekly".equalsIgnoreCase(reqRateType)){
-			int perDaySal = reqRate /7;
-			reqPerMonthSal = perDaySal * 30;
-		}else if("Bi-weekly".equalsIgnoreCase(reqRateType)){
-			int perDaySal = reqRate /14;
-			reqPerMonthSal = perDaySal * 30;
-		}else if("Semi-Monthly".equalsIgnoreCase(reqRateType)){
-			int perDaySal = reqRate /15;
-			reqPerMonthSal = perDaySal * 30;
-		}else if("Monthly".equalsIgnoreCase(reqRateType)){
-			reqPerMonthSal = reqRate;
-		}else if("Bi-Monthly".equalsIgnoreCase(reqRateType)){
-			int perDaySal = reqRate /60;
-			reqPerMonthSal = perDaySal * 30;
-		}else{
-			reqPerMonthSal = reqRate /12;
-		}
-		
-		
-		for(Candidate candidate : candidateList){
-			int matchedSkillCount = 0;
-			List<CandidateSkills> candidateSkillList  = candidateSkillsService.getSkillByCandidateId(candidate.getId());
-			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
-			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
-			for(CandidateSkills candidateSkills : candidateSkillList){
-				if(reqSkills.contains(candidateSkills.getName())){
-					matchedSkillCount++;
-				}
-			}
-			 skillPercentage = matchedSkillCount*percentPerSkill;
-			
-			int  candidateExpMonths = Integer.parseInt(candidate.getExperienceYears())*12 + Integer.parseInt(candidate.getExperienceMonths());
-		
-			if(candidateExpMonths < Integer.parseInt(reqMinExp) *12){
-				expPercentage = 0;
-			}else if(candidateExpMonths >= Integer.parseInt(reqMinExp) *12 && candidateExpMonths <= Integer.parseInt(reqMaxExp) *12){
-				expPercentage = percentPerMonthExp*(float)candidateExpMonths;
-			}else{
-				expPercentage = 20;
-			}
-			if(candidate.getCity().equalsIgnoreCase(reqCity)){
-				locationPercentage = 10;
-			}
-			
-			String candidateRateType = "Hourly";
-			float perMonthCandidateSal = 0;
-			if("Hourly".equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate *24;
-				perMonthCandidateSal = perDaySal * 30;
-			}else if("Weekly".equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate /7;
-				perMonthCandidateSal = perDaySal * 30;
-			}else if("Bi-weekly".equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate /14;
-				perMonthCandidateSal = perDaySal * 30;
-			}else if("Semi-Monthly".equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate /15;
-				perMonthCandidateSal = perDaySal * 30;
-			}else if("Monthly".equalsIgnoreCase(candidateRateType)){
-				perMonthCandidateSal = reqRate;
-			}else if("Bi-Monthly".equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate /60;
-				perMonthCandidateSal = perDaySal * 30;
-			}else{
-				perMonthCandidateSal = reqRate /12;
-			}
-			
-			if(perMonthCandidateSal<=reqPerMonthSal){
-				ratePercentage = 20;
-			}
-			float totalPercentage = skillPercentage+expPercentage+locationPercentage+ratePercentage;
-			double roundOff = Math.round(totalPercentage * 100.0) / 100.0;
-			String candidateScore = String.valueOf(roundOff);
-			candidate.setCandidateScore(candidateScore);
-			candidate.setNoOfReq(reqList.size());
-			candidate.setCandidateResume(candidateResume.getFileName());
-		}
-		resultJson = commonUtil.toJSON(candidateList);
+		resultJson = commonUtil.toJSON(candidateListCopy);
 		return resultJson;
 		
 	}
