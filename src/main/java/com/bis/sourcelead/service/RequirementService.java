@@ -33,11 +33,16 @@ public interface RequirementService {
 
 	public List<RequirementAssignTo> getUserAssignJobCount(Long userId) throws Exception;
 	
-	public void  approverEmailScenario(User user,User approverUser,Requirement requirement, StringBuilder location,String requirementClientName) throws Exception;
+	public void  approverEmailScenario(User user,User approverUser,Requirement requirement, StringBuilder location) throws Exception;
 
-	public void  approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location, String client) throws Exception;
+	public void  approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location) throws Exception;
 	
 	public void acceptEmailScenario(User loginUser, User approverUser, Requirement requirement) throws Exception;
+	
+	public void mailRequirementtoManager(User loginUser, User intiatorUser, Requirement requirement,StringBuilder location) throws Exception;
+	
+	public void AssignToTeamMembersEmail(User loginUser, User managerUser, Requirement requirement,StringBuilder location) throws Exception;
+
 
 
 	
