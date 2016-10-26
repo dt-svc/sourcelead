@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -90,6 +91,9 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 		userList = userList.replaceAll("\\[", "").replaceAll("\\]","");
 		userList = userList.replaceAll("\"", "");
 		String[] usersIds = userList.split(",");
+		
+		
+		
 		for(int i=0; i < usersIds.length  ;i++){
 			User user = new User();
 			user.setId(Long.parseLong(usersIds[i]));
@@ -104,6 +108,19 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 			teamMembers.setUpdatedDate(commonUtil.currentDate());
 	     teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
 		}
+		
+		
+		// For saving  the Team  Lead as a Team member
+		
+		Team team = teamService.getTeamByTeamId(teamId);
+		User user = new User();
+		user.setId(team.getOwnerUserId().getId());
+		teamMembers.setMemberUserId(user);
+		teamMembers.setTeamId(team);
+		teamMembers.setStatus(Constants.MEMBER_ACTIVE);
+		teamMembers.setCreatedDate(commonUtil.currentDate());
+		teamMembers.setUpdatedDate(commonUtil.currentDate());
+		teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
 	    
 		return teamMembers;
 	
