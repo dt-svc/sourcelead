@@ -489,16 +489,18 @@ $(document).ready(function() {
 	                </div>
 	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
-	                  <select class="selectpicker"  id="clientRateType" value="${requirement.clientRateType}" name="clientRateType">
-	                    <option value="">Per</option>
-	                    <option ${requirement.clientRateType  == '1hr' ? 'selected' : ''}>1hr</option>
-	                    <option ${requirement.clientRateType  == '2hr' ? 'selected' : ''}>2hr</option>
-	                    <option ${requirement.clientRateType  == '3hr' ? 'selected' : ''}>3hr</option>
-	                    <option ${requirement.clientRateType  == '4hr' ? 'selected' : ''}>4hr</option>
-	                    <option ${requirement.clientRateType  == 'Other' ? 'selected' : ''}>Other</option>
+	                 <select class="selectpicker"  id="clientRateType" value="${requirement.clientRateType}" name="clientRateType">
+	                    
+			                <option value="">Rate Per</option>
+		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+		                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+		                    <option ${requirement.clientRateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
+		                    <option ${requirement.clientRateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+		                    <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+		                    <option ${requirement.clientRateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
+		                    <option ${requirement.clientRateType  == 'others' ? 'selected' : ''}>Yearly</option>
+		                    
 	                  </select>
-	                </div>
-	              </div>
            		</div>
               </div>
               <div class="form-group">
