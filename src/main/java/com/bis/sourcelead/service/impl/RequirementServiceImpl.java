@@ -993,14 +993,14 @@ public class RequirementServiceImpl implements RequirementService {
 				 globalVarsMap.put("Experience","--"); 
 			 }
 		 if(loginUser.getFirstName()+" "+loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()+" "+loginUser.getLastName())){
-			 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
+			 globalVarsMap.put("LoginUser",loginUser.getFirstName()+" "+loginUser.getLastName());
 			 }else{
-				 globalVarsMap.put("loginUserName","--"); 
+				 globalVarsMap.put("LoginUser","--"); 
 			 }
 		 if(loginUser.getUserType()!= null && !"".equalsIgnoreCase(loginUser.getUserType())){
-			 globalVarsMap.put("role", loginUser.getUserType());
+			 globalVarsMap.put("Role", loginUser.getUserType());
 			 }else{
-				 globalVarsMap.put("role","--"); 
+				 globalVarsMap.put("Role","--"); 
 			 }
 		 
 		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
