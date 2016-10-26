@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
@@ -91,7 +92,9 @@ public class RequirementInterviewRestController {
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			requirementInterviewService.saveRequirementInterview(jsonObj,user,orgLocations);
+			Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			
+			requirementInterviewService.saveRequirementInterview(jsonObj,user,orgLocations,loginOrg);
  	    
  	    
 			return "success";

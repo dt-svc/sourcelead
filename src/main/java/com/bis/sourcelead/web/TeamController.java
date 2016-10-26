@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -33,6 +35,9 @@ public class TeamController {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	RequirementAssignToService requirementAssignToService;
+	
 	@RequestMapping(value = "/team")
 	public ModelAndView newRequirement(HttpServletRequest request) throws Exception {
 		
@@ -42,8 +47,10 @@ public class TeamController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<User> allusersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		 
+		/*Integer requirementAssignToCount=requirementAssignToService.getAssignedTeamMembersCountByTeamMemberUserId(assignUserId, jobType);
 		
-		model.addObject("usersList", allusersList);
+		model.addObject("requirementAssignToCount", requirementAssignToCount);*/
 		return model;
 
 	}

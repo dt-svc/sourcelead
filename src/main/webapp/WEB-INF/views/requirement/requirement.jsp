@@ -263,10 +263,12 @@ $(document).ready(function() {
             <div class="col-md-9">
               <div class="row">
                 <div class="col-md-6">
-                   <input type="text" class="form-control" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
+                 <input type="text" class="form-control" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
+                   
                 </div>
                 <div class="col-md-6">
-                  <input type="text" class="form-control" id="maxExp" name="maxExp" value="${requirement.maxExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
+                 
+                <input type="text" class="form-control" id="maxExp" name="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
                 </div>
               </div>
             </div>
@@ -291,12 +293,14 @@ $(document).ready(function() {
                 <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker" id="rateType" name="rateType">
-                    <option ${requirement.rateType  == 'c2c' ? 'selected' : ''}>Per</option>
-                    <option ${requirement.rateType  == '1hr' ? 'selected' : ''}>1hr</option>
-                    <option ${requirement.rateType  == '2hr' ? 'selected' : ''}>2hr</option>
-                    <option ${requirement.rateType  == '3hr' ? 'selected' : ''}>3hr</option>
-                    <option ${requirement.rateType  == '4hr' ? 'selected' : ''}>4hr</option>
+                    <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+                    <option ${requirement.rateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
+                    <option ${requirement.rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+                    <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+                    <option ${requirement.rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
                     <option ${requirement.rateType  == 'others' ? 'selected' : ''}>Other</option>
+                 
                   </select>
                 </div>
               </div>
@@ -367,7 +371,7 @@ $(document).ready(function() {
            <div class="form-group">
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
-             <textarea rows="2" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true">${requirement.description}</textarea>
+             <textarea rows="2" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description" data-validation="validate_length length2-5000" data-validation-optional="true">${requirement.description}</textarea>
             </div>
           </div>
           
@@ -438,7 +442,7 @@ $(document).ready(function() {
                           </div>
                         </div>
                         <div class="modal-footer">
-                          <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
+                          <button data-dismiss="modal" class="btn btn-primary" type="button" >Save</button>
                           <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
                         </div>
                       </div>
@@ -1308,7 +1312,6 @@ $(document).ready(function() {
                             <label class="col-lg-4">Team Members <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                              <select multiple class="chosen-select form-control select-bg" name="memberUserId" id="memberUserId" placeholder="Team Member *" data-validation="required validate_Space" field-name="Team Member">
-			                    		<option value=''>-- Select Team --</option>
 					                    <c:forEach var="report" items="${all_users_List}">
 							                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
 								       </c:forEach>
@@ -1319,8 +1322,8 @@ $(document).ready(function() {
                         </div>
                       </div>
                       <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="storeTeam();" >Save</button>
-                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                        <button data-dismiss="modal" class="btn btn-primary" type="button" id="team_form" onclick="storeTeam();flushStoreTeam()" >Save</button>
+                        <button data-dismiss="modal" class="btn btn-default" id="team_form" onclick="flushStoreTeam();" type="button">Cancel</button>
                       </div>
                     </div>
                     </form>
@@ -1357,7 +1360,6 @@ $(document).ready(function() {
 			var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
-			
 			var form = $('#requirement_form')[0];
       		var formData = new FormData(form); 
 			  //It will escape all the special characters
@@ -1646,7 +1648,7 @@ function setTemplateValues(){
 			    	$("#positions").val(json.positions);
 			    	
 			    	$("#minExp").val(json.minExp);
-			    	$("#maxExp").val(json.minExp);
+			    	$("#maxExp").val(json.maxExp);
 			    	
 			    	var country = '';
 					 var state = '';
@@ -1900,6 +1902,7 @@ function getUserList(teamType){
                			 getTeamsList(teamType);
 			    	     $("#userList").removeAttr("style");
 	                	    var result = '';
+	                	    result = result+"<input type='hidden' name='assignedTeamId' id='assignedTeamId' value='"+teamType+"'/>";
 	                	    result = result +'<div class="modal-body clearfix">';
 	                		result = result +'<div class="form-horizontal custom-form">';
 	                		result = result +'     <div class="row">';
@@ -2074,7 +2077,12 @@ function assignMembers() {
 </script>
 
 
-
+<script type="text/javascript">
+	function flushStoreTeam() {
+		document.getElementById("team_form").reset();
+		$('#memberUserId').val('').trigger('chosen:updated');
+	}
+</script>
 <script type="text/javascript">
 function getTeamMembers(){
 	
@@ -2175,5 +2183,7 @@ function filterTeamMembers(){
 	getUserList(teamType);
 }
 </script>
+
+
 
 <jsp:include page="../masterFooter.jsp" />

@@ -477,6 +477,12 @@ public class UserServiceImpl implements UserService {
 		logger.debug("In UserService class...");
 		return userDao.findByEmail(email);
 	}
+	
+	@Override
+	public User findByEmailAndOrgLocationsId(String email, Long orgLocationsId) throws Exception {
+		logger.debug("In UserService class...");
+		return userDao.findByEmailAndOrgLocationsId(email,orgLocationsId);
+	}
 
 	@Override
 	public User getUserById(Long Id) throws Exception {

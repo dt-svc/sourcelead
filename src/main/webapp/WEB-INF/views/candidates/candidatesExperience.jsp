@@ -259,12 +259,20 @@ function closeCertificatePopup(){
 								result = result + '	               </div>';
 								result = result	+ '	               <div class="clearfix mb10">';
 								result = result	+ '	                 <div class="col-md-12">';
-								result = result + '	                    <input type="text" class="form-control"  placeholder="Employer Designation" name="designation"  value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation" > <span class="hidden">Employer Designation</span>';
+								if (json.designation != null && json.designation != '' && json.designation != 'undefined') {
+									result = result + '	                    <input type="text" class="form-control"  placeholder="Employer Designation" name="designation"  value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation" > <span class="hidden">Employer Designation</span>';
+								}else{
+									result = result + '	                    <input type="text" class="form-control"  placeholder="Employer Designation" name="designation"  value="" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation" > <span class="hidden">Employer Designation</span>';
+								}
 								result = result + '	                 </div>';
 								result = result + '	               </div>';
 								result = result	+ '	               <div class="clearfix mb10">';
 								result = result	+ '	                 <div class="col-md-12">';
-								result = result	+ '	                  <input type="text" class="form-control input-sm" placeholder="Address" name="address" data-validation="required validate_Space validate_length length2-250"  data-validation-optional="true" field-name="Address" value="'+json.address+'"> <span 	class="hidden">Address</span>';
+								if (json.address != null && json.address != '' && json.address != 'undefined') {
+									result = result	+ '	                  <input type="text" class="form-control input-sm" placeholder="Address" name="address" data-validation="required validate_Space validate_length length2-250"  data-validation-optional="true" field-name="Address" value="'+json.address+'"> <span class="hidden">Address</span>';
+								}else{
+									result = result	+ '	                  <input type="text" class="form-control input-sm" placeholder="Address" name="address" data-validation="required validate_Space validate_length length2-250"  data-validation-optional="true" field-name="Address" value=""> <span class="hidden">Address</span>';
+								}
 								result = result + '	                 </div>';
 								result = result + '	               </div>';
 								result = result	+ '	               <div class="clearfix mb10">';
@@ -335,7 +343,11 @@ function closeCertificatePopup(){
 								result = result	+'</select>';
 								result = result + '</div>';
 								result = result	+ '<div class="col-md-6">';
-								result = result	+ '<input type="text" max class="form-control" value="'+ json.startYear+ '" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Enter Year"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
+								if (json.startYear != null && json.startYear != '' && json.startYear != 'undefined') {
+									result = result	+ '<input type="text" max class="form-control" value="'+ json.startYear+ '" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Enter Year"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
+								}else{
+									result = result	+ '<input type="text" max class="form-control" value="" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Enter Year"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
+								}
 								result = result + '</div>';
 								result = result + '</div>';
 								
@@ -407,18 +419,12 @@ function closeCertificatePopup(){
 								}
 								result = result	+ '	                   </select>';
 								result = result	+ '	                   </div>';
-								
-								/* result = result	+ '	                   <div class="col-md-6" >';
-								if (json.endYear != '' && json.endYear != 'undefined') {
-								result = result + '	                   <input type="text" max class="form-control" value="'+json.endYear+'" id="endYearEdit" name="endYear" field-name="End Year"  placeholder="Enter Year" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true" onblur="validYearEdit();">';
-								}else{
-								result = result + '	             <input type="text" max class="form-control" value = "" id="endYearEdit" name="endYear" field-name="End Year"  placeholder="Enter Year" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true" onblur="validYearEdit();">';
-								}
-								result = result	+ '	                 </div>'; */
-								
-								
 								result = result	+ '<div class="col-md-6">';
-								result = result	+ '<input type="text" max class="form-control" value="'+ json.endYear+'" id="endYearEdit" name="endYear" onblur="validYearEdit();"  placeholder="Enter Year"  field-name="end Date" data-validation="required" data-validation-optional="true" >';
+								if (json.endYear != null && json.endYear != '' && json.endYear != 'undefined') {
+									result = result	+ '<input type="text" max class="form-control" value="'+ json.endYear+'" id="endYearEdit" name="endYear" onblur="validYearEdit();"  placeholder="Enter Year"  field-name="end Date" data-validation="required" data-validation-optional="true" >';
+								}else{
+									result = result	+ '<input type="text" max class="form-control" value="" id="endYearEdit" name="endYear" onblur="validYearEdit();"  placeholder="Enter Year"  field-name="end Date" data-validation="required" data-validation-optional="true" >';
+								}
 								result = result + '</div>';
 								result = result + '</div>';
 								result = result + '	                 </div> ';
@@ -774,7 +780,6 @@ function validYear(){
 function validYearEdit(){
 	
 	var startYear= document.getElementById("startYear").value;
-	alert(startYear);
 	var startMonth= document.getElementById("startMonth").value;
 	
 	var endYear= document.getElementById("endYear").value;

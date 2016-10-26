@@ -41,21 +41,69 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
-		
-		User loginUser = userService.findByUserName(authentication.getName());
-	    if(loginUser != null){
-	    	UserLoginLogoutSession userLoginSession = new UserLoginLogoutSession();
-		    try{
-		    	InetAddress ipAddr = InetAddress.getLocalHost();
-		    	userLoginSession.setIpaddress(ipAddr.getHostAddress());
-		    }catch (UnknownHostException ex) {
-	        }
-		    userLoginSession.setUserId(loginUser);
-		    userLoginSession.setLoginTime(new Date());
-		    userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
-		    request.getSession().setAttribute("userLoginSession", userLoginSession);
+		try{
+			User loginUser = userService.findByUserName(authentication.getName());
+		    if(loginUser != null){
+		    	UserLoginLogoutSession userLoginSession = new UserLoginLogoutSession();
+		    	String ipAddress = getClientIpAddr(request);
+		    	userLoginSession.setIpaddress(ipAddress);
+			    userLoginSession.setUserId(loginUser);
+			    userLoginSession.setLoginTime(new Date());
+			    userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
+			    request.getSession().setAttribute("userLoginSession", userLoginSession);
+		    }
+		}
+	    finally{
+	    	response.sendRedirect("/sourcelead/dashboard");
 	    }
 	    
-		response.sendRedirect("/sourcelead/dashboard");
+		
+	}
+
+	public static String getClientIpAddr(HttpServletRequest request) {  
+	    String ip = request.getHeader("X-Forwarded-For");  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("Proxy-Client-IP");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("WL-Proxy-Client-IP");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_X_FORWARDED_FOR");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_X_FORWARDED");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_X_CLUSTER_CLIENT_IP");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_CLIENT_IP");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_FORWARDED_FOR");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_FORWARDED");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_VIA");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("REMOTE_ADDR");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getRemoteAddr();  
+	    }  
+        if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
+            InetAddress localip = null;
+			try {
+				localip = java.net.InetAddress.getLocalHost();
+			} catch (UnknownHostException e) {
+			}
+			if(localip != null)
+            ip = localip.getHostAddress();
+        }
+	    return ip;  
 	}
 }

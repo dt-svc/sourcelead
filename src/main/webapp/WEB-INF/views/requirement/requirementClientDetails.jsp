@@ -177,7 +177,7 @@ function addClientContactPopUp(orgRelationID,clientLocationId) {
 	result = result+'   </div>';
 	result = result+'  </div>';
 	result = result+'  <div class="modal-footer">';
-	result = result+' 	<input type="button" value="Save" class="btn btn-primary" id="save_clientContact" onclick="saveClientContact();"> ';
+	result = result+' 	<input type="button" value="Save" class="btn btn-primary" id="save_clientContact" onclick="saveClientContact('+orgRelationID+');"> ';
 	result = result+'	<input data-dismiss="modal" type="button" value="Cancel" class="btn btn-default">';
 	result = result+'  </div>';
 	result = result+'</form>';
@@ -369,7 +369,7 @@ function getClientSubmissionTemplates(local){
      2.ajax url implementation in RequirementRestController.
 --%>
 <script type="text/javascript">
-	function saveClientContact() {
+	function saveClientContact(orgRelationId) {
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -387,7 +387,7 @@ function getClientSubmissionTemplates(local){
 			/* $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); */
 	 		$.ajax({
 						type : "POST",
-						url : sourceleadUrl+ "/saveClientContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId=''",
+						url : sourceleadUrl+ "/saveClientContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId,
 						success : function(data) {
 							var json = JSON.parse(data);
 							var output = "";
