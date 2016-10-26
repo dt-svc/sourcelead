@@ -41,6 +41,9 @@ public class Constants {
 
 	public static final Integer RECORD_ACTIVE = 1;
 	public static final Integer RECORD_INACTIVE = 1;
+	
+	
+	public static final Integer LEVEL1 = 1;
 	   
 	public static transient DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static transient DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");
