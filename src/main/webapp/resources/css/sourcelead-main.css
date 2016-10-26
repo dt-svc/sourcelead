@@ -565,7 +565,7 @@ ul.timesheet-menu li a {
 }
 ul.timesheet-menu li a::before {
 	color: #f0ad4e;
-	content: "";
+	content: "ïˆ­";
 	font-family: fontawesome;
 	padding-right: 5px;
 }
@@ -3435,7 +3435,21 @@ ul.addTasUl li .fa{
 	float:left;
 	margin-left:15px;
 }
-
+.sub-details .formgroup {
+ padding:5px 0;
+ }
+ .sub-details .formgroup:nth-child(odd){
+ background: #fff;
+ }
+ .sub-details .col-md-7 {
+ word-break: break-all;
+ }
+ .sub-details .content{
+ padding: 10px 0px !important;
+ }
+ .ui-datepicker select.ui-datepicker-month, .ui-datepicker select.ui-datepicker-year{
+	 color:#202020;
+ }
 @media (max-width: 320px) {
 .hidden-xs {
 	display: none !important;

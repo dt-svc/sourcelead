@@ -198,6 +198,9 @@ function pagination(){
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
+    	"oLanguage": {
+            "sSearch": ""
+       }
     } );
 }
 </script>

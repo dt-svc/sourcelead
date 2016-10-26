@@ -245,13 +245,14 @@ public class RequirementReleaseRestController {
 		requirement.setClientSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
 		
 		requirement.setStatus(Constants.TEAM_ACTIVE);
-		requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+		requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.NEW);
 		
 		if(orgSpoc != null){
 			requirement.setSpocId(orgSpoc);
 			requirement.setClientId(orgSpoc.getOrgRelations());
 			requirement.setUpdatedBy(orgSpoc.getSpocUser().getUserCode());
 			requirement.setCreatedBy(orgSpoc.getSpocUser().getUserCode());
+			requirement.setManagerUserId(orgSpoc.getSpocUser());
 		}
 		
 		requirement.setCreatedDate(commonUtil.currentDate());

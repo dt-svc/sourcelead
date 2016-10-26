@@ -380,8 +380,16 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                  }
              }
              init();
+             var d = new Date();
+             var year = d.getFullYear() - 18;
+             d.setFullYear(year);
              $(".DatePicker").datepicker({
             	 dateFormat: 'yy-mm-dd',
+            	 yearRange: "-70Y:-18Y" ,
+            	 defaultDate: d,
+            	 changeMonth: true,
+                 changeYear: true
+                 
              });
         },
     });

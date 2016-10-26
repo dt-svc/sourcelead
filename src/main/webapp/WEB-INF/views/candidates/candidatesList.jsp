@@ -169,6 +169,9 @@ function cpagination(){
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
     } );
 }
 </script>
