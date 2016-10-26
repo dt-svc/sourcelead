@@ -137,6 +137,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		
 		if(requirement.getManagerUserId().getId()==user.getId()){
 			String query = "from RequirementSubmission reqSub where (reqSub.orgLocations.id =:loginOrgLocation or reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.requirement.id =:requirementId";
+			requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
 		}
 		
 		Boolean teamFlag = teamDao.getTeamOwnersListByUserId(user,loginOrgLocation.getId());
