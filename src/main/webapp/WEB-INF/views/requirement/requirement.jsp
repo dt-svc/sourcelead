@@ -300,7 +300,7 @@ $(document).ready(function() {
                     <option ${requirement.rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
                     <option ${requirement.rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-                    <option ${requirement.rateType  == 'others' ? 'selected' : ''}>Yearly</option>
+                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
               </div>
