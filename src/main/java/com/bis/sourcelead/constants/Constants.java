@@ -136,7 +136,9 @@ public class Constants {
 	public static String UPDATE_PASSWORD = "Update Password";
 	public static String MAIL_PROJECT_MANAGER = "Mail To Project Manager";
 	
-	
+
+
+	public static String CONTACTS = "CONTACTS";
 	/**Constants values for notifications **/
 	
 	public static String NOTIFICATION_UNREAD = "unread";

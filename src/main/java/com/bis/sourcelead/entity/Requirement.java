@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -192,7 +193,6 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String requirementApproverHierarchyStatus;
 	
-	
 	@Transient
 	private String spocName;
 	
@@ -210,6 +210,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private String[] reqSkillsList;
+	
+	@Transient
+	private ArrayList<String> approverNames;
+	
+	@Transient
+	private Integer highestLevel;
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -638,6 +644,22 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setRequirementApproverHierarchyStatus(String requirementApproverHierarchyStatus) {
 		this.requirementApproverHierarchyStatus = requirementApproverHierarchyStatus;
+	}
+
+	public ArrayList<String> getApproverNames() {
+		return approverNames;
+	}
+
+	public void setApproverNames(ArrayList<String> approverNames) {
+		this.approverNames = approverNames;
+	}
+
+	public Integer getHighestLevel() {
+		return highestLevel;
+	}
+
+	public void setHighestLevel(Integer highestLevel) {
+		this.highestLevel = highestLevel;
 	}
 
 }
