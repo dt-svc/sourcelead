@@ -90,6 +90,8 @@ public class Constants {
 	public static String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
 	public static String REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION = "Approval Mechanism Sequential";
 	public static String APPROVED_EMAIL_NOTIFICATION = "Approved Requirement";
+	public static String REJECTED_EMAIL_NOTIFICATION ="Rejected Mail About The Requirement";
+	public static String RELEASEMECHANISM_EMAIL_NOTIFICATION="Release Mechanism";
 	public static String MAILREQUIREMENTTOMANAGER = "Requirement Posting";
 	public static String ASSIGNTEAMMEMBERSFORREQUIREMENT = "AssignToTeamMembers";
 	public static String  WEEK_TIME_SHEET_SUBMISSION= "Week Time Sheet Submission";
@@ -134,7 +136,9 @@ public class Constants {
 	public static String UPDATE_PASSWORD = "Update Password";
 	public static String MAIL_PROJECT_MANAGER = "Mail To Project Manager";
 	
-	
+
+
+	public static String CONTACTS = "CONTACTS";
 	/**Constants values for notifications **/
 	
 	public static String NOTIFICATION_UNREAD = "unread";

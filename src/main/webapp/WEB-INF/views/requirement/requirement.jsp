@@ -1263,7 +1263,7 @@ $(document).ready(function() {
                   <option>Client-2</option>
                   <option>Client-3</option>
                 </select> -->
-               <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId"  field-name = "Application Form">
+               <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId"  data-validation="required"  field-name = "Application Form">
                     	<option value="">-- Select Form --</option>
 		                <c:forEach var="report" items="${submissionTempletesList}">
 					               <option value="${report.id}">${report.templateName}</option>
@@ -1352,6 +1352,7 @@ $(document).ready(function() {
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
+		alert("hi");
 		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -1360,7 +1361,7 @@ $(document).ready(function() {
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		
-		var rate = document.getElementById("rate").value; 
+		/* var rate = document.getElementById("rate").value; 
 		 if(rate != null && rate != ""){
 			 $('#rateType').removeAttr('data-validation-optional');
 			 $('#rateType').attr("data-validation","required"); 
@@ -1368,16 +1369,18 @@ $(document).ready(function() {
 			 $('#rateType').removeAttr('data-validation');
 			 $('#ratePer').attr("data-validation-optional","true"); 
 		 }
-		
+		 */
 		  if ($('#requirement_form').validate(false, validationSettings)){  
+			  alert("validated");
 			var frm = $('#requirement_form').serializeFormJSON();
+			alert(frm);
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			var form = $('#requirement_form')[0];
       		var formData = new FormData(form); 
 			  //It will escape all the special characters
 			var sourceleadUrl = '${sourceleadUrl}';
-			
+			alert(sourceleadUrl);
 			$.ajax({
 						type : "POST",
 		        	    data: formData,

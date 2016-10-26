@@ -1356,7 +1356,7 @@ function requirementDetails(requirementId){
 					         else{
 					           	 result = result +'   <textarea placeholder="Enter description"> NO DATA</textarea>';
 				    	        }
-				            result = result +'   <h2> Details:</h2>';
+				            result = result +'   <h2> Requirement Details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            if(json.positions != null && json.positions != '' && json.positions != 'undefined'){
 				            result = result +'     <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>'+json.positions+'</span>';
@@ -1471,11 +1471,12 @@ function requirementDetails(requirementId){
 				            	}
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
-				            if(json.isClientJob  == 'N'){
+				            
 				            result = result +'   <h2>Internal details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            //result = result +'     <div class="require_wrap_details_cta"> <b>Manager:</b> <span>Manager</span>';
 				            result = result +'       <div class="clearfix"></div>';
+				            if(json.isClientJob  == 'N'){
 				            if(json.clientSubmissionTemplate != '' && json.clientSubmissionTemplate != null && json.clientSubmissionTemplate != 'undefined'){
 					            result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span>'+json.clientSubmissionTemplate+'</span>';
 					            }
@@ -1483,8 +1484,55 @@ function requirementDetails(requirementId){
 						        result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span> --- </span>';
 	  	
 					            }
-				            result = result +'     </div>';
 				            }
+				            result = result +'     </div>';
+				            if(json.highestLevel == '1'){
+				            	result = result +'<div class="require_wrap_details_cta"> <b>Approvers:</b> <span>';
+				            	for (var i=0; i<json.approverNames.length; i++)
+				   				{
+				            	    if(json.approverNames[i] == json.approverNames[0]){
+				            	    	result = result +json.approverNames[i]; 
+				            	    }else{
+				            	    	result = result +","+json.approverNames[i]; 
+				            	    }
+				   				}
+				            	result = result +'</span>';
+				            	result = result +'</div>';
+				            }else{
+				            	for (var i=0; i<json.approverNames.length; i++)
+				   				{
+				            		var level = 1;
+					            	for (var i=0; i<json.approverNames.length; i++)
+					   				{
+					            		result = result +'<div class="require_wrap_details_cta"> <b>Approvers '+level+':</b> <span>'; 
+					            		result = result +json.approverNames[i];
+					            		result = result +'</span>';
+					            		result = result +'</div>';
+					            		level = level+1;
+					   				}
+					            	
+				   				}
+				            } 
+				            
+				            
+				           /*  if(json.approverNames != null && json.approverNames != '' && json.approverNames != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Approver1:</b> <span>'+json.approverNames+'</span>';
+					            }
+					            else{
+					            result = result +'<div class="require_wrap_details_cta"> <b>Approver1:</b> <span> -- </span>';	
+					            }	
+				            result = result +'       <div class="clearfix"></div>';
+				            result = result +'     </div>';
+				            if(json.approverNames != null && json.approverNames != '' && json.approverNames != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Approver2:</b> <span>'+json.approverNames+'</span>';
+					            }
+					            else{
+					            result = result +'<div class="require_wrap_details_cta"> <b>Approver2:</b> <span> -- </span>';	
+					            }	 */
+				            
+				            
+				            
+				            
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="clearfix"></div>';

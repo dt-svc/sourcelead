@@ -557,53 +557,53 @@ public class RequirementServiceImpl implements RequirementService {
 		 if(requirement.getJobTitle()!= null && !"".equalsIgnoreCase(requirement.getJobTitle())){
 			 globalVarsMap.put("requirementName", requirement.getJobTitle());
 			 }else{
-				 globalVarsMap.put("requirementName","NO DATA");
+				 globalVarsMap.put("requirementName","--");
 			 }
 		 if(location!= null){
 			 globalVarsMap.put("requirementLocation", location.toString());
 			 }else{
-				 globalVarsMap.put("requirementLocation","NO DATA");
+				 globalVarsMap.put("requirementLocation","--");
 			 }
 		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
 			 globalVarsMap.put("requirementRate", requirement.getRate());
 			 }else{
-				 globalVarsMap.put("requirementRate","NO DATA");
+				 globalVarsMap.put("requirementRate","--");
 			 }
-		if(requirement.getClientId().getResponderLocationId().getOrg().getOrgName()!=null && !"".equalsIgnoreCase(requirement.getClientId().getResponderLocationId().getOrg().getOrgName())){
+		if(requirement.getClientId()!=null){
 			 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
 		}else{
-			globalVarsMap.put("client","NO DATA");
+			globalVarsMap.put("client","--");
 			 }
 		if(approverUser.getFirstName()!= null && !"".equalsIgnoreCase(approverUser.getFirstName())){
 			globalVarsMap.put("approverName", approverUser.getFirstName());
 		}else{
-			globalVarsMap.put("approverName","NO DATA");
+			globalVarsMap.put("approverName","--");
 		}
 		if(emailMessage.getLastName()!=null && !"".equalsIgnoreCase(emailMessage.getLastName())){
 			globalVarsMap.put("lastName",emailMessage.getLastName());	
 		}else{
-			globalVarsMap.put("lastName","NO DATA");
+			globalVarsMap.put("lastName","--");
 		}
 		if(loginUser.getFirstName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName())){
 			globalVarsMap.put("jobInitiatorName", loginUser.getFirstName());
 			}else{
-			globalVarsMap.put("jobInitiatorName","NO DATA");
+			globalVarsMap.put("jobInitiatorName","--");
 		}
 		if(approverUser.getEmail()!=null && !"".equalsIgnoreCase(approverUser.getEmail())){
 			globalVarsMap.put("userEmailId",approverUser.getEmail());
 			}else{
-				globalVarsMap.put("userEmailId","NO DATA");
+				globalVarsMap.put("userEmailId","--");
 		}
 		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 		 if(loginUser.getFirstName()+" "+loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()+" "+loginUser.getLastName())){
 			 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
 			 }else{
-				 globalVarsMap.put("loginUserName","NO DATA");
+				 globalVarsMap.put("loginUserName","--");
 			}
 		 if(loginUser.getUserType()!=null && !"".equalsIgnoreCase(loginUser.getUserType())){
 			 globalVarsMap.put("role", loginUser.getUserType());
 			 }else{
-				 globalVarsMap.put("role","NO DATA");
+				 globalVarsMap.put("role","--");
 			}
 		 
 		 //setting the Recipient information
@@ -650,22 +650,22 @@ public class RequirementServiceImpl implements RequirementService {
 		 if(location != null){
 		 globalVarsMap.put("requirementLocation", location.toString());
 		 }else{
-		 globalVarsMap.put("requirementLocation","NO DATA");
+		 globalVarsMap.put("requirementLocation","--");
 		 }
 		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
 		 globalVarsMap.put("requirementRate", requirement.getRate());
 		 }else{
-		 globalVarsMap.put("requirementRate","NO DATA");
+		 globalVarsMap.put("requirementRate","--");
 		 }
-		 if(requirement.getClientId().getResponderLocationId().getOrg().getOrgName()!= null && !"".equalsIgnoreCase(requirement.getClientId().getResponderLocationId().getOrg().getOrgName())){
+		 if(requirement.getClientId()!= null){
 		 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
 		 }else{
-		 globalVarsMap.put("client","NO DATA");
+		 globalVarsMap.put("client","--");
 		 }
 		 if(approverUser.getFirstName()!= null && !"".equalsIgnoreCase(approverUser.getFirstName())){
 		 globalVarsMap.put("approverName", approverUser.getFirstName());
 		 }else{
-		 globalVarsMap.put("approverName","NO DATA");
+		 globalVarsMap.put("approverName","--");
 		 }
 		 if(loginUser.getFirstName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName())){
 		 globalVarsMap.put("jobInitiatorName", loginUser.getFirstName());
@@ -720,32 +720,32 @@ public class RequirementServiceImpl implements RequirementService {
 		 if(requirement.getJobTitle()!= null  && !"".equalsIgnoreCase(requirement.getJobTitle())){
 		 globalVarsMap.put("requirementName", requirement.getJobTitle()); 
 		 }else{
-		 globalVarsMap.put("requirementName", "NO DATA");	 
+		 globalVarsMap.put("requirementName", "--");	 
 		 }
 		 if( requirement.getJobId()!= null  && !"".equalsIgnoreCase( requirement.getJobId())){
 		 globalVarsMap.put("requirementId-Name", requirement.getJobId());	 
 		 }else{
-	     globalVarsMap.put("requirementId-Name","NO DATA"); 
+	     globalVarsMap.put("requirementId-Name","--"); 
 		 }
 		 if(loginUser.getFirstName()!= null  && !"".equalsIgnoreCase(loginUser.getFirstName())){
 		 globalVarsMap.put("approverName", loginUser.getFirstName());	 
 		 }else{
-		 globalVarsMap.put("approverName","NO DATA"); 
+		 globalVarsMap.put("approverName","--"); 
 		 }
 		 if(loginUser.getFirstName()!= null  && !"".equalsIgnoreCase(loginUser.getFirstName())){
 		 globalVarsMap.put("jobInitiatorName", loginUser.getFirstName()); 
 		 }else{
-		 globalVarsMap.put("jobInitiatorName","NO DATA"); 
+		 globalVarsMap.put("jobInitiatorName","--"); 
 		 }
 		 if(loginUser.getFirstName()+" "+loginUser.getLastName()!= null  && !"".equalsIgnoreCase( loginUser.getFirstName()+" "+loginUser.getLastName())){
 		 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
 		 }else{
-		 globalVarsMap.put("loginUserName","NO DATA"); 
+		 globalVarsMap.put("loginUserName","--"); 
 		 }
 		 if(loginUser.getUserType()!= null  && !"".equalsIgnoreCase(loginUser.getUserType())){
 		 globalVarsMap.put("role", loginUser.getUserType());
 		 }else{
-		 globalVarsMap.put("role","NO DATA"); 
+		 globalVarsMap.put("role","--"); 
 		 }
 		 
 		 //setting the Recipient information
@@ -793,37 +793,37 @@ public class RequirementServiceImpl implements RequirementService {
 		 if(managerUser.getFirstName()!= null  && !"".equalsIgnoreCase(managerUser.getFirstName())){
 			 globalVarsMap.put("OwnerName", managerUser.getFirstName());
 			 }else{
-				 globalVarsMap.put("OwnerName","NO DATA"); 
+				 globalVarsMap.put("OwnerName","--"); 
 			 }
 		 if(loginUser.getFirstName()!= null  && !"".equalsIgnoreCase(loginUser.getFirstName())){
 			 globalVarsMap.put("JobInitiator", loginUser.getFirstName());
 			 }else{
-				 globalVarsMap.put("JobInitiator","NO DATA"); 
+				 globalVarsMap.put("JobInitiator","--"); 
 			 }
 		 if(requirement.getJobTitle()!= null  && !"".equalsIgnoreCase(requirement.getJobTitle())){
 			 globalVarsMap.put("RequirementTitle", requirement.getJobTitle());
 			 }else{
-				 globalVarsMap.put("RequirementTitle","NO DATA"); 
+				 globalVarsMap.put("RequirementTitle","--"); 
 			 }
 		 if(location!= null){
 			 globalVarsMap.put("RequirementLocation", location.toString());
 			 }else{
-				 globalVarsMap.put("RequirementLocation","NO DATA"); 
+				 globalVarsMap.put("RequirementLocation","--"); 
 			 }
 		 if(requirement.getRate()!= null  && !"".equalsIgnoreCase(requirement.getRate())){
 			 globalVarsMap.put("RequirementRate", requirement.getRate());
 			 }else{
-				 globalVarsMap.put("RequirementRate","NO DATA"); 
+				 globalVarsMap.put("RequirementRate","--"); 
 			 }
 		 if(requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp())){
 			 globalVarsMap.put("Experience", requirement.getMaxExp());
 			 }else{
-				 globalVarsMap.put("Experience","NO DATA"); 
+				 globalVarsMap.put("Experience","--"); 
 			 }
 		 if(loginUser.getFirstName()+" "+loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()+" "+loginUser.getLastName())){
 			 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
 			 }else{
-				 globalVarsMap.put("loginUserName","NO DATA"); 
+				 globalVarsMap.put("loginUserName","--"); 
 			 }
 		 if(loginUser.getUserType()!= null && !"".equalsIgnoreCase(loginUser.getUserType())){
 			 globalVarsMap.put("role", loginUser.getUserType());
@@ -937,6 +937,176 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 
-	
-	
+	@Override
+	public void rejectedEmailScenario(User loginUser, User approverUser, Requirement requirement,
+			StringBuilder location, String requirementClientName, String client, String rejectedReason)
+			throws Exception {
+
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(loginUser.getFirstName());
+		emailMessage.setLastName(loginUser.getLastName());
+		emailMessage.setToEmail(approverUser.getEmail());
+		emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		emailMessage.setFromName(loginUser.getFirstName() + " " + loginUser.getLastName());
+
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		if (rejectedReason != null && !"".equalsIgnoreCase(rejectedReason)) {
+			globalVarsMap.put("reason", rejectedReason);
+		} else {
+			globalVarsMap.put("reason", "--");
+		}
+		if (loginUser.getFirstName() != null && !"".equalsIgnoreCase(loginUser.getUserName())) {
+			globalVarsMap.put("loginUserName", loginUser.getFirstName());
+		} else {
+			globalVarsMap.put("loginUserName", "--");
+		}
+		if (approverUser.getFirstName() + " " + approverUser.getLastName() != null
+				&& !"".equalsIgnoreCase(approverUser.getFirstName() + " " + approverUser.getLastName()))  {
+			globalVarsMap.put("approverName", approverUser.getFirstName() + " " + approverUser.getLastName());
+		} else {
+			globalVarsMap.put("approverName", "--");
+		}
+		if (loginUser.getUserType() != null && !"".equalsIgnoreCase(loginUser.getUserType())) {
+			globalVarsMap.put("role", loginUser.getUserType());
+		} else {
+			globalVarsMap.put("role", "--");
+		}
+		if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
+			globalVarsMap.put("requirementId-Name", requirement.getJobId());
+		} else {
+			globalVarsMap.put("requirementId-Name", "--");
+		}
+		if (loginUser.getUserName() != null && !"".equalsIgnoreCase(loginUser.getUserName()) ) {
+			globalVarsMap.put("jobInitiatorName", loginUser.getFirstName());
+		} else {
+			globalVarsMap.put("jobInitiatorName", "--");
+		}
+
+		// setting the Recipient information
+		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		EmailRecipient emailRecipient = new EmailRecipient();
+		emailRecipient.setEmail(emailMessage.getToEmail());
+		emailRecipient.setName(emailMessage.getFirstName() + " " + emailMessage.getLastName());
+		emailRecipientList.add(emailRecipient);
+
+		// getting the current EmailScenario by EmailScenario unique name and
+		// entity type
+		EmailScenario emailScenario = emailScenarioService
+				.getEmailScenarioByUniqueName(Constants.REJECTED_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_EMAIL);
+
+		// covert subject,body and signature
+		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
+		String url = "";
+
+		// construct HTML template using required data
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
+				signature, url, new Org());
+		emailMessage.setSubject(subject);
+		emailMessage.setMessageBody(emailTemplate);
+
+		// calling the sendEmail method of emailScenerioUtil
+		emailScenerioUtil.sendEmail(emailMessage, emailRecipientList, new ArrayList<EmailAttachment>());
+	}
+
+	@Override
+	public void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc,OrgLocations loginOrgLocation,String releasetype) throws Exception {
+		User  vendorContactUser = null;
+		
+		if(releasetype.equalsIgnoreCase("Vendors")){
+			vendorContactUser = userService.getUserById(orgSpoc.getOwnerUser().getId());
+
+		}else if(releasetype.equalsIgnoreCase("CONTACTS")){
+			vendorContactUser = userService.getUserById(orgSpoc.getSpocUser().getId());
+		}
+	 
+		EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(loginUser.getFirstName());
+		 emailMessage.setLastName(loginUser.getLastName());
+		 emailMessage.setToEmail(vendorContactUser.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 if (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle()) ) {
+			 globalVarsMap.put("RequirementTitle", requirement.getJobTitle());
+			 } else {
+				 globalVarsMap.put("RequirementTitle", "--");
+			}
+		 if (requirement.getCountry() != null && !"".equalsIgnoreCase(requirement.getCountry()) ) {
+			 globalVarsMap.put("RequirementLocation",  requirement.getCountry());
+			 } else {
+				 globalVarsMap.put("RequirementLocation", "--");
+			}
+		 if (requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()) ) {
+			 globalVarsMap.put("RequirementRate", requirement.getRate());
+			 } else {
+				 globalVarsMap.put("RequirementRate", "--");
+			}
+		 if (requirement.getClientId() != null) {
+			 globalVarsMap.put("clientname", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+			 } else {
+				 globalVarsMap.put("clientname", "--");
+			}
+		 if (vendorContactUser.getFirstName() +""+vendorContactUser.getLastName()!= null && !"".equalsIgnoreCase(vendorContactUser.getFirstName() +""+vendorContactUser.getLastName())) {
+			 globalVarsMap.put("contactname", vendorContactUser.getFirstName() +""+vendorContactUser.getLastName());
+			 } else {
+				 globalVarsMap.put("contactname", "--");
+			}
+		 if (requirement.getMaxExp()!= null && !"".equalsIgnoreCase(requirement.getMaxExp())) {
+			 globalVarsMap.put("Experience", requirement.getMaxExp());
+			 } else {
+				 globalVarsMap.put("Experience", "--");
+			}
+		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+		
+		 if (loginUser.getFirstName()+" "+loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()+" "+loginUser.getLastName())) {
+			 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
+			 } else {
+				 globalVarsMap.put("loginUserName", "--");
+			}
+		 
+		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
+			 globalVarsMap.put("LoginOrgName",loginOrgLocation.getOrg().getOrgName() );
+			 } else {
+				 globalVarsMap.put("LoginOrgName", "--");
+			}
+		
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.RELEASEMECHANISM_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+
+		
+	}
+
+	@Override
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, Long userId)
+			throws Exception {
+		
+			return requirementDao.getAssignedRequirementListByOrgLocationIDAndUserId(orgLocationId,userId);
+		
+	}
 }

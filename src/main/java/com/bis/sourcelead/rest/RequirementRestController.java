@@ -165,6 +165,9 @@ public class RequirementRestController {
 			 
 			requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 			requirementApproverHierarchy.setRejectedReason(reason);
+			
+			User initiatorUser = userService.getUserByUserCode(requirement.getCreatedBy()); 
+			requirementService.rejectedEmailScenario(loginUser, initiatorUser, requirement, null, null, null,reason); 
 		}
 		requirementService.addRequirement(requirement);
 		requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);

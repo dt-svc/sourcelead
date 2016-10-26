@@ -429,4 +429,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		
 	}
 
+	@Override
+	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId, String submissionStatus) {
+		return requirementSubmissionDao.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(orgLocationsId,submissionStatus);
+	}
+
 }
