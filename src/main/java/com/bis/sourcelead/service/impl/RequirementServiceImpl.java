@@ -792,20 +792,26 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
 
 	}
+	
+	
 	@SuppressWarnings("unchecked")
+	/**
+	 * calculating the score of Resume per candidate
+	 * 
+	 */
 	@Override
 	public List<Candidate> getRecommendationsWithScore(List<Candidate> candidateList, Requirement requirement) throws Exception {
-		float expPercentage = 0;
-		float locationPercentage = 0;
-		float ratePercentage = 0;
-		float skillPercentage = 0;
+		float expPercentage = 0; //  experience = 20%
+		float locationPercentage = 0; // location 10%
+		float ratePercentage = 0;    // rate 20 %
+		float skillPercentage = 0; // skill = 50%
 		float percentPerSkill = 0;
 		List<Candidate> CandidateListcopy = new ArrayList<>();
 		String reqSkills = "";
 		if(requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())){
 		     reqSkills = requirement.getSkills();
 			String [] reqMaxSkills = reqSkills.split(",");
-			 percentPerSkill = 30/(float)reqMaxSkills.length;
+			 percentPerSkill = 50/(float)reqMaxSkills.length;
 		}
 		int reqMinExp = 0;
 		int reqMaxExp = 0;
