@@ -151,6 +151,18 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					        	   sendEmailToApplicants(candidate,requirementSubmission, user, jsonObj.getString(c+"startTime"), jsonObj.getString(c+"endTime"), loginOrg, jsonObj.getString(c+"dateOfInterview"), jsonObj.getString(c+"location"),jsonObj.getString(c+"interviewType"));
 					           }
 					           
+					           
+					           
+					           if(jsonObj.has("notificationToOthersEmails") && !jsonObj.getString("notificationToOthersEmails").isEmpty()){
+									String[] othersEmails = jsonObj.getString("notificationToOthersEmails").split(",");
+									for (String emailId : othersEmails) {
+										User otherUser = new User();
+										otherUser.setEmail(emailId);
+										sendEmailToInterviewrs(candidate,otherUser,requirementSubmission, user, jsonObj.getString(c+"startTime"), jsonObj.getString(c+"endTime"), loginOrg, jsonObj.getString(c+"dateOfInterview"), jsonObj.getString(c+"location"),jsonObj.getString(c+"interviewType"),orgLocations);
+									}
+									
+									
+							  }
 					           //to store RequirementInterviewers
 					           if(jsonObj.has(c+"interviewer") && !jsonObj.getString(c+"interviewer").isEmpty()){
 					        	    String interviewerIds = jsonObj.getString(c+"interviewer");
@@ -175,9 +187,6 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				}
 			continue;
 		}
-		  if(jsonObj.has("notificationToOthersEmails") && !jsonObj.getString("notificationToOthersEmails").isEmpty()){
-			  
-		  }
 		
 	}
 	
@@ -185,8 +194,19 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	private void sendEmailToInterviewrs(Candidate candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser, String startTime, String endTime,Org loginOrg,String dateOfInterview,String location, String interviewType, OrgLocations orgLocations)	throws Exception {
 		 
 		EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(interviewerUser.getFirstName());
-		 emailMessage.setLastName(interviewerUser.getLastName());
+		
+		if(interviewerUser.getFirstName()!=null){
+			 emailMessage.setFirstName(interviewerUser.getFirstName());
+		}
+		else{
+			 emailMessage.setFirstName("");
+		}
+		if(interviewerUser.getLastName()!=null){
+			 emailMessage.setLastName(interviewerUser.getLastName());
+		}
+		else{
+			 emailMessage.setLastName("");
+		}
 		 emailMessage.setToEmail(interviewerUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
@@ -242,13 +262,16 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String actionLink = "";
 //		 String actionLink = ""+sourceleadUrl+"/"+"acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId=";
 		 
+		 if(interviewerUser.getFirstName()!=null){
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 		 noificationEmailScenario.setBody(notificationbody);
 		 
 		 emailScenerioUtil.sendNotification(actionLink, loginUser, interviewerUser, orgLocations, noificationEmailScenario);
+		 }
 	}
-
-
+	
+	
+	
 	public void sendEmailToApplicants(Candidate candidate, RequirementSubmission requirementSubmission, User loginUser, String startTime, String endTime,Org loginOrg,String dateOfInterview,String location, String interviewType)	throws Exception {
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(candidate.getFirstName());
