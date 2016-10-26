@@ -2,6 +2,11 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
@@ -20,6 +25,8 @@
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+
+
 <!-- end files for autocomplete with tagit -->
 <script>
  window.onload = function() { 
@@ -106,7 +113,7 @@ function teamList(){
 --%>
 
 <script>
-function pagination(){ 
+function pagination(){  alert("hai");
     $('#teamPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[2, 15, 20, -1], [2, 15, 20, "All"]],
@@ -182,10 +189,10 @@ function addTeam(){
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '                <div class="col-md-12">';
 	outPut = outPut + '<select   class="form-control" name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">';
-	 outPut = outPut + ' <option value="">Select Team Lead</option>';            
-	           <c:forEach var="report" items="${usersList}">
+				/* outPut = outPut + ' <option value="">--Select Team Lead--</option>';  */           
+	           /* <c:forEach var="report" items="${usersList}">
 			         outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
-			   </c:forEach>
+			   </c:forEach> */
     outPut = outPut + '</select>';
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '              </div> ';
@@ -193,9 +200,10 @@ function addTeam(){
 	outPut = outPut+ '                <div class="col-md-12">';
 	outPut = outPut+ '                <label>Team Member<b class="text-danger">*</b> </label>';
 	outPut = outPut + '<select multiple class="chosen-select form-control" name="memberUserId" id="memberUserId" placeholder="Team Member *" data-validation="required validate_Space" field-name="Team Member">';
-    <c:forEach var="report" items="${usersList}">
-         outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
-   </c:forEach>
+		/* outPut = outPut + ' <option disabled >--Select Team Member--</option>';      */   
+		/* <c:forEach var="report" items="${usersList}">
+	         outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
+	     </c:forEach> */
     outPut = outPut + '</select>';
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '              </div> ';
@@ -470,7 +478,7 @@ function removeProjectMemberAlertMessage(teamId){
 	result = result +"		<b href='#'><input id='confirm-id' type='button' value='Ok' onclick='deleteTeamMember("+teamId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
 	result = result +"	</div>";
 	$("#removeCandidateAlert").append(result);
-	$("#remove_user_pop").slideDown(200);
+	$("#remove_user_pop").slideDown(200); 
 	$(".project_inn_mask").fadeIn(200);
 }
 </script>
@@ -564,21 +572,21 @@ function TeamMemberpagination(){
               </ul>
             </div>
           </li>
-          <li><a href="#" onclick="addTeam();" title=""><i class="fa fa-plus"></i>Add Team</a></li>
+          <li><a href="#" onclick="addTeam();getTeamOwners();" title=""><i class="fa fa-plus"></i>Add Team</a></li>
           <div class="clearfix"></div>
         </ul>
         <div class="clearfix"></div>
-        <div class="remove_search">
+        <!-- <div class="remove_search">
           <input type="text" placeholder="search" />
-        </div>
+        </div> -->
       </div>
       <div class="project_tabs_inn_table vendor_wrap_inn_table">
        			<div id="popUpDivTeamParent" class="edit-details col-md-4"></div>  
       			<div id="teamList"></div>
       			
               </div>
+        </div>      
   
-    </div>
     
     <!-- Compnay details -->
     <div class="side_mask"><div class="proj_close"></div></div>
@@ -654,19 +662,46 @@ function storeTeam(){
 
 
 <script type="text/javascript">
-function getTeamMembers(){
-	
+function getTeamOwners(){ 
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var teamMemberUserId = document.getElementById("memberUserId").value;
+     $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?${_csrf.parameterName}=${_csrf.token}&teamOwnerUserId="+teamMemberUserId,
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-Select Team Owners-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#ownerUserId").empty();
+			        $("#ownerUserId").append(output);
+			        $("#ownerUserId").trigger("chosen:updated");
+			        
+			        getTeamMembers();
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+} 
+</script>
+
+
+<script type="text/javascript">
+function getTeamMembers(){  
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var teamOwnerUserId = document.getElementById("ownerUserId").value;
-	 
-	 if(teamOwnerUserId != null && teamOwnerUserId != ''  && teamOwnerUserId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?${_csrf.parameterName}=${_csrf.token}&teamOwnerUserId="+teamOwnerUserId,
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	
-		        	output = output + "<option value=''>-Select Team Members-</option>"; 
+		        	var output = "";
+		        	output = output + "<option disabled >-Select Team Members-</option>"; 
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
@@ -674,27 +709,12 @@ function getTeamMembers(){
 					}
 		        	$("#memberUserId").empty();
 			        $("#memberUserId").append(output);
+			        $("#memberUserId").trigger("chosen:updated");
 		        },
 		        error: function(e){
 		            
 		        }
 		    });
-	 }
-	 $(function(){
-		    var config = {
-				  '.chosen-select'           : {},
-				  '.chosen-select-deselect'  : {allow_single_deselect:true},
-				  '.chosen-select-no-single' : {disable_search_threshold:10},
-				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-				  '.chosen-select-width'     : {width:"95%"}
-				}
-		    
-		   
-		    $('.chosen-select').each(function() {
-					var $this = $(this);
-					$this.next().css({'width': '100%'});
-			  })
-		});
 } 
 </script>
 

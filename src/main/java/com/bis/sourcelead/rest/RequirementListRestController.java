@@ -1,4 +1,4 @@
-package com.bis.sourcelead.rest;
+`package com.bis.sourcelead.rest;
 
 import java.util.List;
 
@@ -147,6 +147,13 @@ public class RequirementListRestController {
 					}
 					if(requirement.getManagerUserId() != null && requirement.getManagerUserId().getFirstName() != null && requirement.getManagerUserId().getLastName() != null ){
 						requirement.setManager(requirement.getManagerUserId().getFirstName()+" "+requirement.getManagerUserId().getLastName());	
+					}
+					
+					if(requirement.getClientSubmissionTemplateId()!=null){
+						requirement.setClientSubmissionTemplate(requirement.getSubmissionTemplateId().getTemplateName());
+					}else{
+						requirement.setClientSubmissionTemplate(requirement.getSubmissionTemplateId().getTemplateName());
+
 					}
 					resultJson = commonUtil.toJSON(requirement);
 			

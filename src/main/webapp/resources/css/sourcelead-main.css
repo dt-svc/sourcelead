@@ -565,7 +565,7 @@ ul.timesheet-menu li a {
 }
 ul.timesheet-menu li a::before {
 	color: #f0ad4e;
-	content: "";
+	content: "ïˆ­";
 	font-family: fontawesome;
 	padding-right: 5px;
 }
