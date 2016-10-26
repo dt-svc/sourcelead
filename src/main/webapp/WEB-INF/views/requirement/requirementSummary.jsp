@@ -926,7 +926,7 @@ $(document).ready(function() {
 	
 // project side bar
 $(document).ready(function() {
-    $(".proj_show").click(function(){
+    $(".`	").click(function(){
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
