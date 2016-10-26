@@ -337,7 +337,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
         	 }
     		 clientSubmission.setCandidate(submission.getCandidate());
     		 clientSubmission.setCandidateResumes(submission.getCandidateResumes());
-    		 clientSubmission.setOrgLocations(loginOrgLocation);
     		 clientSubmission.setSourceSubmission(submission);
     		 clientSubmission.setSubmissionTemplateJsonString(submission.getSubmissionTemplateJsonString());
     		 clientSubmission.setSubmissionTemplateJsonStringValue(submission.getSubmissionTemplateJsonStringValue());

@@ -150,6 +150,7 @@ public class RequirementListRestController {
 						requirement.setManager(requirement.getManagerUserId().getFirstName()+" "+requirement.getManagerUserId().getLastName());	
 					}
 					
+
 					if(requirement.getSubmissionTemplateId()!=null){
 						requirement.setClientSubmissionTemplate(requirement.getSubmissionTemplateId().getTemplateName());
 					} 
@@ -163,6 +164,7 @@ public class RequirementListRestController {
 					}
 					requirement.setHighestLevel(highestLevel);
 					requirement.setApproverNames(ar);
+
 					resultJson = commonUtil.toJSON(requirement);
 			
 				 
@@ -231,7 +233,11 @@ public class RequirementListRestController {
 							for (RequirementSubmission requirementSubmission : requirementSubmissions) {
 								CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
 								RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
-								requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName()+" "+requirementSubmissionTemplateFields.getLastName());
+								String candidateName = requirementSubmissionTemplateFields.getFirstName();
+								if(requirementSubmissionTemplateFields.getLastName()!=null){
+									candidateName = candidateName+" "+requirementSubmissionTemplateFields.getLastName();
+								}
+								requirementSubmission.setCandidateName(candidateName);
 								requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
 								requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 								requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());

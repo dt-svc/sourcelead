@@ -1668,6 +1668,7 @@ function cancelAlert(){
 <script>  
 function requirementPipeline(requirementId){
 	  var sourceleadUrl = '${sourceleadUrl}';
+	  var clientSubmissions = '${clientSubmissions}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
@@ -1681,7 +1682,13 @@ function requirementPipeline(requirementId){
             			 location.replace(sourceleadUrl+"/errorPage");
             		 }
             		 else{ 
-							var result ="";
+            			 
+            			 var result ="";
+            			
+            			 var submitToClient = '';
+            			 if(clientSubmissions == 'Y'){
+            				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+            			 }
 							
 							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close"></div></div>';
 							 
@@ -1770,7 +1777,7 @@ function requirementPipeline(requirementId){
 				            result = result +'	<span>';
 				            result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
 				            result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
-				            result = result +'   <a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+				            result = result + submitToClient
 				            result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
 				            result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
 				            result = result +'    </span>';
@@ -2098,7 +2105,9 @@ function requirementPipeline(requirementId){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
 						           
-						           result = result + '         <td><div><span>';
+						           result = result + '<td><div><span>'+report.submissionStatus+'</span></div></td>';
+						           
+						           /* result = result + '         <td><div><span>';
 						           result = result +'			<select>';
 							       
 									if(report.submissionStatus == "INTERVIEW"){
@@ -2126,7 +2135,7 @@ function requirementPipeline(requirementId){
 										result = result +' <option>offer</option>';
 									}
 						           result = result + '             </select>';
-						           result = result + '             </span></div></td>';
+						           result = result + '             </span></div></td>'; */
 						           
 						           result = result + '       </tr>';
 			   				}
