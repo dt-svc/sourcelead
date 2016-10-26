@@ -1,6 +1,6 @@
 package com.bis.sourcelead.rest;
 
-import java.io.Writer;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,20 +12,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
 
 /**
  * This class is used for...
@@ -47,6 +47,9 @@ public class DashboardRestController {
 	
 	@Autowired
 	public OrgLocationService orgLocationService;
+	
+	 @Autowired
+	 RequirementService requirementService;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -89,6 +92,38 @@ public class DashboardRestController {
 	 public @ResponseBody void userSummary(@PathVariable Long orgLocationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			response.sendRedirect("/sourcelead/dashboardLinks?orgLocationId="+orgLocationId);
 			
-	   }
+	}
+	
+	
+	 /**
+	   * @author sarath kumar
+	   * @since  aug 30 2016
+	   * @version 0.0.1
+	   * 
+	   * This method is used to for getting CandidatesList By OrgLocationID
+	   * this method is called at onload when click on timesheet left menu
+	   * 
+	   * @param user This is the first parameter to getCandidatesListByOrgLocationID method
+	   * @param navigation This is the second parameter to getCandidatesListByOrgLocationID method
+	   * @param startDate This is the third parameter to getCandidatesListByOrgLocationID method
+	   *  
+	   * @return string 
+	   * 
+	   * @throws NullPointer
+	   */
+	 
+	 @RequestMapping(value = "/getAssignedRequirementListByOrgLocationIDAndUserId")
+	 public String getAssignedRequirementListByOrgLocationIDAndUserId(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
+
+		String resultJson;
+		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(),user.getId());
+		resultJson = commonUtil.toJSON(requirementList);
+		return resultJson;
+	 }
+	
+	
 
 }

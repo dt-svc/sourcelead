@@ -1101,4 +1101,12 @@ public class RequirementServiceImpl implements RequirementService {
 
 		
 	}
+
+	@Override
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, Long userId)
+			throws Exception {
+		
+			return requirementDao.getAssignedRequirementListByOrgLocationIDAndUserId(orgLocationId,userId);
+		
+	}
 }
