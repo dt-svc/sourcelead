@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
@@ -63,10 +64,12 @@ public class RequirementInterviewRestController {
 	}
 	
 	@RequestMapping(value = "/getAllShortListCandidates")
-	public @ResponseBody String getAllShortListCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,HttpServletRequest request) throws Exception {
+	public @ResponseBody String getAllShortListCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
+			                                              @RequestParam(value="existingApplicantsIds", required=false) List<Long> existingApplicantsIds,
+			                                              HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson = null;
-		List<RequirementSubmission> shortListCandidatesList = requirementSubmissionService.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations.getId(), requirementId);
+		List<RequirementSubmission> shortListCandidatesList = requirementSubmissionService.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations.getId(), requirementId,existingApplicantsIds);
 		for (RequirementSubmission sub : shortListCandidatesList) {
 			String candidateName = "";
  		   if(StringUtils.isNotEmpty(sub.getCandidate().getFirstName())){
@@ -89,7 +92,9 @@ public class RequirementInterviewRestController {
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			requirementInterviewService.saveRequirementInterview(jsonObj,user,orgLocations);
+			Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			
+			requirementInterviewService.saveRequirementInterview(jsonObj,user,orgLocations,loginOrg);
  	    
  	    
 			return "success";

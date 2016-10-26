@@ -10,6 +10,13 @@
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/chosen.jquery.min.js"></script> 
 
+<script src="resources/js/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<script src="resources/js/chosen.jquery.min.js"></script> 
+
+<script src="resources/js/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+
 <script src="resources/js/chosen.jquery.min.js"></script> 
 <script src="resources/js/bootstrap-select.min.js"></script>
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
@@ -35,6 +42,15 @@
 	</script>
 	 
 	<style>
+	
+	.er .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn){
+	width:100px;
+	}
+	.er .btn-default{
+	background:#337ab7;
+	color:#fff;
+	text-shadow: none;
+	}
 	.clsDatePicker {
 		z-index: 100000 !important;
 	}
@@ -69,11 +85,11 @@
         <div class="col-md-12 clearfix">
         <div class="well">
           <div class="input-group col-md-6" id="uploadFileGroup" style="margin:0 auto; position:relative;">
-            <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+            <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
               <input type="file" name="uploadBtn" id="uploadBtn" class="hidden upload">
               </span> 
            </label>
-             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_Space validateResume" data-validation-optional="true">
+             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validate_Space validateResume" >
           </div>
           </div>
         </div>
@@ -220,7 +236,43 @@
        </div>
        
         
-         <div class="form-group">
+        
+        <div class="form-group">
+            <label class="col-md-3">Expected Rate</label>
+            <div class="col-md-9">
+             <div class="input-group er">
+                <div class="input-group-btn tblminwidth-75">
+                  
+                  <select class="selectpicker" id="expectedRateCurrencey" name="expectedRateCurrencey">
+                 
+                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
+                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
+                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
+                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
+                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+                 
+                </select>
+                
+                </div>
+                 <input type="text" id="expectedRate" name="expectedRate" value="${expectedRate}" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
+                <div class="input-group-btn tblminwidth-75">
+                  <select class="selectpicker" id="rateType" name="rateType" field-name="Rate Type">
+                    <option value="">Rate Per</option>
+                    <option ${rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                    <option ${rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+                    <option ${rateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
+                    <option ${rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+                    <option ${rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+                    <option ${rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
+                    <option ${rateType  == 'others' ? 'selected' : ''}>Yearly</option>
+                  </select>
+                </div>
+                 <div class="clearfix"></div> <div class="clearfix"></div>
+              </div>
+            </div>
+          </div>
+        <%--  <div class="form-group">
          <label class="col-md-3">Expected Rate</label>
          <div class="col-md-9">
            <div class="input-group">
@@ -239,7 +291,7 @@
              </div>
            </div>
          </div>
-       </div>
+       </div> --%>
         
         
          <div class="form-group">

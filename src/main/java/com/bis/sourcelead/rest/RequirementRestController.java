@@ -162,15 +162,15 @@ public class RequirementRestController {
 				    	for(RequirementApproverHierarchy rah :list1){
 				    		if(maxLevel.equals(rah.getLevel())){
 								User approverUser = userService.getUserById(rah.getApproverUserId().getId());
-								requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null,null);
-				    			
+								requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null);
 							   } 
 				    	} 
 		    }
-		    	
-		    }
+  }
 		    
 			requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+			User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
+			requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement);
 			
 		}
 		if(status.equalsIgnoreCase("REJECTED")){
@@ -182,6 +182,9 @@ public class RequirementRestController {
 			 
 			requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 			requirementApproverHierarchy.setRejectedReason(reason);
+			
+			User initiatorUser = userService.getUserByUserCode(requirement.getCreatedBy()); 
+			requirementService.rejectedEmailScenario(loginUser, initiatorUser, requirement, null, null, null,reason); 
 		}
 		requirementService.addRequirement(requirement);
 		requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);

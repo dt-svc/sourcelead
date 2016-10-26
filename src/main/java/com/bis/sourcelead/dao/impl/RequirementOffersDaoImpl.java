@@ -1,6 +1,8 @@
 package com.bis.sourcelead.dao.impl;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +35,19 @@ public class RequirementOffersDaoImpl implements RequirementOffersDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public RequirementOffers storeRequirementOffers(RequirementOffers requirementOffers) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		
+		logger.debug("Adding Requirement Offers ");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (requirementOffers != null) {
+				session.saveOrUpdate(requirementOffers);
+			}
+			logger.debug("Requirement Offers Added Successfully");
+		}catch(ConstraintViolationException exception)
+			{
+			
+			}
+		return requirementOffers;
+		
 	}
-	
 }

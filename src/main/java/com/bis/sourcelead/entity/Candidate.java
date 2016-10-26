@@ -88,6 +88,9 @@ public class Candidate {
 	@Column(name = "EXPECTED_RATE")
 	private String expectedRate;
 	
+	@Column(name = "RATE_TYPE")
+	private String rateType;
+	
 	@Column(name = "EXPECTED_RATE_CURRENCY")
 	private String expectedRateCurrencey;
 	
@@ -541,6 +544,15 @@ public class Candidate {
 	}
 
 
+
+	public String getRateType() {
+		return rateType;
+	}
+
+
+	public void setRateType(String rateType) {
+		this.rateType = rateType;
+	}
 	public String getCandidateScore() {
 		return candidateScore;
 	}

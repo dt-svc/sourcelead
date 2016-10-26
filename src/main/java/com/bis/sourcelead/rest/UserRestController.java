@@ -184,10 +184,10 @@ public class UserRestController {
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/validateUserEmail" , method = RequestMethod.POST)
-	 public @ResponseBody  String validateUserEmail(@RequestParam(value="EmailId", required=false) String EmailId) throws Exception {
-		 	
+	 public @ResponseBody  String validateUserEmail(@RequestParam(value="EmailId", required=false) String EmailId, HttpServletRequest request) throws Exception {
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	String result = null;
-		 	User user = userService.findByEmail(EmailId);
+		 	User user = userService.findByEmailAndOrgLocationsId(EmailId,orgLocations.getId());
 		 	
 		 	if (user != null) {
 				result = "true";

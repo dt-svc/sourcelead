@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -83,7 +84,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "SKILLS")
 	private String skills;
 	
-	@Column(name = "DESCRIPTION")
+	@Column(name = "DESCRIPTION" , columnDefinition = "TEXT default NULL")
 	private String description;
 	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
@@ -118,12 +119,11 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	
 	@ManyToOne
-    @JoinColumn(name="SUBMISSION_TEMPLATE_ID", nullable=false )        
+    @JoinColumn(name="SUBMISSION_TEMPLATE_ID" )        
     private SubmissionTemplate submissionTemplateId;
 	
-	
 	@ManyToOne
-    @JoinColumn(name="CLIENT_SUBMISSION_TEMPLATE_ID", nullable=false )        
+    @JoinColumn(name="CLIENT_SUBMISSION_TEMPLATE_ID" )        
     private SubmissionTemplate clientSubmissionTemplateId;
 	
 	@ManyToOne
@@ -150,8 +150,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String clientSubmissionTemplateJsonString;
 	
 	
-	@Column(name="PARENT_REQUIREMENT_ID")
-	private Long parent_requirement_id;
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="PARENT_REQUIREMENT_ID")        
+    private Requirement parentRequirement;
 	
 	@Column(name="PRIORITY")
 	private String priority;
@@ -192,7 +193,6 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String requirementApproverHierarchyStatus;
 	
-	
 	@Transient
 	private String spocName;
 	
@@ -210,6 +210,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private String[] reqSkillsList;
+	
+	@Transient
+	private ArrayList<String> approverNames;
+	
+	@Transient
+	private Integer highestLevel;
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -495,12 +501,13 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.requirementSubmissionStatus = requirementSubmissionStatus;
 	}
 
-	public Long getParent_requirement_id() {
-		return parent_requirement_id;
+
+	public Requirement getParentRequirement() {
+		return parentRequirement;
 	}
 
-	public void setParent_requirement_id(Long parent_requirement_id) {
-		this.parent_requirement_id = parent_requirement_id;
+	public void setParentRequirement(Requirement parentRequirement) {
+		this.parentRequirement = parentRequirement;
 	}
 
 	public String getPriority() {
@@ -637,6 +644,22 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setRequirementApproverHierarchyStatus(String requirementApproverHierarchyStatus) {
 		this.requirementApproverHierarchyStatus = requirementApproverHierarchyStatus;
+	}
+
+	public ArrayList<String> getApproverNames() {
+		return approverNames;
+	}
+
+	public void setApproverNames(ArrayList<String> approverNames) {
+		this.approverNames = approverNames;
+	}
+
+	public Integer getHighestLevel() {
+		return highestLevel;
+	}
+
+	public void setHighestLevel(Integer highestLevel) {
+		this.highestLevel = highestLevel;
 	}
 
 }

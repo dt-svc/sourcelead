@@ -4,7 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
  
  
  
@@ -720,8 +719,7 @@ $(document).ready(function() {
       
       <!-- Addede by Rajashekar -->
       <div id="tab-3" class="project_tabs_inn">
-      <div id="recommendationsList"></div>
-              <!-- <div class="timesheet_head candidateHead recruitmentHead">
+              <div class="timesheet_head candidateHead recruitmentHead">
                 <div class="rec_head"></div>
               </div>
               <div class="require_wrap_table recommend_table">
@@ -839,9 +837,9 @@ $(document).ready(function() {
                   <li data-page="last"><a href="#">Next</a></li>
                 </ul>
                 <div class="clearfix"></div>
-              </nav> -->
-              
+              </nav>
             </div>            
+            
           </div>
     
     <div class="side_mask">
@@ -854,1132 +852,6 @@ $(document).ready(function() {
     <div class="side_mask">
       <div class="proj_close"></div>
     </div>
-    <div class="clients_side_wrap">
-      <div class="clients_side_wrap_inn">
-        <div class="project_side_wrap_inn_tabs"> 
-          
-<!--    Requirment details    -->
-<div class="req_hide">
-<div class="profile_details clearfix">
-          <div class="col-md-6">
-            <div class="media">
-              <div class="media-left image-parent">
-                <div class="imageParent"> <img src="./images/24.jpg" alt="candidate" title="Candidate"> </div>
-              </div>
-              <div class="media-body candidate-details">
-                <h4 class="media-heading">Jaden Smith</h4>
-                <ul class="list-unstyled">
-                  <li><strong>Business Analyst - Full Time</strong></li>
-                  <li>Experience - 4 years</li>
-                </ul>
-              </div>
-            </div>
-            <div class="other-detials">
-              <div class="professinal-details">
-                <ul class="list-inline list-unstyled">
-                  <li>BA</li>
-                  <li>BRS</li>
-                  <li>SRS</li>
-                  <li>Agile</li>
-                  <li>SDLC</li>
-                </ul>
-              </div>
-              <div class="socialnetwork-details">
-                <ul class="list-inline list-unstyled">
-                  <li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>
-                  <li class="bg-twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square"></i></a></li>
-                  <li class="bg-google "><a href="javascript:void(0)"> <i class="fa fa-google-plus-square"></i></a></li>
-                  <li class="bg-linked"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square"></i></a></li>
-                  <li class="bg-web"><a href="javascript:void(0)"> <i class="fa fa-globe"></i></a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <ul class="list-unstyled can-perdt">
-              <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">jadensmith@hotmail.com</a></li>
-              <li><i class="fa fa-phone"></i>+91 9900223355</li>
-              <li><i class="fa fa-location-arrow"></i>Hyderabad, TS, India</li>
-              <li><i class="fa fa-rupee"></i>200/Per Hour - Current Rate / Salary</li>
-              <li><i class="fa fa-rupee"></i>300/Per Hour - Expected Rate / Salary</li>
-            </ul>
-          </div>
-        </div>
-
-<div class="project_side_wrap_inn_tabs">
-          <ul class="new-tabs">
-            <li class="current"><a href="#tabb-1">Profile</a></li>
-            <li><a href="#tabb-2">Resume</a></li>
-            <li><a href="#tabb-3">Employer's</a></li>
-            <li><a href="#tabb-4">Education</a></li>
-            <li><a href="#tabb-5">Certifications</a></li>
-            <li><a href="#tabb-6">Activities</a></li>
-            <div class="clearfix"></div>
-          </ul>
-          <div class="project_tabs">
-            <div id="tabb-1" class="new-tabs_inn">
-              <div class="new-tabs_inn_head addUser-org"> <a href="javascript:void(0)" class="mr"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)"><i class="glyphicon glyphicon-trash"></i>Remove</a> 
-                <!-- Popup Div: Edit Candidate -->
-                <div class="edit-details col-md-8 edit-candaite"> <i class="fa fa-close close-div"></i>
-                  <div class="form-horizontal clearfix">
-                    <div class="clearfix mb10">
-                      <div class="col-md-6">
-                        <input type="text" class="form-control input-sm" value="" placeholder="First Name">
-                      </div>
-                      <div class="col-md-6">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Last Name">
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-6">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Email">
-                      </div>
-                      <div class="col-md-6">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Mobile">
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-6 custom-fields">
-                        <select class="form-control select-arrow select-bg">
-                          <option>India</option>
-                          <option>United States</option>
-                          <option>UK</option>
-                        </select>
-                      </div>
-                      <div class="col-md-6 custom-fields select-arrow">
-                        <select class="form-control input-sm">
-                          <option>India</option>
-                          <option>United States</option>
-                          <option>UK</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-6">
-                        <input type="text" class="form-control input-sm" value="" placeholder="City">
-                      </div>
-                      <div class="col-md-6">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Skills">
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <textarea class="form-control input-sm" placeholder="Summary" rows="2" cols="0">
-                              
-                              </textarea>
-                      </div>
-                    </div>
-                    <div class="clearfix mr">
-                      <div class="pull-right">
-                        <button type="submit" class="btn btn-sm btn-primary mr">Save</button>
-                        <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- Popup Div --> 
-              </div>
-              <div class="require_wrap_details">
-                <h1>Summary:</h1>
-                <textarea placeholder="Enter description">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</textarea>
-                
-                <!-- Select Skills -->
-                <h2>Skills:</h2>
-                <div class="row select-skills">
-                  <div class="divskill col-md-8"> 
-                    <!-- Add skills div -->
-                    <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills"> <i class="fa fa-code"></i>Add Skills </a>
-                      <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>
-                        <div class="form-horizontal clearfix">
-                          <div class="clearfix div-padding">
-                            <div class="col-md-10">
-                              <input type="text" placeholder="Skill..." value="" class="form-control input-sm">
-                            </div>
-                            <div class="col-md-2">
-                              <button class="btn btn-sm btn-primary pull-right" type="submit">Add</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <!-- Add skills div ends -->
-                    <table class="table table-responsive table-hover clearfix">
-                      <thead>
-                        <tr>
-                          <th>Skills</th>
-                          <th>Level</th>
-                          <th>Experience</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td><p class="form-control-static">Java</p></td>
-                          <td><select class="tbldata-dotdot-me width100percnt">
-                              <option selected disabled>Select</option>
-                              <option>Beginner</option>
-                              <option>Familiar</option>
-                              <option>proficient</option>
-                              <option>Expert</option>
-                              <option>Master</option>
-                            </select></td>
-                          <td><select class="tbldata-dotdot-me width100percnt">
-                              <option selected disabled>Select</option>
-                              <option>0</option>
-                              <option>1</option>
-                              <option>2</option>
-                              <option>3</option>
-                              <option>4</option>
-                              <option>5</option>
-                              <option>6</option>
-                              <option>7</option>
-                              <option>8</option>
-                              <option>9</option>
-                              <option>10</option>
-                              <option>11</option>
-                              <option>12</option>
-                              <option>13</option>
-                              <option>14</option>
-                              <option>15</option>
-                              <option>15</option>
-                              <option>16</option>
-                              <option>17</option>
-                              <option>18</option>
-                              <option>19</option>
-                              <option>20+</option>
-                            </select></td>
-                          <td><div class="text-center"> <i class="fa fa-trash"></i> </div></td>
-                        </tr>
-                        <tr>
-                          <td><p class="form-control-static">Javascript</p></td>
-                          <td><select class="tbldata-dotdot-me width100percnt">
-                              <option selected disabled>Select</option>
-                              <option>Beginner</option>
-                              <option>Familiar</option>
-                              <option>proficient</option>
-                              <option>Expert</option>
-                              <option>Master</option>
-                            </select></td>
-                          <td><select class="tbldata-dotdot-me width100percnt">
-                              <option selected disabled>Select</option>
-                              <option>0</option>
-                              <option>1</option>
-                              <option>2</option>
-                              <option>3</option>
-                              <option>4</option>
-                              <option>5</option>
-                              <option>6</option>
-                              <option>7</option>
-                              <option>8</option>
-                              <option>9</option>
-                              <option>10</option>
-                              <option>11</option>
-                              <option>12</option>
-                              <option>13</option>
-                              <option>14</option>
-                              <option>15</option>
-                              <option>15</option>
-                              <option>16</option>
-                              <option>17</option>
-                              <option>18</option>
-                              <option>19</option>
-                              <option>20+</option>
-                            </select></td>
-                          <td><div class="text-center"> <i class="fa fa-trash"></i> </div></td>
-                        </tr>
-                        <tr>
-                          <td><p class="form-control-static">Java</p></td>
-                          <td><select class="tbldata-dotdot-me width100percnt">
-                              <option selected disabled>Select</option>
-                              <option>Beginner</option>
-                              <option>Familiar</option>
-                              <option>proficient</option>
-                              <option>Expert</option>
-                              <option>Master</option>
-                            </select></td>
-                          <td><select class="tbldata-dotdot-me width100percnt">
-                              <option selected disabled>Select</option>
-                              <option>0</option>
-                              <option>1</option>
-                              <option>2</option>
-                              <option>3</option>
-                              <option>4</option>
-                              <option>5</option>
-                              <option>6</option>
-                              <option>7</option>
-                              <option>8</option>
-                              <option>9</option>
-                              <option>10</option>
-                              <option>11</option>
-                              <option>12</option>
-                              <option>13</option>
-                              <option>14</option>
-                              <option>15</option>
-                              <option>15</option>
-                              <option>16</option>
-                              <option>17</option>
-                              <option>18</option>
-                              <option>19</option>
-                              <option>20+</option>
-                            </select></td>
-                          <td><div class="text-center"> <i class="fa fa-trash"></i> </div></td>
-                        </tr>
-                        <tr>
-                          <td><p class="form-control-static">Java</p></td>
-                          <td><select class="tbldata-dotdot-me width100percnt">
-                              <option selected disabled>Select</option>
-                              <option>Beginner</option>
-                              <option>Familiar</option>
-                              <option>proficient</option>
-                              <option>Expert</option>
-                              <option>Master</option>
-                            </select></td>
-                          <td><select class="tbldata-dotdot-me width100percnt">
-                              <option selected disabled>Select</option>
-                              <option>0</option>
-                              <option>1</option>
-                              <option>2</option>
-                              <option>3</option>
-                              <option>4</option>
-                              <option>5</option>
-                              <option>6</option>
-                              <option>7</option>
-                              <option>8</option>
-                              <option>9</option>
-                              <option>10</option>
-                              <option>11</option>
-                              <option>12</option>
-                              <option>13</option>
-                              <option>14</option>
-                              <option>15</option>
-                              <option>15</option>
-                              <option>16</option>
-                              <option>17</option>
-                              <option>18</option>
-                              <option>19</option>
-                              <option>20+</option>
-                            </select></td>
-                          <td><div class="text-center"> <i class="fa fa-trash"></i> </div></td>
-                        </tr>
-                        <tr>
-                          <td><p class="form-control-static">Java</p></td>
-                          <td><select class="tbldata-dotdot-me width100percnt">
-                              <option selected disabled>Select</option>
-                              <option>Beginner</option>
-                              <option>Familiar</option>
-                              <option>proficient</option>
-                              <option>Expert</option>
-                              <option>Master</option>
-                            </select></td>
-                          <td><select class="tbldata-dotdot-me width100percnt">
-                              <option selected disabled>Select</option>
-                              <option>0</option>
-                              <option>1</option>
-                              <option>2</option>
-                              <option>3</option>
-                              <option>4</option>
-                              <option>5</option>
-                              <option>6</option>
-                              <option>7</option>
-                              <option>8</option>
-                              <option>9</option>
-                              <option>10</option>
-                              <option>11</option>
-                              <option>12</option>
-                              <option>13</option>
-                              <option>14</option>
-                              <option>15</option>
-                              <option>15</option>
-                              <option>16</option>
-                              <option>17</option>
-                              <option>18</option>
-                              <option>19</option>
-                              <option>20+</option>
-                            </select></td>
-                          <td><div class="text-center"> <i class="fa fa-trash"></i> </div></td>
-                        </tr>
-                    </tbody>
-                    </table>
-                    <a href="javascript:void(0)">more <i class="fa fa-angle-right"></i></a>
-                  </div>
-                </div>
-                <!-- Select Skills --> 
-              </div>
-            </div>
-            <div id="tabb-2" class="new-tabs_inn">
-              <div class="project_tabs_inn_head"> <a href="#" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Resume</a> 
-                <!-- Popup Div -->
-                <div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>
-                  <div class="form-horizontal clearfix">
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Title">
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <textarea rows="2" placeholder="Description" class="form-control"></textarea>
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <div class="input-group">
-                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                            <input type="file" style="display: none;" multiple id="uploadBtn" class="upload">
-                            </span> </label>
-                          <input type="text" class="form-control" readonly id="uploadFile" placeholder="Files are not selected...">
-                        </div>
-
-                      </div>
-                    </div>
-                    <div class="clearfix mr">
-                      <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>
-                    </div>
-                  </div>
-                </div>
-                <!-- Popup Div --> 
-              </div>
-              <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>Title</th>
-                      <th>Attachment</th>
-                      <th>Description</th>
-                      <th>Created By</th>
-                      <th>Action</th>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>javaresume</span></div></td>
-                      <td><div><span>javaresume.doc</span></div></td>
-                      <td><div><span>javaresume description here</span></div></td>
-                      <td><div><span>Sujith S</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <nav>
-                <ul id="pagingg" class="pagination">
-                  <li><a href="#">Previous</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li class="disabled"><a href="#">6</a></li>
-                  <li data-page="last"><a href="#">Next</a></li>
-                </ul>
-                <div class="clearfix"></div>
-              </nav>
-            </div>
-            <div id="tabb-3" class="new-tabs_inn">
-              <div class="project_tabs_inn_head"> <a href="#" class="addUser-org"> <i class="glyphicon glyphicon-plus"></i>Add Employer's </a> 
-                <!-- Popup Div -->
-                <div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>
-                  <div class="form-horizontal clearfix">
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Employer *">
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-12 checkbox">
-                        <label>
-                          <input type="checkbox" name="Position" id="endDate">
-                          Is Current Position</label>
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Designation">
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Address">
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <p class="ml">Start Date</p>
-                      <div class="col-md-6">
-                        <select class="chosen-select">
-                          <option value="Select Month">Select Month</option>
-                          <option value="January">January</option>
-                          <option value="February">February</option>
-                          <option value="March">March</option>
-                          <option value="April">April</option>
-                          <option value="April">May</option>
-                          <option value="April">June</option>
-                          <option value="April">Jully</option>
-                          <option value="April">August</option>
-                          <option value="April">September</option>
-                          <option value="April">October</option>
-                          <option value="April">November</option>
-                          <option value="April">December</option>
-                        </select>
-                      </div>
-                      <div class="col-md-6">
-                        <input type="text" max class="form-control" value="" placeholder="Enter Year">
-                      </div>
-                    </div>
-                    <div class="clearfix mb10 endDate">
-                      <p class="ml">End Date</p>
-                      <div class="col-md-6">
-                        <select class="chosen-select">
-                          <option value="Select Month">Select Month</option>
-                          <option value="January">January</option>
-                          <option value="February">February</option>
-                          <option value="March">March</option>
-                          <option value="April">April</option>
-                          <option value="April">May</option>
-                          <option value="April">June</option>
-                          <option value="April">Jully</option>
-                          <option value="April">August</option>
-                          <option value="April">September</option>
-                          <option value="April">October</option>
-                          <option value="April">November</option>
-                          <option value="April">December</option>
-                        </select>
-                      </div>
-                      <div class="col-md-6">
-                        <input type="text" max class="form-control" value="" placeholder="Enter Year">
-                      </div>
-                    </div>
-                    <div class="clearfix mb10 hidden">
-                      <div class="col-md-12">
-                        <label>End Date</label>
-                        <select class="chosen-select">
-                          <option value="Select Month">Select Month</option>
-                          <option value="January">January</option>
-                          <option value="February">February</option>
-                          <option value="March">March</option>
-                          <option value="April">April</option>
-                          <option value="April">May</option>
-                          <option value="April">June</option>
-                          <option value="April">Jully</option>
-                          <option value="April">August</option>
-                          <option value="April">September</option>
-                          <option value="April">October</option>
-                          <option value="April">November</option>
-                          <option value="April">December</option>
-                        </select>
-                        <input type="text" class="form-control input-sm mt10" value="" placeholder="Enter Year">
-                        <span class="input-group-addon input-groupAddon hidden"><i class="fa fa-calendar"></i></span> </div>
-                    </div>
-                    <div class="clearfix mr">
-                      <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>
-                    </div>
-                  </div>
-                </div>
-                <!-- Popup Div --> 
-              </div>
-              <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>Employer's</th>
-                      <th>Designation</th>
-                      <th>Address</th>
-                      <th>Start date</th>
-                      <th>End date</th>
-                      <th>Action</th>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <nav>
-                <ul id="pagingdg" class="pagination">
-                  <li><a href="#">Previous</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li class="disabled"><a href="#">6</a></li>
-                  <li data-page="last"><a href="#">Next</a></li>
-                </ul>
-                <div class="clearfix"></div>
-              </nav>
-            </div>
-            <div id="tabb-4" class="new-tabs_inn">
-              <div class="project_tabs_inn_head addUser-org"> <a href="javascript:void(0)"><i class="glyphicon glyphicon-plus"></i>Add Education</a> 
-                <!-- Popup Div -->
-                <div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>
-                  <div class="form-horizontal clearfix">
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Education *" required>
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Specialization">
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-6 positionRelative">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Start Date" id="edu-startDate">
-                        <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span> </div>
-                      <div class="col-md-6 positionRelative">
-                        <input type="text" class="form-control input-sm" value="" placeholder="End Date" id="edu-endDate">
-                        <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span> </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-8">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Grade">
-                      </div>
-                      <div class="col-md-4">
-                        <select>
-                          <option>Grade</option>
-                          <option>%</option>
-                          <option>CGPA</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Institute">
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Address">
-                      </div>
-                    </div>
-                    <div class="clearfix mr">
-                      <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>
-                    </div>
-                  </div>
-                </div>
-                <!-- Popup Div --> 
-              </div>
-              <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>Education</th>
-                      <th>Specilization</th>
-                      <th>Start date</th>
-                      <th>End date</th>
-                      <th>Grade %</th>
-                      <th>Institute/University</th>
-                      <th>Address</th>
-                      <th>Action</th>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><span>65%</span></div></td>
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><span>65%</span></div></td>
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><span>65%</span></div></td>
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><span>65%</span></div></td>
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><span>65%</span></div></td>
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><span>65%</span></div></td>
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><span>65%</span></div></td>
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><span>65%</span></div></td>
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><span>65%</span></div></td>
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>MBA MBA MBA MBA MBA</span></div></td>
-                      <td><div><span>Finance</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><span>65%</span></div></td>
-                      <td><div><span>JNTU JNTU JNTU JNTU</span></div></td>
-                      <td><div><span>Hyderabad Hyderabad</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <nav>
-                <ul id="pagingg" class="pagination">
-                  <li><a href="#">Previous</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li class="disabled"><a href="#">6</a></li>
-                  <li data-page="last"><a href="#">Next</a></li>
-                </ul>
-                <div class="clearfix"></div>
-              </nav>
-            </div>
-            <div id="tabb-5" class="new-tabs_inn">
-              <div class="project_tabs_inn_head"> <a href="#" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a> 
-                <!-- Popup Div -->
-                <div class="edit-details col-md-4"> <i class="fa fa-close close-div"></i>
-                  <div class="form-horizontal clearfix">
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Name *">
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Provider *">
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-8">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Score">
-                      </div>
-                      <div class="col-md-4">
-                        <select>
-                          <option>Grade</option>
-                          <option>%</option>
-                          <option>CGPA</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-12">
-                        <textarea class="form-control" rows="1" placeholder="Description"></textarea>
-                      </div>
-                    </div>
-                    <div class="clearfix mb10">
-                      <div class="col-md-6 positionRelative">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Valid From" id="validFrom">
-                        <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span> </div>
-                      <div class="col-md-6 positionRelative">
-                        <input type="text" class="form-control input-sm" value="" placeholder="Validate To" id="validTo">
-                        <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span> </div>
-                    </div>
-                    <div class="clearfix mr">
-                      <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>
-                    </div>
-                  </div>
-                </div>
-                <!-- Popup Div --> 
-              </div>
-              <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>Name</th>
-                      <th>Provider</th>
-                      <th>Score</th>
-                      <th>Description</th>
-                      <th>Valid from</th>
-                      <th>Valid to</th>
-                      <th>Action</th>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span>TCS Pvt Ltd</span></div></td>
-                      <td><div><span>Web developer</span></div></td>
-                      <td><div><span>300</span></div></td>
-                      <td><div><span>Description Description</span></div></td>
-                      <td><div><span>30/08/2016</span></div></td>
-                      <td><div><span>30/09/2016</span></div></td>
-                      <td><div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <nav>
-                <ul id="pagingg" class="pagination">
-                  <li><a href="#">Previous</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li class="disabled"><a href="#">6</a></li>
-                  <li data-page="last"><a href="#">Next</a></li>
-                </ul>
-                <div class="clearfix"></div>
-              </nav>
-            </div>
-            <div id="tabb-6" class="new-tabs_inn">
-              <div class="project_tabs_inn_head">
-                <input class="vendorfild" type="text">
-                <i class="fa fa-search"></i> </div>
-              <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>By</th>
-                      <th>To</th>
-                      <th>Date & Time</th>
-                      <th>Action</th>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                    <tr>
-                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>
-                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>
-                      <td><div><span>30/08/2016 7:30 AM</span></div></td>
-                      <td><div><a href="javascript:void(0)">View</a></div></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <nav>
-                <ul id="pagingg" class="pagination">
-                  <li><a href="#">Previous</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li class="disabled"><a href="#">6</a></li>
-                  <li data-page="last"><a href="#">Next</a></li>
-                </ul>
-                <div class="clearfix"></div>
-              </nav>
-            </div>
-          </div>
-        </div>
-</div>
-<!--    Requirment details    -->            
-          
-          
-        </div>
-              
-        
-      </div>
-    </div>
-    <!-- Project --> 
   </div>
 </section>
  
@@ -2251,14 +1123,11 @@ function sideBar(requirementId){
 				        result = result+'<div class="row">';
 				        result = result+'<div class="col-md-6">';
 				        result = result+'<ul class="list-unstyled can-perdt">';
-				        if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined'&& json.minExp != null && json.minExp != '')
+				        if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined' && json.minExp != null && json.minExp != '' && json.minExp != 'undefined')
 				        	{
-				       	result = result+'<li><i class="fa fa-black-tie"></i><span>Experience : '+json.maxExp+' years</span></li>';
+				       	result = result+'<li><i class="fa fa-black-tie"></i><span>Experience: '+json.minExp+'-'+json.maxExp+' years</span></li>';
 				        	}
-					    else if(json.minExp != null && json.minExp != '' && json.minExp !='undefined'){
-						result = result+' <li><i class="fa fa-black-tie"></i><span>Experience : '+json.minExp+' years</span></li>';
-	
-					        }
+					   
 				        else{
 					    result = result+'<li><i class="fa fa-black-tie"></i><span>Experience : --</span></li>';
 				        }
@@ -2454,21 +1323,24 @@ function requirementDetails(requirementId){
 				            
 				            result = result +' <div class="pull-right">';
 				            
-				            if(json.requirementApproverHierarchyStatus !='APPROVED'  && json.requirementApproverHierarchyStatus !='REJECTED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){ 
+                            if(json.requirementSubmissionStatus  == "DRAFT"  && json.createdBy == '${SourceLeadWeb_userCode}' ){ 
 					            result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
-				             } 
+				             }else if(json.requirementSubmissionStatus  !='DRAFT' && json.requirementApproverHierarchyStatus !='APPROVED'  && json.requirementApproverHierarchyStatus !='REJECTED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){ 
+				            	result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
+				            }
 				            var APPROVED = "APPROVED";     
 				            var REJECTED = "REJECTED";
 
-				             if(json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
-               					            result = result +'<button  class="btn btn-success mr" type="button" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
-               					          result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
+				             if(json.requirementSubmissionStatus  !='DRAFT'  &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
+               					 result = result +'<button  class="btn btn-success mr" type="button" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
+               		             result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
    				           	 }else if(json.requirementApproverHierarchyStatus == 'APPROVED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
       						              result = result +'<button  id="requirementStatus" class="btn btn-success pull-right mr" type="button">'+json.requirementApproverHierarchyStatus+'</button>';
-    				         }
-   				             else if(json.requirementApproverHierarchyStatus == 'REJECTED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
+    				         }else if( json.requirementSubmissionStatus  !='DRAFT'  && json.requirementApproverHierarchyStatus == 'REJECTED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
 					              result = result +'<button  id="requirementStatus" class="btn btn-danger pull-right mr" type="button">'+json.requirementApproverHierarchyStatus+'</button>';
 		                     }
+				             
+				             
 				             result = result +'     </div>';
 				             result = result +'     </div>';
 				             
@@ -2484,7 +1356,7 @@ function requirementDetails(requirementId){
 					         else{
 					           	 result = result +'   <textarea placeholder="Enter description"> NO DATA</textarea>';
 				    	        }
-				            result = result +'   <h2>Other details:</h2>';
+				            result = result +'   <h2> Requirement Details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            if(json.positions != null && json.positions != '' && json.positions != 'undefined'){
 				            result = result +'     <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>'+json.positions+'</span>';
@@ -2502,15 +1374,25 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-					            result = result +'     <div class="require_wrap_details_cta"> <b>Attachment:</b> <span>'+json.fileName+'<i class="glyphicon glyphicon-save"></i></span>';
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Attachment:</b> <span>'+json.fileName+'</span>';
 					            }
 					            else{
 					            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
 					            }				            
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
+				            if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Skills:</b> <span>'+json.skills+'</span>';
+					            }
+					            else{
+					            result = result +'<div class="require_wrap_details_cta"> <b>Skills:</b> <span> -- </span>';	
+					            }				   
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
+				            result = result +'     <div class="clearfix"></div>';
+				            result = result +'   </div>';
+				            if(json.isClientJob  == 'Y')
+				            	{
 				            result = result +'   <h2>Client details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            
@@ -2583,16 +1465,74 @@ function requirementDetails(requirementId){
 					            else{
 						        result = result +'     <div class="require_wrap_details_cta"> <b>Submission Form:</b> <span> --- </span>';
 	  	
-					            }				            result = result +'       <div class="clearfix"></div>';
+					            }				            
+				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
+				            	}
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
+				            
 				            result = result +'   <h2>Internal details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            //result = result +'     <div class="require_wrap_details_cta"> <b>Manager:</b> <span>Manager</span>';
 				            result = result +'       <div class="clearfix"></div>';
+				            if(json.isClientJob  == 'N'){
+				            if(json.clientSubmissionTemplate != '' && json.clientSubmissionTemplate != null && json.clientSubmissionTemplate != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span>'+json.clientSubmissionTemplate+'</span>';
+					            }
+					            else{
+						        result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span> --- </span>';
+	  	
+					            }
+				            }
 				            result = result +'     </div>';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span>Business Analyst </span>';
+				            if(json.highestLevel == '1'){
+				            	result = result +'<div class="require_wrap_details_cta"> <b>Approvers:</b> <span>';
+				            	for (var i=0; i<json.approverNames.length; i++)
+				   				{
+				            	    if(json.approverNames[i] == json.approverNames[0]){
+				            	    	result = result +json.approverNames[i]; 
+				            	    }else{
+				            	    	result = result +","+json.approverNames[i]; 
+				            	    }
+				   				}
+				            	result = result +'</span>';
+				            	result = result +'</div>';
+				            }else{
+				            	for (var i=0; i<json.approverNames.length; i++)
+				   				{
+				            		var level = 1;
+					            	for (var i=0; i<json.approverNames.length; i++)
+					   				{
+					            		result = result +'<div class="require_wrap_details_cta"> <b>Approvers '+level+':</b> <span>'; 
+					            		result = result +json.approverNames[i];
+					            		result = result +'</span>';
+					            		result = result +'</div>';
+					            		level = level+1;
+					   				}
+					            	
+				   				}
+				            } 
+				            
+				            
+				           /*  if(json.approverNames != null && json.approverNames != '' && json.approverNames != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Approver1:</b> <span>'+json.approverNames+'</span>';
+					            }
+					            else{
+					            result = result +'<div class="require_wrap_details_cta"> <b>Approver1:</b> <span> -- </span>';	
+					            }	
+				            result = result +'       <div class="clearfix"></div>';
+				            result = result +'     </div>';
+				            if(json.approverNames != null && json.approverNames != '' && json.approverNames != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Approver2:</b> <span>'+json.approverNames+'</span>';
+					            }
+					            else{
+					            result = result +'<div class="require_wrap_details_cta"> <b>Approver2:</b> <span> -- </span>';	
+					            }	 */
+				            
+				            
+				            
+				            
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="clearfix"></div>';
@@ -2728,6 +1668,7 @@ function cancelAlert(){
 <script>  
 function requirementPipeline(requirementId){
 	  var sourceleadUrl = '${sourceleadUrl}';
+	  var clientSubmissions = '${clientSubmissions}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
@@ -2741,10 +1682,17 @@ function requirementPipeline(requirementId){
             			 location.replace(sourceleadUrl+"/errorPage");
             		 }
             		 else{ 
-							var result ="";
+            			 
+            			 var result ="";
+            			
+            			 var submitToClient = '';
+            			 if(clientSubmissions == 'Y'){
+            				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+            			 }
 							
+							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close"></div></div>';
+							 
 							//For Add Applicant div
-							result = result +'<div class="side_mask"><div class="addApplicant_close"></div></div>';
 							result = result + '<div class="new_side_wrap">';
 							result = result + '<div class="new_side_wrap_inn">';
 							result = result + '<div class="new_side_wrap_cta">';
@@ -2754,7 +1702,6 @@ function requirementPipeline(requirementId){
 							result = result +'</div>';
 							
 							//For Add Interview Div
-							result = result +'<div class="side_mask"><div class="addInterview_close"></div></div>';
 							result = result + '<div class="add_inter_wrap">';
 							result = result +      '<div class="new_side_wrap_inn">';
 							result = result +              '<div id="addInterviewDiv"></div>';
@@ -2773,7 +1720,6 @@ function requirementPipeline(requirementId){
 							
 							
 							//For Submit to Client Div
-							result = result +'<div class="side_mask"><div class="submitToClient_close"></div></div>';
 							result = result +'<div class="submitnew-wrap">';
 							result = result +' <div class="new_side_wrap_inn">';
 							result = result +'<div class="add_inter">';
@@ -2782,6 +1728,27 @@ function requirementPipeline(requirementId){
 							result = result +'</div>';
 							result = result +'</div>';
 							//For Submit to Client Div
+							
+							
+							
+							result = result +'<div class="shortlist-wrap">';
+							result = result +'<div class="new_side_wrap_inn">';
+							result = result +'<div class="add_inter">';
+							result = result + '<div id="shortlistDiv"></div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
+							
+                             //Candidate submissions details Div
+							 result = result +' <div class="clients_side_wrap">';
+							 result = result +'<div class="clients_side_wrap_inn">';
+							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
+							 result = result + '<div id="viewCandidateDiv"></div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+							 result = result +'</div>';
+
+							 
 							
 				            result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
 				            result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
@@ -2809,8 +1776,8 @@ function requirementPipeline(requirementId){
 				            result = result +'<div class="action-pop">';
 				            result = result +'	<span>';
 				            result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
-				            result = result +'    <a href="javascript:void(0)" title="" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
-				            result = result +'   <a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+				            result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
+				            result = result + submitToClient
 				            result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
 				            result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
 				            result = result +'    </span>';
@@ -3086,7 +2053,7 @@ function requirementPipeline(requirementId){
 			   	        		
 			   	        		var report = json[i];
 						           result = result + '       <tr>';
-						           result = result + '         <td><div><span>'+report.candidateName+'</span></div></td>';
+						           result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+');"><span>'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 						           
 						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.candidateEmail+'</span></div></td>';
@@ -3104,7 +2071,7 @@ function requirementPipeline(requirementId){
 						    	     }
 						           
 						           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
-						        	   result = result + '         <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a>'+report.resumeName+'</div></td>';
+						        	   result = result + '         <td><div><span><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;</a>'+report.resumeName+'</span></div></td>';
 							           }
 							       else{
 							    	   result = result + '         <td><div>--</div></td>';
@@ -3138,7 +2105,9 @@ function requirementPipeline(requirementId){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
 						           
-						           result = result + '         <td><div><span>';
+						           result = result + '<td><div><span>'+report.submissionStatus+'</span></div></td>';
+						           
+						           /* result = result + '         <td><div><span>';
 						           result = result +'			<select>';
 							       
 									if(report.submissionStatus == "INTERVIEW"){
@@ -3166,7 +2135,7 @@ function requirementPipeline(requirementId){
 										result = result +' <option>offer</option>';
 									}
 						           result = result + '             </select>';
-						           result = result + '             </span></div></td>';
+						           result = result + '             </span></div></td>'; */
 						           
 						           result = result + '       </tr>';
 			   				}
@@ -3327,75 +2296,7 @@ function assignedMemberList(requirementId){
 
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
-	  var sourceleadUrl = '${sourceleadUrl}';
-	  $.ajax({
-    type : "POST",
-     url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
-     success :function(data) { 
-    	 var json = JSON.parse(data);
-    	    var result = '';
-    	    result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
-		    result = result +'<div class="rec_head"></div>';
-		    result = result +'</div>';
-		    result = result +'<div class=" project_tabs_inn_table vendor_wrap_inn_table">';
-		    result = result +'<table id="recommendationTable" class="display" cellspacing="0" width="100%"">';
-		    result = result +'<thead>';
-		    result = result +'<tr>';
-		    result = result +'<th>Name</th>';
-		    result = result +'<th>Ph. No</th>';
-		    result = result +'<th>Resume</th>';
-		    result = result +'<th>Number of req</th>';
-		    result = result +'<th>Score</th>';
-		    result = result +'<th>Action</th>';
-		    result = result +'</tr>';
-		    result = result +'</thead>';
-		    result = result +'<tbody>';
-    	 for (var i=0; i<json.length; i++)
-			{
-		    var report = json[i];
-		    result = result +'<tr>';
-		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>';
-		    result = result +'<td><div><span>'+report.mobilePhone+'</span></div></td>';
-		    result = result +'<td><div><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><b class="glyphicon glyphicon-list-alt">&nbsp;'+report.candidateResume+'</b></a></div></td>';
-		    result = result +'<td><div><span>'+report.noOfReq+'</span></div></td>';
-		    result = result +'<td><div><span>'+report.candidateScore+'%</span></div></td>';
-		    result = result +'<td><div><span>';
-		    result = result +'<select>';
-		    result = result +'<option>Interview</option>';
-		    result = result +'<option>Submit</option>';
-		    result = result +' <option>Joined</option>';
-		    result = result +'<option>Screening</option>';
-		    result = result +'<option>Offer</option>';
-		    result = result +'</select>';
-		    result = result +'</span></div>';
-		    result = result +'</td>';
-		    result = result +'</tr>';
-		   
-			}
-    	    result = result +'</tbody>';
-		    result = result +' </table>';
-		    result = result +'</div>';
-		    $("#recommendationsList").empty();
-			$("#recommendationsList").append(result); 
-			recommendationpagination();
-           },
-             
-        }); 
-}
-</script>
-
-<script>
-function recommendationpagination(){  
-    $('#recommendationTable').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": ""
-     	}
-    } );
+	alert("Hai"+requirementId);
 }
 </script>
 
@@ -3408,22 +2309,15 @@ function getActions(){
 	$(".action, .action-pop").click(function(e){
 	 	e.stopPropagation();
  	});	
-}
-</script>
 
-<script>
-function downloadCandidateResume(candidateId){
-	 var sourceleadUrl = '${sourceleadUrl}';
-	  $.ajax({
-      type : "GET",
-      url: sourceleadUrl+"/downloadCandidateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-      success :function(data) { 
-          },
-       }); 
 }
 </script>
 
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />
 <jsp:include page="submitToClient.jsp" />
+
 <jsp:include page="addOffer.jsp" />
+<jsp:include page="shortlist.jsp" />
+<jsp:include page="submissionDetails.jsp" />
+

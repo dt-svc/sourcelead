@@ -169,6 +169,9 @@ function cpagination(){
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
     } );
 }
 </script>
@@ -240,7 +243,7 @@ function clientSideBar(candidateId){
 						 result = result+'  </div>'; */
 						 result = result+'  </div>';
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not allowed</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
 						 result = result+' </div>';
 						 result = result+' </div>';
@@ -541,7 +544,7 @@ function refreshImageBlock(candidateId){
 						 
 						 result = result+'  </div>';
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not allowed</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
 						 result = result+' </div>';
 						 $("#candidateImageId").append(result);
@@ -572,7 +575,7 @@ function loadFile(event,candidateId){
 	    	output.src = URL.createObjectURL(event.target.files[0]);
 	    	
 	    	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
-	 		var msg = "."+extensionName+" extension not allowed";
+	 		var msg = "."+extensionName+" extension not supported";
 	 		alertMessage(msg,candidateId);
 	    }else if(sizeinbytes > 200000){
 	    	output.src = URL.createObjectURL(event.target.files[0]);

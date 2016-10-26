@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -143,14 +144,29 @@ public class RequirementListRestController {
 					requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
 					requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
 					requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
-					requirement.setClientSubmissionTemplate(requirement.getClientSubmissionTemplateId().getTemplateName());
+					/*requirement.setClientSubmissionTemplate(requirement.getClientSubmissionTemplateId().getTemplateName());*/
 					}
 					if(requirement.getManagerUserId() != null && requirement.getManagerUserId().getFirstName() != null && requirement.getManagerUserId().getLastName() != null ){
 						requirement.setManager(requirement.getManagerUserId().getFirstName()+" "+requirement.getManagerUserId().getLastName());	
 					}
+					
+
+					if(requirement.getSubmissionTemplateId()!=null){
+						requirement.setClientSubmissionTemplate(requirement.getSubmissionTemplateId().getTemplateName());
+					} 
+					
+					List<RequirementApproverHierarchy> list = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(Long.parseLong(requirementId));
+					
+					Integer highestLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(requirementId));
+					ArrayList<String> ar = new ArrayList<String>();
+					for(RequirementApproverHierarchy approverN :list ){
+						ar.add(approverN.getApproverUserId().getFirstName() +""+ approverN.getApproverUserId().getLastName());
+					}
+					requirement.setHighestLevel(highestLevel);
+					requirement.setApproverNames(ar);
+
 					resultJson = commonUtil.toJSON(requirement);
 			
-				
 				 
 			}
 			
@@ -213,22 +229,28 @@ public class RequirementListRestController {
 					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 					if(requirementId !=null && !requirementId.isEmpty()){
 						List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
-						for (RequirementSubmission requirementSubmission : requirementSubmissions) {
-							CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
-							RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
-							requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName()+" "+requirementSubmissionTemplateFields.getLastName());
-							requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
-							requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
-							requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
-							requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
-							if(requirementSubmission.getCreatedDate() != null){
-								requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
+						if(requirementSubmissions != null){
+							for (RequirementSubmission requirementSubmission : requirementSubmissions) {
+								CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+								RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+								String candidateName = requirementSubmissionTemplateFields.getFirstName();
+								if(requirementSubmissionTemplateFields.getLastName()!=null){
+									candidateName = candidateName+" "+requirementSubmissionTemplateFields.getLastName();
+								}
+								requirementSubmission.setCandidateName(candidateName);
+								requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
+								requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
+								requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
+								requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
+								requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+								if(requirementSubmission.getCreatedDate() != null){
+									requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
+								}
+								User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+								requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
+								requirementSubmission.setResumeName(candidateResumes.getFileName());
 							}
-							User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-							requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
-							requirementSubmission.setResumeName(candidateResumes.getFileName());
 						}
-						
 						
 						resultJson = commonUtil.toJSON(requirementSubmissions);
 					}

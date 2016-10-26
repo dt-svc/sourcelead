@@ -24,8 +24,9 @@ function addOffer(requirementId){
     
 	result= result + '	          <div class="add_inter">';
 	
-	result = result + '<form id="addOffer_form" name="addOffer_form" >';
-	result = result + '<input type="hidden" id="maxOfferRowNum" name="maxOfferRowNum" value="2" />';
+	result = result + '<form id="addOffer_form" name="addOffer_form" enctype="multipart/form-data" method="post" >';
+	result = result + '<input type="hidden" id="maxOfferRowNum" name="maxOfferRowNum" value="1" />';
+	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
 	
 	result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><a href="javascript:void(0)" onClick="addOfferRow(this);"><i class="fa fa-plus"></i> Add row</a>';
 	result= result + '	              <div class="clearfix"></div>';
@@ -39,54 +40,8 @@ function addOffer(requirementId){
 	result= result + '	                  <th>Rate / Salary</th>';
 	result= result + '	                  <th>Position Type</th>';
 	result= result + '	                  <th>Attachment</th>';
+	result = result + '<th class="action">Action</th>';
 	result= result + '	                </tr>';
-	
-	
-	result= result + '	                <tr id="divTsRow0">';
-	result= result + '	                  <td><select multiple class="chosen-select" id="1applicant"  name="1applicant" field-name="Applicant" data-validation="required">';
-	result= result + '	                      <option>India</option>';
-	result= result + '	                      <option>USA</option>';
-	result= result + '	                      <option>UK</option>';
-	result= result + '	                      <option>Jaipan</option>';
-	result= result + '	                      <option>China</option>';
-	result= result + '	                      <option>Austrlia</option>';
-	result= result + '	                    </select></td>';
-	result= result + '	                  <td><div class="positionRelative date">';
-	result= result + '	                      <input type="text" value="" id="1dateOfJoining"  name="1dateOfJoining"  class="form-control input-sm Datepicker" placeholder="Date" field-name="DateOfJoining"  data-validation="required">';
-	result= result + '	                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
-	result= result + '	                      </div>';
-	result= result + '	                  </td>';
-	
-	result= result + '	                  <td class="clearfix">';
-	result= result + '	                  	  <div class="positionRelative float">';
-	result= result + '	                          <select class="form-control" id="1PaymentType"  name="1PaymentType" field-name="PaymentType"  data-validation="required">';
-	result= result + '	                          <option>Rupee</option>';
-	result= result + '	                          <option>Dollar</option>';
-	result= result + '	                          </select>';
-	result= result + '	                      </div>';
-	result= result + '	                      <div class="positionRelative float"><input type="text" value="" class="form-control input-sm" id="1Amount"  name="1Amount" field-name="Amount"  data-validation="required" ></div>';
-	result= result + '	                  	  <div class="positionRelative float">';
-	result= result + '	                          <select class="form-control" id="1PaymentMode"  name="1PaymentMode"  field-name="PaymentMode"  data-validation="required" >';
-	result= result + '	                          <option>Yearly</option>';
-	result= result + '	                          <option>Monthly</option>';
-	result= result + '	                          </select>';
-	result= result + '	                      </div>';
-	result= result + '					  </td>   ';               
-	result= result + '	                  <td><select class="form-control" id="1PositionType"  name="1PositionType" field-name="PositionType"  data-validation="required" >';
-	result= result + '	                      <option>Fulltime</option>';
-	result= result + '	                      <option>Parttime</option>';
-	result= result + '	                      <option>C2C</option>';
-	result= result + '	                    </select>';
-	result= result + '	                  </td>';
-	result= result + '					  <td>';
-	result= result + '						  <div class="input-group">';
-	result= result + '	                      	<label class="input-group-btn"> <span class="btn btn-primary file-btn"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-	result= result + '	                        	<input type="file" style="display: none;" multiple id="uploadBtn"  class="upload"></span>';
-	result= result + '							</label>';
-	result= result + '							<input type="text" id="1OfferAttachment"  name="1OfferAttachment" field-name="OfferAttachment"  data-validation="required" class="form-control file1" readonly id="uploadFile" placeholder="Files are not selected...">';
-	result= result + '	                     </div>    ';              
-	result= result + '	                  </td>';
-	result= result + '	                </tr>';  
 	
 	result= result + '	              </tbody>';
 	result= result + '	            </table>';
@@ -94,8 +49,7 @@ function addOffer(requirementId){
 	result= result + '	          <div class="row pad2">';
 	result= result + '	            <div class="col-md-12 pad1">';
 	result = result +'				  <button type="submit" id="add_offer" class="btn btn-sm btn-primary mr">Submit</button>';
-	/* result= result + '	              <button type="submit" class="btn btn-sm btn-primary mr">Submit</button>'; */
-	result= result + '	              <button type="submit" class="btn btn-sm btn-danger">Cancel</button>';
+	result= result + '	              <button type="submit" class="btn btn-sm btn-danger" onclick="cancelAddOffer();" >Cancel</button>';
 	result= result + '	            </div>';
 	result= result + '	          </div>';
 	
@@ -111,26 +65,7 @@ function addOffer(requirementId){
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
 	
-	$(".chosen-select").chosen('destroy');
-    var config = {
-		  '.chosen-select'           : {},
-		  '.chosen-select-deselect'  : {allow_single_deselect:true},
-		  '.chosen-select-no-single' : {disable_search_threshold:10},
-		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-		  '.chosen-select-width'     : {width:"95%"}
-		 }
-
-
-		for (var selector in config) {
-		  $(selector).chosen(config[selector]);
-		}
-		$('.chosen-select').each(function() {
-			var $this = $(this);
-			$this.next().css({'width': '100%'});
-			
-         
-		$(".chosen-select").chosen();
-		});
+	addOfferRow();
 	
 }
 </script>
@@ -153,15 +88,11 @@ function loadRemiderDiv(){
 
 
 <div id="divOfferTd1" style="display: none; float: left;">
-	    <select multiple class="chosen-select" id="REPLACEROWIDapplicant"  name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required">
-	                      <option>India</option>
-	                      <option>USA</option>
-	                      <option>UK</option>
-	                      <option>Jaipan</option>
-	                      <option>China</option>
-	                      <option>Austrlia</option>
-	   </select>
+       <select multiple class="chosen-select blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
+			
+	  </select>
 </div>
+
 
 <div id="divOfferTd3" style="display: none; float: left;">
    	 <div class="positionRelative float">
@@ -190,12 +121,18 @@ function loadRemiderDiv(){
 </div>	              
 <div id="divOfferTd5" style="display: none; float: left;">
 	<div class="input-group">
-                  	<label class="input-group-btn"> <span class="btn btn-primary file-btn"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                    	<input type="file" style="display: none;" multiple id="uploadBtn"  class="upload"></span>
-		</label>
-		<input type="text" class="form-control file1" readonly id="uploadFile" placeholder="Files are not selected..." id="REPLACEROWIDOfferAttachment" name="REPLACEROWIDOfferAttachment" >
+        <label class="input-group-btn"> <span class="btn btn-primary file-btn"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+          <input type="file" style="display: none;"  multiple id="uploadBtn"  class="upload" id="REPLACEROWIDOfferAttachment" name="REPLACEROWIDOfferAttachment"></span>
+		</label> 
+		<input type="text" class="form-control file1" readonly id="uploadFile" placeholder="Files are not selected..."  >
      </div>                 
 </div>
+
+ <div id="divOfferTd6" style="display: none; float: left;">
+	 <div>
+         <a href="#" onclick="removeOfferRow(REPLACEROWID);"><i class="glyphicon glyphicon-trash deme"></i></a>
+    </div>
+</div> 
 	
 
 <script type="text/javascript">
@@ -234,37 +171,32 @@ function loadRemiderDiv(){
 		divTsTd5Str = divTsTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
 		cell4.innerHTML = divTsTd5Str; 
 		
+		var cell5 = row.insertCell(5);
+		var divTsTd6Str = document.getElementById("divOfferTd6").innerHTML;
+		divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
+		cell5.innerHTML = divTsTd6Str;
+		
+		
 		
 		$(".add_offer_wrap").addClass("add_offer_wrap_active");
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
 		
-		$(".chosen-select").chosen('destroy');
-	    var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			 }
+		
+		getShortListAndSubmittedAndInterviewedCandidates(maxRowNum);
+		
 
-
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				
-	         
-			$(".chosen-select").chosen();
-			});
+	    $("#"+maxRowNum+"applicant").chosen();
+		
+	    $("#"+maxRowNum+"applicant").on('change', function (e) {
+	    	  getUpdatedSubmittedAndShortListedAndInterviewedCandidates();
+	    }); 
 		
 }		
 </script>
 
 <script type="text/javascript">
-	function removeInterviewRow(rowId) {
+	function removeOfferRow(rowId) {
 		var rowNum = $("#divTsRow"+rowId).val();
 		var maxRowNum = parseInt(rowNum);
 		 document.getElementById("divTsRow"+rowId).style.display = 'none';
@@ -310,8 +242,8 @@ function loadRemiderDiv(){
 </script>
 
 <script>
-function cancelAddInterviewDiv(){
-	 $(".add_inter_wrap").removeClass("add_inter_wrap_active");
+function cancelAddOffer(){
+	 $(".add_offer_wrap").removeClass("add_offer_wrap_active");
 	 $(".side_mask").fadeOut(200);
  	 $("body").css('overflow-y', 'auto');
 }
@@ -320,6 +252,7 @@ function cancelAddInterviewDiv(){
 
 
 <script type="text/javascript">
+
    	$('body').on('submit', '#addOffer_form', function(e){  
 	 if ($(this).validate(false, validationSettings)){
         e.preventDefault();
@@ -331,15 +264,22 @@ function cancelAddInterviewDiv(){
        
         $("#add_offer").attr("disabled", "disabled");
  		$("#add_offer" ).addClass('button').val('Processing..'); 
- 		
- 		alert("con"+con);
+ 		var form = $('#addOffer_form')[0];
+  		var formData = new FormData(form); 
+  		alert("formData"+formData);
  		
    	    $.ajax({
 	    	type: "POST",
+    	    data: formData,
+    	    contentType : 'application/json; charset=utf-8',
+    	    enctype: 'multipart/form-data',
+	        processData: false,
+	        contentType:false,
+    	    dataType : 'json',
 	        url: sourceleadUrl+"/saveOffer?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
 	        success: function(result) {
 	        		
-	        	    $(".add_inter_wrap").removeClass("add_inter_wrap_active");
+	        	    $(".add_inter_wrap").removeClass("add_offer_wrap_active");
 	        		$(".side_mask").fadeOut(200);
 	        		$("body").css('overflow-y', 'auto');
 	        },
@@ -357,14 +297,21 @@ function cancelAddInterviewDiv(){
   </script>
  
 <script type="text/javascript">
- function getShortListCandidates(rowId) {
-	 var existingInterviewers = document.getElementById("1applicant").value;
+ function getShortListAndSubmittedAndInterviewedCandidates(rowId) { 
+	 var existingApplicantsIds = [];    
+	 for(i=rowId ; i > 0; i--){
+		 var applicant = $("#"+(i)+"applicant").val();
+		 if(applicant != null && applicant != '' && applicant != 'undefined'){
+			 existingApplicantsIds.push(applicant);
+		 }
+	 }
+	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#reqId").val();
      
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 
+		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -382,6 +329,51 @@ function cancelAddInterviewDiv(){
 		    });
 	
  }
+</script> 
+
+<script type="text/javascript">
+ function getUpdatedSubmittedAndShortListedAndInterviewedCandidates() { 
+	 var rowId = $("#maxOfferRowNum").val();
+	 var existingApplicantsIds = [];    
+	 for(i=rowId ; i > 0; i--){
+		 var applicant = $("#"+(i)+"applicant").val();
+		 if(applicant != null && applicant != '' && applicant != 'undefined'){
+			 existingApplicantsIds.push(applicant);
+		 }
+	 }
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var requirementId = $("#reqId").val();
+     
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
+					}
+		        	for(var i=rowId-1 ; i > 0; i--){
+		        		 var internalOutput = "";
+		        		 var applicantIdList= $("#"+(i)+"applicant").val();
+		        		 var arr = jQuery.makeArray(applicantIdList);
+                         for(var j = 0; j < arr.length; j++) {
+                        	 var label = $("#"+(i)+"applicant option[value='"+arr[j]+"']").text();
+                        	 internalOutput = internalOutput+"<option value='" +arr[j]+ "' selected>"+label+"</option>";
+                         }
+		        		$("#"+(i)+"applicant").empty();
+		        		$("#"+(i)+"applicant").append(internalOutput);
+			        	$("#"+(i)+"applicant").append(output);
+			        	$("#"+(i)+"applicant").trigger("chosen:updated");
+		       	    }
+			       
+		        },
+		    });
+ }
 </script>    
+  
   
 <jsp:include page="../masterFooter.jsp" />

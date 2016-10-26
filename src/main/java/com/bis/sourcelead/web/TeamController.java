@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -47,10 +46,8 @@ public class TeamController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<User> allusersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		model.addObject("usersList", allusersList); 
 		 
-		/*Integer requirementAssignToCount=requirementAssignToService.getAssignedTeamMembersCountByTeamMemberUserId(assignUserId, jobType);
-		
-		model.addObject("requirementAssignToCount", requirementAssignToCount);*/
 		return model;
 
 	}
