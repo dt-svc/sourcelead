@@ -85,6 +85,13 @@ public class RequirementInterviewRestController {
 		return resultJson;
 	}
 	
+	/**To add interview
+	 * @author Prasad Salina
+	 * @param json
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/saveInterview" , method = RequestMethod.POST)
 	   public String saveInterview(@RequestParam(value="jsonData", required=false) String json, HttpServletRequest request) throws Exception {
 			
@@ -99,8 +106,21 @@ public class RequirementInterviewRestController {
  	    
  	    
 			return "success";
-	    
-	}
+
+  }
+	
+	
+	@RequestMapping(value = "/getAllInternalInterviews" , method = RequestMethod.POST)
+	 public @ResponseBody  String saveProject(@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
+		
+	     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String resultJson = null;
+			
+		 List<RequirementInterview> interviewsList = requirementInterviewService.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(submissionId, orgLocations.getId());
+		 resultJson = commonUtil.toJSON(interviewsList);
+		 return resultJson;
+	   }
+	  
 	 
 	 @RequestMapping(value = "/acceptOrRejectInterview")
 	 @ResponseBody  String acceptOrRejectInterview(@RequestParam(value="interviewStatus", required=false) String interviewStatus,

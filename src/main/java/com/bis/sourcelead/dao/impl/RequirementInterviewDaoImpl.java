@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -59,6 +60,17 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 			Long requirementInterviewIdValue = Long.parseLong(requirementInterviewId);
 			Session session = this.sessionFactory.getCurrentSession();
 			return (RequirementInterview) session.get(RequirementInterview.class, requirementInterviewIdValue);
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<RequirementInterview> getRequirementInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception {
+		logger.debug("In RequirementInterviewDaoImpl class getRequirementInterviewsBySubmissionIdAndOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementInterview interview where interview.submissionId.id = :submissionId and interview.submissionId.orgLocations.id = :orgLocationsId ";
+		List<RequirementInterview> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		
+		return interviewsList;
 	}
 	
 }
