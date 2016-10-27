@@ -33,6 +33,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
@@ -59,6 +60,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 
 	@Autowired
 	ProjectsService projectsService;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
@@ -230,6 +234,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			 			user.setPassword(sourceleadPasswordEncoder.encode(password));
 			 			user.setIsMailSent(Status.Y);
 					}
+					user.setUpdatedBy(loginUser.getUserCode());
+					user.setUpdatedDate(commonUtil.currentDate());
+					
 					userService.addUser(user);
 					if(user.getUserState() != null && !"".equals(user.getUserState()) && Status.NOT_LOGGEDIN.equals(user.getUserState())&& !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
 						userService.sendEmail(user,loginUser,password);
@@ -250,6 +257,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 							  e.printStackTrace();
 							}
 					}
+					employees.setUpdatedBy(loginUser.getUserCode());
+					employees.setUpdatedDate(commonUtil.currentDate());
 					employeesService.updateEmployee(employees);
 			    }
 				return "success";
