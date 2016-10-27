@@ -719,7 +719,7 @@ $(document).ready(function() {
       </div>   
       
       <!-- Addede by Rajashekar -->
-      <div id="tab-3" class="project_tabs_inn">
+      <div id="tab-3" class="project_wrap_table project_tabs project_tabs_inn">
       <div id="recommendationsList"></div>
               <!-- <div class="timesheet_head candidateHead recruitmentHead">
                 <div class="rec_head"></div>
@@ -2308,7 +2308,7 @@ function requirementRecommendations(requirementId){
     	    result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
 		    result = result +'<div class="rec_head"></div>';
 		    result = result +'</div>';
-		    result = result +'<div class=" project_tabs_inn_table vendor_wrap_inn_table">';
+		    result = result +'<div class=" project_tabs_inn_table">';
 		    result = result +'<table id="recommendationTable" class="display" cellspacing="0" width="100%"">';
 		    result = result +'<thead>';
 		    result = result +'<tr>';
@@ -2327,17 +2327,18 @@ function requirementRecommendations(requirementId){
 		    result = result +'<tr>';
 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>';
 		    result = result +'<td><div><span>'+report.mobilePhone+'</span></div></td>';
-		    result = result +'<td><div><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><b class="glyphicon glyphicon-list-alt">&nbsp;'+report.candidateResume+'</b></a></div></td>';
+		    result = result +'<td><div><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><i class="glyphicon glyphicon-list-alt">&nbsp;'+report.candidateResume+'</i></a></div></td>';
 		    result = result +'<td><div><span>'+report.noOfReq+'</span></div></td>';
 		    result = result +'<td><div><span>'+report.candidateScore+'%</span></div></td>';
 		    result = result +'<td><div><span>';
-		    result = result +'<select>';
+		    result = result +'<input type="button" value="Add" class="btn btn-primary btn-sm">';
+		   /*  result = result +'<select>';
 		    result = result +'<option>Interview</option>';
 		    result = result +'<option>Submit</option>';
 		    result = result +' <option>Joined</option>';
 		    result = result +'<option>Screening</option>';
 		    result = result +'<option>Offer</option>';
-		    result = result +'</select>';
+		    result = result +'</select>' */;
 		    result = result +'</span></div>';
 		    result = result +'</td>';
 		    result = result +'</tr>';
