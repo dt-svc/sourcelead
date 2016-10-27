@@ -38,7 +38,7 @@ import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
-
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -233,8 +233,9 @@ public class SubmissionsRestController {
     	
     	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
     	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+    	 Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
     	
-    	 requirementSubmissionService.storeClientSubmission(requirementId, user, orgLocations, submissionsList);
+    	 requirementSubmissionService.storeClientSubmission(requirementId, user, orgLocations, submissionsList,loginOrg);
     	 
     	/* Workbook createExcelworkbook =  new XSSFWorkbook();
  		 Sheet createExcelsheet = createExcelworkbook.createSheet("submissions");

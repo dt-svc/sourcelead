@@ -64,6 +64,8 @@ public class Constants {
 	public static String APPLICANT_INTERVIEW = "Applicant Interview";
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
 	
+	public static String SUBMIT_TO_CLIENT = "Submit To Client";
+	
 	public static String VENDOR_INTERVIEW = "Vendors Interview";
 	public static String VENDOR_INVITATION = "Vendor Invitation";
 	
