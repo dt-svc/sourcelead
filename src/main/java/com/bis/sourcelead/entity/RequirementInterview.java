@@ -93,7 +93,18 @@ import org.hibernate.annotations.FetchMode;
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementInterviewer> requirementInterviewers = new HashSet<RequirementInterviewer>(0);
 
+	@Column(name = "INTERVIEW_STATUS", columnDefinition = "TEXT default NULL")
+	private String interviewStatus;
 	
+	
+	public String getInterviewStatus() {
+		return interviewStatus;
+	}
+
+	public void setInterviewStatus(String interviewStatus) {
+		this.interviewStatus = interviewStatus;
+	}
+
 	public Date getDateOfInterview() {
 		return dateOfInterview;
 	}

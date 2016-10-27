@@ -106,6 +106,7 @@ public class RequirementInterviewRestController {
  	    
  	    
 			return "success";
+
   }
 	
 	
@@ -119,7 +120,20 @@ public class RequirementInterviewRestController {
 		 resultJson = commonUtil.toJSON(interviewsList);
 		 return resultJson;
 	   }
-	
-	
-	
+	  
+	 
+	 @RequestMapping(value = "/acceptOrRejectInterview")
+	 @ResponseBody  String acceptOrRejectInterview(@RequestParam(value="interviewStatus", required=false) String interviewStatus,
+				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
+			 HttpServletRequest request) throws Exception {
+		 
+		 RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewId);
+		 
+		 if(requirementInterview.getInterviewStatus() == null && !("").equals(requirementInterview.getInterviewStatus())){
+			 requirementInterview.setInterviewStatus(interviewStatus);
+			 requirementInterviewService.saveRequirementInterview(requirementInterview);
+		 }
+		 
+		return "success";
+	 }		
 }

@@ -12,9 +12,15 @@ import com.bis.sourcelead.entity.User;
 public interface RequirementInterviewService {
 
 	void saveRequirementInterview(JSONObject jsonObj, User user, OrgLocations orgLocations, Org loginOrg) throws Exception;
+
 	
 	List<RequirementInterview> getRequirementInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
 	
+
+	RequirementInterview getRequirementInterviewById(String requirementInterviewId);
+
+	void saveRequirementInterview(RequirementInterview requirementInterview) throws Exception;;
+
 	
 
 }

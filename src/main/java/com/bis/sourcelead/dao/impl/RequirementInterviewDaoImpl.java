@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementInterviewDao;
 import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -50,6 +51,15 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return requirementInterview;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementInterview getRequirementInterviewById(String requirementInterviewId) {
+			logger.debug("In RequirementInterview getRequirementInterviewById method");
+			Long requirementInterviewIdValue = Long.parseLong(requirementInterviewId);
+			Session session = this.sessionFactory.getCurrentSession();
+			return (RequirementInterview) session.get(RequirementInterview.class, requirementInterviewIdValue);
 	}
 	
 	@Override

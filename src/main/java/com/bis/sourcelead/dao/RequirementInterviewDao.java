@@ -10,4 +10,6 @@ public interface RequirementInterviewDao {
 	
 	List<RequirementInterview> getRequirementInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
 
+	RequirementInterview getRequirementInterviewById(String requirementInterviewId);
+
 }
