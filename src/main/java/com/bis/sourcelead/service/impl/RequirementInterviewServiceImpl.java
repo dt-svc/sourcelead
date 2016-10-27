@@ -3,7 +3,9 @@ package com.bis.sourcelead.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -30,6 +32,7 @@ import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -63,6 +66,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	
 	@Autowired
 	private RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	private RequirementInterviewerService requirementInterviewerService;
 
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -123,9 +129,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 								}
 								
 								if(jsonObj.has("reminderHours") && !jsonObj.getString("reminderHours").isEmpty() && jsonObj.has("reminderMinutes") && !jsonObj.getString("reminderMinutes").isEmpty()){
-									Float reminderHours = Float.parseFloat(jsonObj.getString("reminderHours"));
-									Float reminderMinutes = Float.parseFloat(jsonObj.getString("reminderMinutes"));
-									Float remainedBefore = ((reminderHours*60) + reminderMinutes);
+									Integer reminderHours = Integer.parseInt(jsonObj.getString("reminderHours"));
+									Integer reminderMinutes = Integer.parseInt(jsonObj.getString("reminderMinutes"));
+									Integer remainedBefore = ((reminderHours*60) + reminderMinutes);
 									
 									requirementInterview.setRemainedBefore(remainedBefore.toString());
 								}
@@ -357,6 +363,43 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	}	
 	
 	
+
+	@Override
+	public List<RequirementInterview> getRequirementInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception {
+		logger.debug("In RequirementInterviewServiceImpl class getRequirementInterviewsBySubmissionIdAndOrgLocationsId method...");
+		
+		List<RequirementInterview> interviewslist = null;
+		interviewslist = requirementInterviewDao.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
+		if (interviewslist != null && !interviewslist.isEmpty() ) {
+			for (RequirementInterview requirementInterview : interviewslist) {
+				if(requirementInterview.getRemainedBefore() != null && !requirementInterview.getRemainedBefore().isEmpty()){
+					Integer hours = (Integer.parseInt(requirementInterview.getRemainedBefore()) / 60);
+					Integer minutes = (Integer.parseInt(requirementInterview.getRemainedBefore()) % 60);
+				    requirementInterview.setRemainderTime(hours + " : " + minutes + " minutes");
+				}
+				
+			    if(requirementInterview.getDateOfInterview() != null){
+			    	requirementInterview.setDateOfInterviewStr(Constants.DMY.format(requirementInterview.getDateOfInterview()));
+			    }
+			    
+			    String InterviewersList = "";
+				Set<RequirementInterviewer> Interviewers = requirementInterview.getRequirementInterviewers();
+				int i = 0;
+				for(RequirementInterviewer interviewer: Interviewers){
+					if(i <= 50){
+						InterviewersList = InterviewersList+interviewer.getInterviewerUser().getFirstName()+" "+interviewer.getInterviewerUser().getLastName();
+						if(i != Interviewers.size()-1){
+							InterviewersList = InterviewersList+",";
+						}
+					}
+					i++;
+				}
+				requirementInterview.setInterviewersList(InterviewersList);
+			}
+		}
+		return interviewslist;
+	}
+
 	
 	
 	
@@ -415,4 +458,5 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
 		 
 	}	
+
 }
