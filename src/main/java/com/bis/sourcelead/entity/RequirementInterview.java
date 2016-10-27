@@ -42,10 +42,10 @@ import org.hibernate.annotations.FetchMode;
 	private Date dateOfInterview;
 	
 	@Column(name = "START_TIME")
-	private String startTime;
+	private Date startTime;
 	
 	@Column(name = "END_TIME")
-	private String endTime;
+	private Date endTime;
 	
 	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
 	private String location;
@@ -136,20 +136,19 @@ import org.hibernate.annotations.FetchMode;
 	public void setInterviewType(String interviewType) {
 		this.interviewType = interviewType;
 	}
-
-	public String getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(String startTime) {
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 
-	public String getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(String endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
 
