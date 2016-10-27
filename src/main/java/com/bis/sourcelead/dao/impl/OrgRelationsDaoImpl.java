@@ -311,13 +311,17 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	public List<OrgRelations> getAllVendorsFilterByOrgLocationId(Long orgLocationId, String status) throws Exception {
 		logger.debug("In OrgRelations getAllVendorsByOrgLocationId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String[] level=null;
+		
+		String[] level = null;
 		if(status != null){
-			level = status.split(",");
+			level = status.split(",");	
 		}
+		
+		
 		
 		String subQuery2 = "";
 		String subQuery3  ="";
+		
 		if(level != null){
 			if (Arrays.asList(level).contains("Level-1")) {
 				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-1' or ";
@@ -362,9 +366,12 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 				subQuery3 = " (" + subQuery3.substring(0, subQuery3.length() - 4) + ")";
 			}
 		}
+	
+			
+		
 		
 		List<OrgRelations> vandorsList = null;
-		if(level == null){
+		if(level == null || Arrays.asList(level).contains("")){
 			Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )");
 			vandorsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		}else{

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementInterviewService;
@@ -99,5 +100,20 @@ public class RequirementInterviewRestController {
  	    
 			return "success";
 	    
-}
+	}
+	 
+	 @RequestMapping(value = "/acceptOrRejectInterview")
+	 @ResponseBody  String acceptOrRejectInterview(@RequestParam(value="interviewStatus", required=false) String interviewStatus,
+				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
+			 HttpServletRequest request) throws Exception {
+		 
+		 RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewId);
+		 
+		 if(requirementInterview.getInterviewStatus() == null && !("").equals(requirementInterview.getInterviewStatus())){
+			 requirementInterview.setInterviewStatus(interviewStatus);
+			 requirementInterviewService.saveRequirementInterview(requirementInterview);
+		 }
+		 
+		return "success";
+	 }		
 }
