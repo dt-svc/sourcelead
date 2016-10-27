@@ -481,7 +481,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 createExcelworkbook.write(bos);
     		 byte[] bytes = bos.toByteArray();
     		 
-    		 String UUID = SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode();
+    		 String UUID = SourceLeadRandomCodeHelper.generateUUID();
     		 SubmissionXls submissionXls = new SubmissionXls();
     		 submissionXls.setUuid(UUID);
     		 submissionXls.setDocFile(bytes);
