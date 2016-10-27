@@ -196,7 +196,7 @@ public class RequirementReleaseRestController {
 						OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(contact));
 						Requirement requirement  = new Requirement();
 						releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc);
-						requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype);
+						requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype,null);
 
 				}
 			}	
@@ -213,7 +213,7 @@ public class RequirementReleaseRestController {
 					    	Requirement requirement  = new Requirement();
 					    	releasetype = Constants.VENDORSTYPE;
 							releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc);
-							requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype);
+							requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype,null);
 
 					    }
 					}
