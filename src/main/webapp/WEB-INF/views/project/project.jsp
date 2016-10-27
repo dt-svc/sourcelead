@@ -17,7 +17,7 @@
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 
@@ -258,7 +258,7 @@
 												<h4 class="modal-title">Assign Employees</h4>
 											</div>
 											<div class="modal-body clearfix">
-												<div class="form-horizontal row custom-form">
+												<div class="form-horizontal row custom-form hidden">
 													<div class="col-xs-12 col-md-12 col-lg-12">
 														<div class="input-group">
 															<input type="search" class="form-control"  placeholder="Name / Email" id="searchByName">
@@ -266,7 +266,7 @@
 														</div>
 													</div>
 												</div>
-												<div class="modal-body-custom mt clearfix"
+												<div class="modal-body-custom mt clearfix over"
 													id="employeesList"></div>
 											</div>
 											<div class="modal-footer">
@@ -926,8 +926,8 @@ function getOrgDetails()
 							var json = JSON.parse(data);
 							var output = "";
 	
-							output = output + ' <table cols="0" class="table table-bordered table-striped  clearfix">';
-							output = output + ' <tbody>';
+							output = output + ' <table cols="0" id="assignEmployeePagination" class="table table-bordered table-striped  clearfix">';
+							output = output + ' <thead>';
 							output = output + ' <tr>';
 							output = output + ' <th>&nbsp;&nbsp;</th>';
 							output = output + ' <th>Name</th>';
@@ -936,6 +936,8 @@ function getOrgDetails()
 							output = output + ' <th>Start Date</th>';
 							output = output + ' <th>End Date</th>';
 							output = output + ' </tr>';
+							output = output + ' </thead>';
+							output = output + ' <tbody>';
 							for (var i = 0; i < json.length; i++) {
 								var projectStartDate = $('#StartDate').val();
 								// var projectEndDate = $('#EndDate').val();
@@ -986,7 +988,8 @@ function getOrgDetails()
 	
 							$("#employeesList").empty();
 							$("#employeesList").append(output);
-							
+
+							assignEmployeespagination();	
 						  //StartDate And EndDate Pickers
 					       if(json.length > 0){
 						    	for (var i = 0; i < json.length; i++) {
@@ -1040,6 +1043,24 @@ function getOrgDetails()
 	}
 </script>
 <!-- this script is for Get the TeamMembers functionality Ends -->
+
+
+
+<script>
+function assignEmployeespagination(){  
+    $('#assignEmployeePagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+		
+    } );
+}
+</script>
 
 <!-- this script is for Assign Employee functionality Start -->
 <script>
