@@ -99,7 +99,7 @@
             <label class="col-md-3">Select Vendor <span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
               <div class="form-icon">
-                <select class="select-bg form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="validateEmail();getSpocUserDetails();">
+                <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="validateEmail();getSpocUserDetails();">
                   <option value="">Select Vendor</option>
                    <c:forEach var="report" items="${vendorList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  

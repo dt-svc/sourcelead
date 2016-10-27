@@ -9,7 +9,11 @@
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
  
  
- 
+ <style type="text/css">
+ table#assignEmployeePagination tr th {
+ width:auto !important;
+ }
+ </style>
  
       <!-- Modal content Assign Team-->
            <div role="dialog" id="assignTeam" class="modal fade">
@@ -20,14 +24,14 @@
                    <h4 class="modal-title">Assign Employees</h4>
                  </div>
                  <div class="modal-body clearfix">
-                   <div class="form-horizontal row custom-form">
-                     <div class="col-xs-12 col-md-12 col-lg-12">
+                   <div class="form-horizontal row custom-form hidden">
+                     <div class="col-xs-12 col-md-12 col-lg-12 ">
                        <div class="input-group">
                          <input type="search" class="form-control" placeholder="Name / Email" id="searchByName" >
                          <span class="input-group-addon bt-primary" onclick="getTeamMembers();"><i class="fa fa-search"></i></span> </div>
                      </div>
                    </div>
-                   <div class="modal-body-custom mt clearfix" id="employeesList">
+                   <div class="modal-body-custom mt clearfix over" id="employeesList">
                    </div>
                    <div class="col-md-9">
 					<div class="checkbox">
@@ -365,8 +369,8 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
         success: function(data) {
         	var json = JSON.parse(data);
         	var output = "";
-        	output = output+' <table cols="0" class="table table-bordered table-striped  clearfix">';
-            output = output+' <tbody>';
+        	output = output+' <table cols="0" id="assignEmployeePagination" class="table table-bordered table-striped  clearfix">';
+            output = output+' <thead>';
             output = output+' <tr>';
             output = output+' <th>&nbsp;&nbsp;</th>';
             output = output+' <th>Name</th>';
@@ -375,6 +379,8 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
             output = output+' <th>Start Date</th>';
             output = output+' <th>End Date</th>';
             output = output+' </tr>';
+            output = output+' </thead>';
+            output = output+' <tbody>';
         	for (var i=0; i<json.length; i++)
 			{
      	       // var projectEndDate = $('#EndDate').val();
@@ -402,6 +408,8 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 	        output = output+' </table>';
         	$("#employeesList").empty();
 	        $("#employeesList").append(output);
+	        
+	        assignEmployeespagination();
 	        
 	        //StartDate And EndDate Pickers
 		       if(json.length > 0){
@@ -472,6 +480,22 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 	$('#firstName').val('');
 	$('#lastName').val('');}
 	$('#employeeEmail').val('');
+</script>
+
+<script>
+function assignEmployeespagination(){  
+    $('#assignEmployeePagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+		
+    } );
+}
 </script>
 
 <!-- this script is for Assign Employee functionality at Projects screen -->
