@@ -2331,7 +2331,12 @@ function requirementRecommendations(requirementId){
 		    result = result +'<td><div><span>'+report.noOfReq+'</span></div></td>';
 		    result = result +'<td><div><span>'+report.candidateScore+'%</span></div></td>';
 		    result = result +'<td><div><span>';
-		    result = result +'<input type="button" value="Add" class="btn btn-primary btn-sm">';
+		    if(report.isCandidateAdedd == true){
+		    	result = result +'<input type="button" value="Added" class="btn btn-primary btn-sm">';
+		    }else{
+		    	result = result +'<input type="button" value="Add" class="btn btn-primary btn-sm">';
+		    }
+		    
 		   /*  result = result +'<select>';
 		    result = result +'<option>Interview</option>';
 		    result = result +'<option>Submit</option>';

@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.rest.RequirementRestController;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.RecommendationsService;
@@ -22,7 +25,8 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 
 @Service
 public class RecommendationsServiceImpl implements RecommendationsService{
-
+	
+	private static final Logger logger = LoggerFactory.getLogger(RecommendationsServiceImpl.class);
 	
 	@Autowired
 	private RecommendationsDao recommendationsDao;
@@ -51,7 +55,6 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Candidate> getRecommendationsWithScore(List<Candidate> candidateList, Requirement requirement) throws Exception {
-
 		float expPercentage = 0; //  experience = 20%
 		float locationPercentage = 0; // location 10%
 		float ratePercentage = 0;    // rate 20 %
@@ -104,6 +107,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		}
 		
 		for(Candidate candidate : candidateList){
+			boolean isCandidateAdded = false;
 			int matchedSkillCount = 0;
 			List<CandidateSkills> candidateSkillList  = candidateSkillsService.getSkillByCandidateId(candidate.getId());
 			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
@@ -135,33 +139,38 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				}
 			}
 			
-			String candidateRateType = candidate.getRateType();
-			int reqRate = 200;
-			float perMonthCandidateSal = 0;
-			if("Hourly".equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate *24;
-				perMonthCandidateSal = perDaySal * 30;
-			}else if("Weekly".equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate /7;
-				perMonthCandidateSal = perDaySal * 30;
-			}else if("Bi-weekly".equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate /14;
-				perMonthCandidateSal = perDaySal * 30;
-			}else if("Semi-Monthly".equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate /15;
-				perMonthCandidateSal = perDaySal * 30;
-			}else if("Monthly".equalsIgnoreCase(candidateRateType)){
-				perMonthCandidateSal = reqRate;
-			}else if("Bi-Monthly".equalsIgnoreCase(candidateRateType)){
-				int perDaySal = reqRate /60;
-				perMonthCandidateSal = perDaySal * 30;
-			}else{
-				perMonthCandidateSal = reqRate /12;
+			if(candidate.getExpectedRate() != null && !"".equalsIgnoreCase(candidate.getExpectedRate()) && candidate.getRateType() !=null && !"".equalsIgnoreCase(candidate.getRateType())){
+				String candidateRateType = candidate.getRateType();
+				String  expectedRate = candidate.getExpectedRate();
+				
+				int reqRate = Integer.parseInt(expectedRate);
+				float perMonthCandidateSal = 0;
+				if("Hourly".equalsIgnoreCase(candidateRateType)){
+					int perDaySal = reqRate *24;
+					perMonthCandidateSal = perDaySal * 30;
+				}else if("Weekly".equalsIgnoreCase(candidateRateType)){
+					int perDaySal = reqRate /7;
+					perMonthCandidateSal = perDaySal * 30;
+				}else if("Bi-weekly".equalsIgnoreCase(candidateRateType)){
+					int perDaySal = reqRate /14;
+					perMonthCandidateSal = perDaySal * 30;
+				}else if("Semi-Monthly".equalsIgnoreCase(candidateRateType)){
+					int perDaySal = reqRate /15;
+					perMonthCandidateSal = perDaySal * 30;
+				}else if("Monthly".equalsIgnoreCase(candidateRateType)){
+					perMonthCandidateSal = reqRate;
+				}else if("Bi-Monthly".equalsIgnoreCase(candidateRateType)){
+					int perDaySal = reqRate /60;
+					perMonthCandidateSal = perDaySal * 30;
+				}else{
+					perMonthCandidateSal = reqRate /12;
+				}
+				
+				if(perMonthCandidateSal<=reqPerMonthSal){
+					ratePercentage = 20;
+				}
 			}
 			
-			if(perMonthCandidateSal<=reqPerMonthSal){
-				ratePercentage = 20;
-			}
 			float totalPercentage = skillPercentage+expPercentage+locationPercentage+ratePercentage;
 			double roundOff = Math.round(totalPercentage * 100.0) / 100.0;
 			String candidateScore = String.valueOf(roundOff);
@@ -172,10 +181,21 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			}else{
 				candidate.setCandidateResume(candidateResume.getFileName());
 			}
+			if(reqList.size() >0){
+				for(RequirementSubmission reqSubmission : reqList){
+					logger.info("*RequiredmentID**************"+requirement.getId()+" ==  "+reqSubmission.getRequirement().getId());
+					if(requirement.getId() == reqSubmission.getRequirement().getId()){
+						isCandidateAdded = true;
+					}
+				}
+			}
+			candidate.setIsCandidateAdedd(isCandidateAdded);
 			
 			if(skillPercentage !=0 && totalPercentage !=0 ){
 				CandidateListcopy.add(candidate);
 			}
+			
+			
 		}
 		 Collections.sort(CandidateListcopy, new Comparator() {  
 	            @Override  
