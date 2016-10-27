@@ -163,4 +163,16 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 		return candidateResumes;
 	}
 
+/**
+ * To Get Latest Resumes
+ */
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public CandidateResumes getCandidateLatesResumes(Long candidateId, int status) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from CandidateResumes candidateResumes where candidateResumes.createdDate IN (SELECT max(canresume.createdDate) FROM CandidateResumes canresume where canresume.candidateId.id =:candidateId) and candidateResumes.status = :status";  
+			List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setInteger("status", status).setCacheable(true).list();
+			return candidateResumesList.get(0);
+}
+
 }

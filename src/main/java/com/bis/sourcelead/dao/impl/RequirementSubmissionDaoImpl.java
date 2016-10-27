@@ -20,6 +20,7 @@ import com.bis.sourcelead.dao.TeamMemberDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -131,12 +132,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		List<RequirementSubmission>  requirementSubmission = null;
 		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(user.getId(),loginOrgLocation.getId());
 		if (isadmin && requirement.getManagerUserId().getId()!=user.getId()) {
-			String query = "from RequirementSubmission reqSub where (reqSub.orgLocations.id =:loginOrgLocation or reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.requirement.id =:requirementId";
+			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId";
 			 requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
 		}
 		
 		if(requirement.getManagerUserId().getId()==user.getId()){
-			String query = "from RequirementSubmission reqSub where (reqSub.orgLocations.id =:loginOrgLocation or reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.requirement.id =:requirementId";
+			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId";
 			requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
 		}
 		
@@ -154,7 +155,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 							userCodes.add(usercode.getUserCode());
 						}
 						
-						String query = "from RequirementSubmission reqSub where (reqSub.orgLocations.id =:loginOrgLocation or reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy IN (:usercode) and reqSub.requirement.id =:requirementId";
+						String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.createdBy IN (:usercode) and reqSub.requirement.id =:requirementId";
 						  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setParameterList("usercode", userCodes).setLong("requirementId", requirementId).list();
 					}
 				}
@@ -194,6 +195,31 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 
 	     String query = "from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId  "+submissionStages+" ";
 	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setLong( "requirementId", requirementId).setCacheable(true).list();
+	     return shortListCandidatesList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus) {
+		
+        Session session = this.sessionFactory.getCurrentSession();
+		
+		String query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId and rs.submissionStatus = :submissionStatus and rs.status = 1";
+		
+		List<Long> reqSubmsCount =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("submissionStatus", submissionStatus).list();
+			Integer count = 0;
+			if(reqSubmsCount != null && !reqSubmsCount.isEmpty()){
+					count = reqSubmsCount.get(0).intValue();
+			}
+			return count;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmission> getRequirementPerCandidate(Long candudateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+	     String query = "from RequirementSubmission rs where rs.candidate.id = :candudateId and rs.submissionStatus = 'SUBMISSION' ";
+	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "candudateId", candudateId).setCacheable(true).list();
 	     return shortListCandidatesList;
 	}
 	

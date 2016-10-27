@@ -205,4 +205,10 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 		return candidateResumesDao.getCandidateResumeByResumeId(resumeId);
 	}
 
+
+	@Override
+	public CandidateResumes getCandidateLatesResumes(Long candidateId, int status) throws Exception {
+		return candidateResumesDao.getCandidateLatesResumes(candidateId,status);
+	}
+
 }

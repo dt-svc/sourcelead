@@ -106,4 +106,9 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 		
 		return candidateSkillsDao.getCandidateSkillBySkillId(candidateSkillId);
 	}
+
+	@Override
+	public List<CandidateSkills> getSkillByCandidateId(Long candidateId) throws Exception {
+		return candidateSkillsDao.getSkillByCandidateId(candidateId);
+	}
 }

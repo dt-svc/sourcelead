@@ -113,7 +113,7 @@ function teamList(){
 --%>
 
 <script>
-function pagination(){  alert("hai");
+function pagination(){
     $('#teamPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[2, 15, 20, -1], [2, 15, 20, "All"]],

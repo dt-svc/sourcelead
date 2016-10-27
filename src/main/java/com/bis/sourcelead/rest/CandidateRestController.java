@@ -1,9 +1,17 @@
 package com.bis.sourcelead.rest;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +27,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParser;
@@ -42,6 +52,9 @@ public class CandidateRestController {
 	
 	@Autowired
 	private CandidateService candidateService;
+	
+	@Autowired
+	private CandidateResumesService  candidateResumesService;
 	
 	/**
 	 * @author prasad k
@@ -119,5 +132,75 @@ public class CandidateRestController {
 				result = "false";
 			}
 			return result;
+	   }
+	 
+	
+	 /**
+	  * @author Rajashekar
+	  * @param candidateId
+	  * @param request
+	  * @return string
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/downloadCandidateResume" , method = RequestMethod.GET)
+	 public @ResponseBody  void downloadCandidateResume(@RequestParam(value="candidateId", required=false) Long candidateId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 	CandidateResumes candidateResume = candidateResumesService.getCandidateLatesResumes(candidateId, 1);
+		 	
+		 	 response.setContentType("application/octet-stream");
+		        response.setHeader("Content-Disposition",
+		                "attachment;filename="+candidateResume.getFileName());
+			    
+				InputStream inputStream = new ByteArrayInputStream(candidateResume.getDocFile());
+				try {
+					OutputStream outStream = response.getOutputStream();
+
+					byte[] buffer = new byte[4096];
+					int bytesRead = -1;
+
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						outStream.write(buffer, 0, bytesRead);
+					}
+
+					inputStream.close();
+					outStream.close();
+
+				} catch (FileNotFoundException e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				} 
+			/*byte[] pdfData = candidateResume.getDocFile();
+			FileOutputStream fileOuputStream =null;
+			try { 
+			     fileOuputStream = new FileOutputStream(candidateResume.getFileName()); 
+			    fileOuputStream.write(pdfData);
+			 } finally {
+			    fileOuputStream.close();
+			 }
+			String mimeType = "application/msword";
+	        if (mimeType == null) {        
+	            mimeType = "application/octet-stream";
+	        }              
+	        response.setContentType(mimeType);
+	        String headerKey = "Content-Disposition";
+	         String headerValue = String.format("attachment; filename=\"%s\"", candidateResume.getFileName());
+	         response.setHeader(headerKey, headerValue);
+	        InputStream inputStream = new ByteArrayInputStream(candidateResume.getDocFile());
+			try {
+				OutputStream outStream = response.getOutputStream();
+	            
+	            byte[] buffer = new byte[500];
+	            int bytesRead = -1;
+	             
+	            while ((bytesRead = inputStream.read(buffer)) != -1) {
+	                outStream.write(buffer, 0, bytesRead);
+	            }
+	             
+	            inputStream.close();
+	            outStream.close();   
+				
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}*/
 	   }
 }
