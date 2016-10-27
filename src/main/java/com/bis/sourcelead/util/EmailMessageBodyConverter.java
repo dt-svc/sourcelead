@@ -103,7 +103,8 @@ public String convertTempBodyOfEmailTemplate(String body,Map<String, String> glo
 				tempStr.replace(tempStr.indexOf(tests), tempStr.indexOf(tests)+tests.length(), sb.toString());
 				System.out.println(tempStr);
 				
-				if(test != null && test != "" && ("loginURL".equals(test) || ("userEmailId".equals(test)) || "acceptURL".equals(test) || ("userName".equals(test)) )){
+				if(test != null && test != "" && ("loginURL".equals(test) || ("userEmailId".equals(test)) 
+						|| "acceptURL".equals(test) || ("userName".equals(test)) || "rejectURL".equals(test) || ("tentativeURL".equals(test)) )){
 					sb.delete(0, sb.length());
 					sb.setLength(0);
 				}
