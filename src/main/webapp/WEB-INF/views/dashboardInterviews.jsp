@@ -5,149 +5,120 @@
           <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a>
           <div class="clearfix require_wrap_table dashboard-data">
             <ul class="nav nav-tabs">
-              <li class="active"><a data-toggle="tab" href="#today">Today</a></li>
-              <li><a data-toggle="tab" href="#upcoming">Upcoming</a></li>
-              <li><a data-toggle="tab" href="#previous">Previous</a></li>
+              <li class="active"><a data-toggle="tab" href="javascript:void(0)" onclick="interviews('today')">Today</a></li>
+              <li><a data-toggle="tab" href="javascript:void(0)" onclick="interviews('upcoming')">Upcoming</a></li>
+              <li><a data-toggle="tab" href="javascript:void(0)" onclick="interviews('previous')">Previous</a></li>
             </ul>
             <div class="tab-content clearfix mt">
               <div id="today" class="tab-pane fade in active">
-           <table>
-              <thead>
-                <tr>
-                  <th>Applicant</th>
-                  <th>Requirement</th>
-                  <th>Date &amp; Time</th>
-                  <th>Client</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><div><span>Srinivas Subharamanyam Sahu</span></div></td>
-                  <td><div class="tbldata-dotdot-vsm">Java Devloper</div></td>
-                  <td><div><span>26/10/2016 <br/> 10:15PM</span></div></td>
-                  <td><div><span>TCS Consultancy Services, HYD</span></div></td>
-                </tr>
-                <tr>
-                  <td><div><span>Srinivas Subharamanyam Sahu</span></div></td>
-                  <td>Java Devloper</td>
-                  <td><div><span>26/10/2016 <br/> 10:15PM</span></div></td>
-                 <td><div><span>TCS Consultancy Services, HYD</span></div></td>
-                </tr>
-                <tr>
-                  <td><div><span>Srinivas Subharamanyam Sahu</span></div></td>
-                  <td>Java Devloper</td>
-                  <td><div><span>26/10/2016 <br/> 10:15PM</span></div></td>
-                  <td><div><span>TCS Consultancy Services, HYD</span></div></td>
-                </tr>
-              </tbody>
-            </table>
-            
-            <!-- Pagenation -->
-            <nav class="clearfix">
-              <ul id="pagincg" class="pagination pull-right">
-                <li><a href="#">Previous</a></li>
-                <li class="active"><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li data-page="last"><a href="#">Next</a></li>
-              </ul>
-            </nav>
+           
               </div>
               <div id="upcoming" class="tab-pane fade">
-           <table>
-              <thead>
-                <tr>
-                  <th>Applicant</th>
-                  <th>Requirement</th>
-                  <th>Date &amp; Time</th>
-                  <th>Client</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><div><span>Srinivas Subharamanyam Sahu</span></div></td>
-                  <td><div class="tbldata-dotdot-vsm">Java Devloper</div></td>
-                  <td><div><span>26/10/2016 <br/> 10:15PM</span></div></td>
-                  <td><div><span>TCS Consultancy Services, HYD</span></div></td>
-                </tr>
-                <tr>
-                  <td><div><span>Srinivas Subharamanyam Sahu</span></div></td>
-                  <td>Java Devloper</td>
-                  <td><div><span>26/10/2016 <br/> 10:15PM</span></div></td>
-                 <td><div><span>TCS Consultancy Services, HYD</span></div></td>
-                </tr>
-                <tr>
-                  <td><div><span>Srinivas Subharamanyam Sahu</span></div></td>
-                  <td>Java Devloper</td>
-                  <td><div><span>26/10/2016 <br/> 10:15PM</span></div></td>
-                  <td><div><span>TCS Consultancy Services, HYD</span></div></td>
-                </tr>
-              </tbody>
-            </table>
-            
-            <!-- Pagenation -->
-            <nav class="clearfix">
-              <ul id="pagincg" class="pagination pull-right">
-                <li><a href="#">Previous</a></li>
-                <li class="active"><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li data-page="last"><a href="#">Next</a></li>
-              </ul>
-            </nav>
+           
               </div>
-                            <div id="previous" class="tab-pane fade">
-           <table>
-              <thead>
-                <tr>
-                  <th>Applicant</th>
-                  <th>Requirement</th>
-                  <th>Date &amp; Time</th>
-                  <th>Client</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><div><span>Srinivas Subharamanyam Sahu</span></div></td>
-                  <td><div class="tbldata-dotdot-vsm">Java Devloper</div></td>
-                  <td><div><span>26/10/2016 <br/> 10:15PM</span></div></td>
-                  <td><div><span>TCS Consultancy Services, HYD</span></div></td>
-                </tr>
-                <tr>
-                  <td><div><span>Srinivas Subharamanyam Sahu</span></div></td>
-                  <td>Java Devloper</td>
-                  <td><div><span>26/10/2016 <br/> 10:15PM</span></div></td>
-                 <td><div><span>TCS Consultancy Services, HYD</span></div></td>
-                </tr>
-                <tr>
-                  <td><div><span>Srinivas Subharamanyam Sahu</span></div></td>
-                  <td>Java Devloper</td>
-                  <td><div><span>26/10/2016 <br/> 10:15PM</span></div></td>
-                  <td><div><span>TCS Consultancy Services, HYD</span></div></td>
-                </tr>
-              </tbody>
-            </table>
-            
-            <!-- Pagenation -->
-            <nav class="clearfix">
-              <ul id="pagincg" class="pagination pull-right">
-                <li><a href="#">Previous</a></li>
-                <li class="active"><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li data-page="last"><a href="#">Next</a></li>
-              </ul>
-            </nav>
+           	  <div id="previous" class="tab-pane fade">
+           
               </div>
             </div>
           </div>
         </div>
-        <!-- Pagenation Ends --> 
       </div>
-      <!-- Inteviews Ends --> 
+<!-- Inteviews Ends --> 
+ 
+      
+<script>
+window.onload = interviews('today');
+//window.setInterval("interviews('today');", 60000);
+function interviews(dateRange){
+	var resultToday ="";
+	var resultUpcoming ="";
+	var resultPrevious ="";
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl+"/getInterviews?dateRange="+dateRange,
+			success : function(data) {
+				
+				var json = JSON.parse(data);
+   	        	
+
+				/*  if( result.indexOf('Sign In') >= 0){
+		    		location.replace(sourceleadUrl);
+		    	 }
+        		 else if (result.indexOf('exception') >= 0) {
+        			 location.replace(sourceleadUrl+"/errorPage");
+        		 }
+        		 else{
+			 		$("#popUpDivResume").removeClass("edit-details-active");
+			 		candidateResumesList(candidateId);
+        		 } */
+
+
+			if(json.length > 0){
+				resultToday = resultToday+'	<table>';
+				resultToday = resultToday+'	<thead>';
+				resultToday = resultToday+'	  <tr>';
+				resultToday = resultToday+'	    <th>Applicant</th>';
+				resultToday = resultToday+'	    <th>Requirement</th>';
+				resultToday = resultToday+'	    <th>Date &amp; Time</th>';
+				resultToday = resultToday+'	    <th>Client</th>';
+				resultToday = resultToday+'	  </tr>';
+				resultToday = resultToday+'	</thead>';
+				resultToday = resultToday+'	<tbody>';
+				
+				for (var i=0; i<json.length; i++)
+					{
+		       		var report = json[i];
+						resultToday = resultToday+'	  <tr>';
+						resultToday = resultToday+'	   <td><div><span>'+report.submissionId.candidate.firstName+' '+report.submissionId.candidate.lastName+'</span></div></td>';
+						resultToday = resultToday+'	   <td><div class="tbldata-dotdot-vsm">Java Devloper</div></td>';
+						resultToday = resultToday+'	   <td><div><span>26/10/2016 <br/> 10:15PM</span></div></td>';
+						resultToday = resultToday+'	   <td><div><span>TCS Consultancy Services, HYD</span></div></td>';
+						resultToday = resultToday+'	 </tr>';
+					}
+				
+				
+					resultToday = resultToday+'	 </tbody>';
+					resultToday = resultToday+'	</table>';											
+	      
+			      resultToday = resultToday+'	<nav class="clearfix">';
+			      resultToday = resultToday+'	  <ul id="pagincg" class="pagination pull-right">';
+			      resultToday = resultToday+'	  <li><a href="#">Previous</a></li>';
+			      resultToday = resultToday+'	  <li class="active"><a href="#">1</a></li>';
+			      resultToday = resultToday+'	  <li><a href="#">2</a></li>';
+			      resultToday = resultToday+'	  <li><a href="#">3</a></li>';
+			      resultToday = resultToday+'	  <li><a href="#">4</a></li>';
+			      resultToday = resultToday+'	  <li><a href="#">5</a></li>';
+			      resultToday = resultToday+'	  <li data-page="last"><a href="#">Next</a></li>';
+			      resultToday = resultToday+'	</ul>';
+			      resultToday = resultToday+'	</nav>';
+			}
+		     
+	        if(dateRange == 'today'){
+	        	$("#today").empty();
+	        	$("#upcoming").empty();
+	        	$("#previous").empty();
+	            $("#today").append(resultToday);
+	        }
+			if(dateRange == 'previous'){
+				$("#today").empty();
+	        	$("#upcoming").empty();
+	        	$("#previous").empty();
+				$("#previous").append(resultToday);
+	        }
+			if(dateRange == 'upcoming'){
+				$("#today").empty();
+	        	$("#upcoming").empty();
+	        	$("#previous").empty();
+				$("#upcoming").append(resultToday);
+	        }
+      
+		},
+	});
+	return true;
+}
+</script>
+
+
+      
