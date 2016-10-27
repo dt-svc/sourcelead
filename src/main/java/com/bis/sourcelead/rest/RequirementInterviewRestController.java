@@ -134,6 +134,6 @@ public class RequirementInterviewRestController {
 			 requirementInterviewService.saveRequirementInterview(requirementInterview);
 		 }
 		 
-		return "success";
+		return interviewStatus;
 	 }		
 }
