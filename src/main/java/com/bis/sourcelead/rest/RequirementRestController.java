@@ -39,6 +39,7 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -82,6 +83,9 @@ public class RequirementRestController {
 	 
 	 @Autowired
 	 private CandidateService candidateService;
+	 
+	 @Autowired
+	 private RecommendationsService recommendationsService;
 	 
 	 
 	 
@@ -292,11 +296,12 @@ public class RequirementRestController {
 	public @ResponseBody String getRequirementRecommendationsByRequirementId(@RequestParam(value="requirementId",required = false) Long requirementId,HttpServletRequest request) throws Exception {
 		String resultJson;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Candidate> candidateList = candidateService.getAllCandidatesByLocation(orgLocation.getId());
 		
-		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+        List<Candidate> candidateList = recommendationsService.getAllCandidatesByLocation(orgLocation.getId());
 		
-		List<Candidate> candidateListCopy = requirementService.getRecommendationsWithScore(candidateList,requirement);
+		Requirement requirement = recommendationsService.getRequirementByRequirementId(requirementId);
+		
+		List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScore(candidateList,requirement);
 		
 		resultJson = commonUtil.toJSON(candidateListCopy);
 		return resultJson;
