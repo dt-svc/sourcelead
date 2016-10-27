@@ -21,9 +21,11 @@ function getSubmissionDetailsSideBar(submissionId,candidateId){
 	    	  success: function(data) {
 		       
 	    	   var json = JSON.parse(data);
+	    	   var skillsList = json.skillsList;
+	           var skills = [];
+	           skills = skillsList.split(",");
 	    	   
-	    	  
-	    	   var submissionDetails = "";
+	           var submissionDetails = "";
 	    	   var details = eval(json.submissionTemplateJsonStringValue);
 	    	   $.each(details, function( k, v ) {
 	    		   var value = '';
@@ -72,13 +74,14 @@ function getSubmissionDetailsSideBar(submissionId,candidateId){
                result = result + '</div>';
                result = result + '<div class="other-detials">';
                result = result + '<div class="professinal-details">';
-               result = result + ' <ul class="list-inline list-unstyled">';
-               result = result + '<li>BA</li>';
-               result = result + ' <li>BRS</li>';
-               result = result + '<li>SRS</li>';
-               result = result + ' <li>Agile</li>';
-               result = result + '<li>SDLC</li>';
-               result = result + ' </ul>';
+               result = result+'<ul class="list-inline list-unstyled">';
+               if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
+	             for (i=0;i < skills.length;i++)
+	             {
+	            	 result = result+'<li>'+skills[i]+'</li>';
+	             }
+	            }
+	           result = result+'</ul>';
                result = result + '</div>';
                result = result + '<div class="socialnetwork-details">';
                result = result + '<ul class="list-inline list-unstyled">';
@@ -140,7 +143,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId){
 			  
 			   			//Submission Details
 			   			 result = result + '<div class="col-md-6">';
-			  			 result = result + '<div id="accordion-sl" class="release-jobs">';
+			  			 result = result + '<div class="release-jobs submissionDetails">';
 					     result = result + '<div class="clearfix sub-details">';
 					     result = result + ' <h2 class="active">Submission Details</h2>';
 					     result = result + ' <div class="content clearfix" style="display: block;">';
@@ -151,24 +154,13 @@ function getSubmissionDetailsSideBar(submissionId,candidateId){
 	                     result = result + ' </div>';
 	                    
 	                    
-	                    
-	     			        result = result + '<div class="col-md-6">';
-	     			         result = result + '<div id="accordion-sl" class="release-jobs">';
-	     		                    
-	     					   // Accordion First Tab 
-	     					   result = result + '<div class="clearfix">';
-	     					   result = result + ' <h2 class="active">Interview</h2>';
-	     					   result = result + ' <div class="content clearfix" style="display: block;">';
-	     					   result = result + 'xvcxzvxzv';
-	     					   result = result + ' </div>';
-	     					   result = result + ' </div>';
-	     					   
-		       result = result + '</div>';
-		       result = result + '</div>';
+	                  // Accordion First Tab 
+	     			  result  = result + '   <div id="internalInterviewsList" ></div>';
+		                    
        
           result = result + '</div>';
           
-
+getInternalInterviewsList(submissionId);
 
 $("#viewCandidateDiv").empty();  
 $("#viewCandidateDiv").append(result);
@@ -225,7 +217,219 @@ $(document).ready(function() {
  -->
 
 
+<script>
+function getInternalInterviewsList(submissionId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({  
+         type : "POST",
+         url: sourceleadUrl+"/getAllInternalInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
+         success :function(data) {
+              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+            		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+            		 else if (data.indexOf('exception') >= 0) {
+            			 location.replace(sourceleadUrl+"/errorPage");
+            		 }
+            		 else{
+	                	 $("#internalInterviewsList").empty();
+	                	 var result = "";
+	                	 result = result + '<div class="col-md-6">';
+                    	 result = result + '<div class="clearfix">';
+   					     result = result + '<div class="content clearfix" style="display: block;">';
+	                     var json = JSON.parse(data);
+	                     
+	                     for (var i = 0; i < json.length; i++) { 
+	                    	 
+	                    	 var notifiedDetails ="";
+	                    	 var report = json[i]; 
+	                    	 var interviewers = "---";
+	                    	 var interviewTypeHeader = "";
+	                    	 var interviewType = "---";
+	                    	 
+	                    	 if(report.notificationToApplicant != null && report.notificationToApplicant != 'undefined' && report.notificationToApplicant != "" && report.notificationToApplicant == "Y"){
+	                    		 notifiedDetails = 'Applicant';
+				             }
+	                    	 if(report.notificationToApplicant != null && report.notificationToApplicant != 'undefined' && report.notificationToApplicant != "" && report.notificationToApplicant == "Y" 
+	                    			 && report.notificationToSpoc != null && report.notificationToSpoc != 'undefined' && report.notificationToSpoc != "" && report.notificationToSpoc == "Y"){
+	                    		 notifiedDetails = notifiedDetails + ' , ';
+	                    	 }
+	                    	 
+	                    	 if(report.notificationToSpoc != null && report.notificationToSpoc != 'undefined' && report.notificationToSpoc != "" && report.notificationToSpoc == "Y"){
+	                    		 notifiedDetails = notifiedDetails + 'Vendor';
+				             }
+	                    	 
+	                    	 if(notifiedDetails == ""){
+	                    		notifiedDetails = '---';
+	                    	 }
+	                    	 
+	                    	 if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
+	                    		 interviewers = report.interviewersList;
+	                    	 }
+	                    	 
+	                    	 if(report.interviewType != null && report.interviewType != 'undefined' && report.interviewType != ""){
+	                    		 interviewType = report.interviewType;
+	                    		 interviewTypeHeader = report.interviewType;
+	                    	 }
+	                    	 
+	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
+	                    	 result = result + '<h2  class="active">Interview: <span>'+interviewTypeHeader+' '+report.dateOfInterviewStr+' '+report.startTime+' </span></h2>';
+	                    	 result = result + '<div class="content clearfix">';
+	                    	 result = result + '<div class="interview-type">';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<div class="action-nav">';
+	                    	 result = result + '<a href="javascript:void(0)" title="Attending"><i class="fa fa-check text-success"></i></a>';
+	                    	 result = result + '<a href="javascript:void(0)" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
+	                    	 result = result + '<a href="javascript:void(0)" title="Maybe"><i class="fa fa-question-circle text-muted"></i></a>';
+	                    	 result = result + '</div>';
+	                    	 result = result + '</div>';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Interview Location</strong>';
+	                    	 result = result + '</label>';
+	                    	 result = result + '<p class="col-md-7">'+report.location+'</p>';
+	                    	 result = result + '</div>';
 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Interview Type</strong>';
+	                    	 result = result + '</label>';
+	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+interviewType+'</p>';
+	                    	 result = result + '</div>';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Date</strong>';
+	                    	 result = result + '</label>';
+	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.dateOfInterviewStr+'</p>';
+	                    	 result = result + '</div>';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Time</strong>';
+	                    	 result = result + '</label>';
+                             if(report.endTime != null && report.endTime != 'undefined' && report.endTime != ""){
+                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTime+' to '+report.endTime+'</p>';
+	                    	 }else{
+	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTime+'</p>';
+	                    	 }
+	                    	 result = result + '</div>';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Interviewers</strong>';
+	                    	 result = result + '</label>';
+	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+interviewers+'</p>';
+	                    	 result = result + '</div>';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                         result = result + '<label class="col-md-5">';
+	                         result = result + '<strong>Reminder details</strong>';
+	                         result = result + '</label>';
+	                         result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.remainderTime+'</p>';
+	                         result = result + '</div>';
+	                         
+	                         result = result + '<div class="row clearfix">';
+	                         result = result + '<label class="col-md-5">';
+	                         result = result + '<strong>Notified to</strong>';
+	                         result = result + '</label>';
+	                         result = result + '<p class="col-md-7 tbldata-dotdot-big">'+notifiedDetails+'</p>';
+	                         result = result + '</div>';
+	                         
+	                         result = result + '</div>';
+	                         result = result + '</div>';
+	                         result = result + '</div>';
+	                    	 
+	                    	 /* result  = result + '         <tr>';
+	                    	 if(opt.docName != null && opt.docName != '' && opt.docName != 'undefined'){
+	                    	    result  = result + '<td><div><span>'+opt.docName+'</span></div></td>';
+                   	         }else{
+                   	    	      result  = result + ' <td><div><span>--</span></div></td>';
+                   	         }
+	                    	 
+	                    	 if(opt.contractType != null && opt.contractType != '' && opt.contractType != 'undefined'){
+	                    	 result  = result + ' <td><div><span>'+opt.contractType+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + ' <td><div><span>--</span></div></td>';
+	                    	 }
+	                    	 if(opt.spocName != null && opt.spocName != '' && opt.spocName != 'undefined'){
+		                    	 result  = result + '<td><div><span>'+opt.spocName+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + '<td><div><span>--</span></div></td>'; 
+	                    	 }
+	                    	 
+	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
+		                    	 result  = result + '<td><div><span>'+opt.fileName+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + '<td><div><span>--</span></div></td>';
+	                    	 }
+	                    	
+	                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+	                    	     result  = result + ' <td><div><span>'+opt.startDateStr+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + ' <td><div><span>--</span></div></td>';
+	                    	 }
+	                    	 
+	                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+	                    	     result  = result + '<td><div><span>'+opt.endDateStr+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + '<td><div><span>--</span></div></td>';
+	                    	 }
+	                    	 
+	                    	 if(opt.ownerName != null && opt.ownerName != '' && opt.ownerName != 'undefined'){
+	                    	      result  = result + ' <td><div><span>'+opt.ownerName+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + ' <td><div><span>--</span></div></td>';
+	                    	 }
+	                    	 result = result+'	 <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
+	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
+	                    		 result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+clientLocationId+','+orgRelationId+'); getSpocsList('+orgRelationId+'); getClientDocument('+clientLocationId+','+orgRelationId+', '+opt.id+');"></a>';
+					           	 result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteClientDocument('+clientLocationId+','+orgRelationId+','+opt.id+');"></i>';
+	                    	 }
+	                    	 result = result+'	            </div></td>';
+	                    	 result  = result + '</tr>'; */
+		                     
+	                      }  
+	                     result = result + '</div>';
+	                     result = result + '</div>';
+	                     result = result + '</div>';
+	                    
+	                     $("#internalInterviewsList").append(result); 
+	                     
+	                     $('#accordion-sl .content').hide();
+	                     $('#accordion-sl h2:first').addClass('active').next().slideDown('slow');
+	                     $('#accordion-sl h2').click(function() {
+	                         if($(this).next().is(':hidden')) {
+	                             $('#accordion-sl h2').removeClass('active').next().slideUp('slow');
+	                             $(this).toggleClass('active').next().slideDown('slow');
+	                         }
+	                     });
+			    	} 
+              }else{
+	    	         var result ="";
+		    	     result = result+"   <div class='row'>"; 
+					 result = result+"	<div class='col-lg-12'>"; 
+					 result = result+"		<div class='content-area clearfix'>"; 
+					 result = result+"			<div class='blank-pages'>";
+					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 result = result+"			        <p>No Documents Found</p>";
+					 result = result+"			 </div>";
+					 result = result+"		</div>"; 
+					 result = result+"	</div>"; 
+					 result = result+"  </div> "; 
+					$("#internalInterviewsList").empty();
+				    $("#internalInterviewsList").append(result); 
+              }
+       },
+         
+    }); 
+	 
+	 
+}
+
+</script>
 
 
 

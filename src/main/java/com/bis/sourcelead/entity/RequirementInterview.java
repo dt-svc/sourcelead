@@ -1,7 +1,10 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,10 +12,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 	@Entity
 	@Table(name = "REQUIREMENT_INTERVIEW", catalog = "sourcelead")
@@ -72,8 +79,32 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
-
 	
+	@Transient
+	private String remainderTime;
+	
+	@Transient
+	private String dateOfInterviewStr;
+	
+	@Transient
+	private String interviewersList;
+	
+	@OneToMany(mappedBy = "requirementInterview",cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+	private Set<RequirementInterviewer> requirementInterviewers = new HashSet<RequirementInterviewer>(0);
+
+	@Column(name = "INTERVIEW_STATUS", columnDefinition = "TEXT default NULL")
+	private String interviewStatus;
+	
+	
+	public String getInterviewStatus() {
+		return interviewStatus;
+	}
+
+	public void setInterviewStatus(String interviewStatus) {
+		this.interviewStatus = interviewStatus;
+	}
+
 	public Date getDateOfInterview() {
 		return dateOfInterview;
 	}
@@ -212,7 +243,36 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
-	
-	
+
+	public String getRemainderTime() {
+		return remainderTime;
+	}
+
+	public void setRemainderTime(String remainderTime) {
+		this.remainderTime = remainderTime;
+	}
+
+	public String getDateOfInterviewStr() {
+		return dateOfInterviewStr;
+	}
+
+	public void setDateOfInterviewStr(String dateOfInterviewStr) {
+		this.dateOfInterviewStr = dateOfInterviewStr;
+	}
+
+	public String getInterviewersList() {
+		return interviewersList;
+	}
+
+	public void setInterviewersList(String interviewersList) {
+		this.interviewersList = interviewersList;
+	}
+
+	public Set<RequirementInterviewer> getRequirementInterviewers() {
+		return requirementInterviewers;
+	}
+
+	public void setRequirementInterviewers(Set<RequirementInterviewer> requirementInterviewers) {
+		this.requirementInterviewers = requirementInterviewers;
+	}
 }

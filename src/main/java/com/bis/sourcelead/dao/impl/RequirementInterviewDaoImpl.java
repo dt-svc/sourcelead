@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementInterviewDao;
 import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -49,6 +51,26 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return requirementInterview;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementInterview getRequirementInterviewById(String requirementInterviewId) {
+			logger.debug("In RequirementInterview getRequirementInterviewById method");
+			Long requirementInterviewIdValue = Long.parseLong(requirementInterviewId);
+			Session session = this.sessionFactory.getCurrentSession();
+			return (RequirementInterview) session.get(RequirementInterview.class, requirementInterviewIdValue);
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<RequirementInterview> getRequirementInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception {
+		logger.debug("In RequirementInterviewDaoImpl class getRequirementInterviewsBySubmissionIdAndOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementInterview interview where interview.submissionId.id = :submissionId and interview.submissionId.orgLocations.id = :orgLocationsId ";
+		List<RequirementInterview> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		
+		return interviewsList;
 	}
 	
 }

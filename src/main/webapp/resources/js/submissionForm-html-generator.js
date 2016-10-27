@@ -271,13 +271,20 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
         				 datavalidation = 'data-validation="required validate_email validate_Space validate_length length2-50"';
         				 validationCheck = 'onblur="validateCandidateEmail();"';
         				 
-        			 }else{
+        			 }else if(label == 'Phone Number'){
+        				 datavalidation = 'data-validation="required validate_phone validate_Space validate_length length9-20"';
+        			 }
+        			 else{
         				 datavalidation = 'data-validation="required validate_Space validate_length length2-50"';
         			 }
         			 
         			 datavalidation2 = 'data-validation="required"';
         		 }else{
-        			 datavalidation = 'data-validation="validate_Space validate_length length2-50"';
+        			 if(label == 'Alternate Number'){
+        				 datavalidation = 'data-validation="validate_phone validate_Space validate_length length9-20"';
+        			 }else{
+        				 datavalidation = 'data-validation="validate_Space validate_length length2-50"';
+        			 }
         			 novalidation = 'data-validation-optional="true"';
         		 }
         		 
