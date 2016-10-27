@@ -424,7 +424,7 @@ function getCustomerInterviewsList(submissionId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
          type : "POST",
-         url: sourceleadUrl+"/getAllInternalInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
+         url: sourceleadUrl+"/getAllCustomerInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != "" && data != '[]'){
             		 if( data.indexOf('Sign In') >= 0){
@@ -443,31 +443,8 @@ function getCustomerInterviewsList(submissionId){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 
 	                    	 var report = json[i]; 
-	                    	 
-	                    	 var notifiedDetails ="";
-	                    	 var interviewers = "---";
 	                    	 var interviewTypeHeader = "";
 	                    	 var interviewType = "---";
-	                    	 
-	                    	 if(report.notificationToApplicant != null && report.notificationToApplicant != 'undefined' && report.notificationToApplicant != "" && report.notificationToApplicant == "Y"){
-	                    		 notifiedDetails = 'Applicant';
-				             }
-	                    	 if(report.notificationToApplicant != null && report.notificationToApplicant != 'undefined' && report.notificationToApplicant != "" && report.notificationToApplicant == "Y" 
-	                    			 && report.notificationToSpoc != null && report.notificationToSpoc != 'undefined' && report.notificationToSpoc != "" && report.notificationToSpoc == "Y"){
-	                    		 notifiedDetails = notifiedDetails + ' , ';
-	                    	 }
-	                    	 
-	                    	 if(report.notificationToSpoc != null && report.notificationToSpoc != 'undefined' && report.notificationToSpoc != "" && report.notificationToSpoc == "Y"){
-	                    		 notifiedDetails = notifiedDetails + 'Vendor';
-				             }
-	                    	 
-	                    	 if(notifiedDetails == ""){
-	                    		notifiedDetails = '---';
-	                    	 }
-	                    	 
-	                    	 if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
-	                    		 interviewers = report.interviewersList;
-	                    	 }
 	                    	 
 	                    	 if(report.interviewType != null && report.interviewType != 'undefined' && report.interviewType != ""){
 	                    		 interviewType = report.interviewType;
@@ -535,25 +512,11 @@ function getCustomerInterviewsList(submissionId){
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Interviewers</strong>';
+	                    	 result = result + '<strong>Client Name:</strong>';
 	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+interviewers+'</p>';
+	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.clientName+'</p>';
 	                    	 result = result + '</div>';
-	                    	 
-	                    	 result = result + '<div class="row clearfix">';
-	                         result = result + '<label class="col-md-5">';
-	                         result = result + '<strong>Reminder details</strong>';
-	                         result = result + '</label>';
-	                         result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.remainderTime+'</p>';
-	                         result = result + '</div>';
-	                         
-	                         result = result + '<div class="row clearfix">';
-	                         result = result + '<label class="col-md-5">';
-	                         result = result + '<strong>Notified to</strong>';
-	                         result = result + '</label>';
-	                         result = result + '<p class="col-md-7 tbldata-dotdot-big">'+notifiedDetails+'</p>';
-	                         result = result + '</div>';
-	                         
+	                    	                          
 	                         result = result + '</div>';
 	                         result = result + '</div>';
 	                         result = result + '</div>';

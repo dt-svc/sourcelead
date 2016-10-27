@@ -244,8 +244,9 @@ public class SubmissionsRestController {
     	
     	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
     	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+    	 Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
     	
-    	 requirementSubmissionService.storeClientSubmission(requirementId, user, orgLocations, submissionsList);
+    	 requirementSubmissionService.storeClientSubmission(requirementId, user, orgLocations, submissionsList,loginOrg);
     	 
     	/* Workbook createExcelworkbook =  new XSSFWorkbook();
  		 Sheet createExcelsheet = createExcelworkbook.createSheet("submissions");
