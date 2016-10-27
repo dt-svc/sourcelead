@@ -144,7 +144,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		Boolean teamFlag = teamDao.getTeamOwnersListByUserId(user,loginOrgLocation.getId());
 		if(requirement.getManagerUserId().getId()!=user.getId()&& teamFlag){
 			for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
-				if(requirementAssignTo.getTeamId().getId()!=null){
+				if(requirementAssignTo.getTeamId()!=null){
 					Team team = teamDao.getTeamByTeamId(requirementAssignTo.getTeamId().getId());
 					if(team.getOwnerUserId().getId()==user.getId()){
 						List<TeamMembers> teamMembers =  teamMemberDao.getTeamMembersListByTeamID(requirementAssignTo.getTeamId().getId());
