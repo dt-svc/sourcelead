@@ -73,7 +73,18 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 
+	@Column(name = "INTERVIEW_STATUS", columnDefinition = "TEXT default NULL")
+	private String interviewStatus;
 	
+	
+	public String getInterviewStatus() {
+		return interviewStatus;
+	}
+
+	public void setInterviewStatus(String interviewStatus) {
+		this.interviewStatus = interviewStatus;
+	}
+
 	public Date getDateOfInterview() {
 		return dateOfInterview;
 	}
