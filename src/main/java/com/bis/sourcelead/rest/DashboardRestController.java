@@ -128,19 +128,48 @@ public class DashboardRestController {
 		return resultJson;
 	 }
 	 
-		@RequestMapping(value = "/getRequirementSubmissionsCount" , method = RequestMethod.GET)
-		 public @ResponseBody void getRequirementSubmissionsCount(HttpServletRequest request) throws Exception {
-			
+	@RequestMapping(value = "/getRequirementSubmissionsCount" , method = RequestMethod.GET)
+	public @ResponseBody void getRequirementSubmissionsCount(HttpServletRequest request) throws Exception {
+		
 
-		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			
-		    int reqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION");
-		    int reqinterviewscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"INTERVIEW");
-		    int reqOfferscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"OFFERMADE");
-			
-		   }
+	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+	    int reqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION");
+	    int reqinterviewscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"INTERVIEW");
+	    int reqOfferscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"OFFERMADE");
+		
+	   }
 
+	 
+	 /**
+	   * @author sarath kumar
+	   * @since  oct 26 2016
+	   * @version 0.0.1
+	   * 
+	   * This method is used to for getting CandidatesList By OrgLocationID
+	   * this method is called at onload when click on timesheet left menu
+	   * 
+	   * @param user This is the first parameter to getCandidatesListByOrgLocationID method
+	   * @param navigation This is the second parameter to getCandidatesListByOrgLocationID method
+	   * @param startDate This is the third parameter to getCandidatesListByOrgLocationID method
+	   *  
+	   * @return string 
+	   * 
+	   * @throws NullPointer
+	   */
+	 
+	 @RequestMapping(value = "/getAssignedRequirementApproverListByOrgLocationIDAndUserId")
+	 public String getAssignedRequirementApproverListByOrgLocationIDAndUserId(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
+
+		String resultJson;
+		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(),user.getId());
+		resultJson = commonUtil.toJSON(requirementList);
+		return resultJson;
+	 }
 	
 	
 

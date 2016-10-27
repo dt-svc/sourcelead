@@ -23,8 +23,4 @@ public interface RequirementDao {
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId,Long  userId) throws Exception;
 	
 	
-
-
-	
-	
 }

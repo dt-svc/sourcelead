@@ -1,3 +1,9 @@
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
+
 <div class="content-dashboard clearfix"> 
       <!-- Assigned Requirements -->
       <div class="clearfix dashboard-widget mb col-md-12">
@@ -9,42 +15,9 @@
       <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a>
         <div class="clearfix require_wrap_table dashboard-data">
         		 <div id="requirementList"></div>
-         <!--  <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Requirement</th>
-                <th>Client</th>
-                <th>Rate</th>
-                <th>Priority</th>
-                <th>Applicants</th>
-                <th>Shortlisted</th>
-                <th>Submited</th>
-                <th>Interviewd</th>
-                <th>Offered</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table> -->
-          <!-- Pagenation -->
-          <!-- <nav class="clearfix">
-            <ul id="paging" class="pagination pull-right">
-              <li><a href="#">Previous</a></li>
-              <li class="active"><a href="#">1</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li data-page="last"><a href="#">Next</a></li>
-            </ul>
-          </nav> -->
         </div>
       </div>
-      <!-- Pagenation Ends --> 
     </div>
-    <!-- Assigned Requirements Row Ends  -->
     
     
  <%-- 
@@ -84,17 +57,21 @@ function requirementList(){
 	                	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result = result +"    <th>Title</th>"; 
+	                     result = result +"    <th>ID</th>"; 
+	                     result = result +"    <th>Requirement</th>"; 
 	                     result = result +"    <th>Client</th>"; 
-	                     result = result +"    <th>Position type</th>"; 
-	                     result = result +"    <th>Location</th>"; 
-	                     result = result +"    <th>No.of<br> Positions</th>"; 
-	                     result = result +"    <th>Owner</th>"; 
-	                     result = result +"    <th>Status</th>"; 
-	                     result = result +"    <th>Release</th>"; 
+	                     result = result +"    <th>Rate</th>"; 
+	                     result = result +"    <th>Priority</th>"; 
+	                     result = result +"    <th>Applicants</th>"; 
+	                     result = result +"    <th>Shortlisted</th>"; 
+	                     result = result +"    <th>Submited</th>"; 
+	                     result = result +"    <th>Interviewd</th>"; 
+	                     result = result +"    <th>Offered</th>"; 
+	                     result = result +"    <th>Action</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
+	                     
 	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
@@ -127,6 +104,9 @@ function requirementList(){
 			                     result = result +"<td><div>--</div></td>";
  
 		                     }
+		                     result = result +"<td><div>--</div></td>";
+		                     result = result +"<td><div>--</div></td>";
+		                     result = result +"<td><div>--</div></td>";
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";
 	                     }
@@ -152,3 +132,18 @@ function requirementList(){
        }); 
   } 
 </script>   
+
+<script>
+function pagination(){ 
+    $('#requirementPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[1, 15, 20, -1], [1, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+            "sSearch": ""
+       }
+    } );
+}
+</script>

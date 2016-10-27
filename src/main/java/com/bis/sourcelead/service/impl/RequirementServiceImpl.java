@@ -163,15 +163,24 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			
 			if(jsonObj.has("state")){
-			requirement.setState(jsonObj.getString("state"));
-			location.append(jsonObj.getString("state"));
-			location.append(",");
+				if(!jsonObj.getString("state").isEmpty()){
+					requirement.setState(jsonObj.getString("state"));
+					location.append(jsonObj.getString("state"));
+					location.append(",");
+				}else{
+					location.append("--"+",");
+				}
+			
 			}
 			
-			if(jsonObj.has("city")){
-			requirement.setCity(jsonObj.getString("city"));
-			location.append(jsonObj.getString("city"));
-			location.append(",");
+			if (jsonObj.has("city")) {
+				if (!jsonObj.getString("state").isEmpty()) {
+					requirement.setCity(jsonObj.getString("city"));
+					location.append(jsonObj.getString("city"));
+					location.append(",");
+				} else {
+					location.append("--"+".");
+				}
 			}
 			
 			if(jsonObj.has("maxExp")){
@@ -984,14 +993,14 @@ public class RequirementServiceImpl implements RequirementService {
 				 globalVarsMap.put("Experience","--"); 
 			 }
 		 if(loginUser.getFirstName()+" "+loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()+" "+loginUser.getLastName())){
-			 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
+			 globalVarsMap.put("LoginUser",loginUser.getFirstName()+" "+loginUser.getLastName());
 			 }else{
-				 globalVarsMap.put("loginUserName","--"); 
+				 globalVarsMap.put("LoginUser","--"); 
 			 }
 		 if(loginUser.getUserType()!= null && !"".equalsIgnoreCase(loginUser.getUserType())){
-			 globalVarsMap.put("role", loginUser.getUserType());
+			 globalVarsMap.put("Role", loginUser.getUserType());
 			 }else{
-				 globalVarsMap.put("role","--"); 
+				 globalVarsMap.put("Role","--"); 
 			 }
 		 
 		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
@@ -1101,14 +1110,14 @@ public class RequirementServiceImpl implements RequirementService {
 
 
 	@Override
-	public void rejectedEmailScenario(User loginUser, User approverUser, Requirement requirement,
-			StringBuilder location, String requirementClientName, String client, String rejectedReason)
+	public void rejectedEmailScenario(User loginUser, User initiatorUser, Requirement requirement,
+			StringBuilder location,String rejectedReason)
 			throws Exception {
 
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(loginUser.getFirstName());
 		emailMessage.setLastName(loginUser.getLastName());
-		emailMessage.setToEmail(approverUser.getEmail());
+		emailMessage.setToEmail(initiatorUser.getEmail());
 		emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		emailMessage.setFromName(loginUser.getFirstName() + " " + loginUser.getLastName());
 
@@ -1124,9 +1133,9 @@ public class RequirementServiceImpl implements RequirementService {
 		} else {
 			globalVarsMap.put("loginUserName", "--");
 		}
-		if (approverUser.getFirstName() + " " + approverUser.getLastName() != null
-				&& !"".equalsIgnoreCase(approverUser.getFirstName() + " " + approverUser.getLastName()))  {
-			globalVarsMap.put("approverName", approverUser.getFirstName() + " " + approverUser.getLastName());
+		if (loginUser.getFirstName() + " " + loginUser.getLastName() != null
+				&& !"".equalsIgnoreCase(loginUser.getFirstName() + " " + loginUser.getLastName()))  {
+			globalVarsMap.put("approverName", loginUser.getFirstName() + " " + loginUser.getLastName());
 		} else {
 			globalVarsMap.put("approverName", "--");
 		}
@@ -1136,12 +1145,12 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("role", "--");
 		}
 		if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
-			globalVarsMap.put("requirementId-Name", requirement.getJobId());
+			globalVarsMap.put("requirementId-Name",requirement.getJobId()+"-"+requirement.getJobTitle());
 		} else {
 			globalVarsMap.put("requirementId-Name", "--");
 		}
 		if (loginUser.getUserName() != null && !"".equalsIgnoreCase(loginUser.getUserName()) ) {
-			globalVarsMap.put("jobInitiatorName", loginUser.getFirstName());
+			globalVarsMap.put("jobInitiatorName", initiatorUser.getFirstName());
 		} else {
 			globalVarsMap.put("jobInitiatorName", "--");
 		}

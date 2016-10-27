@@ -197,23 +197,7 @@ function timeSheetSubmissionStatusCount(){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 <%-- <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -229,7 +213,7 @@ function timeSheetSubmissionStatusCount(){
     
     	<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include>
 	    <div class="clearfix row mb"> 
-	   	 	 <jsp:include page="dashboardRequirementApprocals.jsp"></jsp:include>
+	   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
 	    	 <jsp:include page="dashboardInterviews.jsp"></jsp:include>
 	    </div>
 	    <div class="clearfix row mb"> 
@@ -241,4 +225,5 @@ function timeSheetSubmissionStatusCount(){
 	      <jsp:include page="dashboardRequirement.jsp"></jsp:include>
 	    </div>
 </section>
-<jsp:include page="masterFooter.jsp" /> --%>
+<jsp:include page="masterFooter.jsp" />
+ --%>
