@@ -1465,7 +1465,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 									
 									//send mail to assigned manager at time sheet submission
 									if(!actualTimeString.equalsIgnoreCase("0.0")){
-										sendEmailToManagerAtTimesheetSubmissions(timesheetSubmissions,loginUser,loginOrgLocation,loginOrgCode);
+										if(!"Draft".equalsIgnoreCase(status)){
+											sendEmailToManagerAtTimesheetSubmissions(timesheetSubmissions,loginUser,loginOrgLocation,loginOrgCode);
+										}
 									}
 								}
 								
@@ -1639,8 +1641,12 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	private void sendEmailToManagerAtTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions, User loginUser, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
 		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(timesheetSubmissions.getProjectMembers().getProjects().getId());
 		
+		
+		
 		for(ProjectApproverHierarchy approver : approverHierarchyList){
-				 
+				
+			if(!loginUser.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode()) && approver.getLevel() == Constants.LEVEL1){
+				
 			 User projectManager = userService.getUserById(approver.getApproverUserId().getId());
 			 //Employees emp = employeesService.getEmployeeByUserId(loginUser.getId());
 				
@@ -1702,6 +1708,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario);
 			
 		}
+	}
 	}
 	
 	public static boolean isNullOrEmpty(String str) {

@@ -19,8 +19,8 @@ public interface RequirementDao {
 	public List<Requirement> getJobTitleByJobTemplateStatusAndOrgLocationId(Long orgLocationId)throws Exception;
 
 	public List<RequirementAssignTo> getUserAssignJobCount(Long userId)throws Exception;
-
-
+	
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId,Long  userId) throws Exception;
 	
 	
 }

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -149,15 +150,23 @@ public class RequirementListRestController {
 						requirement.setManager(requirement.getManagerUserId().getFirstName()+" "+requirement.getManagerUserId().getLastName());	
 					}
 					
-				/*	if(requirement.getClientSubmissionTemplateId()!=null){
-						requirement.setClientSubmissionTemplate(requirement.getSubmissionTemplateId().getTemplateName());
-					}else{
-						requirement.setClientSubmissionTemplate(requirement.getSubmissionTemplateId().getTemplateName());
 
-					}*/
+					if(requirement.getSubmissionTemplateId()!=null){
+						requirement.setClientSubmissionTemplate(requirement.getSubmissionTemplateId().getTemplateName());
+					} 
+					
+					List<RequirementApproverHierarchy> list = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(Long.parseLong(requirementId));
+					
+					Integer highestLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(requirementId));
+					ArrayList<String> ar = new ArrayList<String>();
+					for(RequirementApproverHierarchy approverN :list ){
+						ar.add(approverN.getApproverUserId().getFirstName() +""+ approverN.getApproverUserId().getLastName());
+					}
+					requirement.setHighestLevel(highestLevel);
+					requirement.setApproverNames(ar);
+
 					resultJson = commonUtil.toJSON(requirement);
 			
-				
 				 
 			}
 			
