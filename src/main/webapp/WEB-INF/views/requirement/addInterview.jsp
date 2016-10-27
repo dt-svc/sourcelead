@@ -39,6 +39,8 @@ padding:0!important;
 function addInterview(requirementId){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
+	var clientSubmissions = '${clientSubmissions}';
+	 
 	var result = "";
 	result = result + '<div class="add_inter">';
 	result = result + '<form id="addInterview_form" name="addInterview_form" >';
@@ -67,7 +69,9 @@ function addInterview(requirementId){
 	result = result + '<div class="col-md-12 mt10">';
 	result = result + '<div class="ne-ch">';
 	result = result + '<label><input type="checkbox" name="notificationToApplicant" value="Y" checked="checked" ><b>Notify to Applicants</b></label>';
-	result = result + '<label><input type="checkbox" name="notificationToSpoc" value="Y" checked="checked"><b>Notify to Vendors</b></label>';
+	if(clientSubmissions == 'Y'){
+	   result = result + '<label><input type="checkbox" name="notificationToSpoc" value="Y" checked="checked"><b>Notify to Vendors</b></label>';
+	}
 	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" value="Y" onClick="showOthersDiv();"><b>Notify to Others</b></label>';
 	result = result + '</div>';
 	

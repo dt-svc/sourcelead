@@ -12,4 +12,7 @@ public interface RequirementInterviewDao {
 
 	RequirementInterview getRequirementInterviewById(String requirementInterviewId);
 
+	List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId,
+			Long orgLocationsId);
+
 }
