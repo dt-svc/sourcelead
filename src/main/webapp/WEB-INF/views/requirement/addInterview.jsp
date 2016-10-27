@@ -79,7 +79,7 @@ function addInterview(requirementId){
 	result = result + '</div>';
 	
 	result = result + '<div class="mb10 mt clearfix">';
-	result = result + '<strong class="clearfix col-md-12 mb">Remainder Before</strong>';
+	result = result + '<strong class="clearfix col-md-12 mb">Reminder Before</strong>';
 	result = result + '<div class="col-md-3">';
 	result = result + '<span>Hours</span>';
 	result = result + '<select class="form-control mt10" id="reminderHours" name="reminderHours">';
@@ -536,4 +536,3 @@ $(function(){
 </script>
 
 
-<jsp:include page="../masterFooter.jsp" />

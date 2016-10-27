@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,9 +34,11 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
+
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -315,8 +318,21 @@ public class SubmissionsRestController {
     	 String resultJson = null;
     	 
     	 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-    	 
-    	 resultJson = toJSON(submission);
+    	 String skillsList = "";
+			Set<CandidateSkills> candidateSkills = submission.getCandidate().getCandidateSkills();
+			int i = 0;
+			for(CandidateSkills skilss: candidateSkills){
+				if(i <= 5){
+					skillsList = skillsList+skilss.getName();
+					if(i != candidateSkills.size()-1){
+						skillsList = skillsList+",";
+					}
+				}
+				i++;
+			}
+			
+			submission.setSkillsList(skillsList);
+    	   resultJson = toJSON(submission);
 		 return resultJson;
     	
     }
