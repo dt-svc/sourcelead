@@ -55,7 +55,7 @@ public class EMailJobScheduler {
  * Fires at 7:00 PM Every Day	
  */
 //	@Scheduled(cron = "${emailJobScheduler.job.cron.expression}")
-	@Scheduled(cron = "0 30 19 ? * *")
+	@Scheduled(cron = "0 30 18 ? * *")
 	public void runEMailJobScheduler() {
 		logger.info("##########  E-Mail Job Scheduler started..! ##########");
 		try {
@@ -78,7 +78,7 @@ public class EMailJobScheduler {
 	/**
 	 * Fires on first Friday on every month emailJobScheduler.job.cron.everyfriday.expression
 	 */
-	@Scheduled(cron = "0 30 18 ? * FRI")
+/*	@Scheduled(cron = "0 30 18 ? * FRI")
 //	@Scheduled(cron = "${emailJobScheduler.job.cron.everyfriday.expression}")
 	public void runNotificationJobScheduler() {
 		String notificationJobSchedulerStatus = "";
@@ -103,5 +103,5 @@ public class EMailJobScheduler {
 			logger.error("ERROR in " + e.getMessage());
 		}
       
-    }
+    }*/
 }

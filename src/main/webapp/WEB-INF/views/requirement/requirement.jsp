@@ -168,6 +168,7 @@ $(document).ready(function() {
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Requirement List  </a>&raquo; Add Requirement </div>
   </section>
   <div class="content-area content-new clearfix">
+  <div id="loading"></div>
    <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
     <div class="form-horizontal req-dtls myForm row">
       <div class="clearfix">
@@ -300,7 +301,7 @@ $(document).ready(function() {
                     <option ${requirement.rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
                     <option ${requirement.rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-                    <option ${requirement.rateType  == 'others' ? 'selected' : ''}>Yearly</option>
+                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
               </div>
@@ -488,16 +489,17 @@ $(document).ready(function() {
 	                </div>
 	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
-	                  <select class="selectpicker"  id="clientRateType" name="clientRateType" field-name="Per" value="${requirement.clientRateType}">
-	                    <option value="">Per</option>
-	                    <option ${requirement.clientRateType  == '1hr' ? 'selected' : ''}>1hr</option>
-	                    <option ${requirement.clientRateType  == '2hr' ? 'selected' : ''}>2hr</option>
-	                    <option ${requirement.clientRateType  == '3hr' ? 'selected' : ''}>3hr</option>
-	                    <option ${requirement.clientRateType  == '4hr' ? 'selected' : ''}>4hr</option>
-	                    <option ${requirement.clientRateType  == 'Other' ? 'selected' : ''}>Other</option>
+	                 <select class="selectpicker"  id="clientRateType" value="${requirement.clientRateType}" name="clientRateType">
+	                    
+			                <option value="">Rate Per</option>
+		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+		                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+		                    <option ${requirement.clientRateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
+		                    <option ${requirement.clientRateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+		                    <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+		                    <option ${requirement.clientRateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
+		                    <option ${requirement.clientRateType  == 'others' ? 'selected' : ''}>Yearly</option>
 	                  </select>
-	                </div>
-	              </div>
            		</div>
               </div>
               <div class="form-group">
@@ -1263,7 +1265,8 @@ $(document).ready(function() {
                   <option>Client-2</option>
                   <option>Client-3</option>
                 </select> -->
-               <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId" data-validation = "required" field-name = "Application Form">
+               <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId"  data-validation="required"  field-name = "Application Form">
+
                     	<option value="">-- Select Form --</option>
 		                <c:forEach var="report" items="${submissionTempletesList}">
 					               <option value="${report.id}">${report.templateName}</option>
@@ -1352,16 +1355,6 @@ $(document).ready(function() {
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
-		
-		 var Rate = document.getElementById("clientRate").value; 
-		 alert("hello.....");
-		 if(Rate != null && Rate != ""){
-			 $('#clientRateType').removeAttr('data-validation-optional');
-			 $('#clientRateType').attr("data-validation","required"); 
-		 }else{
-			 $('#clientRateType').removeAttr('data-validation');
-			 $('#clientRateType').attr("data-validation-optional","true"); 
-		 }
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -1369,7 +1362,7 @@ $(document).ready(function() {
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		
-		var rate = document.getElementById("rate").value; 
+		/* var rate = document.getElementById("rate").value; 
 		 if(rate != null && rate != ""){
 			 $('#rateType').removeAttr('data-validation-optional');
 			 $('#rateType').attr("data-validation","required"); 
@@ -1377,7 +1370,7 @@ $(document).ready(function() {
 			 $('#rateType').removeAttr('data-validation');
 			 $('#ratePer').attr("data-validation-optional","true"); 
 		 }
-		
+		 */
 		  if ($('#requirement_form').validate(false, validationSettings)){  
 			var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -1386,7 +1379,9 @@ $(document).ready(function() {
       		var formData = new FormData(form); 
 			  //It will escape all the special characters
 			var sourceleadUrl = '${sourceleadUrl}';
-			
+			$( "#submitForApproval" ).addClass('button').val('Processing..');
+     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		
 			$.ajax({
 						type : "POST",
 		        	    data: formData,

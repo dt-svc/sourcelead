@@ -35,5 +35,9 @@ public interface RequirementSubmissionService {
 	
 	void storeClientSubmission(Long requirementId, User user, OrgLocations loginOrgLocation,String submissionIds) throws Exception;
 	
+	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus);
+	
+
+	List<RequirementSubmission> getRequirementPerCandidate(Long candudateId) throws Exception;
 
 }

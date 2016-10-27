@@ -19,5 +19,7 @@ public interface CandidateDao {
 	public Candidate findByCandidateEmail(String email,Long orgLocationId) throws Exception;
 	
 	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId) throws Exception;
+
+	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId);
 	
 }

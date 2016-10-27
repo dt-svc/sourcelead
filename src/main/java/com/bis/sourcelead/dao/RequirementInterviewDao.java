@@ -6,4 +6,6 @@ public interface RequirementInterviewDao {
 	
 	RequirementInterview storeRequirementInterview(RequirementInterview requirementInterview)throws Exception;
 
+	RequirementInterview getRequirementInterviewById(String requirementInterviewId);
+
 }
