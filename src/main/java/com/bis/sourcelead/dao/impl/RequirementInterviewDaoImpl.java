@@ -74,6 +74,7 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 	}
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })	
 	public List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId,Long orgLocationsId) {
 		logger.debug("In RequirementInterviewDaoImpl class getRequirementInterviewsBySubmissionIdAndOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
