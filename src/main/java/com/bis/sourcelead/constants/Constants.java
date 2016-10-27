@@ -67,6 +67,8 @@ public class Constants {
 	public static String VENDOR_INTERVIEW = "Vendors Interview";
 	public static String VENDOR_INVITATION = "Vendor Invitation";
 	
+	public static String SHORTLIST_APPLICANTS = "ShortList Applicants";
+	
 	public static String MAIL_PROJECT_MANAGER_TIMESHEET = "Mail To Manager At Timesheet Submission";
 	public static String MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET = "Timesheet Approved By Approver";
 	public static String MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET = "Timesheet Rejected By Approver";
