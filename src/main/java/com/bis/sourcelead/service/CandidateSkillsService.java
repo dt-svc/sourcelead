@@ -49,5 +49,7 @@ public interface CandidateSkillsService {
 	 * @throws Exception
 	 */
 	public List<CandidateSkills> getCandidateSkillsByCandidateId(String candidateId) throws Exception;
+
+	public List<CandidateSkills> getSkillByCandidateId(Long candidateId) throws Exception;
 		
 }

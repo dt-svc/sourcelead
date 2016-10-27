@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -64,6 +66,9 @@ public class RequirementApproverHierarchy {
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	private ArrayList<String> approverNames;
 
 	public Long getId() {
 		return id;
@@ -79,6 +84,14 @@ public class RequirementApproverHierarchy {
 
 	public void setLevel(Integer level) {
 		this.level = level;
+	}
+
+	public ArrayList<String> getApproverNames() {
+		return approverNames;
+	}
+
+	public void setApproverNames(ArrayList<String> approverNames) {
+		this.approverNames = approverNames;
 	}
 
 	public Requirement getRequirementId() {
