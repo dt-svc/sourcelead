@@ -117,7 +117,6 @@ function getSubmissionDetailsSideBar(submissionId,candidateId){
 		       result = result + '<li><a href="#tabb-4" onclick="employeeSubmissionDetails('+candidateId+');">Employer</a></li>';
 		       result = result + '<li><a href="#tabb-5" onclick="educationSubmissionDetails('+candidateId+');">Education</a></li>';
 		       result = result + '<li><a href="#tabb-6" onclick="certificationSubmissionDetails('+candidateId+');">Certifications</a></li>';
-		       result = result + '<li><a href="#tabb-7">Activities</a></li>';
 		       result = result + '<div class="clearfix"></div>';
 		       result = result + '</ul>';
 		       result = result + '<div class="project_tabs">';
