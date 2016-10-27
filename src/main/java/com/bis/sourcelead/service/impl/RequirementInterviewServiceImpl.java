@@ -457,6 +457,43 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
 		 
+	}
+
+
+	@Override
+	public List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception {
+		List<RequirementInterview> customerInterviewList = null;
+		customerInterviewList = requirementInterviewDao.getCustomerInterviewsBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
+		if (customerInterviewList != null && !customerInterviewList.isEmpty() ) {
+			for (RequirementInterview requirementInterview : customerInterviewList) {
+				if(requirementInterview.getRemainedBefore() != null && !requirementInterview.getRemainedBefore().isEmpty()){
+					Integer hours = (Integer.parseInt(requirementInterview.getRemainedBefore()) / 60);
+					Integer minutes = (Integer.parseInt(requirementInterview.getRemainedBefore()) % 60);
+				    requirementInterview.setRemainderTime(hours + " : " + minutes + " minutes");
+				}
+				
+			    if(requirementInterview.getDateOfInterview() != null){
+			    	requirementInterview.setDateOfInterviewStr(Constants.DMY.format(requirementInterview.getDateOfInterview()));
+			    }
+			    
+			    String InterviewersList = "";
+				Set<RequirementInterviewer> Interviewers = requirementInterview.getRequirementInterviewers();
+				int i = 0;
+				for(RequirementInterviewer interviewer: Interviewers){
+					if(i <= 50){
+						InterviewersList = InterviewersList+interviewer.getInterviewerUser().getFirstName()+" "+interviewer.getInterviewerUser().getLastName();
+						if(i != Interviewers.size()-1){
+							InterviewersList = InterviewersList+",";
+						}
+					}
+					i++;
+				}
+				requirementInterview.setInterviewersList(InterviewersList);
+			}
+		}
+		return customerInterviewList;
+		
+		
 	}	
 
 }

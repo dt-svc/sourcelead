@@ -19,7 +19,10 @@ public interface RequirementInterviewService {
 
 	RequirementInterview getRequirementInterviewById(String requirementInterviewId);
 
-	void saveRequirementInterview(RequirementInterview requirementInterview) throws Exception;;
+	void saveRequirementInterview(RequirementInterview requirementInterview) throws Exception;
+
+
+	List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long id) throws Exception;;
 
 	
 

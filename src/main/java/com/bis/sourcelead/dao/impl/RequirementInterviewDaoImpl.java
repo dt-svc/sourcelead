@@ -72,5 +72,15 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 		
 		return interviewsList;
 	}
+
+	@Override
+	public List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId,Long orgLocationsId) {
+		logger.debug("In RequirementInterviewDaoImpl class getRequirementInterviewsBySubmissionIdAndOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementInterview interview where interview.submissionId.id = :submissionId and interview.submissionId.vendorLocationId.id = :orgLocationsId ";
+		List<RequirementInterview> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		
+		return interviewsList;
+	}
 	
 }
