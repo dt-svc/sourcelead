@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import javax.mail.Authenticator;
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -19,6 +21,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,8 +30,10 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailNotification;
 import com.bis.sourcelead.entity.EmailRecipient;
+import com.bis.sourcelead.entity.SubmissionXls;
 import com.bis.sourcelead.service.EmailMessageService;
 import com.bis.sourcelead.service.EmailNotificationService;
+import com.bis.sourcelead.service.SubmissionXlsService;
 
 /**
  * 
@@ -41,17 +46,25 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	@Autowired
 	EmailNotificationService emailNotificationService;
 	
+	@Autowired
+	SubmissionXlsService  submissionXlsService;
+	
 	@Override
 	public String sendEmail(EmailMessage emailMessage, ArrayList<EmailRecipient> emailRecipientList, List<EmailAttachment> attachmentList) throws Exception {
 		if(emailMessage != null)
 		{
-			    // store to db with send flag false
-			    Long emailNotificationd = storeEmailInfoInDB(emailMessage,emailRecipientList);
-				
-			    sendMessage(emailMessage,emailRecipientList,attachmentList);
+			Long emailNotificationd = null;
+			if(null == attachmentList){
+				emailNotificationd = storeEmailInfoInDB(emailMessage,emailRecipientList);
+			}
 			    
-			 // update send flag true if the no exception, to Email Value
-				updateEmailInfoWithDeliveryStatus(emailNotificationd);
+				
+			 sendMessage(emailMessage,emailRecipientList,attachmentList);
+			    
+		 // update send flag true if the no exception, to Email Value
+		    if(null == attachmentList){
+		    	updateEmailInfoWithDeliveryStatus(emailNotificationd);
+		    }
 		}
 		return "success";
 	}
@@ -90,6 +103,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			message.setFrom(new InternetAddress("qatimesheets@microinfoinc.com", emailMessage.getFromName()));
 			
             ArrayList<String> recipientList = new ArrayList<String>();
+            String UUID = null;
 			
 			for(EmailRecipient recipient : emailRecipientList){
 				recipientList.add(recipient.getEmail());
@@ -106,23 +120,36 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			message.setSubject(emailMessage.getSubject());
 			
 			
+			if(attachmentList.size() > 0){
+				for(EmailAttachment attachment : attachmentList){
+					UUID = attachment.getName();
+					
+					 SubmissionXls xls = submissionXlsService.getSubmissionXlsByUUID(UUID);
+			         
+			         DataSource dataSource = new ByteArrayDataSource(xls.getDocFile(), "application/pdf");
+			         MimeBodyPart xlsBodyPart = new MimeBodyPart();
+			         xlsBodyPart.setDataHandler(new DataHandler(dataSource));
+			         xlsBodyPart.setFileName(xls.getFileName());
+
+			         MimeMultipart mimeMultipart = new MimeMultipart();
+			         mimeMultipart.addBodyPart(xlsBodyPart);
+			         
+			         message.setContent(mimeMultipart);
+					 Transport.send(message);
+					
+				}
+			}else{
+				 BodyPart messageBodyPart = new MimeBodyPart();
+		         messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
+		         Multipart multipart = new MimeMultipart();
+		         multipart.addBodyPart(messageBodyPart);
+				
+		         
+		         
+		         message.setContent(multipart);
+				 Transport.send(message);
+			}
 			
-	         BodyPart messageBodyPart = new MimeBodyPart();
-	         messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
-	         Multipart multipart = new MimeMultipart();
-	         multipart.addBodyPart(messageBodyPart);
-			
-	         
-	         
-	        /* messageBodyPart = new MimeBodyPart();
-	         String filename = "C:/Users/BIS94/Desktop/EmployeesServiceImpl.java";
-	         DataSource source = new FileDataSource(filename);
-	         messageBodyPart.setDataHandler(new DataHandler(source));
-	         messageBodyPart.setFileName("Java File");
-	         multipart.addBodyPart(messageBodyPart);*/
-	         
-	         message.setContent(multipart);
-			 Transport.send(message);
 
 			System.out.println("Done");
 
