@@ -185,14 +185,19 @@ public class RequirementReleaseRestController {
 			                                    @RequestParam(value="vendorIds", required=false) String vendorIds,
 			                                    HttpServletRequest request) throws Exception {
 			
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	String releasetype = null;
 			Requirement parentRequirement = requirementService.getRequirementByRequirementId(requirementId);
 			String[] contacts = contactsIds.split(",");
 			if(contacts != null &&  contacts.length>0 && contacts[0] != null && contacts[0] != "" ){
 				for(String contact   : contacts){
+						releasetype = Constants.CONTACTS;
 						OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(contact));
 						Requirement requirement  = new Requirement();
 						releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc);
+						requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype);
+
 				}
 			}	
 			
@@ -206,7 +211,10 @@ public class RequirementReleaseRestController {
 					    Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(requirementId, orgSpoc.getId());
 					    if(isJobReleased.toString().equalsIgnoreCase("false")){
 					    	Requirement requirement  = new Requirement();
+					    	releasetype = Constants.VENDORSTYPE;
 							releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc);
+							requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype);
+
 					    }
 					}
 				}
@@ -243,6 +251,14 @@ public class RequirementReleaseRestController {
 		
 		requirement.setSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
 		requirement.setClientSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
+		
+		if(parentRequirement.getClientSubmissionTemplateId()!=null){
+			requirement.setClientSubmissionTemplateId(parentRequirement.getClientSubmissionTemplateId());
+		}
+		if(parentRequirement.getSubmissionTemplateId()!=null){
+			requirement.setSubmissionTemplateId(parentRequirement.getSubmissionTemplateId());
+		}
+		
 		
 		requirement.setStatus(Constants.TEAM_ACTIVE);
 		requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.NEW);

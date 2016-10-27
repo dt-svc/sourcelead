@@ -4,6 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+ <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
  
  
  
@@ -719,7 +720,8 @@ $(document).ready(function() {
       
       <!-- Addede by Rajashekar -->
       <div id="tab-3" class="project_tabs_inn">
-              <div class="timesheet_head candidateHead recruitmentHead">
+      <div id="recommendationsList"></div>
+              <!-- <div class="timesheet_head candidateHead recruitmentHead">
                 <div class="rec_head"></div>
               </div>
               <div class="require_wrap_table recommend_table">
@@ -837,7 +839,7 @@ $(document).ready(function() {
                   <li data-page="last"><a href="#">Next</a></li>
                 </ul>
                 <div class="clearfix"></div>
-              </nav>
+              </nav> -->
             </div>            
             
           </div>
@@ -924,7 +926,7 @@ $(document).ready(function() {
 	
 // project side bar
 $(document).ready(function() {
-    $(".proj_show").click(function(){
+    $(".`	").click(function(){
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
@@ -1356,7 +1358,7 @@ function requirementDetails(requirementId){
 					         else{
 					           	 result = result +'   <textarea placeholder="Enter description"> NO DATA</textarea>';
 				    	        }
-				            result = result +'   <h2> Details:</h2>';
+				            result = result +'   <h2> Requirement Details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            if(json.positions != null && json.positions != '' && json.positions != 'undefined'){
 				            result = result +'     <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>'+json.positions+'</span>';
@@ -1471,11 +1473,12 @@ function requirementDetails(requirementId){
 				            	}
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
-				            if(json.isClientJob  == 'N'){
+				            
 				            result = result +'   <h2>Internal details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            //result = result +'     <div class="require_wrap_details_cta"> <b>Manager:</b> <span>Manager</span>';
 				            result = result +'       <div class="clearfix"></div>';
+				            if(json.isClientJob  == 'N'){
 				            if(json.clientSubmissionTemplate != '' && json.clientSubmissionTemplate != null && json.clientSubmissionTemplate != 'undefined'){
 					            result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span>'+json.clientSubmissionTemplate+'</span>';
 					            }
@@ -1483,8 +1486,55 @@ function requirementDetails(requirementId){
 						        result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span> --- </span>';
 	  	
 					            }
-				            result = result +'     </div>';
 				            }
+				            result = result +'     </div>';
+				            if(json.highestLevel == '1'){
+				            	result = result +'<div class="require_wrap_details_cta"> <b>Approvers:</b> <span>';
+				            	for (var i=0; i<json.approverNames.length; i++)
+				   				{
+				            	    if(json.approverNames[i] == json.approverNames[0]){
+				            	    	result = result +json.approverNames[i]; 
+				            	    }else{
+				            	    	result = result +","+json.approverNames[i]; 
+				            	    }
+				   				}
+				            	result = result +'</span>';
+				            	result = result +'</div>';
+				            }else{
+				            	for (var i=0; i<json.approverNames.length; i++)
+				   				{
+				            		var level = 1;
+					            	for (var i=0; i<json.approverNames.length; i++)
+					   				{
+					            		result = result +'<div class="require_wrap_details_cta"> <b>Approvers '+level+':</b> <span>'; 
+					            		result = result +json.approverNames[i];
+					            		result = result +'</span>';
+					            		result = result +'</div>';
+					            		level = level+1;
+					   				}
+					            	
+				   				}
+				            } 
+				            
+				            
+				           /*  if(json.approverNames != null && json.approverNames != '' && json.approverNames != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Approver1:</b> <span>'+json.approverNames+'</span>';
+					            }
+					            else{
+					            result = result +'<div class="require_wrap_details_cta"> <b>Approver1:</b> <span> -- </span>';	
+					            }	
+				            result = result +'       <div class="clearfix"></div>';
+				            result = result +'     </div>';
+				            if(json.approverNames != null && json.approverNames != '' && json.approverNames != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Approver2:</b> <span>'+json.approverNames+'</span>';
+					            }
+					            else{
+					            result = result +'<div class="require_wrap_details_cta"> <b>Approver2:</b> <span> -- </span>';	
+					            }	 */
+				            
+				            
+				            
+				            
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="clearfix"></div>';
@@ -2023,7 +2073,7 @@ function requirementPipeline(requirementId){
 						    	     }
 						           
 						           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.id+'\"></a>'+report.resumeName+'</span></div></td>';
+						        	   result = result + '         <td><div><span><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;</a>'+report.resumeName+'</span></div></td>';
 							           }
 							       else{
 							    	   result = result + '         <td><div>--</div></td>';
@@ -2248,7 +2298,75 @@ function assignedMemberList(requirementId){
 
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
-	alert("Hai"+requirementId);
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  $.ajax({
+    type : "POST",
+     url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
+     success :function(data) { 
+    	 var json = JSON.parse(data);
+    	    var result = '';
+    	    result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
+		    result = result +'<div class="rec_head"></div>';
+		    result = result +'</div>';
+		    result = result +'<div class=" project_tabs_inn_table vendor_wrap_inn_table">';
+		    result = result +'<table id="recommendationTable" class="display" cellspacing="0" width="100%"">';
+		    result = result +'<thead>';
+		    result = result +'<tr>';
+		    result = result +'<th>Name</th>';
+		    result = result +'<th>Ph. No</th>';
+		    result = result +'<th>Resume</th>';
+		    result = result +'<th>Number of req</th>';
+		    result = result +'<th>Score</th>';
+		    result = result +'<th>Action</th>';
+		    result = result +'</tr>';
+		    result = result +'</thead>';
+		    result = result +'<tbody>';
+    	 for (var i=0; i<json.length; i++)
+			{
+		    var report = json[i];
+		    result = result +'<tr>';
+		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		    result = result +'<td><div><span>'+report.mobilePhone+'</span></div></td>';
+		    result = result +'<td><div><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><b class="glyphicon glyphicon-list-alt">&nbsp;'+report.candidateResume+'</b></a></div></td>';
+		    result = result +'<td><div><span>'+report.noOfReq+'</span></div></td>';
+		    result = result +'<td><div><span>'+report.candidateScore+'%</span></div></td>';
+		    result = result +'<td><div><span>';
+		    result = result +'<select>';
+		    result = result +'<option>Interview</option>';
+		    result = result +'<option>Submit</option>';
+		    result = result +' <option>Joined</option>';
+		    result = result +'<option>Screening</option>';
+		    result = result +'<option>Offer</option>';
+		    result = result +'</select>';
+		    result = result +'</span></div>';
+		    result = result +'</td>';
+		    result = result +'</tr>';
+		   
+			}
+    	    result = result +'</tbody>';
+		    result = result +' </table>';
+		    result = result +'</div>';
+		    $("#recommendationsList").empty();
+			$("#recommendationsList").append(result); 
+			recommendationpagination();
+           },
+             
+        }); 
+}
+</script>
+
+<script>
+function recommendationpagination(){  
+    $('#recommendationTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
 }
 </script>
 

@@ -71,4 +71,12 @@ public class CandidateSkillsDaoImpl  implements CandidateSkillsDao{
 		return candidateSkills;
 	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateSkills> getSkillByCandidateId(Long candidateId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from CandidateSkills candidateSkills where candidateSkills.candidateId.id = :candidateId" ;
+		return session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list(); 
+	}
 }
