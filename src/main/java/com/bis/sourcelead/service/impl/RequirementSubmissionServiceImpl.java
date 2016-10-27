@@ -72,8 +72,13 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	@Override
-	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId,Long requirementId) throws Exception {
-		return requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocationsId,requirementId);
+	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId,Long requirementId, List<Long> existingApplicantsIds) throws Exception {
+		return requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocationsId,requirementId,existingApplicantsIds);
+	}
+	
+	@Override
+	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(Long orgLocationsId,Long requirementId, List<Long> existingApplicantsIds) throws Exception {
+		return requirementSubmissionDao.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocationsId,requirementId,existingApplicantsIds);
 	}
 
 	
@@ -152,6 +157,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					if(jsonObj.has("Designation") && !isNullOrEmpty(jsonObj.getString("Designation"))){
 						candidate.setDesignation(jsonObj.getString("Designation"));
 					}
+					 if(jsonObj.has("WorkExperience") && !isNullOrEmpty(jsonObj.getString("WorkExperience"))){
+						 candidate.setExperienceYears(jsonObj.getString("WorkExperience"));
+					 }
 					candidate.setCreatedBy(user.getUserCode());
 					candidate.setCreatedDate(new Date());
 					candidate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -301,6 +309,133 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Override
 	public List<RequirementSubmission> getSubmissionsByRequirementId(Long requirementId,User user, OrgLocations loginOrgLocation) throws Exception {
 		return requirementSubmissionDao.getSubmissionsByRequirementId(requirementId,user, loginOrgLocation);
+	}
+
+	@Override
+	public List<RequirementSubmission> getAllSubmissionListByRequirementIdAndSubmissionStage(Long orgLocationsId,
+			Long requirementId,String submissionStatus) throws Exception {
+		return requirementSubmissionDao.getAllSubmissionListByRequirementIdAndSubmissionStage(orgLocationsId, requirementId, submissionStatus);
+	}
+
+	@Override
+	public void storeClientSubmission(Long requirementId, User user, OrgLocations loginOrgLocation,
+			String submissionIds) throws Exception {
+		
+		 String[] submissionId = submissionIds.split(",");
+    	 Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
+		 requirement.setId(requirementId);
+    	 for(int i=0; i < submissionId.length; i++){
+    		 RequirementSubmission submission = requirementSubmissionDao.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
+    		 RequirementSubmission clientSubmission = new RequirementSubmission();
+    		 
+    		 if(requirement.getParentRequirement() != null){
+    			 clientSubmission.setRequirement(requirement.getParentRequirement());
+    			 clientSubmission.setOrgLocations(requirement.getParentRequirement().getOrgLocationId());
+        	 }else{
+        		 clientSubmission.setRequirement(requirement);
+        		 clientSubmission.setOrgLocations(loginOrgLocation);
+        	 }
+    		 clientSubmission.setCandidate(submission.getCandidate());
+    		 clientSubmission.setCandidateResumes(submission.getCandidateResumes());
+    		 clientSubmission.setSourceSubmission(submission);
+    		 clientSubmission.setSubmissionTemplateJsonString(submission.getSubmissionTemplateJsonString());
+    		 clientSubmission.setSubmissionTemplateJsonStringValue(submission.getSubmissionTemplateJsonStringValue());
+    		 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+    		 clientSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
+    		 clientSubmission.setCreatedDate(new Date());
+    		 clientSubmission.setCreatedBy(user.getUserCode());
+    		 requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
+    		 
+    		 RequirementSubmissionTemplateFields templateFields = requirementSubmissionTemplateFieldsDao.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submission.getId());
+    		 
+    		 RequirementSubmissionTemplateFields clientSubmissionFields = new RequirementSubmissionTemplateFields();
+    		 clientSubmissionFields.setRequirementSubmission(clientSubmission);
+    		
+    		 if(!isNullOrEmpty(templateFields.getFirstName())){
+    			 clientSubmissionFields.setFirstName(templateFields.getFirstName()); 
+    		 }
+    		 
+    		 if(!isNullOrEmpty(templateFields.getLastName())){
+    			 clientSubmissionFields.setLastName(templateFields.getLastName()); 
+    		 }
+    		 
+    		 if(!isNullOrEmpty(templateFields.getPhoneNumber())){
+    			 clientSubmissionFields.setPhoneNumber(templateFields.getPhoneNumber()); 
+    		 }
+    		 
+    		 if(!isNullOrEmpty(templateFields.getAlternateNumber())){
+    			 clientSubmissionFields.setAlternateNumber(templateFields.getAlternateNumber()); 
+    		 }
+    		 
+    		 if(!isNullOrEmpty(templateFields.getEmailId())){
+    			 clientSubmissionFields.setEmailId(templateFields.getEmailId()); 
+    		 }
+    		 
+    		 if(!isNullOrEmpty(templateFields.getCountry())){
+    			 clientSubmissionFields.setCountry(templateFields.getCountry()); 
+    		 }
+    		 
+    		 if(!isNullOrEmpty(templateFields.getState())){
+    			 clientSubmissionFields.setState(templateFields.getState()); 
+    		 }
+    		 
+    		 if(!isNullOrEmpty(templateFields.getCity())){
+    			 clientSubmissionFields.setCity(templateFields.getCity()); 
+    		 }
+    		 
+    		 if(null != templateFields.getDateOfBirth()){
+    			 clientSubmissionFields.setDateOfBirth(templateFields.getDateOfBirth()); 
+    		 }
+    		 
+    		 if(!isNullOrEmpty(templateFields.getCurrentORLastCompany())){
+    			 clientSubmissionFields.setCurrentORLastCompany(templateFields.getCurrentORLastCompany()); 
+    		 }
+    		 
+    		 if(!isNullOrEmpty(templateFields.getDesignation())){
+    			 clientSubmissionFields.setDesignation(templateFields.getDesignation()); 
+    		 }
+    		 
+    		 if(!isNullOrEmpty(templateFields.getEducation())){
+    			 clientSubmissionFields.setEducation(templateFields.getEducation()); 
+    		 }
+    		 
+    		 if(!isNullOrEmpty(templateFields.getWorkExperience())){
+    			 clientSubmissionFields.setWorkExperience(templateFields.getWorkExperience()); 
+    		 }
+    		 
+    		 if(!isNullOrEmpty(templateFields.getCurrentCTC())){
+    			 clientSubmissionFields.setCurrentCTC(templateFields.getCurrentCTC()); 
+    		 }
+    		 
+    		 if(!isNullOrEmpty(templateFields.getExpectedCTC())){
+    			 clientSubmissionFields.setExpectedCTC(templateFields.getExpectedCTC()); 
+    		 }
+    		 
+    		 if(!isNullOrEmpty(templateFields.getNoticePeriod())){
+    			 clientSubmissionFields.setNoticePeriod(templateFields.getNoticePeriod()); 
+    		 }
+    		 
+    		 clientSubmissionFields.setStatus(Constants.CANDIDATE_ACTIVE);
+    		 clientSubmissionFields.setCreatedBy(user.getUserCode());
+    		 clientSubmissionFields.setCreatedDate(new Date());
+    		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(clientSubmissionFields);
+    		 
+    		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT);
+    		 submission.setUpdatedBy(user.getUserCode());
+    		 submission.setUpdatedDate(new Date());
+    		 requirementSubmissionDao.storeRequirementSubmission(submission);
+    		 
+    	 }
+		
+	}
+
+	@Override
+	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId, String submissionStatus) {
+		return requirementSubmissionDao.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(orgLocationsId,submissionStatus);
+	}
+
+	public List<RequirementSubmission> getRequirementPerCandidate(Long candudateId) throws Exception {
+		return requirementSubmissionDao.getRequirementPerCandidate(candudateId);
 	}
 
 }

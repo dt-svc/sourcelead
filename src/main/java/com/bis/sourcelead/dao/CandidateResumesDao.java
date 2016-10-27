@@ -18,4 +18,6 @@ public interface CandidateResumesDao {
 	
 	public CandidateResumes getCandidateResumeByResumeId(Long resumeId) throws Exception;
 
+	public CandidateResumes getCandidateLatesResumes(Long candidateId, int status)throws Exception;
+
 }

@@ -27,4 +27,9 @@ public class SourceLeadRandomCodeHelper {
 		String UUID = RandomStringUtils.randomAlphabetic(15);
 		return UUID;
 	}
+	
+	public static String generateSubmissionXlsRandomCode() {
+		String xlsCode = RandomStringUtils.randomNumeric(4);
+		return xlsCode;
+	}
 }

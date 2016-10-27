@@ -1,13 +1,17 @@
 package com.bis.sourcelead.service;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -30,7 +34,29 @@ public interface RequirementService {
 	public List<Requirement> getJobTitleByJobTemplateStatusAndOrgLocationId(Long orgLocationId)throws Exception;
 
 	public List<RequirementAssignTo> getUserAssignJobCount(Long userId) throws Exception;
-
 	
+	public void  approverEmailScenario(User user,User approverUser,Requirement requirement, StringBuilder location) throws Exception;
+
+	public void  approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location) throws Exception;
+	
+	public void acceptEmailScenario(User loginUser, User approverUser, Requirement requirement) throws Exception;
+	
+	public void mailRequirementtoManager(User loginUser, User intiatorUser, Requirement requirement,StringBuilder location) throws Exception;
+	
+	public void AssignToTeamMembersEmail(User loginUser, User managerUser, Requirement requirement,StringBuilder location) throws Exception;
+
+	void rejectedEmailScenario(User loginUser, User initiatorUser, Requirement requirement,
+			StringBuilder location,String rejectedReason) throws Exception;
+
+	void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc, OrgLocations loginOrgLocation,String releasetype) throws Exception;
+
+
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId,Long  userId) throws Exception;
+
+	public List<Candidate> getRecommendationsWithScore(List<Candidate> candidateList, Requirement requirement)throws Exception;
+
+
+
+
 	
 }

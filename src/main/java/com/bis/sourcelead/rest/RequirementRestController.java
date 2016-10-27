@@ -1,5 +1,9 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,18 +22,26 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.service.CandidateResumesService;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -68,6 +80,11 @@ public class RequirementRestController {
 	 @Autowired
 	 CommonUtil commonUtil;
 	 
+	 @Autowired
+	 private CandidateService candidateService;
+	 
+	 
+	 
 	
 	/**
 	 * @author prasad k
@@ -101,6 +118,7 @@ public class RequirementRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Requirement requirement = requirementService.storeRequirement(jsonObj,orgLocation,user,multiFile);
+		
 		return "success";
 		
 	}
@@ -126,11 +144,11 @@ public class RequirementRestController {
 	public @ResponseBody String requirementAcceptOrReject(@RequestParam(value = "requirementId", required = false) Long requirementId,@RequestParam(value = "status", required = false)  String status, @RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception {
 		
 	 
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, user.getId());
+		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
 	    
 		// to get  RequirementApproverHierarchy with maximum Level
 		Integer maxLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirementId);
@@ -139,9 +157,21 @@ public class RequirementRestController {
 		    if(maxLevel!=null){
 		    	 if(maxLevel == requirementApproverHierarchy.getLevel()){
 		    		 requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.APPROVED);
-				   } 
+				   }else{
+				    	List<RequirementApproverHierarchy> list1  =  requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
+				    	for(RequirementApproverHierarchy rah :list1){
+				    		if(maxLevel.equals(rah.getLevel())){
+								User approverUser = userService.getUserById(rah.getApproverUserId().getId());
+								requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null);
+							   } 
+				    	} 
 		    }
+  }
+		    
 			requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+			User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
+			requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement);
+			
 		}
 		if(status.equalsIgnoreCase("REJECTED")){
 			 if(maxLevel!=null){
@@ -149,8 +179,12 @@ public class RequirementRestController {
 		    		 requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
 				   }
 		    }
+			 
 			requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 			requirementApproverHierarchy.setRejectedReason(reason);
+			
+			User initiatorUser = userService.getUserByUserCode(requirement.getCreatedBy()); 
+			requirementService.rejectedEmailScenario(loginUser, initiatorUser, requirement,null,reason); 
 		}
 		requirementService.addRequirement(requirement);
 		requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
@@ -245,6 +279,27 @@ public class RequirementRestController {
 		resultJson = commonUtil.toJSON(teamsList);
 		return resultJson;
 	}
-	
-	
+	/**
+	 * @author Rajashekar
+	 * Recommendations 
+	 * @param requirementId
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/getRequirementRecommendationsByRequirementId", method = RequestMethod.POST)
+	public @ResponseBody String getRequirementRecommendationsByRequirementId(@RequestParam(value="requirementId",required = false) Long requirementId,HttpServletRequest request) throws Exception {
+		String resultJson;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Candidate> candidateList = candidateService.getAllCandidatesByLocation(orgLocation.getId());
+		
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		
+		List<Candidate> candidateListCopy = requirementService.getRecommendationsWithScore(candidateList,requirement);
+		
+		resultJson = commonUtil.toJSON(candidateListCopy);
+		return resultJson;
+		
+	}
 }

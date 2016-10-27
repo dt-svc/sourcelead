@@ -1,7 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,11 +78,23 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 	public TeamMembers saveTeamMembersByJsonData(JSONObject jSONObject,Long teamId) throws Exception {
 		
 		TeamMembers teamMembers = new TeamMembers();
-		String  userList = jSONObject.getString("memberUserId");
+		
+		
+		String  userList = null;
+  	  try{
+  		   JSONArray jsonArray = jSONObject.getJSONArray("memberUserId");
+  		 userList = jsonArray.toString();
+  	  }
+  	  catch(JSONException e){
+  		userList= jSONObject.getString("memberUserId");
+  	  }
 		userList = userList.replaceAll("\\[", "").replaceAll("\\]","");
 		userList = userList.replaceAll("\"", "");
 		String[] usersIds = userList.split(",");
-		for(int i=0;usersIds[0].length() >= i ;i++){
+		
+		
+		
+		for(int i=0; i < usersIds.length  ;i++){
 			User user = new User();
 			user.setId(Long.parseLong(usersIds[i]));
 			teamMembers.setMemberUserId(user);
@@ -93,6 +108,19 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 			teamMembers.setUpdatedDate(commonUtil.currentDate());
 	     teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
 		}
+		
+		
+		// For saving  the Team  Lead as a Team member
+		
+		Team team = teamService.getTeamByTeamId(teamId);
+		User user = new User();
+		user.setId(team.getOwnerUserId().getId());
+		teamMembers.setMemberUserId(user);
+		teamMembers.setTeamId(team);
+		teamMembers.setStatus(Constants.MEMBER_ACTIVE);
+		teamMembers.setCreatedDate(commonUtil.currentDate());
+		teamMembers.setUpdatedDate(commonUtil.currentDate());
+		teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
 	    
 		return teamMembers;
 	

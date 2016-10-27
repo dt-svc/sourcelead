@@ -41,6 +41,9 @@ public class Constants {
 
 	public static final Integer RECORD_ACTIVE = 1;
 	public static final Integer RECORD_INACTIVE = 1;
+	
+	
+	public static final Integer LEVEL1 = 1;
 	   
 	public static transient DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static transient DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");
@@ -57,6 +60,9 @@ public class Constants {
 	
 	public static String ACCEPT_CLIENT_INVITATION = "Accept Client Invitation";
 	public static String ACCEPT_VENDOR_INVITATION = "Accept Vendor Invitation";
+	
+	public static String APPLICANT_INTERVIEW = "Applicant Interview";
+	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
 	
 	public static String MAIL_PROJECT_MANAGER_TIMESHEET = "Mail To Manager At Timesheet Submission";
 	public static String MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET = "Timesheet Approved By Approver";
@@ -84,7 +90,13 @@ public class Constants {
 	/** projectMemberHistory constants**/
 	public static String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
 	public static String  PROJECT_MEMBER_HISTORY_CLOSED= "CLOSED";
-
+	public static String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
+	public static String REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION = "Approval Mechanism Sequential";
+	public static String APPROVED_EMAIL_NOTIFICATION = "Approved Requirement";
+	public static String REJECTED_EMAIL_NOTIFICATION ="Rejected Mail About The Requirement";
+	public static String RELEASEMECHANISM_EMAIL_NOTIFICATION="Release Mechanism";
+	public static String MAILREQUIREMENTTOMANAGER = "Requirement Posting";
+	public static String ASSIGNTEAMMEMBERSFORREQUIREMENT = "AssignToTeamMembers";
 	public static String  WEEK_TIME_SHEET_SUBMISSION= "Week Time Sheet Submission";
 	public static String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";
 
@@ -127,7 +139,10 @@ public class Constants {
 	public static String UPDATE_PASSWORD = "Update Password";
 	public static String MAIL_PROJECT_MANAGER = "Mail To Project Manager";
 	
-	
+
+
+	public static String CONTACTS = "CONTACTS";
+	public static String VENDORSTYPE = "VENDORS";
 	/**Constants values for notifications **/
 	
 	public static String NOTIFICATION_UNREAD = "unread";
