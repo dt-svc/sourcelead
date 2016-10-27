@@ -488,7 +488,7 @@ $(document).ready(function() {
 	                </div>
 	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
-	                  <select class="selectpicker"  id="clientRateType" value="${requirement.clientRateType}" name="clientRateType">
+	                  <select class="selectpicker"  id="clientRateType" name="clientRateType" field-name="Per" value="${requirement.clientRateType}">
 	                    <option value="">Per</option>
 	                    <option ${requirement.clientRateType  == '1hr' ? 'selected' : ''}>1hr</option>
 	                    <option ${requirement.clientRateType  == '2hr' ? 'selected' : ''}>2hr</option>
@@ -1130,7 +1130,7 @@ $(document).ready(function() {
             <div class="col-md-9">
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-                  <input type="text" value="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
+                  <input type="text" placeholder="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
                   <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="getTeamOwners();"></i> </span>
                   </div>
@@ -1245,7 +1245,7 @@ $(document).ready(function() {
           <div class="form-group">
             <label class="col-md-3">Priority<span class="text-danger">*</span></label>
             <div class="col-md-9">
-              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" field-name = "Priority" >
+              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" >
                 <option value="">Select Priority</option>
                 <option ${requirement.priority  == 'Urgent' ? 'selected' : ''}>Urgent</option>
                 <option ${requirement.priority  == 'High' ? 'selected' : ''}>High</option>
@@ -1263,7 +1263,7 @@ $(document).ready(function() {
                   <option>Client-2</option>
                   <option>Client-3</option>
                 </select> -->
-               <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId"  field-name = "Application Form">
+               <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId" data-validation = "required" field-name = "Application Form">
                     	<option value="">-- Select Form --</option>
 		                <c:forEach var="report" items="${submissionTempletesList}">
 					               <option value="${report.id}">${report.templateName}</option>
@@ -1326,7 +1326,7 @@ $(document).ready(function() {
                         </div>
                       </div>
                       <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button" id="team_form" onclick="storeTeam();flushStoreTeam()" >Save</button>
+                        <button class="btn btn-primary" type="button" id="team_form" onclick="storeTeam();flushStoreTeam()" >Save</button>
                         <button data-dismiss="modal" class="btn btn-default" id="team_form" onclick="flushStoreTeam();" type="button">Cancel</button>
                       </div>
                     </div>
@@ -1353,6 +1353,15 @@ $(document).ready(function() {
 <script type="text/javascript">
 	function storeRequirement(saveType) {
 		
+		 var Rate = document.getElementById("clientRate").value; 
+		 alert("hello.....");
+		 if(Rate != null && Rate != ""){
+			 $('#clientRateType').removeAttr('data-validation-optional');
+			 $('#clientRateType').attr("data-validation","required"); 
+		 }else{
+			 $('#clientRateType').removeAttr('data-validation');
+			 $('#clientRateType').attr("data-validation-optional","true"); 
+		 }
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
