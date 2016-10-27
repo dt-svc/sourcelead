@@ -111,7 +111,7 @@ public class RequirementInterviewRestController {
 	
 	
 	@RequestMapping(value = "/getAllInternalInterviews" , method = RequestMethod.POST)
-	 public @ResponseBody  String saveProject(@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
+	 public @ResponseBody  String getAllInternalInterviews(@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
 		
 	     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 String resultJson = null;
@@ -121,6 +121,17 @@ public class RequirementInterviewRestController {
 		 return resultJson;
 	   }
 	  
+	
+	@RequestMapping(value = "/getAllCustomerInterviews" , method = RequestMethod.POST)
+	 public @ResponseBody  String getAllCustomerInterviews(@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
+		
+	     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String resultJson = null;
+			
+		 List<RequirementInterview> interviewsList = requirementInterviewService.getCustomerInterviewsBySubmissionIdAndOrgLocationsId(submissionId, orgLocations.getId());
+		 resultJson = commonUtil.toJSON(interviewsList);
+		 return resultJson;
+	   }
 	 
 	 @RequestMapping(value = "/acceptOrRejectInterview")
 	 @ResponseBody  String acceptOrRejectInterview(@RequestParam(value="interviewStatus", required=false) String interviewStatus,
