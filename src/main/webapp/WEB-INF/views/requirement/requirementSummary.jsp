@@ -2478,15 +2478,7 @@ function getActions(){
 }
 </script>
 
-<script>
-//show div
-function myFun(){
-	   alert("hi");
-}
-$(".demo").on('mouseenter',function(){
-	 alert("hi");
-});
-</script>
+
 
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />
