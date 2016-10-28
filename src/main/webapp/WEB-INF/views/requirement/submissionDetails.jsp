@@ -268,7 +268,7 @@ function getInternalInterviewsList(submissionId){
 				             }
 	                    	 
 	                    	 if(notifiedDetails == ""){
-	                    		notifiedDetails = '---';
+	                    		notifiedDetails = '';
 	                    	 }
 	                    	 
 	                    	 if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
@@ -305,9 +305,17 @@ function getInternalInterviewsList(submissionId){
 	                    		 result = result +' <font color="orange" class="brder-int">Maybe</font>';
 	                    	 }
 	                    	 
+	                    	 if(report.notificationToApplicant == null || report.notificationToApplicant == '' || report.notificationToApplicant =='undefined'){
+	                    		 result = result + '<span id="'+report.id+'applicantDiv">';
+	                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onclick="sendMailToapplicant('+submissionId+','+report.id+');" title="Notify to Applicant"><i class="fa fa-user text-muted"></i></a>';
+	                    		 result = result + '</span>';
+	                    	 }
+	                    	 if(report.notificationToSpoc == null || report.notificationToSpoc == '' || report.notificationToSpoc =='undefined'){
+	                    		 result = result + '<span id="'+report.id+'vendorDiv">';
+	                    		 result = result + '<a href="javascript:void(0)" onclick="sendMailToVendor('+submissionId+','+report.id+');" title="Notify to Vednor"><i class="fa fa-suitcase text-muted"></i></a>';
+	                    		 result = result + '</span>';
+	                    	 }
 	                    	 
-	                    	 result = result + '<a href="javascript:void(0)" class="brder-int-left" onclick="changeInterviewStatus('+report.id+',\'Not Attending\');" title="Notify to Applicant"><i class="fa fa-user text-muted"></i></a>';
-	                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+report.id+',\'Maybe\');" title="Notify to Vednor"><i class="fa fa-suitcase text-muted"></i></a>';
 	                    	 
 	                    	 result = result + '</div>';
 	                    	 result = result + '</div>';
@@ -362,7 +370,7 @@ function getInternalInterviewsList(submissionId){
 	                         result = result + '<label class="col-md-5">';
 	                         result = result + '<strong>Notified to</strong>';
 	                         result = result + '</label>';
-	                         result = result + '<p class="col-md-7 tbldata-dotdot-big">'+notifiedDetails+'</p>';
+	                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span id="'+report.id+'notifiedDiv">'+notifiedDetails+'<span></p>';
 	                         result = result + '</div>';
 	                         
 	                         result = result + '</div>';
@@ -419,6 +427,48 @@ function changeInterviewStatus(submissionId,interviewId,interviewStatus){
 }
 </script>
 
+<script>
+function sendMailToapplicant(submissionId,interviewId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/sendMailToapplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId,	    	   
+		    success: function(data) {
+		    	 jQuery("#"+(interviewId)+"applicantDiv").css("display","none");
+           		 var existingVal = $("#"+(interviewId)+"notifiedDiv").text();
+ 		    	
+ 		    	if(existingVal == "" || existingVal ==null){
+ 		    		 $("#"+(interviewId)+"notifiedDiv").html("Applicant");
+ 		    	}
+ 		    	else{
+ 		    		 $("#"+(interviewId)+"notifiedDiv").html(existingVal+",Applicant");
+ 		    	}
+	           	  }
+	   });
+}
+</script>
+
+<script>
+function sendMailToVendor(submissionId,interviewId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/sendMailToVendor?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId,	    	   
+		    success: function(data) {
+		    	jQuery("#"+(interviewId)+"vendorDiv").css("display","none");
+		    	var existingVal = $("#"+(interviewId)+"notifiedDiv").text();
+		    	
+		    	if(existingVal == "" || existingVal ==null){
+		    		 $("#"+(interviewId)+"notifiedDiv").html("Vendor");
+		    	}
+		    	else{
+		    		 $("#"+(interviewId)+"notifiedDiv").html(existingVal+",Vendor");
+		    	}
+       		   
+           	  } 
+	   });
+}
+</script>
 <script>
 function getCustomerInterviewsList(submissionId){
 	var sourceleadUrl ='${sourceleadUrl}';

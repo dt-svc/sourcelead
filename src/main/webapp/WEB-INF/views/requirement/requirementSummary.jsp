@@ -6,7 +6,65 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
  
- 
+ <style type="text/css">
+.show-tooltip {
+	position:relative;
+	font-size:13px !important;
+}
+.show-tooltip .tooltip_div {
+	color:#333;
+	background: #e1e6fa;
+    border-radius: 3px;
+    display: none;
+    padding:5px;
+    position: absolute;
+    top: 25px;
+	left:-48px;
+    width: 415px;
+	box-sizing:border-box;
+	z-index:999;
+	transition: all 0.5s ease;
+}
+.show-tooltip .tooltip_div:after{
+	bottom: 100%;
+	left: 15%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(136, 183, 213, 0);
+	border-bottom-color: #e1e6fa;
+	border-width: 10px;
+	margin-left: -20px;
+}
+.show-tooltip:hover .tooltip_div{
+	display:block;
+}
+.tooltip_div table {
+	background:#fff;
+}
+.tooltip_div table thead {
+	background:#375d81;
+	color:#fff;
+}
+.tooltip_div table tr th, .tooltip_div table tr td{
+	padding:5px 10px;
+	height: auto !important;
+	font-size: 13px !important;
+    border-bottom: none !important;
+}
+.tooltip_div table tr td span{
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space:nowrap;
+	display:block;
+	width:175px;
+	padding-right:5px;
+	margin-bottom:0;
+}
+</style>
  
 <script>
 $(document).ready(function() {
@@ -719,7 +777,7 @@ $(document).ready(function() {
       </div>   
       
       <!-- Addede by Rajashekar -->
-      <div id="tab-3" class="project_tabs_inn">
+      <div id="tab-3" class="project_wrap_table project_tabs project_tabs_inn">
       <div id="recommendationsList"></div>
               <!-- <div class="timesheet_head candidateHead recruitmentHead">
                 <div class="rec_head"></div>
@@ -2055,7 +2113,7 @@ function requirementPipeline(requirementId){
 			   	        		
 			   	        		var report = json[i];
 						           result = result + '       <tr>';
-						           result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+');"><span>'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+');" class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 						           
 						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.candidateEmail+'</span></div></td>';
@@ -2073,7 +2131,7 @@ function requirementPipeline(requirementId){
 						    	     }
 						           
 						           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.id+'\"></a>'+report.resumeName+'</span></div></td>';
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.id+'\"></a>&nbsp;&nbsp;'+report.resumeName+'</span></div></td>';
 							           }
 							       else{
 							    	   result = result + '         <td><div>--</div></td>';
@@ -2302,13 +2360,13 @@ function requirementRecommendations(requirementId){
 	  $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
-     success :function(data) { 
+     success :function(data) {
     	 var json = JSON.parse(data);
     	    var result = '';
     	    result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
 		    result = result +'<div class="rec_head"></div>';
 		    result = result +'</div>';
-		    result = result +'<div class=" project_tabs_inn_table vendor_wrap_inn_table">';
+		    result = result +'<div class=" project_tabs_inn_table">';
 		    result = result +'<table id="recommendationTable" class="display" cellspacing="0" width="100%"">';
 		    result = result +'<thead>';
 		    result = result +'<tr>';
@@ -2327,17 +2385,37 @@ function requirementRecommendations(requirementId){
 		    result = result +'<tr>';
 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>';
 		    result = result +'<td><div><span>'+report.mobilePhone+'</span></div></td>';
-		    result = result +'<td><div><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><b class="glyphicon glyphicon-list-alt">&nbsp;'+report.candidateResume+'</b></a></div></td>';
-		    result = result +'<td><div><span>'+report.noOfReq+'</span></div></td>';
+		    result = result +'<td><div><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><i class="glyphicon glyphicon-list-alt">&nbsp;'+report.candidateResume+'</i></a></div></td>';
+		    result = result +'<td><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
+		    if(report.requirementSubmisstions.length > 0){
+		    	result = result +'<div class="tooltip_div">';
+			    result = result +'<table class="table-bordered table-hover table-striped table-responsive" width="100%;">';
+			    result = result +' <thead><tr><th>Requirement Name</th> <th>Stage</th></tr></thead>';
+			    result = result +'<tbody>';
+			    for(var j=0;j<report.requirementSubmisstions.length;j++){
+			    	 var sub = report.requirementSubmisstions[j];
+			          result = result +'<tr><td><span>'+sub.requirementName+'</span></td> <td><span>'+sub.requirementStage+'</span></td></tr>';
+			    } 
+			    result = result +'</tbody>';
+			    result = result +' </table>';
+			    result = result +' </div>'; 
+		    }
+		    result = result +' </div></td>';
 		    result = result +'<td><div><span>'+report.candidateScore+'%</span></div></td>';
 		    result = result +'<td><div><span>';
-		    result = result +'<select>';
+		    if(report.isCandidateAdedd == true){
+		    	result = result +'<input type="button" value="Added" class="btn btn-primary btn-sm">';
+		    }else{
+		    	result = result +'<input type="button" value="Add" class="btn btn-primary btn-sm">';
+		    }
+		    
+		   /*  result = result +'<select>';
 		    result = result +'<option>Interview</option>';
 		    result = result +'<option>Submit</option>';
 		    result = result +' <option>Joined</option>';
 		    result = result +'<option>Screening</option>';
 		    result = result +'<option>Offer</option>';
-		    result = result +'</select>';
+		    result = result +'</select>' */;
 		    result = result +'</span></div>';
 		    result = result +'</td>';
 		    result = result +'</tr>';
@@ -2381,6 +2459,16 @@ function getActions(){
  	});	
 
 }
+</script>
+
+<script>
+//show div
+function myFun(){
+	   alert("hi");
+}
+$(".demo").on('mouseenter',function(){
+	 alert("hi");
+});
 </script>
 
 <jsp:include page="addApplicant.jsp" />

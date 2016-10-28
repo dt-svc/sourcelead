@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -163,6 +164,13 @@ public class Candidate {
 	 
 	 @Transient
 	 private String candidateResume;
+	 
+	 @Transient
+	 private boolean isCandidateAdedd;
+	 
+	 @Transient
+	 private List<RequirementSubmission> requirementSubmisstions;
+	 
 
 	public Long getId() {
 		return id;
@@ -580,6 +588,26 @@ public class Candidate {
 
 	public void setCandidateResume(String candidateResume) {
 		this.candidateResume = candidateResume;
+	}
+
+
+	public boolean getIsCandidateAdedd() {
+		return isCandidateAdedd;
+	}
+
+
+	public void setIsCandidateAdedd(boolean isCandidateAdedd) {
+		this.isCandidateAdedd = isCandidateAdedd;
+	}
+
+
+	public List<RequirementSubmission> getRequirementSubmisstions() {
+		return requirementSubmisstions;
+	}
+
+
+	public void setRequirementSubmisstions(List<RequirementSubmission> requirementSubmisstions) {
+		this.requirementSubmisstions = requirementSubmisstions;
 	}
 
 	
