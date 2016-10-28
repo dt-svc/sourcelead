@@ -37,9 +37,10 @@ function interviews(dateRange){
 			type : "GET",
 			url : sourceleadUrl+"/getInterviews?dateRange="+dateRange,
 			success : function(data) {
-				
+				$("#today").empty();
+	        	$("#upcoming").empty();
+	        	$("#previous").empty();
 				var json = JSON.parse(data);
-   	        	alert(data);
 
 				/*  if( result.indexOf('Sign In') >= 0){
 		    		location.replace(sourceleadUrl);
@@ -76,7 +77,6 @@ function interviews(dateRange){
 						resultToday = resultToday+'	 </tr>';
 					}
 				
-				
 					resultToday = resultToday+'	 </tbody>';
 					resultToday = resultToday+'	</table>';											
 	      
@@ -94,25 +94,19 @@ function interviews(dateRange){
 			}
 		     
 	        if(dateRange == 'today'){
-	        	alert("1");
-	        	$("#today").empty();
-	        	$("#upcoming").empty();
-	        	$("#previous").empty();
 	            $("#today").append(resultToday);
 	        }
 			if(dateRange == 'previous'){
-				alert("2");
-				$("#today").empty();
-	        	$("#upcoming").empty();
-	        	$("#previous").empty();
 				$("#previous").append(resultToday);
+				$("#today").removeClass("tab-pane fade in active");
+				$("#upcoming").removeClass("tab-pane fade in active");
+				$("#previous").addClass("tab-pane fade in active");
 	        }
 			if(dateRange == 'upcoming'){
-				alert("3");
-				$("#today").empty();
-	        	$("#upcoming").empty();
-	        	$("#previous").empty();
 				$("#upcoming").append(resultToday);
+				$("#today").removeClass("tab-pane fade in active");
+				$("#previous").removeClass("tab-pane fade in active");
+				$("#upcoming").addClass("tab-pane fade in active");
 	        }
       
 		},

@@ -1,9 +1,5 @@
 package com.bis.sourcelead.rest;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -134,6 +130,13 @@ public class DashboardRestController {
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(),user.getId());
+		for(Requirement requirement : requirementList){
+			if(requirement.getClientId() != null){
+				requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+			}
+			
+		}
+		
 		resultJson = commonUtil.toJSON(requirementList);
 		return resultJson;
 	 }
@@ -235,19 +238,8 @@ public class DashboardRestController {
 			String userCode = user.getUserCode();
 			Long userId = user.getId();
 			
-			/*if(StringUtils.equals(dateRange, "today")){
-				requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId);
-			}
 			
-			if(StringUtils.equals(dateRange, "previous")){
-				requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId);		
-			}
-			
-			if(StringUtils.equals(dateRange, "upcoming")){
-				requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId);
-			}*/
-			
-			if("ROLE_ADMIN".equalsIgnoreCase(userRole)){
+			if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
 				userType = "ADMIN";
 				requirementInterviewList = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode);
 			}else{
