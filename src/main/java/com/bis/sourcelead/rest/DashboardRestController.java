@@ -9,7 +9,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.entity.DashboardCounts;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -34,7 +34,6 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.thoughtworks.xstream.converters.extended.SqlTimeConverter;
 
 /**
  * This class is used for...
@@ -139,17 +138,48 @@ public class DashboardRestController {
 		return resultJson;
 	 }
 	 
-	@RequestMapping(value = "/getRequirementSubmissionsCount" , method = RequestMethod.GET)
-	public @ResponseBody void getRequirementSubmissionsCount(HttpServletRequest request) throws Exception {
+	 /**
+	  * This method is used for getting all Submissions,Applicat's,Interviews,Offers counts and Show in Dashboard page.
+	  * 
+	  * @author prasad K
+	  * @param daterange
+	  * @return String
+	  * @throws NullPointer
+	  */
+	
+	 @RequestMapping(value = "/getRequirementSubmissionsCount" , method = RequestMethod.GET)
+	 public String  getRequirementSubmissionsCount(@RequestParam(value="daterange", required=false) String daterange,HttpServletRequest request) throws Exception {
 		
-
+		String resultJson;
 	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
-	    int reqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION");
-	    int reqinterviewscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"INTERVIEW");
-	    int reqOfferscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"OFFERMADE");
+		DashboardCounts dc= new DashboardCounts();
+		int toDayReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION",daterange);
+		//int previousReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION","previous");
 		
+		int toDayReqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION",daterange);
+		//int previousReqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION","previous");
+	   
+		int toDayReqInterviewscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"INTERVIEW",daterange);
+	  //  int previousReqInterviewscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"INTERVIEW","previous");
+	   
+	    int toDayReqOfferscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"OFFERMADE",daterange);
+	   // int previousReqOfferscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"OFFERMADE","previous");
+		
+	    dc.setSubmissionCount(toDayReqSubmissionscount);
+	    //dc.setSubmissionCount(previousReqSubmissionscount);
+	    
+	    dc.setApplicantsCount(toDayReqApplicantscount);
+	   // dc.setApplicantsCount(previousReqApplicantscount);
+	    
+	    dc.setInterviewsCount(toDayReqInterviewscount);
+	   // dc.setInterviewsCount(previousReqInterviewscount);
+	    
+	    dc.setOffersCount(toDayReqOfferscount);
+	   // dc.setOffersCount(previousReqOfferscount);
+	   
+	    resultJson = commonUtil.toJSON(dc);
+		return resultJson;
 	   }
 
 	 
