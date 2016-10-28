@@ -1,26 +1,19 @@
 package com.bis.sourcelead.rest;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.Writer;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,7 +31,8 @@ import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
-
+import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -48,6 +42,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
@@ -55,7 +50,6 @@ import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -88,9 +82,15 @@ public class SubmissionsRestController {
 	
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	EmailScenarioService emailScenarioService;
+	
+	@Value("${sourceleadUrl}")
+    private String sourceleadUrl;
 	
     
     @RequestMapping(value = "/getCandidateResumes")
@@ -233,61 +233,14 @@ public class SubmissionsRestController {
     	
     	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
     	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+    	 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
     	
-    	 requirementSubmissionService.storeClientSubmission(requirementId, user, orgLocations, submissionsList);
+    	 requirementSubmissionService.storeClientSubmission(requirementId, user, orgLocations, submissionsList,org);
     	 
-    	/* Workbook createExcelworkbook =  new XSSFWorkbook();
- 		 Sheet createExcelsheet = createExcelworkbook.createSheet("submissions");
- 		 createExcelsheet = setExcelHeader(submissionsList,createExcelsheet);
- 		
-    	 String[] submissionId = submissionsList.split(",");
-    	 for(int i=0; i < submissionId.length; i++){
-    		 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
-    		 String data = submission.getSubmissionTemplateJsonStringValue();
-    		 try {
-    		     // create the json array from String rules
-    		     JSONArray jsonRules = new JSONArray(data);
-    		     System.out.println(jsonRules.length());
-    		     // iterate over the rules 
-    		     Row writeRow = createExcelsheet.createRow(i+1);
-    		     for (int j=0; j<jsonRules.length();j++){
-    		         JSONObject obj = (JSONObject) jsonRules.get(j);
-    		         createXlsSheet(createExcelsheet,writeRow,j,obj.getString("value"));
-    		     }
-    		     
-    		 } catch (JSONException e){
-    		     e.printStackTrace();
-    		 }
-    	 }
-    	 
-    	 
-    	 DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-    	 
-    	 String data = "/home/bis88/xls/Submission"+SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode()+""+dateFormat.format(new Date())+".xls";
-    	 FileOutputStream fos =  new FileOutputStream(data);
-		 createExcelworkbook.write(fos);
-		 fos.close();
-		 
-		 EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
-		 emailMessage.setToEmail("ivenkat07@gmail.com");
-		 emailMessage.setSubject("hiiiiiii");
-		 
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipientList.add(emailRecipient);
-		 
-		
-		 ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
-		 EmailAttachment emailAttachment = new EmailAttachment();
-		 emailAttachment.setName(data);
-		 attachmentList.add(emailAttachment);
-		 
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,attachmentList);*/
     	
     	return "success";
     }
+    
     
     
     @RequestMapping(value = "/candidateShortList" , method = RequestMethod.POST)
@@ -296,7 +249,7 @@ public class SubmissionsRestController {
  	
  	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
  	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
- 	
+ 	 Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
  	 
  	 String[] submissionId = submissionsList.split(",");
  	 
@@ -306,13 +259,18 @@ public class SubmissionsRestController {
  		 submission.setUpdatedBy(user.getUserCode());
  		 submission.setUpdatedDate(new Date());
  		 requirementSubmissionService.storeRequirementSubmission(submission);
- 	 }
- 	
+ 		
+ 		}
+ 	 int shotListCount = submissionId.length;
+ 	  Requirement requirement  = requirementService.getRequirementByRequirementId(requirementId);
+ 	  if(requirement.getManagerUserId().getEmail() != null){
+ 		 sendEmailToManages(requirement,user,shotListCount,loginOrg);
+ 	  }
  	return "success";
  }
     
-    
-    @RequestMapping(value = "/getSubmissionDetails" , method = RequestMethod.POST)
+
+	@RequestMapping(value = "/getSubmissionDetails" , method = RequestMethod.POST)
 	   public String getSubmissionDetails(@RequestParam(value="submissionId", required=false) Long submissionId,HttpServletRequest request) throws Exception {
     	 
     	 String resultJson = null;
@@ -339,6 +297,81 @@ public class SubmissionsRestController {
     
     
     
+    
+    
+
+	//vendors mail sending the private method
+
+	public void sendEmailToManages(Requirement requirement, User user,Integer shotListCount,Org loginOrg)	throws Exception {
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(requirement.getManagerUserId().getFirstName());
+		 emailMessage.setLastName(requirement.getManagerUserId().getLastName());
+		 emailMessage.setToEmail(requirement.getManagerUserId().getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromName(user.getFirstName()+" "+user.getLastName());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("managerFirstName", emailMessage.getFirstName());
+			 globalVarsMap.put("managerLastName",emailMessage.getLastName());
+			 globalVarsMap.put("loginUser", emailMessage.getFromName());
+			 globalVarsMap.put("requirementName", requirement.getJobTitle());
+			 
+			 globalVarsMap.put("loginOrgName",loginOrg.getOrgName());
+			 globalVarsMap.put("shortListApplicantCount", shotListCount.toString());
+			 
+			 if((requirement.getMaxExp() == null || requirement.getMaxExp() == "" || requirement.getMaxExp() == "undefiend") && (requirement.getMinExp() == null || requirement.getMinExp() == "" || requirement.getMinExp() == "undefiend" )){
+				 globalVarsMap.put("requirementExperience"," 0 ");
+			 }
+			 else if((requirement.getMaxExp() != null && requirement.getMaxExp() != "" && requirement.getMaxExp() != "undefiend") && (requirement.getMinExp() != null && requirement.getMinExp() != "" && requirement.getMinExp() != "undefiend" )){
+				 globalVarsMap.put("requirementExperience",requirement.getMaxExp() +" - "+requirement.getMinExp());
+			 }
+			 else if((requirement.getMaxExp() != null && requirement.getMaxExp() != "" && requirement.getMaxExp() != "undefiend") && (requirement.getMinExp() == null || requirement.getMinExp() == "" || requirement.getMinExp() == "undefiend" )){
+				 globalVarsMap.put("requirementExperience",requirement.getMinExp());
+			 }
+			 else if((requirement.getMaxExp() == null || requirement.getMaxExp() == "" || requirement.getMaxExp() == "undefiend") && (requirement.getMinExp() != null && requirement.getMinExp() != "" && requirement.getMinExp() != "undefiend" )){
+				 globalVarsMap.put("requirementExperience",requirement.getMaxExp() );
+			 }
+			 if(requirement.getRate() != null && requirement.getRate() != "" && requirement.getRate() != "undefiend"){
+				 globalVarsMap.put("requirementRate",requirement.getRate());
+			 }
+			 if(requirement.getSkills() != null && requirement.getSkills() != "" && requirement.getSkills() != "undefiend"){
+				 globalVarsMap.put("requirementSkill",requirement.getSkills());
+			 }
+			 
+			 globalVarsMap.put("LoginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+			 
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = null;
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.SHORTLIST_APPLICANTS,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 
+	}	
+
+	
+	
+    
     private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
             public HierarchicalStreamWriter createWriter(Writer writer) {
@@ -357,38 +390,6 @@ public class SubmissionsRestController {
 		return str == null || "".equals(str.trim());
 	}
 	
-	
-   private Sheet setExcelHeader(String submissionsList,Sheet createExcelsheet) throws Exception {
-    	   
-    	    Row excelHeader = createExcelsheet.createRow(0);
-    	    String[] submissionId = submissionsList.split(",");
-      	    for(int i=0; i < submissionId.length; i++){
-      		 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
-      		 String data = submission.getSubmissionTemplateJsonStringValue();
-      		 try {
-      		     JSONArray jsonRules = new JSONArray(data);
-      		     System.out.println(jsonRules.length());
-      		     for (int j=0; j<jsonRules.length();j++){
-      		         JSONObject obj = (JSONObject) jsonRules.get(j);
-      		         excelHeader.createCell(j).setCellValue(obj.getString("label"));
-      		     }
-      		 } catch (JSONException e){
-      		     e.printStackTrace();
-      		 }
-      	 }
-		
-      	  return createExcelsheet;
-	}
-   
-   private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,String value) throws IOException {
-	   createExcelsheet.setColumnWidth(column, 5000);
-	   if(!isNullOrEmpty(value)){ 
-			writeRow.createCell(column).setCellValue(value);
-		} else {
-			 writeRow.createCell(column).setCellValue("No Data");
-		}
-	   
-   }
 	
 }
 
