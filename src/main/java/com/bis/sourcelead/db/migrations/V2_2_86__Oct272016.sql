@@ -57,7 +57,7 @@ UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='{{ApprovedRequirement.approv
 UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='Approved the requirement {{ApprovedRequirement.requirementName}}.', `BODY`='Approved the requirement {{ApprovedRequirement.requirementName}}' WHERE `UNIQUE_SCENARIO_NAME`='Approved Requirement' and `ENTITY_TYPE`='Notification';
 
 
-#approvalMechanism
+#approvalMechanism 
 
  UPDATE `sourcelead`.`CLASS_FIELD` SET `FIELD_NAME`='role' WHERE `DELIM_STR`= '{{ApprovalMechanism.role}}' and id = (select  id  from `entity_type` where  `ENTITY_NAME`='ApprovalMechanism' and `ENTITY_TYPE`='Email');
  UPDATE `sourcelead`.`CLASS_FIELD` SET `FIELD_NAME`='client' WHERE `DELIM_STR`= '{{ApprovalMechanism.client}}' and id = (select  id  from `entity_type` where  `ENTITY_NAME`='ApprovalMechanism' and `ENTITY_TYPE`='Email');
