@@ -17,6 +17,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.rest.RequirementRestController;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateSkillsService;
@@ -182,13 +183,16 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				candidate.setCandidateResume(candidateResume.getFileName());
 			}
 			if(reqList.size() >0){
+				
 				for(RequirementSubmission reqSubmission : reqList){
-					logger.info("*RequiredmentID**************"+requirement.getId()+" ==  "+reqSubmission.getRequirement().getId());
-					if(requirement.getId() == reqSubmission.getRequirement().getId()){
+					if(requirement.getId().equals(reqSubmission.getRequirement().getId())){
 						isCandidateAdded = true;
 					}
+					reqSubmission.setRequirementName(reqSubmission.getRequirement().getJobTitle());
+					reqSubmission.setRequirementStage(reqSubmission.getSubmissionStatus());
 				}
 			}
+			candidate.setRequirementSubmisstions(reqList);
 			candidate.setIsCandidateAdedd(isCandidateAdded);
 			
 			if(skillPercentage !=0 && totalPercentage !=0 ){
