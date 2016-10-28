@@ -23,6 +23,7 @@ public interface RequirementInterviewService {
 
 	void saveRequirementInterview(RequirementInterview requirementInterview) throws Exception;
 
+	List<RequirementInterview> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)throws Exception; 
 
 	List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long id) throws Exception;
 
