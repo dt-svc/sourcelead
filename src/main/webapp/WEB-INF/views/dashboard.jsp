@@ -1,3 +1,5 @@
+<%-- 
+
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -193,12 +195,11 @@ function timeSheetSubmissionStatusCount(){
 
 
 
+ --%>
 
 
 
-
- 
-<%-- <jsp:include page="masterHeader.jsp" />
+ <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -211,9 +212,9 @@ function timeSheetSubmissionStatusCount(){
 	      <div class="pull-right brud-crum">Home &raquo; Dashboard</div>
 	    </section>
     
-    	<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include>
+    	<%-- <jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> --%>
 	    <div class="clearfix row mb"> 
-	   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
+	   	 	 <%-- <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include> --%>
 	    	 <jsp:include page="dashboardInterviews.jsp"></jsp:include>
 	    </div>
 	    <div class="clearfix row mb"> 
@@ -226,4 +227,3 @@ function timeSheetSubmissionStatusCount(){
 	    </div>
 </section>
 <jsp:include page="masterFooter.jsp" />
- --%>
