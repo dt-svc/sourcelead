@@ -96,6 +96,18 @@ import org.hibernate.annotations.FetchMode;
 	private String interviewersList;
 	
 	@Transient
+	private String candidateName;
+	
+	@Transient
+	private String requirementTitle;
+	
+	@Transient
+	private String interviewStartDateTimeStr;
+	
+	@Transient
+	private String interviewEndtDateTimeStr;
+	
+	@Transient
 	private String clientName;
 	
 	@OneToMany(mappedBy = "requirementInterview",cascade = CascadeType.ALL)
@@ -297,6 +309,46 @@ import org.hibernate.annotations.FetchMode;
 
 	public void setInterviewersList(String interviewersList) {
 		this.interviewersList = interviewersList;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public String getRequirementTitle() {
+		return requirementTitle;
+	}
+
+	public void setRequirementTitle(String requirementTitle) {
+		this.requirementTitle = requirementTitle;
+	}
+
+	public String getInterviewStartDateTimeStr() {
+		return interviewStartDateTimeStr;
+	}
+
+	public void setInterviewStartDateTimeStr(String interviewStartDateTimeStr) {
+		this.interviewStartDateTimeStr = interviewStartDateTimeStr;
+	}
+
+	public String getInterviewEndtDateTimeStr() {
+		return interviewEndtDateTimeStr;
+	}
+
+	public void setInterviewEndtDateTimeStr(String interviewEndtDateTimeStr) {
+		this.interviewEndtDateTimeStr = interviewEndtDateTimeStr;
+	}
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
 	}
 
 	public Set<RequirementInterviewer> getRequirementInterviewers() {

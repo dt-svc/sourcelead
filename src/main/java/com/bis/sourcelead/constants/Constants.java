@@ -174,6 +174,9 @@ public class Constants {
 	public static String RECRUITER = "ROLE_RECRUITER";
 
 
+	
+	
+	
 	public static String[] RATEPER_LIST = {"Daily","Hourly","Weekly","Bi-Weekly","Semi-Monthly","Monthly","Yearly"};
 	
 	public static String[] ROLE_LIST = {"Admin","Employee","Project Manager","Team Lead"};
@@ -186,7 +189,7 @@ public class Constants {
 	public static String EDUCATIONS = "Educations";
 	public static String SKILLS = "Skills";
 	
-	
+	public static String ADMIN = "Admin";
 	
 
 	public static String MAIL_SENT = "Sent";
