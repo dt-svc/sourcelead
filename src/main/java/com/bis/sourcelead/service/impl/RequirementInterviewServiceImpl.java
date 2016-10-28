@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.RequirementInterviewDao;
 import com.bis.sourcelead.dao.RequirementInterviewerDao;
 import com.bis.sourcelead.entity.Candidate;
@@ -31,6 +32,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -63,6 +65,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	@Autowired
 	private RequirementSubmissionService requirementSubmissionService;
@@ -460,34 +465,18 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		customerInterviewList = requirementInterviewDao.getCustomerInterviewsBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
 		if (customerInterviewList != null && !customerInterviewList.isEmpty() ) {
 			for (RequirementInterview requirementInterview : customerInterviewList) {
-				if(requirementInterview.getRemainedBefore() != null && !requirementInterview.getRemainedBefore().isEmpty()){
-					Integer hours = (Integer.parseInt(requirementInterview.getRemainedBefore()) / 60);
-					Integer minutes = (Integer.parseInt(requirementInterview.getRemainedBefore()) % 60);
-				    requirementInterview.setRemainderTime(hours + " : " + minutes + " minutes");
-				}
-				
+								
 			    if(requirementInterview.getDateOfInterview() != null){
 			    	requirementInterview.setDateOfInterviewStr(Constants.DMY.format(requirementInterview.getDateOfInterview()));
 			    }
 			    
-			    String InterviewersList = "";
-				Set<RequirementInterviewer> Interviewers = requirementInterview.getRequirementInterviewers();
-				int i = 0;
-				for(RequirementInterviewer interviewer: Interviewers){
-					if(i <= 50){
-						InterviewersList = InterviewersList+interviewer.getInterviewerUser().getFirstName()+" "+interviewer.getInterviewerUser().getLastName();
-						if(i != Interviewers.size()-1){
-							InterviewersList = InterviewersList+",";
-						}
-					}
-					i++;
-				}
-				requirementInterview.setInterviewersList(InterviewersList);
-			}
+			    RequirementSubmission requirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(requirementInterview.getSubmissionId().getId(),orgLocationsId);
+			   OrgLocations orgLocations = orgLocationService.getOrgLocations(requirementSubmission.getVendorLocationId().getId());
+			   requirementInterview.setClientName(orgLocations.getOrg().getOrgName());
+			    
+		}
 		}
 		return customerInterviewList;
-		
-		
-	}	
+	}
 
 }
