@@ -29,7 +29,6 @@ import com.bis.sourcelead.service.UserService;
  */
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages = "com.bis.sourcelead")
 public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuccessHandler{
 
 	@Autowired
