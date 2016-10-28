@@ -305,6 +305,7 @@ display: block;
 .viewTemplate .sjfb-field label {
    width:30%;
    float:left;
+   font-size: 13px;
 }
 .viewTemplate p {
 	position:absolute;
