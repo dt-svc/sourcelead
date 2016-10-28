@@ -98,9 +98,9 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 			if (teamMembers != null) {
 				session.saveOrUpdate(teamMembers);
 			}
-			logger.debug("Candidate Stored Successfully");
+			logger.debug("TeamMembers Stored Successfully");
 		} catch (Exception exception) {
-			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"Candidate"));
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"TeamMembers"));
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return teamMembers;
