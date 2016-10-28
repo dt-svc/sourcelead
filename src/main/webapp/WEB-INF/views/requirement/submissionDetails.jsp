@@ -157,29 +157,25 @@ function getSubmissionDetailsSideBar(submissionId,candidateId){
 	                     result = result + ' </div>';
 	                    
 	                    
-	                  //Internal Interviews List
+	                  
 	                  result = result + '<div class="col-md-6">';
-	     			  result  = result + '   <div id="internalInterviewsList" ></div>';
-
-		                  
-	     			 result = result+'<div id="rejectOfferAlert" ></div>  ';
-	     			 // Accordion Seccond Tab 
-	     			  result  = result + '   <div id="offerDetails" ></div>';
-
-	     			  
-	     			//Customer Interviews List
-	     			  result  = result + '   <div id="customerInterviewsList" ></div>';
+		                  //Internal Interviews List
+		     			  result  = result + '   <div id="internalInterviewsList" ></div>';
+		     			  
+		     			  //Customer Interviews List
+		     			  result  = result + '   <div id="customerInterviewsList" ></div>';
+		     			  
+		     			  result = result+'<div id="rejectOfferAlert" ></div>  ';
+		     			 
+		     			  result  = result + '   <div id="offerDetails" ></div>';
 	     			 result = result + ' </div>';      
 
        
           result = result + '</div>';
           
 getInternalInterviewsList(submissionId);
-
-getOfferDetails(submissionId);   
-
 getCustomerInterviewsList(submissionId);
-
+getOfferDetails(submissionId);   
 
 $("#viewCandidateDiv").empty();  
 $("#viewCandidateDiv").append(result);
