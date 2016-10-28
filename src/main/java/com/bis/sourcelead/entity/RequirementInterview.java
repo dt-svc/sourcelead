@@ -87,6 +87,12 @@ import org.hibernate.annotations.FetchMode;
 	private String dateOfInterviewStr;
 	
 	@Transient
+	private String startTimeStr;
+	
+	@Transient
+	private String endTimeStr;
+	
+	@Transient
 	private String interviewersList;
 	
 	@Transient
@@ -111,14 +117,6 @@ import org.hibernate.annotations.FetchMode;
 	@Column(name = "INTERVIEW_STATUS", columnDefinition = "TEXT default NULL")
 	private String interviewStatus;
 	
-	public String getClientName() {
-		return clientName;
-	}
-
-	public void setClientName(String clientName) {
-		this.clientName = clientName;
-	}
-
 	public String getInterviewStatus() {
 		return interviewStatus;
 	}
@@ -279,6 +277,22 @@ import org.hibernate.annotations.FetchMode;
 
 	public void setDateOfInterviewStr(String dateOfInterviewStr) {
 		this.dateOfInterviewStr = dateOfInterviewStr;
+	}
+
+	public String getStartTimeStr() {
+		return startTimeStr;
+	}
+
+	public void setStartTimeStr(String startTimeStr) {
+		this.startTimeStr = startTimeStr;
+	}
+
+	public String getEndTimeStr() {
+		return endTimeStr;
+	}
+
+	public void setEndTimeStr(String endTimeStr) {
+		this.endTimeStr = endTimeStr;
 	}
 
 	public String getInterviewersList() {
