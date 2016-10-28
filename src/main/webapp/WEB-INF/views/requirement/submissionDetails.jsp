@@ -17,7 +17,7 @@
 <script>
 function getSubmissionDetailsSideBar(submissionId,candidateId){
 	var sourceleadUrl = '${sourceleadUrl}';
-	
+
 	$.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,
@@ -228,6 +228,7 @@ $(document).ready(function() {
 <script>
 function getInternalInterviewsList(submissionId){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var clientSubmissions = '${clientSubmissions}';
 	 $.ajax({  
          type : "POST",
          url: sourceleadUrl+"/getAllInternalInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
@@ -281,7 +282,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 }
 	                    	 
 	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
-	                    	 result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.dateOfInterviewStr+' '+report.startTime+' </span></h2>';
+	                    	 result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.dateOfInterviewStr+' '+report.startTimeStr+' </span></h2>';
 	                    	 result = result + '<div class="content clearfix">';
 	                    	 result = result + '<div class="interview-type">';
 	                    	 
@@ -310,7 +311,7 @@ function getInternalInterviewsList(submissionId){
 	                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onclick="sendMailToapplicant('+submissionId+','+report.id+');" title="Notify to Applicant"><i class="fa fa-user text-muted"></i></a>';
 	                    		 result = result + '</span>';
 	                    	 }
-	                    	 if(report.notificationToSpoc == null || report.notificationToSpoc == '' || report.notificationToSpoc =='undefined'){
+	                    	 if((report.notificationToSpoc == null || report.notificationToSpoc == '' || report.notificationToSpoc =='undefined') && (clientSubmissions == 'Y')){
 	                    		 result = result + '<span id="'+report.id+'vendorDiv">';
 	                    		 result = result + '<a href="javascript:void(0)" onclick="sendMailToVendor('+submissionId+','+report.id+');" title="Notify to Vednor"><i class="fa fa-suitcase text-muted"></i></a>';
 	                    		 result = result + '</span>';
@@ -345,10 +346,10 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '<label class="col-md-5">';
 	                    	 result = result + '<strong>Time</strong>';
 	                    	 result = result + '</label>';
-                             if(report.endTime != null && report.endTime != 'undefined' && report.endTime != ""){
-                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTime+' to '+report.endTime+'</p>';
+                             if(report.endTimeStr != null && report.endTimeStr != 'undefined' && report.endTimeStr != ""){
+                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+'</p>';
 	                    	 }else{
-	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTime+'</p>';
+	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+'</p>';
 	                    	 }
 	                    	 result = result + '</div>';
 	                    	 
@@ -487,7 +488,7 @@ function getCustomerInterviewsList(submissionId){
 	                    	 }
 	                    	 
 	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
-	                    	 result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.dateOfInterviewStr+' '+report.startTime+' </span></h2>';
+	                    	 result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.dateOfInterviewStr+' '+report.startTimeStr+' </span></h2>';
 	                    	 result = result + '<div class="content clearfix">';
 	                    	 result = result + '<div class="interview-type">';
 	                    	 
@@ -538,10 +539,10 @@ function getCustomerInterviewsList(submissionId){
 	                    	 result = result + '<label class="col-md-5">';
 	                    	 result = result + '<strong>Time</strong>';
 	                    	 result = result + '</label>';
-                             if(report.endTime != null && report.endTime != 'undefined' && report.endTime != ""){
-                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTime+' to '+report.endTime+'</p>';
+                             if(report.endTimeStr != null && report.endTimeStr != 'undefined' && report.endTimeStr != ""){
+                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+'</p>';
 	                    	 }else{
-	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTime+'</p>';
+	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+'</p>';
 	                    	 }
 	                    	 result = result + '</div>';
 	                    	 

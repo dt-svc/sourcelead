@@ -75,7 +75,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	
 	@Autowired
 	private RequirementInterviewerService requirementInterviewerService;
-
+	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
@@ -398,6 +398,18 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			    	requirementInterview.setDateOfInterviewStr(Constants.DMY.format(requirementInterview.getDateOfInterview()));
 			    }
 			    
+			    if(requirementInterview.getStartTime() != null){
+			    	 String hours = requirementInterview.getStartTime().getHours()+"";
+			    	 String minutes = requirementInterview.getStartTime().getMinutes()+"";
+			    	 requirementInterview.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
+			    }
+			    
+			    if(requirementInterview.getEndTime() != null){
+			    	 String hours = requirementInterview.getEndTime().getHours()+"";
+			    	 String minutes = requirementInterview.getEndTime().getMinutes()+"";
+			    	 requirementInterview.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
+			    }
+			    
 			    String InterviewersList = "";
 				Set<RequirementInterviewer> Interviewers = requirementInterview.getRequirementInterviewers();
 				int i = 0;
@@ -498,6 +510,18 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 								
 			    if(requirementInterview.getDateOfInterview() != null){
 			    	requirementInterview.setDateOfInterviewStr(Constants.DMY.format(requirementInterview.getDateOfInterview()));
+			    }
+			    
+			    if(requirementInterview.getStartTime() != null){
+			    	 String hours = requirementInterview.getStartTime().getHours()+"";
+			    	 String minutes = requirementInterview.getStartTime().getMinutes()+"";
+			    	 requirementInterview.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
+			    }
+			    
+			    if(requirementInterview.getEndTime() != null){
+			    	 String hours = requirementInterview.getEndTime().getHours()+"";
+			    	 String minutes = requirementInterview.getEndTime().getMinutes()+"";
+			    	 requirementInterview.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
 			    }
 			    
 			    RequirementSubmission requirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(requirementInterview.getSubmissionId().getId(),orgLocationsId);
