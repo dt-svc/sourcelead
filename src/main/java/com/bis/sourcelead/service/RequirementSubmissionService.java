@@ -34,7 +34,7 @@ public interface RequirementSubmissionService {
 	
 	List<RequirementSubmission> getAllSubmissionListByRequirementIdAndSubmissionStage(Long orgLocationsId, Long requirementId,String submissionStatus) throws Exception;
 	
-	void storeClientSubmission(Long requirementId, User user, OrgLocations loginOrgLocation,String submissionIds, Org loginOrg) throws Exception;
+	void storeClientSubmission(Long requirementId, User user, OrgLocations loginOrgLocation,String submissionIds,Org org) throws Exception;
 	
 	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus);
 	

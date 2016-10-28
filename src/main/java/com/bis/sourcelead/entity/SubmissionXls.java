@@ -46,6 +46,9 @@ public class SubmissionXls {
 	@Column(name = "UUID")
 	private String uuid;
 	
+	@Column(name = "SUBMISSION_STATUS")
+	private String submissionStatus;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -136,6 +139,14 @@ public class SubmissionXls {
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public String getSubmissionStatus() {
+		return submissionStatus;
+	}
+
+	public void setSubmissionStatus(String submissionStatus) {
+		this.submissionStatus = submissionStatus;
 	}
 	
 	

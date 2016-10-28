@@ -54,17 +54,9 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		if(emailMessage != null)
 		{
 			Long emailNotificationd = null;
-			if(null == attachmentList){
-				emailNotificationd = storeEmailInfoInDB(emailMessage,emailRecipientList);
-			}
-			    
-				
-			 sendMessage(emailMessage,emailRecipientList,attachmentList);
-			    
-		 // update send flag true if the no exception, to Email Value
-		    if(null == attachmentList){
-		    	updateEmailInfoWithDeliveryStatus(emailNotificationd);
-		    }
+			emailNotificationd = storeEmailInfoInDB(emailMessage,emailRecipientList);
+			sendMessage(emailMessage,emailRecipientList,attachmentList);
+			updateEmailInfoWithDeliveryStatus(emailNotificationd);
 		}
 		return "success";
 	}
@@ -127,11 +119,17 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 					 SubmissionXls xls = submissionXlsService.getSubmissionXlsByUUID(UUID);
 			         
 			         DataSource dataSource = new ByteArrayDataSource(xls.getDocFile(), "application/pdf");
+			         MimeMultipart mimeMultipart = new MimeMultipart();
+			         
+			         
+			         BodyPart messageBodyPart = new MimeBodyPart();
+			         messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
+			         mimeMultipart.addBodyPart(messageBodyPart);
+			         
 			         MimeBodyPart xlsBodyPart = new MimeBodyPart();
 			         xlsBodyPart.setDataHandler(new DataHandler(dataSource));
 			         xlsBodyPart.setFileName(xls.getFileName());
 
-			         MimeMultipart mimeMultipart = new MimeMultipart();
 			         mimeMultipart.addBodyPart(xlsBodyPart);
 			         
 			         message.setContent(mimeMultipart);

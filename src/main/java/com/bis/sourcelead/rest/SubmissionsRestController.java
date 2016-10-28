@@ -49,6 +49,7 @@ import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -232,13 +233,14 @@ public class SubmissionsRestController {
     	
     	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
     	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-    	 Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+    	 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
     	
-    	 requirementSubmissionService.storeClientSubmission(requirementId, user, orgLocations, submissionsList,loginOrg);
+    	 requirementSubmissionService.storeClientSubmission(requirementId, user, orgLocations, submissionsList,org);
     	 
     	
     	return "success";
     }
+    
     
     
     @RequestMapping(value = "/candidateShortList" , method = RequestMethod.POST)
