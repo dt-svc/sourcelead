@@ -60,6 +60,41 @@ function getSubmissionDetailsSideBar(submissionId,candidateId){
 	    		   experience = 'Experience -'+json.candidate.experienceYears+ 'Years';
 	    	   }
 	    	   
+	    	   if(json.candidate.rateType != null && json.candidate.rateType != '' && json.candidate.rateType !='undefined'){
+	    		   rateType = json.candidate.rateType; 
+	    	   }else{
+	    		   rateType = " ";
+	    	   }
+	    	   
+	    	   if(json.candidate.expectedRate != null && json.candidate.expectedRate != '' && json.candidate.expectedRate !='undefined'){
+	    		   expectedRate = json.candidate.expectedRate; 
+	    	   }else{
+	    		   expectedRate = " ";
+	    	   }
+	    	   
+	    	   if(json.candidate.currentRateCurrency != null && json.candidate.currentRateCurrency != '' && json.candidate.currentRateCurrency !='undefined'){
+	    		   currentRateCurrency = json.candidate.currentRateCurrency; 
+	    	   }else{
+	    		   currentRateCurrency  = " ";
+	    	   }
+	    	   
+	    	   if(json.candidate.currentRate != null && json.candidate.currentRateCurrency != '' && json.candidate.currentRateCurrency !='undefined'){
+	    		   currentRate = json.candidate.currentRate; 
+	    	   }else{
+	    		   currentRate = " ";
+	    	   }
+	    	   if(json.candidate.state != null && json.candidate.state != '' && json.candidate.state !='undefined'){
+	    		   state = ' , ' +json.candidate.state;
+	    	   }else{
+	    		   state = " ";
+	    	   }
+	    	   
+	    	   if(json.candidate.city != null && json.candidate.city != '' && json.candidate.city !='undefined'){
+	    		   city =' , ' + json.candidate.city; 
+	    	   }else{
+	    		   city = " ";
+	    	   }
+	    	   
 	    	   var result = "";
           	   result = result + ' <div class="req_hide">';
                result = result + '<div class="profile_details clearfix">';
@@ -102,9 +137,11 @@ function getSubmissionDetailsSideBar(submissionId,candidateId){
 		       result = result + '<ul class="list-unstyled can-perdt">';
 		       result = result + ' <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.candidate.email+'</a></li>';
 		       result = result + '<li><i class="fa fa-phone"></i>'+json.candidate.mobilePhone+'</li>';
-		       result = result + '<li><i class="fa fa-location-arrow"></i>Hyderabad, TS, India</li>';
-		       result = result + '<li><i class="fa fa-rupee"></i>200/Per Hour - Current Rate / Salary</li>';
-		       result = result + '<li><i class="fa fa-rupee"></i>300/Per Hour - Expected Rate / Salary</li>';
+		       result = result + '<li><i class="fa fa-location-arrow"></i>';
+		       result = result +json.candidate.country +''+ state +''+ city
+		       result = result +'</li>';
+		       result = result + '<li><i class="fa fa-rupee"></i>'+currentRate+' / '+currentRateCurrency+' - Current Rate / Salary</li>';
+		       result = result + '<li><i class="fa fa-rupee"></i>'+expectedRate+' / '+rateType+' - Expected Rate / Salary</li>';
 		       result = result + '</ul>';
 		       result = result + '</div>';
 		       result = result + '</div>';
