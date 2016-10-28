@@ -191,6 +191,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					}
 					reqSubmission.setRequirementName(reqSubmission.getRequirement().getJobTitle());
 					reqSubmission.setRequirementStage(reqSubmission.getSubmissionStatus());
+					candidate.setReqSubmissionId(reqSubmission.getId().toString());
 				}
 			}
 			candidate.setRequirementSubmisstions(reqList);
