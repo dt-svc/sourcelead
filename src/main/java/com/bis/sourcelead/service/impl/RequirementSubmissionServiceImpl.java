@@ -10,6 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -362,10 +366,83 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     	 Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
 		 requirement.setId(requirementId);
 		 
+		 String requirementName = null;
+		 if(requirement.getParentRequirement() != null){
+			 requirementName = requirement.getParentRequirement().getJobTitle();
+		 }else{
+			 requirementName = requirement.getJobTitle();
+		 }
+		 
+		 
+		 String fullName = null;
+    	 if(!isNullOrEmpty(user.getLastName())){
+    		 fullName = user.getFirstName()+" "+user.getLastName();
+    	 }else{
+    		 fullName = user.getFirstName();
+    	 }
+    	 
 		 
 		 Workbook createExcelworkbook =  new XSSFWorkbook();
  		 Sheet createExcelsheet = createExcelworkbook.createSheet("submissions");
- 		 createExcelsheet = setExcelHeader(submissionIds,createExcelsheet);
+ 		 Row writeRow = null;
+ 		 
+ 		 CellStyle style = createExcelworkbook.createCellStyle();
+	     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+	     style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+	     Font font = createExcelworkbook.createFont();
+         font.setColor(IndexedColors.BLACK.getIndex());
+         style.setFont(font);
+ 		 
+ 		 writeRow = createExcelsheet.createRow(1);
+ 		 createExcelsheet.setColumnWidth(0, 8000);
+ 		 createExcelsheet.setColumnWidth(1, 10000);
+ 		 
+ 		 Cell cell1 = writeRow.createCell(0);
+ 		 cell1.setCellValue("Requirement Name");
+ 		 cell1.setCellStyle(style);
+ 		 
+ 		 Cell cell2 = writeRow.createCell(1);
+ 		 cell2.setCellValue(requirementName);
+ 		 cell2.setCellStyle(style);
+ 		 
+ 		 
+ 		 writeRow = createExcelsheet.createRow(2);
+ 		 createExcelsheet.setColumnWidth(0, 8000);
+ 		 createExcelsheet.setColumnWidth(1, 10000);
+ 		 
+ 		 Cell cell3 = writeRow.createCell(0);
+ 		 cell3.setCellValue("Vendor");
+ 		 cell3.setCellStyle(style);
+ 		 
+ 		 Cell cell4 = writeRow.createCell(1);
+ 		 cell4.setCellValue(org.getOrgName());
+ 		 cell4.setCellStyle(style);
+ 		 
+ 		 writeRow = createExcelsheet.createRow(3);
+		 createExcelsheet.setColumnWidth(0, 8000);
+		 createExcelsheet.setColumnWidth(1, 10000);
+		 
+		 Cell cell5 = writeRow.createCell(0);
+		 cell5.setCellValue("Submitted By");
+		 cell5.setCellStyle(style);
+		 
+		 Cell cell6 = writeRow.createCell(1);
+		 cell6.setCellValue(fullName);
+		 cell6.setCellStyle(style);
+		 
+		 writeRow = createExcelsheet.createRow(4);
+		 createExcelsheet.setColumnWidth(0, 8000);
+		 createExcelsheet.setColumnWidth(1, 10000);
+		 
+		 Cell cell7 = writeRow.createCell(0);
+		 cell7.setCellValue("Number Of Candidates");
+		 cell7.setCellStyle(style);
+		 
+		 Cell cell8 = writeRow.createCell(1);
+		 cell8.setCellValue(String.valueOf(submissionId.length));
+		 cell8.setCellStyle(style);
+ 		   
+ 		 createExcelsheet = setExcelHeader(submissionIds,createExcelsheet,style);
  		 String UUID = null;
 		 
     	 for(int i=0; i < submissionId.length; i++){
@@ -477,7 +554,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		     JSONArray jsonRules = new JSONArray(data);
     		     System.out.println(jsonRules.length());
     		     // iterate over the rules 
-    		     Row writeRow = createExcelsheet.createRow(i+1);
+    		     writeRow = createExcelsheet.createRow(i+8);
     		     for (int j=0; j<jsonRules.length();j++){
     		         JSONObject obj = (JSONObject) jsonRules.get(j);
     		         createXlsSheet(createExcelsheet,writeRow,j,obj.getString("value"));
@@ -509,12 +586,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 submissionXls.setCreatedDate(new Date());
 		 submissionXlsService.storeSubmissionXls(submissionXls);
     	 
-    	 String fullName = null;
-    	 if(!isNullOrEmpty(user.getLastName())){
-    		 fullName = user.getFirstName()+" "+user.getLastName();
-    	 }else{
-    		 fullName = user.getFirstName();
-    	 }
     	 
     	 EmailMessage emailMessage = new EmailMessage();
 		 User requirementManager = userDao.getUserById(requirement.getParentRequirement().getManagerUserId().getId());
@@ -577,9 +648,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	
-	 private Sheet setExcelHeader(String submissionsList,Sheet createExcelsheet) throws Exception {
-  	   
- 	    Row excelHeader = createExcelsheet.createRow(0);
+	 private Sheet setExcelHeader(String submissionsList,Sheet createExcelsheet,CellStyle style) throws Exception {
+ 	    Row excelHeader = createExcelsheet.createRow(7);
  	    String[] submissionId = submissionsList.split(",");
    	    for(int i=0; i < submissionId.length; i++){
    		 RequirementSubmission submission = requirementSubmissionDao.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
@@ -589,7 +659,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
    		     System.out.println(jsonRules.length());
    		     for (int j=0; j<jsonRules.length();j++){
    		         JSONObject obj = (JSONObject) jsonRules.get(j);
-   		         excelHeader.createCell(j).setCellValue(obj.getString("label"));
+   		         Cell cell = excelHeader.createCell(j);
+   		         cell.setCellValue(obj.getString("label"));
+   		         cell.setCellStyle(style);
    		     }
    		 } catch (JSONException e){
    		     e.printStackTrace();
