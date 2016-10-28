@@ -1,14 +1,26 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.HashSet;
+import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,17 +32,28 @@ import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
+import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
+import com.bis.sourcelead.entity.SubmissionXls;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.SubmissionXlsService;
+import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
  * 
@@ -53,7 +76,15 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Autowired
 	private RequirementSubmissionTemplateFieldsDao  requirementSubmissionTemplateFieldsDao;
 		
-		
+	@Autowired
+	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	UserDao userDao;
+	
+	@Value("${sourceleadUrl}")
+    private String sourceleadUrl;
+	
 	@Autowired
 	private CandidateDao candidateDao;
 	
@@ -65,6 +96,12 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Autowired
 	private CandidateEmployersDao candidateEmployersDao;
+	
+	@Autowired
+	private SubmissionXlsService submissionXlsService;
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
 	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
@@ -319,11 +356,18 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 
 	@Override
 	public void storeClientSubmission(Long requirementId, User user, OrgLocations loginOrgLocation,
-			String submissionIds) throws Exception {
+			String submissionIds,Org org) throws Exception {
 		
 		 String[] submissionId = submissionIds.split(",");
     	 Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
 		 requirement.setId(requirementId);
+		 
+		 
+		 Workbook createExcelworkbook =  new XSSFWorkbook();
+ 		 Sheet createExcelsheet = createExcelworkbook.createSheet("submissions");
+ 		 createExcelsheet = setExcelHeader(submissionIds,createExcelsheet);
+ 		 String UUID = null;
+		 
     	 for(int i=0; i < submissionId.length; i++){
     		 RequirementSubmission submission = requirementSubmissionDao.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
     		 RequirementSubmission clientSubmission = new RequirementSubmission();
@@ -341,10 +385,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 clientSubmission.setSubmissionTemplateJsonString(submission.getSubmissionTemplateJsonString());
     		 clientSubmission.setSubmissionTemplateJsonStringValue(submission.getSubmissionTemplateJsonStringValue());
     		 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+    		 clientSubmission.setVendorLocationId(loginOrgLocation);
     		 clientSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
     		 clientSubmission.setCreatedDate(new Date());
     		 clientSubmission.setCreatedBy(user.getUserCode());
-    		 requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
+    		 clientSubmission = requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
     		 
     		 RequirementSubmissionTemplateFields templateFields = requirementSubmissionTemplateFieldsDao.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submission.getId());
     		 
@@ -425,7 +470,99 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 submission.setUpdatedDate(new Date());
     		 requirementSubmissionDao.storeRequirementSubmission(submission);
     		 
+    		 
+    		 String data = clientSubmission.getSubmissionTemplateJsonStringValue();
+    		 try {
+    		     // create the json array from String rules
+    		     JSONArray jsonRules = new JSONArray(data);
+    		     System.out.println(jsonRules.length());
+    		     // iterate over the rules 
+    		     Row writeRow = createExcelsheet.createRow(i+1);
+    		     for (int j=0; j<jsonRules.length();j++){
+    		         JSONObject obj = (JSONObject) jsonRules.get(j);
+    		         createXlsSheet(createExcelsheet,writeRow,j,obj.getString("value"));
+    		     }
+    		     
+    		 } catch (JSONException e){
+    		     e.printStackTrace();
+    		 }
     	 }
+    	 
+    	 
+    	 DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+    	 
+    	 String fileName = "Submission"+SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode()+""+dateFormat.format(new Date())+".xls";
+		 
+		 ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		 createExcelworkbook.write(bos);
+		 byte[] bytes = bos.toByteArray();
+		 
+		 UUID = SourceLeadRandomCodeHelper.generateUUID();
+		 SubmissionXls submissionXls = new SubmissionXls();
+		 submissionXls.setUuid(UUID);
+		 submissionXls.setDocFile(bytes);
+		 submissionXls.setFileContentType("XLS");
+		 submissionXls.setFileName(fileName);
+		 submissionXls.setRequirement(requirement);
+		 submissionXls.setSubmissionStatus("Client Submission");
+		 submissionXls.setCreatedBy(user.getUserCode());
+		 submissionXls.setCreatedDate(new Date());
+		 submissionXlsService.storeSubmissionXls(submissionXls);
+    	 
+    	 String fullName = null;
+    	 if(!isNullOrEmpty(user.getLastName())){
+    		 fullName = user.getFirstName()+" "+user.getLastName();
+    	 }else{
+    		 fullName = user.getFirstName();
+    	 }
+    	 
+    	 EmailMessage emailMessage = new EmailMessage();
+		 User requirementManager = userDao.getUserById(requirement.getParentRequirement().getManagerUserId().getId());
+		 emailMessage.setFirstName(requirementManager.getFirstName());
+		 emailMessage.setLastName(requirementManager.getLastName());
+		 emailMessage.setToEmail(requirementManager.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromName(fullName);
+		 
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		 
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("clientFirstName", emailMessage.getFirstName());
+		 globalVarsMap.put("clientLastName",emailMessage.getLastName());
+		 globalVarsMap.put("loginUser", emailMessage.getFromName());
+		 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
+		 globalVarsMap.put("loginOrgName",org.getOrgName());
+		 globalVarsMap.put("LoginUser",fullName);
+		 globalVarsMap.put("totalNoOfApplicants", String.valueOf(submissionId.length));
+		 
+		 
+		 
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = null;
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.SUBMIT_TO_CLIENT,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		
+		 ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+		 EmailAttachment emailAttachment = new EmailAttachment();
+		 emailAttachment.setName(UUID);
+		 attachmentList.add(emailAttachment);
+		 
+		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,attachmentList);
 		
 	}
 
@@ -434,8 +571,48 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		return requirementSubmissionDao.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(orgLocationsId,submissionStatus);
 	}
 
+	@Override
 	public List<RequirementSubmission> getRequirementPerCandidate(Long candudateId) throws Exception {
 		return requirementSubmissionDao.getRequirementPerCandidate(candudateId);
+	}
+	
+	
+	 private Sheet setExcelHeader(String submissionsList,Sheet createExcelsheet) throws Exception {
+  	   
+ 	    Row excelHeader = createExcelsheet.createRow(0);
+ 	    String[] submissionId = submissionsList.split(",");
+   	    for(int i=0; i < submissionId.length; i++){
+   		 RequirementSubmission submission = requirementSubmissionDao.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
+   		 String data = submission.getSubmissionTemplateJsonStringValue();
+   		 try {
+   		     JSONArray jsonRules = new JSONArray(data);
+   		     System.out.println(jsonRules.length());
+   		     for (int j=0; j<jsonRules.length();j++){
+   		         JSONObject obj = (JSONObject) jsonRules.get(j);
+   		         excelHeader.createCell(j).setCellValue(obj.getString("label"));
+   		     }
+   		 } catch (JSONException e){
+   		     e.printStackTrace();
+   		 }
+   	 }
+		
+   	  return createExcelsheet;
+	}
+
+private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,String value) throws IOException {
+	   createExcelsheet.setColumnWidth(column, 5000);
+	   if(!isNullOrEmpty(value)){ 
+			writeRow.createCell(column).setCellValue(value);
+		} else {
+			 writeRow.createCell(column).setCellValue("No Data");
+		}
+	   
+}
+	
+
+	@Override
+	public RequirementSubmission getSubmissionsBySourceSubmissionId(Long sourceSubmissionId,Long orgLocationsId) {
+		return requirementSubmissionDao.getSubmissionsBySourceSubmissionId(sourceSubmissionId,orgLocationsId);
 	}
 
 }

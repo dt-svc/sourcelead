@@ -1,4 +1,3 @@
-
 #RequirementPosting_email
 
 INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
@@ -103,3 +102,4 @@ UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `DESCRIPTION`='rejection of Email', `SU
 #NOTIFICATION
 
 UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `DESCRIPTION`='rejection of Email', `SUBJECT`='Rejected the requirement {{RejectedMailAboutTheRequirement.requirementName}}', `SIGNATURE`='', `BODY`='Rejected the requirement {{RejectedMailAboutTheRequirement.requirementName}}' WHERE `ID`='53'; 
+

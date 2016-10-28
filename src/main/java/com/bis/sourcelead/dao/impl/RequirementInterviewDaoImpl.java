@@ -13,7 +13,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementInterviewDao;
+import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -36,6 +38,9 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 
+	@Autowired
+	RequirementSubmissionDao requirementSubmissionDao;
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public RequirementInterview storeRequirementInterview(RequirementInterview requirementInterview) throws Exception {
@@ -69,6 +74,19 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementInterview interview where interview.submissionId.id = :submissionId and interview.submissionId.orgLocations.id = :orgLocationsId ";
 		List<RequirementInterview> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		
+		return interviewsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId,Long orgLocationsId) throws Exception {
+		
+		RequirementSubmission requirementSubmission = requirementSubmissionDao.getRequirementSubmissionById(submissionId);
+		logger.debug("In RequirementInterviewDaoImpl class getRequirementInterviewsBySubmissionIdAndOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementInterview interview where interview.submissionId.id IN(Select rs.sourceSubmission.id from RequirementSubmission rs where rs.id = :submissionId and rs.requirement.id = :requirementSubmission and rs.orgLocations.id = :orgLocationsId ) and interview.notificationToSpoc='Y' ";
+		List<RequirementInterview> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("requirementSubmission", requirementSubmission.getRequirement().getId()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
 		
 		return interviewsList;
 	}

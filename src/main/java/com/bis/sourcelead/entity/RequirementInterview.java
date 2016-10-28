@@ -89,6 +89,9 @@ import org.hibernate.annotations.FetchMode;
 	@Transient
 	private String interviewersList;
 	
+	@Transient
+	private String clientName;
+	
 	@OneToMany(mappedBy = "requirementInterview",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementInterviewer> requirementInterviewers = new HashSet<RequirementInterviewer>(0);
@@ -96,7 +99,14 @@ import org.hibernate.annotations.FetchMode;
 	@Column(name = "INTERVIEW_STATUS", columnDefinition = "TEXT default NULL")
 	private String interviewStatus;
 	
-	
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
+	}
+
 	public String getInterviewStatus() {
 		return interviewStatus;
 	}

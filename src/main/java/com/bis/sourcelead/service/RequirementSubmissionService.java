@@ -5,6 +5,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
@@ -33,11 +34,13 @@ public interface RequirementSubmissionService {
 	
 	List<RequirementSubmission> getAllSubmissionListByRequirementIdAndSubmissionStage(Long orgLocationsId, Long requirementId,String submissionStatus) throws Exception;
 	
-	void storeClientSubmission(Long requirementId, User user, OrgLocations loginOrgLocation,String submissionIds) throws Exception;
+	void storeClientSubmission(Long requirementId, User user, OrgLocations loginOrgLocation,String submissionIds,Org org) throws Exception;
 	
 	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus);
 	
 
 	List<RequirementSubmission> getRequirementPerCandidate(Long candudateId) throws Exception;
+
+	RequirementSubmission getSubmissionsBySourceSubmissionId(Long sourceSubmissionId, Long orgLocationsId);
 
 }
