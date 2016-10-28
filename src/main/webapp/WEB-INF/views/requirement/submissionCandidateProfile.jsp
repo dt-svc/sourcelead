@@ -45,82 +45,20 @@ function getCandidateProfile(candidateId){
 							    result = result +'      <h2 class="education">Skills:</h2>';
 							    result = result +'      <div class="select-skills">';
 							    result = result +'       <div class="divskill col-md-12"> ';
-							     result = result + '<div id="candidateSkillList"></div> '; 
+							    result = result + '<div id="candidateSkillList"></div> '; 
 								result = result +'           </div>';
 								result = result +'          </div>';
-								//Select Skills 
-								
 								result = result +'        </div>';
 								
-								// Experience Div created on 26th Oct, 2016 
-								
+								//Employee Div
 								result = result + '<div id="employeeSubmissionProfile"></div> '; 
 								
-								
-								/* result = result +'        <div class="clearfix design-view">';
-								result = result +'          <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Experience</h2>';
-								result = result +'          <div class="row">';
-								result = result +'            <div class="col-md-12">';
-								result = result +'              <ul class="list-unstyled personal-info">';
-								result = result +'                <li>';
-								result = result +'                  <div class="clearfix">';
-								result = result +'                    <h3>Business Analyst</h3>';
-								result = result +'                    <p>April 2014 to July 2016,(2 Years, 2 Months)</p>';
-								result = result +'                    <p>Business Intelli Solltions, Hyderabad, India</p>';
-								result = result +'                  </div>';
-								result = result +'                </li>';
-								result = result +'              </ul>';
-								result = result +'            </div>';
-								result = result +'          </div>';
-								result = result +'        </div>'; */
-								
-								// Experience Div created on 26th Oct, 2016 
-								
-								// Certification Div created on 26th Oct, 2016 
-								
+								//Education Div
 								result = result + '<div id="educationSubmissionProfile"></div> ';
 								
-								/* 
-								result = result +'        <div class="clearfix design-view">';
-								result = result +'          <h2 class="education"><i class="fa fa-graduation-cap"></i>&nbsp;&nbsp;Education</h2>';
-								result = result +'          <div class="row">';
-								result = result +'            <div class="col-md-12">';
-								result = result +'              <ul class="list-unstyled personal-info">';
-								result = result +'                <li>';
-								result = result +'                  <div class="clearfix">';
-								result = result +'                    <h3>MBA <span class="small text-muted">&nbsp;(Finance)</span></h3>';
-								result = result +'                    <p>St.Xaviers college, Palayamkottai, 2010</p>';
-								result = result +'                  </div>';
-								result = result +'                </li>';
-								result = result +'              </ul>';
-								result = result +'            </div>';
-								result = result +'          </div>';
-								result = result +'        </div>'; */
-								
-								 //Certification Div created on 26th Oct, 2016  
-								
-								// Education Div created on 26th Oct, 2016
-								
-						/* 		result = result +'        <div class="clearfix design-view">';
-								result = result +'          <h2 class="education"><i class="fa fa-certificate"></i>&nbsp;&nbsp;Certification</h2>';
-								result = result +'          <div class="row">';
-								result = result +'            <div class="col-md-12">';
-								result = result +'              <ul class="list-unstyled personal-info">';
-								result = result +'                <li>';
-								result = result +'                  <div class="clearfix">';
-								result = result +'                    <h3>Certified Scrum Master</h3>';
-								result = result +'                    <p>August 2010 – August 2012</p>';
-								result = result +'                  </div>';
-								result = result +'                </li>';
-								result = result +'              </ul>';
-								result = result +'            </div>';
-								result = result +'          </div>';
-								result = result +'        </div>'; */
-								
+								//Certification Div
 								result = result + '<div id="certificationSubmissionProfile"></div> ';
 								
-								
-								// Education Div created on 26th Oct, 2016
 								
 								result = result +'      </div>';
 								result = result +'    </div>';
