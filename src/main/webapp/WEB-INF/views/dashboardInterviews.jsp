@@ -31,8 +31,6 @@ window.onload = interviews('today');
 //window.setInterval("interviews('today');", 60000);
 function interviews(dateRange){
 	var resultToday ="";
-	var resultUpcoming ="";
-	var resultPrevious ="";
 	
 	var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
@@ -41,7 +39,7 @@ function interviews(dateRange){
 			success : function(data) {
 				
 				var json = JSON.parse(data);
-   	        	
+   	        	alert(data);
 
 				/*  if( result.indexOf('Sign In') >= 0){
 		    		location.replace(sourceleadUrl);
@@ -71,10 +69,10 @@ function interviews(dateRange){
 					{
 		       		var report = json[i];
 						resultToday = resultToday+'	  <tr>';
-						resultToday = resultToday+'	   <td><div><span>'+report.submissionId.candidate.firstName+' '+report.submissionId.candidate.lastName+'</span></div></td>';
-						resultToday = resultToday+'	   <td><div class="tbldata-dotdot-vsm">Java Devloper</div></td>';
-						resultToday = resultToday+'	   <td><div><span>26/10/2016 <br/> 10:15PM</span></div></td>';
-						resultToday = resultToday+'	   <td><div><span>TCS Consultancy Services, HYD</span></div></td>';
+						resultToday = resultToday+'	   <td><div><span>'+report.candidateName+'</span></div></td>';
+						resultToday = resultToday+'	   <td><div class="tbldata-dotdot-vsm">'+report.requirementTitle+'</div></td>';
+						resultToday = resultToday+'	   <td><div><span>'+report.interviewStartDateTimeStr+'</span></div></td>';
+						resultToday = resultToday+'	   <td><div><span>'+report.clientName+'</span></div></td>';
 						resultToday = resultToday+'	 </tr>';
 					}
 				
@@ -96,18 +94,21 @@ function interviews(dateRange){
 			}
 		     
 	        if(dateRange == 'today'){
+	        	alert("1");
 	        	$("#today").empty();
 	        	$("#upcoming").empty();
 	        	$("#previous").empty();
 	            $("#today").append(resultToday);
 	        }
 			if(dateRange == 'previous'){
+				alert("2");
 				$("#today").empty();
 	        	$("#upcoming").empty();
 	        	$("#previous").empty();
 				$("#previous").append(resultToday);
 	        }
 			if(dateRange == 'upcoming'){
+				alert("3");
 				$("#today").empty();
 	        	$("#upcoming").empty();
 	        	$("#previous").empty();

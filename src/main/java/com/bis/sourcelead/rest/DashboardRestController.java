@@ -9,7 +9,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.entity.DashboardCounts;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -34,7 +34,6 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.thoughtworks.xstream.converters.extended.SqlTimeConverter;
 
 /**
  * This class is used for...
@@ -139,17 +138,48 @@ public class DashboardRestController {
 		return resultJson;
 	 }
 	 
-	@RequestMapping(value = "/getRequirementSubmissionsCount" , method = RequestMethod.GET)
-	public @ResponseBody void getRequirementSubmissionsCount(HttpServletRequest request) throws Exception {
+	 /**
+	  * This method is used for getting all Submissions,Applicat's,Interviews,Offers counts and Show in Dashboard page.
+	  * 
+	  * @author prasad K
+	  * @param daterange
+	  * @return String
+	  * @throws NullPointer
+	  */
+	
+	 @RequestMapping(value = "/getRequirementSubmissionsCount" , method = RequestMethod.GET)
+	 public String  getRequirementSubmissionsCount(@RequestParam(value="daterange", required=false) String daterange,HttpServletRequest request) throws Exception {
 		
-
+		String resultJson;
 	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
-	    int reqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION");
-	    int reqinterviewscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"INTERVIEW");
-	    int reqOfferscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"OFFERMADE");
+		DashboardCounts dc= new DashboardCounts();
+		int toDayReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION",daterange);
+		//int previousReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION","previous");
 		
+		int toDayReqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION",daterange);
+		//int previousReqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION","previous");
+	   
+		int toDayReqInterviewscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"INTERVIEW",daterange);
+	  //  int previousReqInterviewscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"INTERVIEW","previous");
+	   
+	    int toDayReqOfferscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"OFFERMADE",daterange);
+	   // int previousReqOfferscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"OFFERMADE","previous");
+		
+	    dc.setSubmissionCount(toDayReqSubmissionscount);
+	    //dc.setSubmissionCount(previousReqSubmissionscount);
+	    
+	    dc.setApplicantsCount(toDayReqApplicantscount);
+	   // dc.setApplicantsCount(previousReqApplicantscount);
+	    
+	    dc.setInterviewsCount(toDayReqInterviewscount);
+	   // dc.setInterviewsCount(previousReqInterviewscount);
+	    
+	    dc.setOffersCount(toDayReqOfferscount);
+	   // dc.setOffersCount(previousReqOfferscount);
+	   
+	    resultJson = commonUtil.toJSON(dc);
+		return resultJson;
 	   }
 
 	 
@@ -182,70 +212,80 @@ public class DashboardRestController {
 		return resultJson;
 	 }
 	
- 	/**
-	 * 
-	 * @author: Venkat Kesav
-	 * This  controller method is  to get Interviews list 
-	 */
-	@RequestMapping(value = "/getInterviews")
-	public String getInterviews(String dateRange, HttpServletRequest request) throws Exception {
-		
-		
-
-		String resultJson;
-		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-
-	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		
-		List<RequirementInterview> requirementInterview = null;
-		
-		String currentTime = null;
-		String userType = null;
-		Long userId = null;
-		
-		
-		
-		SimpleDateFormat displayFormat = new SimpleDateFormat("HH:mm");
-        SimpleDateFormat parseFormat = new SimpleDateFormat("hh:mm a");
-        Date date = parseFormat.parse("10:30 pm");
-        System.out.println(parseFormat.format(date) + " = " + displayFormat.format(date));
-        
-        
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        System.out.println( sdf.format(cal.getTime()) );
-        
-        
-        
-        String s = sdf.format(cal.getTime());
-        DateFormat f1 = new SimpleDateFormat("HH:mm:ss");
-        Date d = f1.parse(s);
-        DateFormat f2 = new SimpleDateFormat("h:mma");
-        System.out.println(f2.format(d).toLowerCase());
-		
-		
-		/*if(StringUtils.equals(dateRange, "today")){
-			requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId);
-		}
-		
-		if(StringUtils.equals(dateRange, "previous")){
-			requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId);		
-		}
-		
-		if(StringUtils.equals(dateRange, "upcoming")){
-			requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId);
-		}*/
-		
-		//requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, f2.format(d).toLowerCase(), userType, userId);
-		
-		if("ROLE_ADMIN".equalsIgnoreCase(userRole)){
-			//requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId);
-		}else if("ROLE_USER".equalsIgnoreCase(userRole)){
+	 /**
+		 * 
+		 * @author: Venkat Kesav
+		 * This  controller method is  to get Interviews list 
+		 */
+		@RequestMapping(value = "/getInterviews")
+		public String getInterviews(String dateRange, HttpServletRequest request) throws Exception {
 			
+			
+
+			String resultJson;
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			List<RequirementInterview> requirementInterviewList = null;
+			
+			String currentTime = null;
+			String userType = null;
+			String userCode = user.getUserCode();
+			Long userId = user.getId();
+			
+			/*if(StringUtils.equals(dateRange, "today")){
+				requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId);
+			}
+			
+			if(StringUtils.equals(dateRange, "previous")){
+				requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId);		
+			}
+			
+			if(StringUtils.equals(dateRange, "upcoming")){
+				requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId);
+			}*/
+			
+			if("ROLE_ADMIN".equalsIgnoreCase(userRole)){
+				userType = "ADMIN";
+				requirementInterviewList = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode);
+			}else{
+				requirementInterviewList = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode);
+			}
+			
+			for(RequirementInterview requirementInterview : requirementInterviewList){
+				String candidateFirstName = "";
+				String candidateLastName = "";
+				String requirementTitle = "";
+				if(requirementInterview.getSubmissionId() != null && requirementInterview.getSubmissionId().getCandidate() != null){
+					if(requirementInterview.getSubmissionId().getCandidate().getFirstName() != null){
+						
+						candidateFirstName = requirementInterview.getSubmissionId().getCandidate().getFirstName();
+					}
+					if(requirementInterview.getSubmissionId().getCandidate().getLastName() != null){
+						
+						candidateLastName = requirementInterview.getSubmissionId().getCandidate().getLastName();
+					}
+				}
+				
+				if(requirementInterview.getSubmissionId() != null && requirementInterview.getSubmissionId().getRequirement().getJobTitle() != null){
+					requirementTitle = requirementInterview.getSubmissionId().getRequirement().getJobTitle();
+				}
+				
+				requirementInterview.setCandidateName(candidateFirstName+" "+candidateLastName);
+				
+				requirementInterview.setRequirementTitle(requirementTitle);
+				
+				requirementInterview.setInterviewStartDateTimeStr(requirementInterview.getStartTime().toString());
+				
+				requirementInterview.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
+				
+			}
+			
+			
+			resultJson = commonUtil.toJSON(requirementInterviewList);
+			return resultJson;
 		}
-		resultJson = commonUtil.toJSON(requirementInterview);
-		return resultJson;
-	}
 
 }

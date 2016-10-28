@@ -91,4 +91,33 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 		return interviewsList;
 	}
 	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementInterview> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQuery = "";
+		
+		if(!userType.equalsIgnoreCase("ADMIN")){
+			subQuery = "and ri.submissionId.requirement.managerUserId.id =: userId";
+		}
+		
+		String query = "";
+        if(dateRange != null && "today".equals(dateRange)){
+           query ="from RequirementInterview ri where ri.submissionId.orgLocations = :orgLocationsId and ri.submissionId.submissionStatus = 'INTERVIEW' and ri.submissionId.status = 1 and DATE(ri.dateOfInterview) = CURDATE() and ri.endTime >= NOW() "+subQuery;
+        }else if(dateRange != null && "previous".equals(dateRange)){
+            query ="from RequirementInterview ri where ri.submissionId.orgLocations = :orgLocationsId and ri.submissionId.submissionStatus = 'INTERVIEW' and ri.submissionId.status = 1 and DATE(ri.dateOfInterview) < CURDATE() and ri.endTime < NOW()"+subQuery;
+        }else if(dateRange != null && "upcoming".equals(dateRange)){
+        	query ="from RequirementInterview ri where ri.submissionId.orgLocations = :orgLocationsId and ri.submissionId.submissionStatus = 'INTERVIEW' and ri.submissionId.status = 1 and DATE(ri.dateOfInterview) > CURDATE()"+subQuery;
+        }
+		
+        //CAST('10:00:00' AS TIME) BETWEEN start_time AND end_time
+        
+		//String query = "from RequirementInterview ri where DATE(ri.dateOfInterview) = CURDATE()";
+		List<RequirementInterview> requirementInterviewList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		return requirementInterviewList;
+	}
+	
 }

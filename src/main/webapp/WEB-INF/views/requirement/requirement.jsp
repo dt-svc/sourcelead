@@ -235,7 +235,7 @@ $(document).ready(function() {
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
             <div class="col-md-9">
-               <input type="text" class="form-control" id="positions" name="positions" value="${requirement.positions}"  field-name="Positions" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
+               <input type="text" class="form-control" id="positions" name="positions" value="${requirement.positions}"  field-name="Positions" data-validation="validate_Space validate_length length1-5 validate_inte" data-validation-optional="true"  value="">
             </div>
           </div>
           
@@ -264,12 +264,12 @@ $(document).ready(function() {
             <div class="col-md-9">
               <div class="row">
                 <div class="col-md-6">
-                 <input type="text" class="form-control" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
+                 <input type="text" class="form-control" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5 validate_int" data-validation-optional="true"  value="">
                    
                 </div>
                 <div class="col-md-6">
                  
-                <input type="text" class="form-control" id="maxExp" name="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
+                <input type="text" class="form-control" id="maxExp" name="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-5 validate_int" data-validation-optional="true"  value="">
                 </div>
               </div>
             </div>
@@ -501,6 +501,8 @@ $(document).ready(function() {
 		                    <option ${requirement.clientRateType  == 'others' ? 'selected' : ''}>Yearly</option>
 	                  </select>
            		</div>
+              </div>
+              </div>
               </div>
               <div class="form-group">
                 <label class="col-md-3">Submission Form<span class="text-danger">*</span></label>
@@ -1132,7 +1134,7 @@ $(document).ready(function() {
             <div class="col-md-9">
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-                  <input type="text" placeholder="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
+                  <input type="text" placeholder="Assing Role" data-validation = "" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
                   <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="getTeamOwners();"></i> </span>
                   </div>
@@ -1281,10 +1283,21 @@ $(document).ready(function() {
       
     </div>
     </div>
-      <input type="hidden" value="${requirement.id}" name ="requirementId"  id ="requirementId">
+    <input type="hidden" value="${requirement.id}" name ="requirementId"  id ="requirementId">
+     <div class="form-footer clearfix">
+    <div class="col-lg-12">   
+      <div class="pull-right">
+        <input type="button" value="Submit for Approval" id="submitForApproval" onclick="storeRequirement('submitForApproval');" class="btn btn-primary" style="display:none;">
+        <input type="button" value="Draft" id="draft" onclick="storeRequirement('draft');" class="btn btn-danger">
+        <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary" >    
+        <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
+      </div>
+    </div>
+  </div>
     </form:form>
-    
-      <!-- Modal content Demo Popup: Need to Update -->
+  <!-- Content Area Ends-->
+  
+     		 <!-- Modal content Demo Popup: Need to Update -->
                 <div role="dialog" id="addTeam" class="modal fade">
                   <div class="modal-dialog">
                     <form role="form"  id="team_form" name="team_form" method="post" >
@@ -1337,18 +1350,6 @@ $(document).ready(function() {
                   </div>
                 </div>
                 <!-- Modal content Demo Popup: Need to Update ends --> 
-  <div class="form-footer clearfix">
-    <div class="col-lg-12">   
-      <div class="pull-right">
-        <input type="button" value="Submit for Approval" id="submitForApproval" onclick="storeRequirement('submitForApproval');" class="btn btn-primary" style="display:none;">
-        <input type="button" value="Draft" id="draft" onclick="storeRequirement('draft');" class="btn btn-danger">
-        <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary" >    
-        <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
-      </div>
-    </div>
-  </div>
-  
-  <!-- Content Area Ends-->
   
   </div>
 </section>
@@ -2089,9 +2090,16 @@ function assignMembers() {
 	});
 	result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
 	$("#assignedToSavingDiv").empty();
-	$("#assignedToSavingDiv").append(result); 
+	$("#assignedToSavingDiv").append(result);
+	assignedToValidation();
 }
 </script>
+
+<script type="text/javascript">
+	function assignedToValidation() {
+		
+	}
+</script>	
 
 
 <script type="text/javascript">

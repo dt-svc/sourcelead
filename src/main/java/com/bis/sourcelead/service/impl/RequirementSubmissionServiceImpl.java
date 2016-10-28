@@ -381,9 +381,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 fullName = user.getFirstName();
     	 }
     	 
+    	 DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		 
 		 Workbook createExcelworkbook =  new XSSFWorkbook();
- 		 Sheet createExcelsheet = createExcelworkbook.createSheet("submissions");
+ 		 Sheet createExcelsheet = createExcelworkbook.createSheet("submissions "+dateFormat.format(new Date()));
  		 Row writeRow = null;
  		 
  		 CellStyle style = createExcelworkbook.createCellStyle();
@@ -566,7 +567,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     	 }
     	 
     	 
-    	 DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
     	 
     	 String fileName = "Submission"+SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode()+""+dateFormat.format(new Date())+".xls";
 		 
@@ -591,8 +591,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 User requirementManager = userDao.getUserById(requirement.getParentRequirement().getManagerUserId().getId());
 		 emailMessage.setFirstName(requirementManager.getFirstName());
 		 emailMessage.setLastName(requirementManager.getLastName());
-		 //emailMessage.setToEmail(requirementManager.getEmail());
-		 emailMessage.setToEmail("ivenkat07@gmail.com");
+		 emailMessage.setToEmail(requirementManager.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setFromName(fullName);
 		 
@@ -639,8 +638,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 
 	@Override
-	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId, String submissionStatus) {
-		return requirementSubmissionDao.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(orgLocationsId,submissionStatus);
+	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId, String submissionStatus, String dateRange) {
+		return requirementSubmissionDao.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(orgLocationsId,submissionStatus,dateRange);
 	}
 
 	@Override
@@ -686,4 +685,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.getSubmissionsBySourceSubmissionId(sourceSubmissionId,orgLocationsId);
 	}
 
+	
+	@Override
+	public RequirementSubmission getRequirementSubmissionByIdAndSubmissionStatus(Long submissionId,
+			String submissionStatus) throws Exception {
+		return requirementSubmissionDao.getRequirementSubmissionByIdAndSubmissionStatus(submissionId,submissionStatus);
+	}
 }
