@@ -314,7 +314,7 @@ public class VendorRestController {
 	   
 	   // this method is used to re-send email to Spoc
 	   @RequestMapping(value = "/resendSpocInvitationEmail" , method = RequestMethod.POST)
-		  public @ResponseBody  String resendInvitationEmail(@RequestParam(value="spocUserId", required=false) String spocUserId, HttpServletRequest request,String responderType, Long orgRelationID) throws Exception {
+		  public @ResponseBody  String resendInvitationEmail(@RequestParam(value="spocUserId", required=false) String spocUserId, @RequestParam(value="orgSpocId", required=false) String orgSpocId,HttpServletRequest request,String responderType, Long orgRelationID) throws Exception {
 			    
 			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -325,7 +325,11 @@ public class VendorRestController {
 			    String password = null;
 		 		if(null != user  && null != orgRelations){
 		 		    //to update spoc invitation status
-		 			OrgSpoc spoc = orgSpocService.getSpocUserByUserId(Long.parseLong(spocUserId));
+		 			
+		 			// this is commented for not updating status while spoc user duplicate in orgspoc table
+		 			//OrgSpoc spoc = orgSpocService.getSpocUserByUserId(Long.parseLong(spocUserId));
+		 		
+		 			OrgSpoc spoc = orgSpocService.getOrgSpocById(Long.parseLong(orgSpocId));
 		 			spoc.setInvitationStatus(Constants.MAIL_SENT);
 		 			orgSpocService.addOrgSpoc(spoc);
 		 			
