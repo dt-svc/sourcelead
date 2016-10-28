@@ -7,67 +7,11 @@
           <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a>
           <div class="clearfix require_wrap_table dashboard-data">
           		 <div id="requirementApproverList"></div>
-            <!-- <table>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Requirement</th>
-                  <th>Rate</th>
-                  <th>Exp.</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>002</td>
-                  <td><div class="tbldata-dotdot">Requirement</div></td>
-                  <td><div class="tblminwidth-75">5lakhs</div></td>
-                  <td><div><span>5yrs</span></div></td>
-                  <td><div class="tblminwidth-50">Primary</div></td>
-                </tr>
-                <tr>
-                  <td>002</td>
-                  <td><div class="tbldata-dotdot">Requirement</div></td>
-                  <td><div class="tblminwidth-75">5lakhs</div></td>
-                  <td><div><span>5yrs</span></div></td>
-                  <td><div class="tblminwidth-50">Primary</div></td>
-                </tr>
-                <tr>
-                  <td>002</td>
-                  <td><div class="tbldata-dotdot">Requirement</div></td>
-                  <td><div class="tblminwidth-75">5lakhs</div></td>
-                  <td><div><span>5yrs</span></div></td>
-                  <td><div class="tblminwidth-50">Primary</div></td>
-                </tr>
-                <tr>
-                  <td>002</td>
-                  <td><div class="tbldata-dotdot">Requirement</div></td>
-                  <td><div class="tblminwidth-75">5lakhs</div></td>
-                  <td><div><span>5yrs</span></div></td>
-                  <td><div class="tblminwidth-50">Primary</div></td>
-                </tr>
-                
-              </tbody>
-            </table>
-            
-            Pagenation
-            <nav class="clearfix">
-              <ul id="paginbg" class="pagination pull-right">
-                <li><a href="#">Previous</a></li>
-                <li class="active"><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li data-page="last"><a href="#">Next</a></li>
-              </ul>
-            </nav> -->
           </div>
         </div>
         <!-- Pagenation Ends --> 
       </div>
       <!-- Requirement Approvals Ends --> 
-
 
 <%-- 
      @author : sarath kumar.
@@ -119,27 +63,20 @@ function requirementApproverList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
-	                    	 result = result +"<td><div><span>001</span></div></td>";
+	                    	 result = result +"<td><div><span>"+opt.id+"</span></div></td>";
 		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show'><span>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-		                     if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
-		                    	 result = result +"<td><div>"+opt.jobType+"</div></td>";
+		                     if(opt.rate!=null && opt.rate !='' && opt.rate !='undefined'){
+		                    	 result = result +"<td><div>"+opt.rate+"</div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
-		                    
-		                    /*  if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
-			                     result = result +"<td><div><span><span>"+opt.country+" ,"+opt.state+" ,"+opt.city+" </span></span></div></td>";
-		                     }else{
-			                     result = result +"<td><div><span><span>"+opt.country+"</span></span></div></td>";
-		                     }
-		                     if(opt.positions!=null && opt.positions !='' && opt.positions !='undefined'){
-		                    	 result = result +"<td><div>"+opt.positions+"</div></td>";
-		                     }else{
-		                    	 result = result +"<td><div>----</div></td>";
-		                     } */
-	                    	 /* result = result +"<td><div>-----</div></td>"; */
-
-		                     result = result +"<td><div><b class='proj_process'>"+opt.requirementSubmissionStatus+"</b></div></td>";
+	                    	  if(opt.minExp !=null && opt.minExp !='' && opt.minExp !='undefined'){
+                                  
+		                     result = result +"<td><div><b class='proj_process'>"+opt.minExp+"</b></div></td>";
+                                  }else{
+                                	  result = result +"<td><div>-----</div></td>";
+                                	  }
+                                  
 		                     if(opt.requirementSubmissionStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN'){
 			                     result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
 
@@ -177,7 +114,7 @@ function requirementApproverList(){
 function requirementApprovalPagination(){ 
     $('#requirementApproverPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[1, 15, 20, -1], [1, 15, 20, "All"]],
+    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,

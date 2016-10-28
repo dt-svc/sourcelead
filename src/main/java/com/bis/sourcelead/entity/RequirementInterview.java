@@ -42,10 +42,10 @@ import org.hibernate.annotations.FetchMode;
 	private Date dateOfInterview;
 	
 	@Column(name = "START_TIME")
-	private String startTime;
+	private Date startTime;
 	
 	@Column(name = "END_TIME")
-	private String endTime;
+	private Date endTime;
 	
 	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
 	private String location;
@@ -87,7 +87,28 @@ import org.hibernate.annotations.FetchMode;
 	private String dateOfInterviewStr;
 	
 	@Transient
+	private String startTimeStr;
+	
+	@Transient
+	private String endTimeStr;
+	
+	@Transient
 	private String interviewersList;
+	
+	@Transient
+	private String candidateName;
+	
+	@Transient
+	private String requirementTitle;
+	
+	@Transient
+	private String interviewStartDateTimeStr;
+	
+	@Transient
+	private String interviewEndtDateTimeStr;
+	
+	@Transient
+	private String clientName;
 	
 	@OneToMany(mappedBy = "requirementInterview",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
@@ -95,7 +116,6 @@ import org.hibernate.annotations.FetchMode;
 
 	@Column(name = "INTERVIEW_STATUS", columnDefinition = "TEXT default NULL")
 	private String interviewStatus;
-	
 	
 	public String getInterviewStatus() {
 		return interviewStatus;
@@ -136,20 +156,19 @@ import org.hibernate.annotations.FetchMode;
 	public void setInterviewType(String interviewType) {
 		this.interviewType = interviewType;
 	}
-
-	public String getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(String startTime) {
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 
-	public String getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(String endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
 
@@ -260,12 +279,68 @@ import org.hibernate.annotations.FetchMode;
 		this.dateOfInterviewStr = dateOfInterviewStr;
 	}
 
+	public String getStartTimeStr() {
+		return startTimeStr;
+	}
+
+	public void setStartTimeStr(String startTimeStr) {
+		this.startTimeStr = startTimeStr;
+	}
+
+	public String getEndTimeStr() {
+		return endTimeStr;
+	}
+
+	public void setEndTimeStr(String endTimeStr) {
+		this.endTimeStr = endTimeStr;
+	}
+
 	public String getInterviewersList() {
 		return interviewersList;
 	}
 
 	public void setInterviewersList(String interviewersList) {
 		this.interviewersList = interviewersList;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public String getRequirementTitle() {
+		return requirementTitle;
+	}
+
+	public void setRequirementTitle(String requirementTitle) {
+		this.requirementTitle = requirementTitle;
+	}
+
+	public String getInterviewStartDateTimeStr() {
+		return interviewStartDateTimeStr;
+	}
+
+	public void setInterviewStartDateTimeStr(String interviewStartDateTimeStr) {
+		this.interviewStartDateTimeStr = interviewStartDateTimeStr;
+	}
+
+	public String getInterviewEndtDateTimeStr() {
+		return interviewEndtDateTimeStr;
+	}
+
+	public void setInterviewEndtDateTimeStr(String interviewEndtDateTimeStr) {
+		this.interviewEndtDateTimeStr = interviewEndtDateTimeStr;
+	}
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
 	}
 
 	public Set<RequirementInterviewer> getRequirementInterviewers() {

@@ -55,7 +55,7 @@ public class EMailJobScheduler {
  * Fires at 7:00 PM Every Day	
  */
 //	@Scheduled(cron = "${emailJobScheduler.job.cron.expression}")
-	@Scheduled(cron = "0 30 5 * * ?")
+	@Scheduled(cron = "0 30 4 * * ?")
 	public void runEMailJobScheduler() {
 		logger.info("##########  E-Mail Job Scheduler started..! ##########");
 		try {

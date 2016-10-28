@@ -282,6 +282,7 @@ public class RequirementDaoImpl implements RequirementDao {
 
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, Long userId)
 			throws Exception {
 

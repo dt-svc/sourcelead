@@ -13,7 +13,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementInterviewDao;
+import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -36,6 +38,9 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 
+	@Autowired
+	RequirementSubmissionDao requirementSubmissionDao;
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public RequirementInterview storeRequirementInterview(RequirementInterview requirementInterview) throws Exception {
@@ -71,6 +76,48 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 		List<RequirementInterview> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
 		
 		return interviewsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId,Long orgLocationsId) throws Exception {
+		
+		RequirementSubmission requirementSubmission = requirementSubmissionDao.getRequirementSubmissionById(submissionId);
+		logger.debug("In RequirementInterviewDaoImpl class getRequirementInterviewsBySubmissionIdAndOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementInterview interview where interview.submissionId.id IN(Select rs.sourceSubmission.id from RequirementSubmission rs where rs.id = :submissionId and rs.requirement.id = :requirementSubmission and rs.orgLocations.id = :orgLocationsId ) and interview.notificationToSpoc='Y' ";
+		List<RequirementInterview> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("requirementSubmission", requirementSubmission.getRequirement().getId()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		
+		return interviewsList;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementInterview> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQuery = "";
+		
+		if(!userType.equalsIgnoreCase("ADMIN")){
+			subQuery = "and ri.submissionId.requirement.managerUserId.id =: userId";
+		}
+		
+		String query = "";
+        if(dateRange != null && "today".equals(dateRange)){
+           query ="from RequirementInterview ri where ri.submissionId.orgLocations = :orgLocationsId and ri.submissionId.submissionStatus = 'INTERVIEW' and ri.submissionId.status = 1 and DATE(ri.dateOfInterview) = CURDATE() and ri.endTime >= NOW() "+subQuery;
+        }else if(dateRange != null && "previous".equals(dateRange)){
+            query ="from RequirementInterview ri where ri.submissionId.orgLocations = :orgLocationsId and ri.submissionId.submissionStatus = 'INTERVIEW' and ri.submissionId.status = 1 and DATE(ri.dateOfInterview) < CURDATE() and ri.endTime < NOW()"+subQuery;
+        }else if(dateRange != null && "upcoming".equals(dateRange)){
+        	query ="from RequirementInterview ri where ri.submissionId.orgLocations = :orgLocationsId and ri.submissionId.submissionStatus = 'INTERVIEW' and ri.submissionId.status = 1 and DATE(ri.dateOfInterview) > CURDATE()"+subQuery;
+        }
+		
+        //CAST('10:00:00' AS TIME) BETWEEN start_time AND end_time
+        
+		//String query = "from RequirementInterview ri where DATE(ri.dateOfInterview) = CURDATE()";
+		List<RequirementInterview> requirementInterviewList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		return requirementInterviewList;
 	}
 	
 }

@@ -50,6 +50,10 @@ public class RequirementSubmission {
 	@JoinColumn(name = "ORG_LOCATION_ID")
    	private OrgLocations orgLocations;
 	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "VENDOR_LOCATION_ID")
+   	private OrgLocations vendorLocationId;
+	
 	@Column(name = "SUBMISSION_TEMPLATE_JSON_STRING", columnDefinition = "TEXT default NULL")
     private String submissionTemplateJsonString;
 	
@@ -102,12 +106,23 @@ public class RequirementSubmission {
     @Transient
    	private String candidateId;
     
-    
     @Transient
    	private String resumeName;
     
-   
+    @Transient
+   	private String requirementName;
     
+    @Transient
+   	private ApplicantSubmissionStatus requirementStage;
+    
+	public OrgLocations getVendorLocationId() {
+		return vendorLocationId;
+	}
+
+	public void setVendorLocationId(OrgLocations vendorLocationId) {
+		this.vendorLocationId = vendorLocationId;
+	}
+
 	public String getUserName() {
 		return userName;
 	}
@@ -300,6 +315,22 @@ public class RequirementSubmission {
 
 	public void setCandidateId(String candidateId) {
 		this.candidateId = candidateId;
+	}
+
+	public String getRequirementName() {
+		return requirementName;
+	}
+
+	public void setRequirementName(String requirementName) {
+		this.requirementName = requirementName;
+	}
+
+	public ApplicantSubmissionStatus getRequirementStage() {
+		return requirementStage;
+	}
+
+	public void setRequirementStage(ApplicantSubmissionStatus requirementStage) {
+		this.requirementStage = requirementStage;
 	}
 
 	

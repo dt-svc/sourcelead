@@ -64,8 +64,12 @@ public class Constants {
 	public static String APPLICANT_INTERVIEW = "Applicant Interview";
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
 	
+	public static String SUBMIT_TO_CLIENT = "Submit To Client";
+	
 	public static String VENDOR_INTERVIEW = "Vendors Interview";
 	public static String VENDOR_INVITATION = "Vendor Invitation";
+	
+	public static String SHORTLIST_APPLICANTS = "ShortList Applicants";
 	
 	public static String MAIL_PROJECT_MANAGER_TIMESHEET = "Mail To Manager At Timesheet Submission";
 	public static String MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET = "Timesheet Approved By Approver";
@@ -170,6 +174,9 @@ public class Constants {
 	public static String RECRUITER = "ROLE_RECRUITER";
 
 
+	
+	
+	
 	public static String[] RATEPER_LIST = {"Daily","Hourly","Weekly","Bi-Weekly","Semi-Monthly","Monthly","Yearly"};
 	
 	public static String[] ROLE_LIST = {"Admin","Employee","Project Manager","Team Lead"};
@@ -182,7 +189,7 @@ public class Constants {
 	public static String EDUCATIONS = "Educations";
 	public static String SKILLS = "Skills";
 	
-	
+	public static String ADMIN = "Admin";
 	
 
 	public static String MAIL_SENT = "Sent";

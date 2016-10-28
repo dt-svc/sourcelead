@@ -9,11 +9,15 @@
  <jsp:include page="submissionCandidateProfile.jsp" />
  <jsp:include page="submissionCandidateResume.jsp" />
  
+ <style type="text/css">
+ .brder-int {padding:2px 10px; margin-right:5px;}
+ .brder-int-left {border-left:1px solid #c1c1c1; margin-left: -5px;}
+ </style>
  
 <script>
 function getSubmissionDetailsSideBar(submissionId,candidateId){
 	var sourceleadUrl = '${sourceleadUrl}';
-	
+
 	$.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,
@@ -113,7 +117,6 @@ function getSubmissionDetailsSideBar(submissionId,candidateId){
 		       result = result + '<li><a href="#tabb-4" onclick="employeeSubmissionDetails('+candidateId+');">Employer</a></li>';
 		       result = result + '<li><a href="#tabb-5" onclick="educationSubmissionDetails('+candidateId+');">Education</a></li>';
 		       result = result + '<li><a href="#tabb-6" onclick="certificationSubmissionDetails('+candidateId+');">Certifications</a></li>';
-		       result = result + '<li><a href="#tabb-7">Activities</a></li>';
 		       result = result + '<div class="clearfix"></div>';
 		       result = result + '</ul>';
 		       result = result + '<div class="project_tabs">';
@@ -154,13 +157,25 @@ function getSubmissionDetailsSideBar(submissionId,candidateId){
 	                     result = result + ' </div>';
 	                    
 	                    
-	                  // Accordion First Tab 
-	     			  result  = result + '   <div id="internalInterviewsList" ></div>';
-		                    
+	                  
+	                  result = result + '<div class="col-md-6">';
+		                  //Internal Interviews List
+		     			  result  = result + '   <div id="internalInterviewsList" ></div>';
+		     			  
+		     			  //Customer Interviews List
+		     			  result  = result + '   <div id="customerInterviewsList" ></div>';
+		     			  
+		     			  result = result+'<div id="rejectOfferAlert" ></div>  ';
+		     			 
+		     			  result  = result + '   <div id="offerDetails" ></div>';
+	     			 result = result + ' </div>';      
+
        
           result = result + '</div>';
           
 getInternalInterviewsList(submissionId);
+getCustomerInterviewsList(submissionId);
+getOfferDetails(submissionId);   
 
 $("#viewCandidateDiv").empty();  
 $("#viewCandidateDiv").append(result);
@@ -220,6 +235,7 @@ $(document).ready(function() {
 <script>
 function getInternalInterviewsList(submissionId){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var clientSubmissions = '${clientSubmissions}';
 	 $.ajax({  
          type : "POST",
          url: sourceleadUrl+"/getAllInternalInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
@@ -234,15 +250,15 @@ function getInternalInterviewsList(submissionId){
             		 else{
 	                	 $("#internalInterviewsList").empty();
 	                	 var result = "";
-	                	 result = result + '<div class="col-md-6">';
                     	 result = result + '<div class="clearfix">';
    					     result = result + '<div class="content clearfix" style="display: block;">';
 	                     var json = JSON.parse(data);
 	                     
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 
-	                    	 var notifiedDetails ="";
 	                    	 var report = json[i]; 
+	                    	 
+	                    	 var notifiedDetails ="";
 	                    	 var interviewers = "---";
 	                    	 var interviewTypeHeader = "";
 	                    	 var interviewType = "---";
@@ -260,7 +276,7 @@ function getInternalInterviewsList(submissionId){
 				             }
 	                    	 
 	                    	 if(notifiedDetails == ""){
-	                    		notifiedDetails = '---';
+	                    		notifiedDetails = '';
 	                    	 }
 	                    	 
 	                    	 if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
@@ -273,15 +289,42 @@ function getInternalInterviewsList(submissionId){
 	                    	 }
 	                    	 
 	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
-	                    	 result = result + '<h2  class="active">Interview: <span>'+interviewTypeHeader+' '+report.dateOfInterviewStr+' '+report.startTime+' </span></h2>';
+	                    	 result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.dateOfInterviewStr+' '+report.startTimeStr+' </span></h2>';
 	                    	 result = result + '<div class="content clearfix">';
 	                    	 result = result + '<div class="interview-type">';
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
-	                    	 result = result + '<div class="action-nav">';
-	                    	 result = result + '<a href="javascript:void(0)" title="Attending"><i class="fa fa-check text-success"></i></a>';
-	                    	 result = result + '<a href="javascript:void(0)" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
-	                    	 result = result + '<a href="javascript:void(0)" title="Maybe"><i class="fa fa-question-circle text-muted"></i></a>';
+	                    	 result = result + '<div class="action-nav" >';
+	                    	 result = result + '<span id="'+report.id+'actionDiv">';
+		                    	 if(report.interviewStatus == null || report.interviewStatus == '' || report.interviewStatus =='undefined'){
+		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
+			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Not Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
+			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Maybe\');" title="Maybe"  class="brder-int"><i class="fa fa-question-circle text-muted"></i></a>';
+		                    	 }
+	                    	 result = result + '</span>';
+	                    	 result = result + '<span id="'+report.id+'showStatus"></span>';
+	                    	 if(report.interviewStatus == "Attending"){
+	                    		 result = result +' <font color="green" class="brder-int">Attending</font>';
+	                    	 }
+	                    	 if(report.interviewStatus == "Not Attending"){
+	                    		 result = result +' <font color="red" class="brder-int">Not Attending</font>';
+	                    	 }
+	                    	 if(report.interviewStatus == "Maybe"){
+	                    		 result = result +' <font color="orange" class="brder-int">Maybe</font>';
+	                    	 }
+	                    	 
+	                    	 if(report.notificationToApplicant == null || report.notificationToApplicant == '' || report.notificationToApplicant =='undefined'){
+	                    		 result = result + '<span id="'+report.id+'applicantDiv">';
+	                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onclick="sendMailToapplicant('+submissionId+','+report.id+');" title="Notify to Applicant"><i class="fa fa-user text-muted"></i></a>';
+	                    		 result = result + '</span>';
+	                    	 }
+	                    	 if((report.notificationToSpoc == null || report.notificationToSpoc == '' || report.notificationToSpoc =='undefined') && (clientSubmissions == 'Y')){
+	                    		 result = result + '<span id="'+report.id+'vendorDiv">';
+	                    		 result = result + '<a href="javascript:void(0)" onclick="sendMailToVendor('+submissionId+','+report.id+');" title="Notify to Vednor"><i class="fa fa-suitcase text-muted"></i></a>';
+	                    		 result = result + '</span>';
+	                    	 }
+	                    	 
+	                    	 
 	                    	 result = result + '</div>';
 	                    	 result = result + '</div>';
 	                    	 
@@ -310,10 +353,10 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '<label class="col-md-5">';
 	                    	 result = result + '<strong>Time</strong>';
 	                    	 result = result + '</label>';
-                             if(report.endTime != null && report.endTime != 'undefined' && report.endTime != ""){
-                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTime+' to '+report.endTime+'</p>';
+                             if(report.endTimeStr != null && report.endTimeStr != 'undefined' && report.endTimeStr != ""){
+                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+'</p>';
 	                    	 }else{
-	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTime+'</p>';
+	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+'</p>';
 	                    	 }
 	                    	 result = result + '</div>';
 	                    	 
@@ -335,68 +378,316 @@ function getInternalInterviewsList(submissionId){
 	                         result = result + '<label class="col-md-5">';
 	                         result = result + '<strong>Notified to</strong>';
 	                         result = result + '</label>';
-	                         result = result + '<p class="col-md-7 tbldata-dotdot-big">'+notifiedDetails+'</p>';
+	                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span id="'+report.id+'notifiedDiv">'+notifiedDetails+'<span></p>';
 	                         result = result + '</div>';
 	                         
 	                         result = result + '</div>';
 	                         result = result + '</div>';
 	                         result = result + '</div>';
-	                    	 
-	                    	 /* result  = result + '         <tr>';
-	                    	 if(opt.docName != null && opt.docName != '' && opt.docName != 'undefined'){
-	                    	    result  = result + '<td><div><span>'+opt.docName+'</span></div></td>';
-                   	         }else{
-                   	    	      result  = result + ' <td><div><span>--</span></div></td>';
-                   	         }
-	                    	 
-	                    	 if(opt.contractType != null && opt.contractType != '' && opt.contractType != 'undefined'){
-	                    	 result  = result + ' <td><div><span>'+opt.contractType+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + ' <td><div><span>--</span></div></td>';
-	                    	 }
-	                    	 if(opt.spocName != null && opt.spocName != '' && opt.spocName != 'undefined'){
-		                    	 result  = result + '<td><div><span>'+opt.spocName+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + '<td><div><span>--</span></div></td>'; 
-	                    	 }
-	                    	 
-	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-		                    	 result  = result + '<td><div><span>'+opt.fileName+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + '<td><div><span>--</span></div></td>';
-	                    	 }
-	                    	
-	                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-	                    	     result  = result + ' <td><div><span>'+opt.startDateStr+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + ' <td><div><span>--</span></div></td>';
-	                    	 }
-	                    	 
-	                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
-	                    	     result  = result + '<td><div><span>'+opt.endDateStr+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + '<td><div><span>--</span></div></td>';
-	                    	 }
-	                    	 
-	                    	 if(opt.ownerName != null && opt.ownerName != '' && opt.ownerName != 'undefined'){
-	                    	      result  = result + ' <td><div><span>'+opt.ownerName+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + ' <td><div><span>--</span></div></td>';
-	                    	 }
-	                    	 result = result+'	 <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
-	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
-	                    		 result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+clientLocationId+','+orgRelationId+'); getSpocsList('+orgRelationId+'); getClientDocument('+clientLocationId+','+orgRelationId+', '+opt.id+');"></a>';
-					           	 result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteClientDocument('+clientLocationId+','+orgRelationId+','+opt.id+');"></i>';
-	                    	 }
-	                    	 result = result+'	            </div></td>';
-	                    	 result  = result + '</tr>'; */
-		                     
 	                      }  
-	                     result = result + '</div>';
 	                     result = result + '</div>';
 	                     result = result + '</div>';
 	                    
 	                     $("#internalInterviewsList").append(result); 
+	                     
+	                     $('#accordion-sl .content').hide();
+	                    // $('#accordion-sl').find('.test2'+interviewId+'').addClass('active').next().slideDown('slow');
+	                     $('#accordion-sl h2:first').addClass('active').next().slideDown('slow'); 
+	                     $('#accordion-sl h2').click(function() {
+	                         if($(this).next().is(':hidden')) {
+	                             $('#accordion-sl h2').removeClass('active').next().slideUp('slow');
+	                             $(this).toggleClass('active').next().slideDown('slow');
+	                         }
+	                     });
+			    	} 
+              }/* else{
+	    	         var result ="";
+					 $("#internalInterviewsList").empty();
+				     $("#internalInterviewsList").append(result); 
+              } */
+       },
+         
+    }); 
+	 
+	 
+}
+</script>
+
+<script>
+function changeInterviewStatus(submissionId,interviewId,interviewStatus){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/acceptOrRejectInterview?${_csrf.parameterName}=${_csrf.token}&interviewStatus="+interviewStatus+"&requirementInterviewId="+interviewId,	    	   
+		    success: function(data) {
+		    	 jQuery("#"+(interviewId)+"actionDiv").css("display","none");
+		    	 if(interviewStatus == "Attending"){
+           		    $("#"+(interviewId)+"showStatus").html("<font color='green'>Attending</font>");
+	           	 }
+	           	 if(interviewStatus == "Not Attending"){
+	           		$("#"+(interviewId)+"showStatus").html("<font color='red'>Not Attending</font>");
+	           	 }
+	           	 if(interviewStatus == "Maybe"){
+	           		$("#"+(interviewId)+"showStatus").html("<font color='orange'>Maybe</font>");
+	           	 }
+		    }
+	   });
+}
+</script>
+
+<script>
+function sendMailToapplicant(submissionId,interviewId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/sendMailToapplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId,	    	   
+		    success: function(data) {
+		    	 jQuery("#"+(interviewId)+"applicantDiv").css("display","none");
+           		 var existingVal = $("#"+(interviewId)+"notifiedDiv").text();
+ 		    	
+ 		    	if(existingVal == "" || existingVal ==null){
+ 		    		 $("#"+(interviewId)+"notifiedDiv").html("Applicant");
+ 		    	}
+ 		    	else{
+ 		    		 $("#"+(interviewId)+"notifiedDiv").html(existingVal+",Applicant");
+ 		    	}
+	           	  }
+	   });
+}
+</script>
+
+<script>
+function sendMailToVendor(submissionId,interviewId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/sendMailToVendor?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId,	    	   
+		    success: function(data) {
+		    	jQuery("#"+(interviewId)+"vendorDiv").css("display","none");
+		    	var existingVal = $("#"+(interviewId)+"notifiedDiv").text();
+		    	
+		    	if(existingVal == "" || existingVal ==null){
+		    		 $("#"+(interviewId)+"notifiedDiv").html("Vendor");
+		    	}
+		    	else{
+		    		 $("#"+(interviewId)+"notifiedDiv").html(existingVal+",Vendor");
+		    	}
+       		   
+           	  } 
+	   });
+}
+</script>
+<script>
+function getCustomerInterviewsList(submissionId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({  
+         type : "POST",
+         url: sourceleadUrl+"/getAllCustomerInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
+         success :function(data) {
+              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+            		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+            		 else if (data.indexOf('exception') >= 0) {
+            			 location.replace(sourceleadUrl+"/errorPage");
+            		 }
+            		 else{
+	                	 $("#customerInterviewsList").empty();
+	                	 var result = "";
+                    	 result = result + '<div class="clearfix">';
+   					     result = result + '<div class="content clearfix" style="display: block;">';
+	                     var json = JSON.parse(data);
+	                     
+	                     for (var i = 0; i < json.length; i++) { 
+	                    	 
+	                    	 var report = json[i]; 
+	                    	 var interviewTypeHeader = "";
+	                    	 var interviewType = "---";
+	                    	 
+	                    	 if(report.interviewType != null && report.interviewType != 'undefined' && report.interviewType != ""){
+	                    		 interviewType = report.interviewType;
+	                    		 interviewTypeHeader = report.interviewType;
+	                    	 }
+	                    	 
+	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
+	                    	 result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.dateOfInterviewStr+' '+report.startTimeStr+' </span></h2>';
+	                    	 result = result + '<div class="content clearfix">';
+	                    	 result = result + '<div class="interview-type">';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<div class="action-nav" >';
+	                    	 result = result + '<span id="'+report.id+'actionDiv">';
+		                    	 if(report.interviewStatus == null || report.interviewStatus == '' || report.interviewStatus =='undefined'){
+		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
+			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Not Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
+			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Maybe\');" title="Maybe"><i class="fa fa-question-circle text-muted"></i></a>';
+		                    	 }
+	                    	 result = result + '</span>';
+	                    	 result = result + '<span id="'+report.id+'showStatus"></span>';
+	                    	 if(report.interviewStatus == "Attending"){
+	                    		 result = result +' <font color="green">Attending</font>';
+	                    	 }
+	                    	 if(report.interviewStatus == "Not Attending"){
+	                    		 result = result +' <font color="red">Not Attending</font>';
+	                    	 }
+	                    	 if(report.interviewStatus == "Maybe"){
+	                    		 result = result +' <font color="orange">Maybe</font>';
+	                    	 }
+	                    	 result = result + '</div>';
+	                    	 result = result + '</div>';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Interview Location</strong>';
+	                    	 result = result + '</label>';
+	                    	 result = result + '<p class="col-md-7">'+report.location+'</p>';
+	                    	 result = result + '</div>';
+
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Interview Type</strong>';
+	                    	 result = result + '</label>';
+	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+interviewType+'</p>';
+	                    	 result = result + '</div>';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Date</strong>';
+	                    	 result = result + '</label>';
+	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.dateOfInterviewStr+'</p>';
+	                    	 result = result + '</div>';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Time</strong>';
+	                    	 result = result + '</label>';
+                             if(report.endTimeStr != null && report.endTimeStr != 'undefined' && report.endTimeStr != ""){
+                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+'</p>';
+	                    	 }else{
+	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+'</p>';
+	                    	 }
+	                    	 result = result + '</div>';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Client Name:</strong>';
+	                    	 result = result + '</label>';
+	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.clientName+'</p>';
+	                    	 result = result + '</div>';
+	                    	                          
+	                         result = result + '</div>';
+	                         result = result + '</div>';
+	                         result = result + '</div>';
+	                      }  
+	                     result = result + '</div>';
+	                     result = result + '</div>';
+	                    
+	                     $("#customerInterviewsList").append(result); 
+	                     
+	                     $('#accordion-sl .content').hide();
+	                    // $('#accordion-sl').find('.test2'+interviewId+'').addClass('active').next().slideDown('slow');
+	                     $('#accordion-sl h2').click(function() {
+	                         if($(this).next().is(':hidden')) {
+	                             $('#accordion-sl h2').removeClass('active').next().slideUp('slow');
+	                             $(this).toggleClass('active').next().slideDown('slow');
+	                         }
+	                     });
+			    	} 
+              }/* else{
+	    	         var result ="";
+					 $("#customerInterviewsList").empty();
+				     $("#customerInterviewsList").append(result); 
+              } */
+       },
+         
+    }); 
+	 
+	 
+}
+</script>
+
+
+<script>
+function getOfferDetails(submissionId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({  
+         type : "POST",
+         url: sourceleadUrl+"/getOfferDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
+         success :function(data) {
+        	 
+              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+            		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+            		 else if (data.indexOf('exception') >= 0) {
+            			 location.replace(sourceleadUrl+"/errorPage");
+            		 }
+            		 else{
+	                	 $("#offerDetails").empty();
+	                	 result = result+'<div id="rejectOfferAlert" ></div>  ';
+	                	 
+	                	 var result = '';
+	                	 result = result + '<div class="col-md-6">';
+                    	 result = result + '<div class="clearfix">';
+   					     result = result + '<div class="content clearfix" style="display: block;">';
+	                     var json = JSON.parse(data);
+	                  
+	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
+	                    	 result = result + '<h2  class="active">Offer</h2>';
+	                    	 result = result + '<div class="content clearfix">';
+	                    	 result = result + '<div class="interview-type">';
+	                    	 
+	                    	 
+	                    	 var accept = "ACCEPT";
+	                    	 var reject = "REJECT";
+	                    	 var mybe = "MYBE";
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<div class="action-nav">';
+	                    	 result = result + '<a  href="javascript:void(0)"  onClick="acceptingOffer(\''+accept+'\' ,\''+submissionId+'\');"   ><i class="fa fa-check text-success"></i></a>';
+	                    	 result = result + '<a  href="javascript:void(0)"  onClick="rejectOffer( \''+reject+'\' ,\''+submissionId+'\');"  ><i class="fa fa-close text-danger"></i></a>';
+	                    	 result = result + '<a  href="javascript:void(0)"  onClick="acceptingOffer(\''+mybe+'\',\''+submissionId+'\');"   ><i class="fa fa-question-circle text-muted"></i></a>';
+	                    	 result = result + '</div>';
+	                    	 result = result + '</div>';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Joining Date</strong>';
+	                    	 result = result + '</label>';
+	                    	 result = result + '<p class="col-md-7">'+json.dateOfJoiningStr+'</p>';
+	                    	 result = result + '</div>';
+                            
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Position Type</strong>';
+	                    	 result = result + '</label>';
+	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+json.positionType+'</p>';
+	                    	 result = result + '</div>';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Rate</strong>';
+	                    	 result = result + '</label>';
+	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+json.amount+'</p>';
+	                    	 result = result + '</div>';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Attachment</strong>';
+	                    	 result = result + '</label>';
+                             result = result + '<p class="col-md-7 tbldata-dotdot-big"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+json.id+'\"></a></p>';
+	                    	 result = result + '</div>';
+	                    	
+	                         result = result + '</div>';
+	                         result = result + '</div>';
+	                         result = result + '</div>';
+	                    	 
+		                     
+	                     result = result + '</div>';
+	                     result = result + '</div>';
+	                     result = result + '</div>';
+	                    
+	                     $("#offerDetails").append(result); 
 	                     
 	                     $('#accordion-sl .content').hide();
 	                     $('#accordion-sl h2:first').addClass('active').next().slideDown('slow');
@@ -408,6 +699,7 @@ function getInternalInterviewsList(submissionId){
 	                     });
 			    	} 
               }else{
+            	 
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
 					 result = result+"	<div class='col-lg-12'>"; 
@@ -419,8 +711,8 @@ function getInternalInterviewsList(submissionId){
 					 result = result+"		</div>"; 
 					 result = result+"	</div>"; 
 					 result = result+"  </div> "; 
-					$("#internalInterviewsList").empty();
-				    $("#internalInterviewsList").append(result); 
+					$("#offerDetails").empty();
+				    $("#offerDetails").append(result); 
               }
        },
          
@@ -432,4 +724,70 @@ function getInternalInterviewsList(submissionId){
 </script>
 
 
+
+<%-- 
+     @author : David Raju Sammeta
+     this script is for Reject Offer alert
+     1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
+--%>
+<script type="text/javascript">
+function cancelAlert(){ 
+	$("#rejectOfferAlert").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
+
+<script type="text/javascript">
+function rejectOffer(offerStatus,submissionId){
+	
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='acceptingOffer(\""+ offerStatus+ "\" ,\""+ submissionId+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +"	</div>";
+	$("#rejectOfferAlert").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+
+
+
+<script>
+function acceptingOffer(offerStatus,submissionId){
+	
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	 var reason;
+	 if ($('#rejectReason').length)
+	 {
+		 reason = document.getElementById("rejectReason").value; 
+	 }
+	 else
+	 {
+		 reason = '';
+	 }
+	 
+	 $.ajax({  
+         type : "POST",
+         url: sourceleadUrl+"/acceptingOffer?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason,        
+         success :function(data) {
+        	   
+        	    var json = JSON.parse(data);
+        	    $("#offerDetails").empty();
+			    $("#offerDetails").append(data); 
+            
+       },
+         
+    }); 
+	 
+	 
+}
+
+</script>
 
