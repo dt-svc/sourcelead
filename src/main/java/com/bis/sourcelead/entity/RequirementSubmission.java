@@ -97,6 +97,9 @@ public class RequirementSubmission {
    	private String createdDateStr;
     
     @Transient
+	private String skillsList;
+    
+    @Transient
    	private String candidateId;
     
     
@@ -262,6 +265,14 @@ public class RequirementSubmission {
 
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
+	}
+
+	public String getSkillsList() {
+		return skillsList;
+	}
+
+	public void setSkillsList(String skillsList) {
+		this.skillsList = skillsList;
 	}
 
 	public String getCreatedBy() {

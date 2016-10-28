@@ -48,7 +48,7 @@ public interface RequirementService {
 	void rejectedEmailScenario(User loginUser, User initiatorUser, Requirement requirement,
 			StringBuilder location,String rejectedReason) throws Exception;
 
-	void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc, OrgLocations loginOrgLocation,String releasetype) throws Exception;
+	void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc, OrgLocations loginOrgLocation,String releasetype,StringBuilder location) throws Exception;
 
 
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId,Long  userId) throws Exception;
