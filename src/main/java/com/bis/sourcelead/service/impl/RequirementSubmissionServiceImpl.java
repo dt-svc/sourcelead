@@ -394,7 +394,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
          style.setFont(font);
  		 
  		 writeRow = createExcelsheet.createRow(1);
- 		 createExcelsheet.setColumnWidth(0, 8000);
+ 		 createExcelsheet.setColumnWidth(0, 10000);
  		 createExcelsheet.setColumnWidth(1, 10000);
  		 
  		 Cell cell1 = writeRow.createCell(0);
@@ -407,7 +407,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
  		 
  		 
  		 writeRow = createExcelsheet.createRow(2);
- 		 createExcelsheet.setColumnWidth(0, 8000);
+ 		 createExcelsheet.setColumnWidth(0, 10000);
  		 createExcelsheet.setColumnWidth(1, 10000);
  		 
  		 Cell cell3 = writeRow.createCell(0);
@@ -419,7 +419,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
  		 cell4.setCellStyle(style);
  		 
  		 writeRow = createExcelsheet.createRow(3);
-		 createExcelsheet.setColumnWidth(0, 8000);
+		 createExcelsheet.setColumnWidth(0, 10000);
 		 createExcelsheet.setColumnWidth(1, 10000);
 		 
 		 Cell cell5 = writeRow.createCell(0);
@@ -431,7 +431,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 cell6.setCellStyle(style);
 		 
 		 writeRow = createExcelsheet.createRow(4);
-		 createExcelsheet.setColumnWidth(0, 8000);
+		 createExcelsheet.setColumnWidth(0, 10000);
 		 createExcelsheet.setColumnWidth(1, 10000);
 		 
 		 Cell cell7 = writeRow.createCell(0);
@@ -591,7 +591,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 User requirementManager = userDao.getUserById(requirement.getParentRequirement().getManagerUserId().getId());
 		 emailMessage.setFirstName(requirementManager.getFirstName());
 		 emailMessage.setLastName(requirementManager.getLastName());
-		 emailMessage.setToEmail(requirementManager.getEmail());
+		 //emailMessage.setToEmail(requirementManager.getEmail());
+		 emailMessage.setToEmail("ivenkat07@gmail.com");
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setFromName(fullName);
 		 
@@ -672,12 +673,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 
 private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,String value) throws IOException {
-	   createExcelsheet.setColumnWidth(column, 5000);
+	   createExcelsheet.setColumnWidth(column, 8000);
 	   if(!isNullOrEmpty(value)){ 
 			writeRow.createCell(column).setCellValue(value);
-		} else {
-			 writeRow.createCell(column).setCellValue("No Data");
-		}
+		} 
 	   
 }
 	
