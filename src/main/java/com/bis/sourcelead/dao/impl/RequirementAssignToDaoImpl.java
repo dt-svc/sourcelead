@@ -36,7 +36,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 	public List<RequirementAssignTo> getRequirementAssignToListByRequirementId(Long requirementId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementAssignTo rat where rat.requirementId.id =:requirementId";
+		String query = "from RequirementAssignTo rat   left join fetch rat.assignUserId   where  rat.requirementId.id =:requirementId";
 		return session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
 		
 		

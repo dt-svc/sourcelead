@@ -23,17 +23,16 @@ public interface RequirementInterviewService {
 
 	void saveRequirementInterview(RequirementInterview requirementInterview) throws Exception;
 
+	List<RequirementInterview> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)throws Exception; 
 
 	List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long id) throws Exception;
 
 
-	void sendEmailToVendors(Candidate candidate, RequirementSubmission requirementSubmission, User loginUser,String startTime, String endTime, Org loginOrg, String dateOfInterview, String location,
-			String interviewType) throws Exception;
+	void sendEmailToVendors(Candidate candidate, RequirementSubmission requirementSubmission, User loginUser,Org loginOrg,RequirementInterview requirementInterview) throws Exception;
 
 
 	void sendEmailToApplicants(Candidate candidate, RequirementSubmission requirementSubmission, User loginUser,
-			String startTime, String endTime, Org loginOrg, String dateOfInterview, String location,
-			String interviewType, RequirementInterview requirementInterview) throws Exception;
+			Org loginOrg, RequirementInterview requirementInterview) throws Exception;
 	
 	void sendEmailToInterviewrs(Candidate candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser, String startTime, String endTime,Org loginOrg,String dateOfInterview,String location, String interviewType, OrgLocations orgLocations)	throws Exception;
 	
