@@ -438,4 +438,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		return requirementSubmissionDao.getRequirementPerCandidate(candudateId);
 	}
 
+	
+	@Override
+	public RequirementSubmission getRequirementSubmissionByIdAndSubmissionStatus(Long submissionId,
+			String submissionStatus) throws Exception {
+		return requirementSubmissionDao.getRequirementSubmissionByIdAndSubmissionStatus(submissionId,submissionStatus);
+	}
 }

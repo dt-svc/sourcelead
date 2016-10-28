@@ -129,4 +129,23 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 
 		
 	}
+
+	
+	@Override
+	public RequirementOffers getRequirementOfferSubmissionById(Long submissionId) throws Exception {
+		return requirementOffersDao.getRequirementOfferSubmissionById(submissionId);
+	}
+
+
+	@Override
+	public RequirementOffers getRequirementOfferId(Long offerId) throws Exception {
+		return requirementOffersDao.getRequirementOfferId(offerId);
+		
+	}
+
+
+	@Override
+	public RequirementOffers saveOfferStatus(RequirementOffers requirementOffers) throws Exception {
+		return  requirementOffersDao.storeRequirementOffers(requirementOffers);
+	}
 }

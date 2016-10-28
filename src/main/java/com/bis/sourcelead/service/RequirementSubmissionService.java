@@ -40,4 +40,7 @@ public interface RequirementSubmissionService {
 
 	List<RequirementSubmission> getRequirementPerCandidate(Long candudateId) throws Exception;
 
+	
+	RequirementSubmission getRequirementSubmissionByIdAndSubmissionStatus(Long submissionId,String submissionStatus)throws Exception;
+	
 }
