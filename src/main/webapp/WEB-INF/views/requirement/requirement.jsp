@@ -1371,7 +1371,7 @@ $(document).ready(function() {
 			 $('#ratePer').attr("data-validation-optional","true"); 
 		 }
 		 */
-		  if ($('#requirement_form').validate(false, validationSettings)){  
+		  /* if ($('#requirement_form').validate(false, validationSettings)){   */
 			var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
@@ -1396,9 +1396,9 @@ $(document).ready(function() {
 						},
 					});
 			return true;
-		  }else{ 
+		  /* }else{ 
 				return false;
-		 }  
+		 }   */
 	} 
 	
 	$('body').on('blur', '#requirement_form', function() {

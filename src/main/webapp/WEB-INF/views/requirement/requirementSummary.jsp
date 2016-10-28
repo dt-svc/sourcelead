@@ -2103,7 +2103,8 @@ function requirementPipeline(requirementId){
 				           result = result + '           <th>Applied on</th>';
 				           result = result + '           <th>Rate</th>';
 				           result = result + '           <th>Source</th>';
-				           result = result + '           <th>Experince</th>';
+				           result = result + '           <th>Score</th>';
+				           result = result + '           <th>Experience</th>';
 				           result = result + '           <th>Status</th>';
 				           result = result + '         </tr>';
 				           result = result + '       </thead>';
@@ -2153,6 +2154,13 @@ function requirementPipeline(requirementId){
 						           
 						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.userName+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.score != null && report.score != '' && report.score != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.score+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
@@ -2384,7 +2392,11 @@ function requirementRecommendations(requirementId){
 		    var report = json[i];
 		    result = result +'<tr>';
 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>';
-		    result = result +'<td><div><span>'+report.mobilePhone+'</span></div></td>';
+		    if(report.mobilePhone != null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
+		    	result = result +'<td><div><span>'+report.mobilePhone+'</span></div></td>';
+		    }else{
+		    	result = result +'<td><div><span>--</span></div></td>';
+		    }
 		    result = result +'<td><div><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><i class="glyphicon glyphicon-list-alt">&nbsp;'+report.candidateResume+'</i></a></div></td>';
 		    result = result +'<td><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
 		    if(report.requirementSubmisstions.length > 0){
@@ -2394,7 +2406,12 @@ function requirementRecommendations(requirementId){
 			    result = result +'<tbody>';
 			    for(var j=0;j<report.requirementSubmisstions.length;j++){
 			    	 var sub = report.requirementSubmisstions[j];
-			          result = result +'<tr><td><span>'+sub.requirementName+'</span></td> <td><span>'+sub.requirementStage+'</span></td></tr>';
+			    	 if(sub.requirementName != null && sub.requirementName !='' && sub.requirementName !='undefined' && sub.requirementStage != null && sub.requirementStage !='' && sub.requirementStage !='undefined'){
+			    		 result = result +'<tr><td><span>'+sub.requirementName+'</span></td> <td><span>'+sub.requirementStage+'</span></td></tr>'; 
+			    	 }else{
+			    		 result = result +'<tr><td><span>--</span></td> <td><span>--</span></td></tr>';
+			    	 }
+			          
 			    } 
 			    result = result +'</tbody>';
 			    result = result +' </table>';

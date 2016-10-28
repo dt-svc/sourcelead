@@ -288,7 +288,7 @@ public class RequirementRestController {
 	 * Recommendations 
 	 * @param requirementId
 	 * @param request
-	 * @return
+	 * @return Json
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
