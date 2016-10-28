@@ -3,7 +3,9 @@ package com.bis.sourcelead.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.RequirementInterviewDao;
 import com.bis.sourcelead.dao.RequirementInterviewerDao;
 import com.bis.sourcelead.entity.Candidate;
@@ -29,9 +32,12 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 
@@ -62,7 +68,13 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	private UserService userService;
 	
 	@Autowired
+	private OrgLocationService orgLocationService;
+	
+	@Autowired
 	private RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	private RequirementInterviewerService requirementInterviewerService;
 
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -94,12 +106,24 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 									requirementInterview.setInterviewType(jsonObj.getString(c+"interviewType"));
 								}
 								
-								if(jsonObj.has(c+"startTime") && !jsonObj.getString(c+"startTime").isEmpty()){
+								/*if(jsonObj.has(c+"startTime") && !jsonObj.getString(c+"startTime").isEmpty()){
 									requirementInterview.setStartTime(jsonObj.getString(c+"startTime"));
 								}
 								
 								if(jsonObj.has(c+"endTime") && !jsonObj.getString(c+"endTime").isEmpty()){
 									requirementInterview.setEndTime(jsonObj.getString(c+"endTime"));
+								}*/
+								
+								if(jsonObj.has(c+"startTime") && !jsonObj.getString(c+"startTime").isEmpty()){
+									  Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")), 
+											      jsonObj.getString(c+"startTime"));
+									   requirementInterview.setStartTime(startTime);
+								}
+								
+								if(jsonObj.has(c+"endTime") && !jsonObj.getString(c+"endTime").isEmpty()){
+									Date endTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")), 
+										      jsonObj.getString(c+"endTime"));
+								      requirementInterview.setEndTime(endTime);
 								}
 								
 								if(jsonObj.has(c+"location") && !jsonObj.getString(c+"location").isEmpty()){
@@ -123,9 +147,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 								}
 								
 								if(jsonObj.has("reminderHours") && !jsonObj.getString("reminderHours").isEmpty() && jsonObj.has("reminderMinutes") && !jsonObj.getString("reminderMinutes").isEmpty()){
-									Float reminderHours = Float.parseFloat(jsonObj.getString("reminderHours"));
-									Float reminderMinutes = Float.parseFloat(jsonObj.getString("reminderMinutes"));
-									Float remainedBefore = ((reminderHours*60) + reminderMinutes);
+									Integer reminderHours = Integer.parseInt(jsonObj.getString("reminderHours"));
+									Integer reminderMinutes = Integer.parseInt(jsonObj.getString("reminderMinutes"));
+									Integer remainedBefore = ((reminderHours*60) + reminderMinutes);
 									
 									requirementInterview.setRemainedBefore(remainedBefore.toString());
 								}
@@ -193,9 +217,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		}
 		
 	}
-	
-	
-	private void sendEmailToInterviewrs(Candidate candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser, String startTime, String endTime,Org loginOrg,String dateOfInterview,String location, String interviewType, OrgLocations orgLocations)	throws Exception {
+	@Override
+	public void sendEmailToInterviewrs(Candidate candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser, String startTime, String endTime,Org loginOrg,String dateOfInterview,String location, String interviewType, OrgLocations orgLocations)	throws Exception {
 		 
 		EmailMessage emailMessage = new EmailMessage();
 		
@@ -269,7 +292,6 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 
 		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.INTERVIEWER_INVITATION,Constants.ENTITY_TYPE_NOTIFICATION); 
 		 String actionLink = "";
-//		 String actionLink = ""+sourceleadUrl+"/"+"acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId=";
 		 
 		 if(interviewerUser.getFirstName()!=null){
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
@@ -280,7 +302,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	}
 	
 	
-	
+	@Override
 	public void sendEmailToApplicants(Candidate candidate, RequirementSubmission requirementSubmission, User loginUser, String startTime, String endTime,Org loginOrg,String dateOfInterview,String location, String interviewType, RequirementInterview requirementInterview)	throws Exception {
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(candidate.getFirstName());
@@ -308,13 +330,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("interviewTime",time);
 			 globalVarsMap.put("interviewType",interviewTypeValue);
 			 globalVarsMap.put("Location",location);
-			// globalVarsMap.put("acceptURL","<a href="+sourceleadUrl+"/"+"acceptOrRejectInterview?actionLink=acceptOrRejectInterview&interviewStatus=Attending&requirementSubmissionId="+requirementSubmission.getId()+">Attending</a>");
-			 //globalVarsMap.put("rejectURL","<a href="+sourceleadUrl+"/"+"acceptOrRejectInterview?actionLink=acceptOrRejectInterview&interviewStatus=NotAttending&requirementSubmissionId="+requirementSubmission.getId()+">Not Attending</a>");
-			// globalVarsMap.put("tentativeURL","<a href="+sourceleadUrl+"/"+"acceptOrRejectInterview?actionLink=acceptOrRejectInterview&interviewStatus=Tentative&requirementSubmissionId="+requirementSubmission.getId()+">Tentative</a>");
-			 
 			 globalVarsMap.put("acceptURL","<a href='"+sourceleadUrl+"/"+"acceptOrRejectInterview?interviewStatus=Attending&requirementInterviewId="+requirementInterview.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a><br>");
-			 globalVarsMap.put("rejectURL","<a href='"+sourceleadUrl+"/"+"acceptOrRejectInterview?interviewStatus=NotAttending&requirementInterviewId="+requirementInterview.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a><br>");
-			 globalVarsMap.put("tentativeURL","<a href='"+sourceleadUrl+"/"+"acceptOrRejectInterview?interviewStatus=Pending&requirementInterviewId="+requirementInterview.getId()+" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Tentative</div></a>");
+			 globalVarsMap.put("rejectURL","<a href='"+sourceleadUrl+"/"+"acceptOrRejectInterview?interviewStatus=Not Attending&requirementInterviewId="+requirementInterview.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a><br>");
+			 globalVarsMap.put("tentativeURL","<a href='"+sourceleadUrl+"/"+"acceptOrRejectInterview?interviewStatus=Maybe&requirementInterviewId="+requirementInterview.getId()+" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Tentative</div></a>");
 			 
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
@@ -357,13 +375,50 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	}	
 	
 	
+
+	@Override
+	public List<RequirementInterview> getRequirementInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception {
+		logger.debug("In RequirementInterviewServiceImpl class getRequirementInterviewsBySubmissionIdAndOrgLocationsId method...");
+		
+		List<RequirementInterview> interviewslist = null;
+		interviewslist = requirementInterviewDao.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
+		if (interviewslist != null && !interviewslist.isEmpty() ) {
+			for (RequirementInterview requirementInterview : interviewslist) {
+				if(requirementInterview.getRemainedBefore() != null && !requirementInterview.getRemainedBefore().isEmpty()){
+					Integer hours = (Integer.parseInt(requirementInterview.getRemainedBefore()) / 60);
+					Integer minutes = (Integer.parseInt(requirementInterview.getRemainedBefore()) % 60);
+				    requirementInterview.setRemainderTime(hours + " : " + minutes + " minutes");
+				}
+				
+			    if(requirementInterview.getDateOfInterview() != null){
+			    	requirementInterview.setDateOfInterviewStr(Constants.DMY.format(requirementInterview.getDateOfInterview()));
+			    }
+			    
+			    String InterviewersList = "";
+				Set<RequirementInterviewer> Interviewers = requirementInterview.getRequirementInterviewers();
+				int i = 0;
+				for(RequirementInterviewer interviewer: Interviewers){
+					if(i <= 50){
+						InterviewersList = InterviewersList+interviewer.getInterviewerUser().getFirstName()+" "+interviewer.getInterviewerUser().getLastName();
+						if(i != Interviewers.size()-1){
+							InterviewersList = InterviewersList+",";
+						}
+					}
+					i++;
+				}
+				requirementInterview.setInterviewersList(InterviewersList);
+			}
+		}
+		return interviewslist;
+	}
+
 	
 	
 	
 	
 	
 	//vendors mail sending the private method
-
+	@Override
 	public void sendEmailToVendors(Candidate candidate, RequirementSubmission requirementSubmission, User loginUser, String startTime, String endTime,Org loginOrg,String dateOfInterview,String location, String interviewType)	throws Exception {
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(candidate.getFirstName());
@@ -414,5 +469,27 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
 		 
-	}	
+	}
+
+
+	@Override
+	public List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception {
+		List<RequirementInterview> customerInterviewList = null;
+		customerInterviewList = requirementInterviewDao.getCustomerInterviewsBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
+		if (customerInterviewList != null && !customerInterviewList.isEmpty() ) {
+			for (RequirementInterview requirementInterview : customerInterviewList) {
+								
+			    if(requirementInterview.getDateOfInterview() != null){
+			    	requirementInterview.setDateOfInterviewStr(Constants.DMY.format(requirementInterview.getDateOfInterview()));
+			    }
+			    
+			    RequirementSubmission requirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(requirementInterview.getSubmissionId().getId(),orgLocationsId);
+			   OrgLocations orgLocations = orgLocationService.getOrgLocations(requirementSubmission.getVendorLocationId().getId());
+			   requirementInterview.setClientName(orgLocations.getOrg().getOrgName());
+			    
+		}
+		}
+		return customerInterviewList;
+	}
+
 }

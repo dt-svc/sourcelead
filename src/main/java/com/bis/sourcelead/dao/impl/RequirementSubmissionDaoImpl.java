@@ -81,10 +81,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 Session session = this.sessionFactory.getCurrentSession();
 		 List<RequirementSubmission> shortListCandidatesList;
 		 if(existingApplicantsIds != null && !existingApplicantsIds.isEmpty()){
-			 String query = "from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and rs.submissionStatus = 'SHORTLIST' and rs.id NOT IN (:existingApplicantsIds)";
+			 String query = "from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT') and rs.id NOT IN (:existingApplicantsIds)";
 			 shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setLong( "requirementId", requirementId).setParameterList("existingApplicantsIds", existingApplicantsIds).setCacheable(true).list();
 		 }else{
-			 String query = "from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and rs.submissionStatus = 'SHORTLIST' ";
+			 String query = "from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT') ";
 			 shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setLong( "requirementId", requirementId).setCacheable(true).list();
 		 }
 	     return shortListCandidatesList;
@@ -144,23 +144,24 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		Boolean teamFlag = teamDao.getTeamOwnersListByUserId(user,loginOrgLocation.getId());
 		if(requirement.getManagerUserId().getId()!=user.getId()&& teamFlag){
 			for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
-				if(requirementAssignTo.getTeamId().getId()!=null){
+				if(requirementAssignTo.getTeamId()!=null){
 					Team team = teamDao.getTeamByTeamId(requirementAssignTo.getTeamId().getId());
-					if(team.getOwnerUserId().getId()==user.getId()){
-						List<TeamMembers> teamMembers =  teamMemberDao.getTeamMembersListByTeamID(requirementAssignTo.getTeamId().getId());
-						List<String> userCodes = new ArrayList<>();
-						userCodes.add(user.getUserCode());
-						for (TeamMembers teamMember : teamMembers) {
-							User usercode= userDao.getUserById(teamMember.getMemberUserId().getId());
-							userCodes.add(usercode.getUserCode());
+					if(team.getOwnerUserId()!=null){
+						if(team.getOwnerUserId().getId()==user.getId()){
+							List<TeamMembers> teamMembers =  teamMemberDao.getTeamMembersListByTeamID(requirementAssignTo.getTeamId().getId());
+							List<String> userCodes = new ArrayList<>();
+							userCodes.add(user.getUserCode());
+							for (TeamMembers teamMember : teamMembers) {
+								User usercode= userDao.getUserById(teamMember.getMemberUserId().getId());
+								userCodes.add(usercode.getUserCode());
+							}
+							
+							String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.createdBy IN (:usercode) and reqSub.requirement.id =:requirementId";
+							  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setParameterList("usercode", userCodes).setLong("requirementId", requirementId).list();
 						}
-						
-						String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.createdBy IN (:usercode) and reqSub.requirement.id =:requirementId";
-						  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setParameterList("usercode", userCodes).setLong("requirementId", requirementId).list();
-					}
 				}
 			}
-			
+			}
 		}
 		boolean flag = false;
 		for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
@@ -174,7 +175,6 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).list();
 		}
 		return requirementSubmission;
-		
 	}
 
 	@Override
@@ -221,6 +221,15 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	     String query = "from RequirementSubmission rs where rs.candidate.id = :candudateId and rs.submissionStatus = 'SUBMISSION' ";
 	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "candudateId", candudateId).setCacheable(true).list();
 	     return shortListCandidatesList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementSubmission getSubmissionsBySourceSubmissionId(Long sourceSubmissionId,Long orgLocationsId) {
+		Session session = this.sessionFactory.getCurrentSession();
+	     String query = "from RequirementSubmission rs where rs.sourceSubmission.id = :sourceSubmissionId and rs.orgLocations.id =:orgLocationsId ";
+	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "sourceSubmissionId", sourceSubmissionId).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+	     return shortListCandidatesList.get(0);
 	}
 	
 	

@@ -1,16 +1,6 @@
-DROP TABLE IF EXISTS `sourcelead`.`SUBMISSION_XLS`;
-CREATE TABLE `sourcelead`.`SUBMISSION_XLS` (
-  ID BIGINT NOT NULL AUTO_INCREMENT,
-  REQUIREMENT_ID BIGINT,
-  DOC_FILE MEDIUMBLOB,
-  FILE_CONTENT_TYPE VARCHAR(50),
-  FILE_NAME VARCHAR(100),
-  UUID VARCHAR(50),
-  STATUS VARCHAR(20),
-  CREATED_DATE DATE,
-  CREATED_BY VARCHAR(10),
-  UPDATED_DATE DATE,
-  UPDATED_BY VARCHAR(10),
-  PRIMARY KEY (`ID`),
-  FOREIGN KEY(REQUIREMENT_ID) REFERENCES `sourcelead`.`REQUIREMENT`(ID)
-) ;
+UPDATE `sourcelead`.`CLASS_FIELD` SET `DELIM_STR`='{{SubmitToClient.LoginUser}}' WHERE `ID`='209';
+UPDATE `sourcelead`.`CLASS_FIELD` SET `DELIM_STR`='{{SubmitToClient.LoginOrgName}}' WHERE `ID`='210';
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('57', 'loginURL', '{{SubmitToClient.LoginURL}}');
+
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Hi {{SubmitToClient.ClientFirstName}} {{SubmitToClient.ClientLastName}},\n\n {{SubmitToClient.LoginUser}}({{SubmitToClient.LoginOrgName}}) submitted the applicants for the {{SubmitToClient.RequirementTitle}}.\n Total no.of submitted applicants : {{SubmitToClient.TotalNoOfApplicants}}\n\n {{SubmitToClient.LoginURL}}' WHERE `ID`='57';
+
