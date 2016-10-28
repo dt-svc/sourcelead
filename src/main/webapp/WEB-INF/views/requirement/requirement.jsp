@@ -140,23 +140,26 @@ $(document).ready(function () {
 
 <script>
 $(document).ready(function() {
-	
-	var requirementAssignedIds ='${requirementAssignedIds}';
-	if(requirementAssignedIds != null && requirementAssignedIds != 'undefined' && requirementAssignedIds != ''){
-		var result = "";
-		var requirementAssignedToIds = [];
-		requirementAssignedToIds = requirementAssignedIds.split("&");
-		var count = 1;
-		
-		for (i=0;i < requirementAssignedToIds.length;i++)
-        {
-        	 result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+requirementAssignedToIds[i]+"' />";
-        	 count++;
-        }
-		result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
-		$("#assignedToSavingDiv").empty();
-		$("#assignedToSavingDiv").append(result); 
-	}	
+	if ($('#requirementAssignedIds').length)
+	{
+		var requirementAssignedIds ='${requirementAssignedIds}';
+		if(requirementAssignedIds != null && requirementAssignedIds != 'undefined' && requirementAssignedIds != ''){
+			var result = "";
+			var requirementAssignedToIds = [];
+			requirementAssignedToIds = requirementAssignedIds.split("&");
+			var count = 1;
+			
+			for (i=0;i < requirementAssignedToIds.length;i++)
+	        {
+	        	 result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+requirementAssignedToIds[i]+"' />";
+	        	 count++;
+	        }
+			result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
+			$("#assignedToSavingDiv").empty();
+			$("#assignedToSavingDiv").append(result); 
+			assignedToValidation();
+		}	
+	} 
 });
 </script>
 <!-- Content Area -->
@@ -235,7 +238,7 @@ $(document).ready(function() {
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
             <div class="col-md-9">
-               <input type="text" class="form-control" id="positions" name="positions" value="${requirement.positions}"  field-name="Positions" data-validation="validate_Space validate_length length1-5 validate_inte" data-validation-optional="true"  value="">
+               <input type="text" class="form-control" id="positions" name="positions" value="${requirement.positions}"  field-name="Positions" data-validation="validate_Space validate_length length1-5 validate_int" data-validation-optional="true"  value="">
             </div>
           </div>
           
@@ -264,12 +267,12 @@ $(document).ready(function() {
             <div class="col-md-9">
               <div class="row">
                 <div class="col-md-6">
-                 <input type="text" class="form-control" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5 validate_int" data-validation-optional="true"  value="">
+                 <input type="text" class="form-control" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5 validate_float" data-validation-optional="true"  value="">
                    
                 </div>
                 <div class="col-md-6">
                  
-                <input type="text" class="form-control" id="maxExp" name="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-5 validate_int" data-validation-optional="true"  value="">
+                <input type="text" class="form-control" id="maxExp" name="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-5 validate_float" data-validation-optional="true"  value="">
                 </div>
               </div>
             </div>
@@ -1134,7 +1137,7 @@ $(document).ready(function() {
             <div class="col-md-9">
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-                  <input type="text" placeholder="Assing Role" data-validation = "" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
+                  <input type="text" id="assignedTo" placeholder="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
                   <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="getTeamOwners();"></i> </span>
                   </div>
@@ -1249,7 +1252,7 @@ $(document).ready(function() {
           <div class="form-group">
             <label class="col-md-3">Priority<span class="text-danger">*</span></label>
             <div class="col-md-9">
-              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" >
+              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" field-name = "priority">
                 <option value="">Select Priority</option>
                 <option ${requirement.priority  == 'Urgent' ? 'selected' : ''}>Urgent</option>
                 <option ${requirement.priority  == 'High' ? 'selected' : ''}>High</option>
@@ -1267,8 +1270,7 @@ $(document).ready(function() {
                   <option>Client-2</option>
                   <option>Client-3</option>
                 </select> -->
-               <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId"  data-validation="required"  field-name = "Application Form">
-
+               <select class="chosen-select form-control select-bg" name="applicationFrom" id="applicationFrom"  data-validation="required"  field-name = "Application Form">
                     	<option value="">-- Select Form --</option>
 		                <c:forEach var="report" items="${submissionTempletesList}">
 					               <option value="${report.id}">${report.templateName}</option>
@@ -2097,7 +2099,10 @@ function assignMembers() {
 
 <script type="text/javascript">
 	function assignedToValidation() {
-		
+		var count = $('#assignedToMaxCount').val();
+		if(count != null && count != 'undefined' && count!= ''){
+				 $('#assignedTo').attr("data-validation-optional","true"); 
+		} 
 	}
 </script>	
 
@@ -2188,9 +2193,9 @@ var existingValue = document.getElementById('isClientJob').value;
 		 
 		//to remove the  Internal  Submission Form  as we are selecting the Client 
 		 document.getElementById("internalSubmissionFrom").style.display = 'none';
-	     $('#applicationFrom').removeAttr('data-validation');
-	     
-	     
+		 $('#applicationFrom').attr("data-validation-optional","true"); 
+		
+		 
          $('#addClientId').removeAttr('data-validation-optional');
 	     $('#addClientId').attr("data-validation","required"); 
 	   
@@ -2211,6 +2216,8 @@ var existingValue = document.getElementById('isClientJob').value;
 		 
 		 $('#clientSubmissionForm').removeAttr('data-validation');
 		 $('#clientSubmissionForm').attr("data-validation-optional","true"); 
+		 
+		 $('#applicationFrom').removeAttr("data-validation-optional"); 
 	 }
 }
 

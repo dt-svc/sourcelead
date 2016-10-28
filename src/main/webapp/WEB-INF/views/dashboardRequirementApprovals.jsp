@@ -72,17 +72,16 @@ function requirementApproverList(){
 		                     }
 	                    	  if(opt.minExp !=null && opt.minExp !='' && opt.minExp !='undefined'){
                                   
-		                     result = result +"<td><div><b class='proj_process'>"+opt.minExp+"</b></div></td>";
+		                     result = result +"<td><div>"+opt.minExp+"</div></td>";
                                   }else{
                                 	  result = result +"<td><div>-----</div></td>";
                                 	  }
                                   
 		                     if(opt.requirementSubmissionStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN'){
-			                     result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
+		                    	 result = result + '<td><div><a  href="javascript:void(0)"  onClick="#"   ><i class="fa fa-check text-success"></i></a> &nbsp;&nbsp; <a  href="javascript:void(0)"  onClick="#"  ><i class="fa fa-close text-danger"></i></a></div></td>';
 
 		                     }else{
-			                     result = result +"<td><div>--</div></td>";
- 
+		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
 		                     
 		                     result = result +"</tr>";
