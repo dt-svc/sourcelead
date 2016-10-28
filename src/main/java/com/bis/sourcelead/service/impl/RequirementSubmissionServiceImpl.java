@@ -506,4 +506,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 	}
 
+	@Override
+	public RequirementSubmission getSubmissionsBySourceSubmissionId(Long sourceSubmissionId,Long orgLocationsId) {
+		return requirementSubmissionDao.getSubmissionsBySourceSubmissionId(sourceSubmissionId,orgLocationsId);
+	}
+
 }

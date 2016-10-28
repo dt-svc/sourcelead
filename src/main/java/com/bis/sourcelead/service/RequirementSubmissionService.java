@@ -41,4 +41,6 @@ public interface RequirementSubmissionService {
 
 	List<RequirementSubmission> getRequirementPerCandidate(Long candudateId) throws Exception;
 
+	RequirementSubmission getSubmissionsBySourceSubmissionId(Long sourceSubmissionId, Long orgLocationsId);
+
 }
