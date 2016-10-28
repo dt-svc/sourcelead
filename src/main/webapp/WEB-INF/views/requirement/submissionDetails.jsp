@@ -305,9 +305,13 @@ function getInternalInterviewsList(submissionId){
 	                    		 result = result +' <font color="orange" class="brder-int">Maybe</font>';
 	                    	 }
 	                    	 
+	                    	 if(report.notificationToApplicant == null || report.notificationToApplicant == '' || report.notificationToApplicant =='undefined'){
+	                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onclick="changeInterviewStatus('+report.id+',\'Not Attending\');" title="Notify to Applicant"><i class="fa fa-user text-muted"></i></a>';
+	                    	 }
+	                    	 if(report.notificationToSpoc == null || report.notificationToSpoc == '' || report.notificationToSpoc =='undefined'){
+	                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+report.id+',\'Maybe\');" title="Notify to Vednor"><i class="fa fa-suitcase text-muted"></i></a>';
+	                    	 }
 	                    	 
-	                    	 result = result + '<a href="javascript:void(0)" class="brder-int-left" onclick="changeInterviewStatus('+report.id+',\'Not Attending\');" title="Notify to Applicant"><i class="fa fa-user text-muted"></i></a>';
-	                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+report.id+',\'Maybe\');" title="Notify to Vednor"><i class="fa fa-suitcase text-muted"></i></a>';
 	                    	 
 	                    	 result = result + '</div>';
 	                    	 result = result + '</div>';
