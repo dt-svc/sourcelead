@@ -200,11 +200,16 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus) {
+	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus, String dateRange) {
 		
         Session session = this.sessionFactory.getCurrentSession();
-		
-		String query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId and rs.submissionStatus = :submissionStatus and rs.status = 1";
+        
+        String query = "";
+		if(dateRange != null && "today".equals(dateRange)){
+           query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId and rs.submissionStatus = :submissionStatus and rs.status = 1  and DATE(rs.createdDate) = CURDATE()";
+		}else if(dateRange != null && "previous".equals(dateRange)){
+			query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId and rs.submissionStatus = :submissionStatus and rs.status = 1  and DATE(rs.createdDate) < CURDATE()";
+		}
 		
 		List<Long> reqSubmsCount =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("submissionStatus", submissionStatus).list();
 			Integer count = 0;
@@ -213,7 +218,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			}
 			return count;
 	}
-
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementSubmission> getRequirementPerCandidate(Long candudateId) throws Exception {
@@ -223,6 +228,25 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	     return shortListCandidatesList;
 	}
 	
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementSubmission getRequirementSubmissionByIdAndSubmissionStatus(Long submissionId,
+			String submissionStatus) throws Exception {
+		
+			
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmission rs left join fetch rs.requirement where rs.id = :submissionId and rs.submissionStatus = :submissionStatus ";
+		List<RequirementSubmission> requirementSubmissionsList =  session.createQuery(query.toString()).setLong("submissionId", submissionId).setString("submissionStatus", submissionStatus).setCacheable(true).list();
+		
+		RequirementSubmission requirementSubmission = null;
+		if (requirementSubmissionsList != null && requirementSubmissionsList.size() > 0) {
+			requirementSubmission = (RequirementSubmission) requirementSubmissionsList.iterator().next();
+		}
+		return requirementSubmission;
+	
+	}
 	
     
   }

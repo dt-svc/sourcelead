@@ -470,6 +470,13 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
 		 
-	}	
+	}
+	
+	@Override
+	public List<RequirementInterview> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)
+			throws Exception {
+		List<RequirementInterview> list = requirementInterviewDao.getAllInterviewAssignedToLoginUser(orgLocationsId, dateRange, currentTime, userType, userId, userCode);
+		return list;
+	}
 
 }

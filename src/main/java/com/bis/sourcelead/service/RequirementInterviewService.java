@@ -21,6 +21,6 @@ public interface RequirementInterviewService {
 
 	void saveRequirementInterview(RequirementInterview requirementInterview) throws Exception;;
 
-	
+	List<RequirementInterview> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)throws Exception; 
 
 }
