@@ -596,7 +596,7 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("requirementRate","--");
 			 }
-		if(requirement.getClientId()!=null){
+		if(requirement.getClientId().getResponderLocationId()!=null){
 			 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
 		}else{
 			globalVarsMap.put("client","--");
@@ -760,8 +760,8 @@ public class RequirementServiceImpl implements RequirementService {
 		 }else{
 		 globalVarsMap.put("approverName","--"); 
 		 }
-		 if(loginUser.getFirstName()!= null  && !"".equalsIgnoreCase(loginUser.getFirstName())){
-		 globalVarsMap.put("jobInitiatorName", loginUser.getFirstName()); 
+		 if(intiatorUser.getFirstName()!= null  && !"".equalsIgnoreCase(loginUser.getFirstName())){
+		 globalVarsMap.put("jobInitiatorName", intiatorUser.getFirstName()); 
 		 }else{
 		 globalVarsMap.put("jobInitiatorName","--"); 
 		 }
@@ -1184,11 +1184,11 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc,OrgLocations loginOrgLocation,String releasetype) throws Exception {
+	public void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc,OrgLocations loginOrgLocation,String releasetype,StringBuilder location) throws Exception {
 		User  vendorContactUser = null;
 		
-		if(releasetype.equalsIgnoreCase("Vendors")){
-			vendorContactUser = userService.getUserById(orgSpoc.getOwnerUser().getId());
+		if(releasetype.equalsIgnoreCase("VENDORS")){
+			vendorContactUser = userService.getUserById(orgSpoc.getSpocUser().getId());
 
 		}else if(releasetype.equalsIgnoreCase("CONTACTS")){
 			vendorContactUser = userService.getUserById(orgSpoc.getSpocUser().getId());
@@ -1208,8 +1208,8 @@ public class RequirementServiceImpl implements RequirementService {
 			 } else {
 				 globalVarsMap.put("RequirementTitle", "--");
 			}
-		 if (requirement.getCountry() != null && !"".equalsIgnoreCase(requirement.getCountry()) ) {
-			 globalVarsMap.put("RequirementLocation",  requirement.getCountry());
+		 if (location != null) {
+			 globalVarsMap.put("RequirementLocation",  location.toString());
 			 } else {
 				 globalVarsMap.put("RequirementLocation", "--");
 			}
@@ -1236,9 +1236,9 @@ public class RequirementServiceImpl implements RequirementService {
 		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 		
 		 if (loginUser.getFirstName()+" "+loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()+" "+loginUser.getLastName())) {
-			 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
+			 globalVarsMap.put("LoginUser",loginUser.getFirstName()+" "+loginUser.getLastName());
 			 } else {
-				 globalVarsMap.put("loginUserName", "--");
+				 globalVarsMap.put("LoginUser", "--");
 			}
 		 
 		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
