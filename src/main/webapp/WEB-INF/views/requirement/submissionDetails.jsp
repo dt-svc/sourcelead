@@ -160,15 +160,26 @@ function getSubmissionDetailsSideBar(submissionId,candidateId){
 	                  //Internal Interviews List
 	                  result = result + '<div class="col-md-6">';
 	     			  result  = result + '   <div id="internalInterviewsList" ></div>';
+
+		                  
+	     			 result = result+'<div id="rejectOfferAlert" ></div>  ';
+	     			 // Accordion Seccond Tab 
+	     			  result  = result + '   <div id="offerDetails" ></div>';
+
 	     			  
 	     			//Customer Interviews List
 	     			  result  = result + '   <div id="customerInterviewsList" ></div>';
 	     			 result = result + ' </div>';      
+
        
           result = result + '</div>';
           
 getInternalInterviewsList(submissionId);
+
+getOfferDetails(submissionId);   
+
 getCustomerInterviewsList(submissionId);
+
 
 $("#viewCandidateDiv").empty();  
 $("#viewCandidateDiv").append(result);
@@ -597,5 +608,190 @@ function getCustomerInterviewsList(submissionId){
 	 
 	 
 }
+</script>
+
+
+<script>
+function getOfferDetails(submissionId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({  
+         type : "POST",
+         url: sourceleadUrl+"/getOfferDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
+         success :function(data) {
+        	 
+              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+            		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+            		 else if (data.indexOf('exception') >= 0) {
+            			 location.replace(sourceleadUrl+"/errorPage");
+            		 }
+            		 else{
+	                	 $("#offerDetails").empty();
+	                	 result = result+'<div id="rejectOfferAlert" ></div>  ';
+	                	 
+	                	 var result = '';
+	                	 result = result + '<div class="col-md-6">';
+                    	 result = result + '<div class="clearfix">';
+   					     result = result + '<div class="content clearfix" style="display: block;">';
+	                     var json = JSON.parse(data);
+	                  
+	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
+	                    	 result = result + '<h2  class="active">Offer</h2>';
+	                    	 result = result + '<div class="content clearfix">';
+	                    	 result = result + '<div class="interview-type">';
+	                    	 
+	                    	 
+	                    	 var accept = "ACCEPT";
+	                    	 var reject = "REJECT";
+	                    	 var mybe = "MYBE";
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<div class="action-nav">';
+	                    	 result = result + '<a  href="javascript:void(0)"  onClick="acceptingOffer(\''+accept+'\' ,\''+submissionId+'\');"   ><i class="fa fa-check text-success"></i></a>';
+	                    	 result = result + '<a  href="javascript:void(0)"  onClick="rejectOffer( \''+reject+'\' ,\''+submissionId+'\');"  ><i class="fa fa-close text-danger"></i></a>';
+	                    	 result = result + '<a  href="javascript:void(0)"  onClick="acceptingOffer(\''+mybe+'\',\''+submissionId+'\');"   ><i class="fa fa-question-circle text-muted"></i></a>';
+	                    	 result = result + '</div>';
+	                    	 result = result + '</div>';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Joining Date</strong>';
+	                    	 result = result + '</label>';
+	                    	 result = result + '<p class="col-md-7">'+json.dateOfJoiningStr+'</p>';
+	                    	 result = result + '</div>';
+                            
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Position Type</strong>';
+	                    	 result = result + '</label>';
+	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+json.positionType+'</p>';
+	                    	 result = result + '</div>';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Rate</strong>';
+	                    	 result = result + '</label>';
+	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+json.amount+'</p>';
+	                    	 result = result + '</div>';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Attachment</strong>';
+	                    	 result = result + '</label>';
+                             result = result + '<p class="col-md-7 tbldata-dotdot-big"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+json.id+'\"></a></p>';
+	                    	 result = result + '</div>';
+	                    	
+	                         result = result + '</div>';
+	                         result = result + '</div>';
+	                         result = result + '</div>';
+	                    	 
+		                     
+	                     result = result + '</div>';
+	                     result = result + '</div>';
+	                     result = result + '</div>';
+	                    
+	                     $("#offerDetails").append(result); 
+	                     
+	                     $('#accordion-sl .content').hide();
+	                     $('#accordion-sl h2:first').addClass('active').next().slideDown('slow');
+	                     $('#accordion-sl h2').click(function() {
+	                         if($(this).next().is(':hidden')) {
+	                             $('#accordion-sl h2').removeClass('active').next().slideUp('slow');
+	                             $(this).toggleClass('active').next().slideDown('slow');
+	                         }
+	                     });
+			    	} 
+              }else{
+            	 
+	    	         var result ="";
+		    	     result = result+"   <div class='row'>"; 
+					 result = result+"	<div class='col-lg-12'>"; 
+					 result = result+"		<div class='content-area clearfix'>"; 
+					 result = result+"			<div class='blank-pages'>";
+					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 result = result+"			        <p>No Documents Found</p>";
+					 result = result+"			 </div>";
+					 result = result+"		</div>"; 
+					 result = result+"	</div>"; 
+					 result = result+"  </div> "; 
+					$("#offerDetails").empty();
+				    $("#offerDetails").append(result); 
+              }
+       },
+         
+    }); 
+	 
+	 
+}
+
+</script>
+
+
+
+<%-- 
+     @author : David Raju Sammeta
+     this script is for Reject Offer alert
+     1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
+--%>
+<script type="text/javascript">
+function cancelAlert(){ 
+	$("#rejectOfferAlert").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
+
+<script type="text/javascript">
+function rejectOffer(offerStatus,submissionId){
+	
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='acceptingOffer(\""+ offerStatus+ "\" ,\""+ submissionId+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +"	</div>";
+	$("#rejectOfferAlert").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+
+
+
+<script>
+function acceptingOffer(offerStatus,submissionId){
+	
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	 var reason;
+	 if ($('#rejectReason').length)
+	 {
+		 reason = document.getElementById("rejectReason").value; 
+	 }
+	 else
+	 {
+		 reason = '';
+	 }
+	 
+	 $.ajax({  
+         type : "POST",
+         url: sourceleadUrl+"/acceptingOffer?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason,        
+         success :function(data) {
+        	   
+        	    var json = JSON.parse(data);
+        	    $("#offerDetails").empty();
+			    $("#offerDetails").append(data); 
+            
+       },
+         
+    }); 
+	 
+	 
+}
+
 </script>
 
