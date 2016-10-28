@@ -212,70 +212,80 @@ public class DashboardRestController {
 		return resultJson;
 	 }
 	
- 	/**
-	 * 
-	 * @author: Venkat Kesav
-	 * This  controller method is  to get Interviews list 
-	 */
-	@RequestMapping(value = "/getInterviews")
-	public String getInterviews(String dateRange, HttpServletRequest request) throws Exception {
-		
-		
-
-		String resultJson;
-		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-
-	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		
-		List<RequirementInterview> requirementInterview = null;
-		
-		String currentTime = null;
-		String userType = null;
-		Long userId = null;
-		
-		
-		
-		SimpleDateFormat displayFormat = new SimpleDateFormat("HH:mm");
-        SimpleDateFormat parseFormat = new SimpleDateFormat("hh:mm a");
-        Date date = parseFormat.parse("10:30 pm");
-        System.out.println(parseFormat.format(date) + " = " + displayFormat.format(date));
-        
-        
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        System.out.println( sdf.format(cal.getTime()) );
-        
-        
-        
-        String s = sdf.format(cal.getTime());
-        DateFormat f1 = new SimpleDateFormat("HH:mm:ss");
-        Date d = f1.parse(s);
-        DateFormat f2 = new SimpleDateFormat("h:mma");
-        System.out.println(f2.format(d).toLowerCase());
-		
-		
-		/*if(StringUtils.equals(dateRange, "today")){
-			requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId);
-		}
-		
-		if(StringUtils.equals(dateRange, "previous")){
-			requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId);		
-		}
-		
-		if(StringUtils.equals(dateRange, "upcoming")){
-			requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId);
-		}*/
-		
-		//requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, f2.format(d).toLowerCase(), userType, userId);
-		
-		if("ROLE_ADMIN".equalsIgnoreCase(userRole)){
-			//requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId);
-		}else if("ROLE_USER".equalsIgnoreCase(userRole)){
+	 /**
+		 * 
+		 * @author: Venkat Kesav
+		 * This  controller method is  to get Interviews list 
+		 */
+		@RequestMapping(value = "/getInterviews")
+		public String getInterviews(String dateRange, HttpServletRequest request) throws Exception {
 			
+			
+
+			String resultJson;
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			List<RequirementInterview> requirementInterviewList = null;
+			
+			String currentTime = null;
+			String userType = null;
+			String userCode = user.getUserCode();
+			Long userId = user.getId();
+			
+			/*if(StringUtils.equals(dateRange, "today")){
+				requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId);
+			}
+			
+			if(StringUtils.equals(dateRange, "previous")){
+				requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId);		
+			}
+			
+			if(StringUtils.equals(dateRange, "upcoming")){
+				requirementInterview = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId);
+			}*/
+			
+			if("ROLE_ADMIN".equalsIgnoreCase(userRole)){
+				userType = "ADMIN";
+				requirementInterviewList = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode);
+			}else{
+				requirementInterviewList = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode);
+			}
+			
+			for(RequirementInterview requirementInterview : requirementInterviewList){
+				String candidateFirstName = "";
+				String candidateLastName = "";
+				String requirementTitle = "";
+				if(requirementInterview.getSubmissionId() != null && requirementInterview.getSubmissionId().getCandidate() != null){
+					if(requirementInterview.getSubmissionId().getCandidate().getFirstName() != null){
+						
+						candidateFirstName = requirementInterview.getSubmissionId().getCandidate().getFirstName();
+					}
+					if(requirementInterview.getSubmissionId().getCandidate().getLastName() != null){
+						
+						candidateLastName = requirementInterview.getSubmissionId().getCandidate().getLastName();
+					}
+				}
+				
+				if(requirementInterview.getSubmissionId() != null && requirementInterview.getSubmissionId().getRequirement().getJobTitle() != null){
+					requirementTitle = requirementInterview.getSubmissionId().getRequirement().getJobTitle();
+				}
+				
+				requirementInterview.setCandidateName(candidateFirstName+" "+candidateLastName);
+				
+				requirementInterview.setRequirementTitle(requirementTitle);
+				
+				requirementInterview.setInterviewStartDateTimeStr(requirementInterview.getStartTime().toString());
+				
+				requirementInterview.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
+				
+			}
+			
+			
+			resultJson = commonUtil.toJSON(requirementInterviewList);
+			return resultJson;
 		}
-		resultJson = commonUtil.toJSON(requirementInterview);
-		return resultJson;
-	}
 
 }
