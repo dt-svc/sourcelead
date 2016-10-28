@@ -268,7 +268,7 @@ function getInternalInterviewsList(submissionId){
 				             }
 	                    	 
 	                    	 if(notifiedDetails == ""){
-	                    		notifiedDetails = '---';
+	                    		notifiedDetails = '';
 	                    	 }
 	                    	 
 	                    	 if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
@@ -370,7 +370,7 @@ function getInternalInterviewsList(submissionId){
 	                         result = result + '<label class="col-md-5">';
 	                         result = result + '<strong>Notified to</strong>';
 	                         result = result + '</label>';
-	                         result = result + '<p class="col-md-7 tbldata-dotdot-big" id="'+report.id+'notifiedDiv">'+notifiedDetails+'</p>';
+	                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span id="'+report.id+'notifiedDiv">'+notifiedDetails+'<span></p>';
 	                         result = result + '</div>';
 	                         
 	                         result = result + '</div>';
@@ -435,7 +435,14 @@ function sendMailToapplicant(submissionId,interviewId){
 		    url: sourceleadUrl+"/sendMailToapplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId,	    	   
 		    success: function(data) {
 		    	 jQuery("#"+(interviewId)+"applicantDiv").css("display","none");
-           		    $("#"+(interviewId)+"notifiedDiv").html("Applicant");
+           		 var existingVal = $("#"+(interviewId)+"notifiedDiv").text();
+ 		    	
+ 		    	if(existingVal == "" || existingVal ==null){
+ 		    		 $("#"+(interviewId)+"notifiedDiv").html("Applicant");
+ 		    	}
+ 		    	else{
+ 		    		 $("#"+(interviewId)+"notifiedDiv").html(existingVal+",Applicant");
+ 		    	}
 	           	  }
 	   });
 }
@@ -449,7 +456,15 @@ function sendMailToVendor(submissionId,interviewId){
 		    url: sourceleadUrl+"/sendMailToVendor?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId,	    	   
 		    success: function(data) {
 		    	jQuery("#"+(interviewId)+"vendorDiv").css("display","none");
-       		    $("#"+(interviewId)+"notifiedDiv").html("Vendor");
+		    	var existingVal = $("#"+(interviewId)+"notifiedDiv").text();
+		    	
+		    	if(existingVal == "" || existingVal ==null){
+		    		 $("#"+(interviewId)+"notifiedDiv").html("Vendor");
+		    	}
+		    	else{
+		    		 $("#"+(interviewId)+"notifiedDiv").html(existingVal+",Vendor");
+		    	}
+       		   
            	  } 
 	   });
 }
