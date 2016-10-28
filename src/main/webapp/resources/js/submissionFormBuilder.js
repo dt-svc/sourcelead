@@ -166,8 +166,8 @@ function addField(fieldType,value,labelValue,sourceleadUrl,templateId,labelValid
     }
     
     if(hasAutocomplete){
-    	includeAutocompleteHTML = ''+ '<label class="col-md-5"><div class="col-md-2 lblHeight">Type:</div>' +
-        ' <div class="col-md-10"> ' +
+    	includeAutocompleteHTML = ''+ '<label class="col-md-5"><div class="col-md-3 lblHeight">Type:</div>' +
+        ' <div class="col-md-9"> ' +
         '<select  class="field-label form-control input-sm" data-validation="required"  field-name="Autocomplete">'+
         '<option value="location">Location</option>      '+
         '</select>'+
@@ -176,8 +176,8 @@ function addField(fieldType,value,labelValue,sourceleadUrl,templateId,labelValid
      }
     else{
     	 includeTextHTML = ''+
-		   '<label class="col-md-5"><div class="col-md-2 lblHeight">Label:</div>' +
-	       ' <div class="col-md-10" id="label'+addField.i+'"> ' +
+		   '<label class="col-md-5"><div class="col-md-3 lblHeight">Label:</div>' +
+	       ' <div class="col-md-9" id="label'+addField.i+'"> ' +
 	       '<input type="text" '+readOnly+' onblur="validateLabelName('+addField.i+','+templateId+',\''+sourceleadUrl+'\',\''+labelValidationCheck+'\')" id="textLabel'+addField.i+'" data-validation="required validate_Space" placeholder="Required *" field-name="Label" class="field-label form-control input-sm" >' +
 	       ' </div> ' +
 	       '</label>' 
@@ -245,8 +245,8 @@ function addChoice(labelValue) {
     return '' +
         '<li>' +
         '<div class="row">' +
-        '<label class="col-md-5 lblClass"> <div class="col-md-2 lblHeight">Option: </div> ' +
-        '<div class="col-md-10">' +
+        '<label class="col-md-5 lblClass"> <div class="col-md-3 lblHeight">Option: </div> ' +
+        '<div class="col-md-9">' +
         '<input type="text" '+readOnly+' data-validation="required validate_Space" placeholder="Required *" field-name="Option Label" class="choiceInput choice-label form-control input-sm">' +
         '</div>' +
         '</label>' +
