@@ -6,7 +6,65 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
  
- 
+ <style type="text/css">
+.show-tooltip {
+	position:relative;
+	font-size:13px !important;
+}
+.show-tooltip .tooltip_div {
+	color:#333;
+	background: #e1e6fa;
+    border-radius: 3px;
+    display: none;
+    padding:5px;
+    position: absolute;
+    top: 25px;
+	left:-48px;
+    width: 415px;
+	box-sizing:border-box;
+	z-index:999;
+	transition: all 0.5s ease;
+}
+.show-tooltip .tooltip_div:after{
+	bottom: 100%;
+	left: 15%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(136, 183, 213, 0);
+	border-bottom-color: #e1e6fa;
+	border-width: 10px;
+	margin-left: -20px;
+}
+.show-tooltip:hover .tooltip_div{
+	display:block;
+}
+.tooltip_div table {
+	background:#fff;
+}
+.tooltip_div table thead {
+	background:#375d81;
+	color:#fff;
+}
+.tooltip_div table tr th, .tooltip_div table tr td{
+	padding:5px 10px;
+	height: auto !important;
+	font-size: 13px !important;
+    border-bottom: none !important;
+}
+.tooltip_div table tr td span{
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space:nowrap;
+	display:block;
+	width:175px;
+	padding-right:5px;
+	margin-bottom:0;
+}
+</style>
  
 <script>
 $(document).ready(function() {
@@ -2302,7 +2360,7 @@ function requirementRecommendations(requirementId){
 	  $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
-     success :function(data) { 
+     success :function(data) {
     	 var json = JSON.parse(data);
     	    var result = '';
     	    result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
@@ -2328,7 +2386,21 @@ function requirementRecommendations(requirementId){
 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>';
 		    result = result +'<td><div><span>'+report.mobilePhone+'</span></div></td>';
 		    result = result +'<td><div><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><i class="glyphicon glyphicon-list-alt">&nbsp;'+report.candidateResume+'</i></a></div></td>';
-		    result = result +'<td><div><span>'+report.noOfReq+'</span></div></td>';
+		    result = result +'<td><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
+		    if(report.requirementSubmisstions.length > 0){
+		    	result = result +'<div class="tooltip_div">';
+			    result = result +'<table class="table-bordered table-hover table-striped table-responsive" width="100%;">';
+			    result = result +' <thead><tr><th>Requirement Name</th> <th>Stage</th></tr></thead>';
+			    result = result +'<tbody>';
+			    for(var j=0;j<report.requirementSubmisstions.length;j++){
+			    	 var sub = report.requirementSubmisstions[j];
+			          result = result +'<tr><td><span>'+sub.requirementName+'</span></td> <td><span>'+sub.requirementStage+'</span></td></tr>';
+			    } 
+			    result = result +'</tbody>';
+			    result = result +' </table>';
+			    result = result +' </div>'; 
+		    }
+		    result = result +' </div></td>';
 		    result = result +'<td><div><span>'+report.candidateScore+'%</span></div></td>';
 		    result = result +'<td><div><span>';
 		    if(report.isCandidateAdedd == true){
@@ -2387,6 +2459,16 @@ function getActions(){
  	});	
 
 }
+</script>
+
+<script>
+//show div
+function myFun(){
+	   alert("hi");
+}
+$(".demo").on('mouseenter',function(){
+	 alert("hi");
+});
 </script>
 
 <jsp:include page="addApplicant.jsp" />
