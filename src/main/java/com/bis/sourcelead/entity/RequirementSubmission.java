@@ -109,6 +109,11 @@ public class RequirementSubmission {
     @Transient
    	private String resumeName;
     
+    @Transient
+   	private String requirementName;
+    
+    @Transient
+   	private ApplicantSubmissionStatus requirementStage;
     
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -310,6 +315,22 @@ public class RequirementSubmission {
 
 	public void setCandidateId(String candidateId) {
 		this.candidateId = candidateId;
+	}
+
+	public String getRequirementName() {
+		return requirementName;
+	}
+
+	public void setRequirementName(String requirementName) {
+		this.requirementName = requirementName;
+	}
+
+	public ApplicantSubmissionStatus getRequirementStage() {
+		return requirementStage;
+	}
+
+	public void setRequirementStage(ApplicantSubmissionStatus requirementStage) {
+		this.requirementStage = requirementStage;
 	}
 
 	
