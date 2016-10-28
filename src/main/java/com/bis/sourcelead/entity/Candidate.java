@@ -163,6 +163,9 @@ public class Candidate {
 	 
 	 @Transient
 	 private String candidateResume;
+	 
+	 @Transient
+	 private boolean isCandidateAdedd;
 
 	public Long getId() {
 		return id;
@@ -580,6 +583,16 @@ public class Candidate {
 
 	public void setCandidateResume(String candidateResume) {
 		this.candidateResume = candidateResume;
+	}
+
+
+	public boolean getIsCandidateAdedd() {
+		return isCandidateAdedd;
+	}
+
+
+	public void setIsCandidateAdedd(boolean isCandidateAdedd) {
+		this.isCandidateAdedd = isCandidateAdedd;
 	}
 
 	

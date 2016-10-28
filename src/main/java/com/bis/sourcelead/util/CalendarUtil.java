@@ -1,5 +1,6 @@
 package com.bis.sourcelead.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -417,6 +418,45 @@ public  class CalendarUtil {
 		}
         return null;
     }
+    
+    
+    public static Date getDateFromDateAndTime(Date date,String timeInTwelveHoursFormat) {
+    	
+    	  SimpleDateFormat displayFormat = new SimpleDateFormat("HH:mm");
+	       SimpleDateFormat parseFormat = new SimpleDateFormat("hh:mma");
+	       Date time = null;
+	       Date requiredDate = null;
+			try {
+				  time = parseFormat.parse(timeInTwelveHoursFormat);
+				  String[] hourAndMinutes = displayFormat.format(time).split(":");
+			      Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+		          cal.setTime(date);
+		          cal.set(Calendar.HOUR_OF_DAY,Integer.parseInt(hourAndMinutes[0]));
+		          cal.set(Calendar.MINUTE,Integer.parseInt(hourAndMinutes[1]));
+		          cal.set(Calendar.SECOND,0);
+		          cal.set(Calendar.MILLISECOND,0);
+		          requiredDate = cal.getTime();
+			} catch (ParseException e) {
+			}
+		   return requiredDate;
+	}
+    
+    
+    public static String get12FormatTimeFrom24FormatTime(String twentyHourFormatTime) {
+    	
+    	SimpleDateFormat parseFormat = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat displayFormat = new SimpleDateFormat("hh:mm a");
+        String twelveHourFormatTime = null;
+        Date date;
+		try {
+			date = parseFormat.parse(twentyHourFormatTime);
+			twelveHourFormatTime =displayFormat.format(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return twelveHourFormatTime;
+	}
 	 
 //    Calendar calendar = Calendar.getInstance();
 //	Date date = calendar.getTime();

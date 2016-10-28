@@ -37,6 +37,7 @@ import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 
@@ -105,12 +106,24 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 									requirementInterview.setInterviewType(jsonObj.getString(c+"interviewType"));
 								}
 								
-								if(jsonObj.has(c+"startTime") && !jsonObj.getString(c+"startTime").isEmpty()){
+								/*if(jsonObj.has(c+"startTime") && !jsonObj.getString(c+"startTime").isEmpty()){
 									requirementInterview.setStartTime(jsonObj.getString(c+"startTime"));
 								}
 								
 								if(jsonObj.has(c+"endTime") && !jsonObj.getString(c+"endTime").isEmpty()){
 									requirementInterview.setEndTime(jsonObj.getString(c+"endTime"));
+								}*/
+								
+								if(jsonObj.has(c+"startTime") && !jsonObj.getString(c+"startTime").isEmpty()){
+									  Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")), 
+											      jsonObj.getString(c+"startTime"));
+									   requirementInterview.setStartTime(startTime);
+								}
+								
+								if(jsonObj.has(c+"endTime") && !jsonObj.getString(c+"endTime").isEmpty()){
+									Date endTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")), 
+										      jsonObj.getString(c+"endTime"));
+								      requirementInterview.setEndTime(endTime);
 								}
 								
 								if(jsonObj.has(c+"location") && !jsonObj.getString(c+"location").isEmpty()){
