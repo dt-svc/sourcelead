@@ -22,7 +22,6 @@
       
 <script>
 window.onload = interviews('today');
-//window.setInterval("interviews('today');", 60000);
 function interviews(dateRange){
 	var resultToday ="";
 	var sourceleadUrl = '${sourceleadUrl}';

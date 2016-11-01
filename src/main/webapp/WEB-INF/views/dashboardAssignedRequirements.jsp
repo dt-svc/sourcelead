@@ -65,7 +65,7 @@ function requirementList(){
 	                     result = result +"    <th>Applicants</th>"; 
 	                     result = result +"    <th>Shortlisted</th>"; 
 	                     result = result +"    <th>Submited</th>"; 
-	                     result = result +"    <th>Interviewd</th>"; 
+	                     result = result +"    <th>Interviewed</th>"; 
 	                     result = result +"    <th>Offered</th>"; 
 	                     result = result +"    <th>Action</th>"; 
 	                     result = result +"  </tr>"; 
@@ -94,18 +94,12 @@ function requirementList(){
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
 		                     }
-	                    	 result = result +"<td><div>-----</div></td>";
+	                    	 result = result +"<td><div>"+opt.noOfApplicants+"</div></td>";
 
-		                     result = result +"<td><div><b class='proj_process'>"+opt.requirementSubmissionStatus+"</b></div></td>";
-		                     if(opt.requirementSubmissionStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN'){
-			                     result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
-
-		                     }else{
-			                     result = result +"<td><div>--</div></td>";
- 
-		                     }
-		                     result = result +"<td><div>--</div></td>";
-		                     result = result +"<td><div>--</div></td>";
+		                     result = result +"<td><div>"+opt.noOfShortlistedApplicants+"</div></td>";
+			                 result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
+		                     result = result +"<td><div>"+opt.noOfInterviewedApplicants+"</div></td>";
+		                     result = result +"<td><div>"+opt.noOfOfferedApplicants+"</div></td>";
 		                     result = result +"<td><div>--</div></td>";
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";

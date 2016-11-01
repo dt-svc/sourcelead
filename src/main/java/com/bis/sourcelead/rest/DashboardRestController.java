@@ -146,6 +146,18 @@ public class DashboardRestController {
 				requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
 			}
 			
+			int applicantsCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "APPLICANTS");
+			int shortlistedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SHORTLISTED");
+			int submittedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SUBMITTED");
+			int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "INTERVIEWED");
+			int offeredCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "OFFERED");
+			
+			requirement.setNoOfApplicants(String.valueOf(applicantsCount));
+			requirement.setNoOfShortlistedApplicants(String.valueOf(shortlistedCount));
+			requirement.setNoOfSubmittedApplicants(String.valueOf(submittedCount));
+			requirement.setNoOfInterviewedApplicants(String.valueOf(interviewedCount));
+			requirement.setNoOfOfferedApplicants(String.valueOf(offeredCount));
+			
 		}
 		
 		resultJson = commonUtil.toJSON(requirementList);

@@ -257,6 +257,55 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	
 	}
 	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getAllSubmissionCountByRequirementIdAndSubmissionStage(Long orgLocationsId,
+			Long requirementId, String submissionStatus){
+		 Session session = this.sessionFactory.getCurrentSession();
+		 
+		 String submissionStages = "";
+		 
+		 if(submissionStatus.equalsIgnoreCase("APPLICANTS")){
+			 submissionStages = "and (rs.submissionStatus = 'SUBMISSION' OR rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'REJECTED' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' OR rs.submissionStatus = 'OFFERHIRED')";
+		 }
+		 
+		 if(submissionStatus.equalsIgnoreCase("SHORTLISTED")){
+			 submissionStages = "and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'REJECTED' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' OR rs.submissionStatus = 'OFFERHIRED')";
+		 }
+		 
+		 if(submissionStatus.equalsIgnoreCase("SUBMITTED")){
+			 submissionStages = "and (rs.submissionStatus = 'SUBMIT_TO_CLIENT')";
+		 }
+		 
+		 if(submissionStatus.equalsIgnoreCase("INTERVIEWED")){
+			 submissionStages = "and (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'REJECTED' OR rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' OR rs.submissionStatus = 'OFFERHIRED')";
+		 }
+		 
+		 if(submissionStatus.equalsIgnoreCase("OFFERED")){
+			 submissionStages = "and (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' OR rs.submissionStatus = 'OFFERHIRED')";
+		 }
+		 
+	     String query = "from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId  "+submissionStages+" ";
+	     List<Long> candidatesCount = session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocationsId).setLong( "requirementId", requirementId).list();
+	     Integer count = 0;
+			if(candidatesCount != null && !candidatesCount.isEmpty()){
+					count = candidatesCount.size();
+			}
+			return count;
+	}
+	
+	/*
+	SUBMISSION("submission"),
+	SHORTLIST("shortList"),
+	INTERVIEW("interview"),
+	REJECTED("rejected"),
+    SUBMIT_TO_CLIENT("submit_to_client"),
+    OFFERMADE("offer_made"),
+    OFFERACCEPTED("offer_accepted"),
+    OFFERREJECTED("offer_rejected"),
+    OFFERHIRED("hired");
+	*/
     
   }
 
