@@ -130,7 +130,10 @@ public class RequirementOfferRestController {
 			List<RequirementAssignTo>  requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(requirementSubmission.getRequirement().getId());
 			for(RequirementAssignTo requirementAssignTo :requirementAssignToList){
 				
-				if(loginUser.getUserCode().equalsIgnoreCase(requirementSubmission.getCreatedBy()) &&  (loginUser.getId() == requirementAssignTo.getAssignUserId().getId() || loginUser.getUserType().equalsIgnoreCase(Constants.ADMIN) || req.getManagerUserId().getId() == loginUser.getId())){
+				if(loginUser.getUserCode().equalsIgnoreCase(requirementSubmission.getCreatedBy())
+						&&  (loginUser.getId() == requirementAssignTo.getAssignUserId().getId() 
+						|| loginUser.getUserType().equalsIgnoreCase(Constants.ADMIN)
+						|| req.getManagerUserId().getId() == loginUser.getId()) ){
 					requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(requirementSubmission.getId());
 					requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
 				}
