@@ -347,10 +347,12 @@ public class CandidateListRestController {
 
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    
 			MultipartFile multiFile = null;
 			Candidate candidate ;
 			String jsonc = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(jsonc);
+
 			 candidate = candidateService.storeCandidate(jsonObj,loginOrgLocation,user,multiFile);
 			
 			return "success";

@@ -49,6 +49,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -92,6 +93,9 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	OrgService orgService;
+	
+	@Autowired
+	private RolesService rolesService;
 	
 	 @Autowired
 	 private  RequirementSubmissionService requirementSubmissionService;
@@ -446,13 +450,15 @@ public class RequirementServiceImpl implements RequirementService {
 				    teamId = Long.parseLong(assignedTeamId);
 				     team = teamService.getTeamByTeamId(teamId);
 				}
+//			    User roleUser = team.getOwnerUserId();
 				if(StringUtils.isNotEmpty(assignedToMaxCount)){
 				int MaxCount = Integer.parseInt(assignedToMaxCount);
 					for (int c = 1; c < MaxCount; c++) {
 						RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
 						
-						User assUser = new User();
-						assUser.setId(Long.parseLong(jsonObj.getString("assignUserId"+c)));
+//						User assUser = new User();
+//						assUser.setId(Long.parseLong(jsonObj.getString("assignUserId"+c)));
+						User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
 						requirementAssignTo.setAssignUserId(assUser);
 						
 						requirementAssignTo.setRequirementId(requirement);
@@ -462,6 +468,7 @@ public class RequirementServiceImpl implements RequirementService {
 						requirementAssignTo.setUpdatedBy(user.getUserCode());
 						requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
 						requirementAssignTo.setTeamId(team);
+						requirementAssignTo.setRoleId(rolesService.getRolesByDisplayName(assUser.getUserType()));
 						requirementAssignToList.add(requirementAssignTo);
 						AssignToTeamMembersEmail(user, assUser, requirement,location);
 
@@ -519,9 +526,13 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception {
 		Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
-		requirement.setRequirementCreatedDateToString(Constants.DF_YMD.format(requirement.getCreatedDate()));
+		if(requirement.getCreatedDate()!=null){
+			requirement.setRequirementCreatedDateToString(Constants.DF_YMD.format(requirement.getCreatedDate()));
+		}
 		return requirement;
 	}
+
+
 	
 	
 	/**
@@ -596,7 +607,7 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("requirementRate","--");
 			 }
-		if(requirement.getClientId().getResponderLocationId()!=null){
+		if(requirement.getClientId()!=null){
 			 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
 		}else{
 			globalVarsMap.put("client","--");
@@ -1280,5 +1291,13 @@ public class RequirementServiceImpl implements RequirementService {
 		
 			return requirementDao.getAssignedRequirementListByOrgLocationIDAndUserId(orgLocationId,userId);
 		
+	}
+	
+	@Override
+	public List<Requirement> getAssignedRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, Long userId)
+			throws Exception {
+		
+			return requirementDao.getAssignedRequirementApproverListByOrgLocationIDAndUserId(orgLocationId,userId);
+			
 	}
 }

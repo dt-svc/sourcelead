@@ -172,11 +172,11 @@ function editCandidate(candidateId){
 		 }
         getAllCountries(); 
 }
-</script> 
+</script>
 
 <!-- Country,State,City Script Starts Here -->
 
-<script type="text/javascript">
+ <script type="text/javascript">
 function getAllCountries(){
 	setTimeout(function(){ 
 	var countryName = $("#updateCountry").val();
@@ -189,12 +189,14 @@ function getAllCountries(){
         	$('#country').empty();
         	$('#country').append('<option value="">---select---</option>');
             for(var i=0;i<json.length;i++){
-            	if(json[i] == '${loginCountryName}'){
+            	if(json[i] == countryName){
+            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            	}else if(json[i] == '${loginCountryName}'){
             		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
-            	else{
+            	else{ 
             		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-            	}
+            	} 
             	
             }
             $('#country').trigger("chosen:updated");
@@ -206,14 +208,23 @@ function getAllCountries(){
 	}, 100);
 } 
 </script>
-
-
+ 
 <script>
 function getStates(){
-	var countryName = $("#updateCountry").val();
+	
+var countryName = $("#country").val();
 	
 	//to set existing state value(Auto populate)
-	var stateName = $("#updateState").val();
+	var stateName = $("#state").val();
+	
+	if(stateName == null || stateName == 'undefined' || stateName == ''){
+		stateName = document.getElementById("updateState").value;
+	}
+	
+	/* var countryName = $("#updateCountry").val();
+	
+	//to set existing state value(Auto populate)
+	var stateName = $("#updateState").val(); */
 	
 	//end state Auto populate
 	if(countryName != null && countryName != "" && countryName !="undefined"){
@@ -248,20 +259,27 @@ function getStates(){
         $('#city').trigger("chosen:updated");
 	}
 }
-</script> 
+</script>  
 
 
 <script>
 function getCities(){
 	
-   var countryName = $("#updateCountry").val();
+	var countryName = $("#country").val();
+	var stateName = $("#state").val();
+	
+	var cityName = $("#city").val();
+	if(cityName == null || cityName == 'undefined' || cityName == ''){
+		cityName = document.getElementById("updateCity").value;
+	}
+	   /* var countryName = $("#updateCountry").val();
 	
 	//to set existing state value(Auto populate)
 	var stateName = $("#updateState").val();
 	
 	//to set existing city value(Auto populate)
 	var cityName = $("#updateCity").val();
-	//end city Auto populate
+	//end city Auto populate */
 	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
@@ -291,9 +309,9 @@ function getCities(){
     	$('#city').trigger("chosen:updated");
 	}
 }
-</script>
+</script> 
 
-<!-- <script>
+ <!-- <script>
 function updateValues(){
 	var str_array = sequentialApprover1.split(',');
 	for (var i = 0; i < str_array.length; i++) {
@@ -301,8 +319,8 @@ function updateValues(){
 	}
 	$("#sequentialApprover1").val(str_array).trigger("chosen:updated");
 }
-</script> -->
-
+</script> 
+ -->
 
     	    
 
@@ -604,7 +622,7 @@ function candidateProfile(candidateId){
 	          
 	     }); 
 	 }else{
-		 alert("Enter Skill");
+		 
 	 }
 	 
  }  

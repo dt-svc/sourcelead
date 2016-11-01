@@ -140,23 +140,26 @@ $(document).ready(function () {
 
 <script>
 $(document).ready(function() {
-	
-	var requirementAssignedIds ='${requirementAssignedIds}';
-	if(requirementAssignedIds != null && requirementAssignedIds != 'undefined' && requirementAssignedIds != ''){
-		var result = "";
-		var requirementAssignedToIds = [];
-		requirementAssignedToIds = requirementAssignedIds.split("&");
-		var count = 1;
-		
-		for (i=0;i < requirementAssignedToIds.length;i++)
-        {
-        	 result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+requirementAssignedToIds[i]+"' />";
-        	 count++;
-        }
-		result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
-		$("#assignedToSavingDiv").empty();
-		$("#assignedToSavingDiv").append(result); 
-	}	
+	if ($('#requirementAssignedIds').length)
+	{
+		var requirementAssignedIds ='${requirementAssignedIds}';
+		if(requirementAssignedIds != null && requirementAssignedIds != 'undefined' && requirementAssignedIds != ''){
+			var result = "";
+			var requirementAssignedToIds = [];
+			requirementAssignedToIds = requirementAssignedIds.split("&");
+			var count = 1;
+			
+			for (i=0;i < requirementAssignedToIds.length;i++)
+	        {
+	        	 result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+requirementAssignedToIds[i]+"' />";
+	        	 count++;
+	        }
+			result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
+			$("#assignedToSavingDiv").empty();
+			$("#assignedToSavingDiv").append(result); 
+			assignedToValidation();
+		}	
+	} 
 });
 </script>
 <!-- Content Area -->
@@ -235,7 +238,7 @@ $(document).ready(function() {
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
             <div class="col-md-9">
-               <input type="text" class="form-control" id="positions" name="positions" value="${requirement.positions}"  field-name="Positions" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
+               <input type="text" class="form-control" id="positions" name="positions" value="${requirement.positions}"  field-name="Positions" data-validation="validate_Space validate_length length1-5 validate_int" data-validation-optional="true"  value="">
             </div>
           </div>
           
@@ -264,12 +267,12 @@ $(document).ready(function() {
             <div class="col-md-9">
               <div class="row">
                 <div class="col-md-6">
-                 <input type="text" class="form-control" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
+                 <input type="text" class="form-control" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5 validate_float" data-validation-optional="true"  value="">
                    
                 </div>
                 <div class="col-md-6">
                  
-                <input type="text" class="form-control" id="maxExp" name="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
+                <input type="text" class="form-control" id="maxExp" name="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-5 validate_float" data-validation-optional="true"  value="">
                 </div>
               </div>
             </div>
@@ -291,7 +294,7 @@ $(document).ready(function() {
                 </select>
                 
                 </div>
-                <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  value="">
+                <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker" id="rateType" name="rateType">
                     <option value="">Rate Per</option>
@@ -474,7 +477,7 @@ $(document).ready(function() {
               </div>
               <div class="form-group">
                 <label class="col-md-3">Bill Rate / Salary</label>
-              <div class="col-md-9">
+              <div class="col-md-9 pras">
 	              <div class="input-group">
 	                <div class="input-group-btn selp-custom-min">
 	                  <select class="selectpicker" id="clientCurrencyCode" name="clientCurrencyCode">
@@ -487,7 +490,7 @@ $(document).ready(function() {
 	                </select>
 	                
 	                </div>
-	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
+	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
 	                 <select class="selectpicker"  id="clientRateType" value="${requirement.clientRateType}" name="clientRateType">
 	                    
@@ -501,6 +504,10 @@ $(document).ready(function() {
 		                    <option ${requirement.clientRateType  == 'others' ? 'selected' : ''}>Yearly</option>
 	                  </select>
            		</div>
+              </div>
+              </div>
+              <div class="clearfix"></div>
+              <div class="clearfix"></div>
               </div>
               <div class="form-group">
                 <label class="col-md-3">Submission Form<span class="text-danger">*</span></label>
@@ -519,495 +526,7 @@ $(document).ready(function() {
       </div>
       
       
-      <%-- <div class="clearfix">
-        <div class="col-lg-12">
-          <h3>Internal Details</h3>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12  myForm">
-         <div class="form-group">
-            <label class="col-md-3">Manager <span class="text-danger">*</span></label>
-            <div class="col-md-9">
-              <select  class="chosen-select form-control select-bg" id="managerUserId" >
-               <option value="php">Select Manager</option>
-	                    <c:forEach var="report" items="${usersList}">
-		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-		                </c:forEach>
-              </select>
-            </div>
-          </div>
-         <div class="form-group">
-                <label class="col-md-3">Approver<span class="text-danger">*</span></label>
-                <div class="col-md-9">
-                  <div class="form-icon">
-                    <select multiple class="chosen-select form-control select-bg">
-                      <option disabled>Select Client</option>
-                      <option>Client-1</option>
-                      <option>Client-2</option>
-                      <option>Client-3</option>
-                    </select>
-                    Add Level
-                    
-                     
-                    </div>
-                  </div>
-                    </div>
-                  <div role="dialog" id="addLevel" class="modal fade">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                          <h4 class="modal-title">Add Level</h4>
-                        </div>
-                        <div class="modal-body clearfix">
-                          <div class="form-horizontal custom-form clearfix">
-                            <div class="col-xs-12 col-md-12 col-lg-12">
-                              <div class="form-group">
-                                <label class="col-lg-3">Level Name</label>
-                                <div class="col-lg-9">
-                                  <input type="text" class="form-control" value="">
-                                </div>
-                              </div>
-                              <div class="form-group">
-                                <label class="col-lg-3">Description </label>
-                                <div class="col-lg-9">
-                                  <textarea class="form-control" rows="2"></textarea>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
-                          <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-          
-          <div class="form-group">
-            <label class="col-md-3">Assign To <span class="text-danger">*</span></label>
-            <div class="col-md-9">
-                <div class="form-icon"> <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-                  <input type="text" value="Assing Role" class="form-control" data-target="#assignTeam" data-toggle="modal">
-                  </span> <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1"></i> </span> </div>
-                <span class="hidden">Select Team</span> 
-                <!-- Modal content Assign To -->
-                <div role="dialog" id="assignTeam" class="modal fade">
-                  <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button data-dismiss="modal" class="close" type="button">×</button>
-                        <h4 class="modal-title">Assign Role</h4>
-                      </div>
-                      <div class="modal-body clearfix">
-                        <div class="form-horizontal row custom-form">
-                        <div class="form-group">
-                          <div class="col-xs-12 col-md-8 col-lg-8">
-                            <div class="input-group">
-                              <input type="search" class="form-control" value="">
-                              <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>
-                          </div>
-                          <div class="col-xs-12 col-md-4 col-lg-4">
-                             <select class="selectpicker">
-                              <option value="All">All</option>
-                              <option value="Admin">Admin</option>
-                              <option value="Account Manager">Account Manager</option>
-                              <option value="Recruiting Manager">Recruiting Manager</option>
-                              <option value="Hiring Manager">Hiring Managerr</option>
-                              <option value="Teams">Teams</option>
-                             </select>
-                        </div>
-                        </div>
-                        <div class="modal-body-custom mt clearfix">
-                          <table cols="0" class="table table-bordered table-striped  clearfix">
-                            <tbody>
-                              <tr>
-                                <th><input type="checkbox"></th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td><span class="tbldata-dotdot">Murali Krishna</span></td>
-                                <td><span class="tbldata-dotdot" title="muraraikumarmahessrinivas@businessintelli.com">muraraikumarmahessrinivas@businessintelli.com</span></td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control clsDatePicker" id="datepicker5">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button">Assign</button>
-                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                      </div>
-                    </div>
-                  </div>
-                </div> </div>
-                <!-- Assign To modal popup ends -->
-                <!-- Modal content Demo Popup: Need to Update -->
-                <div role="dialog" id="addTeam" class="modal fade">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button data-dismiss="modal" class="close" type="button">×</button>
-                        <h4 class="modal-title">Demo Popup: Need to Update</h4>
-                      </div>
-                      <div class="modal-body clearfix">
-                        <div class="form-horizontal custom-form clearfix">
-                          <div class="col-xs-12 col-md-12 col-lg-12">
-                            <div class="form-group">
-                            <label class="col-lg-3">Frist Name<span class="text-danger">*</span></label>
-                            <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
-                              </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3">Last Name</label>
-                            <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
-                              </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3">Email <span class="text-danger">*</span></label>
-                            <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
-                              </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3">Invoice Frequency<span class="text-danger">*</span></label>
-                            <div class="col-lg-9">
-                              <select class="form-control">
-                              	<option>Invoice-1</option>
-                                <option>Invoice-2</option>
-                                <option>Invoice-3</option>
-                              </select>
-                              </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3"></label>
-                            <div class="col-lg-9">
-                              <div class="checkbox">
-                              <label>
-                                <input type="checkbox" value="" checked>
-                                Send Invitation</label>
-               					 </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
-                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- Modal content Demo Popup: Need to Update ends --> 
-              </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3">Priority<span class="text-danger">*</span></label>
-            <div class="col-md-9">
-              <select class="selectpicker form-control">
-                <option>Select Priority</option>
-                <option>Priority-1</option>
-                <option>Priority-2</option>
-                <option>Priority-3</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group hidden">
-            <label class="col-md-3">Application Form<span class="text-danger">*</span></label>
-            <div class="col-md-9">
-              <div class="form-icon">
-                <select class="chosen-select form-control">
-                  <option>Select Client</option>
-                  <option>Client-1</option>
-                  <option>Client-2</option>
-                  <option>Client-3</option>
-                </select>
-                <i data-target="#addApplicationForm" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new"></i> </div>
-              <div role="dialog" id="addApplicationForm" class="modal fade">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                      <h4 class="modal-title">Application Form</h4>
-                    </div>
-                    <div class="modal-body clearfix">
-                                                <div class="form-horizontal custom-form clearfix">
-                          <div class="row">
-                            <div class="col-xs-12 col-md-12 col-lg-12">
-								<div class="clearfix">
-                    <div class="form-horizontal clearfix custom-fields">
-                      <div class="clearfix mb">
-                        <div class="col-md-8">
-                          <div class="row">
-                            <label class="col-md-3">Title</label>
-                            <div class="col-md-8">
-                              <input type="text" class="form-control input-sm" value="" placeholder="Title">
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-md-4">
-                          <input type="button" class="btn btn-primary btn-sm" value="Add Field">
-                        </div>
-                      </div>
-                      <div class="clearfix mb">
-                        <div class="col-md-8">
-                          <div class="row">
-                            <label class="col-md-3">
-								<input type="text" placeholder="Field Name" class="form-control input-sm">
-                            </label>
-                            <div class="col-md-8">
-                              <select class="form-control">
-                                <option>Option Value-1</option>
-                                <option>Option Value-2</option>
-                                <option>Option Value-3</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                                                    <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-
-                      </div>
-                      <div class="form-custom">
-                      <div class="form-header clearfix mb col-md-12">
-                      <div class="col-sm-3">
-                       <label>Field</label>
-                      </div>
-                      <div class="col-sm-5">
-                        <label>Type</label>
-                      </div>
-                      <div class="col-sm-4">
-                         <label>Is Mandator</label>
-                      </div>
-                      </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Text Field</label>
-                              <div class="col-md-8">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Text Field">
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox" checked>
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Number Field</label>
-                              <div class="col-md-8">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Number Field">
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Select Field</label>
-                              <div class="col-md-8">
-                                <select class="form-control">
-                                  <option>Select Value-1</option>
-                                  <option>Select Value-2</option>
-                                  <option>Select Value-3</option>
-                                  <option>Select Value-4</option>
-                                </select>
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox" checked>
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Browse File</label>
-                              <div class="col-md-8">
-                                    <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
-                                            <div class="input-group">
-                                            <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                                            <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">
-                                            </span> </label>
-                                            <input type="text" class="form-control" readonly id="uploadFile" placeholder="Files are not selected...">
-                                        </div>
-                                    <!-- upload file html need to add bottom JavaScript otherwise it will not work --> 
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Radio btn</label>
-                              <div class="col-md-8 toggle-button">
-                                <label class="switch">
-                                <input type="checkbox" checked>
-                                <div class="slider round"></div>
-                                </label>
-                                </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox" checked>
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Checkbox</label>
-                              <div class="col-md-8 toggle-button">
-                                <label class="switch">
-                                <input type="checkbox">
-                                <div class="slider round"></div>
-                                </label>
-                                </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Textarea</label>
-                              <div class="col-md-8">
-                                <textarea rows="1" class="form-control" placeholder="Textarea"></textarea>
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox" checked>
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                            </div>
-                          </div> </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
-                      <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> --%>
+     
       
       
        <!-- Internal Details html -->
@@ -1094,28 +613,11 @@ $(document).ready(function() {
 	              </div>
               
               </div>
-              
-              <%-- <div class="clearfix lvlTow" id ="sequentialApproverDiv" style="display:none;">
-              <div class="form-group">
-              <div class="col-md-3">Approver 2</div>
-              <div class="col-md-9">
-              		<select   class="chosen-select form-control" name="sequentialApprover2" field-name="Approver 2" data-validation="required">
-                       <option>Select Addpprover</option>
-                       <c:forEach var="report" items="${approverList}">
-		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-		               </c:forEach>
-                    </select>
-              </div></div>
-          </div> --%>
+           
           <div class="form-group">
             <label class="col-md-3">Manager<span class="text-danger">*</span></label>
             <div class="col-md-9">
-             <!--  <select multiple class="chosen-select form-control">
-                <option>Select Manager</option>
-                <option>Manager-1</option>
-                <option>Manager-2</option>
-                <option>Manager-3</option>
-              </select> -->
+           
               <select  class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager">
                        <option value="">Select Manager</option>
                        <c:forEach var="report" items="${approverList}">
@@ -1132,7 +634,7 @@ $(document).ready(function() {
             <div class="col-md-9">
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-                  <input type="text" placeholder="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
+                  <input type="text" id="assignedTo" placeholder="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
                   <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="getTeamOwners();"></i> </span>
                   </div>
@@ -1145,99 +647,7 @@ $(document).ready(function() {
                         <h4 class="modal-title">Assign To</h4>
                       </div>
                        <div id="userList"></div>
-                        <!-- <div class="modal-body clearfix"> -->
-                       
-                        <!-- <div class="form-horizontal custom-form">
-                        <div class="row">
-                          <div class="col-xs-12 col-md-8 col-lg-8">
-                            <div class="input-group">
-                              <input type="search" class="form-control" value="">
-                              <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>
-                          </div>
-                          <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">
-                             <select class="selectpicker">
-                             <option selected disabled>Select Role</option>
-                              <option value="All">All</option>
-                              <option value="Admin">Admin</option>
-                              <option value="Account Manager">Account Manager</option>
-                              <option value="Recruiting Manager">Recruiting Manager</option>
-                              <option value="Hiring Manager">Hiring Manager</option>
-                              <option value="Teams">Teams</option>
-                             </select>
-                        </div>
-                        </div>
-                        </div> -->
-                        <!-- <div class="modal-body-custom mt clearfix">
-                          <table cols="0" class="table table-bordered table-striped  clearfix">
-                            <tbody>
-                              <tr>
-                              <thead>
-                                <th><input type="checkbox"></th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Active Jobs</th>
-                                </thead>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td><span class="tbldata-dotdot">Murali Krishna</span></td>
-                                <td><span class="tbldata-dotdot" title="muraraikumarmahessrinivas@businessintelli.com">muraraikumarmahessrinivas@businessintelli.com</span></td>
-                                <td>Account Manager</td>
-                                <td>101</td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Account Manager</td>
-                                <td>101</td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Account Manager</td>
-                                <td>101</td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Account Manager</td>
-                                <td>101</td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Account Manager</td>
-                                <td>101</td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Account Manager</td>
-                                <td>101</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div> -->
-                        <!-- <div class="clearfix">
-                          <ul class="pagination pull-right pagination-sm" style="margin:0;">
-                            <li><a href="#">1</a></li>
-                            <li class="active"><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#">4</a></li>
-                            <li><a href="#">5</a></li>
-                          </ul>
-                          </div> -->
-                     <!--  </div> -->
-                      <!-- <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button">Assign</button>
-                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                      </div> -->
+                      
                     </div>
                   </div>
                 </div>
@@ -1247,7 +657,7 @@ $(document).ready(function() {
           <div class="form-group">
             <label class="col-md-3">Priority<span class="text-danger">*</span></label>
             <div class="col-md-9">
-              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" >
+              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" field-name = "priority">
                 <option value="">Select Priority</option>
                 <option ${requirement.priority  == 'Urgent' ? 'selected' : ''}>Urgent</option>
                 <option ${requirement.priority  == 'High' ? 'selected' : ''}>High</option>
@@ -1259,14 +669,8 @@ $(document).ready(function() {
           <div class="form-group" id="internalSubmissionFrom">
             <label class="col-md-3">Application Form<span class="text-danger">*</span></label>
             <div class="col-md-9">
-                <!-- <select class="chosen-select form-control">
-                  <option>Select Client</option>
-                  <option>Client-1</option>
-                  <option>Client-2</option>
-                  <option>Client-3</option>
-                </select> -->
-               <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId"  data-validation="required"  field-name = "Application Form">
-
+               
+               <select class="chosen-select form-control select-bg" name="applicationFrom" id="applicationFrom"  data-validation="required"  field-name = "Application Form">
                     	<option value="">-- Select Form --</option>
 		                <c:forEach var="report" items="${submissionTempletesList}">
 					               <option value="${report.id}">${report.templateName}</option>
@@ -1281,10 +685,21 @@ $(document).ready(function() {
       
     </div>
     </div>
-      <input type="hidden" value="${requirement.id}" name ="requirementId"  id ="requirementId">
+    <input type="hidden" value="${requirement.id}" name ="requirementId"  id ="requirementId">
+     <div class="form-footer clearfix">
+    <div class="col-lg-12">   
+      <div class="pull-right">
+        <input type="button" value="Submit for Approval" id="submitForApproval" onclick="storeRequirement('submitForApproval');" class="btn btn-primary" style="display:none;">
+        <input type="button" value="Draft" id="draft" onclick="storeRequirement('draft');" class="btn btn-danger ml">
+        <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >    
+        <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
+      </div>
+    </div>
+  </div>
     </form:form>
-    
-      <!-- Modal content Demo Popup: Need to Update -->
+  <!-- Content Area Ends-->
+  
+     		 <!-- Modal content Demo Popup: Need to Update -->
                 <div role="dialog" id="addTeam" class="modal fade">
                   <div class="modal-dialog">
                     <form role="form"  id="team_form" name="team_form" method="post" >
@@ -1337,18 +752,6 @@ $(document).ready(function() {
                   </div>
                 </div>
                 <!-- Modal content Demo Popup: Need to Update ends --> 
-  <div class="form-footer clearfix">
-    <div class="col-lg-12">   
-      <div class="pull-right">
-        <input type="button" value="Submit for Approval" id="submitForApproval" onclick="storeRequirement('submitForApproval');" class="btn btn-primary" style="display:none;">
-        <input type="button" value="Draft" id="draft" onclick="storeRequirement('draft');" class="btn btn-danger">
-        <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary" >    
-        <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
-      </div>
-    </div>
-  </div>
-  
-  <!-- Content Area Ends-->
   
   </div>
 </section>
@@ -1908,6 +1311,8 @@ function getUserList(teamType){
            type : "POST",
            url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}&teamType="+teamType,    
             success :function(data) {
+            	
+            	getTeamsList(teamType);
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
@@ -1916,7 +1321,6 @@ function getUserList(teamType){
                			 location.replace(sourceleadUrl+"/errorPage");
                		 }
                		 else{
-               			 getTeamsList(teamType);
 			    	     $("#userList").removeAttr("style");
 	                	    var result = '';
 	                	    result = result+"<input type='hidden' name='assignedTeamId' id='assignedTeamId' value='"+teamType+"'/>";
@@ -1991,13 +1395,38 @@ function getUserList(teamType){
                 	 $("#userList").removeAttr("style");
   	    	         var result ="";
 		    	    
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No UserList Found</p>";
-					 result = result+"			 </div>";
-					
+  	    	       result = result +'<div class="modal-body clearfix">';
+ 	    	        result = result +'<div class="form-horizontal custom-form">';
+	           		result = result +'     <div class="row">';
+	           		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 hidden">';
+	           		result = result +'         <div class="input-group">';
+	           		result = result +'           <input type="search" class="form-control" value="">';
+	           		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
+	           		result = result +'       </div>';
+	           		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
+	           		result = result +'          <select id="rolesDiv" onchange="filterTeamMembers();" class="selectpicker form-control" style="display:block !important">';
+	           		result = result +'          </select>';
+	           		result = result +'     </div>';
+	           		result = result +'     </div>';
+	           		result = result +'     </div>';
+	           		
+	           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
+	        		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
+	        		result = result +'           <thead>';
+	        		result = result +'           <tr>';
+	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;"><input type="checkbox"></th>';
+	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Name</th>';
+	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Email</th>';
+	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Role</th>';
+	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Active Jobs</th>';
+	        		result = result +'           </tr>';
+	        		result = result +'           </thead>';
+	        		result = result +'           </table>';
+	        		result = result +'     </div>';
+	        		result = result +'     </div>';
 					$("#userList").empty();
 				    $("#userList").append(result); 
+				    pagination();  
                 }
           },
             
@@ -2089,9 +1518,19 @@ function assignMembers() {
 	});
 	result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
 	$("#assignedToSavingDiv").empty();
-	$("#assignedToSavingDiv").append(result); 
+	$("#assignedToSavingDiv").append(result);
+	assignedToValidation();
 }
 </script>
+
+<script type="text/javascript">
+	function assignedToValidation() {
+		var count = $('#assignedToMaxCount').val();
+		if(count != null && count != 'undefined' && count!= ''){
+				 $('#assignedTo').attr("data-validation-optional","true"); 
+		} 
+	}
+</script>	
 
 
 <script type="text/javascript">
@@ -2180,9 +1619,9 @@ var existingValue = document.getElementById('isClientJob').value;
 		 
 		//to remove the  Internal  Submission Form  as we are selecting the Client 
 		 document.getElementById("internalSubmissionFrom").style.display = 'none';
-	     $('#applicationFrom').removeAttr('data-validation');
-	     
-	     
+		 $('#applicationFrom').attr("data-validation-optional","true"); 
+		
+		 
          $('#addClientId').removeAttr('data-validation-optional');
 	     $('#addClientId').attr("data-validation","required"); 
 	   
@@ -2203,6 +1642,8 @@ var existingValue = document.getElementById('isClientJob').value;
 		 
 		 $('#clientSubmissionForm').removeAttr('data-validation');
 		 $('#clientSubmissionForm').attr("data-validation-optional","true"); 
+		 
+		 $('#applicationFrom').removeAttr("data-validation-optional"); 
 	 }
 }
 

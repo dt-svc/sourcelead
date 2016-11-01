@@ -31,17 +31,16 @@ window.onload = interviews('today');
 //window.setInterval("interviews('today');", 60000);
 function interviews(dateRange){
 	var resultToday ="";
-	var resultUpcoming ="";
-	var resultPrevious ="";
 	
 	var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl+"/getInterviews?dateRange="+dateRange,
 			success : function(data) {
-				
+				$("#today").empty();
+	        	$("#upcoming").empty();
+	        	$("#previous").empty();
 				var json = JSON.parse(data);
-   	        	
 
 				/*  if( result.indexOf('Sign In') >= 0){
 		    		location.replace(sourceleadUrl);
@@ -71,13 +70,12 @@ function interviews(dateRange){
 					{
 		       		var report = json[i];
 						resultToday = resultToday+'	  <tr>';
-						resultToday = resultToday+'	   <td><div><span>'+report.submissionId.candidate.firstName+' '+report.submissionId.candidate.lastName+'</span></div></td>';
-						resultToday = resultToday+'	   <td><div class="tbldata-dotdot-vsm">Java Devloper</div></td>';
-						resultToday = resultToday+'	   <td><div><span>26/10/2016 <br/> 10:15PM</span></div></td>';
-						resultToday = resultToday+'	   <td><div><span>TCS Consultancy Services, HYD</span></div></td>';
+						resultToday = resultToday+'	   <td><div><span>'+report.candidateName+'</span></div></td>';
+						resultToday = resultToday+'	   <td><div class="tbldata-dotdot-vsm">'+report.requirementTitle+'</div></td>';
+						resultToday = resultToday+'	   <td><div><span>'+report.interviewStartDateTimeStr+'</span></div></td>';
+						resultToday = resultToday+'	   <td><div><span>'+report.clientName+'</span></div></td>';
 						resultToday = resultToday+'	 </tr>';
 					}
-				
 				
 					resultToday = resultToday+'	 </tbody>';
 					resultToday = resultToday+'	</table>';											
@@ -96,22 +94,19 @@ function interviews(dateRange){
 			}
 		     
 	        if(dateRange == 'today'){
-	        	$("#today").empty();
-	        	$("#upcoming").empty();
-	        	$("#previous").empty();
 	            $("#today").append(resultToday);
 	        }
 			if(dateRange == 'previous'){
-				$("#today").empty();
-	        	$("#upcoming").empty();
-	        	$("#previous").empty();
 				$("#previous").append(resultToday);
+				$("#today").removeClass("tab-pane fade in active");
+				$("#upcoming").removeClass("tab-pane fade in active");
+				$("#previous").addClass("tab-pane fade in active");
 	        }
 			if(dateRange == 'upcoming'){
-				$("#today").empty();
-	        	$("#upcoming").empty();
-	        	$("#previous").empty();
 				$("#upcoming").append(resultToday);
+				$("#today").removeClass("tab-pane fade in active");
+				$("#previous").removeClass("tab-pane fade in active");
+				$("#upcoming").addClass("tab-pane fade in active");
 	        }
       
 		},

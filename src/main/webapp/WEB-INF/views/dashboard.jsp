@@ -1,4 +1,4 @@
-
+<%-- 
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -190,12 +190,12 @@ function timeSheetSubmissionStatusCount(){
   $('#selector').delay(2000).fadeOut('slow');
 </script> 
 
-<jsp:include page="masterFooter.jsp" />
+<jsp:include page="masterFooter.jsp" /> --%>
 
 
 
 
-<%-- 
+ 
 
  <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
@@ -226,4 +226,3 @@ function timeSheetSubmissionStatusCount(){
 </section>
 <jsp:include page="masterFooter.jsp" />
 
- --%>
