@@ -477,7 +477,7 @@ $(document).ready(function() {
               </div>
               <div class="form-group">
                 <label class="col-md-3">Bill Rate / Salary</label>
-              <div class="col-md-9">
+              <div class="col-md-9 pras">
 	              <div class="input-group">
 	                <div class="input-group-btn selp-custom-min">
 	                  <select class="selectpicker" id="clientCurrencyCode" name="clientCurrencyCode">
@@ -506,6 +506,8 @@ $(document).ready(function() {
            		</div>
               </div>
               </div>
+              <div class="clearfix"></div>
+              <div class="clearfix"></div>
               </div>
               <div class="form-group">
                 <label class="col-md-3">Submission Form<span class="text-danger">*</span></label>
@@ -688,8 +690,8 @@ $(document).ready(function() {
     <div class="col-lg-12">   
       <div class="pull-right">
         <input type="button" value="Submit for Approval" id="submitForApproval" onclick="storeRequirement('submitForApproval');" class="btn btn-primary" style="display:none;">
-        <input type="button" value="Draft" id="draft" onclick="storeRequirement('draft');" class="btn btn-danger">
-        <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary" >    
+        <input type="button" value="Draft" id="draft" onclick="storeRequirement('draft');" class="btn btn-danger ml">
+        <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >    
         <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
       </div>
     </div>
