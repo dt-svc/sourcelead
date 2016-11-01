@@ -12,8 +12,6 @@
 <link rel="stylesheet" href="resources/css/style.css" />
  
 
-
-
 <link rel="stylesheet" href="resources/css/jquery.timepicker.css">
 <script src="resources/js/jquery.timepicker.js"></script> 
 
@@ -57,6 +55,7 @@ function addInterview(requirementId){
 			result = result + '<th>Inteview Type</th>';
 			result = result + '<th>Interview Date</th>';
 			result = result + '<th>Start Time/End Time</th>';
+			result = result + '<th>Time Zone</th>';
 			result = result + '<th>Location</th>';
 			result = result + '<th>Interviewer</th>';
 			result = result + '<th class="action">Action</th>';
@@ -219,18 +218,26 @@ function checkEmails(){
 	</select>
 </div>
 
-
 <div id="divTaskTd5" style="display: none; float: left;">
+   	 <select class="form-control block" id="REPLACEROWIDtimeZone" name="REPLACEROWIDtimeZone">
+		<option value="">--Select Time Zone--</option>
+		  <c:forEach var="timezone" items="${timezonesList}">
+				<option value="${timezone}">${timezone}</option>
+		 </c:forEach>
+	</select>
+</div>
+
+<div id="divTaskTd6" style="display: none; float: left;">
 	  <input value="" type="text" id="REPLACEROWIDlocation" name="REPLACEROWIDlocation" class="form-control input-sm" placeholder="Location" field-name="Location" data-validation="required">
 </div> 
 
-<div id="divTaskTd6" style="display: none; float: left;">
+<div id="divTaskTd7" style="display: none; float: left;">
 		  <select multiple class="chosen-select" id="REPLACEROWIDinterviewer" name="REPLACEROWIDinterviewer" field-name="Interviewer" >
 			
 	  </select>
 </div> 
 
- <div id="divTaskTd7" style="display: none; float: left;">
+ <div id="divTaskTd8" style="display: none; float: left;">
 	 <div>
          <a href="#" onclick="removeInterviewRow(REPLACEROWID);"><i class="glyphicon glyphicon-trash deme"></i></a>
     </div>
@@ -267,23 +274,40 @@ function checkEmails(){
 		
 		var cell3 = row.insertCell(3);
 		cell3.innerHTML = "<div class='pull-left mr' id='"+maxRowNum+"timeDiv'> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='Start Time' name='"+maxRowNum+"startTime' id='"+maxRowNum+"startTime'  type='text' data-validation='required' field-name='Start Time'/><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span></span> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='End Time' name='"+maxRowNum+"endTime' id='"+maxRowNum+"endTime'  type='text' field-name='End Time' /><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span></span> </div> ";
-		$(".timepicker").timepicker();
+		
+		$("#"+maxRowNum+"startTime").timepicker({
+			'showDuration': true
+		}).on('changeTime', function() {
+            $("#"+maxRowNum+"endTime").timepicker('option', 'minTime', $(this).val());
+        });
+		
+		$("#"+maxRowNum+"endTime").timepicker({
+			'showDuration': true
+		}).on('changeTime', function() {
+            $("#"+maxRowNum+"startTime").timepicker('option', 'maxTime', $(this).val());
+        }); 
 		
 		var cell4 = row.insertCell(4);
 		var divTsTd5Str = document.getElementById("divTaskTd5").innerHTML;
 		divTsTd5Str = divTsTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
 		divTsTd5Str = divTsTd5Str.replace(/PRICECALCULATION/g,("")); 
-		cell4.innerHTML = divTsTd5Str;  
+		cell4.innerHTML = divTsTd5Str; 
 		
 		var cell5 = row.insertCell(5);
 		var divTsTd6Str = document.getElementById("divTaskTd6").innerHTML;
 		divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
+		divTsTd6Str = divTsTd6Str.replace(/PRICECALCULATION/g,("")); 
 		cell5.innerHTML = divTsTd6Str;  
 		
 		var cell6 = row.insertCell(6);
 		var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
 		divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell6.innerHTML = divTsTd7Str;
+		cell6.innerHTML = divTsTd7Str;  
+		
+		var cell7 = row.insertCell(7);
+		var divTsTd8Str = document.getElementById("divTaskTd8").innerHTML;
+		divTsTd8Str = divTsTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
+		cell7.innerHTML = divTsTd8Str;
 		
 		getInterviewers(maxRowNum);
 		getShortListCandidates(maxRowNum);

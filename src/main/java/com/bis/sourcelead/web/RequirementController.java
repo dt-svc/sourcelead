@@ -220,6 +220,13 @@ public class RequirementController {
 		model.addObject("candidatesList",candidatesList);
 		model.addObject("requirementId",requirementId);
 		
+		//to get time zone list
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(countries != null){
+			String[] timezonesList = com.ibm.icu.util.TimeZone.getAvailableIDs(countries.getCode2());
+			model.addObject("timezonesList", timezonesList);
+		}
+		
 		if(requirement.getIsClientJob() != null && requirement.getIsClientJob().equalsIgnoreCase("Y")){
 			model.addObject("clientSubmissions","Y");
 		}else{

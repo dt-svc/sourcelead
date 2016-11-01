@@ -1100,12 +1100,22 @@ s
 .form-icon-min .form-control {
 	width: 70%;
 }
+.form-icon-min .chosen-container{
+	width:69% !important;
+}
 .select-bg option {
 	max-width: 320px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
+.select-bg option[value="1"] {
+	max-width: 320px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 .form-icon .formic1, .form-icon-min .formic1 {
 	background: linear-gradient(#ffffff, #e6e9f3) 0 0;
 	background: -webkit-linear-gradient(#ffffff, #e6e9f3) 0 0;
@@ -2632,7 +2642,7 @@ ul.can-perdt li a {
 	width: auto;
 }
 .recruitmentHead ul {
-	padding: 2px 0px 2px 0 !important;
+	
 }
 .recruitmentHead ul li {
 	float: left !important;
@@ -3191,7 +3201,7 @@ approver-block {
 	font-size:15px;
 }
 .chosen-container .chosen-results li.active-result {
-color:#101010 ! Important;
+color:#101010;
 }
 .export_pop ul, .approved_pop ul {
       min-width:150px;
@@ -3635,6 +3645,9 @@ ul.addTasUl li .fa{
 .dataTables_paginate span, .paging_simple_numbers span {
  display: inline !important;
  }
+.chosen-container .chosen-results li:hover{
+	color:#fff;
+}
 @media (max-width: 320px) {
 .hidden-xs {
 	display: none !important;
