@@ -85,7 +85,6 @@ public class CandidateServiceImpl implements CandidateService {
 		
         
         Candidate candidate = null;
-		
 		if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
 			candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("candidateId")));
 		}else{
@@ -179,6 +178,7 @@ public class CandidateServiceImpl implements CandidateService {
 		candidate.setUpdatedBy(user.getUserCode());
 		candidate.setUpdatedDate(commonUtil.currentDate());
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+		
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		return savedCandidate;
 	}
