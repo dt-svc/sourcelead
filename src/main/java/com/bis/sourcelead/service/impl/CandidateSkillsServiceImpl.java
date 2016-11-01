@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateSkillsDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateSkills;
@@ -72,6 +73,7 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 	    		  skill = skill.replace("\"", "");
 	    		  candSkill.setName(skill);
 	    		  candSkill.setCandidateId(candidate);
+	    		  candSkill.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
 	    		  candSkill.setOrgLocationID(orgLocations);
 	    		  candidateSkillsList.add(candSkill);
 	    	  }

@@ -113,6 +113,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			List<CandidateSkills> candidateSkillList  = candidateSkillsService.getSkillByCandidateId(candidate.getId());
 			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
 			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
+			
 			if(candidateSkillList != null && candidateSkillList.size() >0){
 				for(CandidateSkills candidateSkills : candidateSkillList){
 					if(candidateSkills.getName() !=null && !"".equalsIgnoreCase(candidateSkills.getName())){
@@ -171,8 +172,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					ratePercentage = 20;
 				}
 			}
-			
 			float totalPercentage = skillPercentage+expPercentage+locationPercentage+ratePercentage;
+			
 			double roundOff = Math.round(totalPercentage * 100.0) / 100.0;
 			String candidateScore = String.valueOf(roundOff);
 			candidate.setCandidateScore(candidateScore);
@@ -190,6 +191,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					}
 					reqSubmission.setRequirementName(reqSubmission.getRequirement().getJobTitle());
 					reqSubmission.setRequirementStage(reqSubmission.getSubmissionStatus());
+					candidate.setReqSubmissionId(reqSubmission.getId().toString());
 				}
 			}
 			candidate.setRequirementSubmisstions(reqList);

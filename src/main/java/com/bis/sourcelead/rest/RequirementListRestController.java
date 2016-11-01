@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -24,14 +27,17 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.impl.RecommendationsServiceImpl;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -46,6 +52,8 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 	
 @RestController
 public class RequirementListRestController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(RequirementListRestController.class);
 	
 	
 	 @Value("${sourceleadUrl}")
@@ -80,6 +88,14 @@ public class RequirementListRestController {
 	 
 	 @Autowired
 	 RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
+	 
+	 @Autowired
+	 private RecommendationsService recommendationsService;
+	 
+	 @Autowired
+	 private CandidateService candidateService;
+	 
+	 
 	 
 	 /**
 	   * @author sarath kumar
@@ -249,6 +265,12 @@ public class RequirementListRestController {
 								User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 								requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
 								requirementSubmission.setResumeName(candidateResumes.getFileName());
+								Candidate candidate = candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
+								List<Candidate> candidateList = new ArrayList<>();
+								candidateList.add(candidate);
+								List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScore(candidateList,requirementSubmission.getRequirement());
+								requirementSubmission.setScore(candidateListCopy.get(0).getCandidateScore()+"%");
+								logger.info("size of score is "+candidateListCopy.get(0).getCandidateScore());
 							}
 						}
 						
