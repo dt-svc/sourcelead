@@ -266,7 +266,7 @@ $(document).ready(function() {
  Assigned Members
 
                 <h2>Descriptions:</h2>
-                <textarea placeholder="Enter description">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</textarea>
+                <textarea placeholder="Enter description">Lorem Ipsum is simply  text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</textarea>
                 <h2>Other details:</h2>
                 <div class="require_one">
                   <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>10</span>
@@ -927,6 +927,7 @@ $(document).ready(function() {
   <textarea placeholder="Enter message"></textarea>
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
 
+
   
 <script type="text/javascript">
 			var config = {
@@ -1010,6 +1011,7 @@ $(document).ready(function() {
         $(".project_tabs_inn").not(tab).css("display", "none");
         $(tab).fadeIn();
     });
+	
 });
 
 // project side bar tabs
@@ -2387,7 +2389,7 @@ function requirementRecommendations(requirementId){
     	    result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
 		    result = result +'<div class="rec_head"></div>';
 		    result = result +'</div>';
-		    result = result +'<div class=" project_tabs_inn_table">';
+		    result = result +'<div class="project_tabs_inn_table">';
 		    result = result +'<table id="recommendationTable" class="display" cellspacing="0" width="100%"">';
 		    result = result +'<thead>';
 		    result = result +'<tr>';
@@ -2631,7 +2633,7 @@ function clientSideBar(candidateId){
 			             result = result+'			</div>';
 			             result = result+'   <div class="proj_close"></div>';
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
-			             result = result+'     <ul class="project-tabs-menu">';
+			             result = result+'     <ul class="canreq-tabs-menu">';
 			             result = result+'       <li class="current"><a href="#tab-11" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
 			             result = result+'       <li><a href="#tab-12" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');" >Resume</a></li>';
 			             result = result+'       <li><a href="#tab-13" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
@@ -2641,22 +2643,22 @@ function clientSideBar(candidateId){
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
 			             result = result+'     <div class="project_tabs">';
-				         result = result + ' <div id="tab-11" class="project_tabs_inn">';
+				         result = result + ' <div id="tab-11" class="canreq-tabs-menu_inn">';
 						 result = result + '</div>';
 						 
-						 result = result + '<div id="tab-12" class="project_tabs_inn">';
+						 result = result + '<div id="tab-12" class="canreq-tabs-menu_inn">';
 						 result = result + '</div>';
 						 
-						 result = result + '<div id="tab-13" class="project_tabs_inn">';
+						 result = result + '<div id="tab-13" class="canreq-tabs-menu_inn">';
 						 result = result + '</div>';
 						 
-						 result = result + ' <div id="tab-14" class="project_tabs_inn">';
+						 result = result + ' <div id="tab-14" class="canreq-tabs-menu_inn">';
 						 result = result + '</div>';
 						 
-						 result = result + '<div id="tab-15" class="project_tabs_inn">';
+						 result = result + '<div id="tab-15" class="canreq-tabs-menu_inn">';
 						 result = result + '</div>';
 						 
-						 result = result + '<div id="tab-16" class="project_tabs_inn">';
+						 result = result + '<div id="tab-16" class="canreq-tabs-menu_inn">';
 						 result = result + '</div>';
 			             result = result+'     </div>';
 			             result = result+'   </div>';
@@ -2667,7 +2669,7 @@ function clientSideBar(candidateId){
 						 $(".side_mask").fadeIn(200);
 						 $("body").css('overflow-y', 'hidden');
 						 candidateProfile(candidateId);
-			 			 
+						 hilightTab();
 			    	} 
                 }else{
                	 $("#candidateSideDiv").removeAttr("style");
@@ -2691,18 +2693,21 @@ function clientSideBar(candidateId){
 				
 }
 </script>
+
 <script>
-$(document).ready(function() {
-	$("#tab-11").show()
-    $(".project-tabs-menu a").click(function(event) {
+
+function hilightTab(){
+	$("#tab-11").show();	
+    $(".canreq-tabs-menu a").click(function(event) {
         event.preventDefault();
         $(this).parent().addClass("current");
         $(this).parent().siblings().removeClass("current");
+        
         var tab = $(this).attr("href");
-        $(".project_tabs_inn").not(tab).css("display", "none");
+        $(".canreq-tabs-menu_inn").not(tab).css("display", "none");
         $(tab).fadeIn();
-    });
-});
+    });	
+}
 </script>
 
 <jsp:include page="addApplicant.jsp" />
