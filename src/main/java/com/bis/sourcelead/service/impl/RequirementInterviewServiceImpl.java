@@ -310,14 +310,27 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 		 
-		 String time = Constants.DMY.format(requirementInterview.getStartTime());
+		 String time = "";
+		 String endTime = "";
 		 String dateOfInterviewStr ="";
 		 if(requirementInterview.getDateOfInterview()!=null){
 		  dateOfInterviewStr = Constants.DMY.format(requirementInterview.getDateOfInterview());
 		 }
-		 String endTime = Constants.DMY.format(requirementInterview.getStartTime());
+		 
+		 if(requirementInterview.getStartTime() != null){
+	    	 String hours = requirementInterview.getStartTime().getHours()+"";
+	    	 String minutes = requirementInterview.getStartTime().getMinutes()+"";
+	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
+	    }
+	    
+	    if(requirementInterview.getEndTime() != null){
+	    	 String hours = requirementInterview.getEndTime().getHours()+"";
+	    	 String minutes = requirementInterview.getEndTime().getMinutes()+"";
+	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
+	    }
+		 
 		 if(endTime!=null){
-			  time=time+" "+endTime;
+			  time=time+" - "+endTime;
 		 }
 		 String interviewTypeValue="--";
 		 if(requirementInterview.getInterviewType() !=null){
@@ -443,18 +456,30 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 		 
+		 String time = "";
+		 String endTime = "";
+		 if(requirementInterview.getStartTime() != null){
+	    	 String hours = requirementInterview.getStartTime().getHours()+"";
+	    	 String minutes = requirementInterview.getStartTime().getMinutes()+"";
+	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
+	    }
+	    
+	    if(requirementInterview.getEndTime() != null){
+	    	 String hours = requirementInterview.getEndTime().getHours()+"";
+	    	 String minutes = requirementInterview.getEndTime().getMinutes()+"";
+	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
+	    }
+		 
+		 if(endTime!=null){
+			  time=time+" - "+endTime;
+		 }
 		 
 		 
-		 
-		 String time = Constants.DMY.format(requirementInterview.getStartTime());
 		 String dateOfInterviewStr ="";
 		 if(requirementInterview.getDateOfInterview()!=null){
 		  dateOfInterviewStr = Constants.DMY.format(requirementInterview.getDateOfInterview());
 		 }
-		 String endTime = Constants.DMY.format(requirementInterview.getStartTime());
-		 if(endTime!=null){
-			  time=time+" "+endTime;
-		 }
+		 
 		 String interviewTypeValue="--";
 		 if(requirementInterview.getInterviewType() !=null){
 			 interviewTypeValue = requirementInterview.getInterviewType();
