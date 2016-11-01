@@ -693,9 +693,10 @@ function cancel(candidateId){
           </li>  
           
           <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
+          
           <div class="clearfix"></div>
         </ul>
-         
+        
         <div class="clearfix"></div>
       </div>
       <div class="candidate_wrap_table">
@@ -741,6 +742,8 @@ $(document).ready(function() {
 
 // Approved Popup
 $(document).ready(function() {
+	
+	
     $("#appro-pop").click(function(){
 		$(".approved_pop").slideToggle(200);
 	});
@@ -750,6 +753,7 @@ $(document).ready(function() {
     $(".approved_pop, #appro-pop").click(function(e) {
         e.stopPropagation();
     });	
+    
 });
 
 // Export Popup
@@ -806,6 +810,8 @@ $(document).ready(function() {
 
 <script>
 $(document).ready(function() {
+	
+	
     $("#filter1ApprovePop").click(function(){
 		$("#filter1ApprovedPop").slideToggle(200);
 	});
