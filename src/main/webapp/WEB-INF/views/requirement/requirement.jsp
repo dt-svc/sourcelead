@@ -1309,6 +1309,8 @@ function getUserList(teamType){
            type : "POST",
            url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}&teamType="+teamType,    
             success :function(data) {
+            	
+            	getTeamsList(teamType);
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
@@ -1317,7 +1319,6 @@ function getUserList(teamType){
                			 location.replace(sourceleadUrl+"/errorPage");
                		 }
                		 else{
-               			 getTeamsList(teamType);
 			    	     $("#userList").removeAttr("style");
 	                	    var result = '';
 	                	    result = result+"<input type='hidden' name='assignedTeamId' id='assignedTeamId' value='"+teamType+"'/>";
@@ -1392,13 +1393,38 @@ function getUserList(teamType){
                 	 $("#userList").removeAttr("style");
   	    	         var result ="";
 		    	    
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No UserList Found</p>";
-					 result = result+"			 </div>";
-					
+  	    	       result = result +'<div class="modal-body clearfix">';
+ 	    	        result = result +'<div class="form-horizontal custom-form">';
+	           		result = result +'     <div class="row">';
+	           		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 hidden">';
+	           		result = result +'         <div class="input-group">';
+	           		result = result +'           <input type="search" class="form-control" value="">';
+	           		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
+	           		result = result +'       </div>';
+	           		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
+	           		result = result +'          <select id="rolesDiv" onchange="filterTeamMembers();" class="selectpicker form-control" style="display:block !important">';
+	           		result = result +'          </select>';
+	           		result = result +'     </div>';
+	           		result = result +'     </div>';
+	           		result = result +'     </div>';
+	           		
+	           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
+	        		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
+	        		result = result +'           <thead>';
+	        		result = result +'           <tr>';
+	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;"><input type="checkbox"></th>';
+	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Name</th>';
+	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Email</th>';
+	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Role</th>';
+	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Active Jobs</th>';
+	        		result = result +'           </tr>';
+	        		result = result +'           </thead>';
+	        		result = result +'           </table>';
+	        		result = result +'     </div>';
+	        		result = result +'     </div>';
 					$("#userList").empty();
 				    $("#userList").append(result); 
+				    pagination();  
                 }
           },
             
