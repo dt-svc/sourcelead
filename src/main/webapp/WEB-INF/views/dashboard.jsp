@@ -1,3 +1,5 @@
+
+
 <%-- 
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
@@ -193,7 +195,15 @@ function timeSheetSubmissionStatusCount(){
 <jsp:include page="masterFooter.jsp" /> --%>
 
 
-
+<style>
+.dashboard-widget {
+min-height: 350px !important;
+}
+.dashboard-widget .blank-pages{
+padding: 0;
+min-height: 100px;
+}
+</style>
 
  
 
@@ -216,12 +226,12 @@ function timeSheetSubmissionStatusCount(){
 	    	 <jsp:include page="dashboardInterviews.jsp"></jsp:include>
 	    </div>
 	    <div class="clearfix row mb"> 
-	      	 <jsp:include page="dashboardTasks.jsp"></jsp:include>
+	     	 <jsp:include page="dashboardRequirement.jsp"></jsp:include>
+	      	 <%-- <jsp:include page="dashboardTasks.jsp"></jsp:include> --%>
 	      	 <jsp:include page="dashboardTimesheets.jsp"></jsp:include>
 	    </div>
 	    <div class="clearfix row mb"> 
-	   	  <jsp:include page="dashboardTimesheetsApprovals.jsp"></jsp:include>
-	      <jsp:include page="dashboardRequirement.jsp"></jsp:include>
+	   	 <%--  <jsp:include page="dashboardTimesheetsApprovals.jsp"></jsp:include> --%>
 	    </div>
 </section>
 <jsp:include page="masterFooter.jsp" />
