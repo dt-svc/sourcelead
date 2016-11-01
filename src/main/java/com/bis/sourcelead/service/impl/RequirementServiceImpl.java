@@ -962,7 +962,9 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public void mailRequirementtoManager(User loginUser, User managerUser, Requirement requirement,StringBuilder location) throws Exception {
 	
-		 managerUser = userService.getUserById(requirement.getManagerUserId().getId());
+		 if(requirement.getManagerUserId() != null ){
+			managerUser = userService.getUserById(requirement.getManagerUserId().getId());
+		 }
 		
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
