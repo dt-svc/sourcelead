@@ -488,6 +488,7 @@ function candidateProfile(candidateId){
 							
 							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
 			                <c:forEach var="skill" items="${skillsList}">
+			                
 			              			  result = result + ' <option value="${skill.name}">${skill.name}</option>';
 			                </c:forEach>
 			                result = result + '</select>';

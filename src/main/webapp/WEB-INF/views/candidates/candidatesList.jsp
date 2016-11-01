@@ -276,11 +276,12 @@ function clientSideBar(candidateId){
 			            
 			             result = result+'<ul class="list-inline list-unstyled">';
 			             if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
-			             for (i=0;i < skills.length;i++)
+			              for (i=0;i < skills.length;i++)
 			             {
-			            	 result = result+'<li>'+skills[i]+'</li>';
+			            	  result = result+'<li>'+skills[i]+'</li>';
+			             } 
 			             }
-			             }
+			             
 			             result = result+'</ul>';
 			             
 			             result = result+'                 </div>';

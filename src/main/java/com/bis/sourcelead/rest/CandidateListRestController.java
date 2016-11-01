@@ -56,6 +56,7 @@ public class CandidateListRestController {
 	 @Value("${sourceleadUrl}")
 	 private String sourceleadUrl;
 		
+	 
 	 @Autowired
 	 private OrgService orgService;
 	 
@@ -124,14 +125,19 @@ public class CandidateListRestController {
 			Candidate can = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),loginOrgLocation.getId());
 			
 			String skillsList = "";
-			Set<CandidateSkills> candidateSkills = can.getCandidateSkills();
+			//Set<CandidateSkills> candidateSkills = can.getCandidateSkills();
+			List<CandidateSkills> candidateSkills = candidateSkillsService.getCandidateSkillsByCandidateId(candidateId);
+			
 			int i = 0;
 			for(CandidateSkills skilss: candidateSkills){
 				if(i <= 5){
+					if(skilss.getStatus() == 1){
+					
 					skillsList = skillsList+skilss.getName();
 					if(i != candidateSkills.size()-1){
 						skillsList = skillsList+",";
 					}
+				}
 				}
 				i++;
 			}
@@ -215,6 +221,7 @@ public class CandidateListRestController {
 				Candidate candidate = new Candidate();
 				candidate.setId(Long.parseLong(candidateId));
 				cs.setCandidateId(candidate);
+				cs.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
 				cs.setOrgLocationID(loginOrgLocation);
 				cs.setName(skill);
 				candidateSkillsService.storeCandidateSkills(cs);
