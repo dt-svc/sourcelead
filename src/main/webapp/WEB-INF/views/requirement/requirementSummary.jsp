@@ -64,6 +64,9 @@
 	padding-right:5px;
 	margin-bottom:0;
 }
+.project_tabs_inn_table table tr td div i {
+color:#333 !important;
+}
 </style>
  
 <script>
@@ -263,7 +266,7 @@ $(document).ready(function() {
  Assigned Members
 
                 <h2>Descriptions:</h2>
-                <textarea placeholder="Enter description">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</textarea>
+                <textarea placeholder="Enter description">Lorem Ipsum is simply  text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</textarea>
                 <h2>Other details:</h2>
                 <div class="require_one">
                   <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>10</span>
@@ -924,6 +927,7 @@ $(document).ready(function() {
   <textarea placeholder="Enter message"></textarea>
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
 
+
   
 <script type="text/javascript">
 			var config = {
@@ -1007,6 +1011,7 @@ $(document).ready(function() {
         $(".project_tabs_inn").not(tab).css("display", "none");
         $(tab).fadeIn();
     });
+	
 });
 
 // project side bar tabs
@@ -2103,7 +2108,8 @@ function requirementPipeline(requirementId){
 				           result = result + '           <th>Applied on</th>';
 				           result = result + '           <th>Rate</th>';
 				           result = result + '           <th>Source</th>';
-				           result = result + '           <th>Experince</th>';
+				           result = result + '           <th>Score</th>';
+				           result = result + '           <th>Experience</th>';
 				           result = result + '           <th>Status</th>';
 				           result = result + '         </tr>';
 				           result = result + '       </thead>';
@@ -2153,6 +2159,13 @@ function requirementPipeline(requirementId){
 						           
 						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.userName+'</span></div></td>';
+							           }
+							       else{
+							        	result = result + '         <td><div><span>--</span></div></td>';
+						    	     }
+						           
+						           if(report.score != null && report.score != '' && report.score != 'undefined'){
+						        	   result = result + '         <td><div><span>'+report.score+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
@@ -2363,10 +2376,20 @@ function requirementRecommendations(requirementId){
      success :function(data) {
     	 var json = JSON.parse(data);
     	    var result = '';
+    	    
+    	     result = result +' <div class="clients_side_wrap">';
+			 result = result +'<div class="clients_side_wrap_inn">';
+			 result = result +' <div class="project_side_wrap_inn_tabs"> ';
+			 result = result + '<div id="candidateSideDiv"></div>';
+			 result = result +'</div>';
+			 result = result +'</div>';
+			 result = result +'</div>';
+    	    
+    	    //--------------------------------
     	    result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
 		    result = result +'<div class="rec_head"></div>';
 		    result = result +'</div>';
-		    result = result +'<div class=" project_tabs_inn_table">';
+		    result = result +'<div class="project_tabs_inn_table">';
 		    result = result +'<table id="recommendationTable" class="display" cellspacing="0" width="100%"">';
 		    result = result +'<thead>';
 		    result = result +'<tr>';
@@ -2383,9 +2406,14 @@ function requirementRecommendations(requirementId){
 			{
 		    var report = json[i];
 		    result = result +'<tr>';
-		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>';
-		    result = result +'<td><div><span>'+report.mobilePhone+'</span></div></td>';
-		    result = result +'<td><div><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><i class="glyphicon glyphicon-list-alt">&nbsp;'+report.candidateResume+'</i></a></div></td>';
+		    result = result + '<td><div onclick="clientSideBar('+report.id+');" class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>';
+/* 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>'; */
+		    if(report.mobilePhone != null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
+		    	result = result +'<td><div><span>'+report.mobilePhone+'</span></div></td>';
+		    }else{
+		    	result = result +'<td><div><span>--</span></div></td>';
+		    }
+		    result = result +'<td><div><span><a href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.id+'\"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;&nbsp;'+report.candidateResume+'</a></span></div></td>';
 		    result = result +'<td><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
 		    if(report.requirementSubmisstions.length > 0){
 		    	result = result +'<div class="tooltip_div">';
@@ -2394,7 +2422,12 @@ function requirementRecommendations(requirementId){
 			    result = result +'<tbody>';
 			    for(var j=0;j<report.requirementSubmisstions.length;j++){
 			    	 var sub = report.requirementSubmisstions[j];
-			          result = result +'<tr><td><span>'+sub.requirementName+'</span></td> <td><span>'+sub.requirementStage+'</span></td></tr>';
+			    	 if(sub.requirementName != null && sub.requirementName !='' && sub.requirementName !='undefined' && sub.requirementStage != null && sub.requirementStage !='' && sub.requirementStage !='undefined'){
+			    		 result = result +'<tr><td><span>'+sub.requirementName+'</span></td> <td><span>'+sub.requirementStage+'</span></td></tr>'; 
+			    	 }else{
+			    		 result = result +'<tr><td><span>--</span></td> <td><span>--</span></td></tr>';
+			    	 }
+			          
 			    } 
 			    result = result +'</tbody>';
 			    result = result +' </table>';
@@ -2462,13 +2495,219 @@ function getActions(){
 </script>
 
 <script>
-//show div
-function myFun(){
-	   alert("hi");
+var candidateStatusGlobal ="";
+function clientSideBar(candidateId){
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+          type : "POST",
+           url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+           success :function(data) {  
+                if(data != null && data != 'undefined' && data != ""){  
+                	 var json = JSON.parse(data);
+              		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+              		 else if (data.indexOf('exception') >= 0) {
+              			 location.replace(sourceleadUrl+"/errorPage");
+              		 }
+              		 else{
+              			 candidateStatusGlobal = json.status;
+	                	 $("#candidateSideDiv").empty();
+	                	 var skillsList = json.skillsList;
+			             var skills = [];
+			             skills = skillsList.split(",");
+			             
+	                	 var result = "";
+	                	 
+	                	 result = result+'<div id="popUp" ></div>  ';
+	                	
+	                	 
+	                	 result = result+'<form id="candidate_form" name="candidate_form" method="post" >';
+			             result = result+'  <div class="profile_details clearfix" style="margin-bottom:20px;">';
+			             result = result+'               <div class="col-md-6">';
+			             result = result+'                   <div class="media">';
+			             
+			             result = result+'<div class="col-xs-12 col-sm-5 col-md-5">';
+			             result = result+'<div id="candidateImageId">';
+			             result = result+'<div class="well text-center clearfix">';
+						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
+						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
+						 result = result+'  <div class="btn-group uploadfile">';
+						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
+						 result = result+'  <i class="fa fa-upload"></i></button>';
+						 result = result+'  <label class="btn btn-sm btn-primary">';
+					     result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
+					     result = result+'  </label>';
+					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
+						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
+							 result = result+'  <i class="fa fa-trash"></i></button>';
+					     } 
+						 result = result+'  </div>';
+						 result = result+'  </div>';
+						 /*  result = result+'  <div class="pull-right" style="position:relative; top:10px; right:-10px;">';
+						 result = result+'  <a href="#" title="Save"><i class="fa fa-check-circle" onClick="saveCandidateImage('+candidateId+');" ></i></a>';
+						 result = result+'  <a href="#" title="Close"><i class="fa fa-close text-danger"></i></a>';
+						 result = result+'  </div>'; */
+						 result = result+'  </div>';
+						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
+						 result = result+' </div>';
+						 result = result+' </div>';
+						 result = result+'</form>';
+						  
+						  
+			             /*  result = result+'                     <div class="media-left image-parent">';
+			             result = result+'                     <div class="imageParent">'; */
+			             /* result = result+'                     	<img src="./images/24.jpg" alt="candidate" title="Candidate">'; */
+			             /* result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/${SourceLeadWeb_userId}"/>"  alt="Profile Image" class="img-circle img-responsive">';
+			             result = result+'                     </div>';
+			             result = result+'                     </div>'; */
+			             result = result+'                     <div class="media-body candidate-details">';
+			             
+			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+json.lastName+'</h4>';
+			            
+			             result = result+'                       <ul class="list-unstyled">';
+			                                                       if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
+			             result = result+'                         <li>Experience - '+json.experienceYears+' years '+json.experienceMonths+' months </li>';
+              		                                                  }else{
+              		                                                	  
+              		     result = result+'                          <li>Experience - ----</li>';  
+              		                                                  }
+			             result = result+'                       </ul>';
+			             
+			             
+			             result = result+'                 <div class="clearfix">';
+			             result = result+'                 <div class="professinal-details">';
+			             
+			            
+			             result = result+'<ul class="list-inline list-unstyled">';
+			             if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
+			             for (i=0;i < skills.length;i++)
+			             {
+			            	 result = result+'<li>'+skills[i]+'</li>';
+			             }
+			             }
+			             result = result+'</ul>';
+			             
+			             result = result+'                 </div>';
+			             result = result+'                 <div class="socialnetwork-details">';
+			             result = result+'                 <ul class="list-inline list-unstyled">';
+			             result = result+'                                 <li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>';
+			             result = result+'                                 <li class="bg-twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square"></i></a></li>';
+			             result = result+'                                 <li class="bg-google "><a href="javascript:void(0)"> <i class="fa fa-google-plus-square"></i></a></li>';
+			             result = result+'                                 <li class="bg-linked"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square"></i></a></li>';
+			             result = result+'                                 <li class="bg-web"><a href="javascript:void(0)"> <i class="fa fa-globe"></i></a></li>';
+			             result = result+'                               </ul>';
+			             result = result+'                 </div>';
+			             result = result+'                 </div>';
+			             result = result+'               </div>';
+			             result = result+'                   </div>';
+			             result = result+'                 </div>';
+			             result = result+'               <div class="col-md-6">';
+			             result = result+'                 <ul class="list-unstyled can-perdt">';
+			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.email+'</a></li>';
+			                                                  if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
+			             result = result+'                   <li><i class="fa fa-phone"></i>+'+json.mobilePhone+'</li>';
+			                                                  }else{
+			                                                	  
+			             result = result+'                   <li><i class="fa fa-phone"></i>----</li>';         	  
+			                                                  }
+			                                                  if(json.address != null && json.address != '' && json.address != 'undefined'){
+			             result = result+'                   <li><i class="fa fa-location-arrow"></i>'+json.address+'</li>';
+			                                                  }else{
+			             result = result+'                   <li><i class="fa fa-location-arrow"></i>----</li>';                                  	  
+			                                                  }
+			                                                  if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
+			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.currentRate+'/Per Hour - Current Rate / Salary</li>';
+			                                                  }else{
+			             result = result+'                   <li><i class="fa fa-rupee"></i>----</li>';                                    
+			                                                  }
+			                                                  if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
+			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.expectedRate+'/Per Hour - Expected Rate / Salary</li>';
+			                                                  }else{
+			             result = result+'                   <li><i class="fa fa-rupee"></i>----</li>';                                  	  
+			                                                  }
+			             result = result+'                 </ul>';
+			             result = result+'               </div>';
+			             result = result+'			</div>';
+			             result = result+'   <div class="proj_close"></div>';
+			             result = result+'   <div class="project_side_wrap_inn_tabs">';
+			             result = result+'     <ul class="canreq-tabs-menu">';
+			             result = result+'       <li class="current"><a href="#tab-11" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
+			             result = result+'       <li><a href="#tab-12" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');" >Resume</a></li>';
+			             result = result+'       <li><a href="#tab-13" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
+			             result = result+'       <li><a href="#tab-14" onclick="candidateEducation('+candidateId+');">Education</a></li>';
+			             result = result+'       <li><a href="#tab-15" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
+			             result = result+'       <li><a href="#tab-16" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; 
+			             result = result+'       <div class="clearfix"></div>';
+			             result = result+'     </ul>';
+			             result = result+'     <div class="project_tabs">';
+				         result = result + ' <div id="tab-11" class="canreq-tabs-menu_inn">';
+						 result = result + '</div>';
+						 
+						 result = result + '<div id="tab-12" class="canreq-tabs-menu_inn">';
+						 result = result + '</div>';
+						 
+						 result = result + '<div id="tab-13" class="canreq-tabs-menu_inn">';
+						 result = result + '</div>';
+						 
+						 result = result + ' <div id="tab-14" class="canreq-tabs-menu_inn">';
+						 result = result + '</div>';
+						 
+						 result = result + '<div id="tab-15" class="canreq-tabs-menu_inn">';
+						 result = result + '</div>';
+						 
+						 result = result + '<div id="tab-16" class="canreq-tabs-menu_inn">';
+						 result = result + '</div>';
+			             result = result+'     </div>';
+			             result = result+'   </div>';
+			             
+			             $("#candidateSideDiv").empty();  
+			 		     $("#candidateSideDiv").append(result);  
+				 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
+						 $(".side_mask").fadeIn(200);
+						 $("body").css('overflow-y', 'hidden');
+						 candidateProfile(candidateId);
+						 hilightTab();
+			    	} 
+                }else{
+               	 $("#candidateSideDiv").removeAttr("style");
+ 	    	         var result ="";
+		    	     result = result+"   <div class='row'>"; 
+					 result = result+"	<div class='col-lg-12'>"; 
+					 result = result+"		<div class='content-area clearfix'>"; 
+					 result = result+"			<div class='blank-pages'>";
+					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 result = result+"			        <p>No Candidates Found</p>";
+					 result = result+"			 </div>";
+					 result = result+"		</div>"; 
+					 result = result+"	</div>"; 
+					 result = result+"  </div> "; 
+					$("#candidateSideDiv").empty();
+				    $("#candidateSideDiv").append(result); 
+                }
+         },
+           
+      }); 
+				
 }
-$(".demo").on('mouseenter',function(){
-	 alert("hi");
-});
+</script>
+
+<script>
+
+function hilightTab(){
+	$("#tab-11").show();	
+    $(".canreq-tabs-menu a").click(function(event) {
+        event.preventDefault();
+        $(this).parent().addClass("current");
+        $(this).parent().siblings().removeClass("current");
+        
+        var tab = $(this).attr("href");
+        $(".canreq-tabs-menu_inn").not(tab).css("display", "none");
+        $(tab).fadeIn();
+    });	
+}
 </script>
 
 <jsp:include page="addApplicant.jsp" />
@@ -2478,4 +2717,10 @@ $(".demo").on('mouseenter',function(){
 <jsp:include page="addOffer.jsp" />
 <jsp:include page="shortlist.jsp" />
 <jsp:include page="submissionDetails.jsp" />
+<jsp:include page="recommendCandidatesProfile.jsp"></jsp:include>
+ <jsp:include page="recommendCandidatesResumes.jsp"></jsp:include>
+<jsp:include page="recommendCandidatesExperience.jsp"></jsp:include>
+<jsp:include page="recommendCandidatesEducation.jsp"></jsp:include>
+<jsp:include page="recommendCandidatesCertificates.jsp"></jsp:include>
+<jsp:include page="recommendCandidatesActivities.jsp"></jsp:include> 
 

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,6 +48,10 @@ import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 /**
  * Handles requests for the Requirement service.
  * 
@@ -230,6 +235,18 @@ public class RequirementRestController {
 		return resultJson;
 	}
 	
+	
+	
+	@RequestMapping(value = "/getApproverTwoByUserId", method = RequestMethod.POST)
+	public @ResponseBody String getApproverTwoByUserId(@RequestParam(value = "currentApproverId", required = false)  Long currentApproverId,
+		HttpServletRequest request) throws Exception {
+		String resultJson = null;
+		List<User> userList = userService.getUsersByTeamTypeAndNoCurrentUser(currentApproverId);
+		resultJson = toJSON(userList);
+		return resultJson;
+	}
+	
+	
 	/**
 	 * Handles Vendor Contacts 
 	 * @param json
@@ -288,7 +305,7 @@ public class RequirementRestController {
 	 * Recommendations 
 	 * @param requirementId
 	 * @param request
-	 * @return
+	 * @return Json
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
@@ -307,4 +324,13 @@ public class RequirementRestController {
 		return resultJson;
 		
 	}
+	
+	private String toJSON(Object obj){
+        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+            public HierarchicalStreamWriter createWriter(Writer writer) {
+                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+            }
+        });
+        return xstream.toXML(obj);
+    }
 }

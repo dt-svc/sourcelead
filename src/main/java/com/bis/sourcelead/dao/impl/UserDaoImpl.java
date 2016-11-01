@@ -461,6 +461,15 @@ public class UserDaoImpl implements UserDao {
 	     List<User> userRoleList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
 	     return userRoleList; 
 	}
-	
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<User> getUsersByTeamTypeAndNoCurrentUser( Long currentApproverId) {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String query = "from User user where  user.userState != 'INACTIVE' and user.id <> :currentApproverId  ";
+		 List<User> userRoleList = session.createQuery(query.toString()).setLong( "currentApproverId", currentApproverId).setCacheable(true).list();
+		return userRoleList;
+	}
+	
+	
 }
