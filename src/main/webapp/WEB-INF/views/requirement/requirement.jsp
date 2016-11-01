@@ -593,7 +593,7 @@ $(document).ready(function() {
          <div class="form-group sequential" id="addLvl" style="display:none;">
                 <label class="col-md-3">Approver1<span class="text-danger">*</span></label>
                 <div class="col-md-9">   
-                    <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required" data-validation-optional="true">
+                    <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required" data-validation-optional="true" onchange="getLevel2Approvers();">
                        <option value="">Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
@@ -1655,6 +1655,36 @@ function filterTeamMembers(){
 	getUserList(teamType);
 }
 </script>
+
+
+<script type="text/javascript">
+function getLevel2Approvers(currentApproverId){
+	var currentApproverId = document.getElementById("sequentialApprover1").value;
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getApproverTwoByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,  
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-Select Approver-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#sequentialApprover2").empty();
+			        $("#sequentialApprover2").append(output);
+			        $('#sequentialApprover2').trigger("chosen:updated");
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	 }
+} 
+</script> 
 
 
 
