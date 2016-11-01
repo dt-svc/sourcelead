@@ -28,10 +28,8 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Primary;
-import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -195,6 +193,15 @@ public class UserRestController {
 				result = "false";
 			}
 			return result;
+	   }
+	 
+	 
+	 @RequestMapping(value = "/getUserByUserEmail" , method = RequestMethod.POST)
+	 public @ResponseBody  String getUserByUserEmail(@RequestParam(value="EmailId", required=false) String EmailId, HttpServletRequest request) throws Exception {
+		 	String resultJson = null;
+		 	User user = userService.findByEmail(EmailId);
+		 	resultJson = toJSON(user);
+			return resultJson;
 	   }
 	 
 	 

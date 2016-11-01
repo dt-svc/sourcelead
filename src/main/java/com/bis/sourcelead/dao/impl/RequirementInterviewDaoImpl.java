@@ -1,6 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -117,6 +120,15 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
         
 		//String query = "from RequirementInterview ri where DATE(ri.dateOfInterview) = CURDATE()";
 		List<RequirementInterview> requirementInterviewList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		return requirementInterviewList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime) {
+		Session session = this.sessionFactory.getCurrentSession();
+		 String query ="from RequirementInterview ri where ri.status = 1 and ri.startTime > :date and ri.startTime < :triggerTime";
+		List<RequirementInterview> requirementInterviewList = session.createQuery(query).setString("date",currentTime).setString("triggerTime",triggerTime).setCacheable(true).list();
 		return requirementInterviewList;
 	}
 	
