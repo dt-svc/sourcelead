@@ -299,6 +299,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 var interviewers = "---";
 	                    	 var interviewTypeHeader = "";
 	                    	 var interviewType = "---";
+	                    	 var timeZone = "---";
 	                    	 
 	                    	 if(report.notificationToApplicant != null && report.notificationToApplicant != 'undefined' && report.notificationToApplicant != "" && report.notificationToApplicant == "Y"){
 	                    		 notifiedDetails = 'Applicant';
@@ -313,7 +314,7 @@ function getInternalInterviewsList(submissionId){
 				             }
 	                    	 
 	                    	 if(notifiedDetails == ""){
-	                    		notifiedDetails = '';
+	                    		notifiedDetails = '---';
 	                    	 }
 	                    	 
 	                    	 if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
@@ -323,6 +324,10 @@ function getInternalInterviewsList(submissionId){
 	                    	 if(report.interviewType != null && report.interviewType != 'undefined' && report.interviewType != ""){
 	                    		 interviewType = report.interviewType;
 	                    		 interviewTypeHeader = report.interviewType;
+	                    	 }
+	                    	 
+	                    	 if(report.timeZone != null && report.timeZone != 'undefined' && report.timeZone != ""){
+	                    		 timeZone = report.timeZone;
 	                    	 }
 	                    	 
 	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
@@ -357,7 +362,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 }
 	                    	 if((report.notificationToSpoc == null || report.notificationToSpoc == '' || report.notificationToSpoc =='undefined') && (clientSubmissions == 'Y')){
 	                    		 result = result + '<span id="'+report.id+'vendorDiv">';
-	                    		 result = result + '<a href="javascript:void(0)" onclick="sendMailToVendor('+submissionId+','+report.id+');" title="Notify to Vednor"><i class="fa fa-suitcase text-muted"></i></a>';
+	                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onclick="sendMailToVendor('+submissionId+','+report.id+');" title="Notify to Vednor"><i class="fa fa-suitcase text-muted"></i></a>';
 	                    		 result = result + '</span>';
 	                    	 }
 	                    	 
@@ -395,6 +400,13 @@ function getInternalInterviewsList(submissionId){
 	                    	 }else{
 	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+'</p>';
 	                    	 }
+	                    	 result = result + '</div>';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Time Zone</strong>';
+	                    	 result = result + '</label>';
+                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+timeZone+'</p>';
 	                    	 result = result + '</div>';
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
@@ -482,13 +494,13 @@ function sendMailToapplicant(submissionId,interviewId){
 		    	 jQuery("#"+(interviewId)+"applicantDiv").css("display","none");
            		 var existingVal = $("#"+(interviewId)+"notifiedDiv").text();
  		    	
- 		    	if(existingVal == "" || existingVal ==null){
+ 		    	if(existingVal == "" || existingVal == null || existingVal =="---" ){
  		    		 $("#"+(interviewId)+"notifiedDiv").html("Applicant");
  		    	}
  		    	else{
  		    		 $("#"+(interviewId)+"notifiedDiv").html(existingVal+",Applicant");
  		    	}
-	           	  }
+	         }
 	   });
 }
 </script>
@@ -540,10 +552,15 @@ function getCustomerInterviewsList(submissionId){
 	                    	 var report = json[i]; 
 	                    	 var interviewTypeHeader = "";
 	                    	 var interviewType = "---";
+	                    	 var timeZone = "---";
 	                    	 
 	                    	 if(report.interviewType != null && report.interviewType != 'undefined' && report.interviewType != ""){
 	                    		 interviewType = report.interviewType;
 	                    		 interviewTypeHeader = report.interviewType;
+	                    	 }
+	                    	 
+	                    	 if(report.timeZone != null && report.timeZone != 'undefined' && report.timeZone != ""){
+	                    		 timeZone = report.timeZone;
 	                    	 }
 	                    	 
 	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
@@ -603,6 +620,13 @@ function getCustomerInterviewsList(submissionId){
 	                    	 }else{
 	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+'</p>';
 	                    	 }
+	                    	 result = result + '</div>';
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Time Zone</strong>';
+	                    	 result = result + '</label>';
+                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+timeZone+'</p>';
 	                    	 result = result + '</div>';
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';

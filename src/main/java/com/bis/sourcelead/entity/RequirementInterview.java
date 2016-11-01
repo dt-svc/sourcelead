@@ -47,6 +47,9 @@ import org.hibernate.annotations.FetchMode;
 	@Column(name = "END_TIME")
 	private Date endTime;
 	
+	@Column(name = "TIME_ZONE", columnDefinition = "TEXT default NULL")
+	private String timeZone;
+	
 	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
 	private String location;
 	
@@ -170,6 +173,14 @@ import org.hibernate.annotations.FetchMode;
 
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+
+	public String getTimeZone() {
+		return timeZone;
+	}
+
+	public void setTimeZone(String timeZone) {
+		this.timeZone = timeZone;
 	}
 
 	public String getLocation() {
