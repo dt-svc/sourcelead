@@ -188,15 +188,9 @@ public class DashboardRestController {
 	 
 	 /**
 	   * @author sarath kumar
-	   * @since  oct 26 2016
+	   * @since  nov 01 2016
 	   * @version 0.0.1
 	   * 
-	   * This method is used to for getting CandidatesList By OrgLocationID
-	   * this method is called at onload when click on timesheet left menu
-	   * 
-	   * @param user This is the first parameter to getCandidatesListByOrgLocationID method
-	   * @param navigation This is the second parameter to getCandidatesListByOrgLocationID method
-	   * @param startDate This is the third parameter to getCandidatesListByOrgLocationID method
 	   *  
 	   * @return string 
 	   * 
@@ -210,7 +204,7 @@ public class DashboardRestController {
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(),user.getId());
+		List<Requirement>   requirementList = requirementService.getAssignedRequirementApproverListByOrgLocationIDAndUserId(loginOrgLocation.getId(),user.getId());
 		resultJson = commonUtil.toJSON(requirementList);
 		return resultJson;
 	 }
