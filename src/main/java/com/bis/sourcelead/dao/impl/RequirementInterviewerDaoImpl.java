@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementInterviewerDao;
+import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -49,6 +51,15 @@ public class RequirementInterviewerDaoImpl implements RequirementInterviewerDao{
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return interviewer;
+	}
+
+	@Override
+	public List<RequirementInterviewer> getInterviwersListByInterviewId(Long requirementInterviewId) {
+		logger.debug("In RequirementInterviewerDaoImpl class getInterviwersListByInterviewId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementInterviewer interviewer where interviewer.requirementInterview.id = :requirementInterviewId and interviewer.status = 1";
+		List<RequirementInterviewer> requirementInterviewersList =  session.createQuery(query).setLong("requirementInterviewId", requirementInterviewId).setCacheable(true).list();
+		return requirementInterviewersList;
 	}
 	
 }
