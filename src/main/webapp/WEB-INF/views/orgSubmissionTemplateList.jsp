@@ -53,7 +53,7 @@ $(function(){
 	        		
 	        		result = result + '<tr>';
 	                result = result + '<td><div><span class="mid-span">'+opt.templateName+'</span></a></div></td>';
-	                result = result + '<td><div class="tbldata-dotdot"><span class="mid-span">'+opt.description+'</span></div></td>';
+	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.description+'"><span class="mid-span">'+opt.description+'</span></div></td>';
 	                result = result + '<td><div>';
 	                result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;';
 	                result = result + '|&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\',\''+opt.description+'\')">Edit</a>';

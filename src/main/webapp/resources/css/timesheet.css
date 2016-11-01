@@ -1471,7 +1471,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     
     
 .require_wrap_table {
-    width:100%; overflow-y:auto;
+    width:100%;
     }
 .require_wrap_table.recommend_table {}	  
 .require_wrap_table table {
