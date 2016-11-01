@@ -306,7 +306,7 @@ public class UserDaoImpl implements UserDao {
 			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager')";
 		}
 		else if(roleType != null && !"".equals(roleType) && "2".equals(roleType)){
-			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager' OR user.userType = 'Account Manager' OR user.userType = 'Sales Manager' OR user.userType = 'Recruiter')";
+			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager' OR user.userType = 'Account Manager' OR user.userType = 'Sales Manager' OR user.userType = 'Recruiter' OR user.userType = 'Team Lead')";
 		}
 		else if(roleType != null && !"".equals(roleType) && "6".equals(roleType)){
 			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager' OR user.userType = 'Account Manager')";
@@ -318,10 +318,10 @@ public class UserDaoImpl implements UserDao {
 			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager' OR user.userType = 'Account Manager' OR user.userType = 'Sales Manager')";
 		}
 		else if(roleType != null && !"".equals(roleType) && "8".equals(roleType)){
-			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager' OR user.userType = 'Account Manager' OR user.userType = 'Sales Manager' OR user.userType = 'Recruiter')";
+			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager' OR user.userType = 'Account Manager' OR user.userType = 'Sales Manager' OR user.userType = 'Recruiter' OR user.userType = 'Team Lead')";
 		}
 		else if(roleType != null && !"".equals(roleType) && "9".equals(roleType)){
-			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager' OR user.userType = 'Project Manager')";
+			subQuery = "and (user.userType = 'Admin' OR user.userType = 'Project Manager' OR user.userType = 'HR Manager' OR user.userType = 'Project Manager' OR user.userType = 'Team Lead')";
 		}
 		
 	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' "+subQuery+" ";
