@@ -123,3 +123,47 @@ function requirementApprovalPagination(){
     } );
 }
 </script>
+
+<script type="text/javascript">
+function rejectRequirementApprovals(requirementStatus,requirementId){
+	
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='acceptingOffer(\""+ requirementStatus+ "\" ,\""+ requirementId+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +"	</div>";
+	$("#rejectRequirementAlert").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script>
+function acceptRequirementApprovals(requirementStatus,requirementId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 var reason;
+	 if ($('#rejectReason').length)
+	 {
+		 reason = document.getElementById("rejectReason").value; 
+	 }
+	 else
+	 {
+		 reason = '';
+	 }
+	 
+	 $.ajax({  
+         type : "POST",
+         url: sourceleadUrl+"/acceptRequirementApprovals?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&requirementStatus="+requirementStatus+"&reason="+reason,        
+         success :function(data) {
+        	   
+        	    var json = JSON.parse(data);
+        	    $("#offerDetails").empty();
+			    $("#offerDetails").append(data); 
+       },
+         
+    }); 
+}
+
+</script>
