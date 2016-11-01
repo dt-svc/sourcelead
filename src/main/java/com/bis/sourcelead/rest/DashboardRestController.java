@@ -188,7 +188,7 @@ public class DashboardRestController {
 	 
 	 /**
 	   * @author sarath kumar
-	   * @since  nov 01 2016
+	   * @since  oct 26 2016
 	   * @version 0.0.1
 	   * 
 	   *  
@@ -204,7 +204,7 @@ public class DashboardRestController {
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		List<Requirement>   requirementList = requirementService.getAssignedRequirementApproverListByOrgLocationIDAndUserId(loginOrgLocation.getId(),user.getId());
+		List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(),user.getId());
 		resultJson = commonUtil.toJSON(requirementList);
 		return resultJson;
 	 }
@@ -262,6 +262,8 @@ public class DashboardRestController {
 				requirementInterview.setCandidateName(candidateFirstName+" "+candidateLastName);
 				
 				requirementInterview.setRequirementTitle(requirementTitle);
+				
+				requirementInterview.setRequirementId(requirementInterview.getSubmissionId().getRequirement().getId().toString());
 				
 				requirementInterview.setInterviewStartDateTimeStr(requirementInterview.getStartTime().toString());
 				

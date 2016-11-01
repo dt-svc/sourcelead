@@ -102,6 +102,9 @@ import org.hibernate.annotations.FetchMode;
 	private String requirementTitle;
 	
 	@Transient
+   	private String requirementId;
+	
+	@Transient
 	private String interviewStartDateTimeStr;
 	
 	@Transient
@@ -317,6 +320,14 @@ import org.hibernate.annotations.FetchMode;
 
 	public void setRequirementTitle(String requirementTitle) {
 		this.requirementTitle = requirementTitle;
+	}
+
+	public String getRequirementId() {
+		return requirementId;
+	}
+
+	public void setRequirementId(String requirementId) {
+		this.requirementId = requirementId;
 	}
 
 	public String getInterviewStartDateTimeStr() {

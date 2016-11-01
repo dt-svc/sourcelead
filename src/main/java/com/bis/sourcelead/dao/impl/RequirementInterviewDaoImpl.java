@@ -107,11 +107,15 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 		Map<String, Object> params = new HashMap<String,Object>();
 		
 		if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
-			subQuery = "and ri.submissionId.requirement.managerUserId.id =:userId";
-			//namedParameters = ".setLong('userId', userId)";
+			subQuery = "and (ri.submissionId.requirement.managerUserId.id =:userId OR ri.createdBy =:userCode)";
 			params.put("userId",userId);
+			params.put("userCode",userCode);
+			//subQuery = "and ri.submissionId.requirement.managerUserId.id =:userId";
+			//namedParameters = ".setLong('userId', userId)";
+			//params.put("userId",userId);
 			params.put("orgLocationsId",orgLocationsId);
 		}else{
+			
 			params.put("orgLocationsId",orgLocationsId);
 		}
 		
