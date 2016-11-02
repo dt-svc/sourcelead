@@ -22,7 +22,6 @@ import com.bis.sourcelead.entity.UserRole;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages = "com.bis.sourcelead")
 public class SourceleadUserDetailsService implements UserDetailsService {
 
 	@Autowired

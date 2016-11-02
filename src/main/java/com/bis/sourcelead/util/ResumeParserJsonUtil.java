@@ -9,6 +9,8 @@ public class ResumeParserJsonUtil {
 	String email;
 	
 	HashSet<String> phoneNumbers;
+	
+	String skills;
 
 	public String getName() {
 		return name;
@@ -33,7 +35,13 @@ public class ResumeParserJsonUtil {
 	public void setPhoneNumbers(HashSet<String> phoneNumbers) {
 		this.phoneNumbers = phoneNumbers;
 	}
-	
-	
+
+	public String getSkills() {
+		return skills;
+	}
+
+	public void setSkills(String skills) {
+		this.skills = skills;
+	}
 
 }

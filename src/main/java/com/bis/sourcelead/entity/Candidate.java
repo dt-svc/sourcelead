@@ -169,6 +169,10 @@ public class Candidate {
 	 private boolean isCandidateAdedd;
 	 
 	 @Transient
+	 private String reqSubmissionId;
+	 
+	 
+	 @Transient
 	 private List<RequirementSubmission> requirementSubmisstions;
 	 
 
@@ -610,6 +614,11 @@ public class Candidate {
 		this.requirementSubmisstions = requirementSubmisstions;
 	}
 
-	
-	
+
+	public String getReqSubmissionId() {
+		return reqSubmissionId;
+	}
+	public void setReqSubmissionId(String reqSubmissionId) {
+		this.reqSubmissionId = reqSubmissionId;
+	}
 }
