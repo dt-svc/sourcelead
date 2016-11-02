@@ -5,6 +5,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -189,9 +191,11 @@ public class CandidateListRestController {
 	  public String getCandidatesSkillsBycandidateID(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 	
 			String resultJson;
+			
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			List<CandidateSkills>  candidateSkillsList =  candidateSkillsService.getCandidateSkillsByCandidateId(candidateId);
-			resultJson = commonUtil.toJSON(candidateSkillsList);
+			Set<CandidateSkills> candidateSkillsSet = new HashSet<>(candidateSkillsList);
+			resultJson = commonUtil.toJSON(candidateSkillsSet);
 			return resultJson;
 			
 	   }
@@ -215,17 +219,23 @@ public class CandidateListRestController {
 			String resultJson;
 			
 			String[] skills = skillName.split(",");
+			
+   
+			//skills = new HashSet<String>(Arrays.asList(skills)).toArray(new String[0]);
+			
+			
 			for(String skill   : skills){
 				
-				CandidateSkills cs = new CandidateSkills();
-				Candidate candidate = new Candidate();
-				candidate.setId(Long.parseLong(candidateId));
-				cs.setCandidateId(candidate);
-				cs.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
-				cs.setOrgLocationID(loginOrgLocation);
-				cs.setName(skill);
-				candidateSkillsService.storeCandidateSkills(cs);
-				
+				CandidateSkills candidateSkills2 = candidateSkillsService.getSkillsByCandidateIdSkillName(candidateId, skill);
+			    if(candidateSkills2 == null ){
+						CandidateSkills cs = new CandidateSkills();
+						Candidate  candidate =  candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
+						cs.setCandidateId(candidate);
+						cs.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
+						cs.setOrgLocationID(loginOrgLocation);
+						cs.setName(skill);
+						candidateSkillsService.storeCandidateSkills(cs);
+				 }
 			}
 			return "success";
 			
