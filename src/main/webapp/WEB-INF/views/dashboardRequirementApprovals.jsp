@@ -45,8 +45,10 @@ function requirementApproverList(){
                		 }
                		 else{
 			    	     $("#requirementApproverList").removeAttr("style");
+			    	     
 	                	 $("#requirementApproverList").empty();
 	                	 var result = "";
+	                	 result = result+'<div id="rejectRequirementAlert" ></div>  ';
 	                	 result = result +"<table id='requirementApproverPagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>";  
@@ -66,25 +68,33 @@ function requirementApproverList(){
 	                    	 result = result +"<td><div><span>"+opt.id+"</span></div></td>";
 		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show'><span>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 		                     if(opt.rate!=null && opt.rate !='' && opt.rate !='undefined'){
-		                    	 result = result +"<td><div>"+opt.rate+"</div></td>";
+		                    	 result = result +"<td><div>"+opt.rate+"&nbsp;"+opt.currencyCode+"</div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
 	                    	  if(opt.minExp !=null && opt.minExp !='' && opt.minExp !='undefined'){
                                   
-		                     result = result +"<td><div><b class='proj_process'>"+opt.minExp+"</b></div></td>";
+		                     result = result +"<td><div>"+opt.minExp+"</div></td>";
                                   }else{
-                                	  result = result +"<td><div>-----</div></td>";
-                                	  }
-                                  
-		                     if(opt.requirementSubmissionStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN'){
-			                     result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
-
+                             result = result +"<td><div>-----</div></td>";
+                             }
+	                    	  
+                             var APPROVED = "APPROVED";     
+ 				             var REJECTED = "REJECTED";
+ 				            result = result +"<td>";
+				             if(opt.requirementSubmissionStatus  !='DRAFT'  &&  opt.requirementApproverHierarchyStatus !='APPROVED' &&  opt.requirementApproverHierarchyStatus != 'REJECTED' && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
+				            	
+				            	 result = result + '<a  href="javascript:void(0)"  onClick="updateReuqirementStatus(\''+ APPROVED+ '\','+opt.id+');"   ><i class="fa fa-check text-success"></i></a>';
+		                    	 result = result + '<a  href="javascript:void(0)"  onClick="rejectRequirementAlertMessage(\''+ REJECTED+ '\','+opt.id+');"  ><i class="fa fa-close text-danger"></i></a>';
+   				           	 
+				             }else if(opt.requirementApproverHierarchyStatus == 'APPROVED'  && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
+      						      result = result +'<button  id="requirementStatus" class="btn btn-success pull-right mr" type="button">'+opt.requirementApproverHierarchyStatus+'</button>';
+    				         }else if( opt.requirementSubmissionStatus  !='DRAFT'  && opt.requirementApproverHierarchyStatus == 'REJECTED'  && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
+					              result = result +'<button  id="requirementStatus" class="btn btn-danger pull-right mr" type="button">'+opt.requirementApproverHierarchyStatus+'</button>';
 		                     }else{
-			                     result = result +"<td><div>--</div></td>";
- 
-		                     }
-		                     
+		                    	 result = result +"<div>-----</div>";
+		                     }  
+				             result = result +"</td>";
 		                     result = result +"</tr>";
 	                     }
 	                     result = result +" </tbody>";
@@ -122,5 +132,87 @@ function requirementApprovalPagination(){
             "sSearch": ""
        }
     } );
+}
+</script>
+
+<%-- 
+     @author : sarath kumar.
+     this script is for update Requirement.
+     1.usage     :  used in Requirement jsp.
+     2.parameter : csrf token .
+     3.ajax url implementation in CandidateListRestController.
+--%>
+<script>
+function updateReuqirementStatus(status,requirementId){
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+	var requirementId = requirementId;
+	
+	
+	 
+	 var reason;
+	 if ($('#rejectReason').length)
+	 {
+		 reason = document.getElementById("rejectReason").value; 
+	 }
+	 else
+	 {
+		 reason = '';
+	 }
+	$.ajax({
+      type : "POST",
+      url: sourceleadUrl+"/requirementsAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason, 
+    		  success :function(data) {  
+            if(data != null && data != 'undefined' && data != ""){  
+          		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+          		 else if (data.indexOf('exception') >= 0) {
+          			 location.replace(sourceleadUrl+"/errorPage");
+          		 }
+          		 else{ 
+          			requirementApproverList();
+          		 }
+            }
+       },
+	  }); 
+}
+</script>
+
+
+
+
+<%-- 
+     @author : Venkat Kesav
+     this script is for close alert popup.
+     1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
+--%>
+<script type="text/javascript">
+function rejectRequirementAlertMessage(status,requirementId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatus(\""+ status+"\",\""+requirementId+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +"	</div>";
+	$("#rejectRequirementAlert").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+
+
+
+<%-- 
+     @author : Venkat Kesav
+     this script is for Delete Candidate alert
+     1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
+--%>
+<script type="text/javascript">
+function cancelAlert(){ 
+	$("#rejectRequirementAlert").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>

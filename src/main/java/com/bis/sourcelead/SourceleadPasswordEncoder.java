@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages = "com.bis.sourcelead")
 public class SourceleadPasswordEncoder implements PasswordEncoder {
 
 	    public  String hashText(String password) throws Exception {

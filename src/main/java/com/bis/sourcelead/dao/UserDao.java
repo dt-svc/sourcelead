@@ -84,5 +84,8 @@ public interface UserDao {
 	List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId ,Long orgLocationsId) throws Exception;
 
 	List<User> getUsersByTeamType(Long id, String teamType)throws Exception;
+
+	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId);
+
 	
 }

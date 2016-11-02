@@ -54,6 +54,7 @@ public class RequirementInterviewerDaoImpl implements RequirementInterviewerDao{
 	}
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementInterviewer> getInterviwersListByInterviewId(Long requirementInterviewId) {
 		logger.debug("In RequirementInterviewerDaoImpl class getInterviwersListByInterviewId method");
 		Session session = this.sessionFactory.getCurrentSession();
