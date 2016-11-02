@@ -2,10 +2,9 @@ package com.bis.sourcelead.rest;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,10 +27,12 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParser;
 /**
@@ -55,6 +56,10 @@ public class CandidateRestController {
 	
 	@Autowired
 	private CandidateResumesService  candidateResumesService;
+	
+	@Autowired
+	
+	private CandidateSkillsService candidateSkillsService;
 	
 	/**
 	 * @author prasad k
@@ -87,9 +92,9 @@ public class CandidateRestController {
 		if(itrator.hasNext()){
 	        multiFile = request.getFile(itrator.next());
 		}
-	    
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
+		System.out.println(json);
+		/*String jsonc = "{" + json + "}";*/
+		JSONObject jsonObj = new JSONObject(json);
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -109,7 +114,7 @@ public class CandidateRestController {
 		SourceleadResumeParser resumeParser = new SourceleadResumeParser();
 		String resumeDetails = null;
 		if(multiFile != null){
-			resumeDetails = resumeParser.getCandidateDetailsFromResume(multiFile.getBytes());
+			resumeDetails = resumeParser.getCandidateDetailsFromResume(multiFile.getBytes(),request);
 		}
 		return resumeDetails;
 	}
@@ -134,7 +139,15 @@ public class CandidateRestController {
 			return result;
 	   }
 	 
-	
+	 @RequestMapping(value = "/validateSkillName" , method = RequestMethod.POST)
+	 public @ResponseBody  Boolean validateSkillName(@RequestParam(value="skillName", required=false) String skillName, @RequestParam(value="candidateId", required=false) String candidateId, HttpServletRequest request) throws Exception {
+		 	Boolean flag = false;
+		 	CandidateSkills candidateSkills = candidateSkillsService.getSkillsByCandidateIdSkillName(candidateId,skillName);
+		    if(candidateSkills != null){
+		    	flag = candidateSkillsService.validateSkillName(skillName);
+		    }
+			return flag;
+	   }
 	 /**
 	  * @author Rajashekar
 	  * @param candidateId

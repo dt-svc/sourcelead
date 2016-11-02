@@ -78,8 +78,17 @@ function teamList(){
 	                    	 result = result +"<tr>";
 	                    	
 				             result = result +"<td><div><span>"+opt.name+"</span></div></td>";
+				           
+				             if(opt.ownerUserId.firstName != null && opt.ownerUserId.firstName != ' ' && opt.ownerUserId.firstName != 'undefined'){
 				             result = result +"<td><div><span>"+opt.ownerUserId.firstName+"</span></div></td>";
-				             result = result +"<td><div><span>"+opt.name+"</span></div></td>";
+				             }else{
+				            	 result = result +"<td>-----</td>";
+				             }
+				             
+				             
+		            	    result = result +"<td><div><span>"+opt.teamMembers+"</span></div></td>";
+
+            	             
 				             result = result +"<td><div class='tblicons'><i class='glyphicon glyphicon-pencil' onclick='sideBar("+opt.id+");'></i><i class='glyphicon glyphicon-trash' onclick='deleteTeam("+opt.id+");'></i></div></td>";
 				             result = result +"</tr>";
 	                     }
@@ -116,7 +125,7 @@ function teamList(){
 function pagination(){
     $('#teamPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[2, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -357,19 +366,19 @@ function projectMemberList(teamId){
 		                     var json = JSON.parse(data);
 		                     for (var i = 0; i < json.length; i++) { 
 		                    	 var opt = json[i]; 
-		                    	 result = result+ '              <tr>';
-		                    	 if(opt.memberUserId.firstName != null && opt.memberUserId.firstName != '' && opt.memberUserId.firstName !="undefined"){
-		                    	 result = result+ '<td><div><span>'+opt.memberUserId.firstName+'</span></div></td>';
+		                    	 result = result+ '<tr>';
+		                    	 if(opt.memberName != null && opt.memberName != '' && opt.memberName !="undefined"){
+		                    	 result = result+ '<td><div><span>'+opt.memberName+'</span></div></td>';
 		                    	 }else{
 		                    		 result = result+ '<td><div><span>-----</span></div></td>'; 
 		                    	 }
-		                    	 if(opt.memberUserId.email != null && opt.memberUserId.email != '' && opt.memberUserId.email !="undefined"){
-		                    	 result = result+ '<td><div><span>'+opt.memberUserId.email+'</span></div></td>';
+		                    	 if(opt.email != null && opt.email != '' && opt.email !="undefined"){
+		                    	 result = result+ '<td><div><span>'+opt.email+'</span></div></td>';
 		                    	 }else{
 		                    		 result = result+ '<td><div><span>-----</span></div></td>'; 
 		                    	 }
-		                    	 if(opt.memberUserId.userType != null && opt.memberUserId.email != '' && opt.memberUserId.userType !="undefined"){
-		                    	 result = result+ '                <td><div><span>'+opt.memberUserId.userType+'</span></div></td>';
+		                    	 if(opt.userType != null && opt.userType != '' && opt.userType !="undefined"){
+		                    	 result = result+ '<td><div><span>'+opt.userType+'</span></div></td>';
 		                    	 }else{
 		                    		 result = result+ '<td><div><span>-----</span></div></td>'; 
 		                    	 }
@@ -540,7 +549,7 @@ function deleteTeamMember(teamMemberId){
 function TeamMemberpagination(){ 
     $('#teamMemberPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[2, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,

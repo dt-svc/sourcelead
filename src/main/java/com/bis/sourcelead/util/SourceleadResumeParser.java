@@ -1,5 +1,7 @@
 package com.bis.sourcelead.util;
 
+import static gate.Utils.stringFor;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Writer;
@@ -8,19 +10,32 @@ import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.xml.sax.SAXException;
 
 import com.google.i18n.phonenumbers.PhoneNumberMatch;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.rometools.utils.Strings;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
+
+import gate.Annotation;
+import gate.AnnotationSet;
+import gate.Corpus;
+import gate.Document;
+import gate.Factory;
+import gate.FeatureMap;
+import gate.util.GateException;
 public class SourceleadResumeParser {
 	
 /**@param
@@ -28,10 +43,11 @@ public class SourceleadResumeParser {
  *  Using this we can able to get candidate details from upload resume
  *   
  *  @author: Naresh Bolisetty
+ * @throws GateException 
  *  @date: 17-October-2016
  */
-public  String getCandidateDetailsFromResume(byte[] source)
-				throws IOException, SAXException, TikaException {
+public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest request)
+				throws IOException, SAXException, TikaException, GateException {
 				
     	    BodyContentHandler htmlHandler = new BodyContentHandler();
     	    ByteArrayInputStream stream = new ByteArrayInputStream(source);
@@ -49,12 +65,132 @@ public  String getCandidateDetailsFromResume(byte[] source)
 			else{
 				jsonUtil.setName(name);
 			}
-			
-			
 			jsonUtil.setEmail(emailFinderFromParsedTextFile(parsedString));
 			jsonUtil.setPhoneNumbers(phoneNumberFinderFromParsedTextFile(parsedString));
+			
+			JSONObject jObject = loadGateAndAnnie(parsedString,request);
+			String skills = "";
+			if(jObject != null && !jObject.isEmpty()){
+				JSONArray outerArr = (JSONArray)jObject.get("skills");
+				if(outerArr != null && !outerArr.isEmpty()){
+					for (int i = 0; i < outerArr.size(); i++) {
+						JSONObject innerObj = (JSONObject) outerArr.get(i);
+						if(innerObj != null && !innerObj.isEmpty()){
+							Iterator x = innerObj.keySet().iterator();
+							while (x.hasNext()){
+							    String key = (String) x.next();
+							    String outerKeyObj = (String) innerObj.get(key);
+							  // System.out.println("skills>>>>>>>>>>>>>>"+outerKeyObj);
+								String[] totalStrings = outerKeyObj.split(System.getProperty("line.separator"));
+								if(totalStrings != null && totalStrings.length > 0){
+									for(String skillSeperator :totalStrings){
+										skillSeperator = skillSeperator.replaceAll(",,", ",");
+										skillSeperator = skillSeperator.replaceAll(":,", "");
+										String[] arr = skillSeperator.split(":");
+										if(arr != null && arr.length>1){
+											if(StringUtils.isNotEmpty(arr[1])  && arr[1] !=":"){
+												if(StringUtils.isEmpty(skills)){
+													skills = skills+(arr[1].replaceAll(":", "").trim());
+												}
+												else if(!skills.contains(arr[0])){
+													skills= skills+(",");
+													skills= skills+(arr[1].trim());
+												}
+											}
+										}
+										else{
+											arr = skillSeperator.split("\\t");
+											if(arr != null && arr.length>1){
+												if(StringUtils.isNotEmpty(arr[1]) && arr[1] !=":"){
+													if(StringUtils.isEmpty(skills)){
+														skills= skills+(arr[1].trim());
+													}
+													else if(!skills.contains(arr[0])){
+														skills= skills+(",");
+														skills= skills+(arr[1].trim());
+													}
+												}
+											}
+										}
+										if(arr != null && arr.length>0){
+											if(StringUtils.isNotEmpty(arr[0])  && arr[0] !=":" ){
+												if(StringUtils.isEmpty(skills)){
+													skills= skills+(arr[0].trim());
+												}
+												else if(!skills.contains(arr[0])){
+													skills= skills+(",");
+													skills= skills+(arr[0].trim());
+												} 
+											}
+										}
+									}
+								}
+								
+							}
+						}
+					}
+				}
+				
+			}
+			if(skills != null){
+				jsonUtil.setSkills(skills.toString().replaceAll("[^a-zA-Z0-9\\.\\#\\,\\/\\s]", ""));
+			}
 		    return toJSON(jsonUtil);
    }
+
+
+	public static JSONObject loadGateAndAnnie(String paramString,HttpServletRequest request) throws GateException,IOException {
+		Annie annie = (Annie) request.getServletContext().getAttribute("Annie");
+		Corpus corpus = Factory.newCorpus("Annie corpus");
+		FeatureMap params = Factory.newFeatureMap();
+		params.put("stringContent", paramString);
+		Document resume = (Document) Factory.createResource(
+			"gate.corpora.DocumentImpl", params);
+		corpus.add(resume);
+		annie.setCorpus(corpus);
+		annie.execute();
+		return parseResumeContentJsonForm(corpus,paramString);
+	} 
+	@SuppressWarnings("unchecked")
+	public static JSONObject parseResumeContentJsonForm(Corpus corpus,String paramString){
+		Iterator<Document> iter = corpus.iterator();
+		JSONObject parsedJSON = new JSONObject();
+
+		if (iter.hasNext()) { 
+			JSONObject profileJSON = new JSONObject();
+			Document doc = (Document) iter.next();
+			AnnotationSet defaultAnnotSet = doc.getAnnotations();
+
+			AnnotationSet curAnnSet;
+			Iterator it;
+			Annotation currAnnot;
+			// skills
+			String[] otherSections = new String[] { "skills"};
+			for (String otherSection : otherSections) {
+				curAnnSet = defaultAnnotSet.get(otherSection);
+				it = curAnnSet.iterator();
+				JSONArray subSections = new JSONArray();
+				while (it.hasNext()) {
+					JSONObject subSection = new JSONObject();
+					currAnnot = (Annotation) it.next();
+					String key = (String) currAnnot.getFeatures().get(
+							"sectionHeading");
+					String value = stringFor(doc, currAnnot);
+					if (!StringUtils.isBlank(key)
+							&& !StringUtils.isBlank(value)) {
+						subSection.put(key, value);
+					}
+					if (!subSection.isEmpty()) {
+						subSections.add(subSection);
+					}
+				}
+				if (!subSections.isEmpty()) {
+					parsedJSON.put(otherSection, subSections);
+				}
+			}
+		}
+		return parsedJSON;
+	}
     /**
 	 * Name finder from parsed text file
 	 * Here we used java regular expression logic for resolving name from text file 

@@ -962,7 +962,9 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public void mailRequirementtoManager(User loginUser, User managerUser, Requirement requirement,StringBuilder location) throws Exception {
 	
-		 managerUser = userService.getUserById(requirement.getManagerUserId().getId());
+		 if(requirement.getManagerUserId() != null ){
+			managerUser = userService.getUserById(requirement.getManagerUserId().getId());
+		 }
 		
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
@@ -1286,10 +1288,10 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, Long userId)
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode)
 			throws Exception {
 		
-			return requirementDao.getAssignedRequirementListByOrgLocationIDAndUserId(orgLocationId,userId);
+			return requirementDao.getAssignedRequirementListByOrgLocationIDAndUserId(orgLocationId, userType, userId, userCode);
 		
 	}
 	

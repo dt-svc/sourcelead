@@ -53,7 +53,7 @@ $(function(){
 	        		
 	        		result = result + '<tr>';
 	                result = result + '<td><div><span class="mid-span">'+opt.templateName+'</span></a></div></td>';
-	                result = result + '<td><div class="tbldata-dotdot"><span class="mid-span">'+opt.description+'</span></div></td>';
+	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.description+'"><span class="mid-span">'+opt.description+'</span></div></td>';
 	                result = result + '<td><div>';
 	                result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;';
 	                result = result + '|&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\',\''+opt.description+'\')">Edit</a>';
@@ -173,12 +173,12 @@ function templatepagination(){
 			        result = result + '<button class="btn btn-success dropdown-toggle btn-block" type="button" data-toggle="dropdown" id="addFiled-dropdown">Add Field &nbsp;&nbsp;';
 			        result = result + '<span class="caret"></span></button>';
 			        result = result + '<ul id="add-field" class="dropdown-menu pull-right">';
-			        result = result + '<li><a id="add-text" data-type="text" href="javascript:void(0)">Text Box</a></li>';
-			        result = result + '<li><a id="add-textarea" data-type="textarea" href="javascript:void(0)">Text Area</a></li>';
-			        result = result + '<li><a id="add-select" data-type="select" href="javascript:void(0)">Select Box</a></li>';
-			        result = result + '<li><a id="add-radio" data-type="radio" href="javascript:void(0)">Radio Button</a></li>';
-			        result = result + ' <li><a id="add-checkbox" data-type="checkbox" href="javascript:void(0)">Check Box</a></li>';
-			        result = result + '<li><a id="calendar" data-type="calendar" href="javascript:void(0)">Calendar</a></li>';
+			        result = result + '<li><a id="add-text" data-type="text" onclick="scrollToBottom();" href="javascript:void(0)">Text Box</a></li>';
+			        result = result + '<li><a id="add-textarea" data-type="textarea" onclick="scrollToBottom();"  href="javascript:void(0)">Text Area</a></li>';
+			        result = result + '<li><a id="add-select" data-type="select" onclick="scrollToBottom();"  href="javascript:void(0)">Select Box</a></li>';
+			        result = result + '<li><a id="add-radio" data-type="radio" onclick="scrollToBottom();"  href="javascript:void(0)">Radio Button</a></li>';
+			        result = result + ' <li><a id="add-checkbox" data-type="checkbox" onclick="scrollToBottom();"  href="javascript:void(0)">Check Box</a></li>';
+			        result = result + '<li><a id="calendar" data-type="calendar" onclick="scrollToBottom();"  href="javascript:void(0)">Calendar</a></li>';
 			        /* result = result + '<li><a id="add-autocomplete" data-type="autocomplete" href="javascript:void(0)">Auto Complete</a></li>'; */
 		            result = result + '</ul>';
 			        result = result + '</div>';
@@ -466,11 +466,35 @@ function cancelTemplate(){
 }
 </script>
 
+<script>
+function scrollToBottom(){
+	var documentHeight = document.documentElement.offsetHeight;
+	var viewportHeight = window.innerHeight;
+	window.scrollTo(0,documentHeight-viewportHeight);
+}
+</script>
+
 
 </body>
 
 
 <jsp:include page="masterFooter.jsp" />
+<div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
 </html>
 
+
+<script>
+// Back To Top 
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 200) {
+            $('.backtotop').fadeIn('slow');
+        } else {
+            $('.backtotop').fadeOut('slow');
+        }
+    });
+    $('.backtotop').click(function() {
+        $("html, body").animate({scrollTop: 0}, 500);
+        return false;
+    });
+</script>
 

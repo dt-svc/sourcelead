@@ -68,7 +68,7 @@
 	                	 result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result = result +"    <th><input type='checkbox' id='checkbox1'/></th>"; 
+	                     result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this)'</th>"; 
 	                     result = result +"    <th>Name</th>"; 
 	                     result = result +"    <th>Designation</th>"; 
 	                     result = result +"    <th>Position type</th>"; 
@@ -276,11 +276,12 @@ function clientSideBar(candidateId){
 			            
 			             result = result+'<ul class="list-inline list-unstyled">';
 			             if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
-			             for (i=0;i < skills.length;i++)
+			              for (i=0;i < skills.length;i++)
 			             {
-			            	 result = result+'<li>'+skills[i]+'</li>';
+			            	  result = result+'<li>'+skills[i]+'</li>';
+			             } 
 			             }
-			             }
+			             
 			             result = result+'</ul>';
 			             
 			             result = result+'                 </div>';
@@ -839,6 +840,21 @@ $(document).ready(function() {
 
 </script>
 
+<script>
+function toggle(source) {
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i] != source)
+            checkboxes[i].checked = source.checked;
+        
+    }
+$('input:checkbox:not(#checkAll)').click(function() {
+    if(!this.checked) {
+        $('#checkAll').removeAttr('checked');
+    }
+});
+}
+</script>
 
     
 <jsp:include page="../masterFooter.jsp" />

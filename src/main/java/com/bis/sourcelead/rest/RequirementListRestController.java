@@ -269,8 +269,10 @@ public class RequirementListRestController {
 								List<Candidate> candidateList = new ArrayList<>();
 								candidateList.add(candidate);
 								List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScore(candidateList,requirementSubmission.getRequirement());
-								requirementSubmission.setScore(candidateListCopy.get(0).getCandidateScore()+"%");
-								logger.info("size of score is "+candidateListCopy.get(0).getCandidateScore());
+								if(candidateListCopy !=null && candidateListCopy.size() >0){
+									requirementSubmission.setScore(candidateListCopy.get(0).getCandidateScore()+"%");
+									logger.info("size of score is "+candidateListCopy.get(0).getCandidateScore());
+								}
 							}
 						}
 						

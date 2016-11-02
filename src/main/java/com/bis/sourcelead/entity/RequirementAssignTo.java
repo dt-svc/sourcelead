@@ -60,6 +60,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	private String assignedUserName;
 	
 	@Transient
+	private Long teamOwnerId;
+	
+	
+	@Transient
 	private String assignedUserRole;
 	
 	@Transient
@@ -160,6 +164,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 	public void setTeamName(String teamName) {
 		this.teamName = teamName;
+	}
+
+	public Long getTeamOwnerId() {
+		return teamOwnerId;
+	}
+
+	public void setTeamOwnerId(Long teamOwnerId) {
+		this.teamOwnerId = teamOwnerId;
 	}
 	
 	

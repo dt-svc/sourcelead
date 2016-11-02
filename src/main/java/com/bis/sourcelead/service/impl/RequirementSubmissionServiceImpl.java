@@ -691,4 +691,18 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			String submissionStatus) throws Exception {
 		return requirementSubmissionDao.getRequirementSubmissionByIdAndSubmissionStatus(submissionId,submissionStatus);
 	}
+
+	@Override
+	public Integer getAllSubmissionCountByRequirementIdAndSubmissionStage(Long orgLocationsId, Long requirementId,
+			String submissionStatus) {
+		return requirementSubmissionDao.getAllSubmissionCountByRequirementIdAndSubmissionStage(orgLocationsId, requirementId, submissionStatus);
+	}
+
+	@Override
+	public RequirementSubmission getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(Long sourceSubmissionId,
+			Long orgLocationsId) {
+		
+		return requirementSubmissionDao.getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(sourceSubmissionId,orgLocationsId);
+		
+	}
 }

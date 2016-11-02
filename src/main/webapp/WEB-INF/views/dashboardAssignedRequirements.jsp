@@ -7,12 +7,12 @@
 <div class="content-dashboard clearfix"> 
       <!-- Assigned Requirements -->
       <div class="clearfix dashboard-widget mb col-md-12">
-        <h4 class="pull-left">
+        <h4 class="clearfix">
         Assigned Requirements
-        &nbsp;&nbsp;<span class="pull-right" title="Calendar"><i aria-hidden="true" class="fa fa-calendar" id="datepicker"></i>
+        &nbsp;&nbsp;<span title="Calendar"><i aria-hidden="true" class="fa fa-calendar" id="datepicker"></i>
         </span>
         </h4>
-      <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a>
+      <!-- <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
         <div class="clearfix require_wrap_table dashboard-data">
         		 <div id="requirementList"></div>
         </div>
@@ -65,7 +65,7 @@ function requirementList(){
 	                     result = result +"    <th>Applicants</th>"; 
 	                     result = result +"    <th>Shortlisted</th>"; 
 	                     result = result +"    <th>Submited</th>"; 
-	                     result = result +"    <th>Interviewd</th>"; 
+	                     result = result +"    <th>Interviewed</th>"; 
 	                     result = result +"    <th>Offered</th>"; 
 	                     result = result +"    <th>Action</th>"; 
 	                     result = result +"  </tr>"; 
@@ -94,18 +94,12 @@ function requirementList(){
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
 		                     }
-	                    	 result = result +"<td><div>-----</div></td>";
+	                    	 result = result +"<td><div>"+opt.noOfApplicants+"</div></td>";
 
-		                     result = result +"<td><div><b class='proj_process'>"+opt.requirementSubmissionStatus+"</b></div></td>";
-		                     if(opt.requirementSubmissionStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN'){
-			                     result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
-
-		                     }else{
-			                     result = result +"<td><div>--</div></td>";
- 
-		                     }
-		                     result = result +"<td><div>--</div></td>";
-		                     result = result +"<td><div>--</div></td>";
+		                     result = result +"<td><div>"+opt.noOfShortlistedApplicants+"</div></td>";
+			                 result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
+		                     result = result +"<td><div>"+opt.noOfInterviewedApplicants+"</div></td>";
+		                     result = result +"<td><div>"+opt.noOfOfferedApplicants+"</div></td>";
 		                     result = result +"<td><div>--</div></td>";
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";
@@ -137,7 +131,7 @@ function requirementList(){
 function pagination(){ 
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[1, 15, 20, -1], [1, 15, 20, "All"]],
+    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,

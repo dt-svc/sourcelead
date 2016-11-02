@@ -185,7 +185,7 @@ $(document).ready(function() {
 	            	<span class="btn btn-primary">Select Template
 	                </span>
 	            </label>
-                <select class="form-control" id="template"  onChange="setTemplateValues();">
+                <select class="form-control chosen-select" id="template"  onChange="setTemplateValues();">
                    <option value=""  selected>Select template</option>
                     <c:forEach var="title" items="${jobsTemplateList}">
 	                    <option value="${title.id}">${title.jobTitle}</option>
@@ -593,7 +593,7 @@ $(document).ready(function() {
          <div class="form-group sequential" id="addLvl" style="display:none;">
                 <label class="col-md-3">Approver1<span class="text-danger">*</span></label>
                 <div class="col-md-9">   
-                    <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required" data-validation-optional="true">
+                    <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required" data-validation-optional="true" onchange="getLevel2Approvers();">
                        <option value="">Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
@@ -774,7 +774,7 @@ $(document).ready(function() {
 			 $('#ratePer').attr("data-validation-optional","true"); 
 		 }
 		 */
-		  /* if ($('#requirement_form').validate(false, validationSettings)){   */
+		   if ($('#requirement_form').validate(false, validationSettings)){   
 			var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
@@ -799,9 +799,9 @@ $(document).ready(function() {
 						},
 					});
 			return true;
-		  /* }else{ 
+		   }else{ 
 				return false;
-		 }   */
+		 }   
 	} 
 	
 	$('body').on('blur', '#requirement_form', function() {
@@ -841,6 +841,7 @@ function storeTeam(){
 					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
 					success :function(data) { 
 						  /* location.replace(sourceleadUrl+"/team"); */
+						$('#addTeam').modal('hide');
 				      }, 
 		    }); 
 			return true; 
@@ -1494,7 +1495,7 @@ function getTeamsList(teamType){
 function pagination(){
     $("#example").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[2, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -1655,6 +1656,36 @@ function filterTeamMembers(){
 	getUserList(teamType);
 }
 </script>
+
+
+<script type="text/javascript">
+function getLevel2Approvers(currentApproverId){
+	var currentApproverId = document.getElementById("sequentialApprover1").value;
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getApproverTwoByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,  
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-Select Approver-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#sequentialApprover2").empty();
+			        $("#sequentialApprover2").append(output);
+			        $('#sequentialApprover2').trigger("chosen:updated");
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	 }
+} 
+</script> 
 
 
 

@@ -5,7 +5,7 @@ INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_S
 VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'RequirementPosting' and `ENTITY_TYPE` = 'Email'),
 'link', '{{RequirementPosting.link}}');
 
-UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='You are Assigned as a manager for new Requirement of {{RequirementPosting.RequirementTitle}}', `SIGNATURE`='Best Regards \n {{RequirementPosting.LoginUser}},\n {{RequirementPosting.Role}}', `BODY`='Dear {{RequirementPosting.Ownername}},\n\n{{RequirementPosting.JobInitiator}}  assigned you as a owner for the requirement.\n\n The brief requirement details are below \n\n Requirement Title :{{RequirementPosting.RequirementTitle}} \n\n Requirement Location :{{RequirementPosting.RequirementLocation}} \n\n Requirement Rate :{{RequirementPosting.RequirementRate}} \n\n Experience :{{RequirementPosting.Experience}} \n\n For more details login into the system  Login {{RequirementPosting.link}}' WHERE `UNIQUE_SCENARIO_NAME`='Requirement Posting' and `ENTITY_TYPE`='Email';
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='You are Assigned as a manager for new Requirement of {{RequirementPosting.RequirementTitle}}', `SIGNATURE`='Best Regards \n {{RequirementPosting.LoginUser}},\n {{RequirementPosting.Role}}', `BODY`='Dear {{RequirementPosting.Ownername}},\n\n{{RequirementPosting.JobInitiator}}Â  assigned you as a owner for the requirement.\n\n The brief requirement details are below \n\n Requirement Title :{{RequirementPosting.RequirementTitle}} \n\n Requirement Location :{{RequirementPosting.RequirementLocation}} \n\n Requirement Rate :{{RequirementPosting.RequirementRate}} \n\n Experience :{{RequirementPosting.Experience}} \n\n For more details login into the system  Login {{RequirementPosting.link}}' WHERE `UNIQUE_SCENARIO_NAME`='Requirement Posting' and `ENTITY_TYPE`='Email';
 
 
 
@@ -25,7 +25,7 @@ VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Assign
 'link', '{{AssignToTeamMembers.link}}');
 
 
-UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `DESCRIPTION`='Used to Assign TeamMembers for requirement', `SUBJECT`='{{AssignToTeamMembers.RequirementTitle}} new requirement assigned to you', `SIGNATURE`='Best Regards \n {{AssignToTeamMembers.LoginUser}},\n{{AssignToTeamMembers.Role}}', `BODY`='Dear {{AssignToTeamMembers.Ownername}},\n\n new requirement assigned to you. The brief requirement details are below  \n\n Requirement Title :{{AssignToTeamMembers.RequirementTitle}} \n\n Requirement Location :{{AssignToTeamMembers.RequirementLocation}} \n\n Requirement Rate :{{AssignToTeamMembers.RequirementRate}} \n\n Experience :{{AssignToTeamMembers.Experience}} \n\n For more details login into the system Login \n {{AssignToTeamMembers.link}}' WHERE `UNIQUE_SCENARIO_NAME`='AssignToTeamMembers' and `ENTITY_TYPE`='Email';
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `DESCRIPTION`='Used to Assign TeamMembers for requirement', `SUBJECT`='{{AssignToTeamMembers.RequirementTitle}} new requirement assigned to you', `SIGNATURE`='Best Regards \n {{AssignToTeamMembers.LoginUser}},\n{{AssignToTeamMembers.Role}}', `BODY`='Dear {{AssignToTeamMembers.Ownername}},\n\n new requirement assigned to you. The brief requirement details are below  \n\n Requirement Title :{{AssignToTeamMembers.RequirementTitle}} \n\n Requirement Location :{{AssignToTeamMembers.RequirementLocation}} \n\n Requirement Rate :{{AssignToTeamMembers.RequirementRate}} \n\n Experience :{{AssignToTeamMembers.Experience}} \n\n For more details login into the systemÂ Login \n {{AssignToTeamMembers.link}}' WHERE `UNIQUE_SCENARIO_NAME`='AssignToTeamMembers' and `ENTITY_TYPE`='Email';
 
 
 #ApprovedRequirement_Email
@@ -59,8 +59,8 @@ UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='Approved the requirement {{A
 
 #approvalMechanism 
 
- UPDATE `sourcelead`.`CLASS_FIELD` SET `FIELD_NAME`='role' WHERE `DELIM_STR`= '{{ApprovalMechanism.role}}' and id = (select  id  from `entity_type` where  `ENTITY_NAME`='ApprovalMechanism' and `ENTITY_TYPE`='Email');
- UPDATE `sourcelead`.`CLASS_FIELD` SET `FIELD_NAME`='client' WHERE `DELIM_STR`= '{{ApprovalMechanism.client}}' and id = (select  id  from `entity_type` where  `ENTITY_NAME`='ApprovalMechanism' and `ENTITY_TYPE`='Email');
+ UPDATE `sourcelead`.`CLASS_FIELD` SET `FIELD_NAME`='role' WHERE `DELIM_STR`= '{{ApprovalMechanism.role}}' and id = (select  id  from `ENTITY_TYPE` where  `ENTITY_NAME`='ApprovalMechanism' and `ENTITY_TYPE`='Email');
+ UPDATE `sourcelead`.`CLASS_FIELD` SET `FIELD_NAME`='client' WHERE `DELIM_STR`= '{{ApprovalMechanism.client}}' and id = (select  id  from `ENTITY_TYPE` where  `ENTITY_NAME`='ApprovalMechanism' and `ENTITY_TYPE`='Email');
  
 #ApprovalMechanismSequential
  

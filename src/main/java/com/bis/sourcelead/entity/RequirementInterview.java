@@ -47,6 +47,9 @@ import org.hibernate.annotations.FetchMode;
 	@Column(name = "END_TIME")
 	private Date endTime;
 	
+	@Column(name = "TIME_ZONE", columnDefinition = "TEXT default NULL")
+	private String timeZone;
+	
 	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
 	private String location;
 	
@@ -100,6 +103,9 @@ import org.hibernate.annotations.FetchMode;
 	
 	@Transient
 	private String requirementTitle;
+	
+	@Transient
+   	private String requirementId;
 	
 	@Transient
 	private String interviewStartDateTimeStr;
@@ -170,6 +176,14 @@ import org.hibernate.annotations.FetchMode;
 
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+
+	public String getTimeZone() {
+		return timeZone;
+	}
+
+	public void setTimeZone(String timeZone) {
+		this.timeZone = timeZone;
 	}
 
 	public String getLocation() {
@@ -317,6 +331,14 @@ import org.hibernate.annotations.FetchMode;
 
 	public void setRequirementTitle(String requirementTitle) {
 		this.requirementTitle = requirementTitle;
+	}
+
+	public String getRequirementId() {
+		return requirementId;
+	}
+
+	public void setRequirementId(String requirementId) {
+		this.requirementId = requirementId;
 	}
 
 	public String getInterviewStartDateTimeStr() {
