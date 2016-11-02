@@ -48,7 +48,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (userRole != null) {
-				session.save(userRole);
+				session.saveOrUpdate(userRole);
 			}
 			logger.debug("UserRole Added Successfully");
 		} catch (Exception exception) {
@@ -85,7 +85,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 		String subQuery = "";
 		if (!isNullOrEmpty(userState)) {
-			subQuery = "and userRole.user.userState = '" + userState + "'";
+			subQuery = "and userRole.userState = '" + userState + "'";
 		}
 		
 		String subQuery1 = "";
@@ -107,7 +107,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 		String subQuery = "";
 		if (!isNullOrEmpty(userState)) {
-			subQuery = "and userRole.user.userState = '" + userState + "'";
+			subQuery = "and userRole.userState = '" + userState + "'";
 		}
 		
 		String subQuery1 = "";
@@ -128,7 +128,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 		String subQuery = "";
 		if (!isNullOrEmpty(userState)) {
-			subQuery = "and userRole.user.userState = '" + userState + "'";
+			subQuery = "and userRole.userState = '" + userState + "'";
 		}
 		
 		String subQuery1 = "";
@@ -151,7 +151,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 		String subQuery = "";
 		if (!isNullOrEmpty(userState)) {
-			subQuery = "and userRole.user.userState = '" + userState + "'";
+			subQuery = "and userRole.userState = '" + userState + "'";
 		}
 		
 		String subQuery1 = "";
@@ -181,7 +181,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return session
 				.createQuery(
 						"Select userRole from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and "
-								+ "userRole.user.userState = :userState "+subQuery+" ")
+								+ "userRole.userState = :userState "+subQuery+" ")
 				.setLong("locationId", locationId).setString("userState", userState).setLong("userId", userId).setCacheable(true).list();
 	}
 
@@ -282,6 +282,39 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		} else {
 			return null;
 		}
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public UserRole getUserRoleByUserIdAndLocationId(Long userId,Long locationId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("getUserRoleByUserIdAndLocationId method  start");
+		userRole = session.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles  "
+						+ "left join fetch userRole.user where userRole.user.id = :userId and userRole.orgLocations.id = :locationId")
+				.setLong("userId", userId).setLong("locationId", locationId).setCacheable(true).list();
+		logger.debug("getUserRoleByUserIdAndLocationId method ends");
+		if (userRole.size() > 0) {
+			return userRole.get(0);
+		} else {
+			return null;
+		}
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public boolean isUserActive(Long userId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("isUserActive By UserId start");
+		userRole = session.createQuery("from UserRole userRole where userRole.user.id = :userId and userRole.userState = 'ACTIVE' ").setLong("userId", userId).setCacheable(true).list();
+		logger.debug("isUserActive By UserId End");
+		Boolean flag = false;
+		if (userRole.size() > 0) {
+			flag = true;
+		} 
+		return flag;
 	}
 
 	@Override

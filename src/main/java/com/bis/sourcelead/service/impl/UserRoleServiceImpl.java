@@ -76,6 +76,16 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public UserRole getUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception {
 		return userRoleDao.getUserDetailsByEmailAndLocationId(email,locationId);
 	}
+	
+	@Override
+	public boolean isUserActive(Long userId) throws Exception {
+		return userRoleDao.isUserActive(userId);
+	}
+	
+	@Override
+	public UserRole getUserRoleByUserIdAndLocationId(Long userId,Long locationId) throws Exception {
+		return userRoleDao.getUserRoleByUserIdAndLocationId(userId,locationId);
+	}
 
 	@Override
 	public List<UserRole> getUserSpocsListByUserId(Long userId) throws Exception {

@@ -191,13 +191,14 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	  */
 	 @RequestMapping(value = "/terminateUser", method = RequestMethod.POST)
 		public @ResponseBody String terminateUser(
-				@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value="reason", required=false) String reason) throws Exception{
-				User user = userService.getUserById(userId);
-				if(user != null){
-					user.setPreviousUserState(user.getUserState());
-					user.setUserState(Status.INACTIVE);
-					user.setTerminateReason(reason);
-					userService.addUser(user);
+				@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value="reason", required=false) String reason, HttpServletRequest request) throws Exception{
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
+				if(userRole != null){
+					userRole.setPreviousUserState(userRole.getUserState());
+					userRole.setUserState(Status.INACTIVE);
+					userRole.setTerminateReason(reason);
+					userRoleService.addUserRole(userRole);
 				}
 			
 				return "success";
@@ -212,8 +213,13 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	  */
 	 @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
 	 @ResponseBody String updateUser(@RequestParam(value="json", required=false) String json,@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value="emailId", required=false) String emailId,HttpServletRequest request) throws Exception{
-				User user = userService.getUserById(userId);
+				
 				 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				
+				User user = userService.getUserById(userId);
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				
 				json = "{"+json+"}";
 			    JSONObject jsonObj = new JSONObject(json);
 			    String password = "";
@@ -224,9 +230,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					if(jsonObj.has("reportingManager") && !isNullOrEmpty(jsonObj.getString("reportingManager"))){
 						User reportingManager = new User();
 						reportingManager.setId(Long.parseLong(jsonObj.getString("reportingManager")));
-						user.setReportingManager(reportingManager);
+						userRole.setReportingManager(reportingManager);
 					}
-					if(user.getUserState() != null && !"".equals(user.getUserState()) && Status.NOT_LOGGEDIN.equals(user.getUserState())&& !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
+					if(userRole.getUserState() != null && !"".equals(userRole.getUserState()) && Status.NOT_LOGGEDIN.equals(userRole.getUserState())&& !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
 						//generate random password
 						user.setEmail(jsonObj.getString("EmailId"));
 						user.setUserName(jsonObj.getString("EmailId"));
@@ -238,8 +244,10 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					user.setUpdatedDate(commonUtil.currentDate());
 					
 					userService.addUser(user);
-					if(user.getUserState() != null && !"".equals(user.getUserState()) && Status.NOT_LOGGEDIN.equals(user.getUserState())&& !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
-						userService.sendEmail(user,loginUser,password);
+					userRoleService.addUserRole(userRole);
+					
+					if(userRole.getUserState() != null && !"".equals(userRole.getUserState()) && Status.NOT_LOGGEDIN.equals(userRole.getUserState())&& !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
+						userService.sendEmail(user,orgLocations.getId(),loginUser,password);
 					}
 				}
 			    Employees employees = employeesService.getEmployeeByUserId(userId);

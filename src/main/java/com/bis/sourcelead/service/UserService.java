@@ -11,6 +11,7 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.UserProfile;
 public interface UserService  {
 
@@ -20,7 +21,7 @@ public interface UserService  {
 	
 	public void createUser(JSONObject jsonObj, User user, Long orgLocationsId) throws Exception;
 	
-	public void sendEmail(User user, User loginUser, String password) throws Exception;
+	public void sendEmail(User user,Long orgLocationsId, User loginUser, String password) throws Exception;
 	
 	String validateEmailandCandidate(String website, String email,String sourceleadBLockedwebsites) throws Exception;
 	

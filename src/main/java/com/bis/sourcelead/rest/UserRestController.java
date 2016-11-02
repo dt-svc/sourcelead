@@ -39,6 +39,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -86,6 +87,9 @@ public class UserRestController {
 	
 	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
+	
+	@Autowired
+	private UserRoleService userRoleService;
 	
 	@Autowired
 	RolesService rolesService;
@@ -319,16 +323,21 @@ public class UserRestController {
 	  public @ResponseBody  String resendInvitationEmail(@RequestParam(value="userId", required=false) String userId, HttpServletRequest request) throws Exception {
 		    
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    //get user by userId
 		    User user = userService.getUserById(Long.parseLong(userId));
 		    
 		    //generate random password
 		    String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+		    boolean isUserActive = false;
 	 		if(user != null){
-	 			user.setPassword(sourceleadPasswordEncoder.encode(password));
+	 			isUserActive = userRoleService.isUserActive(user.getId());
+	 			if(isUserActive == false){
+	 				user.setPassword(sourceleadPasswordEncoder.encode(password));
+	 			}
 	 			user.setIsMailSent(Status.Y);
 	 			userService.addUser(user);
-	 			userService.sendEmail(user,loginUser,password);
+	 			userService.sendEmail(user,orgLocations.getId(),loginUser,password);
 	 		}
 		
 	 	  return "success";

@@ -33,6 +33,17 @@ public interface UserRoleDao {
 
 	public UserRole getUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception;
 	
+	/**To get user role by userid and locationId
+	 * @author Prasad salina
+	 * @param userId
+	 * @param locationId
+	 * @return
+	 * @throws Exception
+	 */
+	public UserRole getUserRoleByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
+	
+	public boolean isUserActive(Long userId) throws Exception;
+	
 	/**
 	 * This method is used for whether spoc is in multile orgs 
 	 * @param Venkat I

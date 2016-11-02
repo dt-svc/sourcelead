@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +18,12 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.bis.sourcelead.enums.Status;
+
+/**
+ * @author bis113
+ *
+ */
 @Entity
 @Table(name = "USER_ROLE", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="userRole")
@@ -44,6 +52,20 @@ public class UserRole{
     
     @Column(name = "IS_PRIMARY")
     private Integer isPrimary;
+    
+    @Column(name = "USER_STATE")
+	@Enumerated(EnumType.STRING)
+	private Status userState;
+    
+    @Column(name = "PREVIOUS_USER_STATE")
+	@Enumerated(EnumType.STRING)
+	private Status previousUserState;
+	
+	@Column(name = "USER_TYPE")
+	private String userType;
+	
+	@Column(name = "TERMINATE_REASON", columnDefinition = "TEXT default NULL")
+	private String terminateReason;
     
     @Column(name = "STATUS")
 	private String status;
@@ -105,6 +127,38 @@ public class UserRole{
 
 	public void setReportingManager(User reportingManager) {
 		this.reportingManager = reportingManager;
+	}
+
+	public Status getUserState() {
+		return userState;
+	}
+
+	public void setUserState(Status userState) {
+		this.userState = userState;
+	}
+
+	public Status getPreviousUserState() {
+		return previousUserState;
+	}
+
+	public void setPreviousUserState(Status previousUserState) {
+		this.previousUserState = previousUserState;
+	}
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
+
+	public String getTerminateReason() {
+		return terminateReason;
+	}
+
+	public void setTerminateReason(String terminateReason) {
+		this.terminateReason = terminateReason;
 	}
 
 	public Roles getRoles() {
