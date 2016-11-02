@@ -149,7 +149,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				int reqRate = Integer.parseInt(expectedRate);
 				float perMonthCandidateSal = 0;
 				if("Hourly".equalsIgnoreCase(candidateRateType)){
-					int perDaySal = reqRate *24;
+					int perDaySal = reqRate *9;
 					perMonthCandidateSal = perDaySal * 30;
 				}else if("Weekly".equalsIgnoreCase(candidateRateType)){
 					int perDaySal = reqRate /7;
