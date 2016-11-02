@@ -249,7 +249,7 @@ function getContactsLists(){
                 result = result +'<tbody>';
    	        	result = result +'<thead>';
    	        	result = result +'<tr>';
-   	            result = result +'<th><input type="checkbox" id="contactscheckbox"/></th>'; 
+   	            result = result +'<th><input type="checkbox" id="contactscheckbox" onclick="toggle(this);"/></th>'; 
    	        	result = result +'  <th>Name</th>';
    	        	result = result +'  <th>Email</th>';
    	        	result = result +' <th>Ph</th>';
@@ -345,7 +345,7 @@ function getVendorLists(){
                 result = result +'<tbody>';
    	        	result = result +'<thead>';
    	        	result = result +'<tr>';
-   	            result = result +'<th><input type="checkbox" id="checkbox1"/></th>'; 
+   	            result = result +'<th><input type="checkbox" id="checkbox1" onclick="toggle(this);"/></th>'; 
    	        	result = result +'  <th>Name</th>';
    	        	result = result +'  <th>Location</th>';
    	        	result = result +' <th>No. of contacts</th>';
@@ -473,4 +473,26 @@ $(document).ready(function(){
 			getContactsLists();
         }
     }
+</script>
+
+<script>
+function toggle(source) {
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i] != source)
+            checkboxes[i].checked = source.checked;
+        
+    }
+$('input:checkbox:not(#contactscheckbox)').click(function() {
+    if(!this.checked) {
+        $('#contactscheckbox').removeAttr('checked');
+    }
+});
+
+$('input:checkbox:not(#checkbox1)').click(function() {
+    if(!this.checked) {
+        $('#checkbox1').removeAttr('checked');
+    }
+});
+}
 </script>
