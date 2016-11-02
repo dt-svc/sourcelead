@@ -185,11 +185,11 @@
 						</div>
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-					 <c:if test="${empty user_List}">
+					<%-- <c:if test="${empty user_List}">
 					<p style="font-size: 11px; color: red;" class="text-muted small"><i class="fa fa-info-circle"></i>&nbsp;All Admin's in Org will have access to Edit/Approve/Reject TimeSheet</p>
-					</c:if>
+					</c:if> --%>
 						
-					 <c:if test="${not empty user_List}">
+					<%--  <c:if test="${not empty user_List}"> --%>
 						<div class="form-group">
 							<label class="col-md-3" for="Project Manager">Manager <span
 								class="text-danger">*</span></label>
@@ -219,7 +219,7 @@
 								</select>
 							</div>
 						</div>
-					</c:if>
+					<%-- </c:if> --%>
 						<div class="form-group">
 							<label class="col-md-3">Client</label>
 							<div class="col-md-9">

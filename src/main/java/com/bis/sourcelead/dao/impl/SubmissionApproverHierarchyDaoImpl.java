@@ -202,6 +202,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyForEmployeeIdAndStartDate(Long empId,
 			Long approverUserId, Date startDate) {
 		// TODO Auto-generated method stub
+		/*String sub = ":approverUserId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1')";*/
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
 		
@@ -244,7 +245,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	
 	
 	}
-
+	 
+	//can you write the description
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public void updateApprovalStatusForApprover(Long empId,Long approverUserId, Date startDate, String status,String rejectedReason) {
@@ -252,7 +254,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
 		
-		String query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where sah.submissionApprovalStatus != 'APPROVED' and emp.id =:empId and sah.submissionId.startDate = :startDate and  hierarchy.approverUserId.id = :approverUserId ";
+		String sub = ":approverUserId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1')";
+		String query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where sah.submissionApprovalStatus != 'APPROVED' and emp.id =:empId and sah.submissionId.startDate = :startDate and (hierarchy.approverUserId.id = :approverUserId OR "+sub+")  ";
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> sahMainList = session.createQuery(query)
 																	  .setLong("empId", empId)	
@@ -263,7 +266,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		if(sahMainList != null && !sahMainList.isEmpty()){
 	    	for(SubmissionApproverHierarchy mainSah :sahMainList){
 	    		
-	    		
+	    		//get max level
 	    		Query queryForMaxLevel = session.createQuery("select Max(sah.hierarchyId.level) from SubmissionApproverHierarchy sah  where sah.submissionId.projectMembers.employee.id =:empId and sah.submissionId.id = :submissionId and sah.submissionId.startDate = :startDate ");
 	    		List<Integer> maxList = queryForMaxLevel.setLong("empId", empId).setLong("submissionId", mainSah.getSubmissionId().getId()).setParameter("startDate", sqlStartDate).list();
 	    		Integer maxLevel = 0;
@@ -272,7 +275,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    		}
 	    		
 	    		
-	    	    query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and sah.submissionId.id = :submissionId and sah.submissionId.startDate = :startDate and  hierarchy.approverUserId.id = :approverUserId ";
+	    	    query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and sah.submissionId.id = :submissionId and sah.submissionId.startDate = :startDate and hierarchy.approverUserId.id = :approverUserId ";
 	    		@SuppressWarnings("unchecked")
 	    		List<SubmissionApproverHierarchy> sahList = session.createQuery(query)
 	    																	  .setLong("empId", empId)	

@@ -401,16 +401,16 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 				   Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 				   startCal.setLenient(false);
 	        	   
-	        	   if(currentWeekStartDate.equals(employeeStartDate)|| (currentWeekStartDate.before(employeeEndDate) && currentWeekStartDate.after(employeeStartDate))){
+	        	   if( (employeeStartDate !=null && currentWeekStartDate.equals(employeeStartDate) ) || ( (employeeEndDate !=null && currentWeekStartDate.before(employeeEndDate)) ) &&  (employeeStartDate !=null && currentWeekStartDate.after(employeeStartDate)) ){
 				    	  startCal.setTime(currentWeekStartDate);
 			       }
-			       else if(employeeEndDate.before(currentWeekStartDate)){
+			       else if(employeeEndDate != null && employeeEndDate.before(currentWeekStartDate)){
 			    	  Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 			    	  endCal.setLenient(false);
 			    	  endCal.setTime(employeeEndDate);
 			    	  startCal.setTime(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(endCal,"MON").getTime());
 			       }
-			       else if(employeeStartDate.after(currentWeekStartDate)){
+			       else if(employeeStartDate != null && employeeStartDate.after(currentWeekStartDate)){
 			    	  startCal.setTime(employeeStartDate);
 			       }
 	        	   
@@ -594,11 +594,11 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	         sb.append("  <td><div>"+ts.getCombinedStatus()+"</div></td>");
 	         
 	         sb.append("    <td><div> " );
-	             if(ts.getCombinedStatus().equalsIgnoreCase("NEW") || ts.getCombinedStatus().equalsIgnoreCase("SUBMITTED FOR APPROVAL") ){
+	             if( (ts.getCombinedStatus() !=null && ts.getCombinedStatus().equalsIgnoreCase("NEW")) || ( ts.getCombinedStatus() != null && ts.getCombinedStatus().equalsIgnoreCase("SUBMITTED FOR APPROVAL")) ){
 	                 sb.append("<div><i class='fa fa-check' alt='Approve'  onclick='approveSubmission(\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmission(\""+ts.getId()+"\",\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'></i></div>");
 	                 sb.append("<div id='rejectedPopup'></div>");
 	             }
-	             if(ts.getCombinedStatus().equalsIgnoreCase("REJECTED")){
+	             if(ts.getCombinedStatus() !=null && ts.getCombinedStatus().equalsIgnoreCase("REJECTED")){
 	               /*  sb.append(" <div><h3 class='reje_color'>Rejected</h3>");
 	               sb.append(" <i class='glyphicon glyphicon-comment' onclick='rejectedMessage(\'rejectedMessage"+ts.getId()+"\');'>");
 	               sb.append(" <strong id='rejectedMessage"+ts.getId()+"'><p>"+ts.getRejectedReason()+"</p></strong>");
@@ -613,7 +613,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	                
 	                
 	            }
-	            if(ts.getCombinedStatus().equalsIgnoreCase("APPROVED")){
+	            if(ts.getCombinedStatus() !=null && ts.getCombinedStatus().equalsIgnoreCase("APPROVED")){
 	          	  sb.append(" <div><h3>Approved</h3></div>");
 	            }  
 	            sb.append(" </div>");
