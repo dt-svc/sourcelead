@@ -78,7 +78,7 @@ public class RegistrationRestController {
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		resultJson = commonUtil.toJSON(orgsList);
+		resultJson = commonUtil.toJSON(regOrgsList);
 		return resultJson;
 
 	}
