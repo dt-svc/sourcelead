@@ -56,7 +56,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Candidate> getRecommendationsWithScore(List<Candidate> candidateList, Requirement requirement) throws Exception {
-		float expPercentage = 0; //  experience = 20%
+		
 		float locationPercentage = 0; // location 10%
 		float ratePercentage = 0;    // rate 20 %
 		float skillPercentage = 0; // skill = 50%
@@ -109,6 +109,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		
 		for(Candidate candidate : candidateList){
 			boolean isCandidateAdded = false;
+			float expPercentage = 0; //  experience = 20%
 			int matchedSkillCount = 0;
 			List<CandidateSkills> candidateSkillList  = candidateSkillsService.getSkillByCandidateId(candidate.getId());
 			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
