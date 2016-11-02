@@ -106,9 +106,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 									requirementInterview.setInterviewType(jsonObj.getString(c+"interviewType"));
 								}
 								
-								if(jsonObj.has(c+"timeZone") && !jsonObj.getString(c+"timeZone").isEmpty()){
+								/*if(jsonObj.has(c+"timeZone") && !jsonObj.getString(c+"timeZone").isEmpty()){
 									requirementInterview.setTimeZone(jsonObj.getString(c+"timeZone"));
-								}
+								}*/
 								
 								if(jsonObj.has(c+"startTime") && !jsonObj.getString(c+"startTime").isEmpty()){
 									  Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")), 
