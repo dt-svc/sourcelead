@@ -1816,13 +1816,13 @@ function requirementPipeline(requirementId){
 
 							 
 							
-				            result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
+				           // result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
 				            result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
 				            result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
 				            result = result +'  <ul>';
 				            result = result +'    <li class="li-vendor">';
-				            result = result +'      <input type="text" class="vendorfild" placeholder="Search">';
-				            result = result +'      <i class="fa fa-search"></i></li>';
+				          //  result = result +'      <input type="text" class="vendorfild" placeholder="Search">';
+				          // result = result +'      <i class="fa fa-search"></i></li>';
 				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
 				            result = result +'      <div class="export_pop">';
 				            result = result +'        <ul>';
@@ -2098,8 +2098,7 @@ function requirementPipeline(requirementId){
 				           result = result + '     <div class="clearfix"></div>';
 				           result = result + '   </div>';
 				           result = result + '   <div class="require_wrap_table">';
-				           result = result + '     <table id="requirementsPagination">';
-				           result = result + '       <tbody>';
+				           result = result + '     <table id="requirementsPagination" class="display" cellspacing="0" width="100%"">';
 				           result = result + '       <thead>';
 				           result = result + '         <tr>';
 				           result = result + '           <th>Name</th>';
@@ -2114,13 +2113,13 @@ function requirementPipeline(requirementId){
 				           result = result + '           <th>Status</th>';
 				           result = result + '         </tr>';
 				           result = result + '       </thead>';
-				           
+				           result = result + '       <tbody>';
 				           for (var i=0; i<json.length; i++)
 			   				{  
 			   	        		
 			   	        		var report = json[i];
 						           result = result + '       <tr>';
-						           result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+');"><span>'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+');" class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 						           
 						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.candidateEmail+'</span></div></td>';
@@ -2138,7 +2137,7 @@ function requirementPipeline(requirementId){
 						    	     }
 						           
 						           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.id+'\"></a>'+report.resumeName+'</span></div></td>';
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.id+'\"></a>&nbsp;&nbsp;'+report.resumeName+'</span></div></td>';
 							           }
 							       else{
 							    	   result = result + '         <td><div>--</div></td>';
@@ -2181,35 +2180,6 @@ function requirementPipeline(requirementId){
 						           
 						           result = result + '<td><div><span>'+report.submissionStatus+'</span></div></td>';
 						           
-						           /* result = result + '         <td><div><span>';
-						           result = result +'			<select>';
-							       
-									if(report.submissionStatus == "INTERVIEW"){
-										result = result +'  <option selected >interview</option>';
-										result = result +'  <option>submission</option>';
-										result = result +' <option>offer</option>'; 
-										result = result +' <option>rejected</option>'; 
-									}
-									if(report.submissionStatus == "SUBMISSION"){
-										result = result +'  <option selected >submission</option>';
-										result = result +'  <option>interview</option>';
-										result = result +' <option>offer</option>'; 
-										result = result +' <option>rejected</option>';
-									}
-									if(report.submissionStatus == "OFFER"){
-										result = result +'  <option selected >offer</option>';
-										result = result +'  <option>submission</option>';
-										result = result +' <option>interview</option>'; 
-										result = result +' <option>rejected</option>';
-									}
-									if(report.submissionStatus == "REJECTED"){
-										result = result +'  <option selected >rejected</option>';
-										result = result +'  <option>submission</option>';
-										result = result +' <option>interview</option>'; 
-										result = result +' <option>offer</option>';
-									}
-						           result = result + '             </select>';
-						           result = result + '             </span></div></td>'; */
 						           
 						           result = result + '       </tr>';
 			   				}
@@ -2218,22 +2188,12 @@ function requirementPipeline(requirementId){
 				           result = result + '       </tbody>';
 				           result = result + '     </table>';
 				           result = result + '   </div>';
-				           result = result + '   <nav>';
-				           result = result + '     <ul id="paging" class="pagination">';
-				           result = result + '       <li><a href="#">Previous</a></li>';
-				           result = result + '       <li><a href="#">2</a></li>';
-				           result = result + '       <li><a href="#">3</a></li>';
-				           result = result + '       <li class="disabled"><a href="#">6</a></li>';
-				           result = result + '       <li data-page="last"><a href="#">Next</a></li>';
-				           result = result + '     </ul>';
-				           result = result + '     <div class="clearfix"></div>';
-				           result = result + '   </nav>';
 				            
 				            
 							$("#tab-1").empty();
 							$("#tab-2").empty(); 
 							$("#tab-2").append(result);  
-							    
+							documentpagination();
 							$("#tab-2").show();
 							$(".project-tabs-menu a").click(function(event) {
 							     event.preventDefault();

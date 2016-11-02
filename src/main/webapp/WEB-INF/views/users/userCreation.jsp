@@ -8,6 +8,9 @@
 <script src="resources/js/formvalidator.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/chosen.jquery.min.js"></script> 
+
 <!-- <script src="resources/js/masklist.js" type="text/javascript"></script>
 <script src="resources/js/jquery.inputmask.js" type="text/javascript"></script> 
 
@@ -53,7 +56,15 @@
                            </div>
                         </div>
                   </div>
-                <div class="form-group">
+                  
+                 <div class="form-group" id="EmailIdDiv">
+                  <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" id="EmailId" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onKeyUp="validateUserEmail();" onblur="getUserByUserEmail();">
+                  </div>
+                  </div>
+                  
+                <div class="form-group" id="FirstNameDiv">
                   <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" id="FirstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length2-100">
@@ -63,16 +74,11 @@
                 <div class="form-group">
                   <label class="col-md-3">Last Name</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="lastName" data-validation="validate_Space validate_Alphanumeric validate_length length2-100" data-validation-optional="true" value="">
+                    <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_Alphanumeric validate_length length2-100" data-validation-optional="true" value="">
                   </div>
                 </div>
                 
-                <div class="form-group" id="EmailIdDiv">
-                  <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
-                  <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmailId" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onKeyUp="validateUserEmail();">
-                  </div>
-                  </div>
+               
                  <div class="form-group">
                   <label class="col-md-3">Phone Number</label>
                    <div class="col-md-9">
@@ -97,7 +103,7 @@
               <div class="form-group">
                   <label class="col-md-3">Manager</label>
                   <div class="col-md-9">
-                      <select class="form-control select-bg" name="reportingManager" id="reportingManager" field-name="Manager">
+                      <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Manager">
                         <option value="">-Select Manager-</option>
                       </select>
                   </div>
@@ -299,6 +305,44 @@
 		    });
 	 }
  }
+ </script>  
+ 
+ <script type="text/javascript">
+ function getUserByUserEmail() {
+	 var EmailId = document.getElementById("EmailId").value; 
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(EmailId != null && EmailId != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getUserByUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        success: function(data) {
+		        	if(data != null && data != ''){
+		        		var json = JSON.parse(data);
+		        		if(json.firstName != null && json.firstName != ''){
+		        			$("#FirstName").val(json.firstName);
+				        	$("#FirstName").attr("disabled", true);
+				        	$('#FirstNameDiv').find('p.jquery_form_error_message').remove();
+			        		
+			        		if(json.lastName != null && json.lastName != ''){
+			        			$("#lastName").val(json.lastName);
+					        	$("#lastName").attr("disabled", true);
+			        		}else{
+			        			 $("#lastName").attr("disabled", false);
+			        			 $("#lastName").val('');
+			        		}
+		        		}else{
+		        			 $("#FirstName").attr("disabled", false);
+		        			 $("#FirstName").val('');
+		        			 
+		        			 $("#lastName").attr("disabled", false);
+		        			 $("#lastName").val('');
+		        		}
+		        		
+		        	}
+		        },
+		    });
+	 }
+ }
  </script>     
  
 <!-- start script for datepicker -->
@@ -334,7 +378,7 @@
 					}
 		        	$("#reportingManager").empty();
 			        $("#reportingManager").append(output);
-			        //$('.selectpicker').selectpicker('refresh'); 
+			        $('#reportingManager').trigger("chosen:updated");
 		        },
 		    });
 	 }else{
@@ -342,7 +386,27 @@
      	 output = output + "<option value=''>-- Select Manager --</option>"; 
      	 $("#reportingManager").empty();
 	     $("#reportingManager").append(output);
+	     $('#reportingManager').trigger("chosen:updated");
 	 }
 	
  }
+</script>
+
+<script type="text/javascript">
+$(function(){
+	       var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	       $("#reportingManager").chosen();
+	       $("#role").chosen();
+	      
+	       $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+});
 </script>

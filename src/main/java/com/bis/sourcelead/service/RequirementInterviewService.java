@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -34,7 +35,10 @@ public interface RequirementInterviewService {
 	void sendEmailToApplicants(Candidate candidate, RequirementSubmission requirementSubmission, User loginUser,
 			Org loginOrg, RequirementInterview requirementInterview) throws Exception;
 	
-	void sendEmailToInterviewrs(Candidate candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser, String startTime, String endTime,Org loginOrg,String dateOfInterview,String location, String interviewType, OrgLocations orgLocations)	throws Exception;
+	void sendEmailToInterviewrs(Candidate candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser,Org org,RequirementInterview requirementInterview,OrgLocations orgLocations)	throws Exception;
+
+
+	List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 	
 
 }

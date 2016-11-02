@@ -1,11 +1,19 @@
 
 package com.bis.sourcelead;
+import java.io.File;
+import java.io.IOException;
+
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+
+import com.bis.sourcelead.util.Annie;
+
+import gate.Gate;
+import gate.util.GateException;
 /**
  * This class is used to configure the web application without web.xml
  * 
@@ -19,7 +27,24 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
 		super.onStartup(servletContext);
-		servletContext.addListener(new SourceleadSessionListener());
+		//Session Initialization
+    	servletContext.addListener(new SourceleadSessionListener());
+    	
+    	//gate initialization
+		File gateHome = new File(servletContext.getRealPath("/WEB-INF/classes"));
+    	Gate.setGateHome(gateHome);
+    	File siteConfig = new File(servletContext.getRealPath("/WEB-INF/classes/gate.xml"));
+    	Gate.setSiteConfigFile(siteConfig);
+    	try {
+    		Gate.setPluginsHome(gateHome);
+			Gate.init();
+			
+			Annie annie = new Annie();
+			annie.initAnnie();
+			servletContext.setAttribute("Annie", annie);
+		} catch (GateException e) {
+		} catch (IOException e) {
+		}
 	}
 	
 	@Override

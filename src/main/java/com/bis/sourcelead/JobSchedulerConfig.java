@@ -2,6 +2,7 @@ package com.bis.sourcelead;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.bis.sourcelead.util.EMailJobScheduler;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.util.EMailJobScheduler;
 
 @Configuration
 @EnableScheduling
+@EnableAsync
 public class JobSchedulerConfig {
 	
 	@Bean

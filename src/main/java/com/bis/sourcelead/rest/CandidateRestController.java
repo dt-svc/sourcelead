@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -91,9 +92,9 @@ public class CandidateRestController {
 		if(itrator.hasNext()){
 	        multiFile = request.getFile(itrator.next());
 		}
-	    
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
+		System.out.println(json);
+		/*String jsonc = "{" + json + "}";*/
+		JSONObject jsonObj = new JSONObject(json);
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -113,7 +114,7 @@ public class CandidateRestController {
 		SourceleadResumeParser resumeParser = new SourceleadResumeParser();
 		String resumeDetails = null;
 		if(multiFile != null){
-			resumeDetails = resumeParser.getCandidateDetailsFromResume(multiFile.getBytes());
+			resumeDetails = resumeParser.getCandidateDetailsFromResume(multiFile.getBytes(),request);
 		}
 		return resumeDetails;
 	}

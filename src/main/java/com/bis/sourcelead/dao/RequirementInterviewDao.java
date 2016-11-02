@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.RequirementInterview;
@@ -16,5 +17,7 @@ public interface RequirementInterviewDao {
 
 	List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId,
 			Long orgLocationsId) throws Exception;
+
+	List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 
 }
