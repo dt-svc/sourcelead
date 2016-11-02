@@ -39,6 +39,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Column(name = "AMOUNT")
 	private String amount;
 	
+	@Column(name = "Offer_Status")
+	private String offerStatus;
+	
+	
 	@Column(name = "PAYMENT_MODE")
 	private String paymentMode;
 	
@@ -78,7 +82,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
-	
 	
 	@Transient
     private String dateOfJoiningStr;
@@ -235,6 +238,16 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setDateOfJoiningStr(String dateOfJoiningStr) {
 		this.dateOfJoiningStr = dateOfJoiningStr;
 	}
+
+	public String getOfferStatus() {
+		return offerStatus;
+	}
+
+	public void setOfferStatus(String offerStatus) {
+		this.offerStatus = offerStatus;
+	}
+	
+	
 	
 	
 }

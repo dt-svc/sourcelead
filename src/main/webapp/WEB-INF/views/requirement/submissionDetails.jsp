@@ -196,15 +196,21 @@ function getSubmissionDetailsSideBar(submissionId,candidateId){
 	                    
 	                  
 	                  result = result + '<div class="col-md-6">';
-		                  //Internal Interviews List
-		     			  result  = result + '   <div id="internalInterviewsList" ></div>';
-		     			  
-		     			  //Customer Interviews List
-		     			  result  = result + '   <div id="customerInterviewsList" ></div>';
-		     			  
-		     			  result = result+'<div id="rejectOfferAlert" ></div>  ';
-		     			 
-		     			  result  = result + '   <div id="offerDetails" ></div>';
+
+	                  result  = result + '   <div id="internalInterviewsList" ></div>';
+	     			  
+	     			  //Customer Interviews List
+	     			  result  = result + '   <div id="customerInterviewsList" ></div>';
+	     			  
+	     			 //Reject Offer Popup
+	     			  result = result+'<div id="rejectOfferAlert" ></div>  ';
+	     			  
+	     			 // Offer Details
+	     			  result = result+'<div id="offerDetailsByClient" ></div>  ';
+	     			 
+	     			 //Internal Offer List
+	     			  result  = result + '   <div id="offerDetails" ></div>';
+	     			  
 	     			 result = result + ' </div>';      
 
        
@@ -652,7 +658,7 @@ function getOfferDetails(submissionId){
          url: sourceleadUrl+"/getOfferDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
          success :function(data) {
         	 
-              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+              if(data != null && data != 'undefined' && data != "" && data != '{}'){
             		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
@@ -669,56 +675,73 @@ function getOfferDetails(submissionId){
    					     result = result + '<div class="content clearfix" style="display: block;">';
 	                     var json = JSON.parse(data);
 	                  
-	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
-	                    	 result = result + '<h2  class="active">Offer</h2>';
-	                    	 result = result + '<div class="content clearfix">';
-	                    	 result = result + '<div class="interview-type">';
-	                    	 
-	                    	 
-	                    	 var accept = "ACCEPT";
-	                    	 var reject = "REJECT";
-	                    	 var mybe = "MYBE";
-	                    	 
-	                    	 result = result + '<div class="row clearfix">';
-	                    	 result = result + '<div class="action-nav">';
-	                    	 result = result + '<a  href="javascript:void(0)"  onClick="acceptingOffer(\''+accept+'\' ,\''+submissionId+'\');"   ><i class="fa fa-check text-success"></i></a>';
-	                    	 result = result + '<a  href="javascript:void(0)"  onClick="rejectOffer( \''+reject+'\' ,\''+submissionId+'\');"  ><i class="fa fa-close text-danger"></i></a>';
-	                    	 result = result + '<a  href="javascript:void(0)"  onClick="acceptingOffer(\''+mybe+'\',\''+submissionId+'\');"   ><i class="fa fa-question-circle text-muted"></i></a>';
-	                    	 result = result + '</div>';
-	                    	 result = result + '</div>';
-	                    	 
-	                    	 result = result + '<div class="row clearfix">';
-	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Joining Date</strong>';
-	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7">'+json.dateOfJoiningStr+'</p>';
-	                    	 result = result + '</div>';
-                            
-	                    	 result = result + '<div class="row clearfix">';
-	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Position Type</strong>';
-	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+json.positionType+'</p>';
-	                    	 result = result + '</div>';
-	                    	 
-	                    	 result = result + '<div class="row clearfix">';
-	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Rate</strong>';
-	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+json.amount+'</p>';
-	                    	 result = result + '</div>';
-	                    	 
-	                    	 result = result + '<div class="row clearfix">';
-	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Attachment</strong>';
-	                    	 result = result + '</label>';
-                             result = result + '<p class="col-md-7 tbldata-dotdot-big"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+json.id+'\"></a></p>';
-	                    	 result = result + '</div>';
-	                    	
-	                         result = result + '</div>';
-	                         result = result + '</div>';
-	                         result = result + '</div>';
-	                    	 
+   					     result = result + '<div id="accordion-sl" class="release-jobs">';
+                    	 result = result + '<h2  class="active">Offer</h2>';
+                    	 result = result + '<div class="content clearfix">';
+                    	 result = result + '<div class="interview-type">';
+
+                            var accept = "ACCEPT";
+                    	 var reject = "REJECT";
+                    	 var mybe = "MYBE";
+                    	 
+                    	 result = result + '<div class="row clearfix">';
+                    	 result = result + '<div class="action-nav">';
+                    	 result = result + '<span id="'+submissionId+'actionDiv">';
+                    	 if(json.offerStatus != "OFFERACCEPTED"  && json.offerStatus != "OFFERREJECTED" ){
+                    		 result = result + '<a  href="javascript:void(0)"  onClick="acceptingOffer(\''+accept+'\' ,\''+submissionId+'\');"   ><i class="fa fa-check text-success"></i></a>';
+                        	 result = result + '<a  href="javascript:void(0)"  onClick="rejectOffer( \''+reject+'\' ,\''+submissionId+'\');"  ><i class="fa fa-close text-danger"></i></a>';
+                        	 result = result + '<a  href="javascript:void(0)"  onClick="acceptingOffer(\''+mybe+'\',\''+submissionId+'\');"   ><i class="fa fa-question-circle text-muted"></i></a>';
+                    	 }
+                    	
+                    	 result = result + '</div>';
+                    	 result = result + '</div>';
+                    	 result = result + '</span>';
+                    	 result = result + '<span id="'+submissionId+'showStatus"></span>';
+                    	 if(json.offerStatus == "OFFERACCEPTED"){
+                    		 result = result +' <font color="green" class="brder-int">OFFER ACCEPTED</font>';
+                    	 }
+                    	 if(json.offerStatus == "OFFERREJECTED"){
+                    		 result = result +' <font color="red" class="brder-int">OFFER REJECTED</font>';
+                    	 }
+                    	 if(json.offerStatus == "Maybe"){
+                    		 result = result +' <font color="orange" class="brder-int">Maybe</font>';
+                    	 }
+                    	 
+                    	 
+                    	 
+                    	 
+                    	 result = result + '<div class="row clearfix">';
+                    	 result = result + '<label class="col-md-5">';
+                    	 result = result + '<strong>Joining Date</strong>';
+                    	 result = result + '</label>';
+                    	 result = result + '<p class="col-md-7">'+json.dateOfJoiningStr+'</p>';
+                    	 result = result + '</div>';
+                           
+                    	 result = result + '<div class="row clearfix">';
+                    	 result = result + '<label class="col-md-5">';
+                    	 result = result + '<strong>Position Type</strong>';
+                    	 result = result + '</label>';
+                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+json.positionType+'</p>';
+                    	 result = result + '</div>';
+                    	 
+                    	 result = result + '<div class="row clearfix">';
+                    	 result = result + '<label class="col-md-5">';
+                    	 result = result + '<strong>Rate</strong>';
+                    	 result = result + '</label>';
+                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+json.amount+'</p>';
+                    	 result = result + '</div>';
+                    	 
+                    	 result = result + '<div class="row clearfix">';
+                    	 result = result + '<label class="col-md-5">';
+                    	 result = result + '<strong>Attachment</strong>';
+                    	 result = result + '</label>';
+                            result = result + '<p class="col-md-7 tbldata-dotdot-big"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+json.id+'\"></a></p>';
+                    	 result = result + '</div>';
+                    	
+                         result = result + '</div>';
+                         result = result + '</div>';
+                         result = result + '</div>';
+                    	 
 		                     
 	                     result = result + '</div>';
 	                     result = result + '</div>';
@@ -815,10 +838,17 @@ function acceptingOffer(offerStatus,submissionId){
          url: sourceleadUrl+"/acceptingOffer?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason,        
          success :function(data) {
         	   
-        	    var json = JSON.parse(data);
-        	    $("#offerDetails").empty();
-			    $("#offerDetails").append(data); 
-            
+        	 var json = JSON.parse(data);
+        	 jQuery("#"+(submissionId)+"actionDiv").css("display","none");
+	    	 if(offerStatus == "accept"){
+       		    $("#"+(submissionId)+"showStatus").html("<font color='green'>Accept</font>");
+           	 }
+           	 if(offerStatus == "reject"){
+           		$("#"+(submissionId)+"showStatus").html("<font color='red'>Reject</font>");
+           	 }
+           	 if(offerStatus == "mybe"){
+           		$("#"+(submissionId)+"showStatus").html("<font color='orange'>Maybe</font>");
+           	 }
        },
          
     }); 
