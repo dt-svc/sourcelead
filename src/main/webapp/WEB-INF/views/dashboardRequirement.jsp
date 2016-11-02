@@ -9,8 +9,8 @@ $(document).ready(function(){
 </script>
 <div class="col-md-6">
         <div class="dashboard-widget">
-          <h4 class="pull-left">Requirement &nbsp;&nbsp;<a href="#" class="pull-right" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a></h4>
-          <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a>
+          <h4 class="clearfix">Requirement &nbsp;&nbsp;<a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a></h4>
+          <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
           <div class="clearfix require_wrap_table dashboard-data">
             <ul class="nav nav-tabs">
               <li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');" href="#today-req">Today</a></li>

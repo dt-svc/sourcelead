@@ -841,6 +841,7 @@ function storeTeam(){
 					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
 					success :function(data) { 
 						  /* location.replace(sourceleadUrl+"/team"); */
+						$('#addTeam').modal('hide');
 				      }, 
 		    }); 
 			return true; 
@@ -1494,7 +1495,7 @@ function getTeamsList(teamType){
 function pagination(){
     $("#example").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[2, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,

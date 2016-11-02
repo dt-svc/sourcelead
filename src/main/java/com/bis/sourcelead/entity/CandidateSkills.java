@@ -52,8 +52,8 @@ public class CandidateSkills {
 	private String scale ;
 	
 	@Column(name = "STATUS")
-	private Integer status ;
 	
+	private Integer status ;
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	

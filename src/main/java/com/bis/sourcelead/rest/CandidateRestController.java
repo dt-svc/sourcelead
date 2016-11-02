@@ -27,10 +27,12 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParser;
 /**
@@ -54,6 +56,10 @@ public class CandidateRestController {
 	
 	@Autowired
 	private CandidateResumesService  candidateResumesService;
+	
+	@Autowired
+	
+	private CandidateSkillsService candidateSkillsService;
 	
 	/**
 	 * @author prasad k
@@ -133,7 +139,15 @@ public class CandidateRestController {
 			return result;
 	   }
 	 
-	
+	 @RequestMapping(value = "/validateSkillName" , method = RequestMethod.POST)
+	 public @ResponseBody  Boolean validateSkillName(@RequestParam(value="skillName", required=false) String skillName, @RequestParam(value="candidateId", required=false) String candidateId, HttpServletRequest request) throws Exception {
+		 	Boolean flag = false;
+		 	CandidateSkills candidateSkills = candidateSkillsService.getSkillsByCandidateIdSkillName(candidateId,skillName);
+		    if(candidateSkills != null){
+		    	flag = candidateSkillsService.validateSkillName(skillName);
+		    }
+			return flag;
+	   }
 	 /**
 	  * @author Rajashekar
 	  * @param candidateId

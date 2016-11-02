@@ -3,8 +3,8 @@
  
  <div class="col-md-6 mb">
         <div class="clients_wrap_table dashboard-widget">
-          <h4 class="pull-left">Requirement Approvals &nbsp;&nbsp;<a href="#" class="pull-right" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a></h4>
-          <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a>
+          <h4 class="clearfix">Requirement Approvals &nbsp;&nbsp;<a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a></h4>
+          <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
           <div class="clearfix require_wrap_table dashboard-data">
           		 <div id="requirementApproverList"></div>
           </div>
