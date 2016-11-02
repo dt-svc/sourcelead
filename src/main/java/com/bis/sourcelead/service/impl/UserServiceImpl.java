@@ -126,16 +126,25 @@ public class UserServiceImpl implements UserService {
 	   String password = null;
 	   UserRole userRole = null;
 	   user = userDao.findByEmail(jsonObj.getString("email"));
+	   
 	   if(null == user){
-		    user = getUserDetails(jsonObj,loginuser.getUserCode());
-		 	if(sourceType.equalsIgnoreCase("PROJECTS")){
-		 		user.setUserType("Employee");
-		 	}
-		 	
+		   user = getUserDetails(jsonObj,loginuser.getUserCode());
+		   password = SourceLeadRandomCodeHelper.generateRandomPassword();
+		   user.setPassword(sourceleadPasswordEncoder.encode(password));
+		}else if(null != user && user.getUserState().equals(Status.NOT_LOGGEDIN)){
 			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
-	   }
-	    
+		}
+		
+	    if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
+			user.setIsMailSent(Status.Y);
+		}else{
+			user.setIsMailSent(Status.N);
+		}
+	   
+	    if(sourceType.equalsIgnoreCase("PROJECTS")){
+	 		user.setUserType("Employee");
+	    } 
 		
        //For saving the User Role 
 	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(jsonObj.getString("email"),orgLocations.getId());
@@ -274,17 +283,13 @@ public class UserServiceImpl implements UserService {
 		if(jsonObj.has("phoneNumber")){
 			user.setMobilePhone(jsonObj.getString("phoneNumber"));
 		}
-		if(jsonObj.has("reportingManager") && !isNullOrEmpty(jsonObj.getString("reportingManager"))){
+		/*if(jsonObj.has("reportingManager") && !isNullOrEmpty(jsonObj.getString("reportingManager"))){
 			User reportingManager = new User();
 			reportingManager.setId(Long.parseLong(jsonObj.getString("reportingManager")));
 			user.setReportingManager(reportingManager);
-		}
+		}*/
 		user.setUserState(Status.NOT_LOGGEDIN);
-		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
-			user.setIsMailSent(Status.Y);
-		}else{
-			user.setIsMailSent(Status.N);
-		}
+		
 		if(jsonObj.has("roleType")){
 			Roles roles;
 			try {
@@ -301,7 +306,7 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 	
-	private UserRole getUserRoleDetails(JSONObject jsonObj,User user,String userCode, Long orgLocationsId) {
+	private UserRole getUserRoleDetails(JSONObject jsonObj,User user,String userCode, Long orgLocationsId) throws NumberFormatException, JSONException {
 		UserRole userRole = new UserRole();
 		userRole.setUser(user);
 		
@@ -309,6 +314,11 @@ public class UserServiceImpl implements UserService {
 		orgLocations.setId(orgLocationsId);
 		userRole.setOrgLocations(orgLocations);
 		
+		if(jsonObj.has("reportingManager") && !isNullOrEmpty(jsonObj.getString("reportingManager"))){
+			User reportingManager = new User();
+			reportingManager.setId(Long.parseLong(jsonObj.getString("reportingManager")));
+			userRole.setReportingManager(reportingManager);
+		}
 		
 		
 		Roles roles = null;
@@ -736,6 +746,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> getUsersByTeamType(Long id, String teamType) throws Exception {
 		return userDao.getUsersByTeamType(id,teamType);
+	}
+
+
+	@Override
+	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId) throws Exception {
+		return userDao.getUsersByTeamTypeAndNoCurrentUser(currentApproverId);
 	}
 	
 	

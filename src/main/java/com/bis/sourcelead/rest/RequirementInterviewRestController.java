@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterview;
@@ -24,6 +26,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -146,5 +149,43 @@ public class RequirementInterviewRestController {
 		 }
 		 
 		return interviewStatus;
+	 }		
+	 @RequestMapping(value = "/sendMailToapplicant")
+	 @ResponseBody String sendMailToapplicant(@RequestParam(value="submissionId", required=false) String submissionId,
+				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
+			 HttpServletRequest request) throws Exception {
+		 
+		 
+		 RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
+		 
+		 RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewId);
+		 
+		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		 requirementInterviewService.sendEmailToApplicants(requirementSubmission.getCandidate(), requirementSubmission, loginUser,org, requirementInterview);
+		 
+		 requirementInterview.setNotificationToApplicant("Y");
+		 requirementInterviewService.saveRequirementInterview(requirementInterview);
+		 
+		return "success";
+	 }		
+	 @RequestMapping(value = "/sendMailToVendor")
+	 @ResponseBody String sendMailToVendor(@RequestParam(value="submissionId", required=false) String submissionId,
+				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
+			 HttpServletRequest request) throws Exception {
+		 
+		 
+		 RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
+		 
+		 RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewId);
+		 
+		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		 requirementInterviewService.sendEmailToVendors(requirementSubmission.getCandidate(), requirementSubmission, loginUser,org, requirementInterview);
+		 
+		 requirementInterview.setNotificationToSpoc("Y");
+		 requirementInterviewService.saveRequirementInterview(requirementInterview);
+		 
+		return "success";
 	 }		
 }

@@ -282,6 +282,7 @@ public class RequirementDaoImpl implements RequirementDao {
 
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, Long userId)
 			throws Exception {
 
@@ -335,6 +336,57 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 		return query.list();
 		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getAssignedRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, Long userId)
+			throws Exception {
+		 	
+		 
+		Session session = this.sessionFactory.getCurrentSession();
+		User user = userDao.getUserById(userId);
+				
+		Map<String, Object> params = new HashMap<String,Object>();
+		
+		String from = "from Requirement requirement"; 
+		
+		String subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level )";
+		params.put("userId",userId);
+		params.put("level",1);
+		
+		String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2 and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'APPROVED'))) ";
+		params.put("approverUserId",userId);
+		params.put("level1",1);
+		params.put("level2",2);
+			
+		
+		String subQuery = "";
+		if(subQuery2 != "" || subQuery3 != "" ){
+			subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery2+") or ("+subQuery3+") )";
+			params.put("orgLocationId",orgLocationId);
+		}
+		String whereCondition = subQuery;
+		
+		Query query = session.createQuery(from+" "+whereCondition);
+		for (String str : query.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId")){
+				query.setLong(str, (long) params.get( str ));
+			}
+			if(str.equalsIgnoreCase("level") || str.equalsIgnoreCase("level1") || str.equalsIgnoreCase("level2")){
+				query.setInteger(str, (int) params.get( str ));
+			}
+			
+			else{
+				query.setParameter( str, params.get( str ) );
+			}
+        	
+        }
+		
+		return query.list();
+		
+	
 	}
 	
 

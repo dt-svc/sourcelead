@@ -1,4 +1,11 @@
 
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_OFFERS','Notify_To_Vendor','VARCHAR(10) NULL AFTER `STATUS`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_OFFERS','Notify_To_Applicant','VARCHAR(10) NULL AFTER `Notify_To_Vendor`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_OFFERS','Rejected_Reason','TEXT NULL AFTER `Notify_To_Applicant`');
+
+
+
+
 INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`,`ENTITY_TYPE`) VALUES ('ShortListApplicants','Email');
 INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'managerFirstName', '{{ShortListApplicants.ManagerFirstName}}');
 INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'managerLastName', '{{ShortListApplicants.ManagerLastName}}');
@@ -19,3 +26,4 @@ INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQ
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_SUBMISSION','VENDOR_LOCATION_ID','BIGINT NULL AFTER `ORG_LOCATION_ID`');
 ALTER TABLE `sourcelead`.`REQUIREMENT_SUBMISSION` ADD FOREIGN KEY(VENDOR_LOCATION_ID) REFERENCES ORG_LOCATIONS(ID);
+

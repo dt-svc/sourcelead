@@ -29,6 +29,10 @@ public class UserRole{
     @ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User user;
+    
+    @ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "REPORTING_MANAGER_ID")
+	private User reportingManager;
 	
     @ManyToOne(fetch = FetchType.EAGER)
    	@JoinColumn(name = "ROLE_ID", nullable = false)
@@ -93,6 +97,14 @@ public class UserRole{
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public User getReportingManager() {
+		return reportingManager;
+	}
+
+	public void setReportingManager(User reportingManager) {
+		this.reportingManager = reportingManager;
 	}
 
 	public Roles getRoles() {
