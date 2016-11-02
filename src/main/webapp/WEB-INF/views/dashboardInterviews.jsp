@@ -1,15 +1,15 @@
  <!-- Inteviews -->
       <div class="col-md-6">
         <div class="clients_wrap_table dashboard-widget">
-          <h4 class="pull-left">Interviews &nbsp;&nbsp;<a href="#" class="pull-right" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a></h4>
-          <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a>
+          <h4 class="clearfix">Interviews &nbsp;&nbsp;<a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a></h4>
+          <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
           <div class="clearfix require_wrap_table dashboard-data">
             <ul class="nav nav-tabs">
               <li class="active"><a data-toggle="tab" href="javascript:void(0)" onclick="interviews('today')">Today</a></li>
               <li><a data-toggle="tab" href="javascript:void(0)" onclick="interviews('upcoming')">Upcoming</a></li>
               <li><a data-toggle="tab" href="javascript:void(0)" onclick="interviews('previous')">Previous</a></li>
             </ul>
-            <div class="tab-content clearfix mt">
+            <div class="tab-content clearfix mt custom-datatble">
               <div id="today" class="tab-pane fade in active"></div>
               <div id="upcoming" class="tab-pane fade"></div>
            	  <div id="previous" class="tab-pane fade"></div>
