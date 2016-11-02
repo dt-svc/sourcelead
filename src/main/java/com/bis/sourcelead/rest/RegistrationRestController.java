@@ -63,14 +63,22 @@ public class RegistrationRestController {
 		String resultJson;
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		List<Org> orgsList = new ArrayList<>();
+		ArrayList<Org> regOrgsList = new ArrayList<Org>();
 
 		try {
 			orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName);
+			for(Org regOrg : orgsList){
+				regOrg.setEmail(regOrg.getUser().getEmail());
+				regOrg.setIsMailSent(regOrg.getUser().getIsMailSent());
+				regOrg.setUserState(regOrg.getUser().getUserState());
+				regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
+				regOrgsList.add(regOrg);
+			}
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 
-		resultJson = commonUtil.toJSON(orgsList);
+		resultJson = commonUtil.toJSON(regOrgsList);
 		return resultJson;
 
 	}
