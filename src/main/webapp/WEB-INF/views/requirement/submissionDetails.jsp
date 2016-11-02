@@ -305,7 +305,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 var interviewers = "---";
 	                    	 var interviewTypeHeader = "";
 	                    	 var interviewType = "---";
-	                    	 var timeZone = "---";
+	                    	// var timeZone = "---";
 	                    	 
 	                    	 if(report.notificationToApplicant != null && report.notificationToApplicant != 'undefined' && report.notificationToApplicant != "" && report.notificationToApplicant == "Y"){
 	                    		 notifiedDetails = 'Applicant';
@@ -408,12 +408,12 @@ function getInternalInterviewsList(submissionId){
 	                    	 }
 	                    	 result = result + '</div>';
 	                    	 
-	                    	 result = result + '<div class="row clearfix">';
+	                    	 /* result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
 	                    	 result = result + '<strong>Time Zone</strong>';
 	                    	 result = result + '</label>';
                              result = result + '<p class="col-md-7 tbldata-dotdot-big">'+timeZone+'</p>';
-	                    	 result = result + '</div>';
+	                    	 result = result + '</div>'; */
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
@@ -558,7 +558,7 @@ function getCustomerInterviewsList(submissionId){
 	                    	 var report = json[i]; 
 	                    	 var interviewTypeHeader = "";
 	                    	 var interviewType = "---";
-	                    	 var timeZone = "---";
+	                    	//var timeZone = "---";
 	                    	 
 	                    	 if(report.interviewType != null && report.interviewType != 'undefined' && report.interviewType != ""){
 	                    		 interviewType = report.interviewType;
@@ -628,12 +628,12 @@ function getCustomerInterviewsList(submissionId){
 	                    	 }
 	                    	 result = result + '</div>';
 	                    	 
-	                    	 result = result + '<div class="row clearfix">';
+	                    	 /* result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
 	                    	 result = result + '<strong>Time Zone</strong>';
 	                    	 result = result + '</label>';
                              result = result + '<p class="col-md-7 tbldata-dotdot-big">'+timeZone+'</p>';
-	                    	 result = result + '</div>';
+	                    	 result = result + '</div>'; */
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
