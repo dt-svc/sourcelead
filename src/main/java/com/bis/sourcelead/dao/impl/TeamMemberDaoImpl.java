@@ -117,6 +117,15 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 		return (TeamMembers) session.get(TeamMembers.class, teamMemberId);
 		
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TeamMembers> getTeamMembersListByLocationId(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from TeamMembers tm    left join fetch tm.memberUserId   left join fetch tm.teamId team   left join fetch team.ownerUserId where team.orgLocationsId.id =:orgLocationId and tm.status = '1'";
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	}
 	
 	
 	

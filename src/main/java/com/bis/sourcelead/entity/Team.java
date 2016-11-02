@@ -1,5 +1,7 @@
 package com.bis.sourcelead.entity;
 
+
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -11,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -62,6 +65,12 @@ public class Team {
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_LOCATION_ID")
     private OrgLocations orgLocationsId;
+	
+	
+	@Transient
+	private ArrayList<String> teamMembers;
+	
+	
 	
 	public Long getId() {
 		return id;
@@ -150,6 +159,14 @@ public class Team {
 	public void setOrgLocationsId(OrgLocations orgLocationsId) {
 		this.orgLocationsId = orgLocationsId;
 	}
-	
+
+	public ArrayList<String> getTeamMembers() {
+		return teamMembers;
+	}
+
+	public void setTeamMembers(ArrayList<String> teamMembers) {
+		this.teamMembers = teamMembers;
+	}
+
 	
 }

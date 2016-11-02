@@ -56,7 +56,19 @@ public class TeamMembers {
 	
 	
 	@Transient
+    private String ownerName;
+	
+	@Transient
+    private String memberName;
+	
+	@Transient
+    private String teamName;
+	
+	
+	@Transient
     private int teamMemberRequirementAssignedCount;
+	
+	
 	
 	@Transient
     private int teamMemberRequirementAssignedOpenCount;
@@ -141,6 +153,31 @@ public class TeamMembers {
 	public void setTeamMemberRequirementAssignedOpenCount(int teamMemberRequirementAssignedOpenCount) {
 		this.teamMemberRequirementAssignedOpenCount = teamMemberRequirementAssignedOpenCount;
 	}
+
+	public String getOwnerName() {
+		return ownerName;
+	}
+
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
+
+	public String getMemberName() {
+		return memberName;
+	}
+
+	public void setMemberName(String memberName) {
+		this.memberName = memberName;
+	}
+
+	public String getTeamName() {
+		return teamName;
+	}
+
+	public void setTeamName(String teamName) {
+		this.teamName = teamName;
+	}
+	
 	
 	
 }

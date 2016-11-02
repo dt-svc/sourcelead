@@ -78,8 +78,17 @@ function teamList(){
 	                    	 result = result +"<tr>";
 	                    	
 				             result = result +"<td><div><span>"+opt.name+"</span></div></td>";
+				           
+				             if(opt.ownerUserId.firstName != null && opt.ownerUserId.firstName != ' ' && opt.ownerUserId.firstName != 'undefined'){
 				             result = result +"<td><div><span>"+opt.ownerUserId.firstName+"</span></div></td>";
-				             result = result +"<td><div><span>"+opt.name+"</span></div></td>";
+				             }else{
+				            	 result = result +"<td>-----</td>";
+				             }
+				             
+				             
+		            	    result = result +"<td><div><span>"+opt.teamMembers+"</span></div></td>";
+
+            	             
 				             result = result +"<td><div class='tblicons'><i class='glyphicon glyphicon-pencil' onclick='sideBar("+opt.id+");'></i><i class='glyphicon glyphicon-trash' onclick='deleteTeam("+opt.id+");'></i></div></td>";
 				             result = result +"</tr>";
 	                     }

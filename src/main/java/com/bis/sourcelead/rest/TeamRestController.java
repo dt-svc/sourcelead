@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
@@ -88,11 +91,48 @@ public class TeamRestController {
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<Team> teamList = teamService.getTeamListByOrgLocationID(loginOrgLocation.getId());
+		String teamMembers="";
+		for(Team team : teamList){
+			Collection<TeamMembers>	teamMembersList  = teamMembersService.getTeamMembersListByTeamID(team.getId());
+			
+			ArrayList<String> ar = new ArrayList<String>();
+			for(TeamMembers teamMember : teamMembersList){
+				
+				ar.add(teamMember.getMemberUserId().getFirstName()+""+ teamMember.getMemberUserId().getLastName());
+			}
+			team.setTeamMembers(ar);
+		}
 		resultJson = commonUtil.toJSON(teamList);
 		return resultJson;
 		
 	 }
 	  
+	  
+	  /**
+	   * @author sarath kumar
+	   * @since  sep 14 2016
+	   * @version 0.0.1
+	   * 
+	   * This method is used to for getting TeamList By OrgLocationID
+	   * 
+	   *  
+	   * @return string 
+	   * 
+	   * @throws NullPointer
+	   */
+	 
+	  @RequestMapping(value = "/getTeamMembersListByLocationId")
+	  public String getTeamMembersListByLocationId(HttpServletRequest request) throws Exception {
+
+		String resultJson;
+		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByLocationId(loginOrgLocation.getId());
+		
+		resultJson = commonUtil.toJSON(teamMembersList);
+		return resultJson;
+		
+	 }
 	  
 	  /**
 	   * @author sarath kumar

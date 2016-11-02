@@ -841,6 +841,7 @@ function storeTeam(){
 					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
 					success :function(data) { 
 						  /* location.replace(sourceleadUrl+"/team"); */
+						$('#addTeam').modal('hide');
 				      }, 
 		    }); 
 			return true; 
