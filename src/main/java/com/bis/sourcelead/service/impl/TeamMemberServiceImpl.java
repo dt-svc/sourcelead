@@ -148,6 +148,7 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 			teamMembers.setTeamName(teamMembers.getTeamId().getName());
 			teamMembers.setOwnerName(teamMembers.getTeamId().getOwnerUserId().getFirstName() +""+teamMembers.getTeamId().getOwnerUserId().getLastName() );
 			teamMembers.setMemberName(teamMembers.getMemberUserId().getFirstName()+""+teamMembers.getMemberUserId().getLastName());
+			teamMembers.setEmail(teamMembers.getEmail());
 		}
 		return teamMembersList;
 	}

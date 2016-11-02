@@ -64,6 +64,12 @@ public class TeamMembers {
 	@Transient
     private String teamName;
 	
+	@Transient
+    private String email;
+	
+	@Transient
+    private String userType;
+	
 	
 	@Transient
     private int teamMemberRequirementAssignedCount;
@@ -177,7 +183,21 @@ public class TeamMembers {
 	public void setTeamName(String teamName) {
 		this.teamName = teamName;
 	}
-	
-	
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
 	
 }

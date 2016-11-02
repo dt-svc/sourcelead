@@ -155,6 +155,14 @@ public class TeamRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByTeamID(Long.parseLong(teamId));
 		for(TeamMembers  teamMembers : teamMembersList){
+			
+			
+ 			 teamMembers.setTeamName(teamMembers.getTeamId().getName());
+			 teamMembers.setOwnerName(teamMembers.getTeamId().getOwnerUserId().getFirstName() +""+teamMembers.getTeamId().getOwnerUserId().getLastName() );
+			 teamMembers.setMemberName(teamMembers.getMemberUserId().getFirstName()+""+teamMembers.getMemberUserId().getLastName());
+			 teamMembers.setEmail(teamMembers.getTeamId().getOwnerUserId().getEmail());
+			 teamMembers.setUserType(teamMembers.getTeamId().getOwnerUserId().getUserType());
+			
 			 Integer teamMemberRequirementAssignedCount =  requirementAssignToService.getAssignedTeamMembersCountByTeamMemberUserId(teamMembers.getMemberUserId().getId(), "all");
 			 teamMembers.setTeamMemberRequirementAssignedCount(teamMemberRequirementAssignedCount);
 			
