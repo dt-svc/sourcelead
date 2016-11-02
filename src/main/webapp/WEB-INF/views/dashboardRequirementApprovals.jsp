@@ -65,8 +65,8 @@ function requirementApproverList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
-	                    	 result = result +"<td><div><span>"+opt.id+"</span></div></td>";
-		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show'><span>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+	                    	 result = result +"<td><div>"+opt.id+"</div></td>";
+		                     result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobTitle+"</a></div></td>";
 		                     if(opt.rate!=null && opt.rate !='' && opt.rate !='undefined'){
 		                    	 result = result +"<td><div>"+opt.rate+"&nbsp;"+opt.currencyCode+"</div></td>";
 		                     }else{
