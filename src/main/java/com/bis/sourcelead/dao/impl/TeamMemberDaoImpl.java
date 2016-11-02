@@ -64,6 +64,7 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 	   * @throws NullPointer
 	 */
 
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<TeamMembers> getTeamMembersListByTeamID(Long teamId) throws Exception {
@@ -73,7 +74,6 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 		return session.createQuery(query).setLong("teamId", teamId).setCacheable(true).list();
 		
 	}
-
 
 	@Override
 	public TeamMembers getTeamMemberByIdAndLocationId(Long teamMmeberId,Long orgLocationId) throws Exception {
