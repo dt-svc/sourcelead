@@ -65,7 +65,7 @@ function requirementList(){
 	                     result = result +"    <th>Applicants</th>"; 
 	                     result = result +"    <th>Shortlisted</th>"; 
 	                     result = result +"    <th>Submited</th>"; 
-	                     result = result +"    <th>Interviewd</th>"; 
+	                     result = result +"    <th>Interviewed</th>"; 
 	                     result = result +"    <th>Offered</th>"; 
 	                     result = result +"    <th>Action</th>"; 
 	                     result = result +"  </tr>"; 
@@ -76,36 +76,30 @@ function requirementList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
-		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show'><span>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-		                     result = result +"<td><div><span>Client</span></div></td>";
-		                     if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
-		                    	 result = result +"<td><div>"+opt.jobType+"</div></td>";
+		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show'><span>"+opt.id+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+		                     result = result +"<td><div><span>"+opt.jobTitle+"</span></div></td>";
+		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
+		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
 		                    
-		                     if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
-			                     result = result +"<td><div><span><span>"+opt.country+" ,"+opt.state+" ,"+opt.city+" </span></span></div></td>";
+		                     if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
+			                     result = result +"<td><div><span><span>"+opt.rate+"</span></span></div></td>";
 		                     }else{
-			                     result = result +"<td><div><span><span>"+opt.country+"</span></span></div></td>";
+			                     result = result +"<td><div><span><span>-----</span></span></div></td>";
 		                     }
-		                     if(opt.positions!=null && opt.positions !='' && opt.positions !='undefined'){
-		                    	 result = result +"<td><div>"+opt.positions+"</div></td>";
+		                     if(opt.priority != null && opt.priority != '' && opt.priority != 'undefined'){
+		                    	 result = result +"<td><div>"+opt.priority+"</div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
 		                     }
-	                    	 result = result +"<td><div>-----</div></td>";
+	                    	 result = result +"<td><div>"+opt.noOfApplicants+"</div></td>";
 
-		                     result = result +"<td><div><b class='proj_process'>"+opt.requirementSubmissionStatus+"</b></div></td>";
-		                     if(opt.requirementSubmissionStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN'){
-			                     result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
-
-		                     }else{
-			                     result = result +"<td><div>--</div></td>";
- 
-		                     }
-		                     result = result +"<td><div>--</div></td>";
-		                     result = result +"<td><div>--</div></td>";
+		                     result = result +"<td><div>"+opt.noOfShortlistedApplicants+"</div></td>";
+			                 result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
+		                     result = result +"<td><div>"+opt.noOfInterviewedApplicants+"</div></td>";
+		                     result = result +"<td><div>"+opt.noOfOfferedApplicants+"</div></td>";
 		                     result = result +"<td><div>--</div></td>";
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";

@@ -9,12 +9,11 @@
 	rel="stylesheet" type="text/css">
 <link rel="stylesheet"
 	href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="resources/css/chosen.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
@@ -91,7 +90,7 @@
 						<div class="form-group">
 							<label class="col-md-3"> Project Description </label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_Space validate_length length10-5000"
+								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-500"
 									data-validation-optional="true"></textarea>
 								<span class="hidden">Project Description</span>
 							</div>
@@ -196,7 +195,7 @@
 								class="text-danger">*</span></label>
 							<div class="col-md-9">
 								<div class="form-icon-min">
-									<select class="form-control select-bg" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
+									<select class="form-control chosen-select" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
 										<option value="">-- Select Manager --</option>
 										<c:forEach var="option" items="${user_List}">
 											<option value="${option.id}">${option.firstName}
@@ -211,7 +210,7 @@
 						<div class="form-group level-second">
 							<label class="col-md-3" for="Level-II">Level-II</label>
 							<div class="col-md-9">
-								<select class="form-control select-bg" name="level2Manager" id="level2Manager">
+								<select class="form-control chosen-select" name="level2Manager" id="level2Manager">
 									<option value=''>-- Select Manager --</option>
 									<c:forEach var="option" items="${user_List}">
 										<option value="${option.id}">${option.firstName}
@@ -225,7 +224,7 @@
 							<label class="col-md-3">Client</label>
 							<div class="col-md-9">
 								<div class="form-icon">
-									<select class="form-control select-bg" name="selectClient" id="addClientId">
+									<select class="form-control select-bg chosen-select" name="selectClient" id="addClientId">
 										<option value=''>-- Select Client --</option>
 										<c:forEach var="option" items="${add_clientList}">
 											<option value="${option.orgid}">${option.orgName}</option>
@@ -1309,6 +1308,7 @@ function getChildLevel1Approvers(currentApproverId){
 					}
 		        	$("#level2Manager").empty();
 			        $("#level2Manager").append(output);
+			        $('#level2Manager').trigger("chosen:updated");
 		        },
 		        error: function(e){
 		            
@@ -1364,3 +1364,20 @@ function validateClientName(){
 	} 
 }
 </script>
+<script src="resources/js/chosen.jquery.min.js"></script> 
+<script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				});
+ 		</script>

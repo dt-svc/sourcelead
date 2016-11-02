@@ -115,6 +115,9 @@ public class RequirementSubmission {
     @Transient
    	private ApplicantSubmissionStatus requirementStage;
     
+	@Transient
+   	private String score;
+
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
 	}
@@ -331,6 +334,14 @@ public class RequirementSubmission {
 
 	public void setRequirementStage(ApplicantSubmissionStatus requirementStage) {
 		this.requirementStage = requirementStage;
+	}
+
+	public String getScore() {
+		return score;
+	}
+
+	public void setScore(String score) {
+		this.score = score;
 	}
 
 	

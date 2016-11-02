@@ -390,8 +390,7 @@
 		 if ($('#candidate_form').validate(false, validationSettings)){ 
 			var frm = $('#candidate_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			
+			/* con = con.replace(/[{}]/g, ""); */
 			var form = $('#candidate_form')[0];
       		var formData = new FormData(form); 
 			  //It will escape all the special characters
@@ -570,7 +569,7 @@ function getCities(){
 			  '.chosen-select-width'     : {width:"95%"}
 			}
 			
-		  $("#country").chosen();
+		   $("#country").chosen();
 	       $("#state").chosen();
 	       $("#city").chosen();
 	       
@@ -676,7 +675,23 @@ function getCities(){
 						$("#email").val(json.email);
 						$("#mobilePhone").val(json.phoneNumbers);
 						validateCandidateEmail();
+						$("#candidateSkills").empty();
+						 var internalOutput = "";
+						 <c:forEach var="skill" items="${skillsList}">
+						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+	                     </c:forEach>
+						var skills = json.skills;
+						if(skills != null && skills != 'undefined' && skills != ''){
+							var str_array = skills.split(',');
+							for(var i = 0; i < str_array.length; i++) {
+							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+							}
+						}
+						$("#candidateSkills").append(internalOutput);
+		        		$("#candidateSkills").trigger("chosen:updated");
 						$("#loading").removeAttr("style");
+						
 					},
 				});
  	 }

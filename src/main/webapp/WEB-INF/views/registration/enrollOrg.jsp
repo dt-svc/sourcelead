@@ -248,8 +248,12 @@ var validationSettings = {
             	return false;	
                }
             });
-         $('#createOrg_form').showHelpOnFocus();
+         //$('#createOrg_form').showHelpOnFocus();
             
+         $('body').on('blur', '#createOrg_form', function() {
+     		$("#createOrg_form").showHelpOnFocus();
+     		$("#createOrg_form").validateOnBlur(false, validationSettings);
+     	});
      
 	</script>
 

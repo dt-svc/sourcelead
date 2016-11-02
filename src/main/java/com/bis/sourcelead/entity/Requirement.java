@@ -216,6 +216,21 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private Integer highestLevel;
+	
+	@Transient
+	private String noOfApplicants;
+	
+	@Transient
+	private String noOfShortlistedApplicants;
+	
+	@Transient
+	private String noOfSubmittedApplicants;
+	
+	@Transient
+	private String noOfInterviewedApplicants;
+	
+	@Transient
+	private String noOfOfferedApplicants;
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -660,6 +675,46 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setHighestLevel(Integer highestLevel) {
 		this.highestLevel = highestLevel;
+	}
+
+	public String getNoOfApplicants() {
+		return noOfApplicants;
+	}
+
+	public void setNoOfApplicants(String noOfApplicants) {
+		this.noOfApplicants = noOfApplicants;
+	}
+
+	public String getNoOfShortlistedApplicants() {
+		return noOfShortlistedApplicants;
+	}
+
+	public void setNoOfShortlistedApplicants(String noOfShortlistedApplicants) {
+		this.noOfShortlistedApplicants = noOfShortlistedApplicants;
+	}
+
+	public String getNoOfSubmittedApplicants() {
+		return noOfSubmittedApplicants;
+	}
+
+	public void setNoOfSubmittedApplicants(String noOfSubmittedApplicants) {
+		this.noOfSubmittedApplicants = noOfSubmittedApplicants;
+	}
+
+	public String getNoOfInterviewedApplicants() {
+		return noOfInterviewedApplicants;
+	}
+
+	public void setNoOfInterviewedApplicants(String noOfInterviewedApplicants) {
+		this.noOfInterviewedApplicants = noOfInterviewedApplicants;
+	}
+
+	public String getNoOfOfferedApplicants() {
+		return noOfOfferedApplicants;
+	}
+
+	public void setNoOfOfferedApplicants(String noOfOfferedApplicants) {
+		this.noOfOfferedApplicants = noOfOfferedApplicants;
 	}
 
 }
