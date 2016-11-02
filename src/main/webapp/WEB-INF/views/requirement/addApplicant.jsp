@@ -304,11 +304,11 @@ function getCandidateDetails(){
 
 
 <script type="text/javascript">
-function getAllCountries(){
+function getAllCandidateCountries(){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/sourceLeadCountryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#country').empty();
@@ -323,7 +323,7 @@ function getAllCountries(){
             	
             }
             $('#country').trigger("chosen:updated");
-            getStates();
+            getCandidateStates();
         },
         error: function(e){
         }
@@ -332,7 +332,7 @@ function getAllCountries(){
 </script>
 
 <script>
-function getStates(){
+function getCandidateStates(){
 	
 	var countryName = $("#country").val();
 	if(countryName != null && countryName != "" && countryName !="undefined"){
@@ -368,7 +368,7 @@ function getStates(){
 
 
 <script>
-function getCities(){
+function getCandidateCities(){
 	
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
@@ -399,14 +399,14 @@ function getCities(){
 </script>
 <script type="text/javascript">
 function init(){
-	       getAllCountries();
+	       getAllCandidateCountries();
 	      
 	       $("#country").on('change', function (e) {
-	    	   getStates();
-	    	   getCities();
+	    	   getCandidateStates();
+	    	   getCandidateCities();
 	       });
 	       $("#state").on('change', function (e) {
-	    	   getCities();
+	    	   getCandidateCities();
 	       });
 	      
 	       $('.chosen-select').each(function() {
