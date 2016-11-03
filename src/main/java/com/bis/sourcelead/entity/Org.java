@@ -103,6 +103,18 @@ public class Org {
     @Fetch(FetchMode.SELECT)
     private Set<OrgLocations> orgLocationsList;
 	
+	@Transient
+	private String email;
+	
+	@Transient
+	private String mobilePhone;
+	
+	@Transient
+	private Status userState;
+	
+	@Transient
+	private Status isMailSent;
+	
 	
 	public Long getId() {
 		return id;
@@ -248,5 +260,40 @@ public class Org {
 	public void setOrgLocationsList(Set<OrgLocations> orgLocationsList) {
 		this.orgLocationsList = orgLocationsList;
 	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getMobilePhone() {
+		return mobilePhone;
+	}
+
+	public void setMobilePhone(String mobilePhone) {
+		this.mobilePhone = mobilePhone;
+	}
+
+	
+	public Status getUserState() {
+		return userState;
+	}
+
+	public void setUserState(Status userState) {
+		this.userState = userState;
+	}
+
+	public Status getIsMailSent() {
+		return isMailSent;
+	}
+
+	public void setIsMailSent(Status isMailSent) {
+		this.isMailSent = isMailSent;
+	}
+
+	
 
 }
