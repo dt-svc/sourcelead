@@ -1416,10 +1416,10 @@ function requirementDetails(requirementId){
 					        
 				            result = result +'   <h1>Description:</h1>';
 				            if(json.description != null && json.description != '' && json.description != 'undefined'){
-					           	 result = result +'   <textarea placeholder="Enter description">'+json.description+'</textarea>';
+					           	 result = result +'   <textarea placeholder="Enter description" readonly>'+json.description+'</textarea>';
 					         }
 					         else{
-					           	 result = result +'   <textarea placeholder="Enter description"> NO DATA</textarea>';
+					           	 result = result +'   <textarea placeholder="Enter description" readonly> NO DATA</textarea>';
 				    	        }
 				            result = result +'   <h2> Requirement Details:</h2>';
 				            result = result +'   <div class="require_one">';

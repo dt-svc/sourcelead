@@ -475,8 +475,12 @@ function candidateProfile(candidateId){
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details">';	 
 							result = result +'		<h1>Summary:</h1>';
+							if(json.summary != null && json.summary != '' && json.summary != 'undifined'){
 							result = result +'	    <textarea placeholder="Enter description" readonly>'+json.summary+'</textarea>';
-							
+							}
+							else{
+					           	 result = result +'   <textarea placeholder="Enter description" readonly> NO DATA</textarea>';
+				    	        }
 							
 							result = result +'		<div class="clearfix mt dashboard-widget">                                                                                                    ';
 							result = result +'		  <ul class="nav nav-tabs">                                                                                                                   ';
