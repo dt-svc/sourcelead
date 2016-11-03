@@ -11,8 +11,7 @@
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
 
-<link rel="stylesheet" href="resources/css/jquery.timepicker.css">
-<script src="resources/js/jquery.timepicker.js"></script> 
+
 
 
 
@@ -297,7 +296,6 @@ function cancelAddOffer(){
  		$("#add_offer" ).addClass('button').val('Processing..'); 
  		var form = $('#addOffer_form')[0];
   		var formData = new FormData(form); 
-  		alert("formData"+formData);
  		
    	    $.ajax({
 	    	type: "POST",
@@ -410,12 +408,12 @@ function cancelAddOffer(){
 <script>
 
 function NotifyToVendor(){
-	alert("ggf");
+	
 	 if (document.getElementById('notifyToVendor').checked){
-		alert("Y");
+	
 		 $("#notifyToVendor").val('Y');	
 	}else {
-		 alert("N");
+		
 		 $("#notifyToVendor").val('N');
     
 	} 
@@ -427,10 +425,8 @@ function NotifyToVendor(){
 <script>
 function NotifyToApplicant(){
 	 if (document.getElementById('notifyToApplicant').checked){
-		alert("Y");
 		 $("#notifyToApplicant").val('Y');	
 	}else {
-		 alert("N");
 		 $("#notifyToApplicant").val('N');
     
 	} 

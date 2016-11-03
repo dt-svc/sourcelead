@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -137,6 +136,21 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 		teamMembers.setStatus(Constants.TEAM_IN_ACTIVE);
 		return teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
 		
+	}
+
+	@Override
+	public List<TeamMembers> getTeamMembersListByLocationId(Long orgLocationId) throws Exception {
+		
+		
+		List<TeamMembers> teamMembersList = teamMemberDao.getTeamMembersListByLocationId(orgLocationId);
+		for(TeamMembers teamMembers :teamMembersList){
+			
+			teamMembers.setTeamName(teamMembers.getTeamId().getName());
+			teamMembers.setOwnerName(teamMembers.getTeamId().getOwnerUserId().getFirstName() +""+teamMembers.getTeamId().getOwnerUserId().getLastName() );
+			teamMembers.setMemberName(teamMembers.getMemberUserId().getFirstName()+""+teamMembers.getMemberUserId().getLastName());
+			teamMembers.setEmail(teamMembers.getEmail());
+		}
+		return teamMembersList;
 	}
 }
 

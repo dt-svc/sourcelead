@@ -203,6 +203,17 @@ min-height: 350px !important;
 padding: 0;
 min-height: 100px;
 }
+.side-bar .side-nav ul li span {
+display: inline-block !important;
+float: none !important;
+}
+.custom-datatble table{
+ margin-top: 20px !important;
+ }
+ .custom-datatble .dataTables_filter{
+   top: -31px !important;
+    padding: 0 !important;
+ }
 </style>
 
  

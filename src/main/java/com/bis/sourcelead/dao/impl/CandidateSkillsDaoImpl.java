@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateSkillsDao;
-import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
 
 /**
@@ -79,4 +78,44 @@ public class CandidateSkillsDaoImpl  implements CandidateSkillsDao{
 		String query = " from CandidateSkills candidateSkills where candidateSkills.candidateId.id = :candidateId" ;
 		return session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list(); 
 	}
-}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateSkills getSkillsByCandidateIdSkillName(String candidateId, String skillName) {
+		
+		logger.debug("In Store getSkillsByCandidateIdSkillName method");
+		Session session = this.sessionFactory.getCurrentSession();
+		Integer status = Constants.CANDIDATE_SKILL_ACTIVE;
+		String query = "from CandidateSkills s where s.name = :skillName and s.candidateId = :candidateId and s.status = "+status+" ";
+		List<CandidateSkills> candidateSkillsList = session.createQuery(query).setString("candidateId", candidateId).setString("skillName", skillName).setCacheable(true).list();
+		CandidateSkills candidateSkills = null;
+		if(candidateSkillsList != null && !candidateSkillsList.isEmpty())
+		{
+			candidateSkills = (CandidateSkills) candidateSkillsList.iterator().next();
+		}
+		return candidateSkills;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateSkillName(String skillName) {
+		logger.debug("In Store validateskillName method");
+		 Session session = this.sessionFactory.getCurrentSession();
+		 Integer status = Constants.CANDIDATE_SKILL_ACTIVE;
+		 boolean flag = false;
+		 if(skillName != null){
+				String query = "from CandidateSkills s where s.name <> :skillName and s.status = "+status+" ";
+				List<CandidateSkills> candidateSkillsList =session.createQuery(query).setString("skillName", skillName).setCacheable(true).list();
+				if (candidateSkillsList != null && candidateSkillsList.size() > 0) {
+					if(flag = true){
+						return flag;	
+					}else{
+						flag = false;
+					}
+				}
+		 }
+		return flag;
+	}
+} 

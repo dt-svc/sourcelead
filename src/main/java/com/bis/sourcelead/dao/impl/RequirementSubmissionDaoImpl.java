@@ -234,7 +234,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		Session session = this.sessionFactory.getCurrentSession();
 	     String query = "from RequirementSubmission rs where rs.sourceSubmission.id = :sourceSubmissionId and rs.orgLocations.id =:orgLocationsId ";
 	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "sourceSubmissionId", sourceSubmissionId).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
-	     return shortListCandidatesList.get(0);
+	   
+	     if(shortListCandidatesList != null && shortListCandidatesList.size() >0){
+				return shortListCandidatesList.get(0);
+			}
+			return null;
+	   	     	     
 	}
 	
 	
@@ -293,6 +298,23 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					count = candidatesCount.size();
 			}
 			return count;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementSubmission getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(Long vendorSubmissionId,
+			Long vendororgLocationsId) {
+		
+	
+			Session session = this.sessionFactory.getCurrentSession();
+			
+		     String query = "from RequirementSubmission rs where rs.sourceSubmission.id = :vendorSubmissionId and rs.vendorLocationId.id =:vendororgLocationsId ";
+		     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "vendorSubmissionId", vendorSubmissionId).setLong( "vendororgLocationsId", vendororgLocationsId).setCacheable(true).list();
+		   
+		     if(shortListCandidatesList != null && shortListCandidatesList.size() >0){
+					return shortListCandidatesList.get(0);
+				}
+		  return null;
 	}
 	
 	/*

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -283,7 +284,7 @@ public class RequirementDaoImpl implements RequirementDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, Long userId)
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode)
 			throws Exception {
 
 		 
@@ -292,6 +293,18 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 				
 		Map<String, Object> params = new HashMap<String,Object>();
+		
+		
+		String subQueryRole = "";
+		if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
+			subQueryRole = "and (requirement.managerUserId.id =:userId OR requirement.createdBy =:userCode)";
+			params.put("userId",userId);
+			params.put("userCode",userCode);
+			params.put("orgLocationId",orgLocationId);
+		}else{
+			params.put("orgLocationId",orgLocationId);
+		}
+		
 		
 		String from = "from Requirement requirement"; 
 		
@@ -313,7 +326,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 		String subQuery = "";
 		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
-			subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") )";
+			subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) "+subQueryRole;
 			params.put("orgLocationId",orgLocationId);
 		}
 		String whereCondition = subQuery;
