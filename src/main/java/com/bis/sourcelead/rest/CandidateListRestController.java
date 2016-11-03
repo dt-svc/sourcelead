@@ -133,14 +133,14 @@ public class CandidateListRestController {
 			int i = 0;
 			for(CandidateSkills skilss: candidateSkills){
 				if(i <= 5){
-					if(skilss.getStatus() == 1){
+				
 					
 					skillsList = skillsList+skilss.getName();
 					if(i != candidateSkills.size()-1){
 						skillsList = skillsList+",";
 					}
 				}
-				}
+				
 				i++;
 			}
 			

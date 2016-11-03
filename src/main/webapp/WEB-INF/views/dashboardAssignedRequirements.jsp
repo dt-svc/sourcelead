@@ -76,8 +76,8 @@ function requirementList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
-		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show'><span>"+opt.id+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-		                     result = result +"<td><div><span>"+opt.jobTitle+"</span></div></td>";
+		                     result = result +"<td><div>"+opt.id+"</div></td>";
+		                     result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobTitle+"</a></div></td>";
 		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
 		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
 		                     }else{

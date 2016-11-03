@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
@@ -49,11 +48,7 @@ public class TeamRestController {
 	 @Value("${sourceleadUrl}")
 	 private String sourceleadUrl;
 		
-	 @Autowired
-	 private OrgService orgService;
-	 
-	 @Autowired
-	 private OrgLocationService orgLocationService;
+	
 	
 	 @Autowired
 	 CommonUtil commonUtil;
@@ -151,8 +146,6 @@ public class TeamRestController {
 	  public String getTeamMembersListByTeamID(@RequestParam(value="teamId", required=false) String  teamId,HttpServletRequest request) throws Exception {
 
 		String resultJson;
-		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByTeamID(Long.parseLong(teamId));
 		for(TeamMembers  teamMembers : teamMembersList){
 			
