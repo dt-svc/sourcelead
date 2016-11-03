@@ -254,7 +254,11 @@ $('body').on('submit', '#addApplicant_form', function(e){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
+			        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
+			            	}else{
+			            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+"</option>";
+			            	}
 					}
 		        	$("#candidateResumesList").empty();
 			        $("#candidateResumesList").append(output);
