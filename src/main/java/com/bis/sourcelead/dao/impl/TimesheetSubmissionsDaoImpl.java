@@ -181,9 +181,9 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		// TODO Auto-generated method stub
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		/*String sub = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1')";*/
+		String sub = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1')";
 		java.sql.Date sDate = new java.sql.Date(startDate.getTime());
-		String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and ts.status = '1' and ts.startDate =:startDate and ( ( ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))) ) ";
+		String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and ts.status = '1' and ts.startDate =:startDate and ( ( ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))) OR "+sub+" ) ";
 		List<TimesheetSubmissions> timesheetSubmissionsList1 = session.createQuery(query1)
 																		  .setLong("empId", projectMemberId)	
 					                                                      .setLong("userId", userId)
