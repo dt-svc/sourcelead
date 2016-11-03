@@ -273,7 +273,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					        /*
 							 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 							 */
-					        + " OR ( :approverUserId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.projectMembers.emp.id = :empId and subsah.submissionApprovalStatus != 'APPROVED' and subsah.submissionId.startDate = :startDate) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+")"
+					        + " OR ( :approverUserId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.projectMembers.employee.id = :empId and subsah.submissionApprovalStatus != 'APPROVED' and subsah.submissionId.startDate = :startDate) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+")"
 				        	+ ")";
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> sahMainList = session.createQuery(query)
