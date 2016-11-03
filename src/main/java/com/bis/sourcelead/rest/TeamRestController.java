@@ -90,12 +90,15 @@ public class TeamRestController {
 		for(Team team : teamList){
 			Collection<TeamMembers>	teamMembersList  = teamMembersService.getTeamMembersListByTeamID(team.getId());
 			
-			ArrayList<String> ar = new ArrayList<String>();
+			
+			team.setTeamMembersCount(teamMembersList.size()-1);
+			
+			/*ArrayList<String> ar = new ArrayList<String>();
 			for(TeamMembers teamMember : teamMembersList){
 				
 				ar.add(teamMember.getMemberUserId().getFirstName()+""+ teamMember.getMemberUserId().getLastName());
 			}
-			team.setTeamMembers(ar);
+			team.setTeamMembers(ar);*/
 		}
 		resultJson = commonUtil.toJSON(teamList);
 		return resultJson;
