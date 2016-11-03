@@ -1479,7 +1479,7 @@ function requirementDetails(requirementId){
 				            }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>'; 
-				            if(json.spocEmail != '' && json.spocEmail !=null && json.spocEmail != 'undefined'){
+				            /* if(json.spocEmail != '' && json.spocEmail !=null && json.spocEmail != 'undefined'){
 						    result = result +'     <div class="require_wrap_details_cta"> <b>Email:</b> <span>'+json.spocEmail+'</span>';
 				            }
 				            else{
@@ -1494,9 +1494,10 @@ function requirementDetails(requirementId){
 				            else{
 						    result = result +'     <div class="require_wrap_details_cta"> <b>Phone No:</b> <span> --- </span>';
 
-				            }
+				            } 
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
+				            */
 				            if(json.clientCurrencyCode == 'INR' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' &&  json.clientRate != '' && json.clientRate != 'undefined' && json.clientRate != null){
 					        result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ' +json.clientRate+'</span>';
 						    }

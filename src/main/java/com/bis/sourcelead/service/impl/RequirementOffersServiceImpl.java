@@ -97,10 +97,20 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 								if(jsonObj.has(c+"PositionType") && !jsonObj.getString(c+"PositionType").isEmpty()){
 									requirementOffers.setPositionType(jsonObj.getString(c+"PositionType"));
 								}
+								
+								if(jsonObj.has("notifyToVendor") && !jsonObj.getString("notifyToVendor").isEmpty()){
+									requirementOffers.setNotifyToVendor(jsonObj.getString("notifyToVendor"));
+								}
+								
+								if(jsonObj.has("notifyToApplicant") && !jsonObj.getString("notifyToApplicant").isEmpty()){
+									requirementOffers.setNotifyToApplicant(jsonObj.getString("notifyToApplicant"));
+								}
                                
+								
                                final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
                    		       final Map files = multiRequest.getFileMap();
-                              /* MultipartFile multiFile = null;*/
+                              
+                   		       /* MultipartFile multiFile = null;*/
                                /*for (Iterator iter = files.values().iterator(); iter.hasNext();) {
                                	    multiFile = (MultipartFile) iter.next();
                                        String fileName = multiFile.getOriginalFilename();
@@ -115,12 +125,16 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 								requirementOffers.setCreatedBy(user.getUserCode());
 								requirementOffers.setUpdatedDate(new Date());
 								requirementOffers.setUpdatedBy(user.getUserCode());
-								
 					            requirementOffersDao.storeRequirementOffers(requirementOffers);
 					           
 					           RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
 					           requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
-					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+					           
+								RequirementSubmission sourcesubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(requirementSubmission.getId(), orgLocations.getId());
+                                if(sourcesubmission !=null ){
+                                	sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
+                                }
+					            requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					           
 							}
 				}

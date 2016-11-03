@@ -122,6 +122,14 @@ public class RequirementListRestController {
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
+		for(Requirement requirement : requirementList){
+			if(requirement.getClientId() != null){
+				requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+			}
+			if(requirement.getManagerUserId() != null){
+				requirement.setManager(requirement.getManagerUserId().getFirstName());
+			}
+		}
 		resultJson = commonUtil.toJSON(requirementList);
 		return resultJson;
 	 }
@@ -269,8 +277,10 @@ public class RequirementListRestController {
 								List<Candidate> candidateList = new ArrayList<>();
 								candidateList.add(candidate);
 								List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScore(candidateList,requirementSubmission.getRequirement());
-								requirementSubmission.setScore(candidateListCopy.get(0).getCandidateScore()+"%");
-								logger.info("size of score is "+candidateListCopy.get(0).getCandidateScore());
+								if(candidateListCopy !=null && candidateListCopy.size() >0){
+									requirementSubmission.setScore(candidateListCopy.get(0).getCandidateScore()+"%");
+									logger.info("size of score is "+candidateListCopy.get(0).getCandidateScore());
+								}
 							}
 						}
 						

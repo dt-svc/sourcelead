@@ -201,7 +201,7 @@ var validationSettings = {
         		var frm = $('#createOrg_form').serializeFormJSON();
             	var con = JSON.stringify(frm);
 			    con = con.replace(/[{}]/g, ""); 
-			    
+			    var jsonData = encodeURIComponent(con);
          		var sourceleadUrl ='${sourceleadUrl}';
          		
          		var modules = "";
@@ -227,7 +227,7 @@ var validationSettings = {
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
           	      dataType : 'json',
-                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modules="+modules+"&subModules="+subModules+"&json="+con,
+                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modules="+modules+"&subModules="+subModules+"&json="+jsonData,
                 			  
                 			  
                   	success: function(result) {
@@ -380,7 +380,7 @@ function getUserDetails(){
 	        	}
 			 },
 	        error: function(e){
-	            alert('Ajax Error: ' + e.value);
+	            //alert('Ajax Error: ' + e.value);
 	        }
 	    });
 	}else{
