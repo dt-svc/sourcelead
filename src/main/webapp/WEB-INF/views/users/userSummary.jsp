@@ -214,9 +214,9 @@ $(document).ready(function(){
 				result = result + '					<strong>Role:</strong><span class="fix">'+json.userType+'</span><div class="clearfix"></div>';
 				result = result + '			</div>';
 				
-				if(json.user.reportingManager != null && json.user.reportingManager != "" && json.user.reportingManager != 'undefined' && json.user.reportingManager.firstName != null && json.user.reportingManager.firstName != "" && json.user.reportingManager.firstName != 'undefined'){
+				if(json.reportingManager != null && json.reportingManager != "" && json.reportingManager != 'undefined' && json.reportingManager.firstName != null && json.reportingManager.firstName != "" && json.reportingManager.firstName != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
-					result = result + '				 <strong>Manager:</strong><span class="fix">'+json.user.reportingManager.firstName+' '+json.user.reportingManager.lastName+'</span><div class="clearfix"></div>';
+					result = result + '				 <strong>Manager:</strong><span class="fix">'+json.reportingManager.firstName+' '+json.reportingManager.lastName+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
 				}
 				
@@ -887,10 +887,10 @@ function editUserDetails(userId){
 	    					{
 	    		 	    	   manager = json.allReportingManagers[i];
 	    		 	    	   var selected = '';
-	    		 	    	  if(json.reportingManager != null && json.reportingManager != "" && json.reportingManager != 'undefined' && json.reportingManager.id == manager.user.id){
+	    		 	    	  if(json.reportingManager != null && json.reportingManager != "" && json.reportingManager != 'undefined' && json.reportingManager.id == manager.id){
 	    		 	    		 selected = 'selected';
 	    		 	    	 }
-	    		 	    	result = result+"<option value='"+manager.user.id+"' "+selected+">"+manager.user.firstName+" "+manager.user.lastName+"&nbsp;("+manager.userType+")</option>"; 
+	    		 	    	result = result+"<option value='"+manager.id+"' "+selected+">"+manager.firstName+" "+manager.lastName+"&nbsp;("+manager.userType+")</option>"; 
 	    					}
 			 	     	result = result+"</select>"; 
 			 	     	result = result + ' </div>';

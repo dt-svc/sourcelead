@@ -83,7 +83,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.isUserActive(userId);
 	}
 	
-	@Override
+	/*@Override
 	public List<UserRole> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception {
 		return userRoleDao.getManagersByUserRolesAndOrgLocationId(roleType, orgLocationsId);
 	}
@@ -91,7 +91,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 	@Override
 	public List<UserRole> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception {
 		return userRoleDao.getManagersByUserIdAndUserRolesAndOrgLocationId(userId, roleType, orgLocationsId);
-	}
+	}*/
 	
 	@Override
 	public List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception {

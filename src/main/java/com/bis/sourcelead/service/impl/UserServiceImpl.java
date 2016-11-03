@@ -583,7 +583,7 @@ public class UserServiceImpl implements UserService {
 		return userDao.getOwnersByOrgLocationId(orgLocationsId);
 	}
 
-	/*@Override
+	@Override
 	public List<User> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception {
 		return userDao.getManagersByUserRolesAndOrgLocationId(roleType, orgLocationsId);
 	}
@@ -593,10 +593,6 @@ public class UserServiceImpl implements UserService {
 		return userDao.getManagersByUserIdAndUserRolesAndOrgLocationId(userId, roleType, orgLocationsId);
 	}
 	
-	@Override
-	public List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception {
-		return userDao.getAllUserIdsByReportingManagerId(reportingManagerId);
-	}*/
 
 	@Override
 	public User getUserDetailsByUserCode(String userCode) {

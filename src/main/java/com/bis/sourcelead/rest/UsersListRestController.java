@@ -190,15 +190,15 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				
 		 }
 		
-		 /*Employees employee = employeesService.getEmployeeByUserId(userId);
-		 if(employee.getHireDate() != null){
-			 employee.setHireDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(employee.getHireDate())); 
-		 }else{
-			 employee.setHireDateStr("");
-		 }*/
 		 
-		 List<UserRole> userList = userRoleService.getManagersByUserIdAndUserRolesAndOrgLocationId(userRole.getUser().getId(), userRole.getUserType(), orgLocations.getId());
-		 //employee.setAllReportingManagers(userList);
+		 List<User> userList = userService.getManagersByUserIdAndUserRolesAndOrgLocationId(userRole.getUser().getId(), userRole.getUserType(), orgLocations.getId());
+		 for (User user : userList) {
+			    UserRole userRole1 = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if(userRole1 != null){
+					user.setUserType(userRole1.getUserType());
+				}
+		  }
+		 
 		 userRole.setAllReportingManagers(userList);
 		 
 		 resultJson = toJSON(userRole);
@@ -246,6 +246,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				json = "{"+json+"}";
 			    JSONObject jsonObj = new JSONObject(json);
 			    String password = "";
+			    boolean isUserActive = false;
+			    
 				if(user != null){
 					user.setFirstName(jsonObj.getString("FirstName"));
 					user.setLastName(jsonObj.getString("LastName"));
@@ -255,7 +257,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 						reportingManager.setId(Long.parseLong(jsonObj.getString("reportingManager")));
 						userRole.setReportingManager(reportingManager);
 					}
-					if(userRole.getUserState() != null && !"".equals(userRole.getUserState()) && Status.NOT_LOGGEDIN.equals(userRole.getUserState())&& !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
+					
+					isUserActive = userRoleService.isUserActive(user.getId());
+					if(isUserActive == false && !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
 						//generate random password
 						user.setEmail(jsonObj.getString("EmailId"));
 						user.setUserName(jsonObj.getString("EmailId"));
@@ -269,7 +273,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					userService.addUser(user);
 					userRoleService.addUserRole(userRole);
 					
-					if(userRole.getUserState() != null && !"".equals(userRole.getUserState()) && Status.NOT_LOGGEDIN.equals(userRole.getUserState())&& !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
+					if(isUserActive == false && !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
 						userService.sendEmail(user,orgLocations.getId(),loginUser,password);
 					}
 				}

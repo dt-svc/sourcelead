@@ -120,7 +120,7 @@ public class UserRole{
 	private String dailyHours;
 	
 	@Transient
-	List<UserRole> allReportingManagers;
+	List<User> allReportingManagers;
 	
 	@Transient
 	private String userName;
@@ -134,11 +134,11 @@ public class UserRole{
 		this.userName = userName;
 	}
 
-	public List<UserRole> getAllReportingManagers() {
+	public List<User> getAllReportingManagers() {
 		return allReportingManagers;
 	}
 
-	public void setAllReportingManagers(List<UserRole> allReportingManagers) {
+	public void setAllReportingManagers(List<User> allReportingManagers) {
 		this.allReportingManagers = allReportingManagers;
 	}
 

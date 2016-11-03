@@ -317,7 +317,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return flag;
 	}
 	
-	@Override
+	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<UserRole> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -387,14 +387,14 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	    List<UserRole> userRoleList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setLong( "userId", userId).setCacheable(true).list();
         return userRoleList;
         
-	}
+	}*/
 	
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.userState != 'INACTIVE' ";
+		String query = "select userRole.user from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.userState != 'INACTIVE' " ;
 	    List<Long> userIds = session.createQuery(query).setLong( "reportingManagerId", reportingManagerId).setCacheable(true).list();
         return userIds;
         
