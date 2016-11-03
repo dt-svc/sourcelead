@@ -332,6 +332,10 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		
 		@Override
 		public String getArrovalSubmissions(String employeeId,User user) throws Exception {
+			
+			/**
+		     * Get all employeeList(who is member in the project,in which logged in user is approver or logged in user is admin)  with date range
+			*/
 			Collection<TimesheetSubmissions> timesheetSubmissionsList =  getApprovalTimesheetSubmissions(user.getId());
 	        StringBuilder sb = new StringBuilder();
 			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
@@ -396,6 +400,9 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	 		  			   employeeEndDate = nextSundayDate;
 	 		  		   }
 	        	   }
+	        	   
+	        	   
+	        	   
 	        	   
 	        	   Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
 				   Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);

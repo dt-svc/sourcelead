@@ -261,7 +261,9 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
 		
-		/*String sub = ":approverUserId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1')";*/
+		/*
+		 *  get submissionapproverhierarchy list by using empId and logged in user id as approver(either user may exist in project hierarchy  or user may be admin)
+		 */
 		String query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where sah.submissionApprovalStatus != 'APPROVED' and emp.id =:empId and sah.submissionId.startDate = :startDate and (hierarchy.approverUserId.id = :approverUserId OR "+Constants.loginUserAsAdmin+")  ";
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> sahMainList = session.createQuery(query)
@@ -272,25 +274,27 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		
 	
 		if(sahMainList != null && !sahMainList.isEmpty()){
-	    	for(SubmissionApproverHierarchy mainSah :sahMainList){
+	    	for(SubmissionApproverHierarchy sah :sahMainList){
 	    		
-	    		//get max level
+	    		/*
+	    		 * get Max Level
+	    	    */
 	    		Query queryForMaxLevel = session.createQuery("select Max(sah.hierarchyId.level) from SubmissionApproverHierarchy sah  where sah.submissionId.projectMembers.employee.id =:empId and sah.submissionId.id = :submissionId and sah.submissionId.startDate = :startDate ");
-	    		List<Integer> maxList = queryForMaxLevel.setLong("empId", empId).setLong("submissionId", mainSah.getSubmissionId().getId()).setParameter("startDate", sqlStartDate).list();
+	    		List<Integer> maxList = queryForMaxLevel.setLong("empId", empId).setLong("submissionId", sah.getSubmissionId().getId()).setParameter("startDate", sqlStartDate).list();
 	    		Integer maxLevel = 0;
 	    		if(maxList !=null && !maxList.isEmpty()){
 	    			maxLevel = maxList.iterator().next();
 	    		}
 	    		
 	    		
-	    	    query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and sah.submissionId.id = :submissionId and sah.submissionId.startDate = :startDate and hierarchy.approverUserId.id = :approverUserId ";
+	    	   /* query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and sah.submissionId.id = :submissionId and sah.submissionId.startDate = :startDate and hierarchy.approverUserId.id = :approverUserId ";
 	    		@SuppressWarnings("unchecked")
 	    		List<SubmissionApproverHierarchy> sahList = session.createQuery(query)
 	    																	  .setLong("empId", empId)	
 	    																	  .setLong("approverUserId",approverUserId)
 	    																	  .setLong("submissionId", mainSah.getSubmissionId().getId())
-	    				                                                      .setParameter("startDate", sqlStartDate).list();
-	          for(SubmissionApproverHierarchy sah :sahList){
+	    				                                                      .setParameter("startDate", sqlStartDate).list();*/
+	         /* for(SubmissionApproverHierarchy sah :sahList){*/
 	    		
 	    		if(status!=null && status.equalsIgnoreCase("REJECTED")){
             	 	sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
@@ -342,7 +346,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
                 		}
                 	}
 	    		}
-	    	   }	 
+	    	   //}	 
 	    	}
 	    }
 		

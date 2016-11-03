@@ -99,6 +99,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	
 
 	 /**
+	  * 
 	 * @author naresh bolisetty and sarath kumar
 	 * @since  aug 19 2016
 	 * @version 0.0.1
@@ -119,6 +120,12 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	public String newTimesheet(User user,String navigation, String startDate) throws Exception {
 		 
 		
+		/**
+		  * Get Logged-in Employee startDate and endDate range across Various Projects(which are assigned to respective employee)
+		  * @ Hint: Submission Table Records are already availble
+		  * (We are storing these records with employee assigned date at the time of assignment and when employee/particular approver logged in to system(if record not exist then only))
+	      *
+	    */
 		HashMap<String, Date> submissionDateRange =	timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(user.getId());
 		Date employeeStartDate = submissionDateRange.get("STARTDATE");
 		Date employeeEndDate = submissionDateRange.get("ENDDATE");
@@ -133,6 +140,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		cal.setTime(commonUtil.currentDate());
 		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
 		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN");
+		
 		
 		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
 		Date previousMondayDate = previousMonday.getTime();
@@ -168,6 +176,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
           Date currentEndDate = null;
           Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		   startCal.setLenient(false);
+		   /**
+			 * startDate == null means current week timesheets should be shown
+		   */
 		   if(startDate == null || startDate.equalsIgnoreCase("undefined") || startDate.isEmpty() ){  
 			      Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
 			      if(currentWeekStartDate.equals(employeeStartDate)|| (currentWeekStartDate.before(employeeEndDate) && currentWeekStartDate.after(employeeStartDate))){
@@ -183,6 +194,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			    	  startCal.setTime(employeeStartDate);
 			      }
           }
+		   /**
+			 * startDate comes from ui screen when << or >> links clicked
+		   */
 		  else{
                Date sDate  =  Constants.DMY.parse(startDate);
 			   startCal.setTime(sDate);
@@ -216,12 +230,18 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		sb.append("           </li><li>");
 		
 		
+	    /**
+		 * check whether previous submission records are available or not
+	    */
 		Date leftNavStartDate = timesheetSubmissionsService.getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(user.getId(), currentStartDate);
 		if(leftNavStartDate != null && (leftNavStartDate.after(employeeStartDate) || leftNavStartDate.equals(employeeStartDate))){
 			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\");'></i>");
 		}
 		sb.append("            <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
 		
+		/**
+		 * check whether next submission records are available or not
+	    */
 		Date rightNavStartDate = timesheetSubmissionsService.getRightNavStartDateForEmployeeBasedOnCurrentStartDate(user.getId(), currentStartDate);
 		if(rightNavStartDate != null){
 	    Calendar rightCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);	
@@ -257,7 +277,13 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		for(TimesheetSubmissions ts : timesheetSubmissionsList){
 			isThereAnyApproverApproved = new ArrayList<Boolean>();
 			
+			/**
+			 * For to show submission status of each submission record(Hint:As per employee one submission related to one project)
+		    */
 			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(ts.getId());
+			/**
+			 * Don't show withdraw button if any approver(either level1 or level2) is approved
+		    */
 			SubmissionApproverHierarchy isSah = submissionApproverHierarchyService.isThereAnyApproverChangesStatusForTheSubmission(ts.getId(), "APPROVED");
 			if(isSah != null){
 				isThereAnyApproverApproved.add(true);
@@ -269,6 +295,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			Submission_Status submissionStatus = sah.getSubmissionStatus();
 			
 			
+			/**
+			 * Here getting  dates which are enabled in the current submission
+			 * (Hint:In particular project,the member may assigned in the mid of the week) 
+		    */
 			HashSet<Date> pmhDateList =  projectMembersHistoryService.getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(ts.getProjectMembers().getId(), currentStartDate, currentEndDate);
 			//Date assignDate = ts.getProjectMembers().getProjectAssignedDate();
 			//Date assignEndDate = ts.getProjectMembers().getProjectEndDate();
