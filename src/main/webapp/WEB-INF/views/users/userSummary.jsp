@@ -138,7 +138,7 @@ $(document).ready(function(){
 				firstname(json.user.firstName);
 				
 				result = result + '  <div class="project_details">';
-				if(json.user.userState != null && json.user.userState != "" && json.user.userState != 'INACTIVE'){
+				if(json.userState != null && json.userState != "" && json.userState != 'INACTIVE'){
 				    result = result + ' <div class="useredit">';
 						result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 						result = result + ' <a id="remove-user" href="javascript:removeUser();"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
@@ -211,7 +211,7 @@ $(document).ready(function(){
 				}
 				
 				result = result + '			<div class="project_details_cta">';
-				result = result + '					<strong>Role:</strong><span class="fix">'+json.user.userType+'</span><div class="clearfix"></div>';
+				result = result + '					<strong>Role:</strong><span class="fix">'+json.userType+'</span><div class="clearfix"></div>';
 				result = result + '			</div>';
 				
 				if(json.user.reportingManager != null && json.user.reportingManager != "" && json.user.reportingManager != 'undefined' && json.user.reportingManager.firstName != null && json.user.reportingManager.firstName != "" && json.user.reportingManager.firstName != 'undefined'){
@@ -238,7 +238,7 @@ $(document).ready(function(){
 					result = result + '			</div>';
 				}
 				
-				if(json.user.userState != null && json.user.userState != "" && json.user.userState == 'INACTIVE'){
+				if(json.userState != null && json.userState != "" && json.userState == 'INACTIVE'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				<strong>Reason:</strong><span class="fix">'+json.user.terminateReason+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
@@ -293,7 +293,7 @@ function firstname(name)
 	        url: sourceleadUrl+"/getUserDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
 	        success: function(data) {
 			    var json = JSON.parse(data);
-				if(json.user.userState != null && json.user.userState != "" && json.user.userState == 'INACTIVE'){
+				if(json.userState != null && json.userState != "" && json.userState == 'INACTIVE'){
 				  $("#assign_project_id").empty();
 				}else{
 					$("#assign_project_id").empty().append("<a href='javascript:void(0)' data-target='#assignProject' onClick='flushProject();getUnAssignedProjects("+userId+");' data-toggle='modal'><i class='fa fa-plus'></i>Assign Project</a>") ;
@@ -887,10 +887,10 @@ function editUserDetails(userId){
 	    					{
 	    		 	    	   manager = json.allReportingManagers[i];
 	    		 	    	   var selected = '';
-	    		 	    	  if(json.user.reportingManager != null && json.user.reportingManager != "" && json.user.reportingManager != 'undefined' && json.user.reportingManager.id == manager.id){
+	    		 	    	  if(json.reportingManager != null && json.reportingManager != "" && json.reportingManager != 'undefined' && json.reportingManager.id == manager.user.id){
 	    		 	    		 selected = 'selected';
 	    		 	    	 }
-	    		 	    	result = result+"<option value='"+manager.id+"' "+selected+">"+manager.firstName+" "+manager.lastName+"&nbsp;("+manager.userType+")</option>"; 
+	    		 	    	result = result+"<option value='"+manager.user.id+"' "+selected+">"+manager.user.firstName+" "+manager.user.lastName+"&nbsp;("+manager.userType+")</option>"; 
 	    					}
 			 	     	result = result+"</select>"; 
 			 	     	result = result + ' </div>';

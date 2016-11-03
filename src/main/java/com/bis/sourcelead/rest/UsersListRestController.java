@@ -169,16 +169,39 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	 public @ResponseBody String getUserDetailsById(HttpServletRequest request, @RequestParam(value="userId", required=false) Long userId) throws Exception{ 
 		 String resultJson = null;   
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 Employees employee = employeesService.getEmployeeByUserId(userId);
+		 
+		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
+		 
+		 Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocations.getId());
+		 
+		 userRole.setUserType(userRole.getUserType());
+		 
+		 if(employee !=null){
+				userRole.setEmployeeId(employee.getEmployeeId());
+				userRole.setRate(employee.getRate());
+				userRole.setRatePer(employee.getRatePer());
+				userRole.setInvoiceFrequency(employee.getInvoiceFrequency());
+				if(employee.getHireDate() != null){
+					userRole.setHireDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(employee.getHireDate())); 
+				 }else{
+					 userRole.setHireDateStr("");
+				 }
+				userRole.setDailyHours(employee.getDailyHours());
+				
+		 }
+		
+		 /*Employees employee = employeesService.getEmployeeByUserId(userId);
 		 if(employee.getHireDate() != null){
 			 employee.setHireDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(employee.getHireDate())); 
 		 }else{
 			 employee.setHireDateStr("");
-		 }
+		 }*/
 		 
-		 List<UserRole> userList = userRoleService.getManagersByUserIdAndUserRolesAndOrgLocationId(employee.getUser().getId(), employee.getUser().getUserType(), orgLocations.getId());
+		 List<UserRole> userList = userRoleService.getManagersByUserIdAndUserRolesAndOrgLocationId(userRole.getUser().getId(), userRole.getUserType(), orgLocations.getId());
 		 //employee.setAllReportingManagers(userList);
-		 resultJson = toJSON(employee);
+		 userRole.setAllReportingManagers(userList);
+		 
+		 resultJson = toJSON(userRole);
 		 return resultJson;
 	  }
 

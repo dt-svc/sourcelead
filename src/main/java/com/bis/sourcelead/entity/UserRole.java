@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -85,25 +86,103 @@ public class UserRole{
 	@Transient
 	private String userRoleName;
 	
+	@Transient
+	private String employeeId;
 	
 	@Transient
 	private Integer projectsCount;
 	
-	
 	@Transient
 	private Integer openTimeSheetsCount;
-	
 	
 	@Transient
 	private Integer approvedTimeSheetsCount;
 	
-	
 	@Transient
 	private Integer rejectedTimeSheetsCount;
 	
-	
 	@Transient
 	private Integer waitingTimeSheetsCount;
+	
+	@Transient
+	private String rate;
+	
+	@Transient
+	private String ratePer;
+
+	@Transient
+	private String InvoiceFrequency;
+	
+	@Transient
+    private String hireDateStr;
+	
+	@Transient
+	private String dailyHours;
+	
+	@Transient
+	List<UserRole> allReportingManagers;
+	
+	@Transient
+	private String userName;
+	
+	
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public List<UserRole> getAllReportingManagers() {
+		return allReportingManagers;
+	}
+
+	public void setAllReportingManagers(List<UserRole> allReportingManagers) {
+		this.allReportingManagers = allReportingManagers;
+	}
+
+	public String getDailyHours() {
+		return dailyHours;
+	}
+
+	public void setDailyHours(String dailyHours) {
+		this.dailyHours = dailyHours;
+	}
+
+	public String getHireDateStr() {
+		return hireDateStr;
+	}
+
+	public void setHireDateStr(String hireDateStr) {
+		this.hireDateStr = hireDateStr;
+	}
+
+	
+
+	public String getInvoiceFrequency() {
+		return InvoiceFrequency;
+	}
+
+	public void setInvoiceFrequency(String invoiceFrequency) {
+		InvoiceFrequency = invoiceFrequency;
+	}
+
+	public String getRate() {
+		return rate;
+	}
+
+	public void setRate(String rate) {
+		this.rate = rate;
+	}
+
+	public String getRatePer() {
+		return ratePer;
+	}
+
+	public void setRatePer(String ratePer) {
+		this.ratePer = ratePer;
+	}
 
 	public Long getId() {
 		return id;
@@ -274,6 +353,14 @@ public class UserRole{
 
 	public void setWaitingTimeSheetsCount(Integer waitingTimeSheetsCount) {
 		this.waitingTimeSheetsCount = waitingTimeSheetsCount;
+	}
+
+	public String getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
 	}
 
 	
