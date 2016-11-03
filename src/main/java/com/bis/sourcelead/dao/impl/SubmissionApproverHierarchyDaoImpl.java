@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
+import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
@@ -27,6 +28,9 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@Autowired
 	private SessionFactory sessionFactory;
 	
+	@Autowired
+	private UserRoleDao userRoleDao;
+	
 	@Value("${SourceLead.100}")
 	private String notFound;
 	@Value("${SourceLead.101}")
@@ -37,6 +41,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	private String statusDelete;
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
+	
+	
 
 	private static final Logger logger = LoggerFactory.getLogger(SubmissionApproverHierarchyDaoImpl.class);
 	
@@ -202,11 +208,11 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyForEmployeeIdAndStartDate(Long empId,
 			Long approverUserId, Date startDate) {
 		// TODO Auto-generated method stub
-		/*String sub = ":approverUserId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1')";*/
+		String sub = "(:approverUserId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1') and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = pm.projects.id))";
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
 		
-		String query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and sah.submissionId.startDate = :startDate and  hierarchy.approverUserId.id = :approverUserId ";
+		String query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and sah.submissionId.startDate = :startDate and (hierarchy.approverUserId.id = :approverUserId OR "+sub+") ";
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> sahList = session.createQuery(query)
 																	  .setLong("empId", empId)	
@@ -309,8 +315,9 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
         																	  .setLong("submissionId", sah.getSubmissionId().getId())
         																	  .setLong("id", sah.getId())
         				                                                      .setParameter("startDate", sqlStartDate).list();
-        		
-                if(sah.getHeirarchyId().getLevel()==(maxLevel)){
+	    		
+	    		Boolean isAdmin = userRoleDao.isUserAdmin(approverUserId);
+                if(sah.getHeirarchyId().getLevel()==(maxLevel) || isAdmin){
                 	if(approversList != null && !approversList.isEmpty()){
                 		for(SubmissionApproverHierarchy approver  :  approversList){
                 			if(status!=null && status.equalsIgnoreCase("REJECTED")){
