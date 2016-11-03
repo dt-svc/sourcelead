@@ -195,7 +195,7 @@ function timeSheetSubmissionStatusCount(){
 <jsp:include page="masterFooter.jsp" /> --%>
 
 
-<style>
+<!-- <style>
 .dashboard-widget {
 min-height: 350px !important;
 }
@@ -214,7 +214,20 @@ float: none !important;
    top: -31px !important;
     padding: 0 !important;
  }
-</style>
+ .dashboard-datepkr{
+       position:relative;
+}
+.dashboard-datepkr input[type="text"]{
+       width:115px;
+       border:1px solid #ccc;
+       margin-right:5px;
+}
+.dashboard-datepkr .fa{
+   position: absolute;
+   right: 10px;
+   top: 4px;
+}
+</style> -->
 
  
 
@@ -222,6 +235,8 @@ float: none !important;
 <jsp:include page="masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+
 
 <section class="content-wraper">
 	    <section class="content-header clearfix">
