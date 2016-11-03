@@ -385,7 +385,7 @@
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"&nbsp;("+opt.userType+")</option>";
+			        		output = output + "<option value='" +opt.user.id+ "'>"+opt.user.firstName+" "+opt.user.lastName+"&nbsp;("+opt.userType+")</option>";
 					}
 		        	$("#reportingManager").empty();
 			        $("#reportingManager").append(output);

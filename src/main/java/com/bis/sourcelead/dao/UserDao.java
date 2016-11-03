@@ -57,14 +57,14 @@ public interface UserDao {
 	 */
 	public List<User> getOwnersByOrgLocationId(Long orgLocationsId) throws Exception;
 	
-	//Prasad Salina to get managers list baded on role type
+	/*//Prasad Salina to get managers list baded on role type
 	List<User> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception;
 			
 	//Prasad Salina to get managers list baded on role type and except current user
 	List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception;
 	
 	//Prasad Salina to get all the user ids baded on reportingManager userid
-	List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception;
+	List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception;*/
 
 	User getUserDetailsByUserCode(String userCode);
 

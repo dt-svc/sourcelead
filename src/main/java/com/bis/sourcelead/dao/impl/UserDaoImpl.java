@@ -287,13 +287,13 @@ public class UserDaoImpl implements UserDao {
 	public List<User> getOwnersByOrgLocationId(Long orgLocationsId) throws Exception {
 		
 	 Session session = this.sessionFactory.getCurrentSession();
-     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' ";
+     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.orgLocations=:orgLocationsId and userRole.userState != 'INACTIVE')  ";
      List<User> userRoleList = session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
      return userRoleList;
         
 	}
 	
-	@Override
+	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<User> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -374,7 +374,7 @@ public class UserDaoImpl implements UserDao {
 	    List<Long> userIds = session.createQuery(query).setLong( "reportingManagerId", reportingManagerId).setCacheable(true).list();
         return userIds;
         
-	}
+	}*/
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

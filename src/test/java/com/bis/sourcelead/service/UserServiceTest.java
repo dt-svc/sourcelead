@@ -32,6 +32,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.UserProfile;
 import com.bis.sourcelead.service.impl.UserServiceImpl;
@@ -60,6 +61,9 @@ public class UserServiceTest {
 
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	@Autowired
 	OrgSpocService orgSpocService;
@@ -343,7 +347,7 @@ public class UserServiceTest {
 	public void getManagersByUserRolesAndOrgLocationId() throws Exception{
 		String roleType = "2";
 		Long orgLocationsId = 3l;
-		List<User> list = userService.getManagersByUserRolesAndOrgLocationId(roleType, orgLocationsId);
+		List<UserRole> list = userRoleService.getManagersByUserRolesAndOrgLocationId(roleType, orgLocationsId);
 		assertFalse(list.isEmpty());
 	}
 	
@@ -352,7 +356,7 @@ public class UserServiceTest {
 		Long userId = 3l;
 		String roleType = "2";
 		Long orgLocationsId = 3l;
-		List<User> list = userService.getManagersByUserIdAndUserRolesAndOrgLocationId(userId,roleType,orgLocationsId);
+		List<UserRole> list = userRoleService.getManagersByUserIdAndUserRolesAndOrgLocationId(userId,roleType,orgLocationsId);
 		assertFalse(list.isEmpty());
 	}
 	
@@ -373,7 +377,7 @@ public class UserServiceTest {
 	
 	@Test
 	public void getAllUserIdsByReportingManagerId() throws Exception{
-		List<Long> list = userService.getAllUserIdsByReportingManagerId(3l);
+		List<Long> list = userRoleService.getAllUserIdsByReportingManagerId(3l);
 		assertFalse(list.isEmpty());
 	}
 }

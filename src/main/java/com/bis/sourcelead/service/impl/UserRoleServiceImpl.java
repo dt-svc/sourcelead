@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.UserRoleService;
 
@@ -80,6 +81,21 @@ public class UserRoleServiceImpl implements UserRoleService{
 	@Override
 	public boolean isUserActive(Long userId) throws Exception {
 		return userRoleDao.isUserActive(userId);
+	}
+	
+	@Override
+	public List<UserRole> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception {
+		return userRoleDao.getManagersByUserRolesAndOrgLocationId(roleType, orgLocationsId);
+	}
+	
+	@Override
+	public List<UserRole> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception {
+		return userRoleDao.getManagersByUserIdAndUserRolesAndOrgLocationId(userId, roleType, orgLocationsId);
+	}
+	
+	@Override
+	public List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception {
+		return userRoleDao.getAllUserIdsByReportingManagerId(reportingManagerId);
 	}
 	
 	@Override

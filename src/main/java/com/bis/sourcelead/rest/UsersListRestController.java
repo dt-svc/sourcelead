@@ -176,8 +176,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			 employee.setHireDateStr("");
 		 }
 		 
-		 List<User> userList = userService.getManagersByUserIdAndUserRolesAndOrgLocationId(employee.getUser().getId(), employee.getUser().getUserType(), orgLocations.getId());
-		 employee.setAllReportingManagers(userList);
+		 List<UserRole> userList = userRoleService.getManagersByUserIdAndUserRolesAndOrgLocationId(employee.getUser().getId(), employee.getUser().getUserType(), orgLocations.getId());
+		 //employee.setAllReportingManagers(userList);
 		 resultJson = toJSON(employee);
 		 return resultJson;
 	  }

@@ -29,6 +29,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmployeesService;
@@ -609,7 +610,7 @@ public class UserRestController {
 				@RequestParam(value = "role", required = false) String role, HttpServletRequest request) throws Exception {
 			String resultJson = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<User> userList = userService.getManagersByUserRolesAndOrgLocationId(role, orgLocations.getId());
+			List<UserRole> userList = userRoleService.getManagersByUserRolesAndOrgLocationId(role, orgLocations.getId());
 			resultJson = toJSON(userList);
 			return resultJson;
 		}
