@@ -90,7 +90,7 @@
 						<div class="form-group">
 							<label class="col-md-3"> Project Description </label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-500"
+								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-5000"
 									data-validation-optional="true"></textarea>
 								<span class="hidden">Project Description</span>
 							</div>

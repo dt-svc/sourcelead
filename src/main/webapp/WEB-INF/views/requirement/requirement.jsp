@@ -70,6 +70,10 @@ border-radius:3px;
 .modal-footer {
 background-color: #ccc;
 }
+.ratetype p {
+bottom: -14px;
+    left:-20px !important;
+}
 </style>
 
 
@@ -296,7 +300,7 @@ $(document).ready(function() {
                 </div>
                 <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
-                  <select class="selectpicker" id="rateType" name="rateType">
+                  <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Type">
                     <option value="">Rate Per</option>
                     <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
@@ -492,7 +496,7 @@ $(document).ready(function() {
 	                </div>
 	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
-	                 <select class="selectpicker"  id="clientRateType" value="${requirement.clientRateType}" name="clientRateType">
+	                 <select class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Type" value="${requirement.clientRateType}" name="clientRateType">
 	                    
 			                <option value="">Rate Per</option>
 		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
@@ -765,7 +769,7 @@ $(document).ready(function() {
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		
-		/* var rate = document.getElementById("rate").value; 
+		 var rate = document.getElementById("rate").value; 
 		 if(rate != null && rate != ""){
 			 $('#rateType').removeAttr('data-validation-optional');
 			 $('#rateType').attr("data-validation","required"); 
@@ -773,7 +777,16 @@ $(document).ready(function() {
 			 $('#rateType').removeAttr('data-validation');
 			 $('#ratePer').attr("data-validation-optional","true"); 
 		 }
-		 */
+		 
+		 var clientRate = document.getElementById("clientRate").value; 
+		 if(clientRate != null && clientRate != ""){
+			 $('#clientRateType').removeAttr('data-validation-optional');
+			 $('#clientRateType').attr("data-validation","required"); 
+		 }else{
+			 $('#clientRateType').removeAttr('data-validation');
+			 $('#ratePer').attr("data-validation-optional","true"); 
+		 }
+		 
 		   if ($('#requirement_form').validate(false, validationSettings)){   
 			var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
