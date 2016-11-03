@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -28,6 +29,9 @@ public class UserDaoImpl implements UserDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private UserRoleDao userRoleDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -228,7 +232,20 @@ public class UserDaoImpl implements UserDao {
 			throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where (userRole.roles = '3'  OR userRole.roles = '9' OR userRole.roles = '1') and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' and user.id <> :userId ";
+		String query = null;
+		
+		 Boolean isAdmin = userRoleDao.isUserAdmin(userId);
+		
+		
+		if(isAdmin){
+			
+			 query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where (userRole.roles = '1') and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' and user.id <> :userId";
+
+		}else{
+			 query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where (userRole.roles = '3'  OR userRole.roles = '9' OR userRole.roles = '1') and userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' and user.id <> :userId  ";
+
+		}
+		
 	    List<User> userRoleList = session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocationsId).setLong( "userId", userId).setCacheable(true).list();
       
 	    return userRoleList;

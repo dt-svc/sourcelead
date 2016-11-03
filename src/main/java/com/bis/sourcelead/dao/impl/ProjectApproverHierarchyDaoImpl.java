@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -109,13 +110,32 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectId(long projectId) throws Exception {
+	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectId(long projectId,long userId) throws Exception {
+	
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId";
-	        List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId)
+		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId and usr.id = :userId";
+	     
+		
+		 List<ProjectApproverHierarchy>  projectHirachyList1 =   session.createQuery(query.toString()).setLong("projectId", projectId)
+																										.setLong("userId", userId)
 	        																							.setCacheable(true)
 	        																							.list();
-	        return projectHirachyList;
+	      
+
+		  String query2  = "select Max(pah.level) from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId  and pah.projectId =:projectId";
+	      List<ProjectApproverHierarchy>  projectHirachyList2 =   session.createQuery(query.toString()).setLong("projectId", projectId)
+	    		                                                                                        .setLong("userId", userId)
+	        																							.setCacheable(true)
+	        																							.list();
+		if(projectHirachyList1.size() > 0 && projectHirachyList1 !=null){
+			
+			 return projectHirachyList1;
+			 
+		}else{
+			
+		     return projectHirachyList2;
+		}
+		  
 		
 	}
 	

@@ -58,8 +58,8 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 	}
 	
 	@Override
-	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectId(long projectId) throws Exception {
-		return projectApproverHierarchyDao.getAllProjectApproverHierarchyByProjectId(projectId);
+	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectId(long projectId,long userId) throws Exception {
+		return projectApproverHierarchyDao.getAllProjectApproverHierarchyByProjectId(projectId,userId);
 		
 	}
 

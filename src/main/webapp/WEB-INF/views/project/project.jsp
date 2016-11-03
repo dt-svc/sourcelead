@@ -201,7 +201,7 @@
 											<option value="${option.id}">${option.firstName}
 												${option.lastName}</option>
 										</c:forEach>
-									</select> <span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();">Add
+									</select> <span class="btn btn-default formic1 addLevel" id="level2approversSelect" onclick="getLevel2Approvers();">Add
 										Level-II</span>
 								</div>
 								<span class="hidden">Select Project Manager</span>
@@ -1293,26 +1293,37 @@ function getLevel2Approvers(){
 <script type="text/javascript">
 function getChildLevel1Approvers(currentApproverId){
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 $("level2approversSelect").html("");
+	 
+	 
 	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,
 		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var output = "";
-		        	output = output + "<option value=''>-Select Manager-</option>"; 
-		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
-					}
-		        	$("#level2Manager").empty();
-			        $("#level2Manager").append(output);
-			        $('#level2Manager').trigger("chosen:updated");
-		        },
-		        error: function(e){
 		            
-		        }
+		            
+		        	var json = JSON.parse(data);
+		        	if(json.length >0){
+		        		var output = "";
+			        	output = output + "<option value=''>-Select Manager-</option>"; 
+			        	for (var i=0; i<json.length; i++)
+						{
+				        		var opt = json[i];
+				        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+						}
+			        	$("#level2Manager").empty();
+				        $("#level2Manager").append(output);
+				        $('#level2Manager').trigger("chosen:updated");
+		        		
+		        	}else{
+		        		var span = document.getElementById("level2approversSelect");
+			               span.parentNode.removeChild(span); 
+		        	}
+		        	
+		        },
+		       
 		    });
 	 }else{
 		 getApproversLevel2();

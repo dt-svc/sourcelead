@@ -63,10 +63,10 @@ public class EMailJobScheduler {
 	ProjectsService projectsService;
 	
 	@Autowired
-	UserService userservice;
+	UserService userService;
 	
 	@Autowired
-	OrgService orgservice;
+	OrgService orgService;
 	
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
@@ -154,8 +154,8 @@ public class EMailJobScheduler {
 				
 				List<RequirementInterview> interviewList = requirementInterviewService.getAllInterviewListByCurrentDate(currentTime,triggerTime);
 				for (RequirementInterview requirementInterview : interviewList) {
-					Org org = orgservice.findOrgByID(requirementInterview.getSubmissionId().getOrgLocations().getOrg().getId());
-					User user = userservice.getUserByUserCode(requirementInterview.getUpdatedBy());
+					Org org = orgService.findOrgByID(requirementInterview.getSubmissionId().getOrgLocations().getOrg().getId());
+					User user = userService.getUserByUserCode(requirementInterview.getUpdatedBy());
 					
 					List<RequirementInterviewer> requirementInterviewerList = requirementInterviewerService.getInterviwersListByInterviewId(requirementInterview.getId());
 					
