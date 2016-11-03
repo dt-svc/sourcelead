@@ -1041,7 +1041,8 @@ function getCities(){
 			
 			/* upload file script */
 			document.getElementById("uploadBtn").onchange = function () {
-			document.getElementById("uploadFile").value = this.value;
+			//document.getElementById("uploadFile").value = this.value;
+			$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 			};
 				
 				
