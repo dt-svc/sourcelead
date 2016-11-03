@@ -122,6 +122,14 @@ public class RequirementListRestController {
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
+		for(Requirement requirement : requirementList){
+			if(requirement.getClientId() != null){
+				requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+			}
+			if(requirement.getManagerUserId() != null){
+				requirement.setManager(requirement.getManagerUserId().getFirstName());
+			}
+		}
 		resultJson = commonUtil.toJSON(requirementList);
 		return resultJson;
 	 }

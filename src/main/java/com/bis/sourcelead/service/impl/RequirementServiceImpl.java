@@ -45,6 +45,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
@@ -105,6 +106,9 @@ public class RequirementServiceImpl implements RequirementService {
 	 
 	 @Autowired
 	 private CandidateResumesService candidateResumeSerivce;
+	 
+	 @Autowired
+	 private OrgRelationsService orgRelationsService;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -311,7 +315,7 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setSubmissionTemplateJsonString(submissionTemplate.getJsonString());
 			}
 			
-			requirement.setStatus(Constants.REQUIREMENT_STATUS);
+			requirement.setStatus(Constants.TEAM_ACTIVE);
 			requirement.setCreatedDate(commonUtil.currentDate());
 			requirement.setCreatedBy(user.getUserCode());
 			requirement.setUpdatedBy(user.getUserCode());
@@ -608,10 +612,13 @@ public class RequirementServiceImpl implements RequirementService {
 				 globalVarsMap.put("requirementRate","--");
 			 }
 		if(requirement.getClientId()!=null){
-			 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+			OrgRelations orgRelations = orgRelationsService.getRespondingPartyDetailsById(requirement.getClientId().getId());
+			if(orgRelations != null){
+				globalVarsMap.put("client", orgRelations.getResponderLocationId().getOrg().getOrgName());
+			}
 		}else{
 			globalVarsMap.put("client","--");
-			 }
+		 }
 		if(approverUser.getFirstName()!= null && !"".equalsIgnoreCase(approverUser.getFirstName())){
 			globalVarsMap.put("approverName", approverUser.getFirstName());
 		}else{
