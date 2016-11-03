@@ -80,6 +80,8 @@ public class Constants {
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
+	public static String loginUserAsAdmin =":userId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1')";
+	
 	/** projectMember  constants**/
 	public static String MEMBER_ACTIVE = "1";
 	public static String  MEMBER_IN_ACTIVE= "0";
