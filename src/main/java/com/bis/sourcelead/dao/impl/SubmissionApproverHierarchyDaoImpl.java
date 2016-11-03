@@ -264,7 +264,17 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		/*
 		 *  get submissionapproverhierarchy list by using empId and logged in user id as approver(either user may exist in project hierarchy  or user may be admin)
 		 */
-		String query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where sah.submissionApprovalStatus != 'APPROVED' and emp.id =:empId and sah.submissionId.startDate = :startDate and (hierarchy.approverUserId.id = :approverUserId OR "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+")  ";
+		String query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where sah.submissionApprovalStatus != 'APPROVED' and emp.id =:empId and sah.submissionId.startDate = :startDate "
+				        + "and ("
+				           /*
+						   *  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
+						   */
+					        + "    (hierarchy.approverUserId.id = :approverUserId ) "
+					        /*
+							 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
+							 */
+					        + " OR ( :approverUserId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.projectMembers.emp.id = :empId and subsah.submissionApprovalStatus != 'APPROVED' and subsah.submissionId.startDate = :startDate) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+")"
+				        	+ ")";
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> sahMainList = session.createQuery(query)
 																	  .setLong("empId", empId)	
