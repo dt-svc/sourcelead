@@ -750,8 +750,8 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId) throws Exception {
-		return userDao.getUsersByTeamTypeAndNoCurrentUser(currentApproverId);
+	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId, Long orgLocationsId) throws Exception {
+		return userDao.getUsersByTeamTypeAndNoCurrentUser(currentApproverId,orgLocationsId);
 	}
 	
 	

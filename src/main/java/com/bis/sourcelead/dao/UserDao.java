@@ -85,7 +85,7 @@ public interface UserDao {
 
 	List<User> getUsersByTeamType(Long id, String teamType)throws Exception;
 
-	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId);
+	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId,Long orgLocationsId);
 
 	
 }
