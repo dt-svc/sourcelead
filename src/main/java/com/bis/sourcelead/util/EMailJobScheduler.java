@@ -135,7 +135,7 @@ public class EMailJobScheduler {
 	 * Fires on 30 min on every day emailJobScheduler.job.cron.everyminute.expression
 	 * @throws Exception 
 	 */
-	@Scheduled(cron = "0 0/1 * 1/1 * ?")
+	@Scheduled(cron = "0 0/30 * 1/1 * ?")
 	@Async
 	public void runRemainderEmailScheduler() throws Exception {
 				logger.info("##########  E-Mail Job Scheduler started..! ##########");
