@@ -159,8 +159,11 @@ function addResume(candidateId) {
 	 
 	 	/* upload file script to show selected file name*/
 	    document.getElementById("uploadBtn").onchange = function () {
-	    document.getElementById("uploadFile").value = this.value;
-	    };
+		   //$("#uploadFile").dir(this.files[0]);
+	    	//document.getElementById("uploadFile").value = this.value;
+	    	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+	  
+	   }; 
 	    
 	    /* upload file script for size validation 2MB*/
 	    var selectedFile = document.getElementById("uploadBtn");
@@ -172,8 +175,11 @@ function addResume(candidateId) {
 	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
 	      }
 	    });
-	}
-</script>	 
+	    
+}
+</script>
+	
+	 
   
 <%-- 
      @author : Venkat Kesav
