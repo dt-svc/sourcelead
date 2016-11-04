@@ -72,6 +72,13 @@ function addClientPopUp() {
 	result = result+'              </select>';
 	result = result+'              </div>';
 	result = result+'            </div>';
+	result = result+'    <div class="form-group">';
+	result = result+'      <label class="col-lg-3"></label>';
+	result = result+'      <div class="col-lg-9">';
+	result = result+'      <label class="check-box checkBox">';
+	result = result+'       <input type="checkbox" value="Y" name="isMailSent" checked="checked"> Send Invitation';
+	result = result+'      </label>';
+	result = result+'       </div>';
 	result = result+'          </div>';
 	result = result+'        </div>';
 	result = result+'      </div>';

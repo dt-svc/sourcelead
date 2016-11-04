@@ -195,7 +195,7 @@ function timeSheetSubmissionStatusCount(){
 <jsp:include page="masterFooter.jsp" /> --%>
 
 
-<style>
+<!-- <style>
 .dashboard-widget {
 min-height: 350px !important;
 }
@@ -214,7 +214,20 @@ float: none !important;
    top: -31px !important;
     padding: 0 !important;
  }
-</style>
+ .dashboard-datepkr{
+       position:relative;
+}
+.dashboard-datepkr input[type="text"]{
+       width:115px;
+       border:1px solid #ccc;
+       margin-right:5px;
+}
+.dashboard-datepkr .fa{
+   position: absolute;
+   right: 10px;
+   top: 4px;
+}
+</style> -->
 
  
 
@@ -222,25 +235,29 @@ float: none !important;
 <jsp:include page="masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+
 
 <section class="content-wraper">
 	    <section class="content-header clearfix">
 	      <div class="pull-left">
 	        <h2>Dashboard</h2>
 	      </div>
-	      <div class="pull-right brud-crum">Home &raquo; Dashboard</div>
+	      <div class="pull-right brud-crum">Dashboard</div>
 	    </section>
+	    
+	    <div class="clearfix row mb"> 
+	     	 <jsp:include page="dashboardRequirement.jsp"></jsp:include>
+	      	 <%-- <jsp:include page="dashboardTasks.jsp"></jsp:include> --%>
+	      	 <jsp:include page="dashboardTimesheets.jsp"></jsp:include>
+	    </div>
     
     	<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include>
 	    <div class="clearfix row mb"> 
 	   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
 	    	 <jsp:include page="dashboardInterviews.jsp"></jsp:include>
 	    </div>
-	    <div class="clearfix row mb"> 
-	     	 <jsp:include page="dashboardRequirement.jsp"></jsp:include>
-	      	 <%-- <jsp:include page="dashboardTasks.jsp"></jsp:include> --%>
-	      	 <jsp:include page="dashboardTimesheets.jsp"></jsp:include>
-	    </div>
+	    
 	    <div class="clearfix row mb"> 
 	   	 <%--  <jsp:include page="dashboardTimesheetsApprovals.jsp"></jsp:include> --%>
 	    </div>

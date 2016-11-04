@@ -1,7 +1,9 @@
  <!-- Inteviews -->
       <div class="col-md-6">
         <div class="clients_wrap_table dashboard-widget">
-          <h4 class="clearfix">Interviews &nbsp;&nbsp;<a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a></h4>
+          <h4 class="clearfix">Interviews
+        <b class="dashboard-datepkr"><input type="text" class="input-sm" id="datepicker-int"><i class="fa fa-calendar"></i></b>  
+          </h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
           <div class="clearfix require_wrap_table dashboard-data">
             <ul class="nav nav-tabs">
@@ -119,4 +121,13 @@ function requirementInterviewsPagination(){
     } );
 }
 </script>
+<script>
+$(function() {
+   $( "#datepicker-int" ).datepicker({
+         changeMonth: true,
+     changeYear: true
+   });
+ });
+ </script>
+
       
