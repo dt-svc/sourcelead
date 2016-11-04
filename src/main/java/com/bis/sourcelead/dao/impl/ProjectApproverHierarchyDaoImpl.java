@@ -119,7 +119,11 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 			 query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId and projectHirachy.level IN(select Max(subpah.level) from ProjectApproverHierarchy subpah  where subpah.projectId =:projectId)";
 			 projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId).setCacheable(true).list();
 		}
-			return projectHirachyList;
+		else{
+			query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId ";
+			 projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId).setCacheable(true).list();
+		}
+	    return projectHirachyList;
 	}
 	
 

@@ -515,6 +515,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			TimesheetSubmissions  ts = null;
 			
 			StringBuilder sb = new StringBuilder();	
+		    l1 :{
 			if(employeeStartDate != null && employeeStartDate != null){
 			
 			  StringBuilder sb1 = new StringBuilder();
@@ -551,6 +552,10 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		       endDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime()));
 		         
 		         ts = getAllApprovalEmployeeTimesheetSubmissionsByEmployeeUserId(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId(),projectMemberUserId,employeeId);
+		         if(!StringUtils.isNotEmpty(ts.getCombinedStatus())){
+		        	 break l1;
+		         }
+		        
 		         currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
 		         currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
 			
@@ -626,8 +631,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	            sb.append(" </div>");
 	            sb.append("    </td>");
 	            sb.append("<div class='clearfix'></div>");
-			}
-	        
+		    	}
+		    }
 	        return sb.toString();
 		}
 		
