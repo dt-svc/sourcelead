@@ -4,9 +4,12 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -28,6 +31,10 @@ public class Roles {
 	
 	@Column(name = "DISPLAY_NAME")
 	private String displayName;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "ORG_LOCATION_ID")
+	private OrgLocations orgLocations;
 	
 	@Column(name = "STATUS")
 	private String status;
@@ -122,6 +129,14 @@ public class Roles {
 
 	public void setRolesCount(Integer rolesCount) {
 		this.rolesCount = rolesCount;
+	}
+
+	public OrgLocations getOrgLocations() {
+		return orgLocations;
+	}
+
+	public void setOrgLocations(OrgLocations orgLocations) {
+		this.orgLocations = orgLocations;
 	}
 
 	
