@@ -64,10 +64,10 @@ public class EMailJobScheduler {
 	ProjectsService projectsService;
 	
 	@Autowired
-	UserService userservice;
+	UserService userService;
 	
 	@Autowired
-	OrgService orgservice;
+	OrgService orgService;
 	
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
@@ -142,21 +142,26 @@ public class EMailJobScheduler {
 				logger.info("########## Mail Sent to: Applicant,Interviewer,Others  ##########");
 				
 				DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-				Date date = new Date();
 				
 				int addMinuteTime = 30;
 				Date targetTime = new Date(); //now
+				Date date = new Date();
 				targetTime = DateUtils.addMinutes(targetTime, addMinuteTime); 
-				String triggerTime = dateFormat.format(targetTime); 
 				
-				String currentTime = dateFormat.format(date); 
+				String triggerTimeStr = dateFormat.format(targetTime); 
+				String currentTimeStr = dateFormat.format(date); 
 				
 				
-				List<RequirementInterview> interviewList = requirementInterviewService.getAllInterviewListByCurrentDate(currentTime,triggerTime);
+				List<RequirementInterview> interviewList = requirementInterviewService.getAllInterviewListByCurrentDate(currentTimeStr,triggerTimeStr);
 				for (RequirementInterview requirementInterview : interviewList) {
-					Org org = orgservice.findOrgByID(requirementInterview.getSubmissionId().getOrgLocations().getOrg().getId());
-					User user = userservice.getUserByUserCode(requirementInterview.getUpdatedBy());
+			 		
+					int remainderTime = -(Integer.parseInt(requirementInterview.getRemainedBefore()));
+					Date newTargetTime = DateUtils.addMinutes(requirementInterview.getStartTime(), remainderTime); 
 					
+					if(newTargetTime.after(date) && newTargetTime.before(targetTime)){
+					Org org = orgService.findOrgByID(requirementInterview.getSubmissionId().getOrgLocations().getOrg().getId());
+					User user = userService.getUserByUserCode(requirementInterview.getUpdatedBy());
+					 
 					List<RequirementInterviewer> requirementInterviewerList = requirementInterviewerService.getInterviwersListByInterviewId(requirementInterview.getId());
 					
 					if (requirementInterviewerList!=null) {
@@ -180,6 +185,9 @@ public class EMailJobScheduler {
 							requirementInterviewService.sendEmailToInterviewrs(requirementInterview.getSubmissionId().getCandidate(),otherUser,requirementInterview.getSubmissionId(), user, org, requirementInterview, requirementInterview.getSubmissionId().getOrgLocations());
 						}
 					}
+					}
+						
+
 				}
     }
 	
