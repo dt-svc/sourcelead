@@ -512,7 +512,7 @@ function candidateProfile(candidateId){
 							result = result +'		            <div class="divskill col-md-12">                                                                                                  ';
 							result = result +'		              <!-- Add skills div -->                                                                                                         ';
 							result = result +'		              <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
-							result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>                                                       ';
+							result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div" onClick="removeSkillPopUp('+candidateId+');"></i>                                                       ';
 							result = result +'		                  <div class="form-horizontal clearfix">                                                                                      ';
 							result = result +'		                    <div class="clearfix div-padding">                                                                                        ';
 							result = result +'		                      <div class="col-md-10">                                                                                                 ';
