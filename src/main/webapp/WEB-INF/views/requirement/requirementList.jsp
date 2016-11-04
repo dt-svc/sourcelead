@@ -161,7 +161,7 @@ function requirementList(){
 		                     } */
 		                     
 		                     result = result +"<td><div><b class='proj_process'>"+opt.requirementSubmissionStatus+"</b></div></td>";
-		                     if(orgATS != 'Y' && (opt.requirementSubmissionStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN')){
+		                     if(opt.requirementSubmissionStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN'){
 			                     result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
 
 		                     }else{

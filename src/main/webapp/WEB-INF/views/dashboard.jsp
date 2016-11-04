@@ -243,19 +243,21 @@ float: none !important;
 	      <div class="pull-left">
 	        <h2>Dashboard</h2>
 	      </div>
-	      <div class="pull-right brud-crum">Home &raquo; Dashboard</div>
+	      <div class="pull-right brud-crum">Dashboard</div>
 	    </section>
+	    
+	    <div class="clearfix row mb"> 
+	     	 <jsp:include page="dashboardRequirement.jsp"></jsp:include>
+	      	 <%-- <jsp:include page="dashboardTasks.jsp"></jsp:include> --%>
+	      	 <jsp:include page="dashboardTimesheets.jsp"></jsp:include>
+	    </div>
     
     	<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include>
 	    <div class="clearfix row mb"> 
 	   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
 	    	 <jsp:include page="dashboardInterviews.jsp"></jsp:include>
 	    </div>
-	    <div class="clearfix row mb"> 
-	     	 <jsp:include page="dashboardRequirement.jsp"></jsp:include>
-	      	 <%-- <jsp:include page="dashboardTasks.jsp"></jsp:include> --%>
-	      	 <jsp:include page="dashboardTimesheets.jsp"></jsp:include>
-	    </div>
+	    
 	    <div class="clearfix row mb"> 
 	   	 <%--  <jsp:include page="dashboardTimesheetsApprovals.jsp"></jsp:include> --%>
 	    </div>

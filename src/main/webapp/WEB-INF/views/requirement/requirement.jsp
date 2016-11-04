@@ -397,7 +397,7 @@ $(document).ready(function() {
       </div>
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
-	        <c:if test="${SourceLeadWeb_org.vms != 'Y'}">
+	        <%-- <c:if test="${(SourceLeadWeb_org.vms == 'Y' && SourceLeadWeb_org.ats == 'Y') || (SourceLeadWeb_org.vms == 'N' && (SourceLeadWeb_org.ats == 'Y' || SourceLeadWeb_org.ats == 'N'))}"> --%>
 	        	<div class="ml">
 		            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 		            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
@@ -405,7 +405,7 @@ $(document).ready(function() {
 		            &nbsp;&nbsp;
 		            <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
 			  	</div>
-	        </c:if>
+	        <%-- </c:if> --%>
 	      
           <div id="clientDetails" style="display: none;">
             <div class="clearfix">
