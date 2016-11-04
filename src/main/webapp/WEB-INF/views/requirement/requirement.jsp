@@ -643,7 +643,7 @@ $(document).ready(function() {
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
                   <input type="text" id="assignedTo" placeholder="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
-                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="getTeamOwners();flushStoreTeam();"></i> </span>
+                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
                   </div>
                 <!-- Modal content Assign To -->
                 <div role="dialog" id="assignTeam"   class="modal fade">
@@ -710,7 +710,7 @@ $(document).ready(function() {
                 <div role="dialog" id="addTeam" class="modal fade">
                   <div class="modal-dialog">
                     <form role="form"  id="team_form" name="team_form" method="post" >
-                    <div class="modal-content">
+                    <div class="modal-content" id="assignTeamDiv">
                       <div class="modal-header">
                         <button data-dismiss="modal" class="close" type="button">×</button>
                         <h4 class="modal-title">Add Team</h4>
@@ -1553,9 +1553,7 @@ function assignMembers() {
 <script type="text/javascript">
 	function flushStoreTeam() { 
 		document.getElementById("team_form").reset();
-		$('#name').val('');
-		$('#ownerUserId').val('');
-		$('#memberUserId').val('');
+		$('#assignTeamDiv').find('p.jquery_form_error_message').remove();
 	}
 </script>
 
