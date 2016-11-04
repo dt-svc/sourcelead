@@ -126,9 +126,5 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 		String query = "from TeamMembers tm    left join fetch tm.memberUserId   left join fetch tm.teamId team   left join fetch team.ownerUserId where team.orgLocationsId.id =:orgLocationId and tm.status = '1'";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
-	
-	
-	
-	 
 
 }

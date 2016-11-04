@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.UserProfile;
 public interface UserService  {
@@ -120,10 +121,10 @@ public interface UserService  {
 	 */
 	List<User> getUsersByTeamType(Long id, String teamType)throws Exception;
 	
-	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId)throws Exception;
+	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId,Long orgLocationsId)throws Exception;
 
 	
-	
+	public List<User>  getUserListExceptExistedTeamMembersList(List<Long> teamMembersId,Long orgLocationId)throws Exception;
 	
 }	
 		

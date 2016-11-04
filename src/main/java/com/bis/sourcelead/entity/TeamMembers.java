@@ -70,14 +70,14 @@ public class TeamMembers {
 	@Transient
     private String userType;
 	
-	
 	@Transient
     private int teamMemberRequirementAssignedCount;
 	
-	
-	
 	@Transient
     private int teamMemberRequirementAssignedOpenCount;
+	
+	@Transient
+    private Long teamMemberUserId;
 	
 	
 	public Long getId() {
@@ -199,5 +199,17 @@ public class TeamMembers {
 	public void setUserType(String userType) {
 		this.userType = userType;
 	}
+
+	public Long getTeamMemberUserId() {
+		return teamMemberUserId;
+	}
+
+	public void setTeamMemberUserId(Long teamMemberUserId) {
+		this.teamMemberUserId = teamMemberUserId;
+	}
+
+	
+	 
+	
 	
 }
