@@ -924,7 +924,7 @@ function getOrgDetails()
 						success : function(data) {
 							var json = JSON.parse(data);
 							var output = "";
-	
+							output = output+' <div class="wrap_employeeTable">';
 							output = output + ' <table cols="0" id="assignEmployeePagination" class="table table-bordered table-striped  clearfix">';
 							output = output + ' <thead>';
 							output = output + ' <tr>';
@@ -984,7 +984,7 @@ function getOrgDetails()
 							}
 							output = output + ' </tbody>';
 							output = output + ' </table>';
-	
+							output = output+' </div>';
 							$("#employeesList").empty();
 							$("#employeesList").append(output);
 
@@ -1049,7 +1049,7 @@ function getOrgDetails()
 function assignEmployeespagination(){  
     $('#assignEmployeePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -1066,9 +1066,7 @@ function assignEmployeespagination(){
 	function assignEmployee() {
 		var result = "";
 		var count = 1;
-		$(".myCheckbox")
-				.each(
-						function() {
+		$(".myCheckbox").each(function() {
 							var localId = this.id;
 							if ($(this).is(':checked')) {
 								var startDate = $("#startDate" + localId).val();
