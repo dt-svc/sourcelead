@@ -64,16 +64,16 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 	   * @throws NullPointer
 	 */
 
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<TeamMembers> getTeamMembersListByTeamID(Long teamId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from TeamMembers tm  where tm.teamId =:teamId and tm.status = '1'";
+		String query = "from TeamMembers tm  left join fetch tm.memberUserId   left join fetch tm.teamId team   left join fetch team.ownerUserId where tm.teamId =:teamId and tm.status = '1'";
 		return session.createQuery(query).setLong("teamId", teamId).setCacheable(true).list();
 		
 	}
-
 
 	@Override
 	public TeamMembers getTeamMemberByIdAndLocationId(Long teamMmeberId,Long orgLocationId) throws Exception {
@@ -116,6 +116,15 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		return (TeamMembers) session.get(TeamMembers.class, teamMemberId);
 		
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TeamMembers> getTeamMembersListByLocationId(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from TeamMembers tm    left join fetch tm.memberUserId   left join fetch tm.teamId team   left join fetch team.ownerUserId where team.orgLocationsId.id =:orgLocationId and tm.status = '1'";
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
 	
 	

@@ -7,12 +7,12 @@
 <div class="content-dashboard clearfix"> 
       <!-- Assigned Requirements -->
       <div class="clearfix dashboard-widget mb col-md-12">
-        <h4 class="pull-left">
+        <h4 class="clearfix">
         Assigned Requirements
-        &nbsp;&nbsp;<span class="pull-right" title="Calendar"><i aria-hidden="true" class="fa fa-calendar" id="datepicker"></i>
+        &nbsp;&nbsp;<span title="Calendar"><i aria-hidden="true" class="fa fa-calendar" id="datepicker"></i>
         </span>
         </h4>
-      <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a>
+      <!-- <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
         <div class="clearfix require_wrap_table dashboard-data">
         		 <div id="requirementList"></div>
         </div>
@@ -76,8 +76,8 @@ function requirementList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
-		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show'><span>"+opt.id+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-		                     result = result +"<td><div><span>"+opt.jobTitle+"</span></div></td>";
+		                     result = result +"<td><div>"+opt.id+"</div></td>";
+		                     result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobTitle+"</a></div></td>";
 		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
 		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
 		                     }else{
@@ -131,7 +131,7 @@ function requirementList(){
 function pagination(){ 
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[1, 15, 20, -1], [1, 15, 20, "All"]],
+    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
