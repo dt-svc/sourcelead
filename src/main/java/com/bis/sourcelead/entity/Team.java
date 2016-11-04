@@ -66,15 +66,14 @@ public class Team {
     @JoinColumn(name = "ORG_LOCATION_ID")
     private OrgLocations orgLocationsId;
 	
-	
 	@Transient
 	private ArrayList<String> teamMembers;
-	
 	
 	@Transient
 	private Integer teamMembersCount;
 	
-	
+	@Transient
+	private String teamOwnerName;
 	
 	public Long getId() {
 		return id;
@@ -180,5 +179,12 @@ public class Team {
 		this.teamMembersCount = teamMembersCount;
 	}
 
+	public String getTeamOwnerName() {
+		return teamOwnerName;
+	}
+
+	public void setTeamOwnerName(String teamOwnerName) {
+		this.teamOwnerName = teamOwnerName;
+	}
 	
 }
