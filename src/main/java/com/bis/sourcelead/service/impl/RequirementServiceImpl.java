@@ -40,6 +40,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
@@ -368,11 +369,13 @@ public class RequirementServiceImpl implements RequirementService {
 						rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
 						rah.setLevel(1);
 						  
+						rah.setHierarchyType(HIERARCHY_TYPE.PARALLEL);
 						rah.setCreatedDate(commonUtil.currentDate());
 						rah.setCreatedBy(user.getUserCode());
 						rah.setUpdatedBy(user.getUserCode());
 						rah.setUpdatedDate(commonUtil.currentDate());
 						  
+						
 						requirementApproverHierarchyList.add(rah);
 						  approverEmailScenario(user,approverUser,requirement,location);
 
@@ -393,6 +396,8 @@ public class RequirementServiceImpl implements RequirementService {
 					  
 					  rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
 					  rah.setLevel(1);
+					  
+					  rah.setHierarchyType(HIERARCHY_TYPE.SEQUENTIAL);
 					  
 					  rah.setCreatedDate(commonUtil.currentDate());
 					  rah.setCreatedBy(user.getUserCode());
@@ -416,6 +421,7 @@ public class RequirementServiceImpl implements RequirementService {
 					  rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
 					  rah.setLevel(2);
 					  
+					  rah.setHierarchyType(HIERARCHY_TYPE.SEQUENTIAL);
 					  rah.setCreatedDate(commonUtil.currentDate());
 					  rah.setCreatedBy(user.getUserCode());
 					  rah.setUpdatedBy(user.getUserCode());
