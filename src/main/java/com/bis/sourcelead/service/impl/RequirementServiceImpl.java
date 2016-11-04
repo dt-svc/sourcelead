@@ -375,6 +375,7 @@ public class RequirementServiceImpl implements RequirementService {
 						rah.setUpdatedBy(user.getUserCode());
 						rah.setUpdatedDate(commonUtil.currentDate());
 						  
+						
 						requirementApproverHierarchyList.add(rah);
 						  approverEmailScenario(user,approverUser,requirement,location);
 

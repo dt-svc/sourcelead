@@ -152,6 +152,7 @@ public class RequirementRestController {
 	@RequestMapping(value = "/requirementAcceptOrReject", method = RequestMethod.POST)
 	public @ResponseBody String requirementAcceptOrReject(@RequestParam(value = "requirementId", required = false) Long requirementId,@RequestParam(value = "status", required = false)  String status, @RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception {
 		
+		
 	 
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
