@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementInterviewerDao;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -84,18 +85,19 @@ public class EMailJobScheduler {
 //	@Scheduled(cron = "${emailJobScheduler.job.cron.expression}")
 	@Scheduled(cron = "0 30 4 * * ?")
 	public void runEMailJobScheduler() {
-		logger.info("##########  E-Mail Job Scheduler started..! ##########");
+		logger.info("##########  E-Mail Job Scheduler started..! ##########----");
+		String invoiceFrequency = "";
 		try {
-			List<User> usrList = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus();
-			for(User user : usrList){
-				if("Admin".equalsIgnoreCase(user.getUserType()))
-					continue;
-				HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
-				projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
-				logger.info("########## Mail Sent to: "+user.getEmail()+" ##########");
+			HashSet<User> usrList = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency);
+			if(usrList !=null && usrList.size() > 0){
+				for(User user : usrList){
+					if("Admin".equalsIgnoreCase(user.getUserType()))
+						continue;
+					HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
+					projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
+					logger.info("########## Mail Sent to: "+user.getEmail()+" ##########");
+				}	
 			}
-			
-			
 		} catch (Exception e) {
 			logger.error("ERROR in " + e.getMessage());
 		}
@@ -106,19 +108,18 @@ public class EMailJobScheduler {
 	 * Fires on first Friday on every month emailJobScheduler.job.cron.everyfriday.expression
 	 */
 	@Scheduled(cron = "0 30 18 ? * FRI")
-	public void runNotificationJobScheduler() {
-		String notificationJobSchedulerStatus = "";
+	public void runJobSchedulerByWeekly() {
 		logger.info("******************  Notification Job Scheduler started..! **********");
-		Date date = new Date();
 		try {
-			notificationJobSchedulerStatus = jobSchedulerTestService.notiFicationSchedularTest(date.toLocaleString());
-			logger.info("*********** COMPLETED the Notification Job Scheduler with status as : "+notificationJobSchedulerStatus+" ***********");
 			HashSet<User> usrList = projectsService.getAllUserTimeSheetSubmissionStatusCurrentWeek();
-			if(usrList != null && !usrList.isEmpty()){
+			if(usrList != null && usrList.size() > 0){
 				for(User user : usrList){
 					if("Admin".equalsIgnoreCase(user.getUserType()))
 						continue;
 					HashSet<TimesheetSubmissions>  timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
+					for(TimesheetSubmissions ft :timesheetSubmissions){
+						logger.info("****************************************"+ft.getStartDate());
+					}
 					projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
 					logger.info("########## Mail Sent to: "+user.getEmail()+" ##########");
 				}
@@ -128,11 +129,10 @@ public class EMailJobScheduler {
 		} catch (Exception e) {
 			logger.error("ERROR in " + e.getMessage());
 		}
-      
     }
 	
 	/**
-	 * Fires on 30 min on every day emailJobScheduler.job.cron.everyminute.expression
+	 * Fires on every 30 min on every day emailJobScheduler.job.cron.everyminute.expression
 	 * @throws Exception 
 	 */
 	@Scheduled(cron = "0 0/30 * 1/1 * ?")
@@ -187,7 +187,78 @@ public class EMailJobScheduler {
 					}
 					}
 						
-				}
 
+				}
     }
+	
+	/**
+	 * Fires for Every two weeks in a month
+	 */
+	@Scheduled(cron = "0 30 19 1/14 * ?")
+	public void runJobSchedulerByBi_Weekly() {
+		logger.info("******************  Notification Job Scheduler Every two weeks started..! **********");
+		try {
+			HashSet<User> usrList = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.BI_WEEKLY);
+			if(usrList != null && usrList.size() >0){
+				for(User user : usrList){
+					if("Admin".equalsIgnoreCase(user.getUserType()))
+						continue;
+					HashSet<TimesheetSubmissions>  timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
+					projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
+					logger.info("########## Mail Sent to: "+user.getEmail()+" ##########");
+				}
+			}
+			
+			
+		} catch (Exception e) {
+			logger.error("ERROR in " + e.getMessage());
+		}
+    }
+	/**
+	 * Fires at Every 15 days in a month
+	 */
+	@Scheduled(cron = "0 30 19 1/15 * ?")
+	public void runJobSchedulerBySemi_Monthly() {
+		logger.info("******************  Notification Job Scheduler Every 15 days in a month started..! **********");
+		try {
+			HashSet<User> usrList = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.SEMI_MONTHLY);
+			if(usrList != null && usrList.size() >0){
+				for(User user : usrList){
+					if("Admin".equalsIgnoreCase(user.getUserType()))
+						continue;
+					HashSet<TimesheetSubmissions>  timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
+					projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
+					logger.info("########## Mail Sent to: "+user.getEmail()+" ##########");
+				}
+			}
+			
+			
+		} catch (Exception e) {
+			logger.error("ERROR in " + e.getMessage());
+		}
+    }
+	/**
+	 * Fires Every month 30th
+	 */
+	@Scheduled(cron = "0 30 19 30 1/1 ?")
+	public void runJobSchedulerByMonthly() {
+		logger.info("******************  Notification Job Scheduler  Every month 30th started..! **********");
+		try {
+			HashSet<User> usrList = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.MONTHLY);
+			if(usrList != null && usrList.size() >0){
+				for(User user : usrList){
+					if("Admin".equalsIgnoreCase(user.getUserType()))
+						continue;
+					HashSet<TimesheetSubmissions>  timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
+					projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
+					logger.info("########## Mail Sent to: "+user.getEmail()+" ##########");
+				}
+			}
+			
+			
+		} catch (Exception e) {
+			logger.error("ERROR in " + e.getMessage());
+		}
+    }
+	//======================================================End
 }
