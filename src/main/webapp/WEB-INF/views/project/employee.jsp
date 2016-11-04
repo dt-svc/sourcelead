@@ -525,7 +525,6 @@ function assignEmployee(){
 	        if($(this).is(':checked')){
 		        var startDate = $("#startDate"+employeeId).val();
 		        var endDate = $("#endDate"+employeeId).val();
-		        alert("startDate"+startDate);
 				$.ajax({
 		        	type: "POST",
 		            url: sourceleadUrl+"/storeAssignEmployee?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&mailtoMembers="+mailtoMembers, 
