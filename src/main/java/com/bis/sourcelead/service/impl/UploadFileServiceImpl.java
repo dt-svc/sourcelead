@@ -452,7 +452,11 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		employee.setEmployeeId(userImport.getEmployeeId());
 		employee.setRate(userImport.getRate());
 		employee.setRatePer(userImport.getRatePer());
-		employee.setInvoiceFrequency(userImport.getInvoiceFrequency());
+		if(userImport.getInvoiceFrequency() !=null && !"".equalsIgnoreCase(userImport.getInvoiceFrequency())){
+			employee.setInvoiceFrequency(userImport.getInvoiceFrequency());
+		}else{
+			employee.setInvoiceFrequency("Weekly");
+		}
 		employee.setDailyHours(userImport.getDayHours());
 		employee.setOrgLocations(orgLocations);
 		
