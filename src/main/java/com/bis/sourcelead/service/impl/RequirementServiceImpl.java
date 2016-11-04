@@ -142,8 +142,16 @@ public class RequirementServiceImpl implements RequirementService {
 	        StringBuilder location = new StringBuilder();
 
 		    
-		    if (jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())){
+	        if (jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())){
 				requirement.setId(Long.parseLong(jsonObj.getString("requirementId")));
+				requirement.setUpdatedBy(user.getUserCode());
+				requirement.setUpdatedDate(commonUtil.currentDate());
+			}else{
+				
+				requirement.setCreatedDate(commonUtil.currentDate());
+				requirement.setCreatedBy(user.getUserCode());
+				requirement.setUpdatedBy(user.getUserCode());
+				requirement.setUpdatedDate(commonUtil.currentDate());
 			}
 		    
 			if(orgLocations != null){
