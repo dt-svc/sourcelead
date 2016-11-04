@@ -241,7 +241,10 @@ public class RequirementRestController {
 	public @ResponseBody String getApproverTwoByUserId(@RequestParam(value = "currentApproverId", required = false)  Long currentApproverId,
 		HttpServletRequest request) throws Exception {
 		String resultJson = null;
-		List<User> userList = userService.getUsersByTeamTypeAndNoCurrentUser(currentApproverId);
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		List<User> userList = userService.getUsersByTeamTypeAndNoCurrentUser(currentApproverId,orgLocation.getId());
 		resultJson = toJSON(userList);
 		return resultJson;
 	}

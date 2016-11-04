@@ -71,6 +71,10 @@ public class Team {
 	private ArrayList<String> teamMembers;
 	
 	
+	@Transient
+	private Integer teamMembersCount;
+	
+	
 	
 	public Long getId() {
 		return id;
@@ -166,6 +170,14 @@ public class Team {
 
 	public void setTeamMembers(ArrayList<String> teamMembers) {
 		this.teamMembers = teamMembers;
+	}
+
+	public Integer getTeamMembersCount() {
+		return teamMembersCount;
+	}
+
+	public void setTeamMembersCount(Integer teamMembersCount) {
+		this.teamMembersCount = teamMembersCount;
 	}
 
 	

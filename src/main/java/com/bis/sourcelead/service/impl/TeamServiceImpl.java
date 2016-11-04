@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TeamDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
@@ -74,10 +75,17 @@ public class TeamServiceImpl implements TeamService {
 	@Override
 	public Team storeTeam(JSONObject jsonObj,OrgLocations orgLocations) throws Exception {
 		
+		
+		Team team = null;
+		if(jsonObj.has("teamId") && jsonObj.getString("teamId") != null && !"".equals(jsonObj.getString("teamId"))){
+			team = teamDao.getTeamByTeamId(Long.parseLong(jsonObj.getString("teamId")));
+		}else{
+			team = new Team();
+		}
 		User user = new User();
 		user.setId(Long.parseLong(jsonObj.getString("ownerUserId")));
 		
-		Team team = new Team();
+	//	Team team = new Team();
 		if(orgLocations != null){
 			team.setOrgLocationsId(orgLocations);;
 			}

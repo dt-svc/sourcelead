@@ -120,7 +120,7 @@ public interface UserService  {
 	 */
 	List<User> getUsersByTeamType(Long id, String teamType)throws Exception;
 	
-	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId)throws Exception;
+	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId,Long orgLocationsId)throws Exception;
 
 	
 	

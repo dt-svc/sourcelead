@@ -86,7 +86,7 @@ function teamList(){
 				             }
 				             
 				             
-		            	    result = result +"<td><div><span>"+opt.teamMembers+"</span></div></td>";
+		            	    result = result +"<td><div><span>"+opt.teamMembersCount+"</span></div></td>";
 
             	             
 				             result = result +"<td><div class='tblicons'><i class='glyphicon glyphicon-pencil' onclick='sideBar("+opt.id+");'></i><i class='glyphicon glyphicon-trash' onclick='deleteTeam("+opt.id+");'></i></div></td>";
@@ -185,10 +185,11 @@ function addTeam(){
 	var outPut = '';
 	outPut = outPut+'<form role="form"  id="team_form" name="team_form" method="post" > ';
 	outPut = outPut+ '<i class="fa fa-close close-div"  onClick="closeTeamPopup();"></i>';
-	outPut = outPut+ '            <div class="form-horizontal clearfix">';
-	outPut = outPut+ '              <div class="clearfix mb10">';
-	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut+ '                <label>Team Name<b class="text-danger">*</b> </label>';
+	outPut = outPut+ '<div class="form-horizontal clearfix">';
+	outPut = outPut+ '<div class="clearfix mb10">';
+	/* outPut = outPut + '<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">'; */
+	outPut = outPut+ '<div class="col-md-12">';
+	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
 	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="">';
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '              </div>';
