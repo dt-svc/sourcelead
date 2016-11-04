@@ -75,6 +75,24 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			return null;
 		}
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public UserRole getNotPrimaryUser(Long userId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("getNotPrimaryUser By UserId start");
+		userRole = session
+				.createQuery("from UserRole userRole where userRole.user.id=:userId and userRole.isPrimary = '0' and userRole.userState != 'INACTIVE' ")
+				.setLong("userId", userId).setCacheable(true).list();
+		logger.debug("getNotPrimaryUser By UserId start");
+		if (userRole.size() > 0) {
+			return userRole.get(0);
+		} else {
+			return null;
+		}
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -405,7 +423,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	public List<UserRole> getUserSpocsListByUserId(Long userId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user where userRole.user.id = :userId";
+		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user where userRole.user.id = :userId and userRole.userState != 'INACTIVE' ";
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
 		return userRoleList;
 

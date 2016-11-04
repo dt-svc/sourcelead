@@ -240,7 +240,7 @@ $(document).ready(function(){
 				
 				if(json.userState != null && json.userState != "" && json.userState == 'INACTIVE'){
 					result = result + '			<div class="project_details_cta">';
-					result = result + '				<strong>Reason:</strong><span class="fix">'+json.user.terminateReason+'</span><div class="clearfix"></div>';
+					result = result + '				<strong>Reason:</strong><span class="fix">'+json.terminateReason+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
 				}
 				

@@ -218,10 +218,16 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
 				if(userRole != null){
+					userRole.setIsPrimary(0);
 					userRole.setPreviousUserState(userRole.getUserState());
 					userRole.setUserState(Status.INACTIVE);
 					userRole.setTerminateReason(reason);
 					userRoleService.addUserRole(userRole);
+					
+					//to assign primary role to another user
+					UserRole existinguserRole = userRoleService.getNotPrimaryUser(userId);
+					existinguserRole.setIsPrimary(1);
+					userRoleService.addUserRole(existinguserRole);
 				}
 			
 				return "success";

@@ -12,6 +12,8 @@ public interface UserRoleService {
 	
 	public UserRole getLoginUserPrimaryRole(Long userId) throws Exception;
 	
+	public UserRole getNotPrimaryUser(Long userId) throws Exception;
+	
 	public List<UserRole> getUsersListByLocationId(Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception;
 	
 	public List<UserRole> getUsersListByRoleAndLocationId(Long roleId,Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception;

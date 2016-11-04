@@ -29,6 +29,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public UserRole getLoginUserPrimaryRole(Long userId) throws Exception{
 		return userRoleDao.getLoginUserPrimaryRole(userId);
 	}
+	
+	@Override
+	public UserRole getNotPrimaryUser(Long userId) throws Exception{
+		return userRoleDao.getNotPrimaryUser(userId);
+	}
 
 	@Override
 
