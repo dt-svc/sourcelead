@@ -57,6 +57,8 @@ public interface RequirementService {
 
 	public List<Candidate> getRecommendationsWithScore(List<Candidate> candidateList, Requirement requirement)throws Exception;
 
+	public List<Requirement> getRequirementListById(Long requirementId) throws Exception;
+
 
 
 

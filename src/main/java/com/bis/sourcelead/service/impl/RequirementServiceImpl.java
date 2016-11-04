@@ -1315,4 +1315,9 @@ public class RequirementServiceImpl implements RequirementService {
 			return requirementDao.getAssignedRequirementApproverListByOrgLocationIDAndUserId(orgLocationId,userId);
 			
 	}
+	
+	@Override
+	public List<Requirement> getRequirementListById(Long requirementId)throws Exception {
+			return requirementDao.getRequirementListById(requirementId);
+	}
 }
