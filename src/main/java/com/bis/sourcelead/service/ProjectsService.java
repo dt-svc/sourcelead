@@ -60,7 +60,7 @@ public interface ProjectsService {
 		
 		void  userEmailNotificationForTimeSheetSubmission(User user, HashSet<TimesheetSubmissions> timesheetSubmissions) throws Exception;
 		
-		List<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus() throws Exception;
+		HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 		
 		String getProjectDetailsByProjectIdAndLoginOrgId(Long projectId,User user,String loginOrgLocation) throws Exception ;
 	
