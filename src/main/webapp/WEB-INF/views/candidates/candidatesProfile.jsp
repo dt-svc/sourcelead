@@ -532,7 +532,7 @@ function candidateProfile(candidateId){
 							result = result +'		                </div>                                                                                                                        ';
 							result = result +'		              </div>                                                                                                                          ';
 							
-							result = result + '<div id="candidateSkillList"></div> ';
+							result = result + '<div id="candidateSkillList" class="heightScroll clearfix"></div> ';
 							
 							result = result +'		              <!-- Add skills div ends -->                                                                                                    ';
 							

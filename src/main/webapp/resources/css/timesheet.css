@@ -2126,5 +2126,12 @@ width: 100%;
 }
 .pad-sea {
     display: inline-block; padding: 1px 280px 2px 0;
-}			
+}		
+#assignEmployeePagination_paginate { display: none !important;}	
+#assignEmployeePagination_info { display: none !important;}	
+.wrap_employeeTable  { height: 380px !important; overflow-y:scroll !important; overflow-x:hidden !important;}		 	
+	
+#assignEmployeePagination_wrapper .dataTables_filter {position: fixed !important; top: 69px !important; right: 3px !important;}	
+
+#assignTeam .modal-footer { border-top: none;}	
 		 		
