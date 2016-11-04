@@ -78,17 +78,12 @@ function teamList(){
 	                    	 result = result +"<tr>";
 	                    	
 				             result = result +"<td><div><span>"+opt.name+"</span></div></td>";
-				           
-				             if(opt.ownerUserId.firstName != null && opt.ownerUserId.firstName != ' ' && opt.ownerUserId.firstName != 'undefined'){
-				             result = result +"<td><div><span>"+opt.ownerUserId.firstName+"</span></div></td>";
+				             if(opt.teamOwnerName != null && opt.teamOwnerName != '' && opt.teamOwnerName != 'undefined'){
+				             result = result +"<td><div><span>"+opt.teamOwnerName+"</span></div></td>";
 				             }else{
 				            	 result = result +"<td>-----</td>";
 				             }
-				             
-				             
-		            	    result = result +"<td><div><span>"+opt.teamMembersCount+"</span></div></td>";
-
-            	             
+		            	     result = result +"<td><div><span>"+opt.teamMembersCount+"</span></div></td>";
 				             result = result +"<td><div class='tblicons'><i class='glyphicon glyphicon-pencil' onclick='sideBar("+opt.id+");'></i><i class='glyphicon glyphicon-trash' onclick='deleteTeam("+opt.id+");'></i></div></td>";
 				             result = result +"</tr>";
 	                     }
@@ -153,7 +148,7 @@ function sideBar(teamId){
 		outPut = outPut+ '	<div class="project_side_wrap_inn_tabs">';
 		outPut = outPut+ '    <div class="project_tabs">';
 		outPut = outPut+ '      <div id="tab-1" class="project_tabs_inn">';
-		outPut = outPut+ '        <div  class="project_tabs_inn_head team_search"> <a href="#" class="addUser-org" onClick="addMember('+teamId+');"> <i class="glyphicon glyphicon-plus"></i>Add Member</a> ';
+		outPut = outPut+ '        <div  class="project_tabs_inn_head team_search"> <a href="#" class="addUser-org" onClick="addMember('+teamId+');getTeamMembersListExceptExistedTeamMembersList('+teamId+');"> <i class="glyphicon glyphicon-plus"></i>Add Member</a> ';
 		
 		outPut = outPut  +'     <div id="popUpDivTeam" class="edit-details col-md-4"> ';
 		outPut = outPut  +'     </div>  ';
@@ -280,10 +275,10 @@ function addMember(teamId){
 	outPut = outPut+ '            <div class="form-horizontal clearfix">';
 	outPut = outPut+ '              <div class="clearfix mb10">';
 	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut + '<select multiple class="chosen-select form-control" name="memberUserId" id="memberUserId" data-validation="required validate_Space" field-name="Team Member">';
-                       <c:forEach var="report" items="${usersList}">
-    outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
-                      </c:forEach>
+	outPut = outPut + '<select multiple class="chosen-select form-control" name="teamMemberUserId" id="teamMemberUserId" data-validation="required validate_Space" field-name="Team Member">';
+					        				   /*<c:forEach var="report" items="${usersList}">
+					    							outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
+					                      		</c:forEach> */
      outPut = outPut + '</select>';
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '              </div>';
@@ -373,6 +368,7 @@ function projectMemberList(teamId){
 		                    	 }else{
 		                    		 result = result+ '<td><div><span>-----</span></div></td>'; 
 		                    	 }
+		                    	 result = result+ '<input class="existedTeamMember" type="hidden" name="existedTeamMember" id="existedTeamMember" value="'+opt.teamMemberUserId+'"/>'; 
 		                    	 if(opt.email != null && opt.email != '' && opt.email !="undefined"){
 		                    	 result = result+ '<td><div><span>'+opt.email+'</span></div></td>';
 		                    	 }else{
@@ -408,68 +404,6 @@ function projectMemberList(teamId){
 	          },
 	            
 	       }); 
-		  
-		/* var outPut ='';
-	    outPut = outPut+ '  <table>';
-		outPut = outPut+ '            <tbody>';
-		outPut = outPut+ '              <tr>';
-		outPut = outPut+ '                <th>Name</th>';
-		outPut = outPut+ '                <th>Email ID</th>';
-		outPut = outPut+ '                <th>Role</th>';
-		outPut = outPut+ '                <th>Requirement</th>';
-		outPut = outPut+ '                <th>Active<br>Requirement</th>';
-		outPut = outPut+ '                <th>Action</th>';
-		outPut = outPut+ '              </tr>';
-		outPut = outPut+ '              <tr>';
-		outPut = outPut+ '                <td><div><span>Rajashekar</span></div></td>';
-		outPut = outPut+ '                <td><div><span>rajashekar@bis.com</span></div></td>';
-		outPut = outPut+ '                <td><div><span>Employee</span></div></td>';
-		outPut = outPut+ '                <td><div><span>Requirement</span></div></td>';
-		outPut = outPut+ '                <td><div><span>Requirement</span></div></td>';
-		outPut = outPut+ '                <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
-		outPut = outPut+ '              </tr>';
-		outPut = outPut+ '              <tr>';
-		outPut = outPut+ '                <td><div><span>Rajashekar</span></div></td>';
-		outPut = outPut+ '                <td><div><span>rajashekar@bis.com</span></div></td>';
-		outPut = outPut+ '                <td><div><span>Employee</span></div></td>';
-		outPut = outPut+ '                <td><div><span>Requirement</span></div></td>';
-		outPut = outPut+ '                <td><div><span>Requirement</span></div></td>';
-		outPut = outPut+ '                <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
-		outPut = outPut+ '              </tr>';
-		outPut = outPut+ '              <tr>';
-		outPut = outPut+ '                <td><div><span>Rajashekar</span></div></td>';
-		outPut = outPut+ '                <td><div><span>rajashekar@bis.com</span></div></td>';
-		outPut = outPut+ '                <td><div><span>Employee</span></div></td>';
-		outPut = outPut+ '                <td><div><span>Requirement</span></div></td>';
-		outPut = outPut+ '                <td><div><span>Requirement</span></div></td>';
-		outPut = outPut+ '                <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
-		outPut = outPut+ '              </tr>';
-		outPut = outPut+ '              <tr>';
-		outPut = outPut+ '                <td><div><span>Rajashekar</span></div></td>';
-		outPut = outPut+ '                <td><div><span>rajashekar@bis.com</span></div></td>';
-		outPut = outPut+ '                <td><div><span>Employee</span></div></td>';
-		outPut = outPut+ '                <td><div><span>Requirement</span></div></td>';
-		outPut = outPut+ '                <td><div><span>Requirement</span></div></td>';
-		outPut = outPut+ '                <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
-		outPut = outPut+ '              </tr>';
-		outPut = outPut+ '              <tr>';
-		outPut = outPut+ '                <td><div><span>Rajashekar</span></div></td>';
-		outPut = outPut+ '                <td><div><span>rajashekar@bis.com</span></div></td>';
-		outPut = outPut+ '                <td><div><span>Employee</span></div></td>';
-		outPut = outPut+ '                <td><div><span>Requirement</span></div></td>';
-		outPut = outPut+ '                <td><div><span>Requirement</span></div></td>';
-		outPut = outPut+ '                <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
-		outPut = outPut+ '              </tr>';
-		outPut = outPut+ '              <tr>';
-		outPut = outPut+ '                <td><div><span>Rajashekar</span></div></td>';
-		outPut = outPut+ '                <td><div><span>rajashekar@bis.com</span></div></td>';
-		outPut = outPut+ '                <td><div><span>Employee</span></div></td>';
-		outPut = outPut+ '                <td><div><span>Requirement</span></div></td>';
-		outPut = outPut+ '                <td><div><span>Requirement</span></div></td>';
-		outPut = outPut+ '                <td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
-		outPut = outPut+ '              </tr>';
-		outPut = outPut+ '            </tbody>';
-		outPut = outPut+ '          </table>'; */
 }
 </script>
 
@@ -782,7 +716,7 @@ function storeTeamMembers(teamId){
 					url : sourceleadUrl+"/storeTeamMembers?${_csrf.parameterName}=${_csrf.token}&json="+con+"&teamId="+teamId,
 					success :function(data) {  
 						location.replace(sourceleadUrl+"/team");
-				      }, 
+				    }, 
 		    });
 			return true; 
 	   }else{ 
@@ -949,4 +883,39 @@ $(".add-skills").click(function(e){
     $("#validFrom, #edu-endDate, #edu-startDate, #validTo").datepicker();
   } );
   </script>
+  
+  
+  
+  
+ <script type="text/javascript">
+function getTeamMembersListExceptExistedTeamMembersList(teamId){  
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var existedTeamMembersIds = [];
+	 $('.existedTeamMember').each(function() {
+		 var localId = this.value;
+		 existedTeamMembersIds.push(localId);
+	 });  
+	 
+	 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getTeamMembersListExceptExistedTeamMembersList?${_csrf.parameterName}=${_csrf.token}&existedTeamMembersIds="+existedTeamMembersIds+"&teamId="+teamId,
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option disabled >-Select Team Members-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#teamMemberUserId").empty();
+			        $("#teamMemberUserId").append(output);
+			        $("#teamMemberUserId").trigger("chosen:updated");
+		        },
+		        error: function(e){
+		            
+		        }
+	});
+} 
+</script>
  <jsp:include page="../masterFooter.jsp" />

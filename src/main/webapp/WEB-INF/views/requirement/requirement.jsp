@@ -643,7 +643,7 @@ $(document).ready(function() {
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
                   <input type="text" id="assignedTo" placeholder="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
-                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="getTeamOwners();"></i> </span>
+                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="getTeamOwners();flushStoreTeam();"></i> </span>
                   </div>
                 <!-- Modal content Assign To -->
                 <div role="dialog" id="assignTeam"   class="modal fade">
@@ -722,17 +722,14 @@ $(document).ready(function() {
                             <label class="col-lg-4">Team Name <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                               <!-- <input type="text" class="form-control" value=""> -->
-                              <input type="text" class="form-control"  placeholder="Team Name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="">
+                              <input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="">
                               </div>
                             </div>
                             <div class="form-group">
                             <label class="col-lg-4">Team Owner <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                              <select class="form-control"  name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">
-			                    	<%-- <option value=''>-- Select Owner Id --</option>
-				                    <c:forEach var="report" items="${all_users_List}">
-						                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-									</c:forEach> --%>
+			                    	
 			                  </select>
                               </div>
                             </div>
@@ -740,10 +737,7 @@ $(document).ready(function() {
                             <label class="col-lg-4">Team Members <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                              <select multiple class="chosen-select form-control select-bg" name="memberUserId" id="memberUserId" placeholder="Team Member *" data-validation="required validate_Space" field-name="Team Member">
-					                   <%--  <option disabled >-Select Team Members-</option>
-					                    <c:forEach var="report" items="${all_users_List}">
-							                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-								       </c:forEach> --%>
+					                  
 		                       </select>
                               </div>
                             </div>
@@ -751,8 +745,8 @@ $(document).ready(function() {
                         </div>
                       </div>
                       <div class="modal-footer">
-                        <button class="btn btn-primary" type="button" id="team_form" onclick="storeTeam();flushStoreTeam()" >Save</button>
-                        <button data-dismiss="modal" class="btn btn-default" id="team_form" onclick="flushStoreTeam();" type="button">Cancel</button>
+                        <button class="btn btn-primary" type="button" id="team_form" onclick="storeTeam();" >Save</button>
+                        <button data-dismiss="modal" class="btn btn-default" id="team_form"  type="button">Cancel</button>
                       </div>
                     </div>
                     </form>
@@ -1552,9 +1546,11 @@ function assignMembers() {
 
 
 <script type="text/javascript">
-	function flushStoreTeam() {
+	function flushStoreTeam() { 
 		document.getElementById("team_form").reset();
-		$('#memberUserId').val('').trigger('chosen:updated');
+		$('#name').val('');
+		$('#ownerUserId').val('');
+		$('#memberUserId').val('');
 	}
 </script>
 

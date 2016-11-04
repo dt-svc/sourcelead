@@ -759,6 +759,12 @@ public class UserServiceImpl implements UserService {
 		return userDao.getUsersByTeamTypeAndNoCurrentUser(currentApproverId,orgLocationsId);
 	}
 	
+	@Override
+	public List<User> getUserListExceptExistedTeamMembersList(List<Long> teamMembersId, Long orgLocationId)
+			throws Exception {
+		return userDao.getUserListExceptExistedTeamMembersList(teamMembersId, orgLocationId);
+	}
+	
 	
 	
 }

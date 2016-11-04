@@ -24,8 +24,6 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
@@ -88,17 +86,12 @@ public class TeamRestController {
 		List<Team> teamList = teamService.getTeamListByOrgLocationID(loginOrgLocation.getId());
 		String teamMembers="";
 		for(Team team : teamList){
+			
+			team.setTeamOwnerName(team.getOwnerUserId().getFirstName()+""+team.getOwnerUserId().getLastName());
 			Collection<TeamMembers>	teamMembersList  = teamMembersService.getTeamMembersListByTeamID(team.getId());
+			team.setTeamMembersCount(teamMembersList.size());
 			
-			
-			team.setTeamMembersCount(teamMembersList.size()-1);
-			
-			/*ArrayList<String> ar = new ArrayList<String>();
-			for(TeamMembers teamMember : teamMembersList){
-				
-				ar.add(teamMember.getMemberUserId().getFirstName()+""+ teamMember.getMemberUserId().getLastName());
-			}
-			team.setTeamMembers(ar);*/
+			 
 		}
 		resultJson = commonUtil.toJSON(teamList);
 		return resultJson;
@@ -158,6 +151,8 @@ public class TeamRestController {
 			 teamMembers.setMemberName(teamMembers.getMemberUserId().getFirstName()+""+teamMembers.getMemberUserId().getLastName());
 			 teamMembers.setEmail(teamMembers.getTeamId().getOwnerUserId().getEmail());
 			 teamMembers.setUserType(teamMembers.getTeamId().getOwnerUserId().getUserType());
+			 
+			 teamMembers.setTeamMemberUserId(teamMembers.getMemberUserId().getId());
 			
 			 Integer teamMemberRequirementAssignedCount =  requirementAssignToService.getAssignedTeamMembersCountByTeamMemberUserId(teamMembers.getMemberUserId().getId(), "all");
 			 teamMembers.setTeamMemberRequirementAssignedCount(teamMemberRequirementAssignedCount);
@@ -167,6 +162,41 @@ public class TeamRestController {
 		}
 		
 		resultJson = commonUtil.toJSON(teamMembersList);
+		return resultJson;
+	 } 
+	  
+	  /**
+	   * @author prasad k
+	   * @since  sep 14 2016
+	   * @version 0.0.1
+	   * 
+	   * This method is used to for getting TeamList By OrgLocationID
+	   * 
+	   *  
+	   * @return string 
+	   * 
+	   * @throws NullPointer
+	   */
+	 
+	  @RequestMapping(value = "/getTeamMembersListExceptExistedTeamMembersList")
+	  public String getTeamMembersListExceptExistedTeamMembersList(@RequestParam(value="existedTeamMembersIds", required=false) String  existedTeamMembersIds,@RequestParam(value="teamId", required=false) Long  teamId,HttpServletRequest request) throws Exception {
+		  
+		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+		Team  team = teamService.getTeamByTeamId(teamId);	
+		String resultJson;
+		List<Long> ids = new ArrayList<Long>();
+		if(team.getOwnerUserId() !=null){
+			ids.add(team.getOwnerUserId().getId());
+		}
+		String[] existedTeamMemberUserIds = existedTeamMembersIds.split(",");
+		for(String id  : existedTeamMemberUserIds){
+			ids.add(Long.parseLong(id));
+		}
+		
+		List<User> userList = userService.getUserListExceptExistedTeamMembersList(ids, loginOrgLocation.getId());
+		resultJson = commonUtil.toJSON(userList);
 		return resultJson;
 	 } 
 	  
