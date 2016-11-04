@@ -397,13 +397,16 @@ $(document).ready(function() {
       </div>
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
-	      <div class="ml">
-            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
-            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
-            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
-            &nbsp;&nbsp;
-            <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
-		  </div>
+	        <c:if test="${SourceLeadWeb_org.vms != 'Y'}">
+	        	<div class="ml">
+		            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
+		            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
+		            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
+		            &nbsp;&nbsp;
+		            <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
+			  	</div>
+	        </c:if>
+	      
           <div id="clientDetails" style="display: none;">
             <div class="clearfix">
               <h3>Client Details</h3>
