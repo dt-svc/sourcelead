@@ -114,29 +114,12 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId and usr.id = :userId";
-	     
-		
-		 List<ProjectApproverHierarchy>  projectHirachyList1 =   session.createQuery(query.toString()).setLong("projectId", projectId)
-																										.setLong("userId", userId)
-	        																							.setCacheable(true)
-	        																							.list();
-	      
-
-		  String query2  = "select Max(pah.level) from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId  and pah.projectId =:projectId";
-	      List<ProjectApproverHierarchy>  projectHirachyList2 =   session.createQuery(query.toString()).setLong("projectId", projectId)
-	    		                                                                                        .setLong("userId", userId)
-	        																							.setCacheable(true)
-	        																							.list();
-		if(projectHirachyList1.size() > 0 && projectHirachyList1 !=null){
-			
-			 return projectHirachyList1;
-			 
-		}else{
-			
-		     return projectHirachyList2;
+		List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId).setLong("userId", userId).setCacheable(true).list();
+		if(projectHirachyList != null && !projectHirachyList.isEmpty()){
+			 query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId and projectHirachy.level IN(select Max(subpah.level) from ProjectApproverHierarchy subpah  where subpah.projectId =:projectId)";
+			 projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId).setCacheable(true).list();
 		}
-		  
-		
+			return projectHirachyList;
 	}
 	
 

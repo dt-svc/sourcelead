@@ -818,7 +818,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			
 		for(TimesheetSubmissions ts : timesheetSubmissionsList){
 		    	
-			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(ts.getId());
+			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForApprover(ts.getId(),user.getId());
 			Submission_Status submissionStatus = sah.getSubmissionStatus();
 			String submissionStatusStr = submissionStatus.getValue();
 			

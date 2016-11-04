@@ -193,9 +193,12 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForApprover(Long submissionId,Long approverUserId) {
 			
 		Session session = this.sessionFactory.getCurrentSession();
-		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId where sah.submissionId.id = :submissionId and hierarchy.approverUserId.id = :approverUserId ");
+		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch sah.submissionId submission left join fetch submission.projectMembers pm left join fetch hierarchy.approverUserId left join fetch sah.submissionId where sah.submissionId.id = :submissionId and "
+				+ " (hierarchy.approverUserId.id = :approverUserId "
+				 + " OR ( :approverUserId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.id = :submissionId ) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+"))"
+				+ "");
 		@SuppressWarnings("unchecked")
-		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("submissionId", submissionId).setLong("approverUserId",approverUserId).list();
+		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("submissionId", submissionId).setLong("userId",approverUserId).setLong("approverUserId",approverUserId).list();
 		SubmissionApproverHierarchy sah = null;
 		if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){
 			sah = submissionApproverHierarchyList.iterator().next();
@@ -204,21 +207,28 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	
 	}
 
-	@Override
+	
 	@Transactional(rollbackFor = { Exception.class })
 	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyForEmployeeIdAndStartDate(Long empId,
-			Long approverUserId, Date startDate) {
+			Long approverUserId, Long submissionId) {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
-		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
-		
-		String query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and sah.submissionId.startDate = :startDate and (hierarchy.approverUserId.id = :approverUserId OR "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+") ";
+		String query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and sah.submissionId.id = :submissionId and "
+				   /*
+				   *  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
+				   */
+			        + "    ((hierarchy.approverUserId.id = :approverUserId ) "
+			        /*
+					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
+					 */
+			        + " OR ( :approverUserId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.projectMembers.employee.id = :empId  and subsah.submissionId.id = :submissionId) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+"))"
+		      	+ ")";
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> sahList = session.createQuery(query)
 																	  .setLong("empId", empId)	
 				                                                      .setLong("approverUserId",approverUserId)
 				                                                      .setLong("userId",approverUserId)
-				                                                      .setParameter("startDate", sqlStartDate).setCacheable(true).list();
+				                                                      .setParameter("submissionId", submissionId).setCacheable(true).list();
 		
 		return sahList;
 	}

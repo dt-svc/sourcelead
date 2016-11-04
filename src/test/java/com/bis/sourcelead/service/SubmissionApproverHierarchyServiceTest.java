@@ -99,7 +99,7 @@ public class SubmissionApproverHierarchyServiceTest {
 	}
 	@Test
 	public void getSubmissionApproverHierarchyForEmployeeIdAndStartDate() throws Exception{
-		List<SubmissionApproverHierarchy> SubmissionApproverHierarchyForEmployeeId = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(20l,1l,new Date());
+		List<SubmissionApproverHierarchy> SubmissionApproverHierarchyForEmployeeId = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(20l,1l,1l);
 		logger.info("getSubmissionApproverHierarchyForEmployeeIdAndStartDate added successfully"+SubmissionApproverHierarchyForEmployeeId.size());
 	}
 	@Test

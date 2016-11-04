@@ -242,7 +242,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			Long empId = ts.getProjectMembers().getEmployee().getId();
 			
 			
-			 List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(empId, userId, sDate);
+			 List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(empId, userId, ts.getId());
 			 
 			/*String query1 = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and ts.startDate =:startDate and ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where  pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId))";
 			List<TimesheetSubmissions> timesheetSubmissionsList1 = session.createQuery(query1)
@@ -303,14 +303,14 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		Session session = this.sessionFactory.getCurrentSession();  
 		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where  ts.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :empUserId)  and (( ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId)) ) OR "+Constants.loginUserAsAdmin+")  and ts.status = '1' and ts.startDate =:startDate GROUP BY emp.id,ts.startDate";   
 		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("userId", userId).setLong("empUserId", empUserId).setParameter("startDate", sqlStartDate).list();
-		
+		TimesheetSubmissions finalTs  = null;
 		
 		for(TimesheetSubmissions ts : timesheetSubmissionsList){
 			Float combinedTotalHours = 0f ; 
 			java.sql.Date sDate = new java.sql.Date(ts.getStartDate().getTime());
 			Long empId = ts.getProjectMembers().getEmployee().getId();
 			
-		    List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(employeeId, userId, startDate);
+		    List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(employeeId, userId, ts.getId());
 			 
 
 		    Boolean isRejected = false; 
@@ -347,39 +347,11 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			   ts.setCombinedStatus(status);
 			   ts.setRejectedReason(sah.getRejectedReason());
 		    }
-		    
-		    
-			/*for(TimesheetSubmissions ts1 : timesheetSubmissionsList1){
-				if(ts1.getTotalHours()!=null && !ts1.getTotalHours().isEmpty()){
-				combinedTotalHours = combinedTotalHours + Float.parseFloat(ts1.getTotalHours());
-				}
-					if( ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
-						isRejected   = true;  
-						status = "REJECTED";
-					}
-					else if(!isRejected  && ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
-						 isNEW   = true;  
-						 status = "NEW";
-					}
-					else if(!isRejected && !isNEW &&  ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
-						 isSUBMITTEDFORAPPROVAL   = true;  
-						 status = "SUBMITTED FOR APPROVAL";
-					}
-					else if(!isRejected && !isNEW&& !isSUBMITTEDFORAPPROVAL && ts1.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED ){
-						 isAPPROVED   = true;  
-						 status = "APPROVED";
-					}
-				
-			
-			ts.setCombinedTotalHours(combinedTotalHours.toString());
-			ts.setCombinedStatus(status);
-		}*/
+		    finalTs = ts;
+			break;
 		}
-		TimesheetSubmissions timesheetSubmissions = null;
-		if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
-			timesheetSubmissions = timesheetSubmissionsList.iterator().next();
-		}
-		return timesheetSubmissions;
+		
+		return finalTs;
 
 	}
 	
