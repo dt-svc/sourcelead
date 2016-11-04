@@ -390,7 +390,7 @@
 		 if ($('#candidate_form').validate(false, validationSettings)){ 
 			var frm = $('#candidate_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
-			/* con = con.replace(/[{}]/g, ""); */
+			 con = con.replace(/[{}]/g, ""); 
 			var form = $('#candidate_form')[0];
       		var formData = new FormData(form); 
 			  //It will escape all the special characters

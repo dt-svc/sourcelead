@@ -520,9 +520,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 
 	@Override
-	public List<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus() throws Exception {
+	public HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
 		
-		return projectsDao.getAllUserPrevoiusWeekTimeSheetSubmissionStatus();
+		return projectsDao.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency);
 	}
 
 	@Override

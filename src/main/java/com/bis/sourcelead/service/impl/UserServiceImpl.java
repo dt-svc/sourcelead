@@ -361,7 +361,12 @@ public class UserServiceImpl implements UserService {
 			employees.setDailyHours(jsonObj.getString("dayHours"));
 		}
 		if(jsonObj.has("invoiceFrequency")){
-			employees.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+			if(jsonObj.getString("invoiceFrequency") != null && !"".equalsIgnoreCase(jsonObj.getString("invoiceFrequency"))){
+				employees.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+			}else{
+				employees.setInvoiceFrequency("Weekly");
+			}
+			
 		}
 		
 		if(jsonObj.has("dateofJoin") && !isNullOrEmpty(jsonObj.getString("dateofJoin"))){
