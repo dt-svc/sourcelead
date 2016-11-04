@@ -35,7 +35,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
     	Gate.setGateHome(gateHome);
     	File siteConfig = new File(servletContext.getRealPath("/WEB-INF/classes/gate.xml"));
     	Gate.setSiteConfigFile(siteConfig);
-    	/*try {
+    	try {
     		Gate.setPluginsHome(gateHome);
 			Gate.init();
 			
@@ -44,7 +44,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 			servletContext.setAttribute("Annie", annie);
 		} catch (GateException e) {
 		} catch (IOException e) {
-		}*/
+		}
 	}
 	
 	@Override

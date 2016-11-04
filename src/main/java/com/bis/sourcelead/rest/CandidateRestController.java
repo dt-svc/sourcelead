@@ -92,9 +92,8 @@ public class CandidateRestController {
 		if(itrator.hasNext()){
 	        multiFile = request.getFile(itrator.next());
 		}
-		System.out.println(json);
-		/*String jsonc = "{" + json + "}";*/
-		JSONObject jsonObj = new JSONObject(json);
+		String jsonc = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(jsonc);
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

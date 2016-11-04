@@ -136,7 +136,7 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 				
 			}
 			if(skills != null){
-				jsonUtil.setSkills(skills.toString().replaceAll("[^a-zA-Z0-9\\.\\#\\,\\/\\s\\&\\+\\(\\)]", ""));
+				jsonUtil.setSkills(skills.toString().replaceAll("\\/", " and ").replaceAll("[^a-zA-Z0-9\\.\\#\\,\\/\\s\\&\\+\\(\\)]", ""));
 			}
 		    return toJSON(jsonUtil);
    }
