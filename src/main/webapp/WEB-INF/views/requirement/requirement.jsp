@@ -1469,6 +1469,11 @@ function getTeamsList(teamType){
 				}else{
 					output = output +'           <option value="HR Manager">HR Manager</option>';
 				} 
+               if(teamType == 'Project Manager'){
+				output = output +'           <option value="Project Manager" selected>Project Manager</option>';
+			  }else{
+				output = output +'           <option value="Project Manager">Project Manager</option>';
+			  } 
 				for (var i = 0; i < json.length; i++) {
 					var opt = json[i];
 					if(teamType == opt.id){
