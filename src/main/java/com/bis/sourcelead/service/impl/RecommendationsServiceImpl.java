@@ -86,7 +86,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			int reqRate = Integer.parseInt(requirement.getRate());
 			String reqRateType = requirement.getRateType();
 			if("Hourly".equalsIgnoreCase(reqRateType)){
-				int perDaySal = reqRate *24;
+				int perDaySal = reqRate *9;
 				reqPerMonthSal = perDaySal * 30;
 			}else if("Weekly".equalsIgnoreCase(reqRateType)){
 				int perDaySal = reqRate /7;

@@ -453,7 +453,11 @@ public class UserDaoImpl implements UserDao {
 		 }
 		 else if("Admin".equalsIgnoreCase(teamType)){
 			 subQuery = "userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.roles.id IN(select roles.id from Roles roles where roles.displayName = 'Admin') and userRole.orgLocations=:orgLocationsId";
-		 }else{
+		 }else if("Project Manager".equalsIgnoreCase(teamType)){
+			 subQuery = "userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.roles.id IN(select roles.id from Roles roles where roles.displayName = 'Project Manager') and userRole.orgLocations=:orgLocationsId";
+		 }
+		 
+		 else{
 			 Long teamId = Long.parseLong(teamType);
 			 subQuery = "teamMembers.memberUserId.id from TeamMembers teamMembers where teamMembers.teamId.id ="+teamId+" and teamMembers.teamId.orgLocationsId.id=:orgLocationsId"; 
 		 }
