@@ -33,17 +33,22 @@
                    </div>
                    <div class="modal-body-custom mt clearfix over" id="employeesList">
                    </div>
-                   <div class="col-md-9">
+                   <div class="col-md-12">
+                   
+                   <div class="col-md-6">
 					<div class="checkbox">
 						<label> <input type="checkbox" id="membermailCheckbox" value="Y"
 							name="isMailToTeamMembers"> Mail to Team Members
 						</label>
 					</div>
-				</div>
-                 </div>
-                 <div class="modal-footer">
-                   <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="assignEmployee();">Assign</button>
+					</div>
+					
+                 <div class=" col-md-6 modal-footer">
+                   <button data-dismiss="modal" class="btn btn-primary" type="button" id="assignId" onclick="assignEmployee();">Assign</button>
                    <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                 </div>					
+					
+				</div>
                  </div>
                </div>
              </div>
@@ -369,6 +374,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
         success: function(data) {
         	var json = JSON.parse(data);
         	var output = "";
+        	output = output+' <div class="wrap_employeeTable">';
         	output = output+' <table cols="0" id="assignEmployeePagination" class="table table-bordered table-striped  clearfix">';
             output = output+' <thead>';
             output = output+' <tr>';
@@ -406,6 +412,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 			}
         	output = output+' </tbody>';
 	        output = output+' </table>';
+	        output = output+' </div>';
         	$("#employeesList").empty();
 	        $("#employeesList").append(output);
 	        
@@ -486,7 +493,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 function assignEmployeespagination(){  
     $('#assignEmployeePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -497,6 +504,7 @@ function assignEmployeespagination(){
     } );
 }
 </script>
+
 
 <!-- this script is for Assign Employee functionality at Projects screen -->
 <script>
@@ -511,11 +519,13 @@ function assignEmployee(){
 	    	mailtoMembers = "YES";
 	    }
 	    var sourceleadUrl ='${sourceleadUrl}';
+	    
 	    $(".myCheckbox").each(function(){
 	        var employeeId =this.id;
 	        if($(this).is(':checked')){
 		        var startDate = $("#startDate"+employeeId).val();
 		        var endDate = $("#endDate"+employeeId).val();
+		        alert("startDate"+startDate);
 				$.ajax({
 		        	type: "POST",
 		            url: sourceleadUrl+"/storeAssignEmployee?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&mailtoMembers="+mailtoMembers, 
@@ -524,7 +534,7 @@ function assignEmployee(){
 		            }
 				})
 	        }
-	    });
+    	});
 }
 </script>
 
