@@ -268,18 +268,19 @@ $(document).ready(function() {
               </div>
             </div>
             
-          <div class="form-group">
-            <label class="col-md-3">Experince</label>
+         <div class="form-group" >
+            <label class="col-md-3">Experience</label>
             <div class="col-md-9">
               <div class="row">
-                <div class="col-md-6">
-                 <input type="text" class="form-control" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5 validate_float" data-validation-optional="true"  value="">
-                   
-                </div>
-                <div class="col-md-6">
-                 
-                <input type="text" class="form-control" id="maxExp" name="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-5 validate_float" data-validation-optional="true"  value="">
-                </div>
+	                <div class="col-md-6">
+	                 <input type="text" class="form-control" placeholder="minExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                </div>
+	                <div class="col-md-6" >
+	                <input type="text" class="form-control" id="maxExp" name="maxExp" placeholder="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-5 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                </div>
+              </div>
+              <div class="row" id="expId">
+                  <input type="hidden" name="expValidation" id="expValidation">
               </div>
             </div>
           </div>
@@ -821,6 +822,7 @@ if(saveType=='draft'){
 			var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
+			con = encodeURIComponent(con);
 			var form = $('#requirement_form')[0];
       		var formData = new FormData(form); 
 			  //It will escape all the special characters
@@ -1387,7 +1389,7 @@ function getUserList(teamType){
 	                		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
-	                		result = result +'             <th><input type="checkbox"></th>';
+	                		result = result +'             <th><input type="checkbox" id="checkAll" onclick="toggle(this);"></th>';
 	                		result = result +'             <th>Name</th>';
 	                		result = result +'             <th>Email</th>';
 	                		result = result +'             <th>Role</th>';
@@ -1770,8 +1772,42 @@ function getLevel2Approvers(currentApproverId){
  }
  </script>     
  
+ <script>
+function toggle(source) {
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i] != source)
+            checkboxes[i].checked = source.checked;
+        
+    }
+$('input:checkbox:not(#checkAll)').click(function() {
+    if(!this.checked) {
+        $('#checkAll').removeAttr('checked');
+    }
+});
+}
+</script>
+ 
  <!-- Job Id validation script ends here -->
  
-
+<script>
+//Function to validate if maximum exp value is more the minimum exp value
+function minMaxExperience(){
+    var maxExp = ($('#maxExp').val());
+    var minExp = ($('#minExp').val());
+    
+    if (parseFloat(maxExp) < parseFloat(minExp)){
+        $('#expId').find('p.jquery_form_error_message').remove(); 
+		$('input#expValidation').attr('class','error signin_fild');
+		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");
+		$('input#expValidation').attr('record-exist','yes');
+		$('input#expValidation').attr('record-exist-errorMsg','Max Experience is greater than Min Experience'); 
+    }  else{
+    	$('#expId').find('p.jquery_form_error_message').remove(); 
+    	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");
+		$('#expId').find('p.jquery_form_error_message').remove();
+    }
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

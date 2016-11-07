@@ -694,7 +694,7 @@ function getOfferDetails(submissionId){
 	                	 result = result+'<div id="rejectOfferAlert" ></div>  ';
 	                	 
 	                	 var result = '';
-	                	 result = result + '<div class="col-md-6">';
+	                	 
                     	 result = result + '<div class="clearfix">';
    					     result = result + '<div class="content clearfix" style="display: block;">';
 	                     var json = JSON.parse(data);
@@ -712,8 +712,8 @@ function getOfferDetails(submissionId){
                     	 result = result + '<div class="action-nav">';
                     	 result = result + '<span id="'+submissionId+'actionDiv">';
                     	 if(json.offerStatus != "OFFERACCEPTED"  && json.offerStatus != "OFFERREJECTED" ){
-                    		 result = result + '<a  href="javascript:void(0)"  onClick="acceptingOffer(\''+accept+'\' ,\''+submissionId+'\');"   ><i class="fa fa-check text-success"></i></a>';
-                        	 result = result + '<a  href="javascript:void(0)"  onClick="rejectOffer( \''+reject+'\' ,\''+submissionId+'\');"  ><i class="fa fa-close text-danger"></i></a>';
+                    		 result = result + '<a  href="javascript:void(0)" title="Accept" onClick="acceptingOffer(\''+accept+'\' ,\''+submissionId+'\');"   ><i class="fa fa-check text-success"></i></a>';
+                        	 result = result + '<a  href="javascript:void(0)"  title="Reject"  onClick="rejectOffer( \''+reject+'\' ,\''+submissionId+'\');"  ><i class="fa fa-close text-danger"></i></a>';
                         	 result = result + '<a  href="javascript:void(0)"  onClick="acceptingOffer(\''+mybe+'\',\''+submissionId+'\');"   ><i class="fa fa-question-circle text-muted"></i></a>';
                     	 }
                     	
@@ -731,36 +731,80 @@ function getOfferDetails(submissionId){
                     		 result = result +' <font color="orange" class="brder-int">Maybe</font>';
                     	 }
                     	 
+                    	 if(json.dateOfJoiningStr !=null && json.dateOfJoiningStr !='' && json.dateOfJoiningStr !='undefined'){
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Joining Date</strong>';
+	                    	 result = result + '</label>';
+	                    	 result = result + '<p class="col-md-7">'+json.dateOfJoiningStr+'</p>';
+	                    	 result = result + '</div>';
+                    	 }else{
+                    		 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<label class="col-md-5">';
+	                    	 result = result + '<strong>Joining Date</strong>';
+	                    	 result = result + '</label>';
+	                    	 result = result + '<p class="col-md-7">No Data</p>';
+	                    	 result = result + '</div>';
+                    	 }
                     	 
+                    	 if(json.positionType !=null && json.positionType !='' && json.positionType !='undefined'){
+                    		 result = result + '<div class="row clearfix">';
+                        	 result = result + '<label class="col-md-5">';
+                        	 result = result + '<strong>Position Type</strong>';
+                        	 result = result + '</label>';
+                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+json.positionType+'</p>';
+                        	 result = result + '</div>';
+                    	 }else{
+                    		 result = result + '<div class="row clearfix">';
+                        	 result = result + '<label class="col-md-5">';
+                        	 result = result + '<strong>Position Type</strong>';
+                        	 result = result + '</label>';
+                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">No Data</p>';
+                        	 result = result + '</div>';
+                    	 }
                     	 
+                    	 if(json.clientName !=null && json.clientName !='' && json.clientName !='undefined'){
+                    		 result = result + '<div class="row clearfix">';
+                        	 result = result + '<label class="col-md-5">';
+                        	 result = result + '<strong>Client Name</strong>';
+                        	 result = result + '</label>';
+                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+json.clientName+'</p>';
+                        	 result = result + '</div>';
+                    	 }
                     	 
-                    	 result = result + '<div class="row clearfix">';
-                    	 result = result + '<label class="col-md-5">';
-                    	 result = result + '<strong>Joining Date</strong>';
-                    	 result = result + '</label>';
-                    	 result = result + '<p class="col-md-7">'+json.dateOfJoiningStr+'</p>';
-                    	 result = result + '</div>';
-                           
-                    	 result = result + '<div class="row clearfix">';
-                    	 result = result + '<label class="col-md-5">';
-                    	 result = result + '<strong>Position Type</strong>';
-                    	 result = result + '</label>';
-                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+json.positionType+'</p>';
-                    	 result = result + '</div>';
+                    	 if(json.amount !=null && json.amount !='' && json.amount !='undefined'){
+                    		 result = result + '<div class="row clearfix">';
+                        	 result = result + '<label class="col-md-5">';
+                        	 result = result + '<strong>Rate</strong>';
+                        	 result = result + '</label>';
+                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+json.amount+'</p>';
+                        	 result = result + '</div>';
+                    	 }else{
+                    		 result = result + '<div class="row clearfix">';
+                        	 result = result + '<label class="col-md-5">';
+                        	 result = result + '<strong>Rate</strong>';
+                        	 result = result + '</label>';
+                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">No Data</p>';
+                        	 result = result + '</div>';
+                    	 }
+                    	
+                    	 if(json.docFile !=null && json.docFile !='' && json.docFile !='undefined'){
+                    		 
+                    		 result = result + '<div class="row clearfix">';
+                        	 result = result + '<label class="col-md-5">';
+                        	 result = result + '<strong>Attachment</strong>';
+                        	 result = result + '</label>';
+                             result = result + '<p class="col-md-7 tbldata-dotdot-big"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+json.id+'\"></a></p>';
+                        	 result = result + '</div>';
+                    	 }else{
+                    		 result = result + '<div class="row clearfix">';
+                        	 result = result + '<label class="col-md-5">';
+                        	 result = result + '<strong>Attachment</strong>';
+                        	 result = result + '</label>';
+                             result = result + '<p class="col-md-7 tbldata-dotdot-big">No Document</p>';
+                        	 result = result + '</div>';
+                    	 }
                     	 
-                    	 result = result + '<div class="row clearfix">';
-                    	 result = result + '<label class="col-md-5">';
-                    	 result = result + '<strong>Rate</strong>';
-                    	 result = result + '</label>';
-                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+json.amount+'</p>';
-                    	 result = result + '</div>';
-                    	 
-                    	 result = result + '<div class="row clearfix">';
-                    	 result = result + '<label class="col-md-5">';
-                    	 result = result + '<strong>Attachment</strong>';
-                    	 result = result + '</label>';
-                            result = result + '<p class="col-md-7 tbldata-dotdot-big"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+json.id+'\"></a></p>';
-                    	 result = result + '</div>';
                     	
                          result = result + '</div>';
                          result = result + '</div>';
@@ -769,10 +813,7 @@ function getOfferDetails(submissionId){
 		                     
 	                     result = result + '</div>';
 	                     result = result + '</div>';
-	                     result = result + '</div>';
-	                    
 	                     $("#offerDetails").append(result); 
-	                     
 	                     $('#accordion-sl .content').hide();
 	                     $('#accordion-sl h2:first').addClass('active').next().slideDown('slow');
 	                     $('#accordion-sl h2').click(function() {
@@ -856,12 +897,11 @@ function acceptingOffer(offerStatus,submissionId){
 	 {
 		 reason = '';
 	 }
-	 
 	 $.ajax({  
          type : "POST",
          url: sourceleadUrl+"/acceptingOffer?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason,        
          success :function(data) {
-        	   
+        	 
         	 var json = JSON.parse(data);
         	 jQuery("#"+(submissionId)+"actionDiv").css("display","none");
 	    	 if(offerStatus == "accept"){
@@ -873,6 +913,7 @@ function acceptingOffer(offerStatus,submissionId){
            	 if(offerStatus == "mybe"){
            		$("#"+(submissionId)+"showStatus").html("<font color='orange'>Maybe</font>");
            	 }
+           	getOfferDetails(submissionId);
        },
          
     }); 

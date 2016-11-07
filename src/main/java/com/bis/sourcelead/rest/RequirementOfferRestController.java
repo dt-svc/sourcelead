@@ -170,13 +170,12 @@ public class RequirementOfferRestController {
 			
 			if(requirementAssignToList !=null &&  requirementAssignToList.size()>0){
 				for(RequirementAssignTo requirementAssignTo :requirementAssignToList){
-					// if we have  Assigned any team 
+					     // if we have  Assigned any team 
 						if(requirementAssignTo.getTeamId()!=null){
 							if(requirementAssignTo.getAssignUserId().getUserCode().equalsIgnoreCase(requirementSubmission.getCreatedBy())
 							    ||  ( loginUser.getId() == requirementAssignTo.getTeamId().getOwnerUserId().getId())
 							    || (loginUser.getUserType().equalsIgnoreCase(Constants.ADMIN) )
 									|| (req.getManagerUserId().getId() == loginUser.getId())){
-									
 									
 									// This is for Cleint Submission Check  for Offer
 									RequirementSubmission sourcesubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(submissionId, orgLocations.getId());
@@ -185,11 +184,14 @@ public class RequirementOfferRestController {
 											if(requirementOffers!=null){
 													if(requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y")){
 														requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
+														if(sourcesubmission.getVendorLocationId() !=null){
+															requirementOffers.setClientName(sourcesubmission.getVendorLocationId().getOrg().getOrgName());
+														}
 														resultJson = commonUtil.toJSON(requirementOffers);
 													}
 											}
 									}else{
-										// This is for normal Submission Check  for Offer
+										// This is for normal Own Submission Check  for Offer
 										    requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(requirementSubmission.getId());
 												if(requirementOffers!=null){
 													requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
@@ -197,6 +199,7 @@ public class RequirementOfferRestController {
 												}
 									}
 								}
+							
 							// if we have   not  selected the Team
 						}else if(requirementAssignTo.getAssignUserId().getUserCode().equalsIgnoreCase(requirementSubmission.getCreatedBy())
 						    || (loginUser.getUserType().equalsIgnoreCase(Constants.ADMIN) )
@@ -207,9 +210,12 @@ public class RequirementOfferRestController {
 						if(sourcesubmission!=null){
 							requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(sourcesubmission.getId());
 								if(requirementOffers!=null){
-									if(requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y")){
-											requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
-											resultJson = commonUtil.toJSON(requirementOffers);
+									if((requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y")) && (requirementOffers.getNotifyToVendor() !=null)){											requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
+								        	requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
+								        	if(sourcesubmission.getVendorLocationId() !=null){
+												requirementOffers.setClientName(sourcesubmission.getVendorLocationId().getOrg().getOrgName());
+											}
+									        resultJson = commonUtil.toJSON(requirementOffers);
 										}
 								}
 						}else{
@@ -219,17 +225,18 @@ public class RequirementOfferRestController {
 							    	  requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
 							    	  resultJson = commonUtil.toJSON(requirementOffers);
 							    }
-							  
 						}
-						
 					}
 				}
 			}else{
 				RequirementSubmission sourcesubmission = requirementSubmissionService.getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(submissionId, orgLocations.getId());
 				if(sourcesubmission!=null){
 					requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(sourcesubmission.getId());
-					if(requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y")){
+					if((requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y")) && (requirementOffers.getNotifyToVendor() !=null)){
 						requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
+						if(sourcesubmission.getVendorLocationId() !=null){
+							requirementOffers.setClientName(sourcesubmission.getVendorLocationId().getOrg().getOrgName());
+						}
 						resultJson = commonUtil.toJSON(requirementOffers);
 					}
 				}
@@ -299,26 +306,21 @@ public class RequirementOfferRestController {
 				    RequirementSubmission sourcesub  = requirementSubmissionService.getSubmissionsBySourceSubmissionId(submissionId, orgLocations.getId());
 				    if(sourcesub!=null){
 				    	 // This is  if the Own Org member accepts the Offer
-						sourcesub.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
-				        requirementSubmissionService.storeRequirementSubmission(sourcesub);
+						   sourcesub.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+				           requirementSubmissionService.storeRequirementSubmission(sourcesub);
 				    }
 				   
 				    
-				     // This is  if the Client accepts the Offer 
+				      // This is  if the Client accepts the Offer 
 					   //changing the ClientOfferMade    Candidate status  
 					    requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
 					    requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					    
-				    
-				    // for saving  the offerStatus in Requirement Offer Table
-				    requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(requirementSubmission.getId());
-				    requirementOffers.setOfferStatus("OFFERACCEPTED");
-				  
-				    requirementOffersService.saveOfferStatus(requirementOffers);
+					    // for saving  the offerStatus in Requirement Offer Table
+					    requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(requirementSubmission.getId());
+					    requirementOffers.setOfferStatus("OFFERACCEPTED");
+					    requirementOffersService.saveOfferStatus(requirementOffers);
 				}
-			
-			
-			
 			
 			// Mail Logic here  for Accept Offer
 			
