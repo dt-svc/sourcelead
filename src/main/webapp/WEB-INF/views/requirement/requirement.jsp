@@ -627,7 +627,7 @@ $(document).ready(function() {
             <label class="col-md-3">Manager<span class="text-danger">*</span></label>
             <div class="col-md-9">
            
-              <select  class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager">
+              <select  class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager" id="managerId">
                        <option value="">Select Manager</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}" ${report.id  == requirement.managerUserId.id ? 'selected' : ''}>${report.firstName}&nbsp;${report.lastName}</option>
@@ -767,6 +767,37 @@ $(document).ready(function() {
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
+		
+		
+if(saveType=='draft'){
+			
+			//For internal details in draft
+			 $('#managerId').removeAttr('data-validation');
+			 $('#managerId').attr("data-validation-optional","true"); 
+			 
+			 
+			 $('#assignedTo').removeAttr('data-validation');
+			 $('#assignedTo').attr("data-validation-optional","true");
+			 
+			 
+			 $('#priority').removeAttr('data-validation');
+			 $('#priority').attr("data-validation-optional","true");
+			
+			 
+			 $('#applicationFrom').removeAttr('data-validation');
+			 $('#applicationFrom').attr("data-validation-optional","true");
+			 
+			 //for client details in draft
+			 
+			 $('#addClientId').removeAttr('data-validation');
+			 $('#addClientId').attr("data-validation-optional","true");
+			 
+			 $('#selectContact').removeAttr('data-validation');
+			 $('#selectContact').attr("data-validation-optional","true");
+			 
+			 $('#clientSubmissionForm').removeAttr('data-validation');
+			 $('#clientSubmissionForm').attr("data-validation-optional","true");
+		}
 		
 		 var rate = document.getElementById("rate").value; 
 		 if(rate != null && rate != ""){
