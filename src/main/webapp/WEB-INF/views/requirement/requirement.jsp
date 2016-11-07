@@ -232,12 +232,14 @@ $(document).ready(function() {
       
           
           
-          <div class="form-group">
+          <div class="form-group" id="jobIdDiv">
             <label class="col-md-3">Id</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  value="">
+              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  onblur="validateJobId();"  onmouseout="validateJobId();" value="">
             </div>
           </div>
+          
+         
           
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
@@ -1703,6 +1705,41 @@ function getLevel2Approvers(currentApproverId){
 } 
 </script> 
 
+
+<!-- Job Id validation script starts here -->
+
+<script type="text/javascript">
+ function validateJobId() {
+	
+	 var jobId = document.getElementById("jobId").value; 
+	 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(jobId != null && jobId != ""){
+		
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateJobId?${_csrf.parameterName}=${_csrf.token}&jobId="+jobId, 
+		        success: function(data) {
+		        	
+		        	if(data == '"duplicate"'){
+		        		  $('#jobIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#jobId").after("<p class='jquery_form_error_message'>"+jobId+" is Already Existed</span>");
+						  document.getElementById("jobId").setAttribute('record-exist','yes');
+						  document.getElementById("jobId").setAttribute('record-exist-errorMsg',jobId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#jobIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#requirement_form" ).addClass('button').val('Save');
+                         $("#requirement_form").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>     
+ 
+ <!-- Job Id validation script ends here -->
  
 
 

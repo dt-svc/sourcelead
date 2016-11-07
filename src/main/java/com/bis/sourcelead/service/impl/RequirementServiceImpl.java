@@ -1328,4 +1328,9 @@ public class RequirementServiceImpl implements RequirementService {
 	public List<Requirement> getRequirementListById(Long requirementId)throws Exception {
 			return requirementDao.getRequirementListById(requirementId);
 	}
+
+	@Override
+	public Integer validateJobId(Long id) throws Exception {
+		return requirementDao.validateJobId(id);
+	}
 }
