@@ -26,6 +26,12 @@ public class EmailMessage implements Serializable {
 	
 	private String signature;
 	
+    private String userName;
+	
+	private String password;
+	
+	private Long orgLocationId;
+	
 	private Map<String, Object> model;
 	
 	private String[] attachmentFiles;
@@ -92,6 +98,30 @@ public class EmailMessage implements Serializable {
 
 	public void setSignature(String signature) {
 		this.signature = signature;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Long getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 
 	public Map<String, Object> getModel() {

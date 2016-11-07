@@ -228,7 +228,7 @@ function checkEmails(){
 </div> --%>
 
 <div id="divTaskTd5" style="display: none; float: left;">
-	  <input value="" type="text" id="REPLACEROWIDlocation" name="REPLACEROWIDlocation" class="form-control input-sm" placeholder="Location" field-name="Location" data-validation="required">
+	  <input value="" type="text" id="REPLACEROWIDlocation" name="REPLACEROWIDlocation" class="form-control input-sm" placeholder="Location" field-name="Location" >
 </div> 
 
 <div id="divTaskTd6" style="display: none; float: left;">

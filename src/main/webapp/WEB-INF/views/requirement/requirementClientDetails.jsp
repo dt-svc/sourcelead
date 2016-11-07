@@ -357,9 +357,9 @@ function getClientSubmissionTemplates(local){
 						+ "<option value=''>-- Select Contact --</option>";
 				for (var i = 0; i < json.length; i++) {
 					var opt = json[i];
-					
-					output = output + "<option value='"+opt.id+"'>"
-							+opt.spocName+ "</option>";
+					if("" != opt.spocStatus && opt.spocStatus != "In-Active"){
+						output = output + "<option value='"+opt.id+"'>"+opt.spocName+ "</option>";
+					}
 				}
 				$("#selectContact").empty();
 				$("#selectContact").append(output);
