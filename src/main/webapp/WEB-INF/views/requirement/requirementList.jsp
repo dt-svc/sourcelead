@@ -963,8 +963,6 @@ function requirementPipeline(requirementId){
                				<li><input id="c9" type="checkbox"  name="requirementStatus"  type="checkbox" value ="open"  onclick="requirementList();"><label for="c8">Open</label></li>
                				<li><input id="c10" type="checkbox"  name="requirementStatus"  type="checkbox" value ="onhold"  onclick="requirementList();"><label for="c8">On Hold</label></li>
                				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="Cancelled"  onclick="requirementList();"><label for="c8">Cancelled</label></li>
-		                 	<li><input id="c12" type="checkbox"  name="requirementStatus"  type="checkbox" value ="filledClosed"  onclick="requirementList();"><label for="c8">Cancelled</label></li>
-		              		<li><input id="c13" type="checkbox"  name="requirementStatus"  type="checkbox" value ="unFilledClosed"  onclick="requirementList();"><label for="c8">Cancelled</label></li>
 		              </ul>
 		            </div>
           </li>
