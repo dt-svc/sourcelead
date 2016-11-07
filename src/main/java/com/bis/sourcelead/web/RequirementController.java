@@ -233,6 +233,13 @@ public class RequirementController {
 			model.addObject("clientSubmissions","N");
 		}
 		
+		Requirement parentRequirement = requirementService.getRequirementByParentRequirementId(requirementId);
+        if(parentRequirement != null){
+            model.addObject("parentRequirement","Y");
+        }else{
+            model.addObject("parentRequirement","N");
+        }
+		
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 

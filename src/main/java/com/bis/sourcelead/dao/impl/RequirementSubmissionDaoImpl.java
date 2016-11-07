@@ -238,7 +238,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public RequirementSubmission getSubmissionsBySourceSubmissionId(Long sourceSubmissionId,Long orgLocationsId) {
 		Session session = this.sessionFactory.getCurrentSession();
-	     String query = "from RequirementSubmission rs where rs.sourceSubmission.id = :sourceSubmissionId and rs.orgLocations.id =:orgLocationsId ";
+	     String query = "from RequirementSubmission rs where rs.id =:sourceSubmissionId and rs.vendorLocationId.id =:orgLocationsId ";
 	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "sourceSubmissionId", sourceSubmissionId).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
 	   
 	     if(shortListCandidatesList != null && shortListCandidatesList.size() >0){
