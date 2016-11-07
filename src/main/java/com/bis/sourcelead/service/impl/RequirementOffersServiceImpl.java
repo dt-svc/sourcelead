@@ -170,14 +170,14 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					            if(jsonObj.has("notifyToVendor")  && !jsonObj.getString("notifyToVendor").isEmpty()){
 									List<Requirement> vendorRequirement = requirementService.getRequirementListById(requirementSubmission.getRequirement().getId());
 									Requirement clientRequirement= requirementService.getRequirementByRequirementId(requirementSubmission.getRequirement().getId());
-									offerMailToVendors(loginUser,clientRequirement,vendorRequirement);
+									//offerMailToVendors(loginUser,clientRequirement,vendorRequirement);
 					            }
 					            
 					            // This is to  notify  the Applicant
 					            if(jsonObj.has("notifyToApplicant")  && !jsonObj.getString("notifyToApplicant").isEmpty()){
 								           RequirementSubmission candidatsub  = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
 								           Candidate candidate=candidateService.getCandidateByCandidateId(candidatsub.getCandidate().getId());
-								           addOfferMailScenario(loginUser, candidatsub, orgLocations, requirementOffers, candidate);
+								         //  addOfferMailScenario(loginUser, candidatsub, orgLocations, requirementOffers, candidate);
 						        }
 							}
 					     

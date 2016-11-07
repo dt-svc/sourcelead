@@ -306,26 +306,21 @@ public class RequirementOfferRestController {
 				    RequirementSubmission sourcesub  = requirementSubmissionService.getSubmissionsBySourceSubmissionId(submissionId, orgLocations.getId());
 				    if(sourcesub!=null){
 				    	 // This is  if the Own Org member accepts the Offer
-						sourcesub.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
-				        requirementSubmissionService.storeRequirementSubmission(sourcesub);
+						   sourcesub.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+				           requirementSubmissionService.storeRequirementSubmission(sourcesub);
 				    }
 				   
 				    
-				     // This is  if the Client accepts the Offer 
+				      // This is  if the Client accepts the Offer 
 					   //changing the ClientOfferMade    Candidate status  
 					    requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
 					    requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					    
-				    
-				    // for saving  the offerStatus in Requirement Offer Table
-				    requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(requirementSubmission.getId());
-				    requirementOffers.setOfferStatus("OFFERACCEPTED");
-				  
-				    requirementOffersService.saveOfferStatus(requirementOffers);
+					    // for saving  the offerStatus in Requirement Offer Table
+					    requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(requirementSubmission.getId());
+					    requirementOffers.setOfferStatus("OFFERACCEPTED");
+					    requirementOffersService.saveOfferStatus(requirementOffers);
 				}
-			
-			
-			
 			
 			// Mail Logic here  for Accept Offer
 			
