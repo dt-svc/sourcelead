@@ -232,12 +232,14 @@ $(document).ready(function() {
       
           
           
-          <div class="form-group">
+          <div class="form-group" id="jobIdDiv">
             <label class="col-md-3">Id</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  value="">
+              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  onblur="validateJobId();"  onmouseout="validateJobId();" value="">
             </div>
           </div>
+          
+         
           
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
@@ -397,7 +399,7 @@ $(document).ready(function() {
       </div>
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
-	        <%-- <c:if test="${(SourceLeadWeb_org.vms == 'Y' && SourceLeadWeb_org.ats == 'Y') || (SourceLeadWeb_org.vms == 'N' && (SourceLeadWeb_org.ats == 'Y' || SourceLeadWeb_org.ats == 'N'))}"> --%>
+	        <c:if test="${(SourceLeadWeb_org.vms == 'Y' && SourceLeadWeb_org.ats == 'Y') || (SourceLeadWeb_org.vms != 'Y')}">
 	        	<div class="ml">
 		            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 		            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
@@ -405,7 +407,7 @@ $(document).ready(function() {
 		            &nbsp;&nbsp;
 		            <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
 			  	</div>
-	        <%-- </c:if> --%>
+	        </c:if>
 	      
           <div id="clientDetails" style="display: none;">
             <div class="clearfix">
@@ -423,7 +425,7 @@ $(document).ready(function() {
 			                    	<option value="${report.id},${report.responderLocationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option>
 			                    </c:if>  
 			                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-			                  	 	<option value="${report.id},${report.responderLocationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
+			                  	 	<option value="${report.id},${report.locationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
 			                    </c:if>
 						</c:forEach>
                     </select>
@@ -643,7 +645,7 @@ $(document).ready(function() {
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
                   <input type="text" id="assignedTo" placeholder="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
-                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="getTeamOwners();flushStoreTeam();"></i> </span>
+                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
                   </div>
                 <!-- Modal content Assign To -->
                 <div role="dialog" id="assignTeam"   class="modal fade">
@@ -710,7 +712,7 @@ $(document).ready(function() {
                 <div role="dialog" id="addTeam" class="modal fade">
                   <div class="modal-dialog">
                     <form role="form"  id="team_form" name="team_form" method="post" >
-                    <div class="modal-content">
+                    <div class="modal-content" id="assignTeamDiv">
                       <div class="modal-header">
                         <button data-dismiss="modal" class="close" type="button">×</button>
                         <h4 class="modal-title">Add Team</h4>
@@ -1553,9 +1555,7 @@ function assignMembers() {
 <script type="text/javascript">
 	function flushStoreTeam() { 
 		document.getElementById("team_form").reset();
-		$('#name').val('');
-		$('#ownerUserId').val('');
-		$('#memberUserId').val('');
+		$('#assignTeamDiv').find('p.jquery_form_error_message').remove();
 	}
 </script>
 
@@ -1705,6 +1705,41 @@ function getLevel2Approvers(currentApproverId){
 } 
 </script> 
 
+
+<!-- Job Id validation script starts here -->
+
+<script type="text/javascript">
+ function validateJobId() {
+	
+	 var jobId = document.getElementById("jobId").value; 
+	 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(jobId != null && jobId != ""){
+		
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateJobId?${_csrf.parameterName}=${_csrf.token}&jobId="+jobId, 
+		        success: function(data) {
+		        	
+		        	if(data == '"duplicate"'){
+		        		  $('#jobIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#jobId").after("<p class='jquery_form_error_message'>"+jobId+" is Already Existed</span>");
+						  document.getElementById("jobId").setAttribute('record-exist','yes');
+						  document.getElementById("jobId").setAttribute('record-exist-errorMsg',jobId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#jobIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#requirement_form" ).addClass('button').val('Save');
+                         $("#requirement_form").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>     
+ 
+ <!-- Job Id validation script ends here -->
  
 
 

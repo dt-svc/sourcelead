@@ -176,7 +176,7 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <input type="button" class="btn btn-primary ml" onclick="releaseTo();" value="Release">
-            <input type="button" class="btn btn-default ml" value="Cancel">
+            <input type="button" class="btn btn-default ml" value="Cancel" onClick="javascript:location.href = '<c:url value='requirementList'/>'">
           </div>
         </div>
       </div>

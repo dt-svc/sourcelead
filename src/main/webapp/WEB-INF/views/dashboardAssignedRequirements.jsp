@@ -9,8 +9,8 @@
       <div class="clearfix dashboard-widget mb col-md-12">
         <h4 class="clearfix">
         Assigned Requirements
-        &nbsp;&nbsp;<span title="Calendar"><i aria-hidden="true" class="fa fa-calendar" id="datepicker"></i>
-        </span>
+        &nbsp;&nbsp;<!-- <span title="Calendar"><i aria-hidden="true" class="fa fa-calendar" id="datepicker"></i>
+        </span> -->
         </h4>
       <!-- <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
         <div class="clearfix require_wrap_table dashboard-data">
