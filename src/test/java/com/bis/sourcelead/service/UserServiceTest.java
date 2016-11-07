@@ -96,8 +96,6 @@ public class UserServiceTest {
 		user.setUpdatedDate(new Date());
 		user.setUserCode("132425");
 		user.setUserName("shiva");
-		user.setUserState(Status.ACTIVE);
-		user.setUserType("employee");
 		user.setWorkPhone("1233467890");
 		assertEquals(user, userService.addUser(user));
 		//logger.info("add user details success fully inserted "+ user.getEmail());
@@ -156,8 +154,6 @@ public class UserServiceTest {
 		user.setUpdatedDate(new Date());
 		user.setUserCode("132425");
 		user.setUserName("anusha");
-		user.setUserState(Status.ACTIVE);
-		user.setUserType("admin");
 		user.setWorkPhone("334678903");
 		
 		User loginUser =new User();
@@ -223,8 +219,6 @@ public class UserServiceTest {
 		user.setUpdatedDate(new Date());
 		user.setUserCode("132425");
 		user.setUserName("anusha");
-		user.setUserState(Status.ACTIVE);
-		user.setUserType("admin");
 		user.setWorkPhone("334678903");
 		
 		UserProfile userProfile = new UserProfile();

@@ -636,6 +636,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void sendEmailToClientOrVendor(User user, User loginUser, String password, String responderType,Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation)	throws Exception {
 		 
+		 
+		 boolean isUserActive = false;
+		 isUserActive = userRoleService.isUserActive(user.getId());
+		
+		
 		String actionLink = null; 
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
@@ -661,7 +666,7 @@ public class UserServiceImpl implements UserService {
 		     if(null != password){
 			    globalVarsMap.put("userName",user.getEmail());
 			    globalVarsMap.put("password",password);
-			 }else if(null == password && user.getUserState().equals(Status.NOT_LOGGEDIN)){
+			 }else if(null == password && isUserActive == false){
 				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				 user.setPassword(sourceleadPasswordEncoder.encode(password));
 				 user.setIsMailSent(Status.Y);
@@ -690,7 +695,7 @@ public class UserServiceImpl implements UserService {
 			 if(null != password){
 			    globalVarsMap.put("userName",user.getEmail());
 			    globalVarsMap.put("password",password);
-			 }else if(null == password && user.getUserState().equals(Status.NOT_LOGGEDIN)){
+			 }else if(null == password && isUserActive == false){
 				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				 user.setPassword(sourceleadPasswordEncoder.encode(password));
 				 user.setIsMailSent(Status.Y);

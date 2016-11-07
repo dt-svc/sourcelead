@@ -803,10 +803,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		user.setFirstName(jsonObj.getString("employeeFirstName"));
 		user.setLastName(jsonObj.getString("employeeLastName"));
 		user.setEmail(jsonObj.getString("EmailId"));
-		user.setUserType("Employee");
 		user.setCreatedDate(new Date());
 		user.setCreatedBy(users.getUserCode());
-		user.setUserState(Status.NOT_LOGGEDIN);
 		user.setUserName(jsonObj.getString("EmailId"));
 		user.setPassword(sourceleadPasswordEncoder.encode(password));
 		
@@ -855,6 +853,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 			UserRole userRole = new UserRole();
 			userRole.setRoles(roles);
 			userRole.setUser(usr);
+			userRole.setUserType("Employee");
+			userRole.setUserState(Status.NOT_LOGGEDIN);
 			userRole.setOrgLocations(loginOrgLocation);
 			userRole.setIsPrimary(1);
 			userRole.setCreatedBy(users.getUserCode());
