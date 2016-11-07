@@ -68,6 +68,12 @@ public class OrgLocations {
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	
+	@Column(name = "FROM_EMAIL")
+	private String fromEmail;
+	
+	@Column(name = "FROM_EMAIL_PASSWORD")
+	private String fromEmailPassword;
+	
 	@Column(name = "PHONE")
 	private String phone;
 	
@@ -158,6 +164,22 @@ public class OrgLocations {
 
 	public void setStatus(Status status) {
 		this.status = status;
+	}
+
+	public String getFromEmail() {
+		return fromEmail;
+	}
+
+	public void setFromEmail(String fromEmail) {
+		this.fromEmail = fromEmail;
+	}
+
+	public String getFromEmailPassword() {
+		return fromEmailPassword;
+	}
+
+	public void setFromEmailPassword(String fromEmailPassword) {
+		this.fromEmailPassword = fromEmailPassword;
 	}
 
 	public String getLocationCode() {

@@ -189,7 +189,7 @@ public class UserServiceImpl implements UserService {
 			if(("".equals(responderType))  && (sourceType.equalsIgnoreCase("CREATEUSER") || sourceType.equalsIgnoreCase("PROJECTS"))
 					 &&  (jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent")))
 					 && ("Y".equals(jsonObj.getString("isMailSent")))){
-				sendEmail(user,loginuser,password);
+				sendEmail(user,loginuser,password,orgLocations.getId());
 			}
 			
 			if((("Client".equals(responderType) || "Vendor".equals(responderType)) 
@@ -256,7 +256,7 @@ public class UserServiceImpl implements UserService {
 		
 		//send mail to user
 		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
-			sendEmail(user,loginUser,password);
+			sendEmail(user,loginUser,password,orgLocationsId);
 		}
 		 
 	}
@@ -424,13 +424,13 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public void sendEmail(User user, User loginUser, String password) throws Exception {
+	public void sendEmail(User user, User loginUser, String password, Long locationId) throws Exception {
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 emailMessage.setOrgLocationId(locationId);
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
