@@ -307,10 +307,9 @@ function cancelAddOffer(){
     	    dataType : 'json',
 	        url: sourceleadUrl+"/saveOffer?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
 	        success: function(result) {
-	        		
-	        	    $(".add_inter_wrap").removeClass("add_offer_wrap_active");
-	        		$(".side_mask").fadeOut(200);
-	        		$("body").css('overflow-y', 'auto');
+	        	$(".add_offer_wrap").removeClass("add_offer_wrap_active");
+        		$(".side_mask").fadeOut(200);
+        		$("body").css('overflow-y', 'auto');
 	        },
 	    });   
         return true;

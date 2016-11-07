@@ -208,7 +208,12 @@ public class SubmissionsRestController {
      	 for (RequirementSubmission requirementSubmission : shortlistedList) {
 			CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
-			requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName()+" "+requirementSubmissionTemplateFields.getLastName());
+			if(requirementSubmissionTemplateFields.getLastName() != null){
+				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName()+" "+requirementSubmissionTemplateFields.getLastName());
+			}else{
+				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
+			}
+			
 			requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
 			requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
