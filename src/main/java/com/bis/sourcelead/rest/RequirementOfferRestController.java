@@ -227,11 +227,7 @@ public class RequirementOfferRestController {
 			}else{
 				RequirementSubmission sourcesubmission = requirementSubmissionService.getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(submissionId, orgLocations.getId());
 				if(sourcesubmission!=null){
-					requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(sourcesubmission.getId());
-					if(requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y")){
-						requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
-						resultJson = commonUtil.toJSON(requirementOffers);
-					}
+					
 				}
 				
 			}
@@ -425,7 +421,30 @@ public class RequirementOfferRestController {
 			} 
 		}
 	
-	
+	@RequestMapping(value = "/acceptOrRejectOffer")
+    @ResponseBody  String acceptOrRejectOffer(@RequestParam(value="offerStatus", required=false) String offerStatus,
+                           @RequestParam(value = "submissionId", required = false) Long submissionId,
+                    HttpServletRequest request) throws Exception {
+            
+            RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferId(submissionId);
+            RequirementSubmission requirementSubmission   =requirementSubmissionService.getRequirementSubmissionById(submissionId);
+            if(offerStatus.equalsIgnoreCase("Accepted")){
+                     requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+                     requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+                    requirementOffers.setOfferStatus("OFFERACCEPTED");
+                    requirementOffersService.saveOfferStatus(requirementOffers);
+                    
+            }else if(offerStatus.equalsIgnoreCase("Rejected")){
+                    requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
+                    requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+                    requirementOffers.setOfferStatus("OFFERREJECTED");
+                    requirementOffersService.saveOfferStatus(requirementOffers);
+            }
+            
+           return offerStatus;
+    }                
+
+
 	
 	
 }

@@ -15,9 +15,8 @@
  </style>
  
 <script>
-function getSubmissionDetailsSideBar(submissionId,candidateId){
+function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
-
 	$.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,
@@ -148,7 +147,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId){
        		
 		       result = result + ' <div class="project_side_wrap_inn_tabs">';
 		       result = result + '<ul class="new-tabs">';
-		       result = result + ' <li class="current"><a href="#tabb-1" onClick="getSubmissionDetailsSideBar('+submissionId+','+candidateId+');">Time Line</a></li>';
+		       result = result + ' <li class="current"><a href="#tabb-1" onClick="getSubmissionDetailsSideBar('+submissionId+','+candidateId+','+requirementId+');">Time Line</a></li>';
 		       result = result + ' <li><a href="#tabb-2" onClick="getCandidateProfile('+candidateId+');">Profile</a></li>';
 		       result = result + ' <li><a href="#tabb-3" onClick="getCandidateResume('+candidateId+');">Resume</a></li>';
 		       result = result + '<li><a href="#tabb-4" onclick="employeeSubmissionDetails('+candidateId+');">Employer</a></li>';
@@ -217,7 +216,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId){
           result = result + '</div>';
           
 getInternalInterviewsList(submissionId);
-getCustomerInterviewsList(submissionId);
+getCustomerInterviewsList(submissionId,requirementId);
 getOfferDetails(submissionId);   
 
 $("#viewCandidateDiv").empty();  
@@ -278,7 +277,7 @@ $(document).ready(function() {
 <script>
 function getInternalInterviewsList(submissionId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	var clientSubmissions = '${clientSubmissions}';
+	var parentRequirement = '${parentRequirement}';
 	 $.ajax({  
          type : "POST",
          url: sourceleadUrl+"/getAllInternalInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
@@ -366,7 +365,7 @@ function getInternalInterviewsList(submissionId){
 	                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onclick="sendMailToapplicant('+submissionId+','+report.id+');" title="Notify to Applicant"><i class="fa fa-user text-muted"></i></a>';
 	                    		 result = result + '</span>';
 	                    	 }
-	                    	 if((report.notificationToSpoc == null || report.notificationToSpoc == '' || report.notificationToSpoc =='undefined') && (clientSubmissions == 'Y')){
+	                    	 if((report.notificationToSpoc == null || report.notificationToSpoc == '' || report.notificationToSpoc =='undefined') && (parentRequirement == 'Y')){
 	                    		 result = result + '<span id="'+report.id+'vendorDiv">';
 	                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onclick="sendMailToVendor('+submissionId+','+report.id+');" title="Notify to Vednor"><i class="fa fa-suitcase text-muted"></i></a>';
 	                    		 result = result + '</span>';
@@ -533,11 +532,11 @@ function sendMailToVendor(submissionId,interviewId){
 }
 </script>
 <script>
-function getCustomerInterviewsList(submissionId){
+function getCustomerInterviewsList(submissionId,requirementId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
          type : "POST",
-         url: sourceleadUrl+"/getAllCustomerInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
+         url: sourceleadUrl+"/getAllCustomerInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementId="+requirementId,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != "" && data != '[]'){
             		 if( data.indexOf('Sign In') >= 0){

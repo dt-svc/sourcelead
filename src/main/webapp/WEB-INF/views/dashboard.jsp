@@ -195,9 +195,12 @@ function timeSheetSubmissionStatusCount(){
 <jsp:include page="masterFooter.jsp" /> --%>
 
 
-<!-- <style>
+<style>
 .dashboard-widget {
-min-height: 350px !important;
+min-height: 400px !important;
+}
+.dashboard-widget.dashboard-widget-icons{
+min-height: 225px !important;
 }
 .dashboard-widget .blank-pages{
 padding: 0;
@@ -211,13 +214,13 @@ float: none !important;
  margin-top: 20px !important;
  }
  .custom-datatble .dataTables_filter{
-   top: -31px !important;
+   top: -35px !important;
     padding: 0 !important;
  }
  .dashboard-datepkr{
        position:relative;
 }
-.dashboard-datepkr input[type="text"]{
+/* .dashboard-datepkr input[type="text"]{
        width:115px;
        border:1px solid #ccc;
        margin-right:5px;
@@ -226,8 +229,8 @@ float: none !important;
    position: absolute;
    right: 10px;
    top: 4px;
-}
-</style> -->
+} */
+</style>
 
  
 

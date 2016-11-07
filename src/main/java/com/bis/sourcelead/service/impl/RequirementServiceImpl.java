@@ -142,8 +142,16 @@ public class RequirementServiceImpl implements RequirementService {
 	        StringBuilder location = new StringBuilder();
 
 		    
-		    if (jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())){
+	        if (jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())){
 				requirement.setId(Long.parseLong(jsonObj.getString("requirementId")));
+				requirement.setUpdatedBy(user.getUserCode());
+				requirement.setUpdatedDate(commonUtil.currentDate());
+			}else{
+				
+				requirement.setCreatedDate(commonUtil.currentDate());
+				requirement.setCreatedBy(user.getUserCode());
+				requirement.setUpdatedBy(user.getUserCode());
+				requirement.setUpdatedDate(commonUtil.currentDate());
 			}
 		    
 			if(orgLocations != null){
@@ -1299,7 +1307,13 @@ public class RequirementServiceImpl implements RequirementService {
 
 		
 	}
-
+	
+	@Override
+    public Requirement getRequirementByParentRequirementId(Long requirementId) throws Exception {
+        return requirementDao.getRequirementByParentRequirementId(requirementId);
+    }
+	
+	
 	@Override
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode)
 			throws Exception {
@@ -1314,5 +1328,15 @@ public class RequirementServiceImpl implements RequirementService {
 		
 			return requirementDao.getAssignedRequirementApproverListByOrgLocationIDAndUserId(orgLocationId,userId);
 			
+	}
+	
+	@Override
+	public List<Requirement> getRequirementListById(Long requirementId)throws Exception {
+			return requirementDao.getRequirementListById(requirementId);
+	}
+
+	@Override
+	public Integer validateJobId(Long id) throws Exception {
+		return requirementDao.validateJobId(id);
 	}
 }
