@@ -100,7 +100,11 @@
 				            	}else{
 				            		address = "----";
 				            	}
-				            	
+				            	if(opt.candidateUpdateDateToString != null && opt.candidateUpdateDateToString != 'undefined' && opt.candidateUpdateDateToString != ""){
+				            		candidateUpdateDateToString = opt.candidateUpdateDateToString; 
+				            	}else{
+				            		candidateUpdateDateToString = "---";
+				            	}
 		                     result = result +"<tr>";
 			                 result = result +"  <td><input type='checkbox' id='checkbox12'/></td>";
 			                 result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
@@ -114,7 +118,7 @@
 			                 result = result +"  <td><div ><span>"+opt.email+"</span></div></td>";
 			                 result = result +"  <td><div>"+mobilePhone+"</div></td>";
 			                 result = result +"  <td><div><span title='"+address+"'>"+address+"</span></div></td>";
-			                 result = result +"  <td><div>"+opt.candidateUpdateDateToString+"</div></td>";
+			                 result = result +"  <td><div>"+candidateUpdateDateToString+"</div></td>";
 			                 result = result +"</tr>"; 
 	                     }
 	                     result = result +" </tbody>";

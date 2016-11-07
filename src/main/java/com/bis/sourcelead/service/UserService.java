@@ -21,7 +21,7 @@ public interface UserService  {
 	
 	public void createUser(JSONObject jsonObj, User user, Long orgLocationsId) throws Exception;
 	
-	public void sendEmail(User user, User loginUser, String password) throws Exception;
+	public void sendEmail(User user, User loginUser, String password, Long orgLocationsId) throws Exception;
 	
 	String validateEmailandCandidate(String website, String email,String sourceleadBLockedwebsites) throws Exception;
 	

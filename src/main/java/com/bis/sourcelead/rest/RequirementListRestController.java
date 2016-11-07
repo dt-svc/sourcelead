@@ -334,6 +334,8 @@ public class RequirementListRestController {
 								if(candidateListCopy !=null && candidateListCopy.size() >0){
 									requirementSubmission.setScore(candidateListCopy.get(0).getCandidateScore()+"%");
 									logger.info("size of score is "+candidateListCopy.get(0).getCandidateScore());
+								}else{
+									requirementSubmission.setScore("0 %");
 								}
 							}
 						}
