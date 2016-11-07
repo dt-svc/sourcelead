@@ -71,6 +71,7 @@ window.onload = function () {
 		
 		 
 		  <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Create</a></li>
+		   <li><a onclick="exportUserData();""><i class="fa fa-upload"></i>&nbsp;Export User Data</a></li>
 		  <li><a href="<c:url value='/uploadForm'/>"><i class="fa fa-upload"></i>&nbsp;Bulk Imports</a></li>
         </ul>
       </section>
@@ -88,7 +89,19 @@ window.onload = function () {
       <jsp:include page="../masterFooter.jsp" />
       <div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
       
-      
+<script>
+function exportUserData(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+    var userRole = document.getElementById("userRole").value;
+	
+	var searchByName = document.getElementById("searchByName").value;
+	var userState = document.getElementById("userState").value;
+	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole;
+
+}
+
+</script>   
       
 <script type="text/javascript">
 	function getUsersList(){
