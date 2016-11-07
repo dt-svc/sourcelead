@@ -668,38 +668,38 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .project_side_wrap_inn h1 {
     margin:0px 0px; font-size:18px; font-weight:500; padding:15px;
     }  
-.project-tabs-menu {
+.project-tabs-menu, .canreq-tabs-menu {
     margin:0px 0px; padding:0px 0px 0px 10px; position:relative; top:1px;
     }
-.project-tabs-menu li {
+.project-tabs-menu li, .canreq-tabs-menu li {
     float:left; margin-right:-1px; background-color:#eef1fc; border:1px solid #d4d4d1; border-bottom:none; list-style-type:none;
     border-radius:10px 10px 0px 0px; border-top:2px solid #d4d4d1;
     }
-.project-tabs-menu li.current {
+.project-tabs-menu li.current, .canreq-tabs-menu li.current {
     position:relative; background-color:#fff; z-index:5; border-top:2px solid #368ee0;
     }
-.project-tabs-menu li a {
+.project-tabs-menu li a, .canreq-tabs-menu li a {
     padding:7px 25px; text-decoration:none; font-size:15px; color:#666; display:block;
     }
-.project-tabs-menu .current a {
+.project-tabs-menu .current a, .canreq-tabs-menu .current a {
     color:#1d6cb5;
     }
 .project_tabs {
     border:1px solid #d4d4d1; background-color:#fff; width:100%; box-sizing:border-box;
     }
-.project_tabs_inn {
+.project_tabs_inn, .canreq-tabs-menu_inn {
     padding:0px; display:none;
     }
-.project_tabs_inn_head {
+.project_tabs_inn_head, .canreq-tabs-menu_inn_head {
     padding:5px 10px; text-align:right;
     }  
-.project_tabs_inn_head a{
+.project_tabs_inn_head a, .canreq-tabs-menu_inn_head a{
     padding:5px; font-size:13.5px; font-weight:500; color:#666; display:inline-block; margin:0px 0px 0px 10px;
     }
-.project_tabs_inn_head a i {
+.project_tabs_inn_head a i, .canreq-tabs-menu_inn_head a i {
     padding:0px 5px 0px 0px;
     }
-.project_tabs_inn_head a:hover {
+.project_tabs_inn_head a:hover, .canreq-tabs-menu_inn_head a:hover {
     color:#375d81; text-decoration:none;
     }
 .project_tabs_inn_table {
@@ -1471,7 +1471,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     
     
 .require_wrap_table {
-    width:100%;
+    width:100%; overflow-y:auto;
     }
 .require_wrap_table.recommend_table {}	  
 .require_wrap_table table {
@@ -2126,5 +2126,12 @@ width: 100%;
 }
 .pad-sea {
     display: inline-block; padding: 1px 280px 2px 0;
-}			
+}		
+#assignEmployeePagination_paginate { display: none !important;}	
+#assignEmployeePagination_info { display: none !important;}	
+.wrap_employeeTable  { height: 380px !important; overflow-y:scroll !important; overflow-x:hidden !important;}		 	
+	
+#assignEmployeePagination_wrapper .dataTables_filter {position: fixed !important; top: 69px !important; right: 3px !important;}	
+
+#assignTeam .modal-footer { border-top: none;}	
 		 		

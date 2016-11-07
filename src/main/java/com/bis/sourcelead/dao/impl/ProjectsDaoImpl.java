@@ -543,7 +543,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
  */
 @Override
 @Transactional(rollbackFor = { Exception.class })
-public List<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus() throws Exception {
+public HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
 	
 	Session session = this.sessionFactory.getCurrentSession();
 	Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
@@ -556,13 +556,23 @@ public List<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus() throws Excep
 	Date previousDate = previousMonday.getTime();
 	java.sql.Date  previousDayDate = new java.sql.Date(previousDate.getTime());
 	
-	String query = "from User user where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where ts.startDate < :startDate and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
-
-	List<User> userList  = session.createQuery(query.toString()).setDate("startDate", previousDayDate).setCacheable(true).list(); 
-		
-	logger.debug("The Total Employees which are not submitted the Time sheets within a week are : "+userList.size());
+	Date currentWeekMondayDate = CalendarUtil.getCurrentWeekDay("MON");
+	java.sql.Date  currentMondayDate = new java.sql.Date(currentWeekMondayDate.getTime());
+	List<User> userList = null;
+	if(invoiceFrequency !=null && !"".equalsIgnoreCase(invoiceFrequency)){
+		String query = "from User user where user.id IN (select emp.user from Employees emp where emp.InvoiceFrequency = :invoiceFrequency and emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
+		userList = session.createQuery(query).setDate("startDate", previousDayDate).setDate("endDate", currentMondayDate).setString("invoiceFrequency", invoiceFrequency).setCacheable(true).list(); 
+	}else{
+		String query = "from User user where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
+		userList = session.createQuery(query).setDate("startDate", previousDayDate).setDate("endDate", currentMondayDate).setCacheable(true).list(); 
+	}
 	
-	return userList;
+	logger.debug("The Total Employees which are not submitted the Time sheets within a week are : ***********************"+userList.size());
+	 HashSet<User> userSet  = null;
+	 if(userList != null && !userList.isEmpty()){
+			userSet = new HashSet<>(userList);
+		}
+		return userSet;
 }
 
 @Override
@@ -583,6 +593,7 @@ public void saveAllProjects(List<Projects> projectsList) throws Exception {
 }
 
 @Override
+@Transactional(rollbackFor = { Exception.class })
 public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
       Session session = this.sessionFactory.getCurrentSession(); 
       Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL); 
@@ -590,7 +601,8 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
       cal.setTime(new Date()); 
       Date previousDate = CalendarUtil.getCurrentWeekDay("MON"); 
       java.sql.Date previousDayDate = new java.sql.Date(previousDate.getTime()); 
-      String query = "from User user where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where ts.startDate < :startDate and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))"; List<User> userList = session.createQuery(query.toString()).setDate("startDate", previousDayDate).setCacheable(true).list(); 
+      String query = "from User user where user.id IN (select emp.user from Employees emp where emp.InvoiceFrequency = 'Weekly' and emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where ts.startDate = :startDate and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))"; 
+      List<User> userList = session.createQuery(query.toString()).setDate("startDate", previousDayDate).setCacheable(true).list(); 
       logger.debug("The Total Employees which are not submitted the Time sheets within a week are : "+userList.size());
       HashSet<User> userSet  = null;
 		if(userList != null && !userList.isEmpty()){
@@ -599,5 +611,6 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		return userSet;
 
 }
+
           }
 

@@ -16,4 +16,5 @@ public interface TeamMemberDao {
 	
 	public List<TeamMembers>  getTeamMembersListByLocationId(Long orgLocationId) throws Exception;
 	
+	
 }

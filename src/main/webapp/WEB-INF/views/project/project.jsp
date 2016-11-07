@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -90,7 +91,7 @@
 						<div class="form-group">
 							<label class="col-md-3"> Project Description </label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-500"
+								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-5000"
 									data-validation-optional="true"></textarea>
 								<span class="hidden">Project Description</span>
 							</div>
@@ -924,7 +925,7 @@ function getOrgDetails()
 						success : function(data) {
 							var json = JSON.parse(data);
 							var output = "";
-	
+							output = output+' <div class="wrap_employeeTable">';
 							output = output + ' <table cols="0" id="assignEmployeePagination" class="table table-bordered table-striped  clearfix">';
 							output = output + ' <thead>';
 							output = output + ' <tr>';
@@ -984,7 +985,7 @@ function getOrgDetails()
 							}
 							output = output + ' </tbody>';
 							output = output + ' </table>';
-	
+							output = output+' </div>';
 							$("#employeesList").empty();
 							$("#employeesList").append(output);
 
@@ -1049,7 +1050,7 @@ function getOrgDetails()
 function assignEmployeespagination(){  
     $('#assignEmployeePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -1066,9 +1067,7 @@ function assignEmployeespagination(){
 	function assignEmployee() {
 		var result = "";
 		var count = 1;
-		$(".myCheckbox")
-				.each(
-						function() {
+		$(".myCheckbox").each(function() {
 							var localId = this.id;
 							if ($(this).is(':checked')) {
 								var startDate = $("#startDate" + localId).val();
