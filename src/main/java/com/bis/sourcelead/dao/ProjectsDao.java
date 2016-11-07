@@ -61,7 +61,7 @@ public interface ProjectsDao {
 	
 	public List<SubmissionApproverHierarchy>  getApproveUserForTimeSheets(Long userId) throws Exception;
 	
-	public List<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus() throws Exception;
+	public HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 
 	public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek();
 

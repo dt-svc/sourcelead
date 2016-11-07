@@ -57,6 +57,7 @@ function editCandidate(candidateId){
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
 							result = result + '		      <div class="form-horizontal clearfix">';
 							result = result + '<input type="hidden" class="form-control input-sm" name="candidateId"  value="'+candidateId+'">';
+							
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-6">';
 							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="validate_Space required">';
@@ -65,6 +66,7 @@ function editCandidate(candidateId){
 							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+json.lastName+'" placeholder="Last Name">';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
+							
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-6">';
 							result = result + '		            <input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email">';
@@ -73,7 +75,6 @@ function editCandidate(candidateId){
 							result = result + '<div class="col-md-6">';
 							result = result + '<input type="text" class="form-control input-sm" name="mobilePhone"  value="'+json.mobilePhone+'" placeholder="Mobile">';
 							result = result + '</div>';
-							
 							result = result + '</div>';
 							
 							result = result + '<div class="clearfix mb10">';
@@ -93,21 +94,33 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							result = result + '</div>';
 							
+							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6 custom-fields">';
 							result = result + '<select  class="chosen-select form-control select-bg" name="city" id="city" value="'+json.city+'" field-name="City">';
 							result = result + '</select>';
 							result = result + '</div>';
+							
+							
+							result = result + '<div class="col-md-6 custom-fields">';
+							result = result + '<input type="text" class="form-control input-sm" name="designation"  value="'+json.designation+'" placeholder="Designation">';
+							result = result + '</div>';
 							result = result + '</div>';
 							
-							result = result + '<div class="clearfix mb10 mt10">';
-							result = result + '<div class="col-md-12">';
+							
+							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="col-md-6">';
+							result = result + '<input type="text" class="form-control input-sm" name="currentRate"  value="'+json.currentRate+'" placeholder="Current Rate">';
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="col-md-6">';
 							result = result + '<textarea class="form-control input-sm" placeholder="Summary"  name="summary" rows="2" cols="0" > '+json.summary+'</textarea>';
 							//result = result + ''+json.summary+'</textarea>';
 							result = result + ' </div>';
-							result = result + '		        </div>';
-							result = result + '		        <div class="clearfix mr">';
-							result = result + '		          <div class="pull-right">';
-							result = result + '		            <button type="button"  onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
+							result = result + '</div>';
+							result = result + '<div class="clearfix mr">';
+							result = result + '<div class="pull-right">';
+							result = result + '<button type="button"  onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
 							result = result + '		            <button type="button" class="btn btn-sm btn-danger" onClick ="cancelEdit();">Cancel</button>';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
@@ -475,8 +488,12 @@ function candidateProfile(candidateId){
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details">';	 
 							result = result +'		<h1>Summary:</h1>';
+							if(json.summary != null && json.summary != '' && json.summary != 'undifined'){
 							result = result +'	    <textarea placeholder="Enter description" readonly>'+json.summary+'</textarea>';
-							
+							}
+							else{
+					           	 result = result +'   <textarea placeholder="Enter description" readonly> NO DATA</textarea>';
+				    	        }
 							
 							result = result +'		<div class="clearfix mt dashboard-widget">                                                                                                    ';
 							result = result +'		  <ul class="nav nav-tabs">                                                                                                                   ';
@@ -495,7 +512,7 @@ function candidateProfile(candidateId){
 							result = result +'		            <div class="divskill col-md-12">                                                                                                  ';
 							result = result +'		              <!-- Add skills div -->                                                                                                         ';
 							result = result +'		              <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
-							result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>                                                       ';
+							result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div" onClick="removeSkillPopUp('+candidateId+');"></i>                                                       ';
 							result = result +'		                  <div class="form-horizontal clearfix">                                                                                      ';
 							result = result +'		                    <div class="clearfix div-padding">                                                                                        ';
 							result = result +'		                      <div class="col-md-10">                                                                                                 ';
@@ -515,7 +532,7 @@ function candidateProfile(candidateId){
 							result = result +'		                </div>                                                                                                                        ';
 							result = result +'		              </div>                                                                                                                          ';
 							
-							result = result + '<div id="candidateSkillList"></div> ';
+							result = result + '<div id="candidateSkillList" class="heightScroll clearfix"></div> ';
 							
 							result = result +'		              <!-- Add skills div ends -->                                                                                                    ';
 							

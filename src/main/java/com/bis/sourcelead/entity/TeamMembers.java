@@ -56,10 +56,28 @@ public class TeamMembers {
 	
 	
 	@Transient
+    private String ownerName;
+	
+	@Transient
+    private String memberName;
+	
+	@Transient
+    private String teamName;
+	
+	@Transient
+    private String email;
+	
+	@Transient
+    private String userType;
+	
+	@Transient
     private int teamMemberRequirementAssignedCount;
 	
 	@Transient
     private int teamMemberRequirementAssignedOpenCount;
+	
+	@Transient
+    private Long teamMemberUserId;
 	
 	
 	public Long getId() {
@@ -141,6 +159,57 @@ public class TeamMembers {
 	public void setTeamMemberRequirementAssignedOpenCount(int teamMemberRequirementAssignedOpenCount) {
 		this.teamMemberRequirementAssignedOpenCount = teamMemberRequirementAssignedOpenCount;
 	}
+
+	public String getOwnerName() {
+		return ownerName;
+	}
+
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
+
+	public String getMemberName() {
+		return memberName;
+	}
+
+	public void setMemberName(String memberName) {
+		this.memberName = memberName;
+	}
+
+	public String getTeamName() {
+		return teamName;
+	}
+
+	public void setTeamName(String teamName) {
+		this.teamName = teamName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
+
+	public Long getTeamMemberUserId() {
+		return teamMemberUserId;
+	}
+
+	public void setTeamMemberUserId(Long teamMemberUserId) {
+		this.teamMemberUserId = teamMemberUserId;
+	}
+
+	
+	 
 	
 	
 }

@@ -70,6 +70,10 @@ border-radius:3px;
 .modal-footer {
 background-color: #ccc;
 }
+.ratetype p {
+bottom: -14px;
+    left:-20px !important;
+}
 </style>
 
 
@@ -228,12 +232,14 @@ $(document).ready(function() {
       
           
           
-          <div class="form-group">
+          <div class="form-group" id="jobIdDiv">
             <label class="col-md-3">Id</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  value="">
+              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  onblur="validateJobId();"  onmouseout="validateJobId();" value="">
             </div>
           </div>
+          
+         
           
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
@@ -296,7 +302,7 @@ $(document).ready(function() {
                 </div>
                 <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
-                  <select class="selectpicker" id="rateType" name="rateType">
+                  <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Type">
                     <option value="">Rate Per</option>
                     <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
@@ -368,7 +374,7 @@ $(document).ready(function() {
                   </span>
                 </label>
                 
-                <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file" name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_Space validatedoc" data-validation-optional="true">
+                <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
               <div class="clearfix"></div> <div class="clearfix"></div>
               </div>
             </div>
@@ -393,13 +399,16 @@ $(document).ready(function() {
       </div>
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
-	      <div class="ml">
-            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
-            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
-            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
-            &nbsp;&nbsp;
-            <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
-		  </div>
+	        <c:if test="${(SourceLeadWeb_org.vms == 'Y' && SourceLeadWeb_org.ats == 'Y') || (SourceLeadWeb_org.vms != 'Y')}">
+	        	<div class="ml">
+		            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
+		            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
+		            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
+		            &nbsp;&nbsp;
+		            <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
+			  	</div>
+	        </c:if>
+	      
           <div id="clientDetails" style="display: none;">
             <div class="clearfix">
               <h3>Client Details</h3>
@@ -416,7 +425,7 @@ $(document).ready(function() {
 			                    	<option value="${report.id},${report.responderLocationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option>
 			                    </c:if>  
 			                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-			                  	 	<option value="${report.id},${report.responderLocationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
+			                  	 	<option value="${report.id},${report.locationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
 			                    </c:if>
 						</c:forEach>
                     </select>
@@ -492,7 +501,7 @@ $(document).ready(function() {
 	                </div>
 	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
-	                 <select class="selectpicker"  id="clientRateType" value="${requirement.clientRateType}" name="clientRateType">
+	                 <select class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Type" value="${requirement.clientRateType}" name="clientRateType">
 	                    
 			                <option value="">Rate Per</option>
 		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
@@ -618,7 +627,7 @@ $(document).ready(function() {
             <label class="col-md-3">Manager<span class="text-danger">*</span></label>
             <div class="col-md-9">
            
-              <select  class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager">
+              <select  class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager" id="managerId">
                        <option value="">Select Manager</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}" ${report.id  == requirement.managerUserId.id ? 'selected' : ''}>${report.firstName}&nbsp;${report.lastName}</option>
@@ -636,7 +645,7 @@ $(document).ready(function() {
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
                   <input type="text" id="assignedTo" placeholder="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
-                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="getTeamOwners();"></i> </span>
+                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
                   </div>
                 <!-- Modal content Assign To -->
                 <div role="dialog" id="assignTeam"   class="modal fade">
@@ -703,7 +712,7 @@ $(document).ready(function() {
                 <div role="dialog" id="addTeam" class="modal fade">
                   <div class="modal-dialog">
                     <form role="form"  id="team_form" name="team_form" method="post" >
-                    <div class="modal-content">
+                    <div class="modal-content" id="assignTeamDiv">
                       <div class="modal-header">
                         <button data-dismiss="modal" class="close" type="button">×</button>
                         <h4 class="modal-title">Add Team</h4>
@@ -715,17 +724,14 @@ $(document).ready(function() {
                             <label class="col-lg-4">Team Name <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                               <!-- <input type="text" class="form-control" value=""> -->
-                              <input type="text" class="form-control"  placeholder="Team Name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="">
+                              <input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="">
                               </div>
                             </div>
                             <div class="form-group">
                             <label class="col-lg-4">Team Owner <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                              <select class="form-control"  name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">
-			                    	<%-- <option value=''>-- Select Owner Id --</option>
-				                    <c:forEach var="report" items="${all_users_List}">
-						                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-									</c:forEach> --%>
+			                    	
 			                  </select>
                               </div>
                             </div>
@@ -733,10 +739,7 @@ $(document).ready(function() {
                             <label class="col-lg-4">Team Members <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                              <select multiple class="chosen-select form-control select-bg" name="memberUserId" id="memberUserId" placeholder="Team Member *" data-validation="required validate_Space" field-name="Team Member">
-					                   <%--  <option disabled >-Select Team Members-</option>
-					                    <c:forEach var="report" items="${all_users_List}">
-							                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-								       </c:forEach> --%>
+					                  
 		                       </select>
                               </div>
                             </div>
@@ -744,8 +747,8 @@ $(document).ready(function() {
                         </div>
                       </div>
                       <div class="modal-footer">
-                        <button class="btn btn-primary" type="button" id="team_form" onclick="storeTeam();flushStoreTeam()" >Save</button>
-                        <button data-dismiss="modal" class="btn btn-default" id="team_form" onclick="flushStoreTeam();" type="button">Cancel</button>
+                        <button class="btn btn-primary" type="button" id="team_form" onclick="storeTeam();" >Save</button>
+                        <button data-dismiss="modal" class="btn btn-default" id="team_form"  type="button">Cancel</button>
                       </div>
                     </div>
                     </form>
@@ -765,7 +768,38 @@ $(document).ready(function() {
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		
-		/* var rate = document.getElementById("rate").value; 
+		
+if(saveType=='draft'){
+			
+			//For internal details in draft
+			 $('#managerId').removeAttr('data-validation');
+			 $('#managerId').attr("data-validation-optional","true"); 
+			 
+			 
+			 $('#assignedTo').removeAttr('data-validation');
+			 $('#assignedTo').attr("data-validation-optional","true");
+			 
+			 
+			 $('#priority').removeAttr('data-validation');
+			 $('#priority').attr("data-validation-optional","true");
+			
+			 
+			 $('#applicationFrom').removeAttr('data-validation');
+			 $('#applicationFrom').attr("data-validation-optional","true");
+			 
+			 //for client details in draft
+			 
+			 $('#addClientId').removeAttr('data-validation');
+			 $('#addClientId').attr("data-validation-optional","true");
+			 
+			 $('#selectContact').removeAttr('data-validation');
+			 $('#selectContact').attr("data-validation-optional","true");
+			 
+			 $('#clientSubmissionForm').removeAttr('data-validation');
+			 $('#clientSubmissionForm').attr("data-validation-optional","true");
+		}
+		
+		 var rate = document.getElementById("rate").value; 
 		 if(rate != null && rate != ""){
 			 $('#rateType').removeAttr('data-validation-optional');
 			 $('#rateType').attr("data-validation","required"); 
@@ -773,7 +807,16 @@ $(document).ready(function() {
 			 $('#rateType').removeAttr('data-validation');
 			 $('#ratePer').attr("data-validation-optional","true"); 
 		 }
-		 */
+		 
+		 var clientRate = document.getElementById("clientRate").value; 
+		 if(clientRate != null && clientRate != ""){
+			 $('#clientRateType').removeAttr('data-validation-optional');
+			 $('#clientRateType').attr("data-validation","required"); 
+		 }else{
+			 $('#clientRateType').removeAttr('data-validation');
+			 $('#ratePer').attr("data-validation-optional","true"); 
+		 }
+		 
 		   if ($('#requirement_form').validate(false, validationSettings)){   
 			var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -841,6 +884,7 @@ function storeTeam(){
 					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
 					success :function(data) { 
 						  /* location.replace(sourceleadUrl+"/team"); */
+						$('#addTeam').modal('hide');
 				      }, 
 		    }); 
 			return true; 
@@ -1027,7 +1071,8 @@ function getCities(){
 			
 			/* upload file script */
 			document.getElementById("uploadBtn").onchange = function () {
-			document.getElementById("uploadFile").value = this.value;
+			//document.getElementById("uploadFile").value = this.value;
+			$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 			};
 				
 				
@@ -1468,6 +1513,11 @@ function getTeamsList(teamType){
 				}else{
 					output = output +'           <option value="HR Manager">HR Manager</option>';
 				} 
+               if(teamType == 'Project Manager'){
+				output = output +'           <option value="Project Manager" selected>Project Manager</option>';
+			  }else{
+				output = output +'           <option value="Project Manager">Project Manager</option>';
+			  } 
 				for (var i = 0; i < json.length; i++) {
 					var opt = json[i];
 					if(teamType == opt.id){
@@ -1494,7 +1544,7 @@ function getTeamsList(teamType){
 function pagination(){
     $("#example").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[2, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -1534,9 +1584,9 @@ function assignMembers() {
 
 
 <script type="text/javascript">
-	function flushStoreTeam() {
+	function flushStoreTeam() { 
 		document.getElementById("team_form").reset();
-		$('#memberUserId').val('').trigger('chosen:updated');
+		$('#assignTeamDiv').find('p.jquery_form_error_message').remove();
 	}
 </script>
 
@@ -1686,6 +1736,42 @@ function getLevel2Approvers(currentApproverId){
 } 
 </script> 
 
+
+<!-- Job Id validation script starts here -->
+
+<script type="text/javascript">
+ function validateJobId() {
+	
+	 var jobId = document.getElementById("jobId").value; 
+	 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(jobId != null && jobId != ""){
+		
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateJobId?${_csrf.parameterName}=${_csrf.token}&jobId="+jobId, 
+		        success: function(data) {
+		        	
+		        	if(data == '"duplicate"'){
+		        		  $('#jobIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#jobId").after("<p class='jquery_form_error_message'>"+jobId+" is Already Existed</span>");
+						  document.getElementById("jobId").setAttribute('record-exist','yes');
+						  document.getElementById("jobId").setAttribute('record-exist-errorMsg',jobId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#jobIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#requirement_form" ).addClass('button').val('Save');
+                         $("#requirement_form").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>     
+ 
+ <!-- Job Id validation script ends here -->
+ 
 
 
 <jsp:include page="../masterFooter.jsp" />

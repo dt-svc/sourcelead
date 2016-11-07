@@ -36,7 +36,9 @@ $(document).ready(function() {
 
 
 <style>
- 
+.tbldata-dotdot span{
+max-width:220px;
+} 
  .clsDatePicker {
    z-index: 100000 !important;
 }
@@ -87,7 +89,8 @@ function requirementList(){
 	    {
 			clients.push($(this).val());
 	    });
-	
+	var orgATS = '${SourceLeadWeb_org.ats}';
+	var orgVMS = '${SourceLeadWeb_org.ats}';
 	
 	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
@@ -123,7 +126,7 @@ function requirementList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
-		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show'><span>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 		                     result = result +"<td><div><span>Client</span></div></td>";
 		                     if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
 		                    	 result = result +"<td><div>"+opt.jobType+"</div></td>";
@@ -149,14 +152,12 @@ function requirementList(){
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     } */
 		                     
-		                     
 		                     result = result +"<td><div><b class='proj_process'>"+opt.requirementSubmissionStatus+"</b></div></td>";
-		                     if(opt.requirementSubmissionStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN'){
+		                     if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
 			                     result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
 
 		                     }else{
 			                     result = result +"<td><div>--</div></td>";
- 
 		                     }
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";
@@ -958,10 +959,12 @@ function requirementPipeline(requirementId){
 		              <ul>
                 		    <li><input id="c6" type="checkbox" name="requirementStatus" value ="New"  onclick="requirementList();"><label for="c6">New</label></li>
 							<li><input id="c7" name="requirementStatus" type="checkbox" value ="Draft"  onclick="requirementList();"><label for="c7">Draft</label></li>
-							<li><input id="c8" type="checkbox"  name="requirementStatus"  type="checkbox" value ="Waiting for approval"  onclick="requirementList();"><label for="c8">Waiting for approval</label></li>
-               				<li><input id="c9" type="checkbox"  name="requirementStatus"  type="checkbox" value ="Open"  onclick="requirementList();"><label for="c8">Open</label></li>
-               				<li><input id="c10" type="checkbox"  name="requirementStatus"  type="checkbox" value ="On Hold"  onclick="requirementList();"><label for="c8">On Hold</label></li>
+							<li><input id="c8" type="checkbox"  name="requirementStatus"  type="checkbox" value ="submitted"  onclick="requirementList();"><label for="c8">Waiting for approval</label></li>
+               				<li><input id="c9" type="checkbox"  name="requirementStatus"  type="checkbox" value ="open"  onclick="requirementList();"><label for="c8">Open</label></li>
+               				<li><input id="c10" type="checkbox"  name="requirementStatus"  type="checkbox" value ="onhold"  onclick="requirementList();"><label for="c8">On Hold</label></li>
                				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="Cancelled"  onclick="requirementList();"><label for="c8">Cancelled</label></li>
+		                 	<li><input id="c12" type="checkbox"  name="requirementStatus"  type="checkbox" value ="filledClosed"  onclick="requirementList();"><label for="c8">Cancelled</label></li>
+		              		<li><input id="c13" type="checkbox"  name="requirementStatus"  type="checkbox" value ="unFilledClosed"  onclick="requirementList();"><label for="c8">Cancelled</label></li>
 		              </ul>
 		            </div>
           </li>

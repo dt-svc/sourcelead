@@ -40,11 +40,13 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
@@ -105,6 +107,9 @@ public class RequirementServiceImpl implements RequirementService {
 	 
 	 @Autowired
 	 private CandidateResumesService candidateResumeSerivce;
+	 
+	 @Autowired
+	 private OrgRelationsService orgRelationsService;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -137,8 +142,16 @@ public class RequirementServiceImpl implements RequirementService {
 	        StringBuilder location = new StringBuilder();
 
 		    
-		    if (jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())){
+	        if (jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())){
 				requirement.setId(Long.parseLong(jsonObj.getString("requirementId")));
+				requirement.setUpdatedBy(user.getUserCode());
+				requirement.setUpdatedDate(commonUtil.currentDate());
+			}else{
+				
+				requirement.setCreatedDate(commonUtil.currentDate());
+				requirement.setCreatedBy(user.getUserCode());
+				requirement.setUpdatedBy(user.getUserCode());
+				requirement.setUpdatedDate(commonUtil.currentDate());
 			}
 		    
 			if(orgLocations != null){
@@ -311,7 +324,7 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setSubmissionTemplateJsonString(submissionTemplate.getJsonString());
 			}
 			
-			requirement.setStatus(Constants.REQUIREMENT_STATUS);
+			requirement.setStatus(Constants.TEAM_ACTIVE);
 			requirement.setCreatedDate(commonUtil.currentDate());
 			requirement.setCreatedBy(user.getUserCode());
 			requirement.setUpdatedBy(user.getUserCode());
@@ -364,11 +377,13 @@ public class RequirementServiceImpl implements RequirementService {
 						rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
 						rah.setLevel(1);
 						  
+						rah.setHierarchyType(HIERARCHY_TYPE.PARALLEL);
 						rah.setCreatedDate(commonUtil.currentDate());
 						rah.setCreatedBy(user.getUserCode());
 						rah.setUpdatedBy(user.getUserCode());
 						rah.setUpdatedDate(commonUtil.currentDate());
 						  
+						
 						requirementApproverHierarchyList.add(rah);
 						  approverEmailScenario(user,approverUser,requirement,location);
 
@@ -389,6 +404,8 @@ public class RequirementServiceImpl implements RequirementService {
 					  
 					  rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
 					  rah.setLevel(1);
+					  
+					  rah.setHierarchyType(HIERARCHY_TYPE.SEQUENTIAL);
 					  
 					  rah.setCreatedDate(commonUtil.currentDate());
 					  rah.setCreatedBy(user.getUserCode());
@@ -412,6 +429,7 @@ public class RequirementServiceImpl implements RequirementService {
 					  rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
 					  rah.setLevel(2);
 					  
+					  rah.setHierarchyType(HIERARCHY_TYPE.SEQUENTIAL);
 					  rah.setCreatedDate(commonUtil.currentDate());
 					  rah.setCreatedBy(user.getUserCode());
 					  rah.setUpdatedBy(user.getUserCode());
@@ -608,10 +626,13 @@ public class RequirementServiceImpl implements RequirementService {
 				 globalVarsMap.put("requirementRate","--");
 			 }
 		if(requirement.getClientId()!=null){
-			 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+			OrgRelations orgRelations = orgRelationsService.getRespondingPartyDetailsById(requirement.getClientId().getId());
+			if(orgRelations != null){
+				globalVarsMap.put("client", orgRelations.getResponderLocationId().getOrg().getOrgName());
+			}
 		}else{
 			globalVarsMap.put("client","--");
-			 }
+		 }
 		if(approverUser.getFirstName()!= null && !"".equalsIgnoreCase(approverUser.getFirstName())){
 			globalVarsMap.put("approverName", approverUser.getFirstName());
 		}else{
@@ -1286,12 +1307,18 @@ public class RequirementServiceImpl implements RequirementService {
 
 		
 	}
-
+	
 	@Override
-	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, Long userId)
+    public Requirement getRequirementByParentRequirementId(Long requirementId) throws Exception {
+        return requirementDao.getRequirementByParentRequirementId(requirementId);
+    }
+	
+	
+	@Override
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode)
 			throws Exception {
 		
-			return requirementDao.getAssignedRequirementListByOrgLocationIDAndUserId(orgLocationId,userId);
+			return requirementDao.getAssignedRequirementListByOrgLocationIDAndUserId(orgLocationId, userType, userId, userCode);
 		
 	}
 	
@@ -1301,5 +1328,15 @@ public class RequirementServiceImpl implements RequirementService {
 		
 			return requirementDao.getAssignedRequirementApproverListByOrgLocationIDAndUserId(orgLocationId,userId);
 			
+	}
+	
+	@Override
+	public List<Requirement> getRequirementListById(Long requirementId)throws Exception {
+			return requirementDao.getRequirementListById(requirementId);
+	}
+
+	@Override
+	public Integer validateJobId(Long id) throws Exception {
+		return requirementDao.validateJobId(id);
 	}
 }

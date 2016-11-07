@@ -36,7 +36,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 	public List<RequirementAssignTo> getRequirementAssignToListByRequirementId(Long requirementId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementAssignTo rat   left join fetch rat.assignUserId   where  rat.requirementId.id =:requirementId";
+		String query = "from RequirementAssignTo rat   left join fetch rat.teamId  tm  left join fetch tm.ownerUserId    left join fetch rat.assignUserId   where  rat.requirementId.id =:requirementId";
 		return session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
 		
 		
@@ -99,6 +99,25 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 		}
 	
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public RequirementAssignTo getRequirementAssignToByRequirementId(Long requirementId) throws Exception {
+		
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementAssignTo  rato left join fetch rato.requirementId  left join fetch rato.teamId  tm   left join fetch tm.ownerUserId   where rato.requirementId.id = :requirementId ";
+			List<RequirementAssignTo> requirementAssignToList =  session.createQuery(query.toString()).setLong("requirementId", requirementId)
+					.setCacheable(true).list();
+			
+
+			RequirementAssignTo requirementAssignTo = null;
+			if (requirementAssignToList != null && requirementAssignToList.size() > 0) {
+				requirementAssignTo = (RequirementAssignTo) requirementAssignToList.iterator().next();
+			}
+			return requirementAssignTo;
+		}
+
     
   }
 
