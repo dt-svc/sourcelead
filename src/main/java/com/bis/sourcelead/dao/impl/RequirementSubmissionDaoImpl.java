@@ -174,6 +174,11 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			String query = "from RequirementSubmission reqSub where (reqSub.orgLocations.id =:loginOrgLocation or reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId";
 		  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).list();
 		}
+		
+		if(requirement.getManagerUserId().getId()!=user.getId()&& !flag && !teamFlag && !isadmin){
+			String query = "from RequirementSubmission reqSub where (reqSub.orgLocations.id =:loginOrgLocation or reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId";
+		  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).list();
+		}
 		return requirementSubmission;
 	}
 
@@ -221,10 +226,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementSubmission> getRequirementPerCandidate(Long candudateId) throws Exception {
+	public List<RequirementSubmission> getRequirementPerCandidate(Long candidateId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-	     String query = "from RequirementSubmission rs where rs.candidate.id = :candudateId and rs.submissionStatus = 'SUBMISSION' ";
-	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "candudateId", candudateId).setCacheable(true).list();
+	     String query = "from RequirementSubmission rs where rs.candidate.id = :candidateId";
+	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
 	     return shortListCandidatesList;
 	}
 

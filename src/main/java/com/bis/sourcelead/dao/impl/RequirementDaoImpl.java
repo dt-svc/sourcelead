@@ -419,6 +419,31 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 	
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getRequirementListById(Long requirementId) {
+		Session session = sessionFactory.getCurrentSession();
+		String query = "from Requirement requ  left join fetch requ.spocId spoc   left join fetch spoc.spocUser left join fetch requ.parentRequirement where requ.parentRequirement.id =:requirementId";
+		return session.createQuery(query).setLong("requirementId", requirementId).list();
+		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer validateJobId(Long id) throws Exception {
+	Session session = this.sessionFactory.getCurrentSession();
+		
+		String query ="select count(*)from Requirement requirement where requirement.jobId = :id";
+		
+		List<Long> jobCount =   session.createQuery(query.toString()).setLong("id", id)
+        										.list();
+			Integer count = 0;
+			if(jobCount != null && !jobCount.isEmpty()){
+					count = jobCount.get(0).intValue();
+			}
+			return count;
+	}
 	
 
 	

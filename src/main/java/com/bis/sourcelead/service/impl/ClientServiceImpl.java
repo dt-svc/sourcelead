@@ -289,7 +289,7 @@ public class ClientServiceImpl implements ClientService{
 				submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 				submissionTemplate.setOrgLocationId(clientOrgLocations);
 				submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
-				submissionTemplate.setCreatedBy(spocUser.getUserCode());
+				submissionTemplate.setCreatedBy(user.getUserCode());
 				submissionTemplate.setCreatedDate(new Date());
 				submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 			}
