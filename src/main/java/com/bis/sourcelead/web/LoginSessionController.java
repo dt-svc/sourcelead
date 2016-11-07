@@ -2,8 +2,11 @@ package com.bis.sourcelead.web;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,8 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,13 +30,16 @@ import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -76,6 +83,11 @@ public class LoginSessionController {
 	@Autowired 
 	private ProjectMembersHistoryService projectMembersHistoryService;
 	
+	@Autowired 
+	private ModulesService modulesService;
+	
+	@Autowired 
+	private SourceleadActionsService sourceleadActionsService;
 	
 	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
 	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication) throws Exception {
@@ -150,6 +162,12 @@ public class LoginSessionController {
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
 			}
 			
+			
+			List<Long> modulesId = modulesService.getOrgRegisteredModules(org);
+			List<SourceleadActions> actionsList = sourceleadActionsService.getLoginUserRoleActions(modulesId, userRole.getRoles().getId(), org.getId());
+			
+			
+			//List<GrantedAuthority> authorities = buildUserAuthority(actionsList); 
 			
 			List<Tabs> tabsList;
 			if("slead".equalsIgnoreCase(org.getOrgCode())){
@@ -261,5 +279,19 @@ public class LoginSessionController {
 		
 	}
 	
+	
+  private List<GrantedAuthority> buildUserAuthority(List<SourceleadActions> actionsList) {
+
+    	Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
+       
+    	if(actionsList != null && !actionsList.isEmpty()){
+    		// Build user's authorities
+    		for (SourceleadActions sourceleadActions : actionsList) {
+    			setAuths.add(new SimpleGrantedAuthority(sourceleadActions.getActionRole()));
+    		}
+    	}
+    	List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);
+    	return Result;
+    }
 	
 }

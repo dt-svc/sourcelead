@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ModulesDao;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.enums.Status;
 
 @Repository
 public class ModulesDaoImpl implements ModulesDao{
@@ -43,6 +45,38 @@ public class ModulesDaoImpl implements ModulesDao{
 			}
 			
 		}
+		
+		String query = "select modules.id from Modules modules where "+subQuery+" ";
+		List<Long> modulesIdList =  session.createQuery(query.toString())
+									.setCacheable(true).list();
+		
+		return modulesIdList;
+
+	
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getOrgRegisteredModules(Org org) throws Exception {
+		
+		logger.debug("In ModulesDaoImpl class getOrgRegisteredModules method");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQuery = "";
+		
+		if(org.getAts().equals(Status.Y)){
+			subQuery = "modules.moduleName = 'ATS' OR ";
+		}
+		
+		if(org.getVms().equals(Status.Y)){
+			subQuery = subQuery+"modules.moduleName = 'VMS' OR ";
+		}
+		
+		if(org.getTimeSheet().equals(Status.Y)){
+			subQuery = subQuery+"modules.moduleName = 'TIMESHEET' OR";
+		}
+		
+		subQuery = subQuery.substring(0, subQuery.length()-3);
 		
 		String query = "select modules.id from Modules modules where "+subQuery+" ";
 		List<Long> modulesIdList =  session.createQuery(query.toString())
