@@ -424,7 +424,6 @@ function saveMyTimesheet(status,savingType){
        		   var mydata = JSON.stringify(frm);
        		   mydata = mydata.replace(/[{}]/g, "");
        		   mydata = encodeURIComponent(mydata);
-       		   alert("mydata"+mydata);
        		
        		   var form = $('#timesheet_form')[0];
        		   var formData = new FormData(form); 
