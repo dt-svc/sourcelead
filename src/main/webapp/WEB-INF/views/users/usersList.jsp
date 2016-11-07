@@ -71,7 +71,16 @@ window.onload = function () {
 		
 		 
 		  <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Create</a></li>
-		   <li><a onclick="exportUserData();""><i class="fa fa-upload"></i>&nbsp;Export User Data</a></li>
+		  
+		   <li>
+		    <a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
+			    <div class="export_pop">
+				   <ul>
+				   <li>PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>
+				   <li onclick="exportUserData();">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>
+				   </ul>
+				</div>
+		   </li>
 		  <li><a href="<c:url value='/uploadForm'/>"><i class="fa fa-upload"></i>&nbsp;Bulk Imports</a></li>
         </ul>
       </section>
@@ -250,6 +259,17 @@ function getUserSummary(userId){
 
 <script>
   $('#selector').delay(2000).fadeOut('slow');
+  $(document).ready(function() {
+	   $("#export-pop").click(function(){
+	               $(".export_pop").slideToggle(200);
+	       });
+	   $("html").click(function() {
+	       $(".export_pop").slideUp(200);
+	   });
+	   $(".export_pop, #export-pop").click(function(e) {
+	       e.stopPropagation();
+	   });        
+	});  
 </script> 
 
     
