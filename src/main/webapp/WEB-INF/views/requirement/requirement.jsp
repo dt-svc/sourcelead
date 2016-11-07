@@ -821,6 +821,7 @@ if(saveType=='draft'){
 			var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
+			con = encodeURIComponent(con);
 			var form = $('#requirement_form')[0];
       		var formData = new FormData(form); 
 			  //It will escape all the special characters

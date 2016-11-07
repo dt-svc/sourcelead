@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,10 +126,23 @@ public class RequirementListRestController {
 		List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
 		for(Requirement requirement : requirementList){
 			if(requirement.getClientId() != null){
-				requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+				}
+				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+					requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+				}
 			}
 			if(requirement.getManagerUserId() != null){
-				requirement.setManager(requirement.getManagerUserId().getFirstName());
+				String managerFirstName = "";
+				if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
+					managerFirstName = requirement.getManagerUserId().getFirstName();
+				}
+				String managerLastName = "";
+				if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
+					managerLastName = requirement.getManagerUserId().getLastName();
+				}
+				requirement.setManager(managerFirstName+" "+managerLastName);
 			}
 		}
 		
@@ -139,10 +153,23 @@ public class RequirementListRestController {
 				for(Requirement requirement : requirementList){
 					if(stat.equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
 						if(requirement.getClientId() != null){
-							requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+							if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+								requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+							}
+							if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+								requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+							}
 						}
 						if(requirement.getManagerUserId() != null){
-							requirement.setManager(requirement.getManagerUserId().getFirstName());
+							String managerFirstName = "";
+							if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
+								managerFirstName = requirement.getManagerUserId().getFirstName();
+							}
+							String managerLastName = "";
+							if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
+								managerLastName = requirement.getManagerUserId().getLastName();
+							}
+							requirement.setManager(managerFirstName+" "+managerLastName);
 						}
 						
 						requirementList1.add(requirement);
