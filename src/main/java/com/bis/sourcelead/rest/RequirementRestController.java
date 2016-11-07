@@ -1,10 +1,6 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,26 +20,20 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
-import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
-import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
-import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -350,6 +340,28 @@ public class RequirementRestController {
 		return resultJson;
 		
 	}
+	
+	/**
+	 * prasad K
+	 * This method is check job id duplicate or not
+	 * @param jobId
+	 * @return
+	 * @throws Exception
+	 */
+	 @RequestMapping(value = "/validateJobId",  method = RequestMethod.POST)
+	    public @ResponseBody String validateJobId(@RequestParam(value="jobId", required=false) Long jobId) throws Exception {
+		    	String result;
+				String resultJson;
+				Integer jobIdCount = requirementService.validateJobId(jobId);
+				if(jobIdCount>0){
+					result = "duplicate";
+				}
+				else{
+					result = "unique";
+				}
+				resultJson = commonUtil.toJSON(result);
+				return resultJson;
+		    }
 	
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
