@@ -2,9 +2,12 @@ package com.bis.sourcelead.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -30,6 +33,10 @@ public class SourceleadActions {
 	@Column(name = "ACTION_ROLE")
 	private String actionRole;
 	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "TAB_ID")
+	private Tabs tabs;
+	
 	
 
 	public Long getId() {
@@ -54,6 +61,14 @@ public class SourceleadActions {
 
 	public void setActionRole(String actionRole) {
 		this.actionRole = actionRole;
+	}
+
+	public Tabs getTabs() {
+		return tabs;
+	}
+
+	public void setTabs(Tabs tabs) {
+		this.tabs = tabs;
 	}
 	
 	
