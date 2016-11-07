@@ -136,7 +136,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
 		}
 		
-		if(requirement.getManagerUserId().getId()==user.getId()){
+		if(requirement.getManagerUserId().getId()== user.getId()){
 			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId";
 			requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
 		}
@@ -232,7 +232,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public RequirementSubmission getSubmissionsBySourceSubmissionId(Long sourceSubmissionId,Long orgLocationsId) {
 		Session session = this.sessionFactory.getCurrentSession();
-	     String query = "from RequirementSubmission rs where rs.sourceSubmission.id = :sourceSubmissionId and rs.orgLocations.id =:orgLocationsId ";
+	     String query = "from RequirementSubmission rs where rs.id =:sourceSubmissionId and rs.vendorLocationId.id =:orgLocationsId ";
 	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "sourceSubmissionId", sourceSubmissionId).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
 	   
 	     if(shortListCandidatesList != null && shortListCandidatesList.size() >0){

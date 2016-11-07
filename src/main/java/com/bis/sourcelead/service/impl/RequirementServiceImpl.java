@@ -1299,7 +1299,13 @@ public class RequirementServiceImpl implements RequirementService {
 
 		
 	}
-
+	
+	@Override
+    public Requirement getRequirementByParentRequirementId(Long requirementId) throws Exception {
+        return requirementDao.getRequirementByParentRequirementId(requirementId);
+    }
+	
+	
 	@Override
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode)
 			throws Exception {
