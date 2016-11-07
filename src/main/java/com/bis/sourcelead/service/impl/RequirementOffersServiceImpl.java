@@ -74,7 +74,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	private RequirementService requirementService;
 	
 	@Override
-	public void saveRequirementOffers(JSONObject jsonObj, User user, OrgLocations orgLocations,MultipartHttpServletRequest request) throws Exception {
+	public void saveRequirementOffers(JSONObject jsonObj, User loginUser, OrgLocations orgLocations,MultipartHttpServletRequest request) throws Exception {
 		
 		
 		String maxAdminTimeTypeRowNum = jsonObj.getString("maxOfferRowNum");
@@ -150,31 +150,37 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 							  
 								requirementOffers.setStatus(Constants.RECORD_ACTIVE);
 								requirementOffers.setCreatedDate(new Date());
-								requirementOffers.setCreatedBy(user.getUserCode());
+								requirementOffers.setCreatedBy(loginUser.getUserCode());
 								requirementOffers.setUpdatedDate(new Date());
-								requirementOffers.setUpdatedBy(user.getUserCode());
+								requirementOffers.setUpdatedBy(loginUser.getUserCode());
 					            requirementOffersDao.storeRequirementOffers(requirementOffers);
 					           
 					           RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
 					           requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
+					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					           
 								RequirementSubmission sourcesubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(requirementSubmission.getId(), orgLocations.getId());
                                 if(sourcesubmission !=null ){
                                 	sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
+                                	requirementSubmissionService.storeRequirementSubmission(sourcesubmission);
                                 }
-					            requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-					            User loginUs=user;
-								RequirementSubmission applicant=requirementSubmission;
-								Candidate candidate=candidateService.getCandidateByCandidateId(Long.parseLong(applicants[i].replace("\"", "")));
-								addOfferMailScenario( loginUs, applicant, orgLocations, requirementOffers, candidate);
 					            
-					            if(jsonObj.has("notifyToVendor")){
-					            User loginUser= user;
-								List<Requirement> vendorRequirement = requirementService.getRequirementListById(requirementSubmission.getRequirement().getId());
-								Requirement clientRequirement= requirementService.getRequirementByRequirementId(requirementSubmission.getRequirement().getId());
-								offerMailToVendors(loginUser,clientRequirement,vendorRequirement);
+                                
+                                // This is to  notify  the Vendor
+					            if(jsonObj.has("notifyToVendor")  && !jsonObj.getString("notifyToVendor").isEmpty()){
+									List<Requirement> vendorRequirement = requirementService.getRequirementListById(requirementSubmission.getRequirement().getId());
+									Requirement clientRequirement= requirementService.getRequirementByRequirementId(requirementSubmission.getRequirement().getId());
+									offerMailToVendors(loginUser,clientRequirement,vendorRequirement);
 					            }
+					            
+					            // This is to  notify  the Applicant
+					            if(jsonObj.has("notifyToApplicant")  && !jsonObj.getString("notifyToApplicant").isEmpty()){
+								           RequirementSubmission candidatsub  = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
+								           Candidate candidate=candidateService.getCandidateByCandidateId(candidatsub.getCandidate().getId());
+								           addOfferMailScenario(loginUser, candidatsub, orgLocations, requirementOffers, candidate);
+						        }
 							}
+					     
 				}
 			continue;
 		}
@@ -325,7 +331,10 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
         
         globalVarsMap.put("rejectLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOffer?offerStatus=Rejected&submissionId="+applicant.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
 
-        globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"downloadOfferAttachment?offerId="+requirementOffers.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment"+"<br/>"+requirementOffers.getFileName()+"</div></a>");
+        if(requirementOffers.getDocFile() !=null){
+            globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"downloadOfferAttachment?offerId="+requirementOffers.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment"+"<br/>"+requirementOffers.getFileName()+"</div></a>");
+
+        }
 
             
             
