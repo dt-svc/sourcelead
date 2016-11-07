@@ -1,5 +1,20 @@
 CALL sourcelead.AlterTableAddColumn ('sourcelead','ROLES','ORG_LOCATION_ID','BIGINT NULL AFTER `DISPLAY_NAME`');
-ALTER TABLE `sourcelead`.`ROLES`  ADD FOREIGN KEY(ORG_LOCATION_ID) REFERENCES ORG_LOCATIONS(ID);
+ALTER TABLE `sourcelead`.`ROLES`  ADD FOREIGN KEY(ORG_LOCATION_ID) REFERENCES `sourcelead`.`ORG_LOCATIONS`(ID);
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','ROLES','ORG_ID','BIGINT NULL AFTER `ORG_LOCATION_ID`');
+ALTER TABLE `sourcelead`.`ROLES`  ADD FOREIGN KEY(ORG_ID) REFERENCES `sourcelead`.`ORG`(ID);
+
+
+UPDATE `sourcelead`.`ROLES` SET `ORG_ID`='1' WHERE `ID`='1';
+UPDATE `sourcelead`.`ROLES` SET `ORG_ID`='1' WHERE `ID`='2';
+UPDATE `sourcelead`.`ROLES` SET `ORG_ID`='1' WHERE `ID`='3';
+UPDATE `sourcelead`.`ROLES` SET `ORG_ID`='1' WHERE `ID`='4';
+UPDATE `sourcelead`.`ROLES` SET `ORG_ID`='1' WHERE `ID`='5';
+UPDATE `sourcelead`.`ROLES` SET `ORG_ID`='1' WHERE `ID`='6';
+UPDATE `sourcelead`.`ROLES` SET `ORG_ID`='1' WHERE `ID`='7';
+UPDATE `sourcelead`.`ROLES` SET `ORG_ID`='1' WHERE `ID`='8';
+UPDATE `sourcelead`.`ROLES` SET `ORG_ID`='1' WHERE `ID`='9';
+
 
 
 DROP TABLE IF EXISTS `sourcelead`.`ROLE_ACTIONS_MAPPING`;

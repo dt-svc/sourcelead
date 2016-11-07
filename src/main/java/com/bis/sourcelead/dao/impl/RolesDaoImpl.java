@@ -1,7 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -9,17 +9,31 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RolesDao;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
 public class RolesDaoImpl implements RolesDao{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
 
 	private static final Logger logger = LoggerFactory.getLogger(RolesDaoImpl.class);
 
@@ -120,6 +134,46 @@ public class RolesDaoImpl implements RolesDao{
 			return null;
 		}
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Roles> getSourceleadRoles(Long orgId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		return session.createQuery("from Roles roles where roles.id <> '4' and roles.org.id = :orgId ").setLong("orgId", orgId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Roles storeRoles(Roles roles) {
+		logger.debug("Adding Roles");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (roles != null) {
+				session.saveOrUpdate(roles);
+			}
+			logger.debug("Roles Added Successfully");
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return roles;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Roles getRolesByRoleNameAndOrgLocationId(String roleName, Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Roles> roles = new ArrayList<Roles>();
+		logger.debug("Roles start");
+		roles = session.createQuery("from Roles roles where roles.roleName = :roleName and roles.orgLocations.id = :orgLocationId " ).setString( "roleName", roleName )
+				.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		logger.debug("Roles end");
+		if (roles.size() > 0) {
+			return roles.get(0);
+		} else {
+			return null;
+		}
+   	}
 
 
 }

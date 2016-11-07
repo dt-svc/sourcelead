@@ -36,6 +36,11 @@ public class Roles {
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocations;
 	
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "ORG_ID")
+	private Org org;
+	
 	@Column(name = "STATUS")
 	private String status;
 	
@@ -137,6 +142,14 @@ public class Roles {
 
 	public void setOrgLocations(OrgLocations orgLocations) {
 		this.orgLocations = orgLocations;
+	}
+
+	public Org getOrg() {
+		return org;
+	}
+
+	public void setOrg(Org org) {
+		this.org = org;
 	}
 
 	

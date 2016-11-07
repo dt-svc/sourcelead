@@ -7,6 +7,9 @@ UPDATE `sourcelead`.`TABS` SET `TAB_ID`='4' WHERE `ID`='6';
 
 INSERT INTO `sourcelead`.`TABS` (`ID`, `TAB_NAME`) VALUES ('11', 'Settings');
 
+ALTER TABLE `sourcelead`.`ROLES` DROP INDEX `DISPLAY_NAME` ;
+
+
 
 
 DROP TABLE IF EXISTS `sourcelead`.`SOURCELEAD_ACTIONS`;
