@@ -203,7 +203,9 @@ public class Constants {
 	public static String TEAM_ACTIVE = "1";
 	public static String TEAM_IN_ACTIVE = "0";
 
-	//public static String ACTIVE = "Active";
+	public static String BI_WEEKLY = "Bi-Weekly";
+	public static String SEMI_MONTHLY = "Semi-Monthly";
+	public static String MONTHLY = "Monthly";
 	
 	
 	public static String[] ROLE_DROPDOWN = {"Admin","Project Manager","HR Manager","Recruiter"};

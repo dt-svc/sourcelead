@@ -210,7 +210,7 @@ public class ProjectsServiceTest {
 
 	//@Test
 	public void getPreviousWeekTimeShhetSubmissionStatus() throws Exception{
-		List<User> usrList  = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus();
+		HashSet<User> usrList  = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus("Weekly");
 		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+usrList.size());
 		
 	}

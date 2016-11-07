@@ -361,7 +361,12 @@ public class UserServiceImpl implements UserService {
 			employees.setDailyHours(jsonObj.getString("dayHours"));
 		}
 		if(jsonObj.has("invoiceFrequency")){
-			employees.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+			if(jsonObj.getString("invoiceFrequency") != null && !"".equalsIgnoreCase(jsonObj.getString("invoiceFrequency"))){
+				employees.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+			}else{
+				employees.setInvoiceFrequency("Weekly");
+			}
+			
 		}
 		
 		if(jsonObj.has("dateofJoin") && !isNullOrEmpty(jsonObj.getString("dateofJoin"))){
@@ -750,8 +755,14 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId) throws Exception {
-		return userDao.getUsersByTeamTypeAndNoCurrentUser(currentApproverId);
+	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId, Long orgLocationsId) throws Exception {
+		return userDao.getUsersByTeamTypeAndNoCurrentUser(currentApproverId,orgLocationsId);
+	}
+	
+	@Override
+	public List<User> getUserListExceptExistedTeamMembersList(List<Long> teamMembersId, Long orgLocationId)
+			throws Exception {
+		return userDao.getUserListExceptExistedTeamMembersList(teamMembersId, orgLocationId);
 	}
 	
 	
