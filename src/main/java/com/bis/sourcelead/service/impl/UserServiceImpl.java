@@ -429,7 +429,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void sendEmail(User user, User loginUser, String password, Long locationId) throws Exception {
 		
-		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationsId);
+		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), locationId);
 		 
 		 boolean isUserActive = false;
 		 isUserActive = userRoleService.isUserActive(user.getId());
