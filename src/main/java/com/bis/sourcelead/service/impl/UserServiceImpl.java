@@ -212,9 +212,9 @@ public class UserServiceImpl implements UserService {
 			 * @throws Exception 
 			 * 
 			 */
-			if(userRole != null && StringUtils.isNotEmpty(userRole.getRoles().getRoleName()) && userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)){
+			/*if(userRole != null && StringUtils.isNotEmpty(userRole.getRoles().getRoleName()) && userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)){
 				commonUtil.addAdminAsSecondLevelManager(orgLocations.getId(), user, loginuser);
-			}
+			}*/
 		 
         return user1;
 				
