@@ -40,7 +40,7 @@ public class Constants {
 	public static final String VENDOR_NAME = "Vendor Name*";
 
 	public static final Integer RECORD_ACTIVE = 1;
-	public static final Integer RECORD_INACTIVE = 1;
+	public static final Integer RECORD_INACTIVE = 0;
 	
 	
 	public static final Integer LEVEL1 = 1;
@@ -216,4 +216,7 @@ public class Constants {
 	public static String[] ROLE_DROPDOWN = {"Admin","Project Manager","HR Manager","Recruiter"};
 	public static String[] STATUS_DROPDOWN = {"Active","In-Active","New","Negotiation","Contracted"};
 	public static String[] LEVEL_DROPDOWN = {"Level-1","Level-2","Level-3","Level-4","Level-5"};
+	public static String[] USER_EXCEL_HEADERS = { "Employee Id", "First Name", "Last Name", "Email-id", "Phone Number",
+			"Date Of Join", "Rate", "Location", "Role", "Manager", "status" };
+	
 }

@@ -1,9 +1,12 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +19,12 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.bis.sourcelead.enums.Status;
+
+/**
+ * @author bis113
+ *
+ */
 @Entity
 @Table(name = "USER_ROLE", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="userRole")
@@ -45,6 +54,20 @@ public class UserRole{
     @Column(name = "IS_PRIMARY")
     private Integer isPrimary;
     
+    @Column(name = "USER_STATE")
+	@Enumerated(EnumType.STRING)
+	private Status userState;
+    
+    @Column(name = "PREVIOUS_USER_STATE")
+	@Enumerated(EnumType.STRING)
+	private Status previousUserState;
+	
+	@Column(name = "USER_TYPE")
+	private String userType;
+	
+	@Column(name = "TERMINATE_REASON", columnDefinition = "TEXT default NULL")
+	private String terminateReason;
+    
     @Column(name = "STATUS")
 	private String status;
 	
@@ -63,25 +86,103 @@ public class UserRole{
 	@Transient
 	private String userRoleName;
 	
+	@Transient
+	private String employeeId;
 	
 	@Transient
 	private Integer projectsCount;
 	
-	
 	@Transient
 	private Integer openTimeSheetsCount;
-	
 	
 	@Transient
 	private Integer approvedTimeSheetsCount;
 	
-	
 	@Transient
 	private Integer rejectedTimeSheetsCount;
 	
-	
 	@Transient
 	private Integer waitingTimeSheetsCount;
+	
+	@Transient
+	private String rate;
+	
+	@Transient
+	private String ratePer;
+
+	@Transient
+	private String InvoiceFrequency;
+	
+	@Transient
+    private String hireDateStr;
+	
+	@Transient
+	private String dailyHours;
+	
+	@Transient
+	List<User> allReportingManagers;
+	
+	@Transient
+	private String userName;
+	
+	
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public List<User> getAllReportingManagers() {
+		return allReportingManagers;
+	}
+
+	public void setAllReportingManagers(List<User> allReportingManagers) {
+		this.allReportingManagers = allReportingManagers;
+	}
+
+	public String getDailyHours() {
+		return dailyHours;
+	}
+
+	public void setDailyHours(String dailyHours) {
+		this.dailyHours = dailyHours;
+	}
+
+	public String getHireDateStr() {
+		return hireDateStr;
+	}
+
+	public void setHireDateStr(String hireDateStr) {
+		this.hireDateStr = hireDateStr;
+	}
+
+	
+
+	public String getInvoiceFrequency() {
+		return InvoiceFrequency;
+	}
+
+	public void setInvoiceFrequency(String invoiceFrequency) {
+		InvoiceFrequency = invoiceFrequency;
+	}
+
+	public String getRate() {
+		return rate;
+	}
+
+	public void setRate(String rate) {
+		this.rate = rate;
+	}
+
+	public String getRatePer() {
+		return ratePer;
+	}
+
+	public void setRatePer(String ratePer) {
+		this.ratePer = ratePer;
+	}
 
 	public Long getId() {
 		return id;
@@ -105,6 +206,38 @@ public class UserRole{
 
 	public void setReportingManager(User reportingManager) {
 		this.reportingManager = reportingManager;
+	}
+
+	public Status getUserState() {
+		return userState;
+	}
+
+	public void setUserState(Status userState) {
+		this.userState = userState;
+	}
+
+	public Status getPreviousUserState() {
+		return previousUserState;
+	}
+
+	public void setPreviousUserState(Status previousUserState) {
+		this.previousUserState = previousUserState;
+	}
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
+
+	public String getTerminateReason() {
+		return terminateReason;
+	}
+
+	public void setTerminateReason(String terminateReason) {
+		this.terminateReason = terminateReason;
 	}
 
 	public Roles getRoles() {
@@ -220,6 +353,14 @@ public class UserRole{
 
 	public void setWaitingTimeSheetsCount(Integer waitingTimeSheetsCount) {
 		this.waitingTimeSheetsCount = waitingTimeSheetsCount;
+	}
+
+	public String getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
 	}
 
 	
