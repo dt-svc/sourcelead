@@ -40,7 +40,7 @@ public class Constants {
 	public static final String VENDOR_NAME = "Vendor Name*";
 
 	public static final Integer RECORD_ACTIVE = 1;
-	public static final Integer RECORD_INACTIVE = 1;
+	public static final Integer RECORD_INACTIVE = 0;
 	
 	
 	public static final Integer LEVEL1 = 1;
