@@ -54,6 +54,9 @@ public class RegistrationRestController {
 	 OrgService orgService;
 	 
 	 @Autowired
+     UserRoleService userRoleService;
+	 
+	 @Autowired
 	 CommonUtil commonUtil;
 	 
 	 @RequestMapping(value = "/getOrgsList")
@@ -72,7 +75,10 @@ public class RegistrationRestController {
 			for(Org regOrg : orgsList){
 				regOrg.setEmail(regOrg.getUser().getEmail());
 				regOrg.setIsMailSent(regOrg.getUser().getIsMailSent());
-				regOrg.setUserState(regOrg.getUser().getUserState());
+				UserRole userRole =userRoleService.getLoginUserPrimaryRole(regOrg.getUser().getId());
+                if(userRole != null){
+                    regOrg.setUserState(userRole.getUserState());
+                }
 				regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
 				regOrgsList.add(regOrg);
 			}
