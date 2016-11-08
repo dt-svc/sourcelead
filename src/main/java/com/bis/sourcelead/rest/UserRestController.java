@@ -319,6 +319,7 @@ public class UserRestController {
 	  public @ResponseBody  String resendInvitationEmail(@RequestParam(value="userId", required=false) String userId, HttpServletRequest request) throws Exception {
 		    
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    //get user by userId
 		    User user = userService.getUserById(Long.parseLong(userId));
 		    
@@ -328,7 +329,7 @@ public class UserRestController {
 	 			user.setPassword(sourceleadPasswordEncoder.encode(password));
 	 			user.setIsMailSent(Status.Y);
 	 			userService.addUser(user);
-	 			userService.sendEmail(user,loginUser,password);
+	 			userService.sendEmail(user,loginUser,password,orgLocations.getId());
 	 		}
 		
 	 	  return "success";

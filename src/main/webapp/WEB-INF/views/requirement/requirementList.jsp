@@ -76,8 +76,7 @@ padding: 1px 280px 2px 0;
 --%>
 
 <script>
-function requirementList(){  
-	
+function requirementList(){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var status = [];
 		$('input:checkbox[name=requirementStatus]:checked').each(function() 
@@ -90,7 +89,7 @@ function requirementList(){
 			clients.push($(this).val());
 	    });
 	var orgATS = '${SourceLeadWeb_org.ats}';
-	var orgVMS = '${SourceLeadWeb_org.ats}';
+	var orgVMS = '${SourceLeadWeb_org.vms}';
 	
 	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
@@ -127,7 +126,11 @@ function requirementList(){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
 		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-		                     result = result +"<td><div><span>Client</span></div></td>";
+		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
+		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
 		                     if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
 		                    	 result = result +"<td><div>"+opt.jobType+"</div></td>";
 		                     }else{
@@ -144,13 +147,12 @@ function requirementList(){
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
 		                     }
-	                    	 result = result +"<td><div>-----</div></td>";
 
-		                     /* f(opt.managerUserId.firstName != null && opt.managerUserId.firstName !='' && opt.managerUserId.firstName !='undefined'){
-		                    	 result = result +"<td><div>"+opt.managerUserId.firstName+" "+opt.managerUserId.lastName+"</div></td>";
+		                     if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
+		                    	 result = result +"<td><div>"+opt.manager+"</div></td>";
 		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
-		                     } */
+		                    	 result = result +"<td><div>----</div></td>";
+		                     }
 		                     
 		                     result = result +"<td><div><b class='proj_process'>"+opt.requirementSubmissionStatus+"</b></div></td>";
 		                     if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
@@ -963,8 +965,6 @@ function requirementPipeline(requirementId){
                				<li><input id="c9" type="checkbox"  name="requirementStatus"  type="checkbox" value ="open"  onclick="requirementList();"><label for="c8">Open</label></li>
                				<li><input id="c10" type="checkbox"  name="requirementStatus"  type="checkbox" value ="onhold"  onclick="requirementList();"><label for="c8">On Hold</label></li>
                				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="Cancelled"  onclick="requirementList();"><label for="c8">Cancelled</label></li>
-		                 	<li><input id="c12" type="checkbox"  name="requirementStatus"  type="checkbox" value ="filledClosed"  onclick="requirementList();"><label for="c8">Cancelled</label></li>
-		              		<li><input id="c13" type="checkbox"  name="requirementStatus"  type="checkbox" value ="unFilledClosed"  onclick="requirementList();"><label for="c8">Cancelled</label></li>
 		              </ul>
 		            </div>
           </li>

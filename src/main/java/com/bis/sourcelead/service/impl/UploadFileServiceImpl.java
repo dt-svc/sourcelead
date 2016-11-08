@@ -476,7 +476,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		employee.setUser(user);
 		employeesService.addEmployee(employee);
 		if(isMailChecked !=null){
-			userService.sendEmail(user, loginUser, password);
+			userService.sendEmail(user, loginUser, password,orgLocations.getId());
 		}
 		
 

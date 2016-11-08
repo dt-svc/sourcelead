@@ -784,7 +784,7 @@ public class ProjectsServiceImpl implements ProjectsService{
  		
 		//send mail to user
 		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
-			userService.sendEmail(user,users,password);
+			userService.sendEmail(user,users,password,loginOrgLocation.getId());
 		}
 		
 		return null;

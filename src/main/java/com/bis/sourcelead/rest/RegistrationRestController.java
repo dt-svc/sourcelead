@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -94,13 +95,14 @@ public class RegistrationRestController {
 				Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 				Registration registration =  gson.fromJson(json1,Registration.class);
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			    String[] registredModules =  modules.split(",");
 			    if("Recruiting".equalsIgnoreCase(registredModules[0])){
 			    	if(null == subModules || "".equalsIgnoreCase(subModules)){
 			    		return "Invalid Sub Modules";
 			    	}
 			    }
-				registrationService.addRegistration(registration,user,modules,subModules);
+				registrationService.addRegistration(registration,user,modules,subModules,orgLocations.getId());
 				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", registration.getCompanyName()+" Org has created sucessfully.");
 			} catch (Exception e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
