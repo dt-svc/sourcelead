@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateService;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.TeamService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -78,6 +80,9 @@ public class RequirementRestController {
 	 
 	 @Autowired
 	 private CandidateService candidateService;
+	 
+	 @Autowired
+	 private UserRoleService userRoleService;
 	 
 	 @Autowired
 	 private RecommendationsService recommendationsService;
@@ -243,6 +248,10 @@ public class RequirementRestController {
 		for(User user : usersList){
 			List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId());
 			user.setAssignJobCount(assign.size());
+			UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocation.getId());
+			if(userRole !=null){
+				user.setUserType(userRole.getUserType());
+			}
 		}
 		resultJson = commonUtil.toJSON(usersList);
 		return resultJson;

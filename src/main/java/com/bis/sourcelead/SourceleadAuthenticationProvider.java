@@ -21,6 +21,7 @@ import com.bis.sourcelead.entity.UserLoginAttempts;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.UserLoginAttemptsService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 
 /**
@@ -40,6 +41,9 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
     
     @Autowired
     private UserLoginAttemptsService userLoginAttemptsService;
+    
+    @Autowired
+    private UserRoleService userRoleService;
   
     /*@param
      * 
@@ -51,23 +55,34 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
           String password = (String) authentication.getCredentials();
      
           User  user = userService.findByUserName(username);
+          UserRole userRole = null;;
+			
+          try {
+        	    if(user != null){
+        		     userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+        	     }
+				
+			  } catch (Exception e1) {
+				e1.printStackTrace();
+			 }
+          
           if(user == null){
         	  throw new BadCredentialsException("login_unRegistered_error");
           }
-          else if(user.getUserState().equals(Status.INACTIVE)){
+          else if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.INACTIVE)){
         	  throw new BadCredentialsException("login_inActive_error");
           }
           else{
         	  if(sourceleadPasswordEncoder.matches(password, user.getPassword())){
         		  List<GrantedAuthority> authorities = buildUserAuthority(user.getUserRole()); 
-        		  if(user.getUserState().equals(Status.NOT_LOGGEDIN)){
-        			  user.setUserState(Status.ACTIVE);
-        			  try {
-						userService.addUser(user);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-        		  }
+				  try {
+					  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
+	        			  userRole.setUserState(Status.ACTIVE);
+	        			  userRoleService.addUserRole(userRole);
+	        		  }
+				   } catch (Exception e) {
+					  e.printStackTrace();
+				   }
         		  
         		  return new UsernamePasswordAuthenticationToken(username, password, authorities);
         	  }
