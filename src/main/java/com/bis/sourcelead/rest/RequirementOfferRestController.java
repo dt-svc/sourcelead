@@ -227,7 +227,11 @@ public class RequirementOfferRestController {
 			}else{
 				RequirementSubmission sourcesubmission = requirementSubmissionService.getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(submissionId, orgLocations.getId());
 				if(sourcesubmission!=null){
-					
+					requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(sourcesubmission.getId());
+						if(requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y")){
+							requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
+							resultJson = commonUtil.toJSON(requirementOffers);
+						}
 				}
 				
 			}
