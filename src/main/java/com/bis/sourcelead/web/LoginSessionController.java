@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -16,9 +17,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -94,6 +98,20 @@ public class LoginSessionController {
 		
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		
+		OrgLocations orgLocations = userRole.getOrgLocations();
+		Org org = orgLocations.getOrg();
+		
+		List<Long> modulesId = modulesService.getOrgRegisteredModules(org);
+		List<Tabs> tabsList;
+		if("slead".equalsIgnoreCase(org.getOrgCode())){
+			tabsList = tabsService.getTabsList(modulesId, userRole.getRoles().getId(), org.getId());
+		}else{
+			tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+		}
+		
+		SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
+		
 		setLoginSession(request, authentication,user,userRole);
 		
 		ModelAndView model = new ModelAndView();
@@ -111,13 +129,32 @@ public class LoginSessionController {
 	
 	
 	@RequestMapping(value = "/dashboardLinks" , method = RequestMethod.GET)
-	   public ModelAndView loginSessionLinks(HttpServletRequest request,Authentication authentication,
+	   public ModelAndView loginSessionLinks(HttpServletRequest request,HttpServletResponse response,Authentication authentication,
 			   @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(user.getEmail(), orgLocationId);
 		if(null != userRole){
+			OrgLocations orgLocations = userRole.getOrgLocations();
+			Org org = orgLocations.getOrg();
+			
+			List<Long> modulesId = modulesService.getOrgRegisteredModules(org);
+			List<SourceleadActions> actionsList = null;
+			List<Tabs> tabsList;
+			if("slead".equalsIgnoreCase(org.getOrgCode())){
+				actionsList = sourceleadActionsService.getLoginUserRoleActions(modulesId, userRole.getRoles().getId(), org.getId());
+				tabsList = tabsService.getTabsList(modulesId, userRole.getRoles().getId(), org.getId());
+			}else{
+				actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+			}
+			String userName = (String) authentication.getPrincipal();
+			//new SecurityContextLogoutHandler().logout(request, response, authentication); 
+			//authentication.getAuthorities().clear();
+			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userName,null, buildUserAuthority(actionsList)));
+			System.out.println(authentication.getAuthorities());
+			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			setLoginSession(request, authentication,user,userRole);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("dashboard");
@@ -163,20 +200,14 @@ public class LoginSessionController {
 			}
 			
 			
-			List<Long> modulesId = modulesService.getOrgRegisteredModules(org);
-			List<SourceleadActions> actionsList = sourceleadActionsService.getLoginUserRoleActions(modulesId, userRole.getRoles().getId(), org.getId());
 			
-			
-			//List<GrantedAuthority> authorities = buildUserAuthority(actionsList); 
-			
-			List<Tabs> tabsList;
-			if("slead".equalsIgnoreCase(org.getOrgCode())){
+			/*if("slead".equalsIgnoreCase(org.getOrgCode())){
 				tabsList = tabsService.getSourceLeadTabsListByOrgId(userRole.getRoles().getId(), org.getId());
 			}else{
 				 tabsList = tabsService.getTabsListByLoginUserRoleIdAndOrgLocationId(userRole.getRoles().getId(), orgLocations.getId());
 			}
+			*/
 			
-			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRoleId", userRole.getRoles().getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "userType", userRole.getRoles().getDisplayName());

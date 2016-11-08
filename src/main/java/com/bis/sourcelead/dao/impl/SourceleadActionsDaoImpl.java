@@ -48,4 +48,17 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 	    return actionsList;
 	}
 
+	@Override
+	@Transactional
+	public List<SourceleadActions> getLoginUserRoleActionsByOrgLocationId(List<Long> modulesId, Long roleId,
+			Long orgLocationId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId) "
+	    		+ "and moduleActions.sourceleadActions.id IN (select ram.sourceleadActions.id from RoleActionMapping ram where ram.roles.id = :roleId and ram.orgLocations.id = :orgLocationId and ram.status = '1' ) ) ";
+	    List<SourceleadActions> actionsList = session.createQuery(query.toString()).setLong( "roleId", roleId).setLong( "orgLocationId", orgLocationId).setParameterList("modulesId", modulesId).setCacheable(true).list();
+      
+	    return actionsList;
+	}
+
 }

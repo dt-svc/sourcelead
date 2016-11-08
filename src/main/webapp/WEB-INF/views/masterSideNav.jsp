@@ -25,13 +25,9 @@
       </div>
       <div class="side-nav">
         <ul class="list-unstyled">
-          
+          <li class="${sessionData.nav == 'Dashboard' ? 'side-nav-active' : ''}"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>" title="Dashboard"><span><i class="fa fa-dashboard"></i></span>Dashboard</a></li>
           
           <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-	                 
-	                 <c:if test="${userTabs.tabName == 'Dashboard'}">
-	                 <li class="${sessionData.nav == 'Dashboard' ? 'side-nav-active' : ''}"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>" title="Dashboard"><span><i class="fa fa-dashboard"></i></span>Dashboard</a></li>
-	                 </c:if>
 	                 
 	                 <c:if test="${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_timesheet == 'Y'}">
 		                 <c:if test="${userTabs.tabName == 'Clients'}">

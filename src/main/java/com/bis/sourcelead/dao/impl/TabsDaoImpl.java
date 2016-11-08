@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TabsDao;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Tabs;
 
 @Repository
@@ -53,6 +54,29 @@ public class TabsDaoImpl implements TabsDao{
 		 
 		 
 		 
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Tabs> getTabsList(List<Long> modulesId, Long roleId, Long orgId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId) "
+	    		+ "and moduleActions.sourceleadActions.id IN (select ram.sourceleadActions.id from RoleActionMapping ram where ram.roles.id = :roleId and ram.org.id = :orgId and ram.status = '1' ))) ";
+	    List<Tabs> tabsList = session.createQuery(query.toString()).setLong( "roleId", roleId).setLong( "orgId", orgId).setParameterList("modulesId", modulesId).setCacheable(true).list();
+	    return tabsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Tabs> getTabsListByOrgLocationId(List<Long> modulesId, Long roleId, Long orgLocationId)
+			throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId) "
+	    		+ "and moduleActions.sourceleadActions.id IN (select ram.sourceleadActions.id from RoleActionMapping ram where ram.roles.id = :roleId and ram.orgLocations.id = :orgLocationId and ram.status = '1' ))) ";
+	    List<Tabs> tabsList = session.createQuery(query.toString()).setLong( "roleId", roleId).setLong( "orgLocationId", orgLocationId).setParameterList("modulesId", modulesId).setCacheable(true).list();
+	    return tabsList;
 	}
 
 }

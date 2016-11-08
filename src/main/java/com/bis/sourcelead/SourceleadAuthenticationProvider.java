@@ -16,10 +16,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginAttempts;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.UserLoginAttemptsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -44,6 +50,12 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
     
     @Autowired
     private UserRoleService userRoleService;
+    
+    @Autowired 
+	private ModulesService modulesService;
+	
+	@Autowired 
+	private SourceleadActionsService sourceleadActionsService;
   
     /*@param
      * 
@@ -55,7 +67,8 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
           String password = (String) authentication.getCredentials();
      
           User  user = userService.findByUserName(username);
-          UserRole userRole = null;;
+          UserRole userRole = null;
+          List<Long> modulesId = null;
 			
           try {
         	    if(user != null){
@@ -74,7 +87,28 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
           }
           else{
         	  if(sourceleadPasswordEncoder.matches(password, user.getPassword())){
-        		  List<GrantedAuthority> authorities = buildUserAuthority(user.getUserRole()); 
+        		  OrgLocations orgLocations = userRole.getOrgLocations();
+      			  Org org = orgLocations.getOrg();
+				try {
+					modulesId = modulesService.getOrgRegisteredModules(org);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+    			List<SourceleadActions> actionsList = null;
+    			if("slead".equalsIgnoreCase(org.getOrgCode())){
+    				try {
+						actionsList = sourceleadActionsService.getLoginUserRoleActions(modulesId, userRole.getRoles().getId(), org.getId());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+    			}else{
+    				try {
+						actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+    			}
+        		  List<GrantedAuthority> authorities = buildUserAuthority(actionsList); 
 				  try {
 					  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
 	        			  userRole.setUserState(Status.ACTIVE);
@@ -97,7 +131,7 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
         return true;
     }
 
-    private List<GrantedAuthority> buildUserAuthority(Set<UserRole> userRoles) {
+  /*  private List<GrantedAuthority> buildUserAuthority(Set<UserRole> userRoles) {
 
     	Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
        
@@ -105,6 +139,21 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
     		// Build user's authorities
     		for (UserRole userRole : userRoles) {
     			setAuths.add(new SimpleGrantedAuthority(userRole.getRoles().getRoleName()));
+    		}
+    	}
+    	List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);
+    	return Result;
+    }*/
+    
+    
+    private List<GrantedAuthority> buildUserAuthority(List<SourceleadActions> actionsList) {
+
+    	Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
+       
+    	if(actionsList != null && !actionsList.isEmpty()){
+    		// Build user's authorities
+    		for (SourceleadActions sourceleadActions : actionsList) {
+    			setAuths.add(new SimpleGrantedAuthority(sourceleadActions.getActionRole()));
     		}
     	}
     	List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);

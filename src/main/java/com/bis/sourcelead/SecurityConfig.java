@@ -29,10 +29,10 @@ import org.springframework.stereotype.Controller;
  */
 
 @Configuration
-@EnableWebSecurity
 @ComponentScan(excludeFilters = { @Filter(type = FilterType.ANNOTATION, value = Controller.class),
 @Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebAppConfig.class) })
 @PropertySource(value = { "${propertyLocation:app.properties}" })
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled=true)
 public class SecurityConfig  {
 	

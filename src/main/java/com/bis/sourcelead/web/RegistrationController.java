@@ -63,7 +63,7 @@ public class RegistrationController {
 	 @Autowired
 	 CommonUtil commonUtil;
 	 
-	 @PreAuthorize("hasRole('ROLE_SOURCELEAD_ADMIN')")
+	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/enrolledOrgsList")
 		public ModelAndView enrolledOrgsList(HttpServletRequest request) {
 		 
