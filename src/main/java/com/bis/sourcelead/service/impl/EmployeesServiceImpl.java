@@ -107,5 +107,11 @@ public class EmployeesServiceImpl implements EmployeesService {
 		return emplist;
 	}
 
+	@Override
+	public Employees getEmployeeByUserIdAndOrgLocationsId(Long userId, Long orgLocationsId) {
+		// TODO Auto-generated method stub
+		return  employeesDao.getEmployeeByUserIdAndOrgLocationsId(userId,orgLocationsId);
+	}
+
 	
 }
