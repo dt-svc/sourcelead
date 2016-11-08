@@ -58,8 +58,8 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 	}
 	
 	@Override
-	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectId(long projectId) throws Exception {
-		return projectApproverHierarchyDao.getAllProjectApproverHierarchyByProjectId(projectId);
+	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectId(long projectId,long userId) throws Exception {
+		return projectApproverHierarchyDao.getAllProjectApproverHierarchyByProjectId(projectId,userId);
 		
 	}
 
@@ -125,7 +125,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 			 }
 		 
 		//admin as approver hierarchy ..
-		Collection<User> uLsit = userService.getUsersByUserRoles(loginOrgLocation.getId());
+		/*Collection<User> uLsit = userService.getUsersByUserRoles(loginOrgLocation.getId());
 		CopyOnWriteArrayList<User> userLsit = new CopyOnWriteArrayList<User>(uLsit);
 		if(userLsit != null && !userLsit.isEmpty()){
 			for(User userRole : userLsit){
@@ -144,7 +144,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 				  } 
 				  
 			}
-		}
+		}*/
 		return projectMemberList;
 	}
 	

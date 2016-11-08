@@ -1,8 +1,14 @@
 package com.bis.sourcelead.service;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 
 public interface UserRoleService {
@@ -10,6 +16,8 @@ public interface UserRoleService {
 	public UserRole addUserRole(UserRole userRole) throws Exception;
 	
 	public UserRole getLoginUserPrimaryRole(Long userId) throws Exception;
+	
+	public UserRole getNotPrimaryUser(Long userId) throws Exception;
 	
 	public List<UserRole> getUsersListByLocationId(Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception;
 	
@@ -27,6 +35,32 @@ public interface UserRoleService {
 	
 	public UserRole getUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception;
 	
+	/**To get user role by userid and locationId
+	 * @author Prasad salina
+	 * @param userId
+	 * @param locationId
+	 * @return
+	 * @throws Exception
+	 */
+	public UserRole getUserRoleByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
+	
+	/**
+	 * @author Prasad salina
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean isUserActive(Long userId) throws Exception;
+	
+	//Prasad Salina to get managers list baded on role type
+	/*List<UserRole> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception;
+			
+	//Prasad Salina to get managers list baded on role type and except current user
+	List<UserRole> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception;*/
+
+	//Prasad Salina to get all the user ids baded on reportingManager userid
+	List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception;
+	
 	/**
 	 * This method is used for whether spoc is in multile orgs 
 	 * @param Venkat I
@@ -34,5 +68,12 @@ public interface UserRoleService {
 	 * @throws Exception
 	 */
 	public List<UserRole> getUserSpocsListByUserId(Long userId) throws Exception;
+
+	public Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, List<UserRole> activeList,
+			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList, String userState) throws Exception;
+
+	public File getPdfFile(List<UserRole> activeList,
+			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
+			String userState, String orgName) throws Exception;
 	
 }
