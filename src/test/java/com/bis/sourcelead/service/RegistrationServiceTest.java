@@ -50,7 +50,7 @@ public class RegistrationServiceTest {
 		registration.setWebsite("www.tesla.com");
 		User user = new User();
 		user.setId(3L);
-		registrationService.addRegistration(registration, user, " ", " ");
+		registrationService.addRegistration(registration, user, " ", " ",1l);
 		logger.info("registration added successfully");
 		
 	}
@@ -103,11 +103,11 @@ public class RegistrationServiceTest {
 		user.setUserName("yogi");
 		Set<UserRole> userRole = new HashSet<UserRole>() ;
 		UserRole ur= new UserRole();
+		ur.setUserState(Status.ACTIVE);
+		ur.setUserType("per");
 		ur.setUser(user);
 		userRole.add(ur);
 		user.setUserRole(userRole);
-		user.setUserState(Status.ACTIVE);
-		user.setUserType("per");
 		user.setWorkPhone("12345");
 		user.getIsMailSent();
 		registrationService.sendUpdatePasswordEmail(user);

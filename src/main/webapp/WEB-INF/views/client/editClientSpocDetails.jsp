@@ -159,7 +159,7 @@
 						} 
 						result = result + ' <form id="editVendorContact_form"  name="editVendorContact_form" method="post">';
 						/* readonly="readonly" */
-				     	if(json.userState == 'ACTIVE'){
+				     	if(json.userState == 'ACTIVE' || json.userState == 'INACTIVE'){
 				     		
 				     		result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
 							result = result + '<label>First Name:<span class="text-danger">*</span></label>';
@@ -176,6 +176,12 @@
 							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" readonly="readonly">';
 							//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId" onKeyUp="validateClientEmail('+spocId+');">';
 							result = result + '</div>';
+							
+							result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
+							result = result + '<label>Phone No:</label>';
+							result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" readonly="readonly" >';
+							result = result + '</div>';
+							
 					   }else{
 						   result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
 							result = result + '<label>First Name:<span class="text-danger">*</span></label>';
@@ -191,6 +197,11 @@
 							result = result + '<label>Email:</label>';
 							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail('+spocId+');">';
 							//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId" onKeyUp="validateClientEmail('+spocId+');">';
+							result = result + '</div>';
+							
+							result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
+							result = result + '<label>Phone No:</label>';
+							result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" data-validation="validate_int validate_length length9-20" >';
 							result = result + '</div>';
 					   }
 						
@@ -212,11 +223,6 @@
 						result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail('+spocId+');">';
 						//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId" onKeyUp="validateClientEmail('+spocId+');">';
 						result = result + '</div>'; */
-						
-						result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
-						result = result + '<label>Phone No:</label>';
-						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" data-validation="validate_int validate_length length9-20" >';
-						result = result + '</div>';
 						
 						result = result + ' <div class="user_summary_edit_cta" >';
 						result = result + '<label>Spoc Status :</label>';

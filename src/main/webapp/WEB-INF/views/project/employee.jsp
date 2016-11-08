@@ -351,7 +351,11 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 	  }
 	}
 	else{
-		$("#reasonForProjectDiv").empty().append("<font class='jquery_form_error_message'>Reason is required</font>") ;
+		if(reason){
+			$("#reasonForProjectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+		}else{
+			$("#reasonForProjectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
 	}
 }
 </script>
@@ -525,7 +529,6 @@ function assignEmployee(){
 	        if($(this).is(':checked')){
 		        var startDate = $("#startDate"+employeeId).val();
 		        var endDate = $("#endDate"+employeeId).val();
-		        alert("startDate"+startDate);
 				$.ajax({
 		        	type: "POST",
 		            url: sourceleadUrl+"/storeAssignEmployee?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&mailtoMembers="+mailtoMembers, 

@@ -37,7 +37,7 @@ padding:0!important;
 function addInterview(requirementId){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
-	var clientSubmissions = '${clientSubmissions}';
+	var parentRequirement = '${parentRequirement}';
 	 
 	var result = "";
 	result = result + '<div class="add_inter">';
@@ -68,7 +68,7 @@ function addInterview(requirementId){
 	result = result + '<div class="col-md-12 mt10">';
 	result = result + '<div class="ne-ch">';
 	result = result + '<label><input type="checkbox" name="notificationToApplicant" value="Y" checked="checked" ><b>Notify to Applicants</b></label>';
-	if(clientSubmissions == 'Y'){
+	if(parentRequirement == 'Y'){
 	   result = result + '<label><input type="checkbox" name="notificationToSpoc" value="Y" checked="checked"><b>Notify to Vendors</b></label>';
 	}
 	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" value="Y" onClick="showOthersDiv();"><b>Notify to Others</b></label>';
@@ -228,7 +228,7 @@ function checkEmails(){
 </div> --%>
 
 <div id="divTaskTd5" style="display: none; float: left;">
-	  <input value="" type="text" id="REPLACEROWIDlocation" name="REPLACEROWIDlocation" class="form-control input-sm" placeholder="Location" field-name="Location" data-validation="required">
+	  <input value="" type="text" id="REPLACEROWIDlocation" name="REPLACEROWIDlocation" class="form-control input-sm" placeholder="Location" field-name="Location" >
 </div> 
 
 <div id="divTaskTd6" style="display: none; float: left;">

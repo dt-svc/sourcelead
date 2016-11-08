@@ -40,7 +40,7 @@ public class Constants {
 	public static final String VENDOR_NAME = "Vendor Name*";
 
 	public static final Integer RECORD_ACTIVE = 1;
-	public static final Integer RECORD_INACTIVE = 1;
+	public static final Integer RECORD_INACTIVE = 0;
 	
 	
 	public static final Integer LEVEL1 = 1;
@@ -60,12 +60,13 @@ public class Constants {
 	
 	public static String ACCEPT_CLIENT_INVITATION = "Accept Client Invitation";
 	public static String ACCEPT_VENDOR_INVITATION = "Accept Vendor Invitation";
-	
+	public static String OFFER_MAIL_TO_VENDORS="Client to Vendor Acceptence";
 	public static String APPLICANT_INTERVIEW = "Applicant Interview";
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
 	
 	public static String SUBMIT_TO_CLIENT = "Submit To Client";
-	
+	public static String ADD_OFFER_MAIL ="Forward the Mail";
+
 	public static String VENDOR_INTERVIEW = "Vendors Interview";
 	public static String VENDOR_INVITATION = "Vendor Invitation";
 	

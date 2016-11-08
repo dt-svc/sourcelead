@@ -442,8 +442,6 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		user.setEmail(userImport.getEmailId());
 		user.setMobilePhone(userImport.getMobileNumber());
 		user.setCreatedDate(new Date());
-		user.setUserState(Status.NOT_LOGGEDIN);
-		user.setUserType(role.getDisplayName());
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setUserName(userImport.getEmailId());
 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
@@ -465,7 +463,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		userRole.setUser(user);
 		userRole.setIsPrimary(1);
 		userRole.setRoles(role);
-
+		userRole.setUserState(Status.NOT_LOGGEDIN);
+		userRole.setUserType(role.getDisplayName());
 		userRole.setCreatedDate(new Date());
 		userRole.setOrgLocations(orgLocations);
 
@@ -476,7 +475,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		employee.setUser(user);
 		employeesService.addEmployee(employee);
 		if(isMailChecked !=null){
-			userService.sendEmail(user, loginUser, password);
+			userService.sendEmail(user, loginUser, password,orgLocations.getId());
 		}
 		
 

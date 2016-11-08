@@ -16,7 +16,7 @@ public interface RequirementInterviewDao {
 	List<RequirementInterview> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)throws Exception; 
 
 	List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId,
-			Long orgLocationsId) throws Exception;
+			Long orgLocationsId, Long requirementId) throws Exception;
 
 	List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 

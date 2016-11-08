@@ -232,12 +232,14 @@ $(document).ready(function() {
       
           
           
-          <div class="form-group">
+          <div class="form-group" id="jobIdDiv">
             <label class="col-md-3">Id</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  value="">
+              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  onblur="validateJobId();"  onmouseout="validateJobId();" value="">
             </div>
           </div>
+          
+         
           
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
@@ -266,18 +268,19 @@ $(document).ready(function() {
               </div>
             </div>
             
-          <div class="form-group">
-            <label class="col-md-3">Experince</label>
+         <div class="form-group" >
+            <label class="col-md-3">Experience</label>
             <div class="col-md-9">
               <div class="row">
-                <div class="col-md-6">
-                 <input type="text" class="form-control" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5 validate_float" data-validation-optional="true"  value="">
-                   
-                </div>
-                <div class="col-md-6">
-                 
-                <input type="text" class="form-control" id="maxExp" name="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-5 validate_float" data-validation-optional="true"  value="">
-                </div>
+	                <div class="col-md-6">
+	                 <input type="text" class="form-control" placeholder="minExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                </div>
+	                <div class="col-md-6" >
+	                <input type="text" class="form-control" id="maxExp" name="maxExp" placeholder="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-5 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                </div>
+              </div>
+              <div class="row" id="expId">
+                  <input type="hidden" name="expValidation" id="expValidation">
               </div>
             </div>
           </div>
@@ -397,7 +400,7 @@ $(document).ready(function() {
       </div>
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
-	        <%-- <c:if test="${(SourceLeadWeb_org.vms == 'Y' && SourceLeadWeb_org.ats == 'Y') || (SourceLeadWeb_org.vms == 'N' && (SourceLeadWeb_org.ats == 'Y' || SourceLeadWeb_org.ats == 'N'))}"> --%>
+	        <c:if test="${(SourceLeadWeb_org.vms == 'Y' && SourceLeadWeb_org.ats == 'Y') || (SourceLeadWeb_org.vms != 'Y')}">
 	        	<div class="ml">
 		            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 		            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
@@ -405,7 +408,7 @@ $(document).ready(function() {
 		            &nbsp;&nbsp;
 		            <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
 			  	</div>
-	        <%-- </c:if> --%>
+	        </c:if>
 	      
           <div id="clientDetails" style="display: none;">
             <div class="clearfix">
@@ -423,7 +426,7 @@ $(document).ready(function() {
 			                    	<option value="${report.id},${report.responderLocationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option>
 			                    </c:if>  
 			                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-			                  	 	<option value="${report.id},${report.responderLocationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
+			                  	 	<option value="${report.id},${report.locationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
 			                    </c:if>
 						</c:forEach>
                     </select>
@@ -625,7 +628,7 @@ $(document).ready(function() {
             <label class="col-md-3">Manager<span class="text-danger">*</span></label>
             <div class="col-md-9">
            
-              <select  class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager">
+              <select  class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager" id="managerId">
                        <option value="">Select Manager</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}" ${report.id  == requirement.managerUserId.id ? 'selected' : ''}>${report.firstName}&nbsp;${report.lastName}</option>
@@ -643,7 +646,7 @@ $(document).ready(function() {
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
                   <input type="text" id="assignedTo" placeholder="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
-                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="getTeamOwners();flushStoreTeam();"></i> </span>
+                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
                   </div>
                 <!-- Modal content Assign To -->
                 <div role="dialog" id="assignTeam"   class="modal fade">
@@ -710,7 +713,7 @@ $(document).ready(function() {
                 <div role="dialog" id="addTeam" class="modal fade">
                   <div class="modal-dialog">
                     <form role="form"  id="team_form" name="team_form" method="post" >
-                    <div class="modal-content">
+                    <div class="modal-content" id="assignTeamDiv">
                       <div class="modal-header">
                         <button data-dismiss="modal" class="close" type="button">×</button>
                         <h4 class="modal-title">Add Team</h4>
@@ -766,6 +769,37 @@ $(document).ready(function() {
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		
+		
+if(saveType=='draft'){
+			
+			//For internal details in draft
+			 $('#managerId').removeAttr('data-validation');
+			 $('#managerId').attr("data-validation-optional","true"); 
+			 
+			 
+			 $('#assignedTo').removeAttr('data-validation');
+			 $('#assignedTo').attr("data-validation-optional","true");
+			 
+			 
+			 $('#priority').removeAttr('data-validation');
+			 $('#priority').attr("data-validation-optional","true");
+			
+			 
+			 $('#applicationFrom').removeAttr('data-validation');
+			 $('#applicationFrom').attr("data-validation-optional","true");
+			 
+			 //for client details in draft
+			 
+			 $('#addClientId').removeAttr('data-validation');
+			 $('#addClientId').attr("data-validation-optional","true");
+			 
+			 $('#selectContact').removeAttr('data-validation');
+			 $('#selectContact').attr("data-validation-optional","true");
+			 
+			 $('#clientSubmissionForm').removeAttr('data-validation');
+			 $('#clientSubmissionForm').attr("data-validation-optional","true");
+		}
+		
 		 var rate = document.getElementById("rate").value; 
 		 if(rate != null && rate != ""){
 			 $('#rateType').removeAttr('data-validation-optional');
@@ -788,6 +822,7 @@ $(document).ready(function() {
 			var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
+			con = encodeURIComponent(con);
 			var form = $('#requirement_form')[0];
       		var formData = new FormData(form); 
 			  //It will escape all the special characters
@@ -1354,7 +1389,7 @@ function getUserList(teamType){
 	                		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
-	                		result = result +'             <th><input type="checkbox"></th>';
+	                		result = result +'             <th><input type="checkbox" id="checkAll" onclick="toggle(this);"></th>';
 	                		result = result +'             <th>Name</th>';
 	                		result = result +'             <th>Email</th>';
 	                		result = result +'             <th>Role</th>';
@@ -1553,9 +1588,7 @@ function assignMembers() {
 <script type="text/javascript">
 	function flushStoreTeam() { 
 		document.getElementById("team_form").reset();
-		$('#name').val('');
-		$('#ownerUserId').val('');
-		$('#memberUserId').val('');
+		$('#assignTeamDiv').find('p.jquery_form_error_message').remove();
 	}
 </script>
 
@@ -1705,7 +1738,76 @@ function getLevel2Approvers(currentApproverId){
 } 
 </script> 
 
- 
 
+<!-- Job Id validation script starts here -->
+
+<script type="text/javascript">
+ function validateJobId() {
+	
+	 var jobId = document.getElementById("jobId").value; 
+	 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(jobId != null && jobId != ""){
+		
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateJobId?${_csrf.parameterName}=${_csrf.token}&jobId="+jobId, 
+		        success: function(data) {
+		        	
+		        	if(data == '"duplicate"'){
+		        		  $('#jobIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#jobId").after("<p class='jquery_form_error_message'>"+jobId+" is Already Existed</span>");
+						  document.getElementById("jobId").setAttribute('record-exist','yes');
+						  document.getElementById("jobId").setAttribute('record-exist-errorMsg',jobId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#jobIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#requirement_form" ).addClass('button').val('Save');
+                         $("#requirement_form").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>     
+ 
+ <script>
+function toggle(source) {
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i] != source)
+            checkboxes[i].checked = source.checked;
+        
+    }
+$('input:checkbox:not(#checkAll)').click(function() {
+    if(!this.checked) {
+        $('#checkAll').removeAttr('checked');
+    }
+});
+}
+</script>
+ 
+ <!-- Job Id validation script ends here -->
+ 
+<script>
+//Function to validate if maximum exp value is more the minimum exp value
+function minMaxExperience(){
+    var maxExp = ($('#maxExp').val());
+    var minExp = ($('#minExp').val());
+    
+    if (parseFloat(maxExp) < parseFloat(minExp)){
+        $('#expId').find('p.jquery_form_error_message').remove(); 
+		$('input#expValidation').attr('class','error signin_fild');
+		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");
+		$('input#expValidation').attr('record-exist','yes');
+		$('input#expValidation').attr('record-exist-errorMsg','Max Experience is greater than Min Experience'); 
+    }  else{
+    	$('#expId').find('p.jquery_form_error_message').remove(); 
+    	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");
+		$('#expId').find('p.jquery_form_error_message').remove();
+    }
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

@@ -153,7 +153,15 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		logger.debug("In ProjectMember getAllProjectMembersByProjectId method");
         Session session = this.sessionFactory.getCurrentSession();
         List<ProjectMembers> projectsMembersList = null;
-		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id ");
+
+		/* commented by prasad salina 
+		to get userType from userrole
+		
+		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id and pm.status ='1' "
+				+ "and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.userType = 'Employee')) ");*/
+
+		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id and pm.status ='1'");
+
 		projectsMembersList=projectsMembersListQuery.setLong("id", id).setCacheable(true).list();
 		return projectsMembersList;
         

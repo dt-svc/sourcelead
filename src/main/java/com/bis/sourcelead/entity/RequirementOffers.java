@@ -86,6 +86,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Transient
     private String dateOfJoiningStr;
 	
+	@Transient
+    private String clientName;
+	
 
 	public Long getId() {
 		return id;
@@ -246,8 +249,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setOfferStatus(String offerStatus) {
 		this.offerStatus = offerStatus;
 	}
-	
-	
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
+	}
 	
 	
 }

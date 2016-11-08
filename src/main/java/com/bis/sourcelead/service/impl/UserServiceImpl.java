@@ -125,15 +125,23 @@ public class UserServiceImpl implements UserService {
 	   User user = null;
 	   String password = null;
 	   UserRole userRole = null;
+	   boolean isUserActive = false;
 	   user = userDao.findByEmail(jsonObj.getString("email"));
+	   if(null != user){
+		  isUserActive = userRoleService.isUserActive(user.getId());
+	   }
 	   
 	   if(null == user){
 		   user = getUserDetails(jsonObj,loginuser.getUserCode());
 		   password = SourceLeadRandomCodeHelper.generateRandomPassword();
 		   user.setPassword(sourceleadPasswordEncoder.encode(password));
-		}else if(null != user && user.getUserState().equals(Status.NOT_LOGGEDIN)){
+		}else if(isUserActive == false){
 			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
+		}
+	   
+	    if(jsonObj.has("phoneNumber")){
+			user.setMobilePhone(jsonObj.getString("phoneNumber"));
 		}
 		
 	    if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
@@ -189,7 +197,8 @@ public class UserServiceImpl implements UserService {
 			if(("".equals(responderType))  && (sourceType.equalsIgnoreCase("CREATEUSER") || sourceType.equalsIgnoreCase("PROJECTS"))
 					 &&  (jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent")))
 					 && ("Y".equals(jsonObj.getString("isMailSent")))){
-				sendEmail(user,loginuser,password);
+
+				sendEmail(user,loginuser,password,orgLocations.getId());
 			}
 			
 			if((("Client".equals(responderType) || "Vendor".equals(responderType)) 
@@ -256,7 +265,8 @@ public class UserServiceImpl implements UserService {
 		
 		//send mail to user
 		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
-			sendEmail(user,loginUser,password);
+
+			sendEmail(user,loginUser,password,orgLocationsId);
 		}
 		 
 	}
@@ -280,26 +290,6 @@ public class UserServiceImpl implements UserService {
 			user.setUserName(jsonObj.getString("email"));
 		}
 		
-		if(jsonObj.has("phoneNumber")){
-			user.setMobilePhone(jsonObj.getString("phoneNumber"));
-		}
-		/*if(jsonObj.has("reportingManager") && !isNullOrEmpty(jsonObj.getString("reportingManager"))){
-			User reportingManager = new User();
-			reportingManager.setId(Long.parseLong(jsonObj.getString("reportingManager")));
-			user.setReportingManager(reportingManager);
-		}*/
-		user.setUserState(Status.NOT_LOGGEDIN);
-		
-		if(jsonObj.has("roleType")){
-			Roles roles;
-			try {
-				roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleType")));
-				user.setUserType(roles.getDisplayName());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-		}
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setCreatedBy(userCode);
 		user.setCreatedDate(commonUtil.currentDate());
@@ -318,6 +308,19 @@ public class UserServiceImpl implements UserService {
 			User reportingManager = new User();
 			reportingManager.setId(Long.parseLong(jsonObj.getString("reportingManager")));
 			userRole.setReportingManager(reportingManager);
+		}
+		
+		userRole.setUserState(Status.NOT_LOGGEDIN);
+		
+		if(jsonObj.has("roleType")){
+			Roles roles;
+			try {
+				roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleType")));
+				userRole.setUserType(roles.getDisplayName());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 		
 		
@@ -424,13 +427,23 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public void sendEmail(User user, User loginUser, String password) throws Exception {
+	public void sendEmail(User user, User loginUser, String password, Long locationId) throws Exception {
+		
+		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), locationId);
+		 if(userRole == null){
+		    userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		 }
+		 
+		 boolean isUserActive = false;
+		 isUserActive = userRoleService.isUserActive(user.getId());
+		 
+
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 emailMessage.setOrgLocationId(locationId);
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -438,10 +451,10 @@ public class UserServiceImpl implements UserService {
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
 		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
 		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
-		 globalVarsMap.put("role",user.getUserType());
+		 globalVarsMap.put("role",userRole.getUserType());
 		 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 		 globalVarsMap.put("userEmailId",user.getEmail());
-		 if(null != user && user.getUserState().equals(Status.NOT_LOGGEDIN)){
+		 if(isUserActive == false){
 			 globalVarsMap.put("password",password);
 		 }else{
 			 globalVarsMap.put("password","Note : You have already registered. Login with your registered password");
@@ -591,10 +604,6 @@ public class UserServiceImpl implements UserService {
 		return userDao.getManagersByUserIdAndUserRolesAndOrgLocationId(userId, roleType, orgLocationsId);
 	}
 	
-	@Override
-	public List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception {
-		return userDao.getAllUserIdsByReportingManagerId(reportingManagerId);
-	}
 
 	@Override
 	public User getUserDetailsByUserCode(String userCode) {
@@ -638,6 +647,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void sendEmailToClientOrVendor(User user, User loginUser, String password, String responderType,Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation)	throws Exception {
 		 
+		 
+		 boolean isUserActive = false;
+		 isUserActive = userRoleService.isUserActive(user.getId());
+		
+		
 		String actionLink = null; 
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
@@ -663,7 +677,7 @@ public class UserServiceImpl implements UserService {
 		     if(null != password){
 			    globalVarsMap.put("userName",user.getEmail());
 			    globalVarsMap.put("password",password);
-			 }else if(null == password && user.getUserState().equals(Status.NOT_LOGGEDIN)){
+			 }else if(null == password && isUserActive == false){
 				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				 user.setPassword(sourceleadPasswordEncoder.encode(password));
 				 user.setIsMailSent(Status.Y);
@@ -692,7 +706,7 @@ public class UserServiceImpl implements UserService {
 			 if(null != password){
 			    globalVarsMap.put("userName",user.getEmail());
 			    globalVarsMap.put("password",password);
-			 }else if(null == password && user.getUserState().equals(Status.NOT_LOGGEDIN)){
+			 }else if(null == password && isUserActive == false){
 				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				 user.setPassword(sourceleadPasswordEncoder.encode(password));
 				 user.setIsMailSent(Status.Y);
