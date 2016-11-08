@@ -33,7 +33,6 @@ import org.springframework.stereotype.Controller;
 @Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebAppConfig.class) })
 @PropertySource(value = { "${propertyLocation:app.properties}" })
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class SecurityConfig  {
 	
     @Configuration
