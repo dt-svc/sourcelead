@@ -282,8 +282,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					userRoleService.addUserRole(userRole);
 					
 					if(isUserActive == false && !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
-						userService.sendEmail(user,orgLocations.getId(),loginUser,password);
-
+						userService.sendEmail(user,loginUser,password,orgLocations.getId());
+                     }
 				}
 			    Employees employees = employeesService.getEmployeeByUserId(userId);
 			    if(employees !=  null){
