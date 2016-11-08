@@ -50,12 +50,17 @@ public interface RequirementService {
 
 	void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc, OrgLocations loginOrgLocation,String releasetype,StringBuilder location) throws Exception;
 
-
-	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId,Long  userId) throws Exception;
+	public Requirement getRequirementByParentRequirementId(Long requirementId) throws Exception;
+	
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
 	
 	public List<Requirement> getAssignedRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId,Long  userId) throws Exception;
 
 	public List<Candidate> getRecommendationsWithScore(List<Candidate> candidateList, Requirement requirement)throws Exception;
+
+	public List<Requirement> getRequirementListById(Long requirementId) throws Exception;
+	
+	Integer validateJobId(Long id) throws Exception;
 
 
 

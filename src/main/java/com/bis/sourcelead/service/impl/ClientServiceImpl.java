@@ -227,27 +227,9 @@ public class ClientServiceImpl implements ClientService{
 				orgService.addOrganization(org);
 			}
 			
-			if("Client".equals(responderType)){
-				submissionTemplate = submissionTemplateService.getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId(clientOrgLocations.getId(), orgLocations.getId());
-				if(submissionTemplate == null){
-					submissionTemplate = new SubmissionTemplate();
-					sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
-					submissionTemplate.setTemplateName("Default Template");
-					submissionTemplate.setDescription("Default Template Description");
-					submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
-					submissionTemplate.setIsDefault("Y");
-					submissionTemplate.setClientLocationId(clientOrgLocations);
-					submissionTemplate.setOrgLocationId(orgLocations);
-					submissionTemplate.setCreatedBy(user.getUserCode());
-					submissionTemplate.setCreatedDate(new Date());
-					submissionTemplateService.addSubmissionTemplate(submissionTemplate);
-				}
-			}
-			
 			if(jsonObj.has("email")){
 				spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
-				if(!isNullOrEmpty(jsonObj.getString("roleType")) 
-						&& Long.parseLong(jsonObj.getString("roleType")) == 1L && null == clientOrgLocations.getUser() && null == org.getUser()){
+				if(!isNullOrEmpty(jsonObj.getString("roleType")) && null == clientOrgLocations.getUser() && null == org.getUser()){
 					clientOrgLocations.setUser(spocUser);
 					org.setUser(spocUser);
 					orgLocationService.updateOrgLocations(clientOrgLocations);
@@ -298,6 +280,39 @@ public class ClientServiceImpl implements ClientService{
 				orgSpocService.addOrgSpoc(orgSpoc);
 				}
 			}
+			
+			if(org.getOrgType().equalsIgnoreCase("Guest")){
+				submissionTemplate = new SubmissionTemplate();
+				sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
+				submissionTemplate.setTemplateName(org.getOrgName()+" Default Template");
+				submissionTemplate.setDescription(org.getOrgName()+" Default Template");
+				submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
+				submissionTemplate.setOrgLocationId(clientOrgLocations);
+				submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+				submissionTemplate.setCreatedBy(user.getUserCode());
+				submissionTemplate.setCreatedDate(new Date());
+				submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+			}
+			
+			submissionTemplate = submissionTemplateService.getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId(clientOrgLocations.getId(), orgLocations.getId());
+			if(submissionTemplate == null){
+				submissionTemplate = new SubmissionTemplate();
+				sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
+				submissionTemplate.setTemplateName("Default Template");
+				submissionTemplate.setDescription("Default Template Description");
+				submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
+				submissionTemplate.setIsDefault("Y");
+				if("Client".equals(responderType)){
+					submissionTemplate.setClientLocationId(clientOrgLocations);
+					submissionTemplate.setOrgLocationId(orgLocations);
+				}else if("Vendor".equals(responderType)){
+					submissionTemplate.setClientLocationId(orgLocations);
+					submissionTemplate.setOrgLocationId(clientOrgLocations);
+				}
+				submissionTemplate.setCreatedBy(user.getUserCode());
+				submissionTemplate.setCreatedDate(new Date());
+				submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+			}
 		}
 	
 	
@@ -321,7 +336,6 @@ public class ClientServiceImpl implements ClientService{
 			if(jsonObj.has("webSite")){
 				org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
 			}
-			org.setOrgType("Company");
 			org.setOrgType("Guest");
 			org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 			org.setCreatedDate(commonUtil.currentDate());

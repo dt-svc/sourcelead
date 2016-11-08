@@ -106,14 +106,14 @@ window.onload = function () {
 	 				var mobilePhone = "";
 	 			    var email = "";
 	 				
-	 			    if(org.user != null && org.user.mobilePhone != null && org.user.mobilePhone != ''){
-	 			    	mobilePhone = org.user.mobilePhone;
+	 			    if(org.mobilePhone != null && org.mobilePhone != ''){
+	 			    	mobilePhone = org.mobilePhone;
 	 			    }else{
 	 			    	mobilePhone = "&nbsp;No Data"
 	 			    }
 	 				
-	 				if(org.user != null && org.user.email != null && org.user.email != ''){
-	 			    	email = org.user.email;
+	 				if(org.email != null && org.email != ''){
+	 			    	email = org.email;
 	 			    }else{
 	 			    	email = "No Data"
 	 			    }
@@ -133,12 +133,12 @@ window.onload = function () {
 	       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+email+" </lable></p>";
 	       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
 	       	        
-	       	    	if(org.user != null && (org.user.isMailSent != null && org.user.isMailSent != "" && org.user.isMailSent == 'Y') &&
-	 			    		(org.user.userState != null && org.user.userState != "" && org.user.userState == 'NOT_LOGGEDIN') ){
+	       	    	if(org.user != null && (org.isMailSent != null && org.isMailSent != "" && org.isMailSent == 'Y') &&
+	 			    		(org.userState != null && org.userState != "" && org.userState == 'NOT_LOGGEDIN') ){
 	 			    	 result = result +"<p><label id='user"+org.user.id+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+org.user.id+");'>&nbsp;&nbsp;Resend</a></label></p>";
-	 			    }else if(org.user != null && org.user.userState != null && org.user.userState != "" && org.user.userState == 'ACTIVE'){
+	 			    }else if(org.user != null && org.userState != null && org.userState != "" && org.userState == 'ACTIVE'){
 	 			    	result = result +"<p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p>";
-	 			    }else if(org.user != null && org.user.userState != null && org.user.userState != "" && org.user.userState == 'INACTIVE'){
+	 			    }else if(org.user != null && org.userState != null && org.userState != "" && org.userState == 'INACTIVE'){
 	 			    	result = result +"<p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p>";
 	 			    }else if(org.user == null){
 	 			    	result = result +"<p><label class='label label-info'><i class='fa fa-check'></i>&nbsp;&nbsp;Guest Org</label></p>";

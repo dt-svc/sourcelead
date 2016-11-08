@@ -1,10 +1,10 @@
  <!-- Timesheets -->
       <div class="col-md-6">
-        <div class="clients_wrap_table dashboard-widget">
-          <h4 class="pull-left">Timesheets &nbsp;&nbsp;<a href="#" class="pull-right" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a></h4>
-          <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a>
-          <div class="clearfix require_wrap_table dashboard-data">
-            <div class="db-widget-sm">
+        <div class="clients_wrap_table dashboard-widget dashboard-widget-icons">
+          <h4 class="clearfix">Timesheets &nbsp;&nbsp;<!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
+          <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
+          <div class="clearfix require_wrap_table dashboard-data mt">
+            <div class="db-widget-sm row">
               <div class="col-xs-12 col-sm-3">
                 <div class="info-box"> <span class="info-box-icon bg-orange"> <i class="fa fa-floppy-o" aria-hidden="true"></i> </span>
                   <div class="info-box-content text-center">

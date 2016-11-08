@@ -154,13 +154,7 @@ function cancel(){
       <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Account Settings</div>
     </section>
     <div class="content-area clearfix">
-      <section class="action-btns clearfix">
-        <ul class="pull-right list-unstyled list-inline">
-          <li><a href="#" class="faclose"><i aria-hidden="true" class="fa fa-close"></i></a></li>
-          <li><a href="#" class="collpase-div"><i aria-hidden="true" class="fa fa-angle-down"></i></a></li>
-        </ul>
-      </section>
-      <div class="clearfix form-area form-horizontal toggle-div remove-div">
+      <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
       <div id="loading"></div> 
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">

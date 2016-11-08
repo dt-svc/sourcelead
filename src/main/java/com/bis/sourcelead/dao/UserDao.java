@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 
 public interface UserDao {
@@ -82,7 +83,7 @@ public interface UserDao {
 
 	List<User> getUsersByTeamType(Long id, String teamType)throws Exception;
 
-	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId);
+	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId,Long orgLocationsId);
 
-	
+	public List<User>  getUserListExceptExistedTeamMembersList(List<Long> teamMembersId,Long orgLocationId)throws Exception;
 }

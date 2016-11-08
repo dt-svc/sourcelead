@@ -588,10 +588,17 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     	 
     	 
     	 EmailMessage emailMessage = new EmailMessage();
-		 User requirementManager = userDao.getUserById(requirement.getParentRequirement().getManagerUserId().getId());
-		 emailMessage.setFirstName(requirementManager.getFirstName());
-		 emailMessage.setLastName(requirementManager.getLastName());
-		 emailMessage.setToEmail(requirementManager.getEmail());
+    	
+    		 if(requirement.getSpocId() != null){
+    			 Long managerId = requirement.getSpocId().getOwnerUser().getId();
+    			 User requirementManager = userDao.getUserById(managerId);
+    			 emailMessage.setFirstName(requirementManager.getFirstName());
+    			 emailMessage.setLastName(requirementManager.getLastName());
+    			 emailMessage.setToEmail(requirementManager.getEmail());
+    		 }
+    	
+		 
+		 
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setFromName(fullName);
 		 
@@ -696,5 +703,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public Integer getAllSubmissionCountByRequirementIdAndSubmissionStage(Long orgLocationsId, Long requirementId,
 			String submissionStatus) {
 		return requirementSubmissionDao.getAllSubmissionCountByRequirementIdAndSubmissionStage(orgLocationsId, requirementId, submissionStatus);
+	}
+
+	@Override
+	public RequirementSubmission getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(Long sourceSubmissionId,
+			Long orgLocationsId) {
+		
+		return requirementSubmissionDao.getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(sourceSubmissionId,orgLocationsId);
+		
 	}
 }

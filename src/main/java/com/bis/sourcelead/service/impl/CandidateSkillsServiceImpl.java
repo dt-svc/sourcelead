@@ -36,6 +36,9 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 	 */
 	@Override
 	public CandidateSkills storeCandidateSkills(CandidateSkills candidateSkills) throws Exception {
+		String newlist = candidateSkills.getName();
+		System.out.println(newlist);
+		
 		
 		return candidateSkillsDao.storeCandidateSkills(candidateSkills);
 	}
@@ -112,5 +115,17 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 	@Override
 	public List<CandidateSkills> getSkillByCandidateId(Long candidateId) throws Exception {
 		return candidateSkillsDao.getSkillByCandidateId(candidateId);
+	}
+
+	@Override
+	public CandidateSkills getSkillsByCandidateIdSkillName(String candidateId, String skillName) {
+		
+		return candidateSkillsDao.getSkillsByCandidateIdSkillName(candidateId, skillName);
+	}
+
+	@Override
+	public Boolean validateSkillName(String skillName) {
+		Boolean flag = candidateSkillsDao.validateSkillName(skillName);
+		return flag;
 	}
 }

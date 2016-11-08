@@ -338,7 +338,9 @@ public class UserRestController {
 	 			}
 	 			user.setIsMailSent(Status.Y);
 	 			userService.addUser(user);
-	 			userService.sendEmail(user,orgLocations.getId(),loginUser,password);
+
+	 			userService.sendEmail(user,loginUser,password,orgLocations.getId());
+
 	 		}
 		
 	 	  return "success";

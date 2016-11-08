@@ -1184,7 +1184,7 @@ function sideBar(requirementId){
 				        result = result+'</div>';
 				        result = result+'<div class="col-md-9">';
 				        result = result+'<div class="canDetails clearfix">';
-				        result = result+'<h4>'+json.jobTitle+'-'+json.jobType+'</h4>';
+				        result = result+'<h4></h4>';
 				        result = result+'<div class="row">';
 				        result = result+'<div class="col-md-6">';
 				        result = result+'<ul class="list-unstyled can-perdt">';
@@ -1416,10 +1416,10 @@ function requirementDetails(requirementId){
 					        
 				            result = result +'   <h1>Description:</h1>';
 				            if(json.description != null && json.description != '' && json.description != 'undefined'){
-					           	 result = result +'   <textarea placeholder="Enter description">'+json.description+'</textarea>';
+					           	 result = result +'   <textarea placeholder="Enter description" readonly>'+json.description+'</textarea>';
 					         }
 					         else{
-					           	 result = result +'   <textarea placeholder="Enter description"> NO DATA</textarea>';
+					           	 result = result +'   <textarea placeholder="Enter description" readonly> NO DATA</textarea>';
 				    	        }
 				            result = result +'   <h2> Requirement Details:</h2>';
 				            result = result +'   <div class="require_one">';
@@ -1479,7 +1479,7 @@ function requirementDetails(requirementId){
 				            }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>'; 
-				            if(json.spocEmail != '' && json.spocEmail !=null && json.spocEmail != 'undefined'){
+				            /* if(json.spocEmail != '' && json.spocEmail !=null && json.spocEmail != 'undefined'){
 						    result = result +'     <div class="require_wrap_details_cta"> <b>Email:</b> <span>'+json.spocEmail+'</span>';
 				            }
 				            else{
@@ -1494,9 +1494,10 @@ function requirementDetails(requirementId){
 				            else{
 						    result = result +'     <div class="require_wrap_details_cta"> <b>Phone No:</b> <span> --- </span>';
 
-				            }
+				            } 
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
+				            */
 				            if(json.clientCurrencyCode == 'INR' && json.clientCurrencyCode  !='' && json.clientCurrencyCode  !='undefined' &&  json.clientRate != '' && json.clientRate != 'undefined' && json.clientRate != null){
 					        result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ' +json.clientRate+'</span>';
 						    }
@@ -2118,7 +2119,7 @@ function requirementPipeline(requirementId){
 			   	        		
 			   	        		var report = json[i];
 						           result = result + '       <tr>';
-						           result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+');" class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 						           
 						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.candidateEmail+'</span></div></td>';

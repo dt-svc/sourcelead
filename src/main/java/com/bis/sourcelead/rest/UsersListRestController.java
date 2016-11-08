@@ -242,6 +242,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	  */
 	 @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
 	 @ResponseBody String updateUser(@RequestParam(value="json", required=false) String json,@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value="emailId", required=false) String emailId,HttpServletRequest request) throws Exception{
+
 				
 				 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -249,6 +250,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				User user = userService.getUserById(userId);
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 				
+
 				json = "{"+json+"}";
 			    JSONObject jsonObj = new JSONObject(json);
 			    String password = "";
@@ -281,7 +283,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					
 					if(isUserActive == false && !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
 						userService.sendEmail(user,orgLocations.getId(),loginUser,password);
-					}
+
 				}
 			    Employees employees = employeesService.getEmployeeByUserId(userId);
 			    if(employees !=  null){

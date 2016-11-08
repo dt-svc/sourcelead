@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.UserProfile;
@@ -21,7 +22,8 @@ public interface UserService  {
 	
 	public void createUser(JSONObject jsonObj, User user, Long orgLocationsId) throws Exception;
 	
-	public void sendEmail(User user,Long orgLocationsId, User loginUser, String password) throws Exception;
+
+	public void sendEmail(User user, User loginUser, String password, Long orgLocationsId) throws Exception;
 	
 	String validateEmailandCandidate(String website, String email,String sourceleadBLockedwebsites) throws Exception;
 	
@@ -118,10 +120,10 @@ public interface UserService  {
 	 */
 	List<User> getUsersByTeamType(Long id, String teamType)throws Exception;
 	
-	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId)throws Exception;
+	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId,Long orgLocationsId)throws Exception;
 
 	
-	
+	public List<User>  getUserListExceptExistedTeamMembersList(List<Long> teamMembersId,Long orgLocationId)throws Exception;
 	
 }	
 		

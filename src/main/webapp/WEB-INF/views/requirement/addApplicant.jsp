@@ -33,11 +33,11 @@ function getAddApplicant(requirementId){
 	result = result + '</c:forEach>';
 	result = result + '</select>';
 	result = result + '</div>';		
-	result = result + '<div class="text-center text-info col-md-2">';
+	result = result + '<div id="orConditionDiv" class="text-center text-info col-md-2" style="display: block;">';
 	result = result + '------- ( OR ) -------';
 	result = result + '</div>';
 	
-	result = result + '<div class="col-md-5">';
+	result = result + '<div class="col-md-5 pull-right">';
 	result = result + '<div class="panel-border col-md-12">';
 	result = result + '<div class="" id="browseDiv"  style="display: block;">';
 	result = result + '<div class="input-group">';
@@ -240,6 +240,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 		 $("#candidateResumesList").attr("data-validation", "required");
 		 document.getElementById("resumesDiv").style.display="";
 		 document.getElementById("browseDiv").style.display="none";
+		 document.getElementById("orConditionDiv").style.display="none";
 		 $("#uploadFile").removeAttr("data-validation");
 		 $("#uploadFile").removeAttr("data-validation");
 		 $('.jquery_form_error_message').remove();
@@ -253,7 +254,11 @@ $('body').on('submit', '#addApplicant_form', function(e){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
+			        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
+			            	}else{
+			            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+"</option>";
+			            	}
 					}
 		        	$("#candidateResumesList").empty();
 			        $("#candidateResumesList").append(output);
@@ -266,6 +271,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
      	 $("#candidateResumesList").removeAttr("data-validation");
 		 document.getElementById("resumesDiv").style.display="none";
 		 document.getElementById("browseDiv").style.display="";
+		 document.getElementById("orConditionDiv").style.display="";
 		 $("#uploadFile").attr("data-validation", "required");
 	     $("#candidateResumesList").append(output);
 	 }
@@ -302,11 +308,11 @@ function getCandidateDetails(){
 
 
 <script type="text/javascript">
-function getAllCountries(){
+function getAllCandidateCountries(){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/sourceLeadCountryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#country').empty();
@@ -321,7 +327,7 @@ function getAllCountries(){
             	
             }
             $('#country').trigger("chosen:updated");
-            getStates();
+            getCandidateStates();
         },
         error: function(e){
         }
@@ -330,7 +336,7 @@ function getAllCountries(){
 </script>
 
 <script>
-function getStates(){
+function getCandidateStates(){
 	
 	var countryName = $("#country").val();
 	if(countryName != null && countryName != "" && countryName !="undefined"){
@@ -366,7 +372,7 @@ function getStates(){
 
 
 <script>
-function getCities(){
+function getCandidateCities(){
 	
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
@@ -397,14 +403,14 @@ function getCities(){
 </script>
 <script type="text/javascript">
 function init(){
-	       getAllCountries();
+	       getAllCandidateCountries();
 	      
 	       $("#country").on('change', function (e) {
-	    	   getStates();
-	    	   getCities();
+	    	   getCandidateStates();
+	    	   getCandidateCities();
 	       });
 	       $("#state").on('change', function (e) {
-	    	   getCities();
+	    	   getCandidateCities();
 	       });
 	      
 	       $('.chosen-select').each(function() {

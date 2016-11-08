@@ -18,7 +18,6 @@ body {
 	color: #333;
 	font-family: 'Roboto', sans-serif;
 	min-height: 100%;
-	word-break:break-all;
 }
 img {
 	outline: none;
@@ -835,6 +834,7 @@ s
 .content-wraper .content-header h2 {
 	margin: 0;
 	font-size: 22px;
+	word-break:break-all;
 }
 .action-btns ul {
 	margin: 5px 10px;
@@ -1814,7 +1814,7 @@ custom scroll bar ends*/
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 	display: block;
 	margin-bottom: 0;
-	min-height:175px;
+	min-height:140px;
 	width: 100%;
 }
 .info-box-icon {
@@ -2157,7 +2157,7 @@ ul.tree-checkbox::before {
  -moz-box-shadow:0px 1px 3px rgba(0,0,0,0.4);
  box-shadow:0px 1px 3px rgba(0,0,0,0.4);*/
 }
-#accordion-sl h2, .submissionDetails h2 {
+#accordion-sl h2, .submissionDetails h2, #accordion-role h2, #accordion-copyrole h2 {
     cursor: pointer;
     padding: 10px 15px;
     background-color: #ddd;
@@ -2175,7 +2175,7 @@ ul.tree-checkbox::before {
     border: 1px solid #ddd;
     border-top: 0;
 }
-#accordion-sl h2.active {
+#accordion-sl h2.active, #accordion-role h2.active, #accordion-copyrole h2.active {
     background-color: #375d81;
     color: #fff;
 }
@@ -2184,14 +2184,14 @@ ul.tree-checkbox::before {
     color: #fff !important;
     padding: 10px 15px !important;
 }
-#accordion-sl h2:after {
+#accordion-sl h2:after, #accordion-role h2:after {
     content: "\f114";
     font-family: FontAwesome;
     float: right;
     font-size: 15px;
     color: a6a6a6;
 }
-#accordion-sl h2.active:after {
+#accordion-sl h2.active:after, #accordion-role h2.ative:after {
 	font-size: 15px;
 	float: right;
 	content: "\f115";
@@ -2642,7 +2642,7 @@ ul.can-perdt li a {
 	width: auto;
 }
 .recruitmentHead ul {
-	
+	padding: 2px 0px 2px 0 !important;
 }
 .recruitmentHead ul li {
 	float: left !important;
@@ -3268,9 +3268,9 @@ color:#101010;
     color:#fff;
 	position: relative;
     cursor:default;
-	border-radius:0;
+	/*border-radius:0;*/
 }
-.dashboard-widget .nav-tabs li.active > a:after {
+dashboard-widget .nav-tabs li.active > a:after {
 	top: 100%;
 	left: 50%;
 	border: solid transparent;
@@ -3286,9 +3286,13 @@ color:#101010;
 }
 .dashboard-widget .nav-tabs {
 	border-bottom:1px solid #f60;
+	position: absolute;
+    top: 10px;
+    right: 30px;
 }
 .dashboard-widget .nav-tabs > li > a{
-border-bottom:none;	
+	border-bottom:none;	
+	padding: 5px 15px;
 }
 .dashboard-widget .nav > li > a:focus, .dashboard-widget .nav > li > a:hover {
 	border:1px solid #f60;
@@ -3511,7 +3515,7 @@ ul.addTasUl li .fa{
 	background: #ccc none repeat scroll 0 0;
     border-radius: 5px;
     margin-top: 15px;
-    padding: 0 25px 10px;
+    padding: 0 10px 10px;
   }
   .design-view .select-skills{
 	  background:#fff;
@@ -3527,7 +3531,7 @@ ul.addTasUl li .fa{
 	  background:#fff;
   }
   .personal-info h3{
-	  font-size:20px;
+	  font-size:16px;
 	  font-weight:500;
 	  margin:0;
 	  margin-bottom:5px;
@@ -3548,6 +3552,7 @@ ul.addTasUl li .fa{
 	.education {
 		color:#3e2723 !important;
 		font-size:18px !important;
+		padding:8px 5px !important;
 	}
 	
 	.skills-graph {
@@ -3613,7 +3618,6 @@ ul.addTasUl li .fa{
 	border-left-color: #eeeeee;
 	border-width: 15px;
 	margin-top: -20px;
-	
 }
 .skmwidgetdiv-innerright{
 	background:#eeeeee;
@@ -3648,12 +3652,131 @@ ul.addTasUl li .fa{
 .chosen-container .chosen-results li:hover{
 	color:#fff;
 }
+.side-nav-fixed{
+	position:fixed;
+	padding-top:0;
+}
+
+/* Add Role Styles */
+
+.select-role{
+	background:#fff;
+	min-height:10px;
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;
+	-ms-border-radius:5px;
+	border-radius:5px;
+	padding:10px;
+	box-shadow:0 6px 4px -6px #505050;
+}
+.select-role .col-md-4 {
+	margin:0 auto;
+}
+#accordion-role h2:after, #accordion-copyrole h2:after {
+    content: "\f101";
+    font-family: FontAwesome;
+    float: right;
+    font-size: 15px;
+    color: a6a6a6;
+}
+#accordion-role h2.active:after, #accordion-copyrole h2.active:after {
+	font-size: 15px;
+	float: right;
+	content: "\f103";
+	font-family: FontAwesome;
+	color: #fff;
+}
+.role-area {
+    min-height:10px;
+	max-height:375px;
+	overflow-y: auto;
+	background:#fff;
+	-webkit-border-radius:8px;
+	-moz-border-radius:8px;
+	-ms-border-radius:8px;
+	border-radius:8px;
+	padding:10px 15px;
+	border:2px solid #3081cb;
+	box-shadow:0 6px 4px -6px #505050;
+}
+.role-area input[type="checkbox"]{
+	margin-right:10px;
+}
+.role-area dd {
+	margin-left:30px;
+	display: block;
+    margin-left: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+	word-wrap:break-word;
+}
+.role-area dt {
+	margin-bottom:5px;
+}
+.btn-addrole .btn {
+	font-size:16px;
+	margin-bottom:15px;
+	width:90%;
+	margin:15px auto;
+	box-shadow:0 5px 2px -4px #505050;
+}
+.role-area dt + dd {
+	display:none;
+}
+/* Accordon role styles */
+.role-area ul {
+	padding:0;
+	margin:0;
+}
+.role-area ul li {
+	padding-left:25px;
+}
+
+.role-area ul li:hover{
+	background-color:#EEEEEE;
+}
+.dashboard-datepkr{
+	position:relative;
+}
+.dashboard-datepkr input[type="text"]{
+	width:115px;
+	border:1px solid #ccc;
+	margin-right:5px;
+}
+.dashboard-datepkr .fa{
+	position: absolute;
+    right: 10px;
+    top: 4px;
+}
+.dashboard-datepkr input[type="text"]{
+       width:90px;
+       border:1px solid #ccc;
+       margin-right:5px;
+}
+.dashboard-widget .require_wrap_table {
+	overflow-y: visible !important;
+}
+.ratepop-parent {
+	position:relative;
+}
+.ratepop-parent .ratepop{
+	border:1px solid red;
+	padding:10px;
+	position:absolute;
+	top:0;
+	width:100%;
+	background:#fff;
+	z-index:999;
+	left:0;
+}
 @media (max-width: 320px) {
 .hidden-xs {
 	display: none !important;
 }
 .main-header span.logo h1 {
 	font-size: 22px;
+	word-break:break-all;
 }
 .main-header .navbar .custom-navbar ul.custom-navbar-inner li a {
 	padding: 15px 5px;

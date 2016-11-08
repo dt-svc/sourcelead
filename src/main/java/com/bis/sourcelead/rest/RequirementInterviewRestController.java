@@ -126,12 +126,14 @@ public class RequirementInterviewRestController {
 	  
 	
 	@RequestMapping(value = "/getAllCustomerInterviews" , method = RequestMethod.POST)
-	 public @ResponseBody  String getAllCustomerInterviews(@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
+	 public @ResponseBody  String getAllCustomerInterviews(@RequestParam(value="submissionId", required=false) Long submissionId,
+			 @RequestParam(value = "requirementId", required = false) Long requirementId,
+			 HttpServletRequest request) throws Exception {
 		
 	     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 String resultJson = null;
 			
-		 List<RequirementInterview> interviewsList = requirementInterviewService.getCustomerInterviewsBySubmissionIdAndOrgLocationsId(submissionId, orgLocations.getId());
+		 List<RequirementInterview> interviewsList = requirementInterviewService.getCustomerInterviewsBySubmissionIdAndOrgLocationsId(submissionId, orgLocations.getId(),requirementId);
 		 resultJson = commonUtil.toJSON(interviewsList);
 		 return resultJson;
 	   }
