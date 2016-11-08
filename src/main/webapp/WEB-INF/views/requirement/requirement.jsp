@@ -528,11 +528,7 @@ $(document).ready(function() {
           </div>
         </div>
       </div>
-      
-      
-     
-      
-      
+
        <!-- Internal Details html -->
       <div class="clearfix">
         <div class="col-lg-12">
@@ -1099,10 +1095,16 @@ function setTemplateValues(){
 	
  var sourceleadUrl ='${sourceleadUrl}';
 	var requirementId = document.getElementById('template').value;
+	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
+		
+	
 	$.ajax({
 	   	type: "POST",
+	   	
 	    url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 	   
 		    success: function(data) {
+		    	
+		    	
 		    	if(data != null && data != 'undefined' && data !='' ){
 		    		
 		    		var json = JSON.parse(data);
@@ -1137,12 +1139,18 @@ function setTemplateValues(){
 					}else{
 						$("#city").val('');
 					}
-					 
+					
+					$('#description').val('');
+					$('#rate').val('');
+					$('#education').val('').trigger('chosen:updated');
+					$('#skills').val('').trigger('chosen:updated');
+					
 					var skills = [];
 		            skills = json.skills.split(",");
 		            $("#skills").val(skills);
 		            $('#skills').trigger("chosen:updated");
 		            
+		           
 		            var educations = [];
 		            educations = json.education.split(",");
 		            $("#education").val(educations);
@@ -1156,9 +1164,8 @@ function setTemplateValues(){
 			    	$("#rateType").val(json.rateType);
 			    	
 			    	 existedFile = json.fileName;
-			    	 alert("existedFile="+existedFile);
-			    	 $("#fileName").val(existedFile);
-			    	 $('#fileName').trigger("chosen:updated");
+			    	 $("#uploadFile").val(existedFile);
+			    	 $('#uploadFile').trigger("chosen:updated");
 		    	}else{
 		    		
 		    		$("#jobTitle").val('');
@@ -1176,15 +1183,22 @@ function setTemplateValues(){
 			    	$("#rate").val('');
 			    	$("#currencyCode").val('');
 			    	$("#rateType").val('');
-			    	$("#fileName").val('');
+			    	existedFile = json.fileName;
+			    	 $("#fileName").val(existedFile);
+			    	 $('#fileName').trigger("chosen:updated");
 		    	}
-		    	
-		    	
-		    	
-		    	
-		    	
 		    }
      });
+	}else{
+		 document.getElementById("requirement_form").reset();
+		 $("#skills").trigger("chosen:updated");
+		 $("#education").trigger("chosen:updated");
+		 $("#state").trigger("chosen:updated");
+		 $("#city").trigger("chosen:updated");
+		 $("#rate").val('');
+		 $("#description").val('');
+		 
+	}
 }
 
 $(function(){
