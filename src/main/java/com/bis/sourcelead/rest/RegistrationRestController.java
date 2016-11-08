@@ -201,18 +201,29 @@ public class RegistrationRestController {
 	   
 	   @RequestMapping(value = "/validateCompanyName", method = RequestMethod.GET)
 	   public @ResponseBody String validateCompanyName(
-	   		@RequestParam(value="companyName", required=false) String companyName) {
+	   		@RequestParam(value="companyName", required=false) String companyName) throws Exception {
 			String status = null;
 			if(!isNullOrEmpty(companyName)){
-			    boolean flag;
-				try {
-					flag = orgService.isOrgNameExisted(companyName);
+			    boolean flag = false;
+			    List<Org> org =orgService.getOrgs();
+			    for(Org orgList : org ){
+			    	//String Name = companyName.toUpperCase();
+			    	if(orgList.getOrgName().equals(companyName)){
+			    		flag = true;
+			    	}
+			    }
+			    if (flag == true) {
+					status = "Company Duplicated";
+				}
+				/*try {
+					
+					flag = orgService.isOrgNameExisted(status);
 					if (flag == true) {
 						status = "Company Duplicated";
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-				}
+				}*/
 			}
 	       return status;
 	   }
