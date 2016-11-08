@@ -383,7 +383,7 @@ public class ClientRestController {
 	 @ResponseBody String validateSpocEmailId(@RequestParam(value = "email", required = false) String email, @RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			String result;
-			OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(email, orgRelationId, user.getId()); 
+			OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(email, orgRelationId, user.getId(), Constants.RECORD_ACTIVE); 
 			if (orgSpoc != null) {
 				result = "true";
 			} else {

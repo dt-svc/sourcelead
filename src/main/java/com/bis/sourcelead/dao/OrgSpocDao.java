@@ -32,7 +32,7 @@ public interface OrgSpocDao {
 	 * @return
 	 * @throws Exception
 	 */
-	OrgSpoc validateSpacEmailIdByOwnerUserIdAndOrgRelationId(String email, Long orgRelationId, Long userId) throws Exception;
+	OrgSpoc validateSpacEmailIdByOwnerUserIdAndOrgRelationId(String email, Long orgRelationId, Long userId, Integer status) throws Exception;
 
 
 	OrgSpoc getSpocAndOwnerDetailsById(Long spocId, Long ownerId);
