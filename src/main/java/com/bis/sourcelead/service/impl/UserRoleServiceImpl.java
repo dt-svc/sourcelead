@@ -260,7 +260,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 			   writeRow.createCell(4).setCellValue(userRoles.getUser().getMobilePhone());
 		   }
 		   if(userRoles.getUser().getUserType() != null){
-			   writeRow.createCell(8).setCellValue(userRoles.getUser().getUserType());
+			   writeRow.createCell(8).setCellValue(userRoles.getUserType());
 		   }
 		   if(userRoles.getUser().getLocation() !=null){
 			   writeRow.createCell(7).setCellValue(userRoles.getUser().getLocation());
@@ -269,7 +269,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 			   writeRow.createCell(9).setCellValue(userRoles.getReportingManager().getFirstName());
 		   }
 		   if(userRoles.getUser().getStatus() !=null){
-			   writeRow.createCell(10).setCellValue(userRoles.getUser().getStatus());
+			   writeRow.createCell(10).setCellValue(userRoles.getUserState().toString());
 		   }
 		return createExcelsheet;
 		
