@@ -385,7 +385,7 @@ $(document).ready(function() {
            <div class="form-group">
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
-             <textarea rows="2" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description" data-validation="validate_length length2-5000" data-validation-optional="true">${requirement.description}</textarea>
+             <textarea rows="2" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true">${requirement.description}</textarea>
             </div>
           </div>
           
@@ -770,7 +770,7 @@ $(document).ready(function() {
 	         }; 
 		
 		
-if(saveType=='draft'){
+          if(saveType=='draft'){
 			
 			//For internal details in draft
 			 $('#managerId').removeAttr('data-validation');
@@ -819,10 +819,11 @@ if(saveType=='draft'){
 		 }
 		 
 		   if ($('#requirement_form').validate(false, validationSettings)){   
+			
 			var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
-			con = encodeURIComponent(con);
+			var jsonData = encodeURIComponent(con);
 			var form = $('#requirement_form')[0];
       		var formData = new FormData(form); 
 			  //It will escape all the special characters
@@ -838,7 +839,7 @@ if(saveType=='draft'){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType+"&json="+con,
+						url : sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType+"&json="+jsonData,
 						success : function(result) {
 								location.replace(sourceleadUrl+"/requirementList");
 						},
