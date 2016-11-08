@@ -430,6 +430,9 @@ public class UserServiceImpl implements UserService {
 	public void sendEmail(User user, User loginUser, String password, Long locationId) throws Exception {
 		
 		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), locationId);
+		 if(userRole == null){
+		    userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		 }
 		 
 		 boolean isUserActive = false;
 		 isUserActive = userRoleService.isUserActive(user.getId());
