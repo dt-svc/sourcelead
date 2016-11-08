@@ -232,13 +232,11 @@ public class RequirementOfferRestController {
 				RequirementSubmission sourcesubmission = requirementSubmissionService.getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(submissionId, orgLocations.getId());
 				if(sourcesubmission!=null){
 					requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(sourcesubmission.getId());
-					if((requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y")) && (requirementOffers.getNotifyToVendor() !=null)){
-						requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
-						if(sourcesubmission.getVendorLocationId() !=null){
-							requirementOffers.setClientName(sourcesubmission.getVendorLocationId().getOrg().getOrgName());
+						if(requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y")){
+							requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
+							resultJson = commonUtil.toJSON(requirementOffers);
 						}
-						resultJson = commonUtil.toJSON(requirementOffers);
-					}
+
 				}
 				
 			}
