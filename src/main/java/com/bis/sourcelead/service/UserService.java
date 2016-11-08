@@ -11,6 +11,7 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.UserProfile;
 public interface UserService  {
 
@@ -20,7 +21,7 @@ public interface UserService  {
 	
 	public void createUser(JSONObject jsonObj, User user, Long orgLocationsId) throws Exception;
 	
-	public void sendEmail(User user, User loginUser, String password) throws Exception;
+	public void sendEmail(User user,Long orgLocationsId, User loginUser, String password) throws Exception;
 	
 	String validateEmailandCandidate(String website, String email,String sourceleadBLockedwebsites) throws Exception;
 	
@@ -77,9 +78,6 @@ public interface UserService  {
 	//Prasad Salina to get managers list baded on role type and except current user
 	List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception;
 
-	//Prasad Salina to get all the user ids baded on reportingManager userid
-	List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception;
-	
 	
 	/**
 	 * @author Prasanna vadla

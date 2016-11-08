@@ -24,14 +24,17 @@ import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -71,6 +74,9 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 UserService userService;
+	 
+	 @Autowired
+     UserRoleService userRoleService;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -111,7 +117,15 @@ public class DashboardRestController {
 	
 	@RequestMapping(value = "/dashboard/{orgLocationId}" , method = RequestMethod.GET)
 	 public @ResponseBody void userSummary(@PathVariable Long orgLocationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
-			response.sendRedirect("/sourcelead/dashboardLinks?orgLocationId="+orgLocationId);
+			
+		     //to update user state in user role based on location----> Prasad Salina
+		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
+   			    userRole.setUserState(Status.ACTIVE);
+   			    userRoleService.addUserRole(userRole);
+   		      }
+		     response.sendRedirect("/sourcelead/dashboardLinks?orgLocationId="+orgLocationId);
 			
 	}
 	

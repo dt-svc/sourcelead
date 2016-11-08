@@ -54,7 +54,7 @@ public interface OrgSpocService {
 
 	OrgSpoc getSpocAndOwnerDetailsById(Long spocId, Long ownerId);
 	
-	OrgSpoc getSpocAndOwnerDetailsByIdAndOwnerId(Long spocId, Long ownerId, Long spocUserId, Long loginUserId, Long orgLocationId);
+	OrgSpoc getSpocAndOwnerDetailsByIdAndOwnerId(Long spocId, Long ownerId, Long spocUserId, Long loginUserId, Long orgLocationId) throws Exception;
 
 	List<Long> getOwnerIdbySpocId(Long spocUserId, Long ownerId);
 	

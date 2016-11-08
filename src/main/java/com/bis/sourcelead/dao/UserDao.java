@@ -62,9 +62,6 @@ public interface UserDao {
 			
 	//Prasad Salina to get managers list baded on role type and except current user
 	List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception;
-	
-	//Prasad Salina to get all the user ids baded on reportingManager userid
-	List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception;
 
 	User getUserDetailsByUserCode(String userCode);
 

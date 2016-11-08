@@ -144,10 +144,14 @@ public class RegistrationServiceImpl implements RegistrationService{
 		//For Saving of User Details
 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
 		User user = null;
+		UserRole uRole = null;
 		user = userService.findByEmail(registration.getEmail());
+		if(null != user){
+			   uRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		   }
 		if(user == null){
 			 user = getUserDetails(registration,password);
-		}else if(null != user && user.getUserState().equals(Status.NOT_LOGGEDIN)){
+		}else if(null != uRole && uRole.getUserState().equals(Status.NOT_LOGGEDIN)){
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
 		}
 		try {
@@ -208,7 +212,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		   saveRoleActions(org,orgLocations,user);
 		
-		userService.sendEmail(user, loginUser, password);
+		userService.sendEmail(user,orgLocations.getId(), loginUser, password);
 		
 		
 		
@@ -262,8 +266,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user.setLastName(registration.getLastName());
 		user.setEmail(registration.getEmail());
 		user.setUserName(registration.getEmail());
-		user.setUserState(Status.NOT_LOGGEDIN);
-		user.setUserType("Admin");
 		user.setPassword(sourceleadPasswordEncoder.encode(password));
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setCreatedBy(user.getUserCode());
@@ -335,6 +337,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		UserRole userRole = new UserRole();
 		userRole.setUser(user);
 		userRole.setOrgLocations(orgLocations);
+		userRole.setUserState(Status.NOT_LOGGEDIN);
+		userRole.setUserType("Admin");
 		Roles roles = null;
 		try {
 			roles = rolesService.getRolesByRoleNameAndOrgLocationId("ROLE_ADMIN",orgLocations.getId());
