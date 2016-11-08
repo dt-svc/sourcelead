@@ -59,7 +59,8 @@
 	                 <li class="${sessionData.nav == 'Projects' ? 'side-nav-active' : ''}"><a href="<c:url value='/projectDashboard'/>" title="Projects"><span><i class="fa fa-bar-chart"></i></span>Projects</a></li>
 	                 </c:if>
 	                 
-	                 <c:if test="${userTabs.tabName == 'Timesheets' }">
+	                 <c:if test="${userTabs.tabName == 'Timesheet Approval' }">
+	                 <sec:authorize access="hasAnyRole('ROLE_VIEW_TIMESHEETS_APPROVAL','ROLE_VIEW_MY_TIMESHEETS')"> 
 				           <li class="${sessionData.nav == 'TimeSheet' || sessionData.nav == 'TimeSheetApproval' ? 'side-nav-active' : ''}">
 							  <a href="#" class="tree-view-new" title="TimeSheets">
 								<span><i class="fa fa-clock-o"></i></span>
@@ -73,22 +74,24 @@
 							  
 							  <c:if test="${sessionData.nav == 'TimeSheet' || sessionData.nav == 'TimeSheetApproval'}">
 							  <ul class="collapses" style="display: block">
-							  	<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My Timesheets</a></li>
-									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>" title="TimeSheet Approval">Timesheet Approval</a></li>
+							  	<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
+									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>" title="TimeSheet Approval">TimeSheet Approval</a></li>
 							  </ul>
 							  </c:if>
 							  <c:if test="${sessionData.nav != 'TimeSheet' || sessionData.nav != 'TimeSheetApproval'}">
 							  <ul class="collapses" style="display: none">
-							  	<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My Timesheets</a></li>
-									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>" title="TimeSheet Approval">Timesheet Approval</a></li>
+							  	<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
+									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>" title="TimeSheet Approval">TimeSheet Approval</a></li>
 							  </ul>
 							  </c:if>
 						  </li>
+					  </sec:authorize>
 	                 </c:if>
 	                 
-	                 <c:if test="${userTabs.tabName == 'My Timesheets' }">
+	                 <c:if test="${userTabs.tabName == 'My Timesheets'}">
+	                 <sec:authorize access="hasAnyRole('ROLE_VIEW_MY_TIMESHEETS') && !hasAnyRole('ROLE_VIEW_TIMESHEETS_APPROVAL')">
 	                       <li class="${sessionData.nav == 'TimeSheet' ? 'side-nav-active' : ''}"><a href="<c:url value='/timesheet'/>"><span><i class="fa fa-clock-o"></i></span>TimeSheet</a></li>
-	                
+	                 </sec:authorize>
 	                 </c:if>
 	                 
 	               
