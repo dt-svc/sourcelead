@@ -129,8 +129,13 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
             query ="from RequirementInterview ri where ri.submissionId.orgLocations = :orgLocationsId and ri.submissionId.submissionStatus = 'INTERVIEW' and ri.submissionId.status = 1 and DATE(ri.dateOfInterview) < CURDATE() and ri.endTime < NOW()"+subQuery;
         }else if(dateRange != null && "upcoming".equals(dateRange)){
         	query ="from RequirementInterview ri where ri.submissionId.orgLocations = :orgLocationsId and ri.submissionId.submissionStatus = 'INTERVIEW' and ri.submissionId.status = 1 and DATE(ri.dateOfInterview) > CURDATE()"+subQuery;
+        }else{
+        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        	java.util.Date date = dateFormat.parse(dateRange);
+        	java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
+        	query ="from RequirementInterview ri where ri.submissionId.orgLocations = :orgLocationsId and ri.submissionId.submissionStatus = 'INTERVIEW' and ri.submissionId.status = 1 and DATE(ri.dateOfInterview) = :sqlStartDate"+subQuery;
+        	params.put("sqlStartDate",sqlStartDate);
         }
-        
         
         Query queryExe = session.createQuery(query);
         for (String str : queryExe.getNamedParameters())
