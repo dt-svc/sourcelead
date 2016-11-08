@@ -516,9 +516,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						            	  sb.append("<p>NO DATA</p>");
 						              }
 						              else{
-
-                                          sb.append("     <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId' >");
-									      for(ProjectTasks pt   : ProjectTasksList){
+						            	  
+                                          sb.append("     <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
+                                          sb.append("<option value=''>--select option--</option>");
+                                          for(ProjectTasks pt   : ProjectTasksList){
 									              sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");   
 									      }
 							              sb.append(" </select>"); 
