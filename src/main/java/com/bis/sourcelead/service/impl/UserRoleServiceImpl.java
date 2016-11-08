@@ -24,6 +24,7 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.util.PdfUtil;
 
 @Service
 public class UserRoleServiceImpl implements UserRoleService{
@@ -32,6 +33,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 	
 	@Autowired
 	UserRoleDao userRoleDao;
+	
+	@Autowired
+	private PdfUtil pdfUtil;
 
 	@Override
 	public UserRole addUserRole(UserRole userRole) throws Exception {
@@ -135,7 +139,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 			 }else{
 				 if(activeList !=null){
 				 cell2.setCellValue(activeList.size());
-				 }{
+				 }else{
 					 cell2.setCellValue("--");
 				 }
 			 }
@@ -209,7 +213,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 				 writeRow.createCell(5).setCellValue(emp.getHireDateStr()); 
 			 }
 			 if(emp.getRate() !=null){
-				 writeRow.createCell(6).setCellValue(emp.getRate());
+				 writeRow.createCell(6).setCellValue(emp.getRate()+"/"+emp.getRatePer());
 			 }
   	    } 
 		   if(userRoles.getUser().getFirstName() !=null){
@@ -238,6 +242,13 @@ public class UserRoleServiceImpl implements UserRoleService{
 		   }
 		return createExcelsheet;
 		
+	}
+
+	@Override
+	public File getPdfFile(List<UserRole> activeList,
+			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
+			String userState,String orgName) throws Exception {
+		return pdfUtil.createPdfTable(activeList, inactiveList, notLoggedInList, userRolesList, userState,orgName);
 	}
 	
 

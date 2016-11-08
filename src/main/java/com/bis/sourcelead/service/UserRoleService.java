@@ -42,5 +42,9 @@ public interface UserRoleService {
 
 	public Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, List<UserRole> activeList,
 			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList, String userState) throws Exception;
+
+	public File getPdfFile(List<UserRole> activeList,
+			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
+			String userState, String orgName) throws Exception;
 	
 }

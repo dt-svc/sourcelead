@@ -76,7 +76,7 @@ window.onload = function () {
 		    <a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
 			    <div class="export_pop">
 				   <ul>
-				   <li>PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>
+				   <li onclick="exportToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>
 				   <li onclick="exportUserData();">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>
 				   </ul>
 				</div>
@@ -100,17 +100,30 @@ window.onload = function () {
       
 <script>
 function exportUserData(){
+	var exportType = "xls";
 	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     var userRole = document.getElementById("userRole").value;
-	
 	var searchByName = document.getElementById("searchByName").value;
 	var userState = document.getElementById("userState").value;
-	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole;
+	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=xls";
 
 }
-
 </script>   
+
+<script>
+function exportToPdf(){
+	var exportType = "pdf";
+	var sourceleadUrl = '${sourceleadUrl}';
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+    var userRole = document.getElementById("userRole").value;
+	var searchByName = document.getElementById("searchByName").value;
+	var userState = document.getElementById("userState").value;
+	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=pdf";
+
+	
+}
+</script>
       
 <script type="text/javascript">
 	function getUsersList(){

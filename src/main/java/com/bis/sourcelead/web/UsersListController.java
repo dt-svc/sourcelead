@@ -128,7 +128,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 			@RequestParam(value="userRole", required=false) String userRole,
 			@RequestParam(value="searchByName", required=false) String searchByName,
 			@RequestParam(value="userState", required=false) String userState,
-			@RequestParam(value="loginUserRole", required=false) String loginUserRole,HttpServletResponse response) throws Exception {
+			@RequestParam(value="loginUserRole", required=false) String loginUserRole,
+			@RequestParam(value="exportType", required=false) String exportType,HttpServletResponse response) throws Exception {
 		
 		 List<UserRole> activeList = null;
 		 List<UserRole> inactiveList = null;
@@ -139,6 +140,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
          
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
  		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+ 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
  		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
  		List<UserRole> rolesList = new ArrayList<UserRole>();
  		
@@ -172,17 +174,21 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
  		} catch (Exception e) {
  			e.printStackTrace();
  		}
+ 		File file = null;
+ 		if(!"pdf".equalsIgnoreCase(exportType)){
+ 			createExcelsheet = userRoleService.getExcelFile(createExcelsheet,createExcelworkbook,activeList,inactiveList,notLoggedInList,userRolesList,userState);
+ 	 		  file = new File("users_"+dateFormat.format(new Date())+".xls");
+ 			 FileOutputStream fos = new FileOutputStream(file);
+ 			 try {
+ 				createExcelworkbook.write(fos);
+ 				fos.close();
+ 			} catch (IOException e) {
+ 				e.printStackTrace();
+ 			}	 	
+ 		}else{
+ 			file = userRoleService.getPdfFile(activeList,inactiveList,notLoggedInList,userRolesList,userState,org.getOrgName());
  		
- 		createExcelsheet = userRoleService.getExcelFile(createExcelsheet,createExcelworkbook,activeList,inactiveList,notLoggedInList,userRolesList,userState);
- 		 File file = new File("/root/Desktop/PDF_FILE/users_"+dateFormat.format(new Date())+".xls");
-		 FileOutputStream fos = new FileOutputStream(file);
-		 try {
-			createExcelworkbook.write(fos);
-			fos.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	 
-		 
+ 		}
 		 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
 				mimeType = "application/octet-stream";
