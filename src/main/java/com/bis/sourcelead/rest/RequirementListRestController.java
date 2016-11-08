@@ -204,7 +204,7 @@ public class RequirementListRestController {
 	 */
 	 
 	 @RequestMapping(value = "/getRequirementById" , method = RequestMethod.POST)
-	 public @ResponseBody  String getCandidateById(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
+	 public @ResponseBody  String getRequirementById(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
 			String resultJson = null;
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");

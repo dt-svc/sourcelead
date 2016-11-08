@@ -67,6 +67,10 @@
 .project_tabs_inn_table table tr td div i {
 color:#333 !important;
 }
+.remove_user_pop textarea {
+width: 92% !important;
+margin-top:10px;
+}
 </style>
  
 <script>
@@ -1388,10 +1392,15 @@ function requirementDetails(requirementId){
 				            
 				            result = result +' <div class="pull-right">';
 				            
-                            if(json.requirementSubmissionStatus  == "DRAFT"  && json.createdBy == '${SourceLeadWeb_userCode}' ){ 
-					            result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
+                            if((json.requirementSubmissionStatus  == "DRAFT" || json.requirementSubmissionStatus  == "SUBMITTED" ||  json.requirementSubmissionStatus  == "OPEN"   ||  json.requirementSubmissionStatus  == "NEW"   || json.createdBy == '${SourceLeadWeb_userCode}') && (json.requirementApproverHierarchyStatus =='APPROVED' || json.requirementApproverHierarchyStatus =='REJECTED') ){ 
+					            alert("one");
+                            	result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
 				             }else if(json.requirementSubmissionStatus  !='DRAFT' && json.requirementApproverHierarchyStatus !='APPROVED'  && json.requirementApproverHierarchyStatus !='REJECTED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){ 
-				            	result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
+				            	 alert("two");
+				            	 result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
+				             }else if((json.requirementSubmissionStatus  != 'DRAFT') && (json.requirementApproverHierarchyStatus =='APPROVED'  || json.requirementSubmissionStatus  == "SUBMITTED"  || json.requirementApproverHierarchyStatus =='REJECTED'  ||  json.requirementApproverHierarchyStatus  == "NEW" ) ){ 
+				            	 alert("three");
+				            	 result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
 				            }
 				            var APPROVED = "APPROVED";     
 				            var REJECTED = "REJECTED";
@@ -1653,8 +1662,6 @@ function updateReuqirementStatus(status){
 	
 	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementId = '${requirementId}';
-	
-	
 	 
 	 var reason;
 	 if ($('#rejectReason').length)
@@ -1699,7 +1706,6 @@ function rejectRequirementAlertMessage(status){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
-	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatus(\""+ status+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
 	result = result +"	</div>";
 	$("#rejectRequirementAlert").append(result);
@@ -1709,6 +1715,12 @@ function rejectRequirementAlertMessage(status){
 </script>
 
 
+<script type="text/javascript">
+function cancelAlert(){ 
+	$("#rejectRequirementAlert").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 
 <%-- 
