@@ -227,19 +227,13 @@ $(document).ready(function() {
 	           </div>
 	         </div>
 	       </div>
-          
-          
-      
-          
-          
+	       
           <div class="form-group" id="jobIdDiv">
             <label class="col-md-3">Id</label>
             <div class="col-md-9">
               <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  onblur="validateJobId();"  onmouseout="validateJobId();" value="">
             </div>
           </div>
-          
-         
           
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
@@ -375,7 +369,7 @@ $(document).ready(function() {
                   </span>
                 </label>
                 
-                <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
+                <input type="text" class="form-control" readonly id="uploadFile" name="docFile"  value="${requirement.fileName}" type="file"   placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
               <div class="clearfix"></div> <div class="clearfix"></div>
               </div>
             </div>
@@ -823,10 +817,12 @@ $(document).ready(function() {
 			var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
+			
+			//It will escape all the special characters
 			var jsonData = encodeURIComponent(con);
 			var form = $('#requirement_form')[0];
       		var formData = new FormData(form); 
-			  //It will escape all the special characters
+			  
 			var sourceleadUrl = '${sourceleadUrl}';
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
      		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
@@ -1158,7 +1154,11 @@ function setTemplateValues(){
 			    	$("#rate").val(json.rate);
 			    	$("#currencyCode").val(json.currencyCode);
 			    	$("#rateType").val(json.rateType);
-			    	$("#fileName").val(json.fileName);
+			    	
+			    	 existedFile = json.fileName;
+			    	 alert("existedFile="+existedFile);
+			    	 $("#fileName").val(existedFile);
+			    	 $('#fileName').trigger("chosen:updated");
 		    	}else{
 		    		
 		    		$("#jobTitle").val('');
