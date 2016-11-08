@@ -715,7 +715,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				sb.append("</strong>");
 			}else{
 				sb.append("<span>");
-				sb.append("<input type='file' name='docFile'><label><i class='glyphicon glyphicon-save'></i>Choose file</label>");
+				sb.append("<input type='file' name='docFile'>");
 				sb.append("</span>");
 			}
 			}
@@ -1195,7 +1195,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				sb.append("</strong>");
 			}else{
 				sb.append("<span>");
-				sb.append("<input type='file' name='docFile'><label><i class='glyphicon glyphicon-save'></i>Choose file</label>");
+				sb.append("<input type='file' name='docFile'>");
 				sb.append("</span>");
 			}
 			

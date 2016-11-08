@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -64,13 +65,21 @@ public class RegistrationRestController {
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		List<Org> orgsList = new ArrayList<>();
 
+		ArrayList<Org> regOrgsList = new ArrayList<Org>();
+
 		try {
 			orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName);
+			for(Org regOrg : orgsList){
+				regOrg.setEmail(regOrg.getUser().getEmail());
+				regOrg.setIsMailSent(regOrg.getUser().getIsMailSent());
+				regOrg.setUserState(regOrg.getUser().getUserState());
+				regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
+				regOrgsList.add(regOrg);
+			}
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-
-		resultJson = commonUtil.toJSON(orgsList);
+		resultJson = commonUtil.toJSON(regOrgsList);
 		return resultJson;
 
 	}
@@ -86,13 +95,14 @@ public class RegistrationRestController {
 				Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 				Registration registration =  gson.fromJson(json1,Registration.class);
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			    String[] registredModules =  modules.split(",");
 			    if("Recruiting".equalsIgnoreCase(registredModules[0])){
 			    	if(null == subModules || "".equalsIgnoreCase(subModules)){
 			    		return "Invalid Sub Modules";
 			    	}
 			    }
-				registrationService.addRegistration(registration,user,modules,subModules);
+				registrationService.addRegistration(registration,user,modules,subModules,orgLocations.getId());
 				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", registration.getCompanyName()+" Org has created sucessfully.");
 			} catch (Exception e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));

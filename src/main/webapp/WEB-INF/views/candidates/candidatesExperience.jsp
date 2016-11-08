@@ -206,9 +206,9 @@ function closeCertificatePopup(){
 				.click(function(e) {
 					e.stopPropagation();
 				});
-		$('html').click(function() {
+		/* $('html').click(function() {
 			$(".edit-details").removeClass("edit-details-active");
-		});
+		}); */
 
 	}
 </script>
@@ -449,10 +449,10 @@ function closeCertificatePopup(){
 										.click(function(e) {
 											e.stopPropagation();
 										});
-								$('html').click(function() {
+								/* $('html').click(function() {
 											$(".edit-details").removeClass(
 													"edit-details-active");
-										});
+										}); */
 								
 							}
 						}

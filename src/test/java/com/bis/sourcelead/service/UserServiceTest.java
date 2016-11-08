@@ -27,6 +27,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -45,7 +46,7 @@ import com.bis.sourcelead.service.impl.UserServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = WebAppConfig.class, loader = AnnotationConfigWebContextLoader.class)
+@ContextConfiguration(classes = {WebAppConfig.class, SecurityConfig.class}, loader = AnnotationConfigWebContextLoader.class)
 public class UserServiceTest {
 
 	@Configuration
@@ -159,7 +160,7 @@ public class UserServiceTest {
 		User loginUser =new User();
 		//loginUser.setId(12l);
 		String password="bis12334";
-		userService.sendEmail(user,loginUser,password);
+		userService.sendEmail(user,loginUser,password,1l);
 	}
 
 	@Test

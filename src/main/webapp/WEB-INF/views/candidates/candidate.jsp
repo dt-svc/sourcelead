@@ -89,7 +89,7 @@
               <input type="file" name="uploadBtn" id="uploadBtn" class="hidden upload">
               </span> 
            </label>
-             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validate_Space validateResume" >
+             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required" >
           </div>
           </div>
         </div>
@@ -390,11 +390,14 @@
 		 if ($('#candidate_form').validate(false, validationSettings)){ 
 			var frm = $('#candidate_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
-			/* con = con.replace(/[{}]/g, ""); */
+			 con = con.replace(/[{}]/g, ""); 
 			var form = $('#candidate_form')[0];
       		var formData = new FormData(form); 
 			  //It will escape all the special characters
 			var sourceleadUrl = '${sourceleadUrl}';
+			$("#store_candidate").attr("disabled", "disabled");
+			$("#store_candidate").addClass('button').val('Processing..');
+
 			$.ajax({
 						type : "POST",
 		        	    data: formData,

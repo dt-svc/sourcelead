@@ -51,5 +51,10 @@ public class RequirementAssignToServiceImpl implements RequirementAssignToServic
 	public Integer getAssignedTeamMembersCountByTeamMemberUserId(Long assignUserId,String jobType) {
 		return requirementAssignToDao.getAssignedTeamMembersCountByTeamMemberUserId(assignUserId, jobType);
 	}
+
+	@Override
+	public RequirementAssignTo getRequirementAssignToByRequirementId(Long requirementId) throws Exception {
+		 return requirementAssignToDao.getRequirementAssignToByRequirementId(requirementId);
+	}
 	
 }

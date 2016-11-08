@@ -23,6 +23,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
@@ -41,7 +42,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = WebAppConfig.class, loader = AnnotationConfigWebContextLoader.class)
+@ContextConfiguration(classes = {WebAppConfig.class, SecurityConfig.class}, loader = AnnotationConfigWebContextLoader.class)
 public class UploadFileServiceTest {
 //	uploadFile(MultipartFile multipartFile, OrgLocations orgLocations, User user, String isMailChecked) throws Exception;
 	private static final Logger logger = LoggerFactory.getLogger(UploadFileServiceTest.class);

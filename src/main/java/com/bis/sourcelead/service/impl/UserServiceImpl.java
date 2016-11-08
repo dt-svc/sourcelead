@@ -189,7 +189,7 @@ public class UserServiceImpl implements UserService {
 			if(("".equals(responderType))  && (sourceType.equalsIgnoreCase("CREATEUSER") || sourceType.equalsIgnoreCase("PROJECTS"))
 					 &&  (jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent")))
 					 && ("Y".equals(jsonObj.getString("isMailSent")))){
-				sendEmail(user,loginuser,password);
+				sendEmail(user,loginuser,password,orgLocations.getId());
 			}
 			
 			if((("Client".equals(responderType) || "Vendor".equals(responderType)) 
@@ -256,7 +256,7 @@ public class UserServiceImpl implements UserService {
 		
 		//send mail to user
 		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
-			sendEmail(user,loginUser,password);
+			sendEmail(user,loginUser,password,orgLocationsId);
 		}
 		 
 	}
@@ -361,7 +361,12 @@ public class UserServiceImpl implements UserService {
 			employees.setDailyHours(jsonObj.getString("dayHours"));
 		}
 		if(jsonObj.has("invoiceFrequency")){
-			employees.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+			if(jsonObj.getString("invoiceFrequency") != null && !"".equalsIgnoreCase(jsonObj.getString("invoiceFrequency"))){
+				employees.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+			}else{
+				employees.setInvoiceFrequency("Weekly");
+			}
+			
 		}
 		
 		if(jsonObj.has("dateofJoin") && !isNullOrEmpty(jsonObj.getString("dateofJoin"))){
@@ -419,13 +424,13 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public void sendEmail(User user, User loginUser, String password) throws Exception {
+	public void sendEmail(User user, User loginUser, String password, Long locationId) throws Exception {
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 emailMessage.setOrgLocationId(locationId);
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -750,8 +755,14 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId) throws Exception {
-		return userDao.getUsersByTeamTypeAndNoCurrentUser(currentApproverId);
+	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId, Long orgLocationsId) throws Exception {
+		return userDao.getUsersByTeamTypeAndNoCurrentUser(currentApproverId,orgLocationsId);
+	}
+	
+	@Override
+	public List<User> getUserListExceptExistedTeamMembersList(List<Long> teamMembersId, Long orgLocationId)
+			throws Exception {
+		return userDao.getUserListExceptExistedTeamMembersList(teamMembersId, orgLocationId);
 	}
 	
 	

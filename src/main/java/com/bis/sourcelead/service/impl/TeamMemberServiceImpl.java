@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -75,17 +74,29 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 	}
 
 	@Override
-	public TeamMembers saveTeamMembersByJsonData(JSONObject jSONObject,Long teamId) throws Exception {
+	public void saveTeamMembersByJsonData(JSONObject jSONObject,Long teamId) throws Exception {
 		
 		
 		String  userList = null;
-  	  try{
-  		   JSONArray jsonArray = jSONObject.getJSONArray("memberUserId");
-  		 userList = jsonArray.toString();
-  	  }
-  	  catch(JSONException e){
-  		userList= jSONObject.getString("memberUserId");
-  	  }
+		if(jSONObject.has("teamMemberUserId")){
+				try{
+		  		  JSONArray jsonArray = jSONObject.getJSONArray("teamMemberUserId");
+		  		  userList = jsonArray.toString();
+		  	     }
+		  	     catch(JSONException e){
+		  		     userList= jSONObject.getString("teamMemberUserId");
+		  	     }
+		}
+		if(jSONObject.has("memberUserId")){
+			 try{
+		  		  JSONArray jsonArray = jSONObject.getJSONArray("memberUserId");
+		  		  userList = jsonArray.toString();
+		  	     }
+		  	     catch(JSONException e){
+		  		     userList= jSONObject.getString("memberUserId");
+		  	     }
+		}
+		
 		userList = userList.replaceAll("\\[", "").replaceAll("\\]","");
 		userList = userList.replaceAll("\"", "");
 		String[] usersIds = userList.split(",");
@@ -110,23 +121,7 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 			teamMembers.setUpdatedDate(commonUtil.currentDate());
 	        teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
 		}
-		
-		
-		// For saving  the Team  Lead as a Team member
-		
-		TeamMembers teamlead = new TeamMembers();
-		
-		Team team = teamService.getTeamByTeamId(teamId);
-		User user = new User();
-		user.setId(team.getOwnerUserId().getId());
-		teamlead.setMemberUserId(user);
-		teamlead.setTeamId(team);
-		teamlead.setStatus(Constants.MEMBER_ACTIVE);
-		teamlead.setCreatedDate(commonUtil.currentDate());
-		teamlead.setUpdatedDate(commonUtil.currentDate());
-		teamMemberDao.saveOrUpdateTeamMembers(teamlead);
 	   
-		return teamlead;
 	
 }
 
@@ -138,5 +133,21 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 		return teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
 		
 	}
+
+	@Override
+	public List<TeamMembers> getTeamMembersListByLocationId(Long orgLocationId) throws Exception {
+		
+		
+		List<TeamMembers> teamMembersList = teamMemberDao.getTeamMembersListByLocationId(orgLocationId);
+		for(TeamMembers teamMembers :teamMembersList){
+			
+			teamMembers.setTeamName(teamMembers.getTeamId().getName());
+			teamMembers.setOwnerName(teamMembers.getTeamId().getOwnerUserId().getFirstName() +""+teamMembers.getTeamId().getOwnerUserId().getLastName() );
+			teamMembers.setMemberName(teamMembers.getMemberUserId().getFirstName()+""+teamMembers.getMemberUserId().getLastName());
+			teamMembers.setEmail(teamMembers.getEmail());
+		}
+		return teamMembersList;
+	}
+	 
 }
 

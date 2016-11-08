@@ -80,19 +80,21 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 							while (x.hasNext()){
 							    String key = (String) x.next();
 							    String outerKeyObj = (String) innerObj.get(key);
-							  // System.out.println("skills>>>>>>>>>>>>>>"+outerKeyObj);
+							    Boolean semicolonExists = outerKeyObj.contains(":");
+							    outerKeyObj = outerKeyObj.replaceAll(",,", ",");
+							    outerKeyObj = outerKeyObj.replaceAll(":,", "");
+							   // System.out.println("skills>>>>>>>>>>>>>>"+outerKeyObj);
 								String[] totalStrings = outerKeyObj.split(System.getProperty("line.separator"));
 								if(totalStrings != null && totalStrings.length > 0){
+									
 									for(String skillSeperator :totalStrings){
-										skillSeperator = skillSeperator.replaceAll(",,", ",");
-										skillSeperator = skillSeperator.replaceAll(":,", "");
 										String[] arr = skillSeperator.split(":");
 										if(arr != null && arr.length>1){
 											if(StringUtils.isNotEmpty(arr[1])  && arr[1] !=":"){
 												if(StringUtils.isEmpty(skills)){
 													skills = skills+(arr[1].replaceAll(":", "").trim());
 												}
-												else if(!skills.contains(arr[0])){
+												else if(!skills.contains(arr[1])){
 													skills= skills+(",");
 													skills= skills+(arr[1].trim());
 												}
@@ -105,24 +107,25 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 													if(StringUtils.isEmpty(skills)){
 														skills= skills+(arr[1].trim());
 													}
-													else if(!skills.contains(arr[0])){
+													else if(!skills.contains(arr[1])){
 														skills= skills+(",");
 														skills= skills+(arr[1].trim());
 													}
 												}
 											}
-										}
-										if(arr != null && arr.length>0){
-											if(StringUtils.isNotEmpty(arr[0])  && arr[0] !=":" ){
-												if(StringUtils.isEmpty(skills)){
-													skills= skills+(arr[0].trim());
+											else if(arr != null && arr.length>0 && !semicolonExists){
+												if(StringUtils.isNotEmpty(arr[0])  && arr[0] !=":" ){
+													if(StringUtils.isEmpty(skills)){
+														skills= skills+(arr[0].trim());
+													}
+													else if(!skills.contains(arr[0])){
+														skills= skills+(",");
+														skills= skills+(arr[0].trim());
+													} 
 												}
-												else if(!skills.contains(arr[0])){
-													skills= skills+(",");
-													skills= skills+(arr[0].trim());
-												} 
 											}
 										}
+										
 									}
 								}
 								
@@ -133,7 +136,7 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 				
 			}
 			if(skills != null){
-				jsonUtil.setSkills(skills.toString().replaceAll("[^a-zA-Z0-9\\.\\#\\,\\/\\s]", ""));
+				jsonUtil.setSkills(skills.toString().replaceAll("\\/", " and ").replaceAll("[^a-zA-Z0-9\\.\\#\\,\\/\\s\\&\\+\\(\\)]", ""));
 			}
 		    return toJSON(jsonUtil);
    }

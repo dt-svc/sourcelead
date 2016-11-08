@@ -10,8 +10,11 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TeamDao;
+import com.bis.sourcelead.dao.TeamMemberDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
+import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
@@ -30,6 +33,9 @@ public class TeamServiceImpl implements TeamService {
 	
 	@Autowired
 	TeamDao teamDao;
+	
+	@Autowired
+	TeamMemberDao teamMemberDao;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -74,10 +80,17 @@ public class TeamServiceImpl implements TeamService {
 	@Override
 	public Team storeTeam(JSONObject jsonObj,OrgLocations orgLocations) throws Exception {
 		
+		
+		Team team = null;
+		if(jsonObj.has("teamId") && jsonObj.getString("teamId") != null && !"".equals(jsonObj.getString("teamId"))){
+			team = teamDao.getTeamByTeamId(Long.parseLong(jsonObj.getString("teamId")));
+		}else{
+			team = new Team();
+		}
 		User user = new User();
 		user.setId(Long.parseLong(jsonObj.getString("ownerUserId")));
 		
-		Team team = new Team();
+	//	Team team = new Team();
 		if(orgLocations != null){
 			team.setOrgLocationsId(orgLocations);;
 			}
@@ -93,6 +106,18 @@ public class TeamServiceImpl implements TeamService {
 		team.setUpdatedDate(commonUtil.currentDate());
 		
 		teamDao.storeTeam(team);
+		
+		/*// For saving  the Team  Lead as a Team member
+		TeamMembers teamlead = new TeamMembers();
+		User teamUser = new User();
+		teamUser.setId(team.getOwnerUserId().getId());
+		teamlead.setMemberUserId(teamUser);
+		teamlead.setTeamId(team);
+		teamlead.setStatus(Constants.MEMBER_ACTIVE);
+		teamlead.setCreatedDate(commonUtil.currentDate());
+		teamlead.setUpdatedDate(commonUtil.currentDate());
+		teamMemberDao.saveOrUpdateTeamMembers(teamlead);*/
+				
 		teamMembersService.saveTeamMembersByJsonData(jsonObj, team.getId());
 		
 		return team;

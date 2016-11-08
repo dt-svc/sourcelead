@@ -106,9 +106,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 									requirementInterview.setInterviewType(jsonObj.getString(c+"interviewType"));
 								}
 								
-								if(jsonObj.has(c+"timeZone") && !jsonObj.getString(c+"timeZone").isEmpty()){
+								/*if(jsonObj.has(c+"timeZone") && !jsonObj.getString(c+"timeZone").isEmpty()){
 									requirementInterview.setTimeZone(jsonObj.getString(c+"timeZone"));
-								}
+								}*/
 								
 								if(jsonObj.has(c+"startTime") && !jsonObj.getString(c+"startTime").isEmpty()){
 									  Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")), 
@@ -541,9 +541,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			}
 
 	@Override
-	public List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception {
+	public List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId,Long requirementId) throws Exception {
 		List<RequirementInterview> customerInterviewList = null;
-		customerInterviewList = requirementInterviewDao.getCustomerInterviewsBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
+		customerInterviewList = requirementInterviewDao.getCustomerInterviewsBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId,requirementId);
 		if (customerInterviewList != null && !customerInterviewList.isEmpty() ) {
 			for (RequirementInterview requirementInterview : customerInterviewList) {
 								
@@ -564,7 +564,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			    }
 			    
 			    RequirementSubmission requirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(requirementInterview.getSubmissionId().getId(),orgLocationsId);
-			   OrgLocations orgLocations = orgLocationService.getOrgLocations(requirementSubmission.getVendorLocationId().getId());
+			   OrgLocations orgLocations = orgLocationService.getOrgLocations(requirementSubmission.getOrgLocations().getId());
 			   requirementInterview.setClientName(orgLocations.getOrg().getOrgName());
 			    
 		}

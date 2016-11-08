@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -122,7 +124,67 @@ public class RequirementListRestController {
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
-		resultJson = commonUtil.toJSON(requirementList);
+		for(Requirement requirement : requirementList){
+			if(requirement.getClientId() != null){
+				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+				}
+				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+					requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+				}
+			}
+			if(requirement.getManagerUserId() != null){
+				String managerFirstName = "";
+				if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
+					managerFirstName = requirement.getManagerUserId().getFirstName();
+				}
+				String managerLastName = "";
+				if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
+					managerLastName = requirement.getManagerUserId().getLastName();
+				}
+				requirement.setManager(managerFirstName+" "+managerLastName);
+			}
+		}
+		
+		ArrayList<Requirement>  requirementList1 = new ArrayList<Requirement>();
+		String[] status1 = status.split(",");
+		if (status1[0] != null && status1[0].length() > 0) {
+			for (String stat : status1) {
+				for(Requirement requirement : requirementList){
+					if(stat.equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
+						if(requirement.getClientId() != null){
+							if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+								requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+							}
+							if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+								requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+							}
+						}
+						if(requirement.getManagerUserId() != null){
+							String managerFirstName = "";
+							if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
+								managerFirstName = requirement.getManagerUserId().getFirstName();
+							}
+							String managerLastName = "";
+							if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
+								managerLastName = requirement.getManagerUserId().getLastName();
+							}
+							requirement.setManager(managerFirstName+" "+managerLastName);
+						}
+						
+						requirementList1.add(requirement);
+					}
+				}
+				
+			}
+			resultJson = commonUtil.toJSON(requirementList1);
+		}else{
+			
+			resultJson = commonUtil.toJSON(requirementList);
+		}
+		
+		
+		
 		return resultJson;
 	 }
 	    
@@ -269,8 +331,12 @@ public class RequirementListRestController {
 								List<Candidate> candidateList = new ArrayList<>();
 								candidateList.add(candidate);
 								List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScore(candidateList,requirementSubmission.getRequirement());
-								requirementSubmission.setScore(candidateListCopy.get(0).getCandidateScore()+"%");
-								logger.info("size of score is "+candidateListCopy.get(0).getCandidateScore());
+								if(candidateListCopy !=null && candidateListCopy.size() >0){
+									requirementSubmission.setScore(candidateListCopy.get(0).getCandidateScore()+"%");
+									logger.info("size of score is "+candidateListCopy.get(0).getCandidateScore());
+								}else{
+									requirementSubmission.setScore("0 %");
+								}
 							}
 						}
 						

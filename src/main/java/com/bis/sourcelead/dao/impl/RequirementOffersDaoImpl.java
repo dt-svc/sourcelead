@@ -60,7 +60,7 @@ public class RequirementOffersDaoImpl implements RequirementOffersDao{
 	
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementOffers rs left join fetch rs.submissionId  where rs.submissionId = :submissionId";
+		String query = "from RequirementOffers rs left join fetch rs.submissionId  sub left join fetch sub.sourceSubmission    where rs.submissionId = :submissionId";
 		List<RequirementOffers> requirementOffersList =  session.createQuery(query.toString()).setLong("submissionId", submissionId).setCacheable(true).list();
 		
 		RequirementOffers requirementOffers = null;

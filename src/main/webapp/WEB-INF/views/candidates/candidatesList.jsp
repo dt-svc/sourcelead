@@ -68,7 +68,7 @@
 	                	 result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result = result +"    <th><input type='checkbox' id='checkbox1'/></th>"; 
+	                     result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>"; 
 	                     result = result +"    <th>Name</th>"; 
 	                     result = result +"    <th>Designation</th>"; 
 	                     result = result +"    <th>Position type</th>"; 
@@ -100,7 +100,11 @@
 				            	}else{
 				            		address = "----";
 				            	}
-				            	
+				            	if(opt.candidateUpdateDateToString != null && opt.candidateUpdateDateToString != 'undefined' && opt.candidateUpdateDateToString != ""){
+				            		candidateUpdateDateToString = opt.candidateUpdateDateToString; 
+				            	}else{
+				            		candidateUpdateDateToString = "---";
+				            	}
 		                     result = result +"<tr>";
 			                 result = result +"  <td><input type='checkbox' id='checkbox12'/></td>";
 			                 result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
@@ -114,7 +118,7 @@
 			                 result = result +"  <td><div ><span>"+opt.email+"</span></div></td>";
 			                 result = result +"  <td><div>"+mobilePhone+"</div></td>";
 			                 result = result +"  <td><div><span title='"+address+"'>"+address+"</span></div></td>";
-			                 result = result +"  <td><div>"+opt.candidateUpdateDateToString+"</div></td>";
+			                 result = result +"  <td><div>"+candidateUpdateDateToString+"</div></td>";
 			                 result = result +"</tr>"; 
 	                     }
 	                     result = result +" </tbody>";
@@ -840,6 +844,21 @@ $(document).ready(function() {
 
 </script>
 
+<script>
+function toggle(source) {
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i] != source)
+            checkboxes[i].checked = source.checked;
+        
+    }
+$('input:checkbox:not(#checkAll)').click(function() {
+    if(!this.checked) {
+        $('#checkAll').removeAttr('checked');
+    }
+});
+}
+</script>
 
     
 <jsp:include page="../masterFooter.jsp" />

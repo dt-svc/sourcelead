@@ -72,6 +72,13 @@ function addClientPopUp() {
 	result = result+'              </select>';
 	result = result+'              </div>';
 	result = result+'            </div>';
+	result = result+'    <div class="form-group">';
+	result = result+'      <label class="col-lg-3"></label>';
+	result = result+'      <div class="col-lg-9">';
+	result = result+'      <label class="check-box checkBox">';
+	result = result+'       <input type="checkbox" value="Y" name="isMailSent" checked="checked"> Send Invitation';
+	result = result+'      </label>';
+	result = result+'       </div>';
 	result = result+'          </div>';
 	result = result+'        </div>';
 	result = result+'      </div>';
@@ -350,9 +357,9 @@ function getClientSubmissionTemplates(local){
 						+ "<option value=''>-- Select Contact --</option>";
 				for (var i = 0; i < json.length; i++) {
 					var opt = json[i];
-					
-					output = output + "<option value='"+opt.id+"'>"
-							+opt.spocName+ "</option>";
+					if("" != opt.spocStatus && opt.spocStatus != "In-Active"){
+						output = output + "<option value='"+opt.id+"'>"+opt.spocName+ "</option>";
+					}
 				}
 				$("#selectContact").empty();
 				$("#selectContact").append(output);

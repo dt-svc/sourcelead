@@ -16,6 +16,7 @@ import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -24,7 +25,7 @@ import com.bis.sourcelead.form.Registration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = WebAppConfig.class, loader = AnnotationConfigWebContextLoader.class)
+@ContextConfiguration(classes = {WebAppConfig.class, SecurityConfig.class}, loader = AnnotationConfigWebContextLoader.class)
 public class RegistrationServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(RegistrationServiceTest.class);
@@ -49,7 +50,7 @@ public class RegistrationServiceTest {
 		registration.setWebsite("www.tesla.com");
 		User user = new User();
 		user.setId(3L);
-		registrationService.addRegistration(registration, user, " ", " ");
+		registrationService.addRegistration(registration, user, " ", " ",1l);
 		logger.info("registration added successfully");
 		
 	}

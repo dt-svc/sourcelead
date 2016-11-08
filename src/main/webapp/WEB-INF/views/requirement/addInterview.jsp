@@ -37,7 +37,7 @@ padding:0!important;
 function addInterview(requirementId){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
-	var clientSubmissions = '${clientSubmissions}';
+	var parentRequirement = '${parentRequirement}';
 	 
 	var result = "";
 	result = result + '<div class="add_inter">';
@@ -55,10 +55,10 @@ function addInterview(requirementId){
 			result = result + '<th>Inteview Type</th>';
 			result = result + '<th>Interview Date</th>';
 			result = result + '<th>Start Time/End Time</th>';
-			result = result + '<th>Time Zone</th>';
+			/* result = result + '<th>Time Zone</th>'; */
 			result = result + '<th>Location</th>';
 			result = result + '<th>Interviewer</th>';
-			result = result + '<th class="action">Action</th>';
+			result = result + '<th>Action</th>';
 		result = result + '</tr>';
 	result = result + '</tbody>';
 	result = result + '</table>';
@@ -68,7 +68,7 @@ function addInterview(requirementId){
 	result = result + '<div class="col-md-12 mt10">';
 	result = result + '<div class="ne-ch">';
 	result = result + '<label><input type="checkbox" name="notificationToApplicant" value="Y" checked="checked" ><b>Notify to Applicants</b></label>';
-	if(clientSubmissions == 'Y'){
+	if(parentRequirement == 'Y'){
 	   result = result + '<label><input type="checkbox" name="notificationToSpoc" value="Y" checked="checked"><b>Notify to Vendors</b></label>';
 	}
 	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" value="Y" onClick="showOthersDiv();"><b>Notify to Others</b></label>';
@@ -218,26 +218,26 @@ function checkEmails(){
 	</select>
 </div>
 
-<div id="divTaskTd5" style="display: none; float: left;">
+<%-- <div id="divTaskTd5" style="display: none; float: left;">
    	 <select class="form-control block" id="REPLACEROWIDtimeZone" name="REPLACEROWIDtimeZone">
 		<option value="">--Select Time Zone--</option>
 		  <c:forEach var="timezone" items="${timezonesList}">
 				<option value="${timezone}">${timezone}</option>
 		 </c:forEach>
 	</select>
-</div>
+</div> --%>
 
-<div id="divTaskTd6" style="display: none; float: left;">
-	  <input value="" type="text" id="REPLACEROWIDlocation" name="REPLACEROWIDlocation" class="form-control input-sm" placeholder="Location" field-name="Location" data-validation="required">
+<div id="divTaskTd5" style="display: none; float: left;">
+	  <input value="" type="text" id="REPLACEROWIDlocation" name="REPLACEROWIDlocation" class="form-control input-sm" placeholder="Location" field-name="Location" >
 </div> 
 
-<div id="divTaskTd7" style="display: none; float: left;">
+<div id="divTaskTd6" style="display: none; float: left;">
 		  <select multiple class="chosen-select" id="REPLACEROWIDinterviewer" name="REPLACEROWIDinterviewer" field-name="Interviewer" >
 			
 	  </select>
 </div> 
 
- <div id="divTaskTd8" style="display: none; float: left;">
+ <div id="divTaskTd7" style="display: none; float: left;">
 	 <div>
          <a href="#" onclick="removeInterviewRow(REPLACEROWID);"><i class="glyphicon glyphicon-trash deme"></i></a>
     </div>
@@ -269,8 +269,10 @@ function checkEmails(){
 		var cell2 = row.insertCell(2);
 		/* cell2.innerHTML = "<div class='positionRelative date'><input class='form-control input-sm Datepicker' placeholder='Date' name='"+maxRowNum+"dateOfInterview' id='"+maxRowNum+"dateOfInterview'  readonly='readonly'  type='text' data-validation='required' field-name='Interview Date' > <span class='input-group-addon input-groupAddon'><i class='fa fa-calendar'></i></span> </div>"; */
 		cell2.innerHTML = "<div class='positionRelative date'><input class='form-control input-sm Datepicker' placeholder='Select Date' name='"+maxRowNum+"dateOfInterview' id='"+maxRowNum+"dateOfInterview'  readonly='readonly'  type='text' data-validation='required' field-name='Interview Date' ></div>";
-		$(".Datepicker").datepicker();
-
+		//$(".Datepicker").datepicker();
+		$(".Datepicker").datepicker({
+		      minDate: 0  
+		});
 		
 		var cell3 = row.insertCell(3);
 		cell3.innerHTML = "<div class='pull-left mr' id='"+maxRowNum+"timeDiv'> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='Start Time' name='"+maxRowNum+"startTime' id='"+maxRowNum+"startTime'  type='text' data-validation='required' field-name='Start Time'/><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span></span> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='End Time' name='"+maxRowNum+"endTime' id='"+maxRowNum+"endTime'  type='text' field-name='End Time' /><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span></span> </div> ";
@@ -291,23 +293,17 @@ function checkEmails(){
 		var divTsTd5Str = document.getElementById("divTaskTd5").innerHTML;
 		divTsTd5Str = divTsTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
 		divTsTd5Str = divTsTd5Str.replace(/PRICECALCULATION/g,("")); 
-		cell4.innerHTML = divTsTd5Str; 
+		cell4.innerHTML = divTsTd5Str;  
 		
 		var cell5 = row.insertCell(5);
 		var divTsTd6Str = document.getElementById("divTaskTd6").innerHTML;
 		divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
-		divTsTd6Str = divTsTd6Str.replace(/PRICECALCULATION/g,("")); 
 		cell5.innerHTML = divTsTd6Str;  
 		
 		var cell6 = row.insertCell(6);
 		var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
 		divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell6.innerHTML = divTsTd7Str;  
-		
-		var cell7 = row.insertCell(7);
-		var divTsTd8Str = document.getElementById("divTaskTd8").innerHTML;
-		divTsTd8Str = divTsTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell7.innerHTML = divTsTd8Str;
+		cell6.innerHTML = divTsTd7Str;
 		
 		getInterviewers(maxRowNum);
 		getShortListCandidates(maxRowNum);

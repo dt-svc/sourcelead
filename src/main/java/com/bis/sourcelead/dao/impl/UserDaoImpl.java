@@ -470,7 +470,11 @@ public class UserDaoImpl implements UserDao {
 		 }
 		 else if("Admin".equalsIgnoreCase(teamType)){
 			 subQuery = "userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.roles.id IN(select roles.id from Roles roles where roles.displayName = 'Admin') and userRole.orgLocations=:orgLocationsId";
-		 }else{
+		 }else if("Project Manager".equalsIgnoreCase(teamType)){
+			 subQuery = "userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.roles.id IN(select roles.id from Roles roles where roles.displayName = 'Project Manager') and userRole.orgLocations=:orgLocationsId";
+		 }
+		 
+		 else{
 			 Long teamId = Long.parseLong(teamType);
 			 subQuery = "teamMembers.memberUserId.id from TeamMembers teamMembers where teamMembers.teamId.id ="+teamId+" and teamMembers.teamId.orgLocationsId.id=:orgLocationsId"; 
 		 }
@@ -481,11 +485,27 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<User> getUsersByTeamTypeAndNoCurrentUser( Long currentApproverId) {
+	public List<User> getUsersByTeamTypeAndNoCurrentUser( Long currentApproverId,Long orgLocationsId) {
+		
+		
 		 Session session = this.sessionFactory.getCurrentSession();
-		 String query = "from User user where  user.userState != 'INACTIVE' and user.id <> :currentApproverId  ";
-		 List<User> userRoleList = session.createQuery(query.toString()).setLong( "currentApproverId", currentApproverId).setCacheable(true).list();
-		return userRoleList;
+		 String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where  userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' and user.id <> :currentApproverId ";
+
+		 List<User> userRoleList = session.createQuery(query.toString()).setLong( "currentApproverId", currentApproverId).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+		 return userRoleList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<User> getUserListExceptExistedTeamMembersList(List<Long> teamMembersId, Long orgLocationId)
+			throws Exception {
+
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String query = "from User user where user.id NOT IN (:teamMembersId) ";
+
+		 List<User> userRoleList = session.createQuery(query.toString()).setParameterList("teamMembersId", teamMembersId).setCacheable(true).list();
+		 return userRoleList;
+		 
 	}
 	
 	
