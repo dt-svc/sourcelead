@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Roles;
 
 public interface RolesService {
@@ -21,5 +22,7 @@ public interface RolesService {
 	public Roles storeRoles(Roles roles);
 	
 	public Roles getRolesByRoleNameAndOrgLocationId(String roleName,Long orgLocationId) throws Exception;
+	
+	List<Roles> getUserRolesListByModule(Org org, Long orgLocationId);
 
 }

@@ -81,7 +81,7 @@ public class TabsDaoImpl implements TabsDao{
 		 List<Long> roleActonList = new ArrayList<Long>();
 		 for(Roles roles : rolesList){
 			 for (String s : roles.getActionId().split(",")){
-				 roleActonList.add(Long.parseLong(s));
+				 roleActonList.add(Long.parseLong(s.trim()));
 			 }
 		 }
 		

@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Roles;
 
 public interface RolesDao {
@@ -21,5 +22,7 @@ public interface RolesDao {
 	public Roles storeRoles(Roles roles);
 	
 	public Roles getRolesByRoleNameAndOrgLocationId(String roleName,Long orgLocationId) throws Exception;
+	
+	List<Roles> getUserRolesListByModule(Org org, Long orgLocationId);
 
 }

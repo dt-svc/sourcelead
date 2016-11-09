@@ -14,7 +14,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RolesDao;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -174,6 +177,42 @@ public class RolesDaoImpl implements RolesDao{
 			return null;
 		}
    	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Roles> getUserRolesListByModule(Org org, Long orgLocationId) {
+		
+		
+        Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQuery = "";
+		
+		if(org.getAts().equals(Status.Y)){
+			subQuery = "modules.moduleName = 'ATS' OR ";
+		}
+		
+		if(org.getVms().equals(Status.Y)){
+			subQuery = subQuery+"modules.moduleName = 'VMS' OR ";
+		}
+		
+		if(org.getTimeSheet().equals(Status.Y)){
+			subQuery = subQuery+"modules.moduleName = 'TIMESHEET' OR";
+		}
+		
+		subQuery = subQuery.substring(0, subQuery.length()-3);
+		
+		String query1 = "select modules.id from Modules modules where "+subQuery+" ";
+		List<Long> modulesIdList =  session.createQuery(query1.toString())
+									.setCacheable(true).list();
+		
+		
+		String query = "from Roles roles where roles.actionId IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId) and roles.orgLocations.id = :orgLocationId ) ";
+	    List<Roles> rolesList = session.createQuery(query.toString()).setParameterList("modulesId", modulesIdList).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+      
+		
+		
+		return rolesList;
+	}
 
 
 }

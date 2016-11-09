@@ -68,7 +68,7 @@ public class UserController {
 			List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 		    model.addObject("org_projectsList", projectsList);
 		    
-		    List<Roles> rolesList = rolesService.getMoudleRoles(org.getId(),userRoleId);
+		    List<Roles> rolesList = rolesService.getUserRolesListByModule(org,orgLocations.getId());
 		    model.addObject("rolesList", rolesList);
 		    
 		    commonUtil.highLightMenu(Constants.Users, request);

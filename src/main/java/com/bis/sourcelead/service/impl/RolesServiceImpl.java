@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.RolesDao;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.service.RolesService;
 
@@ -62,6 +63,12 @@ public class RolesServiceImpl implements RolesService{
 	@Override
 	public Roles getRolesByRoleNameAndOrgLocationId(String roleName, Long orgLocationId) throws Exception {
 		return rolesDao.getRolesByRoleNameAndOrgLocationId(roleName, orgLocationId);
+	}
+
+
+	@Override
+	public List<Roles> getUserRolesListByModule(Org org, Long orgLocationId) {
+		return rolesDao.getUserRolesListByModule(org, orgLocationId);
 	}
 
 }
