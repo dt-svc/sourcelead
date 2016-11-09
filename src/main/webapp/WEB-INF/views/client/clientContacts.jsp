@@ -366,7 +366,7 @@ function addContact(orgRelationID,clientLocationId) {
 	
 	result = result  +'	 <div class="clearfix mb10" id="EmailIdDiv">';
 	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	    <input type="text" class="form-control input-sm" id="EmailId" name="email"  value="" field-name="Email" placeholder="Email Id *" onblur="getSpocUserDetails('+clientLocationId+','+orgRelationID+');" data-validation="required validate_Space validate_length length2-100 validate_email">';
+	result = result  +'	    <input type="text" class="form-control input-sm" id="EmailId" name="email"  value="" field-name="Email" placeholder="Email Id *" onblur="validateEmail('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" data-validation="required validate_Space validate_length length2-100 validate_email">';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
@@ -720,4 +720,34 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 	 }
 	
  }
+</script>
+
+<script type="text/javascript">
+function validateEmail(orgRelationID){
+	 getOwners(orgRelationID);
+	var email = document.getElementById("EmailId").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(email != null){
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/validateClientOrVendorEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+			success : function(data) {
+				var result = data;
+				if(result == 'Invalid Email') {
+					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					$("input#EmailId").after( "<p class='jquery_form_error_message'>" + email + " should not your org users email</span>");
+					document.getElementById("EmailId").setAttribute( 'record-exist', 'yes');
+					document.getElementById("EmailId").setAttribute( 'record-exist-errorMsg', email +"  should not your org users email");
+					
+				}else if(result == 'Valid Email') {
+					$('input#EmailId').removeAttr("class record-exist record-exist-errormsg");
+					$('input#EmailId').attr('class','valid form-control');
+					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					
+				}
+			},
+
+		});
+	}
+}
 </script>
