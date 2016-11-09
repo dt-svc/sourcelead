@@ -761,6 +761,12 @@ public class UserServiceImpl implements UserService {
 		 
 		 emailScenerioUtil.sendNotification(actionLink, loginUser, user, respondingPartyOrgLocation, noificationEmailScenario);
 	}
+	
+	@Override
+	public List<User> getUserListExceptExistedUsersList(List<Long> userIds, Long orgLocationId)
+			throws Exception {
+		return userDao.getUserListExceptExistedUsersList(userIds, orgLocationId);
+	}
 
 	@Override
 	public List<User> getUsersByTeamType(Long id, String teamType) throws Exception {

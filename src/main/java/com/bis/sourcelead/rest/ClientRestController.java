@@ -604,7 +604,18 @@ public class ClientRestController {
 	
 	
 	
-	
+	@RequestMapping(value = "/getAllOwners")
+	public @ResponseBody String getAllOwners(@RequestParam(value="email", required=false) String email,@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		String resultJson = null;
+		
+		List<Long> existingOwnerUserIds = orgSpocService.getOwnerUserIdsbySpocEmailAndOrgRelationId(email,orgRelationId);
+		List<User> userList = userService.getUserListExceptExistedUsersList(existingOwnerUserIds,orgLocations.getId());
+		resultJson = commonUtil.toJSON(userList);
+		return resultJson;
+
+	}	
 	
 	
 	

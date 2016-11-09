@@ -139,6 +139,21 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getOwnerUserIdsbySpocEmailAndOrgRelationId(String email, Long orgRelationId) {
+		logger.debug("getOwnerIdbySpocId start");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Long> ownersList = null;;
+		if(orgRelationId != null && email != null){
+			String query = "select spoc.ownerUser.id from OrgSpoc spoc where spoc.spocUser.email = :email and spoc.orgRelations.id = :orgRelationId and spoc.status = '1' ";
+		    ownersList = session.createQuery(query).setString( "email", email ).setLong( "orgRelationId", orgRelationId ).setCacheable(true).list();
+		}
+	    
+        return ownersList;
+        
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public OrgSpoc getSpocUserByUserId(Long spocUserId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgSpoc> orgSpocs = new ArrayList<OrgSpoc>();

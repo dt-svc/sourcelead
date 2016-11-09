@@ -311,6 +311,11 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		}
 	
 	@Override
+	public List<Long> getOwnerUserIdsbySpocEmailAndOrgRelationId(String email, Long orgRelationId) throws Exception{
+		return orgSpocDao.getOwnerUserIdsbySpocEmailAndOrgRelationId(email,orgRelationId);	
+	 }
+	
+	@Override
 	public OrgSpoc getSpocUserByUserId(Long spocUserId) throws Exception {
 		logger.debug("In OrgSpocService class...");
 		return orgSpocDao.getSpocUserByUserId(spocUserId);

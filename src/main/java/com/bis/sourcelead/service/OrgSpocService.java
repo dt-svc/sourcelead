@@ -58,6 +58,8 @@ public interface OrgSpocService {
 
 	List<Long> getOwnerIdbySpocId(Long spocUserId, Long ownerId);
 	
+	List<Long> getOwnerUserIdsbySpocEmailAndOrgRelationId(String email, Long orgRelationId) throws Exception;
+	
 	
 	/**To get Spoc user
 	 * @author Prasad Salina

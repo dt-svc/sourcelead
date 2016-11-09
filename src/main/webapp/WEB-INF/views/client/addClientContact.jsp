@@ -361,6 +361,7 @@ function getOrgDetails()
 
 <script type="text/javascript">
 function validateEmail(){
+	 getOwners();
 	var email = document.getElementById("email").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(email != null){
@@ -419,22 +420,6 @@ function validateEmail(){
  }
  </script>
  
- <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				})
-</script> 
 
 <script type="text/javascript">
         var validationSettings = {
@@ -623,3 +608,61 @@ function getSpocUserDetails(){
 	
 }
 </script>
+
+<script type="text/javascript">
+ function getOwners() {
+	 var email = document.getElementById("email").value; 
+	 var vendorName = document.getElementById("vendorName").value;
+	 var orgLocationId = vendorName.split(',');
+	 var orgRelationId = orgLocationId[0];
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(email != null && email != "" && email != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllOwners?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgRelationId="+orgRelationId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		if(i == 0){
+			        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}
+			        		
+					}
+		        	$("#owner").empty();
+			        $("#owner").append(output);
+			        $('#owner').trigger("chosen:updated");
+		        },
+		    });
+	 }/* else{
+		 var output = "";
+     	 output = output + "<option value=''>-- Select Manager --</option>"; 
+     	 $("#reportingManager").empty();
+	     $("#reportingManager").append(output);
+	     $('#reportingManager').trigger("chosen:updated");
+	 } */
+	
+ }
+</script>
+
+
+ <script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+</script> 
