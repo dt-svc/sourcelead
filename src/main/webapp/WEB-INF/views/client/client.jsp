@@ -121,14 +121,14 @@ window.onload = function () {
 				
          
             <div class="form-group">
-              <label class="col-md-3">Level</label>
+              <label class="col-md-3">Tier</label>
               <div class="col-md-9">
                   <select class="form-control selectpicker" id="level" name="level">
-                    <option value="Level-1">Level-1</option>
-                    <option value="Level-2">Level-2</option>
-                    <option value="Level-3">Level-3</option>
-                    <option value="Level-4">Level-4</option>
-                    <option selected="selected" value="Level-5">Level-5</option>
+                    <option value="Tier-1">Tier-1</option>
+                    <option value="Tier-2">Tier-2</option>
+                    <option value="Tier-3">Tier-3</option>
+                    <option value="Tier-4">Tier-4</option>
+                    <option selected="selected" value="Tier-5">Tier-5</option>
                   </select>
               </div>
             </div>

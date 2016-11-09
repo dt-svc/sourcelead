@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -109,14 +110,20 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectId(long projectId) throws Exception {
+	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectId(long projectId,long userId) throws Exception {
+	
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId";
-	        List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId)
-	        																							.setCacheable(true)
-	        																							.list();
-	        return projectHirachyList;
-		
+		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId and usr.id = :userId";
+		List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId).setLong("userId", userId).setCacheable(true).list();
+		if(projectHirachyList != null && !projectHirachyList.isEmpty()){
+			 query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId and projectHirachy.level IN(select Max(subpah.level) from ProjectApproverHierarchy subpah  where subpah.projectId =:projectId)";
+			 projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId).setCacheable(true).list();
+		}
+		else{
+			query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId ";
+			 projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId).setCacheable(true).list();
+		}
+	    return projectHirachyList;
 	}
 	
 

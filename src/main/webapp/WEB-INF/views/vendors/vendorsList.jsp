@@ -75,14 +75,14 @@
 	                  </li>
                   
 	                
-						<li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Level</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
+						<li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
 		                	<div id="filter2ApprovedPop" class="approved_pop">
 		                    	<ul>
-									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Level-1"  onclick="getVendorLists();"><label>Level-1</label></li>
-									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Level-2"  onclick="getVendorLists();"><label>Level-2</label></li>
-									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-3"  onclick="getVendorLists();"><label>Level-3</label></li>
-		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Level-4"  onclick="getVendorLists();"><label>Level-4</label></li>
-		               				<li><input id="c10"  type="checkbox" name="clinetLevel" value ="Level-5"  onclick="getVendorLists();"><label>Level-5</label></li>
+									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Tier-1"  onclick="getVendorLists();"><label>Tier-1</label></li>
+									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Tier-2"  onclick="getVendorLists();"><label>Tier-2</label></li>
+									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Tier-3"  onclick="getVendorLists();"><label>Tier-3</label></li>
+		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Tier-4"  onclick="getVendorLists();"><label>Tier-4</label></li>
+		               				<li><input id="c10"  type="checkbox" name="clinetLevel"value ="Tier-5"  onclick="getVendorLists();"><label>Tier-5</label></li>
 		                        </ul>
 		                    </div>                	
 		                </li>          
@@ -146,7 +146,7 @@ function getVendorLists(){
    	        	result = result +'<th>Location</th>';
    	        	result = result +'<th>No.of Contacts</th>';
    	        	result = result +'<th>Released jobs</th>';
-   	        	result = result +'<th>Level</th>';
+   	        	result = result +'<th>Tier</th>';
    	        	/* result = result +'<th>Actions</th>'; */
    	        	result = result +'</tr>';
    	        	result = result +'</thead>';
