@@ -366,7 +366,7 @@ function addContact(orgRelationID,clientLocationId) {
 	
 	result = result  +'	 <div class="clearfix mb10" id="EmailIdDiv">';
 	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	    <input type="text" class="form-control input-sm" id="EmailId" name="email" onKeyUp="validateSpocEmail('+orgRelationID+');" value="" field-name="Email" placeholder="Email Id *" onblur="getSpocUserDetails('+clientLocationId+');" data-validation="required validate_Space validate_length length2-100 validate_email">';
+	result = result  +'	    <input type="text" class="form-control input-sm" id="EmailId" name="email"  value="" field-name="Email" placeholder="Email Id *" onblur="getSpocUserDetails('+clientLocationId+','+orgRelationID+');" data-validation="required validate_Space validate_length length2-100 validate_email">';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
@@ -586,7 +586,8 @@ function closePopupDiv(){
 
 
 <script type="text/javascript">
-function getSpocUserDetails(orgLocationId){
+function getSpocUserDetails(orgLocationId,orgRelationID){
+	getOwners(orgRelationID);
 	var email = document.getElementById("EmailId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(email){
@@ -686,4 +687,37 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 		    }
 	   });
 }
+</script>
+
+
+<script type="text/javascript">
+ function getOwners(orgRelationID) {
+	 var email = document.getElementById("EmailId").value; 
+	 var orgRelationId = orgRelationID;
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(email != null && email != "" && email != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllOwners?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgRelationId="+orgRelationId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		if(i == 0){
+			        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}
+			        		
+					}
+		        	$("#owner").empty();
+			        $("#owner").append(output);
+			        $('#owner').trigger("chosen:updated");
+		        },
+		    });
+	 }
+	
+ }
 </script>
