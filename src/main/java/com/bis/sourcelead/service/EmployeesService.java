@@ -39,4 +39,6 @@ public interface EmployeesService {
 	public Collection<Employees> getAllEmployeesByOrgLocationIdAndSearchByName(Long orgLocationId,Long level1Manager,Long level2Manager,String searchByName)throws Exception;
 
 	public List<Employees> getEmployeesExcludeTeamMembersBySearchByName(Long projectId, Long orgLocationsId,String searchByName) throws Exception;
+
+	public Employees getEmployeeByUserIdAndOrgLocationsId(Long userId, Long id);
 }

@@ -73,8 +73,8 @@ public class OrgSpocServiceTest {
 		user.setUpdatedDate(new Date());
 		user.setUserCode("132425");
 		user.setUserName("shiva");
-		user.setUserState(Status.ACTIVE);
-		user.setUserType("employee");
+		/*user.setUserState(Status.ACTIVE);
+		user.setUserType("employee");*/
 		user.setWorkPhone("1233467890");
 		orgSpoc.setSpocUser(user);
 		
