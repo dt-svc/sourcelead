@@ -48,7 +48,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (userRole != null) {
-				session.save(userRole);
+				session.saveOrUpdate(userRole);
 			}
 			logger.debug("UserRole Added Successfully");
 		} catch (Exception exception) {
@@ -75,6 +75,24 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			return null;
 		}
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public UserRole getNotPrimaryUser(Long userId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("getNotPrimaryUser By UserId start");
+		userRole = session
+				.createQuery("from UserRole userRole where userRole.user.id=:userId and userRole.isPrimary = '0' and userRole.userState != 'INACTIVE' ")
+				.setLong("userId", userId).setCacheable(true).list();
+		logger.debug("getNotPrimaryUser By UserId start");
+		if (userRole.size() > 0) {
+			return userRole.get(0);
+		} else {
+			return null;
+		}
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -85,7 +103,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 		String subQuery = "";
 		if (!isNullOrEmpty(userState)) {
-			subQuery = "and userRole.user.userState = '" + userState + "'";
+			subQuery = "and userRole.userState = '" + userState + "'";
 		}
 		
 		String subQuery1 = "";
@@ -107,7 +125,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 		String subQuery = "";
 		if (!isNullOrEmpty(userState)) {
-			subQuery = "and userRole.user.userState = '" + userState + "'";
+			subQuery = "and userRole.userState = '" + userState + "'";
 		}
 		
 		String subQuery1 = "";
@@ -128,7 +146,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 		String subQuery = "";
 		if (!isNullOrEmpty(userState)) {
-			subQuery = "and userRole.user.userState = '" + userState + "'";
+			subQuery = "and userRole.userState = '" + userState + "'";
 		}
 		
 		String subQuery1 = "";
@@ -151,7 +169,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 		String subQuery = "";
 		if (!isNullOrEmpty(userState)) {
-			subQuery = "and userRole.user.userState = '" + userState + "'";
+			subQuery = "and userRole.userState = '" + userState + "'";
 		}
 		
 		String subQuery1 = "";
@@ -181,7 +199,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return session
 				.createQuery(
 						"Select userRole from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and "
-								+ "userRole.user.userState = :userState "+subQuery+" ")
+								+ "userRole.userState = :userState "+subQuery+" ")
 				.setLong("locationId", locationId).setString("userState", userState).setLong("userId", userId).setCacheable(true).list();
 	}
 
@@ -283,13 +301,129 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			return null;
 		}
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public UserRole getUserRoleByUserIdAndLocationId(Long userId,Long locationId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("getUserRoleByUserIdAndLocationId method  start");
+		userRole = session.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles  "
+						+ "left join fetch userRole.user where userRole.user.id = :userId and userRole.orgLocations.id = :locationId")
+				.setLong("userId", userId).setLong("locationId", locationId).setCacheable(true).list();
+		logger.debug("getUserRoleByUserIdAndLocationId method ends");
+		if (userRole.size() > 0) {
+			return userRole.get(0);
+		} else {
+			return null;
+		}
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public boolean isUserActive(Long userId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("isUserActive By UserId start");
+		userRole = session.createQuery("from UserRole userRole where userRole.user.id = :userId and userRole.userState = 'ACTIVE' ").setLong("userId", userId).setCacheable(true).list();
+		logger.debug("isUserActive By UserId End");
+		Boolean flag = false;
+		if (userRole.size() > 0) {
+			flag = true;
+		} 
+		return flag;
+	}
+	
+	/*@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<UserRole> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		
+		if(roleType != null && !"".equals(roleType) && "1".equals(roleType)){
+			subQuery = "and userRole.userType = 'Admin'";
+		}
+		else if(roleType != null && !"".equals(roleType) && "3".equals(roleType)){
+			subQuery = "and (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "2".equals(roleType)){
+			subQuery = "and (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Account Manager' OR userRole.userType = 'Sales Manager' OR userRole.userType = 'Recruiter' OR userRole.userType = 'Team Lead')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "6".equals(roleType)){
+			subQuery = "and (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Account Manager')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "5".equals(roleType)){
+			subQuery = "and (userRole.userType = 'Admin' OR userRole.userType = 'HR Manager')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "7".equals(roleType)){
+			subQuery = "and (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Account Manager' OR userRole.userType = 'Sales Manager')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "8".equals(roleType)){
+			subQuery = "and (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Account Manager' OR userRole.userType = 'Sales Manager' OR userRole.userType = 'Recruiter' OR userRole.userType = 'Team Lead')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "9".equals(roleType)){
+			subQuery = "and (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Project Manager' OR userRole.userType = 'Team Lead')";
+		}
+		
+	    String query = "from UserRole userRole where userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE' "+subQuery+" ";
+	    List<UserRole> userRoleList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+        return userRoleList;
+        
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<UserRole> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		
+		if(roleType != null && !"".equals(roleType) && "Admin".equals(roleType)){
+			subQuery = "and userRole.userType = 'Admin'";
+		}
+		else if(roleType != null && !"".equals(roleType) && "Project Manager".equals(roleType)){
+			subQuery = "and (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "Employee".equals(roleType)){
+			subQuery = "and (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Account Manager' OR userRole.userType = 'Sales Manager' OR userRole.userType = 'Recruiter')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "Account Manager".equals(roleType)){
+			subQuery = "and (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Account Manager')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "HR Manager".equals(roleType)){
+			subQuery = "and (userRole.userType = 'Admin' OR userRole.userType = 'HR Manager')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "Sales Manager".equals(roleType)){
+			subQuery = "and (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Account Manager' OR userRole.userType = 'Sales Manager')";
+		}
+		else if(roleType != null && !"".equals(roleType) && "Recruiter".equals(roleType)){
+			subQuery = "and (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Account Manager' OR userRole.userType = 'Sales Manager' OR userRole.userType = 'Recruiter')";
+		}
+		
+	    String query = "from UserRole userRole where userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE' and userRole.user.id <> :userId "+subQuery+" ";
+	    List<UserRole> userRoleList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setLong( "userId", userId).setCacheable(true).list();
+        return userRoleList;
+        
+	}*/
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select userRole.user from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.userState != 'INACTIVE' " ;
+	    List<Long> userIds = session.createQuery(query).setLong( "reportingManagerId", reportingManagerId).setCacheable(true).list();
+        return userIds;
+        
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<UserRole> getUserSpocsListByUserId(Long userId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user where userRole.user.id = :userId";
+		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user where userRole.user.id = :userId and userRole.userState != 'INACTIVE' ";
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
 		return userRoleList;
 

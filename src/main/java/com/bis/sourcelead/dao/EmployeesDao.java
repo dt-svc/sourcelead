@@ -36,5 +36,7 @@ public interface EmployeesDao {
 	
 	public List<Employees> getEmployeesExcludeTeamMembersBySearchByName(Long projectId, Long orgLocationsId,String searchByName) throws Exception;
 
+	public Employees getEmployeeByUserIdAndOrgLocationsId(Long userId, Long orgLocationsId);
+
 	
 }

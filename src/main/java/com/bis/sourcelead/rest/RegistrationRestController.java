@@ -6,7 +6,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +26,7 @@ import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.RegistrationService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -54,6 +54,9 @@ public class RegistrationRestController {
 	 OrgService orgService;
 	 
 	 @Autowired
+     UserRoleService userRoleService;
+	 
+	 @Autowired
 	 CommonUtil commonUtil;
 	 
 	 @RequestMapping(value = "/getOrgsList")
@@ -72,7 +75,10 @@ public class RegistrationRestController {
 			for(Org regOrg : orgsList){
 				regOrg.setEmail(regOrg.getUser().getEmail());
 				regOrg.setIsMailSent(regOrg.getUser().getIsMailSent());
-				regOrg.setUserState(regOrg.getUser().getUserState());
+				UserRole userRole =userRoleService.getLoginUserPrimaryRole(regOrg.getUser().getId());
+                if(userRole != null){
+                    regOrg.setUserState(userRole.getUserState());
+                }
 				regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
 				regOrgsList.add(regOrg);
 			}

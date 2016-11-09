@@ -381,20 +381,24 @@
 </script> 
 <script type="text/javascript">
 	function storeCandidate() {
+		
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd'
 			};
+		
 		 if ($('#candidate_form').validate(false, validationSettings)){ 
+			
+			var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#candidate_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
-			 con = con.replace(/[{}]/g, ""); 
+			con = con.replace(/[{}]/g, ""); 
+		    var jsonData = encodeURIComponent(con);
 			var form = $('#candidate_form')[0];
       		var formData = new FormData(form); 
-			  //It will escape all the special characters
-			var sourceleadUrl = '${sourceleadUrl}';
+			//It will escape all the special characters
 			$("#store_candidate").attr("disabled", "disabled");
 			$("#store_candidate").addClass('button').val('Processing..');
 
@@ -406,7 +410,7 @@
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}&json="+con,
+						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(result) {
 								location.replace(sourceleadUrl+"/candidatesList");
 						},

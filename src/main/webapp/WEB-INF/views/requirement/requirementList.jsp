@@ -76,7 +76,8 @@ padding: 1px 280px 2px 0;
 --%>
 
 <script>
-function requirementList(){
+function requirementList(){  
+	
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var status = [];
 		$('input:checkbox[name=requirementStatus]:checked').each(function() 
@@ -126,11 +127,7 @@ function requirementList(){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
 		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
-		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
-		                     }
+		                     result = result +"<td><div><span>Client</span></div></td>";
 		                     if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
 		                    	 result = result +"<td><div>"+opt.jobType+"</div></td>";
 		                     }else{
@@ -147,14 +144,38 @@ function requirementList(){
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
 		                     }
+	                    	 result = result +"<td><div>-----</div></td>";
 
-		                     if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-		                    	 result = result +"<td><div>"+opt.manager+"</div></td>";
+		                     /* f(opt.managerUserId.firstName != null && opt.managerUserId.firstName !='' && opt.managerUserId.firstName !='undefined'){
+		                    	 result = result +"<td><div>"+opt.managerUserId.firstName+" "+opt.managerUserId.lastName+"</div></td>";
 		                     }else{
-		                    	 result = result +"<td><div>----</div></td>";
-		                     }
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     } */
 		                     
-		                     result = result +"<td><div><b class='proj_process'>"+opt.requirementSubmissionStatus+"</b></div></td>";
+		                     /* result = result +"<td><div><b class='proj_process'>"+opt.requirementSubmissionStatus+"</b></div></td>"; */
+		                     
+		                     result = result +"<td><select onchange='changeStatus("+opt.id+");' id='changeStatusId'>";
+								if(opt.requirementSubmissionStatus == "ONHOLD"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									result = result +"<option value='CANCEL'>CANCEL</option>";
+								}
+								else if(opt.requirementSubmissionStatus == "CANCEL"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+
+								}else if(opt.requirementSubmissionStatus == "OPEN"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									result = result +"<option value='ONHOLD'>ON-HOLD</option>";
+									result = result +"<option value='CANCEL'>CANCEL</option>";
+								}else{
+									result = result +"<option   value='OPEN'>OPEN</option>";
+									result = result +"<option value='ONHOLD'>ON-HOLD</option>";
+									result = result +"<option value='CANCEL'>CANCEL</option>";
+								}
+								
+								result = result +" </select>";	
+			                    result = result +" </td>";
+		                     
+		                     
 		                     if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
 			                     result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
 
@@ -1157,6 +1178,26 @@ $(".reminder").click(function(){
    });
    });
 </script>
+
+
+<script type="text/javascript">
+function changeStatus(requirementId){
+	var status = document.getElementById("changeStatusId").value;
+	$("#changeStatusId option[value=status]").remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 alert("raju"+status);
+	   $.ajax({
+         type : "POST",
+          url: sourceleadUrl+"/saveChangedStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,        
+          success :function(data) { 
+        	  $('#changeStatusId').removeAttr('value');
+        	  location.replace(sourceleadUrl+"/requirementList");
+          }
+}); 
+}
+</script>
+
+
 <script type="text/javascript">
             $(function () {
                 $('#datetimepicker5').datetimepicker({

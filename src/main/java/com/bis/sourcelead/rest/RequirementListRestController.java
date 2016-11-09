@@ -28,6 +28,7 @@ import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -204,7 +205,7 @@ public class RequirementListRestController {
 	 */
 	 
 	 @RequestMapping(value = "/getRequirementById" , method = RequestMethod.POST)
-	 public @ResponseBody  String getCandidateById(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
+	 public @ResponseBody  String getRequirementById(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
 			String resultJson = null;
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -344,4 +345,19 @@ public class RequirementListRestController {
 					}
 				return resultJson;
 		 }
+		 
+		 @RequestMapping(value = "/saveChangedStatus" , method = RequestMethod.POST)
+		 @ResponseBody  String saveChangedStatus(@RequestParam(value="requirementId", required=false) Long  requirementId,
+				 @RequestParam(value="status", required=false) String  status) throws Exception {
+			
+			 
+			 Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+			 
+			 REQUIREMENT_SUBMISSION_STATUS changedStatus = Enum.valueOf(REQUIREMENT_SUBMISSION_STATUS.class, status);
+			 
+			 requirement.setRequirementSubmissionStatus(changedStatus);
+			 requirementService.addRequirement(requirement); 
+			return "success";
+		 }
+		 
 }

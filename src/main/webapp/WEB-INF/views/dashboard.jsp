@@ -246,7 +246,7 @@ float: none !important;
 	      <div class="pull-left">
 	        <h2>Dashboard</h2>
 	      </div>
-	      <div class="pull-right brud-crum">Dashboard</div>
+	     <!--  <div class="pull-right brud-crum">Dashboard</div> -->
 	    </section>
 	    
 	    <div class="clearfix row mb"> 
