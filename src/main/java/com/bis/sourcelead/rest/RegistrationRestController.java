@@ -214,7 +214,7 @@ public class RegistrationRestController {
 			    List<Org> org =orgService.getOrgs();
 			    for(Org orgList : org ){
 			    	//String Name = companyName.toUpperCase();
-			    	if(orgList.getOrgName().equals(companyName)){
+			    	if(orgList.getOrgName().equalsIgnoreCase(companyName)){
 			    		flag = true;
 			    	}
 			    }

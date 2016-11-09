@@ -774,7 +774,7 @@ function pagination1(){
 							result = result + '</div>'; */
 							
 							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>Level:</strong>';
+							result = result + '<strong>Tier:</strong>';
 							if(json.level != null && json.level !='' && json.level !='undefined'){
 							result = result + '<span>'+json.level+'</span><div class="clearfix"></div>';
 							}else{
