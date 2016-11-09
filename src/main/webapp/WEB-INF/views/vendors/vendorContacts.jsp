@@ -313,9 +313,9 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'	<div class="form-horizontal clearfix">';
 	result = result  +'                  </div>  ';      
 	
-	result = result  +'	 <div class="clearfix mb10">';
+	result = result  +'	 <div class="clearfix mb10" id="EmailIdDiv">';
 	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	    <input type="text" class="form-control input-sm" name="email" id="EmailId" value="" onKeyUp="validateSpocEmail('+orgRelationID+');" onblur="getSpocUserDetails('+clientLocationId+');" field-name="Email" placeholder="Email Id *" data-validation="required">';
+	result = result  +'	    <input type="text" class="form-control input-sm" name="email" id="EmailId" value=""  onblur=" validateEmail('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" field-name="Email" placeholder="Email Id *" data-validation="required">';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
@@ -484,7 +484,7 @@ $('html').click(function(){
 </script> 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
  function validateSpocEmail(orgRelationId) {
 	 var EmailId = document.getElementById("EmailId").value; 
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
@@ -512,11 +512,12 @@ $('html').click(function(){
 		    });
 	 }
  }
- </script>
+ </script> -->
  
  
  <script type="text/javascript">
-function getSpocUserDetails(orgLocationId){
+function getSpocUserDetails(orgLocationId,orgRelationID){
+	getOwners(orgRelationID);
 	var email = document.getElementById("EmailId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(email){
@@ -616,5 +617,67 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 		    	vendorContactList(orgRelationId,vendorLocationId);
 		    }
 	   });
+}
+</script>
+
+<script type="text/javascript">
+ function getOwners(orgRelationID) {
+	 var email = document.getElementById("EmailId").value; 
+	 var orgRelationId = orgRelationID;
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(email != null && email != "" && email != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllOwners?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgRelationId="+orgRelationId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		if(i == 0){
+			        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}
+			        		
+					}
+		        	$("#owner").empty();
+			        $("#owner").append(output);
+			        $('#owner').trigger("chosen:updated");
+		        },
+		    });
+	 }
+	
+ }
+</script>
+
+<script type="text/javascript">
+function validateEmail(orgRelationID){
+	 getOwners(orgRelationID);
+	var email = document.getElementById("EmailId").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(email != null){
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/validateClientOrVendorEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+			success : function(data) {
+				var result = data;
+				if(result == 'Invalid Email') {
+					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					$("input#EmailId").after( "<p class='jquery_form_error_message'>" + email + " should not your org users email</span>");
+					document.getElementById("EmailId").setAttribute( 'record-exist', 'yes');
+					document.getElementById("EmailId").setAttribute( 'record-exist-errorMsg', email +"  should not your org users email");
+					
+				}else if(result == 'Valid Email') {
+					$('input#EmailId').removeAttr("class record-exist record-exist-errormsg");
+					$('input#EmailId').attr('class','valid form-control');
+					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					
+				}
+			},
+
+		});
+	}
 }
 </script>

@@ -2759,5 +2759,4 @@ function validateClientName(){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				});
->>>>>>> 03853672d2d9f112e329440a96bcc541151dac40
  		</script>

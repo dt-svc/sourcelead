@@ -243,7 +243,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 			 if(emp.getHireDate() !=null){
 				 writeRow.createCell(5).setCellValue(emp.getHireDateStr()); 
 			 }
-			 if(emp.getRate() !=null){
+			 if(emp.getRate() !=null && !"".equalsIgnoreCase(emp.getRate())){
 				 writeRow.createCell(6).setCellValue(emp.getRate()+"/"+emp.getRatePer());
 			 }
   	    } 
