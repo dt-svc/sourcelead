@@ -6,7 +6,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +26,7 @@ import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.RegistrationService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -207,18 +207,29 @@ public class RegistrationRestController {
 	   
 	   @RequestMapping(value = "/validateCompanyName", method = RequestMethod.GET)
 	   public @ResponseBody String validateCompanyName(
-	   		@RequestParam(value="companyName", required=false) String companyName) {
+	   		@RequestParam(value="companyName", required=false) String companyName) throws Exception {
 			String status = null;
 			if(!isNullOrEmpty(companyName)){
-			    boolean flag;
-				try {
-					flag = orgService.isOrgNameExisted(companyName);
+			    boolean flag = false;
+			    List<Org> org =orgService.getOrgs();
+			    for(Org orgList : org ){
+			    	//String Name = companyName.toUpperCase();
+			    	if(orgList.getOrgName().equals(companyName)){
+			    		flag = true;
+			    	}
+			    }
+			    if (flag == true) {
+					status = "Company Duplicated";
+				}
+				/*try {
+					
+					flag = orgService.isOrgNameExisted(status);
 					if (flag == true) {
 						status = "Company Duplicated";
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-				}
+				}*/
 			}
 	       return status;
 	   }
