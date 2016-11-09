@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -950,7 +949,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 							              sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' >");
 									      
 									      for(ProjectTasks pt   : ProjectTasksList){
-									    	  if(pt.getId().equals(timesheetEntries.getProjectTask().getId())){
+									    	   if(timesheetEntries.getProjectTask() != null && pt.getId().equals(timesheetEntries.getProjectTask().getId())){
 								    	    	   sb.append("<option value='"+pt.getId()+"' selected>"+pt.getTaskName()+"</option>");
 								    	       }
 								    	       else{
@@ -1203,24 +1202,22 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			sb.append("            </tbody>");
 			sb.append("     </table>");
 			
-		   /*	sb.append("<div class='timesheet_bot'>");
-		    sb.append("	<div class='timesheet_button'>");
-		    sb.append("        <input type='button' value='Edit' class='time_btn time_cancel'>");
-		    sb.append("    </div>");
-		    sb.append("	<div class='clearfix'></div>");
-		    sb.append("</div>");*/
 			
 			sb.append("<div class='timesheet_bot'>");
 			sb.append(" 	<div class='timesheet_week_comm'>");
 			TimesheetSubmissions tsFirst = timesheetSubmissionsList.iterator().next();
 			if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
-				sb.append("<textarea   style='border: none;background: transparent;color: #333;'   name='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+				sb.append("<div class='commentTime'>");
+				sb.append("<textarea   name='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+				sb.append("</div>");
 			}else{
-				sb.append("<textarea   style='border: none;background: transparent;color: #333;'   name='weekComment' placeholder='comments here...'></textarea>");
+				sb.append("<div class='commentTime'>");
+				sb.append("<textarea   name='weekComment' placeholder='comments here...'></textarea>");
+				sb.append("</div>");
 			}
 			
 			
-			if(!isNullOrEmpty(tsFirst.getFileName())){
+		/*	if(!isNullOrEmpty(tsFirst.getFileName())){
 				sb.append("<strong>");
 				
 				sb.append("<i class='glyphicon glyphicon-save'></i>");
@@ -1240,25 +1237,65 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				sb.append("<input type='file' name='docFile'>");
 				sb.append("</span>");
 			}
+			*/
 			
+			//display multiple attachments
+			StringBuilder documentBuffer = new StringBuilder();	
+			List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(tsFirst.getId());
+			documentBuffer.append("<input type='hidden' name='attcahmentMaxRowNumber'  id='attcahmentMaxRowNumber' value='1' />");
+			documentBuffer.append("<div class='timesheetDocs'>"); 
+				if(timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()){
+					for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
+						if(!isNullOrEmpty(tsd.getFileName())){
+								documentBuffer.append("<strong>");
+								documentBuffer.append(" <a class='downicon' href=\'"+sourceleadUrl+"/downloadDocument?submissionDocumentId="+tsd.getId()+"\'>");
+								documentBuffer.append("<i class='glyphicon glyphicon-save'></i>");
+								documentBuffer.append(" <input type='button' value='"+tsd.getFileName()+"'>");
+								documentBuffer.append("</a>");
+								
+
+								SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+							    String startDate1  =  sdf.format(tsFirst.getStartDate());
+							    String endDate1  =  sdf.format(tsFirst.getEndDate());
+							    documentBuffer.append("<input class='dele' type='button'  onClick='deleteSubmissionDocument(\""+tsd.getId()+"\",\""+tsFirst.getProjectMembers().getEmployee().getId()+"\",\""+startDate1+"\",\""+endDate1+"\");'>");
+								
+							    documentBuffer.append("</strong>");
+						} 
+					}
+				} 
+		
+				 
+            	documentBuffer.append("<div class='commentFile'>"); 
+				documentBuffer.append("<span>"); 
+				documentBuffer.append("<table class='timesheetAttachment' id='attachmentTable' cellpadding='0' cellspacing='0'>");
+						documentBuffer.append("<tr id='divAttachmentTsRow0'>");
+						documentBuffer.append("<td><input type='file' name='0docFile' id='0docFile'><i class='fa fa-plus' onClick='addAttachment()'></i></td> ");           
+						documentBuffer.append("</tr>");
+				documentBuffer.append("</table>");
+				documentBuffer.append("</span>");
+				documentBuffer.append("</div>");
+				documentBuffer.append("</div>"); 
+				sb.append(documentBuffer);
+		
 			sb.append("<div class='clearfix'></div>");
 			sb.append("</div>");
 			
 			if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue()))){
+				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("	<div class='timesheet_button'>");
 				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\");' value='Update' class='time_btn'>");
 				   /*sb.append("        <input type='button' value='Clear' class='time_btn time_cancel'>");*/
 				   sb.append("    </div>");
-				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("</div>");
 			}
 			else if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
+				   sb.append("	<div class='clearfix'></div>");   
 				   sb.append("	<div class='timesheet_button'>");
 				   sb.append("  </div>");
-				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("</div>");
 			}
 			else{
+				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("	<div class='timesheet_button'>");
 				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\",\"approver\");' value='Save' class='time_btn time_dra'>");
 				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\");' value='Submit' class='time_btn'>");
@@ -1267,7 +1304,6 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				   sb.append("");
 				   
 				   sb.append("    </div>");
-				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("</div>");
 			}
 		  
