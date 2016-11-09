@@ -95,19 +95,11 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
 					e1.printStackTrace();
 				}
     			List<SourceleadActions> actionsList = null;
-    			if("slead".equalsIgnoreCase(org.getOrgCode())){
-    				try {
-						actionsList = sourceleadActionsService.getLoginUserRoleActions(modulesId, userRole.getRoles().getId(), org.getId());
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-    			}else{
-    				try {
-						actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-    			}
+    			try {
+					actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
         		  List<GrantedAuthority> authorities = buildUserAuthority(actionsList); 
 				  try {
 					  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){

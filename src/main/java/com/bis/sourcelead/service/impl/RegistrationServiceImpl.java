@@ -208,10 +208,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
 		
-		//saveActionRoles(org,orgLocations,user,modules);
-		
-		   saveRoleActions(org,orgLocations,user);
-		
 		userService.sendEmail(user,orgLocations.getId(), loginUser, password);
 		
 		
@@ -374,26 +370,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	
 	
-/*	 public void  saveActionRoles(Org org,OrgLocations orgLocations,User user,String modules) throws Exception {
-		 
-		 List<Long> modulesId = modulesService.getModulesIdByModuleName(modules);
-		 Collection<ActionRoles> actionRolesList = actionRolesService.getSourceLeadActionRolesListByOrgId(1L,modulesId,org);
-		 if(actionRolesList != null){
-			 for(ActionRoles actionRoles : actionRolesList){
-				 ActionRoles userActionroles = new ActionRoles();
-				 userActionroles.setTabActions(actionRoles.getTabActions());
-				 userActionroles.setRoles(actionRoles.getRoles());
-				 userActionroles.setIsNotify(actionRoles.getIsNotify());
-				 userActionroles.setOrg(org);
-				 userActionroles.setOrgLocations(orgLocations);
-				 userActionroles.setCreatedDate(new Date());
-				 userActionroles.setCreatedBy(user.getUserCode());
-				 actionRolesService.addActionRoles(userActionroles);
-			 }
-		 }
-		 
-	 }*/
-	
 	
 	public void saveOrgBasedRoles(OrgLocations orgLocations,User user) throws Exception{
 		List<Roles> rolesList = rolesService.getSourceleadRoles(1L);
@@ -403,6 +379,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 				orgRoles.setRoleName(roles.getRoleName());
 				orgRoles.setDisplayName(roles.getDisplayName());
 				orgRoles.setOrgLocations(orgLocations);
+				orgRoles.setActionId(roles.getActionId());
 				orgRoles.setCreatedBy(user.getUserCode());
 				orgRoles.setCreatedDate(new Date());
 				rolesService.storeRoles(orgRoles);
@@ -411,27 +388,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 	}
 	
-	public void  saveRoleActions(Org org,OrgLocations orgLocations,User user) throws Exception {
-		
-		List<RoleActionMapping> mappingsList = roleActionMappingService.getRoleActionMappingForRegistrationByOrgId(1L);
-		if(mappingsList != null){
-			for(RoleActionMapping roleActionMapping : mappingsList){
-				Roles orgRole = rolesService.getRolesByRoleNameAndOrgLocationId(roleActionMapping.getRoles().getRoleName(), orgLocations.getId());
-				
-				RoleActionMapping orgRoleActionMapping = new RoleActionMapping();
-				orgRoleActionMapping.setRoles(orgRole);
-				orgRoleActionMapping.setSourceleadActions(roleActionMapping.getSourceleadActions());
-				orgRoleActionMapping.setOrg(org);
-				orgRoleActionMapping.setOrgLocations(orgLocations);
-				orgRoleActionMapping.setStatus(roleActionMapping.getStatus());
-				orgRoleActionMapping.setCreatedDate(new Date());
-				roleActionMappingService.saveRoleActionMapping(orgRoleActionMapping);
-			}
-		}
-		
-	}
-	
-	 
 	 
 	 public void  saveDefaultSubmissionTemplate(Org org,OrgLocations orgLocations,User user) throws Exception {
 		 SubmissionTemplate sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateById(1L);

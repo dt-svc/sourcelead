@@ -103,12 +103,7 @@ public class LoginSessionController {
 		Org org = orgLocations.getOrg();
 		
 		List<Long> modulesId = modulesService.getOrgRegisteredModules(org);
-		List<Tabs> tabsList;
-		if("slead".equalsIgnoreCase(org.getOrgCode())){
-			tabsList = tabsService.getTabsList(modulesId, userRole.getRoles().getId(), org.getId());
-		}else{
-			tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
-		}
+		List<Tabs> tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
 		
 		SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 		
@@ -140,18 +135,10 @@ public class LoginSessionController {
 			Org org = orgLocations.getOrg();
 			
 			List<Long> modulesId = modulesService.getOrgRegisteredModules(org);
-			List<SourceleadActions> actionsList = null;
-			List<Tabs> tabsList;
-			if("slead".equalsIgnoreCase(org.getOrgCode())){
-				actionsList = sourceleadActionsService.getLoginUserRoleActions(modulesId, userRole.getRoles().getId(), org.getId());
-				tabsList = tabsService.getTabsList(modulesId, userRole.getRoles().getId(), org.getId());
-			}else{
-				actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
-				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
-			}
+			List<SourceleadActions> actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+			List<Tabs> tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+			
 			String userName = (String) authentication.getPrincipal();
-			//new SecurityContextLogoutHandler().logout(request, response, authentication); 
-			//authentication.getAuthorities().clear();
 			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userName,null, buildUserAuthority(actionsList)));
 			System.out.println(authentication.getAuthorities());
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);

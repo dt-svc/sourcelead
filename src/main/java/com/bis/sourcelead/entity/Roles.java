@@ -15,6 +15,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "ROLES", catalog = "sourcelead")
@@ -40,6 +41,10 @@ public class Roles {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ORG_ID")
 	private Org org;
+	
+	@Column(name = "ACTION_ID")
+	@Type(type="text")
+	private String actionId;
 	
 	@Column(name = "STATUS")
 	private String status;
@@ -150,6 +155,14 @@ public class Roles {
 
 	public void setOrg(Org org) {
 		this.org = org;
+	}
+
+	public String getActionId() {
+		return actionId;
+	}
+
+	public void setActionId(String actionId) {
+		this.actionId = actionId;
 	}
 
 	
