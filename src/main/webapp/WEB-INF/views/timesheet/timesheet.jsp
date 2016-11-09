@@ -33,10 +33,10 @@
 				         <!-- ####  this div is for dummy timesheets entries ( useful for add rows )   below   ####-->
 				         <div id="divadttTd1" style="display:none;" >   
 				             <div> 
-				              <select id="REPLACEROWIDsubmissionsubmissionIdtask1Id" name="REPLACEROWIDsubmissionsubmissionIdtask1Id" >
-				                           <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
+				              <select id="REPLACEROWIDsubmissionsubmissionIdtask1Id" name="REPLACEROWIDsubmissionsubmissionIdtask1Id" class="existedProjectTaskId" onchange="getProjectTasksOnChange('REPLACEROWIDsubmissionsubmissionIdtask1Id','projectId')">  
+				                          <%--  <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
 				                              	<option value="${task.id}">${task.taskName}</option>
-				                           </c:forEach>
+				                           </c:forEach> --%>
 				             </select>
 				             <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID','submissionId')" class="addtaskfield removetaskfield"/>
 				             </div>
@@ -234,8 +234,10 @@ function addTimeSheetRow(submissionId,projectId) {
 			var divadttTd0Str = document.getElementById("divadttTd1").innerHTML;
 			divadttTd0Str = divadttTd0Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd0Str = divadttTd0Str.replace(/submissionId/g, (submissionId));
+			divadttTd0Str = divadttTd0Str.replace(/projectId/g, (projectId)); 
 			cell0.setAttribute("class", "pname");  
 			cell0.innerHTML = divadttTd0Str;
+			
 			
 			
 		    var cell1 = row.insertCell(1);
@@ -348,6 +350,7 @@ function addTimeSheetRow(submissionId,projectId) {
 			maskme();   
 		    
 			var projectTaskId = maxRowNum+"submission"+submissionId+"task1Id"; 
+			
 			getProjectTasks(projectTaskId,projectId); 
 		  
 			
@@ -357,21 +360,41 @@ function addTimeSheetRow(submissionId,projectId) {
         function disableInput(divId){
         	$("#"+divId+" :input").attr("disabled", "disabled");
         }
+        
+       //get project tasks 
 	   function getProjectTasks(projectTaskId,projectId){
 		   var sourceleadUrl ='${sourceleadUrl}';
+		   $("#"+projectTaskId).empty();
+		   
+		   var avilableProjectTaskIds = [];
+		   $('.existedProjectTaskId').each(function() {
+				 var localId = this.value;
+				 avilableProjectTaskIds.push(localId);
+		   }); 
+			 
 		   $.ajax({
    	          type : "POST",
- 	      	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,		
+ 	      	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
  		      success :function(data) {
  		    	    var json = JSON.parse(data);
- 		    	    var result = ""; 
- 		    	    for (var i=0; i<json.length; i++)
- 					{
- 			        		var opt = json[i];
- 			        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
- 					}
- 		    	    $("#"+projectTaskId).empty();
- 		    	    $("#"+projectTaskId).append(result);
+ 		    	    $('.existedProjectTaskId').each(function() {
+ 			   			 var localId = this.id;
+ 			   			 var localValue = this.value;
+	 			   		    var result = ""; 
+	 			   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){ 
+	 			   			    $('option', this).not(':eq(0), :selected').remove();
+	 			   		    }else{ 
+	 			   		    	 $("#"+localId).empty();
+	 			   		   		 result = result + "<option value=''>--select option--</option>";
+	 			   		    }
+	  		    	    	for (var i=0; i<json.length; i++)
+	  					 	{
+	  			        		var opt = json[i];
+	  			        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
+	  						}
+ 				    	 	$("#"+localId).append(result);
+ 			   	   }); 
+ 		    	   
  		      }
  	      	  
  	       }); 
@@ -380,6 +403,49 @@ function addTimeSheetRow(submissionId,projectId) {
 
 	 
 </script>
+<script>
+function getProjectTasksOnChange(projectTaskId,projectId){
+
+	   var sourceleadUrl ='${sourceleadUrl}';
+	   
+	   var avilableProjectTaskIds = [];
+	   $('.existedProjectTaskId').each(function() {
+			 var localId = this.value;
+			 avilableProjectTaskIds.push(localId);
+	   }); 
+		 
+	   $.ajax({
+          type : "POST",
+    	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
+	      success :function(data) {
+	    	    var json = JSON.parse(data);
+	    	    $('.existedProjectTaskId').each(function() {
+		   			 var localId = this.id;
+		   			 var localValue = this.value;
+			   		    var result = ""; 
+			   		    if(projectTaskId != localId){  
+					   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){ 
+					   			    $('option', this).not(':eq(0), :selected').remove();
+					   		    }else{  
+					   		    	 $("#"+localId).empty();
+					   		   		 result = result + "<option value=''>--select option--</option>";
+					   		    }
+				    	    	for (var i=0; i<json.length; i++)
+							 	{
+					        		var opt = json[i];
+					        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
+								}
+					    	 	$("#"+localId).append(result);
+			   		    }
+			   		   
+		   	   }); 
+	    	   
+	      }
+    	  
+     }); 
+}
+</script>
+
 	
 <script type="text/javascript">
 (function ($) {
@@ -543,7 +609,7 @@ $(document).click(function(){
 		 var total = 0;
 		 $('.timesheetrProject').each(function() {
 		 var p = this.id;
-		 for (var j = 1; j < 10; j++){
+		 for (var j = 1; j < 50; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
 			    	 var hours = btemp;
@@ -669,7 +735,7 @@ function checkHours(){
 		 var total = 0;
 		 $('.timesheetrProject').each(function() {
 		 var p = this.id;
-		 for (var j = 1; j < 10; j++){
+		 for (var j = 1; j < 50; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
 			    	 var hours = btemp;

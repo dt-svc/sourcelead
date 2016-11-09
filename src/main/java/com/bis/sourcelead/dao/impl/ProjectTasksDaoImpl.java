@@ -117,6 +117,19 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		return projectTasksList;  
 		
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectTasks> getAllTasksByProjectIdAndExistedProjectTaskIds(Long projectId,
+			List<Long> avilableProjectTaskIds) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.id NOT IN (:avilableProjectTaskIds) ";
+		List<ProjectTasks> projectTasksList = session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setParameterList("avilableProjectTaskIds", avilableProjectTaskIds).list();
+		return projectTasksList;
+		
+	}
+	
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -143,7 +156,6 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		}
 		
 	}
-	
-	
+
 
 }
