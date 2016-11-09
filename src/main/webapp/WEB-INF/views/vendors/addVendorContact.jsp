@@ -553,6 +553,7 @@ function validateClientName(){
 
 <script type="text/javascript">
 function validateEmail(){
+	 getOwners();
 	var email = document.getElementById("email").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(email != null){
@@ -578,6 +579,45 @@ function validateEmail(){
 		});
 	}
 }
+</script>
+
+<script type="text/javascript">
+ function getOwners() {
+	 var email = document.getElementById("email").value; 
+	 var vendorName = document.getElementById("vendorName").value;
+	 var orgLocationId = vendorName.split(',');
+	 var orgRelationId = orgLocationId[0];
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(email != null && email != "" && email != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllOwners?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgRelationId="+orgRelationId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		if(i == 0){
+			        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}
+			        		
+					}
+		        	$("#owner").empty();
+			        $("#owner").append(output);
+			        $('#owner').trigger("chosen:updated");
+		        },
+		    });
+	 }/* else{
+		 var output = "";
+     	 $("#owner").empty();
+	     $("#owner").append(output);
+	     $('#owner').trigger("chosen:updated");
+	 } */
+	
+ }
 </script>
 
 <script type="text/javascript">
