@@ -88,6 +88,11 @@
 						<!-- #### this div is for dummy timesheets entries ( useful for add rows ) above  ####-->      
 	</div>
 	</div>  
+	<div id="divAttachmentTd1" style="display: none; float: left;">
+	  		<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile'> 
+	  		<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
+    </div>
+
 </form>   
 </section>
 <div class="time_pop" id="timeSheetErrorMsg"></div>
@@ -542,13 +547,13 @@ function withdrawMyTimesheet(submissionId,startdate){
 
 <!-- this script is for delete document -->
 <script type="text/javascript">
-function deleteSubmissionDocument(submissionId){  
+function deleteSubmissionDocument(submissionDocumentId){  
     var sourceleadUrl ='${sourceleadUrl}';
     var startdate;
 	var navigation;
     $.ajax({
           type : "POST",
-      	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,		
+      	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
 	      success :function(result) {
 	    		dynamicTimesheet(navigation,startdate);  
 	      }
@@ -819,3 +824,38 @@ function checkHours(){
 	});	
 </script>
 
+
+
+<script>
+function addAttachment(){  
+			
+			var checkMaxTsRowNum = $("#attcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("attachmentTable");
+			var maxRowNum = parseInt($("input[name = 'attcahmentMaxRowNumber']").val());
+			$("input[name = 'attcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentTsRow" + maxRowNum);
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+}			
+</script>
+
+<script type="text/javascript">
+	function removeAttachmentRow(rowId) {
+		var rowNum = $("#divAttachmentTsRow"+rowId).val();
+		var maxRowNum = parseInt(rowNum);
+		 document.getElementById("divAttachmentTsRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentTsRow"+rowId).value= '';
+		 var  rId = "divAttachmentTsRow"+rowId;
+		  var r = document.getElementById("attachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+	}
+</script>

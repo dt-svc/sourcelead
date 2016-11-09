@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,19 @@ public class TimesheetSubmissionsDocumentsServiceImpl implements TimesheetSubmis
 		
 		 return  timesheetSubmissionsDocumentsDao.addTimesheetSubmissionsDocuments(timesheetSubmissionsDocuments);
 
+	}
+
+	@Override
+	public List<TimesheetSubmissionsDocuments> getAllTimesheetSubmissionsDocumentsBySubmissionId(Long submissionId)
+			throws Exception {
+		
+		return  timesheetSubmissionsDocumentsDao.getAllTimesheetSubmissionsDocumentsBySubmissionId(submissionId);
+		
+	}
+
+	@Override
+	public TimesheetSubmissionsDocuments getTimesheetSubmissionsDocuments(Long id) throws Exception {
+		return  timesheetSubmissionsDocumentsDao.getTimesheetSubmissionsDocuments(id);
 	}
 
 	
