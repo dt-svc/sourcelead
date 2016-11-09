@@ -97,7 +97,9 @@ window.onload = function () {
 
       <jsp:include page="../masterFooter.jsp" />
       <div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
-      
+  
+ <!--  Rajashkar
+  SCript is used to export user data as xls format -->    
 <script>
 function exportUserData(){
 	var exportType = "xls";
@@ -110,7 +112,8 @@ function exportUserData(){
 
 }
 </script>   
-
+ <!--  Rajashkar
+  SCript is used to export user data as pdf format --> 
 <script>
 function exportToPdf(){
 	var exportType = "pdf";

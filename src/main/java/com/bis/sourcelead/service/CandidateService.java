@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.io.File;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -73,5 +74,9 @@ public interface CandidateService {
 	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId) throws Exception;
 
 	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId)throws Exception;
+
+	public File getCandidateExcelFile(List<Candidate> candidatesList, String orgName)throws Exception;
+
+	public File getCandidatePdf(List<Candidate> candidatesList, String orgName) throws Exception;
 	
 }
