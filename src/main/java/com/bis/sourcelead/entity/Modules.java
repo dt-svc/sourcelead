@@ -37,6 +37,10 @@ public class Modules {
 	@JoinColumn(name = "ORG_ID", nullable = false)
 	private Org org;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PARENT_MODULE_ID")
+	private Modules modules;
+	
 	@Column(name = "IS_ENROLED")
 	@Enumerated(EnumType.STRING)
 	private Status isEnrolled;
@@ -74,6 +78,14 @@ public class Modules {
 
 	public void setIsEnrolled(Status isEnrolled) {
 		this.isEnrolled = isEnrolled;
+	}
+
+	public Modules getModules() {
+		return modules;
+	}
+
+	public void setModules(Modules modules) {
+		this.modules = modules;
 	}
 	
 	

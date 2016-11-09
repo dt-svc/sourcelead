@@ -1,6 +1,6 @@
-UPDATE `sourcelead`.`MODULES` SET `MODULE_NAME`='ATS' WHERE `ID`='1';
-UPDATE `sourcelead`.`MODULES` SET `MODULE_NAME`='VMS' WHERE `ID`='2';
-UPDATE `sourcelead`.`MODULES` SET `MODULE_NAME`='TIMESHEET' WHERE `ID`='3';
+UPDATE `sourcelead`.`MODULES` SET `MODULE_NAME`='RECRUITING' WHERE `ID`='1';
+UPDATE `sourcelead`.`MODULES` SET `MODULE_NAME`='ATS' WHERE `ID`='2';
+UPDATE `sourcelead`.`MODULES` SET `MODULE_NAME`='VMS' WHERE `ID`='3';
 
 UPDATE `sourcelead`.`TABS` SET `TAB_ID`='4' WHERE `ID`='5';
 UPDATE `sourcelead`.`TABS` SET `TAB_ID`='4' WHERE `ID`='6';
@@ -9,6 +9,13 @@ INSERT INTO `sourcelead`.`TABS` (`ID`, `TAB_NAME`) VALUES ('11', 'Settings');
 
 ALTER TABLE `sourcelead`.`ROLES` DROP INDEX `DISPLAY_NAME` ;
 
+INSERT INTO `sourcelead`.`MODULES` (`ID`, `MODULE_NAME`, `ORG_ID`, `IS_ENROLED`) VALUES ('4', 'TIMESHEET', '1', 'Y');
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','MODULES','PARENT_MODULE_ID','BIGINT NULL AFTER `MODULE_NAME`');
+ALTER TABLE `sourcelead`.`MODULES`  ADD FOREIGN KEY(PARENT_MODULE_ID) REFERENCES `sourcelead`.`MODULES`(ID);
+
+UPDATE `sourcelead`.`MODULES` SET `PARENT_MODULE_ID`='1' WHERE `ID`='2';
+UPDATE `sourcelead`.`MODULES` SET `PARENT_MODULE_ID`='1' WHERE `ID`='3';
 
 
 

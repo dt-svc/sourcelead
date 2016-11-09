@@ -29,27 +29,21 @@
           
           <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
 	                 
-	                 <c:if test="${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_timesheet == 'Y'}">
-		                 <c:if test="${userTabs.tabName == 'Clients'}">
-		                   <li class="${sessionData.nav == 'Clients' ? 'side-nav-active' : ''}"><a href="<c:url value='/clientDashboard'/>" title="Clients"><span><i class="fa fa-user-plus"></i></span>Clients</a></li>
-		                 </c:if>
-	                </c:if> 
+                    <c:if test="${userTabs.tabName == 'Clients'}">
+                 	  <li class="${sessionData.nav == 'Clients' ? 'side-nav-active' : ''}"><a href="<c:url value='/clientDashboard'/>" title="Clients"><span><i class="fa fa-user-plus"></i></span>Clients</a></li>
+                    </c:if>
 	                
 	                <c:if test="${userTabs.tabName == 'Requirement'}"> 
 	                   <li class="${sessionData.nav == 'Requirement' ? 'side-nav-active' : ''}"><a href="<c:url value='/requirementList'/>" title="Requirement"><span><i class="fa fa-briefcase"></i></span>Requirement</a></li>
 	                </c:if> 
 	                
-	                <c:if test="${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
-		                <c:if test="${userTabs.tabName == 'Candidates'}">
-		                   <li class="${sessionData.nav == 'Candidates' ? 'side-nav-active' : ''}"><a href="<c:url value='/candidatesList'/>" title="Candidates"><span><i class="fa fa-user"></i></span>Candidates</a></li>
-		                </c:if> 
-	                </c:if>
-	                
-	                <c:if test="${SourceLeadWeb_vms == 'Y'}">
-		                <c:if test="${userTabs.tabName == 'Vendors'}">
-		                   <li class="${sessionData.nav == 'Vendors' ? 'side-nav-active' : ''}"><a href="<c:url value='/vendorsList'/>" title="Vendors"><span><i class="fa fa-suitcase"></i></span>Vendors</a></li>
-		                </c:if> 
-	                </c:if>  
+	                <c:if test="${userTabs.tabName == 'Candidates'}">
+	                   <li class="${sessionData.nav == 'Candidates' ? 'side-nav-active' : ''}"><a href="<c:url value='/candidatesList'/>" title="Candidates"><span><i class="fa fa-user"></i></span>Candidates</a></li>
+	                </c:if> 
+                
+	                <c:if test="${userTabs.tabName == 'Vendors'}">
+	                   <li class="${sessionData.nav == 'Vendors' ? 'side-nav-active' : ''}"><a href="<c:url value='/vendorsList'/>" title="Vendors"><span><i class="fa fa-suitcase"></i></span>Vendors</a></li>
+	                </c:if> 
 	                 
 	                 <c:if test="${userTabs.tabName == 'Users'}">
 	                 <li class="${sessionData.nav == 'Users' ? 'side-nav-active' : ''}"><a href="<c:url value='/usersList'/>" title="Users"><span><i class="fa fa-users"></i></span>Users</a></li>
