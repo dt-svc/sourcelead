@@ -114,7 +114,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	}
 
 	/**
-	 * To get All the Users by filtering 
+	 * @author Rajashekar
+	 * To get All the Users to export to Excel and pdf
 	 * @param request
 	 * @param userRole
 	 * @param searchByName
@@ -202,7 +203,6 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 			response.getOutputStream().close();
 			response.getOutputStream().flush();	
 			
-//		return "redirect:/usersList";	 
 
 	}
 

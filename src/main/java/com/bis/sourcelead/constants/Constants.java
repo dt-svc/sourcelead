@@ -218,5 +218,6 @@ public class Constants {
 	public static String[] LEVEL_DROPDOWN = {"Level-1","Level-2","Level-3","Level-4","Level-5"};
 	public static String[] USER_EXCEL_HEADERS = { "Employee Id", "First Name", "Last Name", "Email-id", "Phone Number",
 			"Date Of Join", "Rate", "Location", "Role", "Manager", "status" };
-	
+	public static String[] CANDIDATE_EXCEL_HEADERS = {"Firstname","Last name","Email id","Phone Number","Location","Designation","Education","Experience","Skills","Rate"};
+			
 }
