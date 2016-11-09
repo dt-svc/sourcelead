@@ -241,6 +241,24 @@ public class RequirementDaoImpl implements RequirementDao {
 	}
 	
 	
+	@Override
+    @Transactional(rollbackFor = { Exception.class })
+    public Requirement getRequirementByParentRequirementId(Long requirementId) throws Exception {
+
+        Session session = this.sessionFactory.getCurrentSession();
+        
+        String query = "from Requirement requirement left join fetch requirement.parentRequirement left join fetch requirement.clientId  orgrelation left join fetch orgrelation.responderLocationId orgLocation  where requirement.parentRequirement.id =:requirementId";
+        List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+        
+        Requirement requirement = null;
+        if(requirementList != null && !requirementList.isEmpty())
+        {
+            requirement = (Requirement) requirementList.iterator().next();
+        }
+        return requirement;
+    
+    }
+	
 	/**
 	 * @author venkat kesav
 	 * @since  oct 21 2016

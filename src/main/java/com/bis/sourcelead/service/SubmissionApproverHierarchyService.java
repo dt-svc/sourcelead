@@ -29,7 +29,7 @@ public interface SubmissionApproverHierarchyService {
 	
 	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyByApproverUserId(Long approverUserId);
 
-	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyForEmployeeIdAndStartDate(Long empId,Long approverUserId,Date startDate);
+	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyForEmployeeIdAndStartDate(Long empId,Long approverUserId,Long submissionId);
     
 	public void updateSubmissionStatus(Long submissionId,String status);
 	

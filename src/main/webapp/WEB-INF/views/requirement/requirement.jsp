@@ -72,7 +72,10 @@ background-color: #ccc;
 }
 .ratetype p {
 bottom: -14px;
-    left:-20px !important;
+left:-20px !important;
+}
+.pras.req-title p{
+bottom:-14px;
 }
 </style>
 
@@ -209,7 +212,7 @@ $(document).ready(function() {
 	 </div>
 </div>
 
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt pras">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt pras req-title">
            <div class="form-group">
 	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
 	         <div class="col-md-9">

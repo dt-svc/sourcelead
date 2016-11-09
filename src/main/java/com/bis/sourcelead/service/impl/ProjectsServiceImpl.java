@@ -347,22 +347,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 * This block is for Email To Managers and Project Members
 		 * 
 		 */
-		
-		//send mail to assigned team members
-		if((jsonObj.has("isMailToTeamMembers") && !isNullOrEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("Y".equals(jsonObj.getString("isMailToTeamMembers")))){
-			for(ProjectMembers projectMembers : projectMemberList){
-				if(projectMembers.getEmployee() != null){
-					Employees emp = projectMembers.getEmployee();
-					if(jsonObj.has("level1Manager") && jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
-						User  approverUserId1 =new User();
-						approverUserId1.setId(Long.valueOf(jsonObj.getString("level1Manager")));
-						sendEmailToTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation, loginOrgCode);
-					}
-				}
-			}
-		}
-		
-		
 		if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotBlank(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
 			if(jsonObj.has("level1Manager") && jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
 				User  approverUserId1 =new User();
@@ -386,7 +370,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				}
 			}*/
 		}
-		
+		 
 	  SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Successfully you have created a project");
 	  return "projectDashboard";
 		 
@@ -800,7 +784,9 @@ public class ProjectsServiceImpl implements ProjectsService{
  		
 		//send mail to user
 		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
+
 			userService.sendEmail(user,users,password,loginOrgLocation.getId());
+
 		}
 		
 		return null;
@@ -819,10 +805,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		user.setFirstName(jsonObj.getString("employeeFirstName"));
 		user.setLastName(jsonObj.getString("employeeLastName"));
 		user.setEmail(jsonObj.getString("EmailId"));
-		user.setUserType("Employee");
 		user.setCreatedDate(new Date());
 		user.setCreatedBy(users.getUserCode());
-		user.setUserState(Status.NOT_LOGGEDIN);
 		user.setUserName(jsonObj.getString("EmailId"));
 		user.setPassword(sourceleadPasswordEncoder.encode(password));
 		
@@ -871,6 +855,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 			UserRole userRole = new UserRole();
 			userRole.setRoles(roles);
 			userRole.setUser(usr);
+			userRole.setUserType("Employee");
+			userRole.setUserState(Status.NOT_LOGGEDIN);
 			userRole.setOrgLocations(loginOrgLocation);
 			userRole.setIsPrimary(1);
 			userRole.setCreatedBy(users.getUserCode());
