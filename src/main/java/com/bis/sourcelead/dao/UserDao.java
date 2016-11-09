@@ -63,6 +63,8 @@ public interface UserDao {
 			
 	//Prasad Salina to get managers list baded on role type and except current user
 	List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception;
+	
+	public List<User>  getUserListExceptExistedUsersList(List<Long> userIds,Long orgLocationId)throws Exception;
 
 	User getUserDetailsByUserCode(String userCode);
 

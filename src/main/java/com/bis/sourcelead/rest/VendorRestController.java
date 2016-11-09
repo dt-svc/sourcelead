@@ -83,11 +83,11 @@ public class VendorRestController {
 			String[] owners = ownersId.split(",");
 			for(int i=0 ;i<owners.length;i++ ){
 				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
-				OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(jsonObj.getString("email"), Long.parseLong(orgRelationId), ownerUser.getId());
-			     if(orgSpoc == null){
+				/*OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(jsonObj.getString("email"), Long.parseLong(orgRelationId), ownerUser.getId());
+			     if(orgSpoc == null){*/
 			    	orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId,responderType);
 					SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg","Successfully you have created a client");
-			    }
+			    /*}*/
 			} 
 		}
 		

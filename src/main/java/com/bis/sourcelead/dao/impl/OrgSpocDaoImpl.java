@@ -97,12 +97,12 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public OrgSpoc validateSpacEmailIdByOwnerUserIdAndOrgRelationId(String email, Long orgRelationId, Long userId) throws Exception {
+	public OrgSpoc validateSpacEmailIdByOwnerUserIdAndOrgRelationId(String email, Long orgRelationId, Long userId, Integer status) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgSpoc> orgSpocs = new ArrayList<OrgSpoc>();
 		logger.debug("validateSpacEmailIdByOwnerUserIdAndOrgRelationId start");
-		orgSpocs = session.createQuery("from OrgSpoc spoc where spoc.spocUser.email =:email and spoc.ownerUser.id = :userId and spoc.orgRelations.id = :orgRelationId").setCacheable(true).setLong( "userId", userId)
-				 .setString( "email", email).setLong( "orgRelationId", orgRelationId).setCacheable(true).list();
+		orgSpocs = session.createQuery("from OrgSpoc spoc where spoc.spocUser.email =:email and spoc.ownerUser.id = :userId and spoc.orgRelations.id = :orgRelationId and spoc.status = :status").setCacheable(true).setLong( "userId", userId)
+				 .setString( "email", email).setLong( "orgRelationId", orgRelationId).setInteger( "status", status).setCacheable(true).list();
 		logger.debug("validateSpacEmailIdByOwnerUserIdAndOrgRelationId end");
 		if (orgSpocs.size() > 0) {
 			return orgSpocs.get(0);
@@ -133,6 +133,21 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "select spoc.ownerUser.id from OrgSpoc spoc where spoc.spocUser.id=:spocUserId and spoc.ownerUser.id != :ownerId";
 	    List<Long> ownersList = session.createQuery(query).setLong( "ownerId", ownerId ).setLong( "spocUserId", spocUserId ).setCacheable(true).list();
+        return ownersList;
+        
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getOwnerUserIdsbySpocEmailAndOrgRelationId(String email, Long orgRelationId) {
+		logger.debug("getOwnerIdbySpocId start");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Long> ownersList = null;;
+		if(orgRelationId != null && email != null){
+			String query = "select spoc.ownerUser.id from OrgSpoc spoc where spoc.spocUser.email = :email and spoc.orgRelations.id = :orgRelationId and spoc.status = '1' ";
+		    ownersList = session.createQuery(query).setString( "email", email ).setLong( "orgRelationId", orgRelationId ).setCacheable(true).list();
+		}
+	    
         return ownersList;
         
 	}
