@@ -114,7 +114,7 @@
 						  <div class="form-group">
 							<label class="col-md-4">Job Title</label>
 							<div class="col-md-8">
-							  <input type="text" name="jobTitle" field-name="Job Title" value="${SourceLeadWeb_user.jobTitle}" class="form-control" data-validation-optional="true" data-validation="validate_length length2-100" />
+							  <input type="text" name="jobTitle" field-name="Job Title" readonly="readonly" value="${SourceLeadWeb_userType}" class="form-control" data-validation-optional="true" data-validation="validate_length length2-100" />
 							</div>
 						  </div>
 						  <div class="form-group">

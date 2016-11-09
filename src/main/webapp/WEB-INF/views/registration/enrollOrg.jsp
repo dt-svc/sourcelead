@@ -31,7 +31,7 @@
             <div class="form-group">
 	            <label class="col-md-3">Company<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
-	              <input type="text" name="companyName" id="companyName"  value="${companyName}" class="form-control" onblur="validateCompanyName()"  field-name="Company Name" data-validation="required validate_Space validate_length length2-250" />
+	              <input type="text" name="companyName" id="companyName"  value="${companyName}" class="form-control" onblur="validateCompanyName();"  field-name="Company Name" data-validation="required validate_Space validate_length length2-250" />
 	             <span class="hidden">Company</span>
 	            </div>
             </div>
@@ -261,7 +261,9 @@ var validationSettings = {
 
 <script type="text/javascript">
 function validateCompanyName(){
-	var companyName = document.getElementById("companyName").value;
+	var con = document.getElementById("companyName").value;
+	var company = document.getElementById("companyName").value;
+	var companyName = encodeURIComponent(con);
 	var sourceleadUrl ='${sourceleadUrl}';
 	 if(companyName != null && companyName != ''){
 		 $("#register_button").attr("disabled", "disabled");
@@ -275,9 +277,9 @@ function validateCompanyName(){
 		        			//Existed company
 		    	    		$('#companyNameDiv').find('p.jquery_form_error_message').remove(); 
 		    	    		$('input#companyName').attr('class','error form-control');
-		    	    		$("input#companyName").closest('b').after("<p class='jquery_form_error_message'> "+companyName+" "+result+"</p>");
+		    	    		$("input#companyName").closest('b').after("<p class='jquery_form_error_message'> "+company+" "+result+"</p>");
 		    				$('input#companyName').attr('record-exist','yes');
-		    				$('input#companyName').attr('record-exist-errorMsg',companyName+' '+result+''); 
+		    				$('input#companyName').attr('record-exist-errorMsg',company+' '+result+''); 
 		    				$( "#register_button" ).addClass('sign_btn').val('Register');
 		    				$("#register_button").removeAttr("disabled");
 			        	}

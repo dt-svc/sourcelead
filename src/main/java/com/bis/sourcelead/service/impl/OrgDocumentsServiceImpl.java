@@ -18,6 +18,7 @@ import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgDocumentsService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 
 
@@ -34,6 +35,9 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 
 	@Autowired
 	private OrgDocumentsDao orgDocumentsDao;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	@Autowired
 	private UserService userService;
@@ -136,7 +140,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 	public List<OrgDocuments> getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long responderLocationId,Long loginUserId,
 			Long orgLocationId, String sourceType) throws Exception {
 		
-		 List<Long> managerUserIds = userService.getAllUserIdsByReportingManagerId(loginUserId);
+		 List<Long> managerUserIds = userRoleService.getAllUserIdsByReportingManagerId(loginUserId);
 		
          List<OrgDocuments> documentsList = orgDocumentsDao.getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(responderLocationId, loginUserId, managerUserIds, orgLocationId,sourceType);
 		

@@ -29,6 +29,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmployeesService;
@@ -39,6 +40,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -86,6 +88,9 @@ public class UserRestController {
 	
 	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
+	
+	@Autowired
+	private UserRoleService userRoleService;
 	
 	@Autowired
 	RolesService rolesService;
@@ -325,11 +330,17 @@ public class UserRestController {
 		    
 		    //generate random password
 		    String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+		    boolean isUserActive = false;
 	 		if(user != null){
-	 			user.setPassword(sourceleadPasswordEncoder.encode(password));
+	 			isUserActive = userRoleService.isUserActive(user.getId());
+	 			if(isUserActive == false){
+	 				user.setPassword(sourceleadPasswordEncoder.encode(password));
+	 			}
 	 			user.setIsMailSent(Status.Y);
 	 			userService.addUser(user);
+
 	 			userService.sendEmail(user,loginUser,password,orgLocations.getId());
+
 	 		}
 		
 	 	  return "success";
@@ -578,14 +589,16 @@ public class UserRestController {
 		 * @throws Exception
 		 */
 		@RequestMapping(value = "/reActiveUser", method = RequestMethod.POST)
-        public String reActiveUser(@RequestParam(value = "userId", required = false) String userID) throws Exception {
-                    User user = userService.getUserById(Long.parseLong(userID));
-                    logger.info("The user state is "+user.getUserState());
-                    user.setUserState(user.getPreviousUserState());
-                    user.setPreviousUserState(user.getUserState());
-                    userService.addUser(user);
-                    return "updated";
-               }
+        public String reActiveUser(@RequestParam(value = "userId", required = false) String userID, HttpServletRequest request) throws Exception {
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(Long.parseLong(userID), orgLocations.getId());
+				if(userRole != null){
+					userRole.setUserState(userRole.getPreviousUserState());
+					userRole.setPreviousUserState(userRole.getUserState());
+					userRoleService.addUserRole(userRole);
+				}
+                return "updated";
+         }
 		
 		
 		/**
@@ -602,6 +615,12 @@ public class UserRestController {
 			String resultJson = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			List<User> userList = userService.getManagersByUserRolesAndOrgLocationId(role, orgLocations.getId());
+			for (User user : userList) {
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if(userRole != null){
+					user.setUserType(userRole.getUserType());
+				}
+			}
 			resultJson = toJSON(userList);
 			return resultJson;
 		}

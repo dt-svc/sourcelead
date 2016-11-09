@@ -98,11 +98,13 @@ public class RequirementReleaseRestController {
 					    }
 					}
 			}
+		    if(contactsList != null){
+		    	for(OrgSpoc contact : contactsList){
+			    	Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), contact.getId());
+			    	contact.setReleasedRequirement(isJobReleased.toString());
+				}
+		    }
 		    
-		    for(OrgSpoc contact : contactsList){
-		    	Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), contact.getId());
-		    	contact.setReleasedRequirement(isJobReleased.toString());
-			}
 			 resultJson = commonUtil.toJSON(contactsList);
 			 return resultJson;
 		}
