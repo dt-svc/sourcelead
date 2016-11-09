@@ -187,10 +187,12 @@ public class ClientRestController {
 		
 		
 		 @RequestMapping(value = "/validateClientOrVendorEmail",  method = RequestMethod.POST)
-		    public @ResponseBody String validateClientOrVendorEmail(@RequestParam(value="email", required=false) String email) {
+		    public @ResponseBody String validateClientOrVendorEmail(@RequestParam(value="email", required=false) String email) throws Exception {
 			 
-			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			 if(!email.equalsIgnoreCase(user.getEmail())){
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 
+			 UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(email, orgLocation.getId());
+			 if(userRole == null){
 				 return "Valid Email";
 			 }else{
 				 return "Invalid Email";
