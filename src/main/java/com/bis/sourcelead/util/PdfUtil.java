@@ -56,20 +56,16 @@ public class PdfUtil {
 	        List orderedList = new List(List.ORDERED);
 	        
 	        if("ACTIVE".equalsIgnoreCase(userState)){
-//				 cell2.setCellValue(userRolesList.size());
 	        	activeCount = userRolesList.size();
 			 }else{
 				 if(activeList !=null){
-//				 cell2.setCellValue(activeList.size());
 					 activeCount = activeList.size();
 				 }
 			 }
 	        if("INACTIVE".equalsIgnoreCase(userState)){
-//				 cell4.setCellValue(userRolesList.size()); 
 	        	inActiveCount = userRolesList.size();
 			 }else{
 				 if(inactiveList !=null){
-//				 cell4.setCellValue(inactiveList.size()); 
 					 inActiveCount = inactiveList.size();
 				 }
 			 }
@@ -148,7 +144,7 @@ public class PdfUtil {
 	   			table.addCell("--");
 	   		   }
 	   		   if(userRole.getUser().getUserType() != null){
-	   			table.addCell(userRole.getUser().getUserType());
+	   			table.addCell(userRole.getUserType());
 	   		   }else{
 	   			table.addCell("--");
 	   		   }
@@ -158,7 +154,7 @@ public class PdfUtil {
 	   			table.addCell("--");
 	   		   }
 	   		   if(userRole.getUser().getStatus() !=null){
-	   			table.addCell(userRole.getUser().getStatus());
+	   			table.addCell(userRole.getUserState().toString());
 	   		   }else{
 	   			table.addCell("--");
 	   		   }
