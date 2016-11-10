@@ -393,9 +393,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						            	  }
 						              }
 						              else{
-						            	      sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' >");
-										      for(ProjectTasks pt   : ProjectTasksList){
-										    	       if(pt.getId().equals(timesheetEntries.getProjectTask().getId())){
+						            	      sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
+						            	      sb.append("<option value=''>--select option--</option>");
+						            	      for(ProjectTasks pt   : ProjectTasksList){
+										    	       if(timesheetEntries.getProjectTask() != null && pt.getId().equals(timesheetEntries.getProjectTask().getId())){
 										    	    	   sb.append("<option value='"+pt.getId()+"' selected>"+pt.getTaskName()+"</option>");
 										    	       }
 										    	       else{
@@ -545,9 +546,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						            	  sb.append("<p>NO DATA</p>");
 						              }
 						              else{
-
-                                          sb.append("     <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' >");
-									      for(ProjectTasks pt   : ProjectTasksList){
+						            	  
+                                          sb.append("     <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
+                                          sb.append("<option value=''>--select option--</option>");
+                                          for(ProjectTasks pt   : ProjectTasksList){
 									              sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");   
 									      }
 							              sb.append(" </select>"); 
@@ -1352,8 +1354,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 										ProjectTasks projectTasks = new ProjectTasks();
 
 									   if (jsonObj.has(c+"submission"+submissionId+"task1Id")){
-										projectTasks.setId(Long.parseLong(jsonObj.getString(c+"submission"+submissionId+"task1Id")));
-										timesheetEntries.setProjectTask(projectTasks);
+										   if(!isNullOrEmpty(jsonObj.getString(c+"submission"+submissionId+"task1Id"))){
+												  projectTasks.setId(Long.parseLong(jsonObj.getString(c+"submission"+submissionId+"task1Id")));
+												  timesheetEntries.setProjectTask(projectTasks);
+										   }
 										 }
 										//For Monday Hours
 										if (jsonObj.has(c+"submission"+submissionId+"timeSheetDay1Id")){

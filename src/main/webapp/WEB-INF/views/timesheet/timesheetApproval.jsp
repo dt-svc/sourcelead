@@ -485,9 +485,16 @@ function addTimeSheetRow(submissionId,projectId) {
  /* this script is for get project tasks   */	     
 function getProjectTasks(projectTaskId,projectId){    
 	   var sourceleadUrl ='${sourceleadUrl}';
+	   
+	   var avilableProjectTaskIds = [];
+	   $('.existedProjectTaskId').each(function() {
+			 var localId = this.value;
+			 avilableProjectTaskIds.push(localId);
+	   }); 
+				   
 	   $.ajax({
           type : "POST",
-    	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,		
+    	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
 	      success :function(data) {
 	    	    var json = JSON.parse(data);
 	    	    var result = ""; 
@@ -496,8 +503,15 @@ function getProjectTasks(projectTaskId,projectId){
 		        		var opt = json[i];
 		        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
 				}
-	    	    $("#"+projectTaskId).empty();
-	    	    $("#"+projectTaskId).append(result);
+	    	    
+	    	    $('.existedProjectTaskId').each(function() {
+	   			 var localId = this.id;
+	   			 alert("localId"+localId);
+	   			 $("#"+localId).empty();
+		    	 $("#"+localId).append(result);
+	   	  	    }); 
+	    	    
+	    	   
 	      }
     	  
      }); 
@@ -911,7 +925,7 @@ function checkHours(){
 		 var total = 0;
 		 $('.timesheetrProject').each(function() {
 		 var p = this.id;
-		 for (var j = 1; j < 10; j++){
+		 for (var j = 1; j < 50; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
 			    	 var hours = btemp;

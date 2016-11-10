@@ -57,6 +57,17 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		List<ProjectTasks> list = tasksDao.getAllTasksByProjectId(projectId);
 		return list;
 	}
+	
+	
+	@Override
+	public List<ProjectTasks> getAllTasksByProjectIdAndExistedProjectTaskIds(Long projectId,
+			List<Long> avilableProjectTaskIds) throws Exception {
+		
+		List<ProjectTasks> list = tasksDao.getAllTasksByProjectIdAndExistedProjectTaskIds(projectId, avilableProjectTaskIds);
+		return list;
+		
+	}
+	
 
 	@Override
 	public Collection<ProjectTasks> getAllSourceleadTasks() throws Exception {
@@ -132,11 +143,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		    		  
 		
 	}
-	
-	
-	//by sarath 
-	
-	
+
 	
 
 }

@@ -187,10 +187,12 @@ public class ClientRestController {
 		
 		
 		 @RequestMapping(value = "/validateClientOrVendorEmail",  method = RequestMethod.POST)
-		    public @ResponseBody String validateClientOrVendorEmail(@RequestParam(value="email", required=false) String email) {
+		    public @ResponseBody String validateClientOrVendorEmail(@RequestParam(value="email", required=false) String email) throws Exception {
 			 
-			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			 if(!email.equalsIgnoreCase(user.getEmail())){
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 
+			 UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(email, orgLocation.getId());
+			 if(userRole == null){
 				 return "Valid Email";
 			 }else{
 				 return "Invalid Email";
@@ -383,7 +385,7 @@ public class ClientRestController {
 	 @ResponseBody String validateSpocEmailId(@RequestParam(value = "email", required = false) String email, @RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			String result;
-			OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(email, orgRelationId, user.getId()); 
+			OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(email, orgRelationId, user.getId(), Constants.RECORD_ACTIVE); 
 			if (orgSpoc != null) {
 				result = "true";
 			} else {
@@ -604,7 +606,18 @@ public class ClientRestController {
 	
 	
 	
-	
+	@RequestMapping(value = "/getAllOwners")
+	public @ResponseBody String getAllOwners(@RequestParam(value="email", required=false) String email,@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		String resultJson = null;
+		
+		List<Long> existingOwnerUserIds = orgSpocService.getOwnerUserIdsbySpocEmailAndOrgRelationId(email,orgRelationId);
+		List<User> userList = userService.getUserListExceptExistedUsersList(existingOwnerUserIds,orgLocations.getId());
+		resultJson = commonUtil.toJSON(userList);
+		return resultJson;
+
+	}	
 	
 	
 	

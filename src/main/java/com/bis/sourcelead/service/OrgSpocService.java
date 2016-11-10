@@ -50,13 +50,15 @@ public interface OrgSpocService {
 	 * @return
 	 * @throws Exception
 	 */
-	OrgSpoc validateSpacEmailIdByOwnerUserIdAndOrgRelationId(String email, Long orgRelationId, Long userId) throws Exception;
+	OrgSpoc validateSpacEmailIdByOwnerUserIdAndOrgRelationId(String email, Long orgRelationId, Long userId, Integer status) throws Exception;
 
 	OrgSpoc getSpocAndOwnerDetailsById(Long spocId, Long ownerId);
 	
 	OrgSpoc getSpocAndOwnerDetailsByIdAndOwnerId(Long spocId, Long ownerId, Long spocUserId, Long loginUserId, Long orgLocationId) throws Exception;
 
 	List<Long> getOwnerIdbySpocId(Long spocUserId, Long ownerId);
+	
+	List<Long> getOwnerUserIdsbySpocEmailAndOrgRelationId(String email, Long orgRelationId) throws Exception;
 	
 	
 	/**To get Spoc user
