@@ -356,7 +356,7 @@
 	   		    	$("#spocDetailsId").removeAttr("onClick")
 	   		    	$("#spocDetailsId").attr("onclick","clientDetailsbySpocId('"+spocId+"', '"+ownerId+"', '"+spocUserId+"', '"+ownerId+"')");
 	   		    	clientDetailsbySpocId(spocId,ownerId,spocUserId,ownerId);
-	   		    	getVendorContactLists();
+	   		    	getVendorContactLists(); 
 	   		    }
 		 }); 
 	     	return true;
