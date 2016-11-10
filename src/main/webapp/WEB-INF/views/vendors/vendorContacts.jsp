@@ -456,7 +456,7 @@ $('html').click(function(){
 			$("#addClientContact").addClass('button').val('Processing..');
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId,
+						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId+"&responderType=Vendor",
 						success : function(result) {
 							$("#popUpDivContact").removeClass("edit-details-active");
 							vendorContactList(orgRelationId,vendorLocationId);

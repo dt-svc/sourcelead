@@ -226,7 +226,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					
 					//to assign primary role to another user
 					UserRole existinguserRole = userRoleService.getNotPrimaryUser(userId);
-					existinguserRole.setIsPrimary(1);
+					if(existinguserRole != null){
+						existinguserRole.setIsPrimary(1);
+					}
 					userRoleService.addUserRole(existinguserRole);
 				}
 			
