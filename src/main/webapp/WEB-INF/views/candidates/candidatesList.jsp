@@ -126,18 +126,18 @@
 	                     }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
+	                     $("#noCandidates").val('');
 	                     $("#candidateList").append(result);
 	                     cpagination(); 
 			    	} 
                  }else{
                 	 $("#candidateList").removeAttr("style");
   	    	         var result ="";
-		    	    
 					 result = result+"			<div class='blank-pages'>";
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 					 result = result+"			        <p>No Candidates Found</p>";
 					 result = result+"			 </div>";
-					noCandidateFound();
+					$("#noCandidates").val("nocandidate");
 					$("#candidateList").empty();
 				    $("#candidateList").append(result); 
                  }
@@ -147,12 +147,6 @@
   } 
 </script>
 
-<script>
-function noCandidateFound(){
-	$("#noCandidates").val("nocandidate");
-}
-
-</script>
 <%-- 
      @author : sarath kumar.
      this script is for prepare pagination to candidateList.
@@ -905,7 +899,7 @@ function exportToExcel(){
          $("#canDiv").removeAttr("onClick");
      }
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"exportType=xls";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&exportType=xls";	
 	  }
 }
 </script>

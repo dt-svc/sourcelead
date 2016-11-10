@@ -187,6 +187,7 @@ function requirementList(){
 	                     }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
+	                     $("#noReq").val('');
 	                     $("#requirementList").append(result); 
 	                     pagination(); 
 			    	} 
@@ -199,6 +200,7 @@ function requirementList(){
 					 result = result+"			        <p>No Requirement Found</p>";
 					 result = result+"			 </div>";
 					noRequirements();
+					$("#noReq").val("noreq");
 					$("#requirementList").empty();
 				    $("#requirementList").append(result); 
                 }
@@ -208,11 +210,6 @@ function requirementList(){
   } 
 </script>
 
-<script>
-function noRequirements(){
-	$("#noReq").val("noreq");
-}
-</script>
 <%-- 
      @author : sarath kumar.
      this script is for prepare pagination to requirementList.
@@ -1244,7 +1241,19 @@ function changeStatus(requirementId){
 
 <script>
 function exportToPdf(){
-	alert("pdf");
+	var req = $("#noReq").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	  var status = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() 
+	    {
+			status.push($(this).val());
+	    });
+	 var clients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() 
+	    {
+			clients.push($(this).val());
+	    });
+		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=pdf";
 }
 </script>
 
@@ -1263,7 +1272,7 @@ function exportToExcel(){
 	    {
 			clients.push($(this).val());
 	    });
-		//window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients;
+		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=xls";
 }
 
 </script>
