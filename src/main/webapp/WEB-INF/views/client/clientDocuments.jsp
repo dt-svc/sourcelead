@@ -433,7 +433,7 @@ function getSpocsList(orgRelationId){
         	for (var i=0; i<json.length; i++)
 			{
 	        		var opt = json[i];
-	        		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.spocName+"</option>";
+	        		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.spocName+"&nbsp;("+opt.ownerName+")</option>";
 			}
         	$("#spoc").empty();
 	        $("#spoc").append(output);

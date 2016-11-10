@@ -124,7 +124,7 @@ public class OrgSpocServiceTest {
 	
 	@Test
 	public void validateSpacEmailIdByOwnerUserIdAndOrgRelationId() throws Exception{
-		OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId("info@acer123.com", 1l, 3l);
+		OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId("info@acer123.com", 1l, 3l,1);
 		logger.info("retrieved sucessfully...."+orgSpoc.getSpocStatus());
 	}
 	

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,7 +112,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			boolean isCandidateAdded = false;
 			float expPercentage = 0; //  experience = 20%
 			int matchedSkillCount = 0;
-			List<CandidateSkills> candidateSkillList  = candidateSkillsService.getSkillByCandidateId(candidate.getId());
+//			List<CandidateSkills> candidateSkillList  = candidateSkillsService.getSkillByCandidateId(candidate.getId());
+			Set<CandidateSkills> candidateSkillList = candidate.getCandidateSkills();
 			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
 			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
 			
