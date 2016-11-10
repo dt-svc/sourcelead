@@ -3,6 +3,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<script src="resources/js/bootstrap-select.min.js"></script>
+
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <script src="resources/js/chosen.jquery.min.js"></script>
 
@@ -10,6 +13,9 @@
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
+
+
+
 
 
 
@@ -57,6 +63,8 @@ function addOffer(requirementId){
 	
 	result= result + '	          <div class="row pad2">';
 	
+	
+	
 	result= result + '	          <div class="form-group">';
 	result= result + '<label class="col-md-3"></label>';
 	result= result + '<div class="col-md-9">';
@@ -67,7 +75,7 @@ function addOffer(requirementId){
     result= result + '</div>';
     result= result + '</div>';
             
-    result= result + '	          <div class="form-group">';
+    result= result + '<div class="form-group">';
 	result= result + '<label class="col-md-3"></label>';
 	result= result + '<div class="col-md-9">';
 	result= result + '<div class="checkbox checkBox">';
@@ -118,7 +126,7 @@ function loadRemiderDiv(){
 
 
 <div id="divOfferTd1" style="display: none; float: left;">
-       <select multiple class="chosen-select blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
+       <select multiple class="chosen-select blminwidth-50" id="REPLACEROWIDapplicantId" name="REPLACEROWIDapplicantId" field-name="Applicant" data-validation="required" >
 			
 	  </select>
 </div>
@@ -126,7 +134,7 @@ function loadRemiderDiv(){
 
 <div id="divOfferTd3" style="display: none; float: left;">
    	 <div class="positionRelative float">
-           <select class="form-control" id="REPLACEROWIDPaymentType" name="REPLACEROWIDPaymentType"  >
+           <select class="form-control selectpicker" id="REPLACEROWIDPaymentType" name="REPLACEROWIDPaymentType"  >
 	           <option>Rupee</option>
 	           <option>Dollar</option>
            </select>
@@ -135,7 +143,7 @@ function loadRemiderDiv(){
      	  <input type="text" value="" class="form-control input-sm" id="REPLACEROWIDAmount" name="REPLACEROWIDpaymentTypAmount" >
      </div>
    	 <div class="positionRelative float">
-           <select class="form-control" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode">
+           <select class="form-control selectpicker" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode">
            <option>Yearly</option>
            <option>Monthly</option>
            </select>
@@ -143,7 +151,7 @@ function loadRemiderDiv(){
 </div> 
 
 <div id="divOfferTd4" style="display: none; float: left;">
- 	<select class="form-control" id="REPLACEROWIDPositionType" name="REPLACEROWIDPositionType">
+ 	<select class="form-control selectpicker" id="REPLACEROWIDPositionType" name="REPLACEROWIDPositionType">
 	                      <option>Fulltime</option>
 	                      <option>Parttime</option>
 	                      <option>C2C</option>
@@ -206,6 +214,7 @@ function loadRemiderDiv(){
 		divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
 		cell5.innerHTML = divTsTd6Str;
 		
+		$("#"+maxRowNum+"applicantId").chosen();
 		
 		
 		$(".add_offer_wrap").addClass("add_offer_wrap_active");
@@ -216,9 +225,8 @@ function loadRemiderDiv(){
 		getShortListAndSubmittedAndInterviewedCandidates(maxRowNum);
 		
 
-	    $("#"+maxRowNum+"applicant").chosen();
 		
-	    $("#"+maxRowNum+"applicant").on('change', function (e) {
+	    $("#"+maxRowNum+"applicantId").on('change', function (e) {
 	    	  getUpdatedSubmittedAndShortListedAndInterviewedCandidates();
 	    }); 
 		
@@ -328,7 +336,7 @@ function cancelAddOffer(){
  function getShortListAndSubmittedAndInterviewedCandidates(rowId) { 
 	 var existingApplicantsIds = [];    
 	 for(i=rowId ; i > 0; i--){
-		 var applicant = $("#"+(i)+"applicant").val();
+		 var applicant = $("#"+(i)+"applicantId").val();
 		 if(applicant != null && applicant != '' && applicant != 'undefined'){
 			 existingApplicantsIds.push(applicant);
 		 }
@@ -349,9 +357,9 @@ function cancelAddOffer(){
 			        		var opt = json[i];
 			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
 					}
-		        	$("#"+rowId+"applicant").empty();
-		        	$("#"+rowId+"applicant").append(output);
-		        	$("#"+rowId+"applicant").trigger("chosen:updated");
+		        	$("#"+rowId+"applicantId").empty();
+		        	$("#"+rowId+"applicantId").append(output);
+		        	$("#"+rowId+"applicantId").trigger("chosen:updated");
 			       
 		        },
 		    });
@@ -364,7 +372,7 @@ function cancelAddOffer(){
 	 var rowId = $("#maxOfferRowNum").val();
 	 var existingApplicantsIds = [];    
 	 for(i=rowId ; i > 0; i--){
-		 var applicant = $("#"+(i)+"applicant").val();
+		 var applicant = $("#"+(i)+"applicantId").val();
 		 if(applicant != null && applicant != '' && applicant != 'undefined'){
 			 existingApplicantsIds.push(applicant);
 		 }
@@ -386,16 +394,16 @@ function cancelAddOffer(){
 					}
 		        	for(var i=rowId-1 ; i > 0; i--){
 		        		 var internalOutput = "";
-		        		 var applicantIdList= $("#"+(i)+"applicant").val();
+		        		 var applicantIdList= $("#"+(i)+"applicantId").val();
 		        		 var arr = jQuery.makeArray(applicantIdList);
                          for(var j = 0; j < arr.length; j++) {
-                        	 var label = $("#"+(i)+"applicant option[value='"+arr[j]+"']").text();
+                        	 var label = $("#"+(i)+"applicantId option[value='"+arr[j]+"']").text();
                         	 internalOutput = internalOutput+"<option value='" +arr[j]+ "' selected>"+label+"</option>";
                          }
-		        		$("#"+(i)+"applicant").empty();
-		        		$("#"+(i)+"applicant").append(internalOutput);
-			        	$("#"+(i)+"applicant").append(output);
-			        	$("#"+(i)+"applicant").trigger("chosen:updated");
+		        		$("#"+(i)+"applicantId").empty();
+		        		$("#"+(i)+"applicantId").append(internalOutput);
+			        	$("#"+(i)+"applicantId").append(output);
+			        	$("#"+(i)+"applicantId").trigger("chosen:updated");
 		       	    }
 			       
 		        },
@@ -431,6 +439,26 @@ function NotifyToApplicant(){
 	} 
 }
 
+</script>
+
+
+
+<script type="text/javascript">
+$(function(){
+	       var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	       
+	      
+	       $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+});
 </script>
 
 
