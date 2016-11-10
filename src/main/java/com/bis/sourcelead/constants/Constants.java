@@ -81,9 +81,9 @@ public class Constants {
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
-	public static String loginUserAsAdmin =":userId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1')";
+	public static String loginUserAsAdmin =":userId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1' and userRole.orgLocations.id = ts.projectMembers.projects.orgLocationsId.id)";
 	
-	public static String loginUserAsAdminWithMaxHeirarchyLevel ="(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1') and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = pm.projects.id))";
+	public static String loginUserAsAdminWithMaxHeirarchyLevel ="(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1' and userRole.orgLocations.id = pm.projects.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = pm.projects.id))";
 	
 	/** projectMember  constants**/
 	public static String MEMBER_ACTIVE = "1";
@@ -218,5 +218,6 @@ public class Constants {
 	public static String[] LEVEL_DROPDOWN = {"Level-1","Level-2","Level-3","Level-4","Level-5"};
 	public static String[] USER_EXCEL_HEADERS = { "Employee Id", "First Name", "Last Name", "Email-id", "Phone Number",
 			"Date Of Join", "Rate", "Location", "Role", "Manager", "status" };
-	
+	public static String[] CANDIDATE_EXCEL_HEADERS = {"Firstname","Last name","Email id","Phone Number","Location","Designation","Education","Experience","Skills","Rate"};
+    public static String[] REQUIREMENT_EXCEL_HEADERS = {"Requirement id","Requirement Title","Experience","Rate","Location","Skills","Manager","Assign To","Priority","Application Form","Client Name","Client Contact"};
 }

@@ -57,14 +57,14 @@
                          </div>
                        </div> -->
                        <div class="form-group">
-			              <label class="col-md-3">Level</label>
+			              <label class="col-md-3">Tier</label>
 			              <div class="col-md-9">
 			                  <select class="form-control selectpicker" id="level" name="level">
-			                    <option value="Level-1">Level-1</option>
-			                    <option value="Level-2">Level-2</option>
-			                    <option value="Level-3">Level-3</option>
-			                    <option value="Level-4">Level-4</option>
-			                    <option selected="selected" value="Level-5">Level-5</option>
+			                    <option value="Tier-1">Tier-1</option>
+			                    <option value="Tier-2">Tier-2</option>
+			                    <option value="Tier-3">Tier-3</option>
+			                    <option value="Tier-4">Tier-4</option>
+			                    <option selected="selected" value="Tier-5">Tier-5</option>
 			                  </select>
 			              </div>
                       </div>
@@ -553,6 +553,7 @@ function validateClientName(){
 
 <script type="text/javascript">
 function validateEmail(){
+	 getOwners();
 	var email = document.getElementById("email").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(email != null){
@@ -563,9 +564,9 @@ function validateEmail(){
 				var result = data;
 				if(result == 'Invalid Email') {
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-					$("input#email").after( "<p class='jquery_form_error_message'>" + email + " should not your login email</span>");
+					$("input#email").after( "<p class='jquery_form_error_message'>" + email + " should not your org users email</span>");
 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
-					document.getElementById("email").setAttribute( 'record-exist-errorMsg', email +"  should not your login email");
+					document.getElementById("email").setAttribute( 'record-exist-errorMsg', email +"  should not your org users email");
 					
 				}else if(result == 'Valid Email') {
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");
@@ -578,6 +579,45 @@ function validateEmail(){
 		});
 	}
 }
+</script>
+
+<script type="text/javascript">
+ function getOwners() {
+	 var email = document.getElementById("email").value; 
+	 var vendorName = document.getElementById("vendorName").value;
+	 var orgLocationId = vendorName.split(',');
+	 var orgRelationId = orgLocationId[0];
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(email != null && email != "" && email != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllOwners?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgRelationId="+orgRelationId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		if(i == 0){
+			        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}
+			        		
+					}
+		        	$("#owner").empty();
+			        $("#owner").append(output);
+			        $('#owner').trigger("chosen:updated");
+		        },
+		    });
+	 }/* else{
+		 var output = "";
+     	 $("#owner").empty();
+	     $("#owner").append(output);
+	     $('#owner').trigger("chosen:updated");
+	 } */
+	
+ }
 </script>
 
 <script type="text/javascript">

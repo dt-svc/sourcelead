@@ -75,7 +75,7 @@
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Level :</strong>';
+						result = result + '<strong>Tier :</strong>';
 						if(json.level != null && json.level !='' && json.level !='undefined'){
 							result = result + '<span>'+json.level+'</span><div class="clearfix"></div>';
 						}else{
@@ -136,23 +136,23 @@
 						var selected4 = '';
 						var selected5 = '';
 						
-						if(json.level == 'Level-1'){
+						if(json.level == 'Tier-1'){
 								selected1 = 'selected';
 							} 
 						
-						if(json.level == 'Level-2'){
+						if(json.level == 'Tier-2'){
 								selected2 = 'selected';
 							} 
 						
-						if(json.level == 'Level-3'){
+						if(json.level == 'Tier-3'){
 								selected3 = 'selected';
 							}
 						
-						if(json.level == 'Level-4'){
+						if(json.level == 'Tier-4'){
 								selected4 = 'selected';
 						}
 						
-						if(json.level == 'Level-5'){
+						if(json.level == 'Tier-5'){
 								selected5 = 'selected';
 						}
 						
@@ -234,13 +234,13 @@
 						
 						//level
                         result = result + ' <div class="user_summary_edit_cta">';
-                        result = result + ' <label>Level</label>';
+                        result = result + ' <label>Tier</label>';
                         result = result + ' <select id="level" name="level" >';
-                        result = result + ' <option '+selected1+'>Level-1</option>';
-                        result = result + ' <option '+selected2+'>Level-2</option>';
-                        result = result + ' <option '+selected3+'>Level-3</option>';
-                        result = result + ' <option '+selected4+'>Level-4</option>';
-                        result = result + ' <option '+selected5+'>Level-5</option>';
+                        result = result + ' <option '+selected1+'>Tier-1</option>';
+                        result = result + ' <option '+selected2+'>Tier-2</option>';
+                        result = result + ' <option '+selected3+'>Tier-3</option>';
+                        result = result + ' <option '+selected4+'>Tier-4</option>';
+                        result = result + ' <option '+selected5+'>Tier-5</option>';
                         result = result + ' </select>';
                         result = result + ' </div>';   
 						

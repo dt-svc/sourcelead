@@ -85,15 +85,15 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		
 		
 		for (long c = 1; c < maxCount; c++) {
-				if(jsonObj.has(c+"applicant")){
+				if(jsonObj.has(c+"applicantId")){
 						
 						String applicantslist =null;
 						try{
-							JSONArray jsonArray = jsonObj.getJSONArray(c+"applicant");
+							JSONArray jsonArray = jsonObj.getJSONArray(c+"applicantId");
 							applicantslist = jsonArray.toString();
 						}
 						catch(JSONException e){
-							applicantslist =jsonObj.getString(c+"applicant");
+							applicantslist =jsonObj.getString(c+"applicantId");
 						}
 						applicantslist = applicantslist.replaceAll("\\[", "").replaceAll("\\]","");
 						applicantslist = applicantslist.replaceAll("\"", "");

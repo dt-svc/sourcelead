@@ -3,10 +3,8 @@ package com.bis.sourcelead.rest;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,17 +33,17 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
+import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.SourceleadCustomExceptions;
 
 @RestController 
 public class TimesheetSubmissionsRestController {
@@ -68,6 +66,9 @@ public class TimesheetSubmissionsRestController {
 	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	TimesheetSubmissionsDocumentsService timesheetSubmissionsDocumentsService;
 	
 	// sarath kumar punnana : this  controller method is for withdraw  timwsheet entries.
 	@RequestMapping(value = "/withDrawTimesheet", method = RequestMethod.POST)
@@ -117,15 +118,17 @@ public class TimesheetSubmissionsRestController {
 	
 	
 	@RequestMapping(value = "/downloadDocument", method = RequestMethod.GET)
-    public void downloadDocument(@RequestParam(value="submissionId", required=false) Long submissionId ,HttpServletResponse response) throws Exception {
+    public void downloadDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId ,HttpServletResponse response) throws Exception {
 		
-		    TimesheetSubmissions timesheetSubmissions =    timesheetSubmissionsService.getTimesheetSubmissions(submissionId.toString());
+		
+			TimesheetSubmissionsDocuments	timesheetSubmissionsDocuments =	timesheetSubmissionsDocumentsService.getTimesheetSubmissionsDocuments(submissionDocumentId);	
+		    //TimesheetSubmissions timesheetSubmissions =    timesheetSubmissionsService.getTimesheetSubmissions(submissionId.toString());
 		    
 		    response.setContentType("application/octet-stream");
 	        response.setHeader("Content-Disposition",
-	                "attachment;filename="+timesheetSubmissions.getFileName());
+	                "attachment;filename="+timesheetSubmissionsDocuments.getFileName());
 		    
-			InputStream inputStream = new ByteArrayInputStream(timesheetSubmissions.getDocFile());
+			InputStream inputStream = new ByteArrayInputStream(timesheetSubmissionsDocuments.getDocFile());
 			try {
 				OutputStream outStream = response.getOutputStream();
 
@@ -173,13 +176,15 @@ public class TimesheetSubmissionsRestController {
 	}
 	
 	@RequestMapping(value = "/deleteSubmissionDocument", method = RequestMethod.POST)
-    public String deleteSubmissionDocument(@RequestParam(value="submissionId", required=false) Long submissionId ,HttpServletResponse response) throws Exception {
+    public String deleteSubmissionDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId ,HttpServletResponse response) throws Exception {
         
-            TimesheetSubmissions timesheetSubmissions =    timesheetSubmissionsService.getTimesheetSubmissions(submissionId.toString());
-            timesheetSubmissions.setDocFile(null);
-            timesheetSubmissions.setFileContentType(null);
-            timesheetSubmissions.setFileName(null);
-            timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
+            /*TimesheetSubmissions timesheetSubmissions =    timesheetSubmissionsService.getTimesheetSubmissions(submissionId.toString());*/
+			TimesheetSubmissionsDocuments	timesheetSubmissionsDocuments =	timesheetSubmissionsDocumentsService.getTimesheetSubmissionsDocuments(submissionDocumentId);
+            timesheetSubmissionsDocuments.setDocFile(null);
+            timesheetSubmissionsDocuments.setFileContentType(null);
+            timesheetSubmissionsDocuments.setFileName(null);
+            timesheetSubmissionsDocuments.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+            timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(timesheetSubmissionsDocuments);
             return "success";
     }
 	

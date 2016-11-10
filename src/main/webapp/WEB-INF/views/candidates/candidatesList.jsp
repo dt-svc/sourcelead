@@ -19,6 +19,7 @@
 <script>
  window.onload = function() {
  	 candidateList();
+ 	 $("#upcandidateStatus").val('');
 };
 </script>
 
@@ -29,7 +30,7 @@
      2.parameter : csrf token .
      3.ajax url implementation in CandidateListRestController.
 --%>
-
+<input type="hidden" id="noCandidates" name="noCandidates"/>
 <script>
   function candidateList(){ 	 
 	  
@@ -137,7 +138,7 @@
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 					 result = result+"			        <p>No Candidates Found</p>";
 					 result = result+"			 </div>";
-					
+					noCandidateFound();
 					$("#candidateList").empty();
 				    $("#candidateList").append(result); 
                  }
@@ -147,6 +148,12 @@
   } 
 </script>
 
+<script>
+function noCandidateFound(){
+	$("#noCandidates").val("nocandidate");
+}
+
+</script>
 <%-- 
      @author : sarath kumar.
      this script is for prepare pagination to candidateList.
@@ -255,7 +262,6 @@ function clientSideBar(candidateId){
 						 result = result+' </div>';
 						 result = result+' </div>';
 						 result = result+'</form>';
-						  
 						  
 			             /*  result = result+'                     <div class="media-left image-parent">';
 			             result = result+'                     <div class="imageParent">'; */
@@ -667,12 +673,11 @@ function cancel(candidateId){
     <div class="vendor_wrap">
       <div class="timesheet_head">
         <ul>
-          <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
+          <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
             <div class="export_pop">
               <ul>
-                <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-                <li>Excel<i class="fa fa-file-excel-o"></i></li>
-                <li>Word<i class="fa fa-file-word-o"></i></li>
+                <li onclick="exportToPdf();">PDF<i class="fa fa-file-pdf-o"></i></li>
+                <li onclick="exportToExcel();">Excel<i class="fa fa-file-excel-o"></i></li>
               </ul>
             </div>
           </li>
@@ -680,8 +685,8 @@ function cancel(candidateId){
            <li><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
                   	<ul>
-	                    <li><input id="candidateAll" type="radio" name="candidateStatus" value ="2" onclick="candidateList();"  ><label for="c5">All</label></li>
-						<li><input id="candidateActive" type="radio" name="candidateStatus" value ="1" checked onclick="candidateList();"><label for="c6">Active</label></li>
+	                    <li><input id="candidateAll" type="radio" name="candidateStatus" checked  value ="2" onclick="candidateList();"  ><label for="c5">All</label></li>
+						<li><input id="candidateActive" type="radio" name="candidateStatus" value ="1"  onclick="candidateList();"><label for="c6">Active</label></li>
 						<li><input id="candidateInActive" name="candidateStatus" type="radio" value ="0"  onclick="candidateList();"><label for="c7">In Active</label></li>
                     </ul>
                   </div>                	
@@ -690,7 +695,7 @@ function cancel(candidateId){
             <li><i class="fa fa-filter"></i><span id="candidateUpdiv"> UpDated Candidates </span><i class="glyphicon glyphicon-play" id="filter1ApprovePop"></i>|
               	<div id="filter1ApprovedPop" class="approved_pop">
                   	<ul>
-	                    <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1" checked onclick="candidateList();"  ><label for="c5">1 Day ago</label></li>
+	                    <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="c5">1 Day ago</label></li>
 						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="c6">3 Day ago</label></li>
 						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7"  onclick="candidateList();"><label for="c7">1 Week ago</label></li>
 						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="21"  onclick="candidateList();"><label for="c7">2 Week ago</label></li>
@@ -701,7 +706,7 @@ function cancel(candidateId){
           </li>  
           
           <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
-          
+         
           <div class="clearfix"></div>
         </ul>
         
@@ -863,5 +868,47 @@ $('input:checkbox:not(#checkAll)').click(function() {
 }
 </script>
 
+<script>
+function exportToPdf(){
+	var isCandidatesAvailable= $("#noCandidates").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	  var candFilterRadio = $('input[name=candidateStatus]');
+	  var candidateStatus = candFilterRadio.filter(':checked').val();
+	  if(candidateStatus == 1){
+        $("#canDiv").text("Active Candidates");
+    }else if(candidateStatus == 0){
+  	  $("#canDiv").text("In Active Candidates");
+    }else if(candidateStatus == 'ALL'){
+  	  $("#canDiv").text("All Candidates");
+    }else{
+        $("#canDiv").removeAttr("onClick");
+    }
+	  if(isCandidatesAvailable == ''){
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&exportType=pdf";	
+	  }
+}
+
+</script>
+
+<script>
+function exportToExcel(){
+	var isCandidatesAvailable= $("#noCandidates").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	  var candFilterRadio = $('input[name=candidateStatus]');
+	  var candidateStatus = candFilterRadio.filter(':checked').val();
+	  if(candidateStatus == 1){
+         $("#canDiv").text("Active Candidates");
+     }else if(candidateStatus == 0){
+   	  $("#canDiv").text("In Active Candidates");
+     }else if(candidateStatus == 'ALL'){
+   	  $("#canDiv").text("All Candidates");
+     }else{
+         $("#canDiv").removeAttr("onClick");
+     }
+	  if(isCandidatesAvailable == ''){
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"exportType=xls";	
+	  }
+}
+</script>
     
 <jsp:include page="../masterFooter.jsp" />
