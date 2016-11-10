@@ -561,6 +561,8 @@ function validateClientName(){
 				var result = data;
 				if (result == true) {
 					//duplicate client
+					$("#save_client").removeAttr("disabled");
+			        $("#save_client").attr("disabled", "disabled");
 					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as client</span>");
 					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
 					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as client");
@@ -569,6 +571,7 @@ function validateClientName(){
 				}else {
 					//New WebSite class="form-control"
 					//$("#save_client").removeAttr("disabled");
+					$("#save_client").removeAttr("disabled");
 					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
 					$('input#orgName').attr('class','valid form-control');
 					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
