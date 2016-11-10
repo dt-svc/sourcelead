@@ -127,7 +127,11 @@ function requirementList(){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
 		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-		                     result = result +"<td><div><span>Client</span></div></td>";
+		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
+		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
 		                     if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
 		                    	 result = result +"<td><div>"+opt.jobType+"</div></td>";
 		                     }else{
@@ -144,16 +148,11 @@ function requirementList(){
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
 		                     }
-	                    	 result = result +"<td><div>-----</div></td>";
-
-		                     /* f(opt.managerUserId.firstName != null && opt.managerUserId.firstName !='' && opt.managerUserId.firstName !='undefined'){
-		                    	 result = result +"<td><div>"+opt.managerUserId.firstName+" "+opt.managerUserId.lastName+"</div></td>";
+		                     if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
+		                    	 result = result +"<td><div>"+opt.manager+"</div></td>";
 		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
-		                     } */
-		                     
-		                     /* result = result +"<td><div><b class='proj_process'>"+opt.requirementSubmissionStatus+"</b></div></td>"; */
-		                     
+		                    	 result = result +"<td><div>----</div></td>";
+		                     }
 		                     result = result +"<td><select onchange='changeStatus("+opt.id+");' id='changeStatusId'>";
 								if(opt.requirementSubmissionStatus == "ONHOLD"){
 									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
