@@ -816,7 +816,7 @@ function clearTimesheet(){
 	 /* for (var p = 1; p < 200; p++){   */
 		 $('.NEW').each(function() {
 		 var p = this.id;
-		 for (var j = 1; j < 10; j++){
+		 for (var j = 1; j < 50; j++){
 			    $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val("00:00");
 			    $("#"+j+"submission"+p+"textArea"+i+"Id").val(""); 
 		 }
