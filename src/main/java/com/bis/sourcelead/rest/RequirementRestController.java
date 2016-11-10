@@ -187,7 +187,7 @@ public class RequirementRestController {
 		if(status.equalsIgnoreCase("REJECTED")){
 			 if(maxLevel!=null){
 		    	 if(maxLevel.equals(requirementApproverHierarchy.getLevel())){
-		    		  requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
+		    		     requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
 		    		     requirement.setUpdatedBy(loginUser.getUserCode());
 				    	 requirement.setUpdatedDate(commonUtil.currentDate());
 				    	 requirementService.addRequirement(requirement);
@@ -201,16 +201,24 @@ public class RequirementRestController {
 							  rah.setUpdatedDate(commonUtil.currentDate());
 			    		      requirementApproverHierarchyService.addRequirementApproverHierarchy(rah);
 		            	} 
+		    		    
+		    		    
+					    // Email for Reject requirement  from approver level Two to Initiator.
+
 		    		    User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
-		    			requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement); 
+		    			requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason); 
 				   }else{
 					    requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 					    requirementApproverHierarchy.setUpdatedBy(loginUser.getUserCode());
 					    requirementApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
 					    requirementApproverHierarchy.setRejectedReason(reason);
 					    requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
-						User approverUser = userService.getUserById(requirementApproverHierarchy.getApproverUserId().getId());
-						requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null);
+					    
+					    // Email for Reject requirement  from approver level One to Initiator.
+					    User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
+		    			requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason); 
+						//User approverUser = userService.getUserById(requirementApproverHierarchy.getApproverUserId().getId());
+						//requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null);
 				   }
 		    }
 		}
