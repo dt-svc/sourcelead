@@ -352,7 +352,11 @@
 			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId, 	   
 	   		    success: function(data) {
 	   		        var ownerId = data;
-	   		    	clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId);
+	   		    	
+	   		    	$("#spocDetailsId").removeAttr("onClick")
+	   		    	$("#spocDetailsId").attr("onclick","clientDetailsbySpocId('"+spocId+"', '"+ownerId+"', '"+spocUserId+"', '"+ownerId+"')");
+	   		    	clientDetailsbySpocId(spocId,ownerId,spocUserId,ownerId);
+	   		    	getVendorContactLists();
 	   		    }
 		 }); 
 	     	return true;
