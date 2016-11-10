@@ -85,8 +85,8 @@ public class RegistrationRestController {
 	@RequestMapping(value = "/companyRegistration" , method = RequestMethod.POST)
 	   public String addCompanyRegistration(
 				@RequestParam(value="json", required=false) String json ,
-				@RequestParam(value="modules", required=false) String modules ,
-				@RequestParam(value="subModules", required=false) String subModules ,
+				@RequestParam(value="modulesList", required=false) String modulesList ,
+				@RequestParam(value="submodulesList", required=false) String submodulesList ,
 	   			HttpServletRequest request) {
 		try {
 
@@ -94,13 +94,18 @@ public class RegistrationRestController {
 				Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 				Registration registration =  gson.fromJson(json1,Registration.class);
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			    String[] registredModules =  modules.split(",");
-			    if("Recruiting".equalsIgnoreCase(registredModules[0])){
-			    	if(null == subModules || "".equalsIgnoreCase(subModules)){
-			    		return "Invalid Sub Modules";
+			    String[] registredModules =  modulesList.split(",");
+			    
+			    for(int i=0; i<registredModules.length; i++){
+			    	if(Long.parseLong(registredModules[i]) == 1l){
+			    		if(isNullOrEmpty(submodulesList)){
+			    			return "Invalid Sub Modules";
+			    		}
+			    		
 			    	}
 			    }
-				registrationService.addRegistration(registration,user,modules,subModules);
+			   
+				registrationService.addRegistration(registration,user,modulesList,submodulesList);
 				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", registration.getCompanyName()+" Org has created sucessfully.");
 			} catch (Exception e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));

@@ -216,36 +216,30 @@ public class RegistrationServiceImpl implements RegistrationService{
 		org.setOrgType("Company");
 		org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 		org.setStatus(Status.ACTIVE);
+		String orgModules = "";
+		
+		
+		if(!isNullOrEmpty(subModules)){
+			String[] registeredSubModules =  subModules.split(",");
+			for(int i=0; i<registeredSubModules.length; i++){
+					orgModules = orgModules+registeredSubModules[i]+",";
+			}
+		}
 		
 		if(!isNullOrEmpty(modules)){
 			String[] registeredModules =  modules.split(",");
-			if(registeredModules.length == 2){
-				org.setTimeSheet(Status.Y);
-			}
-			else if(registeredModules[0].equalsIgnoreCase("TimeSheet")){
-					org.setTimeSheet(Status.Y);
-					org.setAts(Status.N);
-					org.setVms(Status.N);
-			}else{
-				org.setTimeSheet(Status.N);
-			}
-		}
-		
-		if(!isNullOrEmpty(subModules)){
-			String[] recruitingModules =  subModules.split(",");
-			if(recruitingModules.length == 2){
-				org.setAts(Status.Y);
-				org.setVms(Status.Y);
-			}else{
-				if(recruitingModules[0].equalsIgnoreCase("ATS")){
-					org.setAts(Status.Y);
-					org.setVms(Status.N);
-				}else{
-					org.setVms(Status.Y);
-					org.setAts(Status.N);
+			for(int i=0; i<registeredModules.length; i++){
+				if(Long.parseLong(registeredModules[i]) != 1L){
+					orgModules = orgModules+registeredModules[i]+",";
 				}
 			}
 		}
+		
+		
+		orgModules = orgModules.substring(0, orgModules.length()-1);
+		org.setModulesId(orgModules);
+		
+		
 		org.setCreatedDate(new Date());
 		return org;
 	}

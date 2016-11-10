@@ -29,8 +29,7 @@ public class Modules {
 	
 	
 	@Column(name = "MODULE_NAME")
-	@Enumerated(EnumType.STRING)
-	private Status moduleName;
+	private String moduleName;
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -39,7 +38,7 @@ public class Modules {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PARENT_MODULE_ID")
-	private Modules modules;
+	private Modules parentModule;
 	
 	@Column(name = "IS_ENROLED")
 	@Enumerated(EnumType.STRING)
@@ -56,11 +55,12 @@ public class Modules {
 		this.id = id;
 	}
 
-	public Status getModuleName() {
+
+	public String getModuleName() {
 		return moduleName;
 	}
 
-	public void setModuleName(Status moduleName) {
+	public void setModuleName(String moduleName) {
 		this.moduleName = moduleName;
 	}
 
@@ -80,13 +80,14 @@ public class Modules {
 		this.isEnrolled = isEnrolled;
 	}
 
-	public Modules getModules() {
-		return modules;
+	public Modules getParentModule() {
+		return parentModule;
 	}
 
-	public void setModules(Modules modules) {
-		this.modules = modules;
+	public void setParentModule(Modules parentModule) {
+		this.parentModule = parentModule;
 	}
+
 	
 	
 	

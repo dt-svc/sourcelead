@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ModulesDao;
+import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.service.ModulesService;
 
@@ -29,6 +30,18 @@ private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.cla
 	@Override
 	public List<Long> getOrgRegisteredModules(Org org) throws Exception {
 		return modulesDao.getOrgRegisteredModules(org);
+	}
+
+
+	@Override
+	public List<Modules> getSourceLeadModules() throws Exception {
+		return modulesDao.getSourceLeadModules();
+	}
+
+
+	@Override
+	public List<Modules> getRequirementSubModules() throws Exception {
+		return modulesDao.getRequirementSubModules();
 	}
 
 }

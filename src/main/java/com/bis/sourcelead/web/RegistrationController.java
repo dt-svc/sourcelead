@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.ActionRoles;
+import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -55,6 +56,9 @@ public class RegistrationController {
 	 @Autowired
 	 private NotificationsService notificationsService;
 	 
+	 @Autowired
+	 private ModulesService moduleService;
+	 
 	 
 	 @Autowired
 	 CommonUtil commonUtil;
@@ -83,6 +87,18 @@ public class RegistrationController {
 	 @RequestMapping(value = "/enrollOrg")
 		public ModelAndView registration() {
 			ModelAndView model = new ModelAndView();
+			List<Modules> modulesList = null;
+			List<Modules> requirementSubModulesList = null;
+			try {
+				 modulesList = modulesService.getSourceLeadModules();
+				 model.addObject("modulesList", modulesList);
+				 
+				 requirementSubModulesList = moduleService.getRequirementSubModules();
+				 model.addObject("requirementSubModulesList", requirementSubModulesList);
+				 
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			
 			model.setViewName("registration/enrollOrg");
 

@@ -103,6 +103,10 @@ public class Org {
     @Fetch(FetchMode.SELECT)
     private Set<OrgLocations> orgLocationsList;
 	
+	@Column(name = "MODULES_ID")
+	@Type(type="text")
+	private String modulesId;
+	
 	@Transient
 	private String email;
 	
@@ -292,6 +296,14 @@ public class Org {
 
 	public void setIsMailSent(Status isMailSent) {
 		this.isMailSent = isMailSent;
+	}
+
+	public String getModulesId() {
+		return modulesId;
+	}
+
+	public void setModulesId(String modulesId) {
+		this.modulesId = modulesId;
 	}
 
 	

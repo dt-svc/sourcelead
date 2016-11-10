@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -11,7 +12,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ModulesDao;
+import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
 
 @Repository
@@ -62,29 +66,40 @@ public class ModulesDaoImpl implements ModulesDao{
 		logger.debug("In ModulesDaoImpl class getOrgRegisteredModules method");
 		Session session = this.sessionFactory.getCurrentSession();
 		
-		String subQuery = "";
-		
-		if(org.getAts().equals(Status.Y)){
-			subQuery = "modules.moduleName = 'ATS' OR ";
-		}
-		
-		if(org.getVms().equals(Status.Y)){
-			subQuery = subQuery+"modules.moduleName = 'VMS' OR ";
-		}
-		
-		if(org.getTimeSheet().equals(Status.Y)){
-			subQuery = subQuery+"modules.moduleName = 'TIMESHEET' OR";
-		}
-		
-		subQuery = subQuery.substring(0, subQuery.length()-3);
-		
-		String query = "select modules.id from Modules modules where "+subQuery+" ";
-		List<Long> modulesIdList =  session.createQuery(query.toString())
+		List<Long> modulesList = new ArrayList<Long>();
+		for (String s : org.getModulesId().split(",")){
+			modulesList.add(Long.parseLong(s));
+		 }	
+			 
+		String query = "select modules.id from Modules modules where modules.id IN (:modulesList) ";
+		List<Long> modulesIdList =  session.createQuery(query.toString()).setParameterList("modulesList", modulesList)
 									.setCacheable(true).list();
 		
 		return modulesIdList;
 
 	
+	}
+
+	@Override
+	@Transactional
+	public List<Modules> getSourceLeadModules() throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from Modules modules where modules.parentModule.id IS NULL ";
+	    List<Modules> modulesList = session.createQuery(query.toString()).setCacheable(true).list();
+      
+	    return modulesList;
+	}
+
+	@Override
+	@Transactional
+	public List<Modules> getRequirementSubModules() throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from Modules modules where modules.parentModule.id = '1' ";
+	    List<Modules> modulesList = session.createQuery(query.toString()).setCacheable(true).list();
+      
+	    return modulesList;
 	}
 
 }
