@@ -184,30 +184,20 @@ public class RolesDaoImpl implements RolesDao{
 		
 		
         Session session = this.sessionFactory.getCurrentSession();
+        
+        String subQuery = "";
 		
-		String subQuery = "";
+        List<Long> modulesList = new ArrayList<Long>();
+		for (String s : org.getModulesId().split(",")){
+			modulesList.add(Long.parseLong(s));
+		 }	
 		
-		if(org.getAts().equals(Status.Y)){
-			subQuery = "modules.moduleName = 'ATS' OR ";
+		if("slead".equalsIgnoreCase(org.getOrgCode())){
+			subQuery = "and roles.roleName != 'ROLE_SOURCELEAD_ADMIN' ";
 		}
 		
-		if(org.getVms().equals(Status.Y)){
-			subQuery = subQuery+"modules.moduleName = 'VMS' OR ";
-		}
-		
-		if(org.getTimeSheet().equals(Status.Y)){
-			subQuery = subQuery+"modules.moduleName = 'TIMESHEET' OR";
-		}
-		
-		subQuery = subQuery.substring(0, subQuery.length()-3);
-		
-		String query1 = "select modules.id from Modules modules where "+subQuery+" ";
-		List<Long> modulesIdList =  session.createQuery(query1.toString())
-									.setCacheable(true).list();
-		
-		
-		String query = "from Roles roles where roles.actionId IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId) and roles.orgLocations.id = :orgLocationId ) ";
-	    List<Roles> rolesList = session.createQuery(query.toString()).setParameterList("modulesId", modulesIdList).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		String query = "from Roles roles where roles.actionId IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId) and roles.orgLocations.id = :orgLocationId ) "+subQuery+" ";
+	    List<Roles> rolesList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
       
 		
 		
