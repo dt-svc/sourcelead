@@ -147,7 +147,6 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setUpdatedBy(user.getUserCode());
 				requirement.setUpdatedDate(commonUtil.currentDate());
 			}else{
-				
 				requirement.setCreatedDate(commonUtil.currentDate());
 				requirement.setCreatedBy(user.getUserCode());
 				requirement.setUpdatedBy(user.getUserCode());
@@ -481,10 +480,7 @@ public class RequirementServiceImpl implements RequirementService {
 						
 						requirementAssignTo.setRequirementId(requirement);
 						
-						requirementAssignTo.setCreatedDate(commonUtil.currentDate());
-						requirementAssignTo.setCreatedBy(user.getUserCode());
-						requirementAssignTo.setUpdatedBy(user.getUserCode());
-						requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
+						
 						requirementAssignTo.setTeamId(team);
 						requirementAssignTo.setRoleId(rolesService.getRolesByDisplayName(assUser.getUserType()));
 						requirementAssignToList.add(requirementAssignTo);
