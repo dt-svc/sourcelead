@@ -16,8 +16,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.SecurityConfig;
+import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
@@ -107,7 +108,7 @@ public class OrgSpocServiceTest {
 		String responderType = "";
 		
 		
-		orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId,responderType);
+		orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId,responderType,new Org());
 	}
 	
 	@Test

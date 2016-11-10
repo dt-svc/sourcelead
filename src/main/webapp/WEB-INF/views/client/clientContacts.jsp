@@ -505,7 +505,7 @@ function closePopupDiv(){
 			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId,
+						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&responderType=Client",
 						success : function(result) {
 							 $("#popUpDivContact").removeClass("edit-details-active");
 							 clientContactList(orgRelationId,clientLocationId);
