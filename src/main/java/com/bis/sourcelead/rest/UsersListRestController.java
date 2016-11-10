@@ -228,8 +228,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					UserRole existinguserRole = userRoleService.getNotPrimaryUser(userId);
 					if(existinguserRole != null){
 						existinguserRole.setIsPrimary(1);
+						userRoleService.addUserRole(existinguserRole);
 					}
-					userRoleService.addUserRole(existinguserRole);
+					
 				}
 			
 				return "success";
