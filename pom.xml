@@ -48,11 +48,11 @@
 			<version>${springframework.version}</version>
 		</dependency>
 		<dependency>
-    <groupId>org.apache.commons</groupId>
-    <artifactId>commons-lang3</artifactId>
-    <version>3.5</version>
-</dependency>
-		
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.5</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
@@ -112,6 +112,18 @@
 		</dependency>
 
 		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-jgroupsreplication</artifactId>
+			<version>1.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jgroups</groupId>
+			<artifactId>jgroups</artifactId>
+			<version>3.6.11.Final</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-c3p0</artifactId>
 			<version>${hibernate.version}</version>
@@ -143,7 +155,7 @@
 			<artifactId>hibernate-validator</artifactId>
 			<version>5.1.3.Final</version>
 		</dependency>
-		
+
 		<!-- iText PDF -->
 		<dependency>
 			<groupId>com.itextpdf</groupId>
@@ -275,20 +287,20 @@
 			<artifactId>cucumber-jruby</artifactId>
 			<version>1.0.13</version>
 		</dependency>
-		
-		<!-- https://mvnrepository.com/artifact/org.apache.tika/tika-app -->
-	    <dependency>
-		    <groupId>org.apache.tika</groupId>
-		    <artifactId>tika-app</artifactId>
-		    <version>1.12</version>
-	    </dependency>
 
-		
+		<!-- https://mvnrepository.com/artifact/org.apache.tika/tika-app -->
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-app</artifactId>
+			<version>1.12</version>
+		</dependency>
+
+
 		<!-- https://mvnrepository.com/artifact/com.googlecode.libphonenumber/libphonenumber -->
 		<dependency>
-		    <groupId>com.googlecode.libphonenumber</groupId>
-		    <artifactId>libphonenumber</artifactId>
-		    <version>7.7.2</version>
+			<groupId>com.googlecode.libphonenumber</groupId>
+			<artifactId>libphonenumber</artifactId>
+			<version>7.7.2</version>
 		</dependency>
 
 		<!-- The following are Spring Testing dependencies. -->
@@ -396,7 +408,7 @@
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
 			<version>3.10-FINAL</version>
-		</dependency> 
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
 		<dependency>
@@ -411,255 +423,245 @@
 			<artifactId>commons-io</artifactId>
 			<version>1.3.2</version>
 		</dependency>
-		
-			<!-- For security tablib in jsp -->
 
-	<dependency>
-	    <groupId>org.springframework.security</groupId>
-	    <artifactId>spring-security-taglibs</artifactId>
-	    <version>${spring-security.version}</version>
-    </dependency> 
-		
+		<!-- For security tablib in jsp -->
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+
 		<!-- to get time zones -->
-        <dependency>
-            <groupId>com.ibm.icu</groupId>
-            <artifactId>icu4j</artifactId>
-            <version>4.6</version>
-       </dependency>
-       <!-- to get time zones -->
+		<dependency>
+			<groupId>com.ibm.icu</groupId>
+			<artifactId>icu4j</artifactId>
+			<version>4.6</version>
+		</dependency>
+		<!-- to get time zones -->
 
-    
-      <!-- Gate App Implementation -->
-		    <!-- https://mvnrepository.com/artifact/org.apache.ant/ant -->
-			<dependency>
-			    <groupId>org.apache.ant</groupId>
-			    <artifactId>ant</artifactId>
-			    <version>1.9.3</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.apache.ant/ant-launcher -->
-			<dependency>
-			    <groupId>org.apache.ant</groupId>
-			    <artifactId>ant-launcher</artifactId>
-			    <version>1.9.3</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/aopalliance/aopalliance -->
-			<dependency>
-			    <groupId>aopalliance</groupId>
-			    <artifactId>aopalliance</artifactId>
-			    <version>1.0</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.apache.james/apache-mime4j-core -->
-			<dependency>
-			    <groupId>org.apache.james</groupId>
-			    <artifactId>apache-mime4j-core</artifactId>
-			    <version>0.7.2</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.apache.james/apache-mime4j-dom -->
-			<dependency>
-			    <groupId>org.apache.james</groupId>
-			    <artifactId>apache-mime4j-dom</artifactId>
-			    <version>0.7.2</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15 -->
-			<dependency>
-			    <groupId>org.bouncycastle</groupId>
-			    <artifactId>bcprov-jdk15</artifactId>
-			    <version>1.45</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
-			<dependency>
-			    <groupId>commons-codec</groupId>
-			    <artifactId>commons-codec</artifactId>
-			    <version>1.5</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-compress -->
-			<dependency>
-			    <groupId>org.apache.commons</groupId>
-			    <artifactId>commons-compress</artifactId>
-			    <version>1.5</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-			<dependency>
-			    <groupId>commons-io</groupId>
-			    <artifactId>commons-io</artifactId>
-			    <version>2.4</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
-			<dependency>
-			    <groupId>commons-lang</groupId>
-			    <artifactId>commons-lang</artifactId>
-			    <version>2.6</version>
-			</dependency>
+
+		<!-- Gate App Implementation -->
+		<!-- https://mvnrepository.com/artifact/org.apache.ant/ant -->
+		<dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant</artifactId>
+			<version>1.9.3</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.ant/ant-launcher -->
+		<dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant-launcher</artifactId>
+			<version>1.9.3</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/aopalliance/aopalliance -->
+		<dependency>
+			<groupId>aopalliance</groupId>
+			<artifactId>aopalliance</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.james/apache-mime4j-core -->
+		<dependency>
+			<groupId>org.apache.james</groupId>
+			<artifactId>apache-mime4j-core</artifactId>
+			<version>0.7.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.james/apache-mime4j-dom -->
+		<dependency>
+			<groupId>org.apache.james</groupId>
+			<artifactId>apache-mime4j-dom</artifactId>
+			<version>0.7.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15 -->
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15</artifactId>
+			<version>1.45</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.5</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-compress -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-compress</artifactId>
+			<version>1.5</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
 		<!--https://mvnrepository.com/artifact/commons-logging/commons-logging -->
-			<!--<dependency>
-			    <groupId>commons-logging</groupId>
-			    <artifactId>commons-logging</artifactId>
-			    <version>1.1.3</version>
-			</dependency> -->
-			<!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
-			<dependency>
-			    <groupId>dom4j</groupId>
-			    <artifactId>dom4j</artifactId>
-			    <version>1.6.1</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.xhtmlrenderer/flying-saucer-core -->
-			<dependency>
-			    <groupId>org.xhtmlrenderer</groupId>
-			    <artifactId>flying-saucer-core</artifactId>
-			    <version>9.0.4</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/fontbox -->
-			<dependency>
-			    <groupId>org.apache.pdfbox</groupId>
-			    <artifactId>fontbox</artifactId>
-			    <version>1.8.4</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/uk.ac.gate/gate-asm -->
-			<dependency>
-			    <groupId>uk.ac.gate</groupId>
-			    <artifactId>gate-asm</artifactId>
-			    <version>3.1</version>
-			</dependency>
-			 <!-- https://mvnrepository.com/artifact/uk.ac.gate/gate-core -->
-			<dependency>
-			    <groupId>uk.ac.gate</groupId>
-			    <artifactId>gate-core</artifactId>
-			    <version>8.0</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/uk.ac.gate/gate-compiler-jdt -->
-			<dependency>
-			    <groupId>uk.ac.gate</groupId>
-			    <artifactId>gate-compiler-jdt</artifactId>
-			    <version>4.3.2-P20140317-1600</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest-core -->
-			<dependency>
-			    <groupId>org.hamcrest</groupId>
-			    <artifactId>hamcrest-core</artifactId>
-			    <version>1.3</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.apache.ivy/ivy -->
-			<dependency>
-			    <groupId>org.apache.ivy</groupId>
-			    <artifactId>ivy</artifactId>
-			    <version>2.3.0-rc1</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/gnu.getopt/java-getopt -->
-			<dependency>
-			    <groupId>gnu.getopt</groupId>
-			    <artifactId>java-getopt</artifactId>
-			    <version>1.0.13</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/jaxen/jaxen -->
-			<dependency>
-			    <groupId>jaxen</groupId>
-			    <artifactId>jaxen</artifactId>
-			    <version>1.1.6</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.jdom/jdom -->
-			<dependency>
-			    <groupId>org.jdom</groupId>
-			    <artifactId>jdom</artifactId>
-			    <version>1.1.3</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/jempbox -->
-			<dependency>
-			    <groupId>org.apache.pdfbox</groupId>
-			    <artifactId>jempbox</artifactId>
-			    <version>1.8.4</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/com.drewnoakes/metadata-extractor -->
-			<dependency>
-			    <groupId>com.drewnoakes</groupId>
-			    <artifactId>metadata-extractor</artifactId>
-			    <version>2.6.2</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/xerces/xercesImpl -->
-			<dependency>
-			    <groupId>xerces</groupId>
-			    <artifactId>xercesImpl</artifactId>
-			    <version>2.8.1</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/xml-apis/xml-apis -->
-			<dependency>
-			    <groupId>xml-apis</groupId>
-			    <artifactId>xml-apis</artifactId>
-			    <version>1.3.03</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/com.adobe.xmp/xmpcore -->
-			<dependency>
-			    <groupId>com.adobe.xmp</groupId>
-			    <artifactId>xmpcore</artifactId>
-			    <version>5.1.2</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/net.sourceforge.nekohtml/nekohtml -->
-			<dependency>
-			    <groupId>net.sourceforge.nekohtml</groupId>
-			    <artifactId>nekohtml</artifactId>
-			    <version>1.9.14</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
-			<dependency>
-			    <groupId>org.apache.pdfbox</groupId>
-			    <artifactId>pdfbox</artifactId>
-			    <version>1.8.4</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.codehaus.woodstox/stax2-api -->
-			<dependency>
-			    <groupId>org.codehaus.woodstox</groupId>
-			    <artifactId>stax2-api</artifactId>
-			    <version>3.1.1</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.codehaus.woodstox/woodstox-core-lgpl -->
-			<dependency>
-			    <groupId>org.codehaus.woodstox</groupId>
-			    <artifactId>woodstox-core-lgpl</artifactId>
-			    <version>4.2.0</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/xerces/xercesImpl -->
-			<dependency>
-			    <groupId>xerces</groupId>
-			    <artifactId>xercesImpl</artifactId>
-			    <version>2.9.1</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans -->
-			<dependency>
-			    <groupId>org.apache.xmlbeans</groupId>
-			    <artifactId>xmlbeans</artifactId>
-			    <version>2.3.0</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/xmlunit/xmlunit -->
-			<dependency>
-			    <groupId>xmlunit</groupId>
-			    <artifactId>xmlunit</artifactId>
-			    <version>1.5</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/xpp3/xpp3 -->
-			<dependency>
-			    <groupId>xpp3</groupId>
-			    <artifactId>xpp3</artifactId>
-			    <version>1.1.4c</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/com.thoughtworks.xstream/xstream -->
-			<dependency>
-			    <groupId>com.thoughtworks.xstream</groupId>
-			    <artifactId>xstream</artifactId>
-			    <version>1.4.7</version>
-			</dependency>
-	<!-- Gate App Implementation -->
+		<!--<dependency> <groupId>commons-logging</groupId> <artifactId>commons-logging</artifactId> 
+			<version>1.1.3</version> </dependency> -->
+		<!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.xhtmlrenderer/flying-saucer-core -->
+		<dependency>
+			<groupId>org.xhtmlrenderer</groupId>
+			<artifactId>flying-saucer-core</artifactId>
+			<version>9.0.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/fontbox -->
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>fontbox</artifactId>
+			<version>1.8.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/uk.ac.gate/gate-asm -->
+		<dependency>
+			<groupId>uk.ac.gate</groupId>
+			<artifactId>gate-asm</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/uk.ac.gate/gate-core -->
+		<dependency>
+			<groupId>uk.ac.gate</groupId>
+			<artifactId>gate-core</artifactId>
+			<version>8.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/uk.ac.gate/gate-compiler-jdt -->
+		<dependency>
+			<groupId>uk.ac.gate</groupId>
+			<artifactId>gate-compiler-jdt</artifactId>
+			<version>4.3.2-P20140317-1600</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest-core -->
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-core</artifactId>
+			<version>1.3</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.ivy/ivy -->
+		<dependency>
+			<groupId>org.apache.ivy</groupId>
+			<artifactId>ivy</artifactId>
+			<version>2.3.0-rc1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/gnu.getopt/java-getopt -->
+		<dependency>
+			<groupId>gnu.getopt</groupId>
+			<artifactId>java-getopt</artifactId>
+			<version>1.0.13</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/jaxen/jaxen -->
+		<dependency>
+			<groupId>jaxen</groupId>
+			<artifactId>jaxen</artifactId>
+			<version>1.1.6</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.jdom/jdom -->
+		<dependency>
+			<groupId>org.jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<version>1.1.3</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/jempbox -->
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>jempbox</artifactId>
+			<version>1.8.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.drewnoakes/metadata-extractor -->
+		<dependency>
+			<groupId>com.drewnoakes</groupId>
+			<artifactId>metadata-extractor</artifactId>
+			<version>2.6.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/xerces/xercesImpl -->
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.8.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/xml-apis/xml-apis -->
+		<dependency>
+			<groupId>xml-apis</groupId>
+			<artifactId>xml-apis</artifactId>
+			<version>1.3.03</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.adobe.xmp/xmpcore -->
+		<dependency>
+			<groupId>com.adobe.xmp</groupId>
+			<artifactId>xmpcore</artifactId>
+			<version>5.1.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/net.sourceforge.nekohtml/nekohtml -->
+		<dependency>
+			<groupId>net.sourceforge.nekohtml</groupId>
+			<artifactId>nekohtml</artifactId>
+			<version>1.9.14</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>1.8.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.codehaus.woodstox/stax2-api -->
+		<dependency>
+			<groupId>org.codehaus.woodstox</groupId>
+			<artifactId>stax2-api</artifactId>
+			<version>3.1.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.codehaus.woodstox/woodstox-core-lgpl -->
+		<dependency>
+			<groupId>org.codehaus.woodstox</groupId>
+			<artifactId>woodstox-core-lgpl</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/xerces/xercesImpl -->
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.9.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans -->
+		<dependency>
+			<groupId>org.apache.xmlbeans</groupId>
+			<artifactId>xmlbeans</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/xmlunit/xmlunit -->
+		<dependency>
+			<groupId>xmlunit</groupId>
+			<artifactId>xmlunit</artifactId>
+			<version>1.5</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/xpp3/xpp3 -->
+		<dependency>
+			<groupId>xpp3</groupId>
+			<artifactId>xpp3</artifactId>
+			<version>1.1.4c</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.thoughtworks.xstream/xstream -->
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.4.7</version>
+		</dependency>
+		<!-- Gate App Implementation -->
 
 	</dependencies>
 	<build>
-	
-		<!-- <resources>
-			<resource>
-				<directory>src/main/webapp/resources/images</directory>
-				<includes>
-					<include>borderpdf.pdf</include>
-				</includes>
-			</resource>
-		</resources>
-        -->
+
+		<!-- <resources> <resource> <directory>src/main/webapp/resources/images</directory> 
+			<includes> <include>borderpdf.pdf</include> </includes> </resource> </resources> -->
 		<finalName>sourcelead</finalName>
 		<plugins>
 			<plugin>
@@ -713,41 +715,42 @@
 				</configuration>
 			</plugin>
 
-         <plugin>
-			    <artifactId>maven-antrun-plugin</artifactId>
-			    <version>1.7</version>
-			    <executions>
-				<execution>
-				    <phase>install</phase>
-				    <configuration>
-				          <target>
-				              <copy file="${project.build.directory}/sourcelead.war" todir="/home/tomcat/webapps"/>
-				          </target>
-				    </configuration>
-				    <goals>
-				         <goal>run</goal>
-				    </goals>
-				</execution>
-			    </executions>
-			</plugin> 
-			
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<configuration>
+							<target>
+								<copy file="${project.build.directory}/sourcelead.war"
+									todir="/home/tomcat/webapps" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!-- For to create zip -->
 			<plugin>
-			    <artifactId>maven-assembly-plugin</artifactId>
+				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.5.3</version>
-				 <executions>
+				<executions>
 					<execution>
-					    <phase>install</phase>
-					    <configuration>
-					         <descriptors>
+						<phase>install</phase>
+						<configuration>
+							<descriptors>
 								<descriptor>zipConverter.xml</descriptor>
 							</descriptors>
-					    </configuration>
-					    <goals>
-					         <goal>assembly</goal>
-					    </goals>
+						</configuration>
+						<goals>
+							<goal>assembly</goal>
+						</goals>
 					</execution>
-			    </executions>
+				</executions>
 			</plugin>
 			<!-- For to create zip -->
 
