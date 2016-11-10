@@ -89,7 +89,7 @@
               <input type="file" name="uploadBtn" id="uploadBtn" class="hidden upload">
               </span> 
            </label>
-             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required" >
+             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validate_Space validatedoc " >
           </div>
           </div>
         </div>
