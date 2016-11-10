@@ -81,14 +81,14 @@ public class VendorRestController {
 			String ownersId = jsonObj.getString("owner");
 			ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]","");
 			String[] owners = ownersId.split(",");
-			for(int i=0 ;i<owners.length;i++ ){
+			/*for(int i=0 ;i<owners.length;i++ ){
 				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
-				/*OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(jsonObj.getString("email"), Long.parseLong(orgRelationId), ownerUser.getId());
+				OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(jsonObj.getString("email"), Long.parseLong(orgRelationId), ownerUser.getId());
 			     if(orgSpoc == null){*/
 			    	orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId,responderType);
 					SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg","Successfully you have created a client");
-			    /*}*/
-			} 
+			    /*}
+			} */
 		}
 		
 			return "vendorsList";
