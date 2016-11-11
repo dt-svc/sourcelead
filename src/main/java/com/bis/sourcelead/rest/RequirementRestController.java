@@ -303,10 +303,14 @@ public class RequirementRestController {
 		
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(Long.parseLong(orgRelationId), user.getId(),orgLocations.getId());
 		for (OrgSpoc orgSpoc : orgSpocsList) {
+			String ownerLastName = "";
+			if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getLastName() != null){
+				ownerLastName = orgSpoc.getOwnerUser().getLastName();
+			}
 			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
 			orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 			orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-			orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+			orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+ownerLastName);
 			orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
 			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
 		}
