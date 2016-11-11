@@ -9,6 +9,19 @@
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 
+<style type="text/css">
+.timesheet-content {
+background: #fff;
+min-height: 100px;
+clear:both;
+display: inline-block;
+width:100%;
+}
+.timesheet-content #example_filter {
+position: relative !important;
+top:0px !important;
+}
+</style>
 
 <script>
 	function predefineProfileImage(imageId,userId){
@@ -193,6 +206,7 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
            <div class="pull-right brud-crum"><a href="dashboard">Home</a> » TimeSheet List</div>
         </section>
         
+<div class="timesheet-content">
 <div class="timesheet_out">
 	<div class="timesheet_appr_wrap" >
 		<div class="timesheet_appr_wrap">
@@ -217,7 +231,7 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 	</div>
 	
 </div>
-</div>
+</div></div>
 		
 </section>
       

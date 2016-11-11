@@ -520,7 +520,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 							        	sb.append("<b class='proj_process'>"+submissionStatus+"</b>");
 							        	if(isSah == null ){
 							                String startDateStr = format.format(ts.getStartDate());
-							        		sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+ts.getId()+"\",\""+startDateStr+"\");' >withdraw</b>");
+							        		sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+ts.getId()+"\",\""+startDateStr+"\");' >Modify</b>");
 							        	}
 							        }
 							        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
@@ -640,7 +640,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								        	sb.append("<b class='proj_process'>"+submissionStatus+"</b>");
 								        	if(isSah == null ){
 								        		String startDateStr = format.format(ts.getStartDate());
-								        	    sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+ts.getId()+"\",\""+startDateStr+"\");' >withdraw</b>");
+								        	    sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+ts.getId()+"\",\""+startDateStr+"\");' >Modify</b>");
 								        	}
 								        }
 								        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
