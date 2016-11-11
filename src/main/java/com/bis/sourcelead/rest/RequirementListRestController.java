@@ -1,16 +1,23 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +29,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
@@ -364,4 +372,103 @@ public class RequirementListRestController {
 			return "success";
 		 }
 		 
+		 
+		 /**
+		  * @author Rajashekar
+		  * used fro export xls and pdf
+		  * @param status
+		  * @param clients
+		  * @param exportType
+		  * @param request
+		  * @return void
+		  * @throws Exception
+		  */
+		 @RequestMapping(value = "/getRequirementExportListByOrgLocationID")
+		 public void getRequirementExportListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+
+//			String resultJson;
+			Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
+			File file =null;
+			for(Requirement requirement : requirementList){
+				if(requirement.getClientId() != null){
+					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+						requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+						requirement.setClientContactName(requirement.getClientId().getResponderLocationId().getUser().getFirstName());
+						requirement.setClientContactEmail(requirement.getClientId().getResponderLocationId().getUser().getEmail());
+					}
+					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+						requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+						requirement.setClientContactName(requirement.getClientId().getLocationId().getUser().getFirstName());
+						requirement.setClientContactEmail(requirement.getClientId().getLocationId().getUser().getEmail());
+					}
+				}
+				if(requirement.getManagerUserId() != null){
+					String managerFirstName = "";
+					if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
+						managerFirstName = requirement.getManagerUserId().getFirstName();
+					}
+					String managerLastName = "";
+					if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
+						managerLastName = requirement.getManagerUserId().getLastName();
+					}
+					requirement.setManager(managerFirstName+" "+managerLastName);
+				}
+			}
+			
+			List<Requirement>  requirementList1 = new ArrayList<Requirement>();
+			String[] status1 = status.split(",");
+			if (status1[0] != null && status1[0].length() > 0) {
+				for (String stat : status1) {
+					for(Requirement requirement : requirementList){
+						if(stat.equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
+							if(requirement.getClientId() != null){
+								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+									requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+									requirement.setClientContactName(requirement.getClientId().getResponderLocationId().getUser().getFirstName());
+									requirement.setClientContactEmail(requirement.getClientId().getResponderLocationId().getUser().getEmail());
+								}
+								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+									requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+									requirement.setClientContactName(requirement.getClientId().getLocationId().getUser().getFirstName());
+									requirement.setClientContactEmail(requirement.getClientId().getLocationId().getUser().getEmail());
+								}
+							}
+							if(requirement.getManagerUserId() != null){
+								String managerFirstName = "";
+								if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
+									managerFirstName = requirement.getManagerUserId().getFirstName();
+								}
+								String managerLastName = "";
+								if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
+									managerLastName = requirement.getManagerUserId().getLastName();
+								}
+								requirement.setManager(managerFirstName+" "+managerLastName);
+							}
+							
+							requirementList1.add(requirement);
+						}
+					}
+					
+				}
+				 file = requirementService.getExportRequirementFile(requirementList1,org.getOrgName(),exportType);
+			}else{
+				 file = requirementService.getExportRequirementFile(requirementList,org.getOrgName(),exportType);
+			}
+			 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();	
+			
+		 }
 }

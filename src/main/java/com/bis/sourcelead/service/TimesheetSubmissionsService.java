@@ -31,7 +31,7 @@ public interface TimesheetSubmissionsService {
     
     public TimesheetSubmissions  getAllApprovalEmployeeTimesheetSubmissionsByEmployeeUserId(Date startDate,Date endDate, Long  userId,Long  empUserId,Long employeeId)throws Exception;
     
-    public HashMap<String,Date> getMinAndMaxTimesheetSubmissionDatesForEmployee(Long  userId) throws Exception;
+    public HashMap<String,Date> getMinAndMaxTimesheetSubmissionDatesForEmployee(Long  userId,Long locationsId) throws Exception;
     
     Date getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(Long userId,Date currentStartDate);
     
@@ -41,7 +41,7 @@ public interface TimesheetSubmissionsService {
     
     Date getRightNavStartDateForApproverBasedOnCurrentStartDate(Long  approverUserId,Long empUserId,Date currentStartDate);
     
-    public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissions(Long userId) throws Exception ;
+    public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissions(Long userId,Long locationsId) throws Exception ;
     
     public Collection<TimesheetSubmissions> getTimesheetSubmissionsByAproverId(Long projectMemberId,Long userId,Date startDate) throws Exception ;
     
@@ -73,9 +73,9 @@ public interface TimesheetSubmissionsService {
 	
 	public List<TimesheetSubmissions> getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId(Long memberId, Date terminatedDate) throws Exception;
 	
-	public String getArrovalSubmissions(String employeeId,User user)throws Exception;
+	public String getArrovalSubmissions(String employeeId,User user,Long locationsId)throws Exception;
 	
-	public String dynamicTimesheet(User user,String navigation,String startDate,Long memberId,Long projectMemberUserId, Long employeeId) throws Exception ;
+	public String dynamicTimesheet(User user,String navigation,String startDate,Long memberId,Long projectMemberUserId, Long employeeId,Long locationsId) throws Exception ;
 	
 	public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId) throws Exception;
 }

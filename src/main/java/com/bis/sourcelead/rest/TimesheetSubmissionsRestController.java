@@ -83,7 +83,8 @@ public class TimesheetSubmissionsRestController {
 	public @ResponseBody  String getArrovalSubmissions(HttpServletRequest request, @RequestParam(value="employeeId", required=false) String employeeId) throws Exception {
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String output = timesheetSubmissionsService.getArrovalSubmissions(employeeId, user);
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String output = timesheetSubmissionsService.getArrovalSubmissions(employeeId, user,orgLoc.getId());
 		return output;
          
 	}
@@ -94,7 +95,8 @@ public class TimesheetSubmissionsRestController {
 	public @ResponseBody String dynamicTimesheet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate,@RequestParam(value="memberId", required=false) Long memberId,@RequestParam(value="projectMemberUserId", required=false) Long projectMemberUserId,@RequestParam(value="employeeId", required=false) Long employeeId) throws Exception {
 		 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String output = timesheetSubmissionsService.dynamicTimesheet(user, navigation, startDate, memberId, projectMemberUserId, employeeId);
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String output = timesheetSubmissionsService.dynamicTimesheet(user, navigation, startDate, memberId, projectMemberUserId, employeeId,orgLoc.getId());
 		return output;
 	}
 	
