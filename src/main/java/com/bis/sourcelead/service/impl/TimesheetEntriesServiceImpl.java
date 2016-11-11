@@ -121,7 +121,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	 */
 	
 	@Override
-	public String newTimesheet(User user,String navigation, String startDate) throws Exception {
+	public String newTimesheet(User user,String navigation, String startDate,Long locationsId) throws Exception {
 		 
 		
 		/**
@@ -130,7 +130,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		  * (We are storing these records with employee assigned date at the time of assignment and when employee/particular approver logged in to system(if record not exist then only))
 	      *
 	    */
-		HashMap<String, Date> submissionDateRange =	timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(user.getId());
+		HashMap<String, Date> submissionDateRange =	timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(user.getId(),locationsId);
 		Date employeeStartDate = submissionDateRange.get("STARTDATE");
 		Date employeeEndDate = submissionDateRange.get("ENDDATE");
 		
@@ -397,7 +397,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						            	  }
 						              }
 						              else{
-						            	      sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
+						            	      sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
 						            	      sb.append("<option value=''>--select option--</option>");
 						            	      for(ProjectTasks pt   : ProjectTasksList){
 										    	       if(timesheetEntries.getProjectTask() != null && pt.getId().equals(timesheetEntries.getProjectTask().getId())){
@@ -551,7 +551,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              }
 						              else{
 						            	  
-                                          sb.append("     <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
+                                          sb.append("     <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
                                           sb.append("<option value=''>--select option--</option>");
                                           for(ProjectTasks pt   : ProjectTasksList){
 									              sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");   
@@ -946,7 +946,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              }
 						              else{
 						              
-							              sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' >");
+							              sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id'  class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
 									      
 									      for(ProjectTasks pt   : ProjectTasksList){
 									    	   if(timesheetEntries.getProjectTask() != null && pt.getId().equals(timesheetEntries.getProjectTask().getId())){
@@ -1060,7 +1060,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				              sb.append("       <tr id='timesheetRow"+rowCount+"submission"+ts.getId()+"'>");
 				              sb.append("                 <td>");
 				              sb.append("                      <div> ");
-				              sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' >");
+				              sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
 						      
 						      for(ProjectTasks pt   : ProjectTasksList){
 						              sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");   
@@ -1400,7 +1400,11 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		                               MultipartFile  multiFile = (MultipartFile)files.get(a+"docFile");
 		                               tsd.setDocFile(multiFile.getBytes());
 		                               tsd.setFileName(multiFile.getOriginalFilename());
-		                               tsd.setFileContentType(multiFile.getContentType());
+		                               
+		                               if(multiFile.getContentType()!=null){
+		                            	   tsd.setFileContentType(multiFile.getContentType());
+		                               }
+		                              
 		                               
 		                               tsd.setStatus(Constants.CANDIDATE_ACTIVE);
 		                               tsd.setCreatedDate(commonUtil.currentDate());

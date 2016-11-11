@@ -256,8 +256,8 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 	padding:0px 0px 8px 0px; display:inline-block; width:100%;
     }
 .timesheet_week_comm span input {
-	width:50%; display:inline-block; background-color:#367fa9; height:35px; border:1px solid #1f6791; padding:5px 5px;
-	border-radius:2px; color:#fff;
+	width:85%; display:inline-block; background-color:#367fa9; height:35px; border:1px solid #1f6791; padding:5px 5px;
+	border-radius:2px; color:#fff; margin:10px 0 0 0;
     }
 .timesheet_week_comm span i {
 	display:inline-block; font-size:20px; padding:0px 0px 0px 10px; color:#454545; cursor:pointer;
