@@ -699,15 +699,30 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			
 			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty() ){
 			TimesheetSubmissions tsFirst = timesheetSubmissionsList.iterator().next();
-			if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
-				sb.append("<div class='commentTime'>");
-				sb.append("<textarea  name='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
-				sb.append("</div>");
+			
+			if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
+					if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
+						sb.append("<div class='commentTime'>");
+						sb.append("<textarea  name='weekComment'  id='weekComment' readonly='readonly' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+						sb.append("</div>");
+					}else{
+						sb.append("<div class='commentTime'>");
+						sb.append("<textarea   name='weekComment' id='weekComment' readonly='readonly' placeholder='comments here...'></textarea>");
+						sb.append("</div>");
+					}
 			}else{
-				sb.append("<div class='commentTime'>");
-				sb.append("<textarea   name='weekComment' placeholder='comments here...'></textarea>");
-				sb.append("</div>");
+					if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
+						sb.append("<div class='commentTime'>");
+						sb.append("<textarea  name='weekComment'  id='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+						sb.append("</div>");
+					}else{
+						sb.append("<div class='commentTime'>");
+						sb.append("<textarea   name='weekComment' id='weekComment' placeholder='comments here...'></textarea>");
+						sb.append("</div>");
+					}
 			}
+			
+			
 			
 				//display multiple attachments
 				StringBuilder documentBuffer = new StringBuilder();	
