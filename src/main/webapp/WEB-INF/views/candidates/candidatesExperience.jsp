@@ -645,18 +645,30 @@ function employeePagination(){
 		
 		var currentposition = document.getElementById("isCurrentPositionEdit").checked;
 		if (currentposition) {
-			$("#isCurrentPositionEdit" ).val( 'Y' );
+			$("#urrentPositionEdit" ).val( 'Y' );
 			document.getElementById("endDateEditDiv").style.display = 'none';
 			$('#endYearEdit').removeAttr('data-validation');
 			$('#endMonthEdit').removeAttr('data-validation');
 		}else {
+			
 			document.getElementById("endDateEditDiv").style.display = '';
 			$("#endYearEdit").attr("data-validation", "required");
 			$("#endMonthEdit").attr("data-validation", "required");
-			var exisitngEndYear = document.getElementById("exisitngEndYear").value;
-			if(exisitngEndYear == null || exisitngEndYear == '' || exisitngEndYear =='undefined'){
+			
+			 var exisitngEndYear;
+			 if ($('#exisitngEndYear').length)
+			 {
+				 exisitngEndYear = document.getElementById("exisitngEndYear").value; 
+			 }
+			 else
+			 {
+				 exisitngEndYear = '';
+				 $("#endYearEdit" ).val( '' );
+			 }
+			 
+			/* if(exisitngEndYear == null || exisitngEndYear == '' || exisitngEndYear =='undefined'){
 				$("#endYearEdit" ).val( '' );
-			}
+			} */
 		}
 
 	}

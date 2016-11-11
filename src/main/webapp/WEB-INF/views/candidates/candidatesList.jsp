@@ -127,18 +127,18 @@
 	                     }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
+	                     $("#noCandidates").val('');
 	                     $("#candidateList").append(result);
 	                     cpagination(); 
 			    	} 
                  }else{
                 	 $("#candidateList").removeAttr("style");
   	    	         var result ="";
-		    	    
 					 result = result+"			<div class='blank-pages'>";
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 					 result = result+"			        <p>No Candidates Found</p>";
 					 result = result+"			 </div>";
-					noCandidateFound();
+					$("#noCandidates").val("nocandidate");
 					$("#candidateList").empty();
 				    $("#candidateList").append(result); 
                  }
@@ -148,12 +148,6 @@
   } 
 </script>
 
-<script>
-function noCandidateFound(){
-	$("#noCandidates").val("nocandidate");
-}
-
-</script>
 <%-- 
      @author : sarath kumar.
      this script is for prepare pagination to candidateList.
@@ -230,16 +224,16 @@ function clientSideBar(candidateId){
 	                	
 	                	 
 	                	 result = result+'<form id="candidate_form" name="candidate_form" method="post" >';
-			             result = result+'  <div class="profile_details clearfix" style="margin-bottom:20px;">';
+			             result = result+'  <div class="profile_details clearfix mb">';
 			             result = result+'               <div class="col-md-6">';
 			             result = result+'                   <div class="media">';
 			             
 			             result = result+'<div class="col-xs-12 col-sm-5 col-md-5">';
 			             result = result+'<div id="candidateImageId">';
-			             result = result+'<div class="well text-center clearfix">';
+			             result = result+'<div class="well well-sm text-center clearfix">';
 						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
 						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
-						 result = result+'  <div class="btn-group uploadfile">';
+						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
 						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
 						 result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
@@ -257,8 +251,8 @@ function clientSideBar(candidateId){
 						 result = result+'  </div>'; */
 						 result = result+'  </div>';
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not support</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
 						 result = result+' </div>';
 						 result = result+' </div>';
 						 result = result+'</form>';
@@ -325,17 +319,62 @@ function clientSideBar(candidateId){
 			                                                  }else{
 			             result = result+'                   <li><i class="fa fa-location-arrow"></i>----</li>';                                  	  
 			                                                  }
-			                                                  if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
-			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.currentRate+'/Per Hour - Current Rate / Salary</li>';
-			                                                  }else{
-			             result = result+'                   <li><i class="fa fa-rupee"></i>----</li>';                                    
-			                                                  }
-			                                                  if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
-			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.expectedRate+'/Per Hour - Expected Rate / Salary</li>';
-			                                                  }else{
-			             result = result+'                   <li><i class="fa fa-rupee"></i>----</li>';                                  	  
-			                                                  }
+			             result = result+'                   <li><i class="fa fa-rupee"></i><b>Current Rate:</b>  ';
+			             
+		             	 if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
+			             	result = result+'                    '+json.currentRate+'/Per Hour';
+			             }else{
+			             	result = result+'                     ---- ';                                    
+			             }
+		             	 result = result+'				     <b>Expected:</b> ';
+			             if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
+			             	result = result+'                    '+json.expectedRate+'/Per Hour';
+			             }else{
+			             	result = result+'                     ----';                                  	  
+			             }
+			             result = result+'					 </li>'; 
+			             
 			             result = result+'                 </ul>';
+			            /* New comments div creation Nov 8th, 2016 */
+			            
+			            result = result+'<div class="comments-div clearfix">';
+			            result = result+'    <div class="commentsimg">';
+			            result = result+'    <i class="fa fa-comments"></i>';
+			            result = result+'        <div class="commentsimg-inner">';
+			            
+			            result = result+'        	<img src="resources/images/userprofile-img.png" alt="User Comment" title="User Comment">';
+			            result = result+'        </div>';
+			            result = result+'    </div>';
+			            result = result+'     <div class="comments-content">';
+			            result = result+'         <div class="pull-left">';
+			            result = result+'         <p class="comment-by">';
+			            result = result+'            By <span class="text-danger">Manikanth AnanthKumar Satyanarayana</span>';
+			            result = result+'            <span class="small">(10/10/2016 at 12:10pm)</span></p>';
+			            result = result+'         <p class="comment-text">It is a long established fact that a reader will be distracted';
+			            result = result+'            by the readable content of a page when looking atIt is a long established fact that a reader will be distracted';
+			            result = result+'            by the readable content of a page when looking at</p>';
+			            result = result+'         </div>';
+			            result = result+'         <div class="pull-right cmt-button">';
+			            result = result+'          <span class="comments-button">';
+			            
+			            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+')">';
+			            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
+			            result = result+'            </button>';
+			            result = result+'            <div class="add-comment">';
+			            
+			   
+			            
+			            
+			            result = result+'            </div>';
+			            result = result+'          </span>';
+			            result = result+'          <a href="javascript:void(0)" class="comments-view">View more <span class="label label-warning">4</span></a>';
+			 			result = result+'		</div>';
+			            result = result+'     </div>';
+			            result = result+'</div>';
+			 		    /* New comments div creation Nov 8th, 2016 */
+			             
+			             
+			             
 			             result = result+'               </div>';
 			             result = result+'			</div>';
 			             result = result+'   <div class="proj_close"></div>';
@@ -906,9 +945,88 @@ function exportToExcel(){
          $("#canDiv").removeAttr("onClick");
      }
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"exportType=xls";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&exportType=xls";	
 	  }
 }
+</script>
+
+<script>
+function showComment(candidateId){
+	var result = "";
+		result = result+'	        <form role="form" id="candidateComments_form" name="candidateComments_form" method="post">';
+	    result = result+'              <textarea rows="1" class="form-control clearfix mb10" placeholder="Comments" id="comment" name="comment" data-validation="required validate_Space validate_Description validate_length length2-500" field-name="Comment"></textarea>';
+	    result = result+'              <span class="clearfix pull-right">';
+	    result = result+'              		<input type="button" id="submit_comment" value="Add" class="btn btn-sm btn-success" onClick="addComment('+candidateId+')">';
+	    result = result+'              		<input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="closeComment()">';
+	    result = result+'              </span>';
+		result = result+'	        </form>';
+	$('.add-comment').empty();
+	$('.add-comment').append(result);
+}
+function closeComment(){
+	$('.add-comment').empty();
+}
+</script>
+
+
+<%-- 
+     @author : Venkat Kesav
+     this script is for saving Comment
+     1.usage     : onclick
+     2.parameter : candidateId.
+     3.ajax url implementation in CandidateResumeRestController.
+--%>
+<script type="text/javascript">
+	function addComment(candidateId){
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			        borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+		         }; 
+			 if ($('#candidateComments_form').validate(false, validationSettings)){
+				var frm = $('#candidateComments_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, "");
+				var form = $('#candidateComments_form')[0];
+	      		var formData = new FormData(form); 
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#submit_comment").attr("disabled", "disabled");
+         		$("#submit_comment" ).addClass('button').val('Processing..');
+				//It will escape all the special characters
+		        var jsonData = encodeURIComponent(con);
+				$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/saveCandidateComment?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId,
+						success : function(result) {
+							 /* if( result.indexOf('Sign In') >= 0){
+					    		location.replace(sourceleadUrl);
+					    	 }
+		            		 else if (result.indexOf('exception') >= 0) {
+		            			 location.replace(sourceleadUrl+"/errorPage");
+		            		 }
+		            		 else{
+						 		$("#popUpDivResume").removeClass("edit-details-active");
+						 		candidateResumesList(candidateId);
+		            		 } */
+						},
+					});
+					$('.add-comment').toggle(200);
+					return true;
+			 }else{ 
+					return false;
+			 } 
+		}
+		$('body').on('blur', '#candidateComments_form', function() {
+		$("#candidateComments_form").showHelpOnFocus();
+		$("#candidateComments_form").validateOnBlur(false, validationSettings);
+	});
 </script>
     
 <jsp:include page="../masterFooter.jsp" />
