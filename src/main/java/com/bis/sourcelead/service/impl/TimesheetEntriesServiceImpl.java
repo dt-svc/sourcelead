@@ -738,7 +738,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						documentBuffer.append("<span>"); 
 						documentBuffer.append("<table class='timesheetAttachment' id='attachmentTable' cellpadding='0' cellspacing='0'>");
 								documentBuffer.append("<tr id='divAttachmentTsRow0'>");
-								documentBuffer.append("<td><input type='file' name='0docFile' id='0docFile'><i class='fa fa-plus' onClick='addAttachment()'></i></td> ");           
+								documentBuffer.append("<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ");           
 								documentBuffer.append("</tr>");
 						documentBuffer.append("</table>");
 						documentBuffer.append("</span>");
@@ -1269,7 +1269,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				documentBuffer.append("<span>"); 
 				documentBuffer.append("<table class='timesheetAttachment' id='attachmentTable' cellpadding='0' cellspacing='0'>");
 						documentBuffer.append("<tr id='divAttachmentTsRow0'>");
-						documentBuffer.append("<td><input type='file' name='0docFile' id='0docFile'><i class='fa fa-plus' onClick='addAttachment()'></i></td> ");           
+						documentBuffer.append("<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' class='timesheetAttachmentValidation' ><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ");           
 						documentBuffer.append("</tr>");
 				documentBuffer.append("</table>");
 				documentBuffer.append("</span>");

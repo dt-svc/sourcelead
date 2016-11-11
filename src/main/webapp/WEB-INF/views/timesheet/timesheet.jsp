@@ -89,8 +89,10 @@
 	</div>
 	</div>  
 	<div id="divAttachmentTd1" style="display: none; float: left;">
-	  		<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile'> 
-	  		<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
+			<div id='REPLACEROWIDdocFileuploadFileGroup'>
+	  			<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation"> 
+	  			<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
+	  		</div>
     </div>
 
 </form>   
@@ -108,6 +110,8 @@ $(document).ready(function() {
 	dynamicTimesheet(navigation,startdate);  
 });
 </script>
+
+
 
 <script type="text/javascript">
 function dynamicTimesheet(navigation , startDate){ 
@@ -129,6 +133,9 @@ function dynamicTimesheet(navigation , startDate){
 							       $("#dynamic").append(data);
 							       maskme();  
 							       $("html").trigger('click');
+							       
+							       timesheetAttachmentValidationFun();
+						       
 				    	       }else{
 				    	    	    $("#dynamic").removeAttr("style");
 				    	    	    var result ="";
@@ -153,6 +160,23 @@ function dynamicTimesheet(navigation , startDate){
 
 <!-- this script is for timesheet screen  above -->   
 
+<!-- this script is for validate size of attachments -->
+<script type="text/javascript">
+function timesheetAttachmentValidationFun(){
+		       var deleteLink = document.querySelectorAll('.timesheetAttachmentValidation');
+		       for (var i = 0; i < deleteLink.length; i++) {
+		           deleteLink[i].addEventListener('change', function(event) {
+		        	     	var attach_id = this.id;
+		        	     	var size = $('#'+attach_id)[0].files[0].size;
+		        	     	if(size > 2097152){ 
+		        		    	  $("#"+attach_id).val('');
+		        		    	  $("#"+attach_id+"uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+		        	     	}
+		           });
+		       }
+}   
+</script>
+	
 <!-- this script is for timesheet comment  shown and hide  -->	      
 <script type="text/javascript">
 function timesheetComment(local){ 
@@ -842,6 +866,8 @@ function addAttachment(){
 			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
 			cell0.innerHTML = divAttachmentTdStr;
 			
+			timesheetAttachmentValidationFun();
+			
 }			
 </script>
 
@@ -859,6 +885,4 @@ function addAttachment(){
 		    } 
 	}
 </script>
-
-
 
