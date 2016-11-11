@@ -360,6 +360,34 @@ public class RequirementRestController {
 		
 	}
 	
+	
+
+    /**
+	 * @David Raju Sammeta
+	 * 
+	 * This Method   getRequirementWhichIsReleasedOrNot  is Used to check whether the requirement is released Or Not 
+	 * 
+	 * @param requirementId
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getRequirementWhichIsReleasedOrNot", method = RequestMethod.POST)
+	public @ResponseBody String getRequirementWhichIsReleasedOrNot(@RequestParam(value = "requirementId", required = false)  Long requirementId,
+		HttpServletRequest request) throws Exception {
+		String resultJson = null;
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		Boolean  flag = requirementService.checkRequirementIsReleasedOrNot(requirementId, orgLocation.getId());
+		resultJson = toJSON(flag);
+		return resultJson;
+	}
+
+
+
+	
+	
 	/**
 	 * prasad K
 	 * This method is check job id duplicate or not

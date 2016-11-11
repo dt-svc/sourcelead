@@ -1335,4 +1335,19 @@ public class RequirementServiceImpl implements RequirementService {
 	public Integer validateJobId(Long id) throws Exception {
 		return requirementDao.validateJobId(id);
 	}
+
+	
+	@Override
+	public Boolean checkRequirementIsReleasedOrNot(Long requirementId,Long orgLocationId) throws Exception {
+		   
+			Requirement  req = requirementDao.checkRequirementIsReleasedOrNot(requirementId,orgLocationId);
+			Boolean requirementReleased = true;
+			if(req!=null){
+				
+				return requirementReleased;
+			}else{
+				
+				return false;
+			}
+	}
 }
