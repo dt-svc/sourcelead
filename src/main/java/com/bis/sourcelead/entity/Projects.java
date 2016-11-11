@@ -122,6 +122,12 @@ public class Projects {
     private String managerLevel2;
     
     @Transient
+    private String managerLevel1UserType;
+    
+    @Transient
+    private String managerLevel2UserType;
+    
+    @Transient
     private String createdDateStr;
     
     @Transient
@@ -520,5 +526,20 @@ public class Projects {
 	public void setProjectTasks(Set<ProjectTasks> projectTasks) {
 		this.projectTasks = projectTasks;
 	}
-	
+
+	public String getManagerLevel1UserType() {
+		return managerLevel1UserType;
+	}
+
+	public void setManagerLevel1UserType(String managerLevel1UserType) {
+		this.managerLevel1UserType = managerLevel1UserType;
+	}
+
+	public String getManagerLevel2UserType() {
+		return managerLevel2UserType;
+	}
+
+	public void setManagerLevel2UserType(String managerLevel2UserType) {
+		this.managerLevel2UserType = managerLevel2UserType;
+	}
 }
