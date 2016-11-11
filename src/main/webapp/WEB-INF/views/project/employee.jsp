@@ -396,8 +396,8 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
      	       // var projectEndDate = $('#EndDate').val();
 	        		var opt = json[i];
 	        		var role = '';
-	        		if(opt.user.userType != null && opt.user.userType != '' && opt.user.userType != 'undefined'){
-	        			role = opt.user.userType; 
+	        		if(opt.userType != null && opt.userType != '' && opt.userType != 'undefined'){
+	        			role = opt.userType; 
 	        		}else{
 	        			role = 'Employee';
 	        		}

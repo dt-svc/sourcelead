@@ -224,7 +224,7 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
   <!-- dummy divs above -->          
 			  <div id="divadttTd1" style="display:none;" >   
 			       <div> 
-			        <select id="REPLACEROWIDsubmissionsubmissionIdtask1Id" name="REPLACEROWIDsubmissionsubmissionIdtask1Id" >
+			        <select id="REPLACEROWIDsubmissionsubmissionIdtask1Id" name="REPLACEROWIDsubmissionsubmissionIdtask1Id" class="existedProjectTaskIdprojectId" onchange="getProjectTasksOnChange('REPLACEROWIDsubmissionsubmissionIdtask1Id','projectId')">
 			                     <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
 			                        	<option value="${task.id}">${task.taskName}</option>
 			                     </c:forEach>
@@ -297,6 +297,12 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 </div>
 <div class="mask_time"></div>	
 
+<!-- this script is for add files -->
+<div id="divAttachmentTd1" style="display: none; float: left;">
+	  		<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile'> 
+	  		<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
+</div>
+
 	 
 <!-- this script is for dynamicTimesheetpopUp when click on count -->	
 <script>
@@ -364,6 +370,7 @@ function addTimeSheetRow(submissionId,projectId) {
 			var divadttTd0Str = document.getElementById("divadttTd1").innerHTML;
 			divadttTd0Str = divadttTd0Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd0Str = divadttTd0Str.replace(/submissionId/g, (submissionId));
+			divadttTd0Str = divadttTd0Str.replace(/projectId/g, (projectId));
 			cell0.setAttribute("class", "pname");  
 			cell0.innerHTML = divadttTd0Str;
 			
@@ -483,11 +490,12 @@ function addTimeSheetRow(submissionId,projectId) {
 			
 }	
  /* this script is for get project tasks   */	     
-function getProjectTasks(projectTaskId,projectId){    
+function getProjectTasks(projectTaskId,projectId){  
 	   var sourceleadUrl ='${sourceleadUrl}';
+	   $("#"+projectTaskId).empty();
 	   
 	   var avilableProjectTaskIds = [];
-	   $('.existedProjectTaskId').each(function() {
+	   $('.existedProjectTaskId'+projectId).each(function() { alert("hai"+this.id);
 			 var localId = this.value;
 			 avilableProjectTaskIds.push(localId);
 	   }); 
@@ -497,7 +505,7 @@ function getProjectTasks(projectTaskId,projectId){
     	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
 	      success :function(data) {
 	    	    var json = JSON.parse(data);
-	    	    var result = ""; 
+	    	    /* var result = ""; 
 	    	    for (var i=0; i<json.length; i++)
 				{
 		        		var opt = json[i];
@@ -509,15 +517,75 @@ function getProjectTasks(projectTaskId,projectId){
 	   			 alert("localId"+localId);
 	   			 $("#"+localId).empty();
 		    	 $("#"+localId).append(result);
-	   	  	    }); 
-	    	    
-	    	   
+	   	  	    });  */
+	   	  	    
+	    	    $('.existedProjectTaskId'+projectId).each(function() {
+		   			 var localId = this.id;
+		   			 var localValue = this.value;
+			   		    var result = ""; 
+			   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){ 
+			   			    $('option', this).not(':eq(0), :selected').remove();
+			   		    }else{ 
+			   		    	 $("#"+localId).empty();
+			   		   		 result = result + "<option value=''>--select option--</option>";
+			   		    }
+ 		    	    	for (var i=0; i<json.length; i++)
+ 					 	{
+ 			        		var opt = json[i];
+ 			        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
+ 						}
+			    	 	$("#"+localId).append(result);
+		   	   }); 
 	      }
     	  
      }); 
 	   
 }
 </script>
+
+<script>
+function getProjectTasksOnChange(projectTaskId,projectId){
+
+	   var sourceleadUrl ='${sourceleadUrl}';
+	   
+	   var avilableProjectTaskIds = [];
+	   $('.existedProjectTaskId'+projectId).each(function() {
+			 var localId = this.value;
+			 avilableProjectTaskIds.push(localId);
+	   }); 
+		 
+	   $.ajax({
+          type : "POST",
+    	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
+	      success :function(data) {
+	    	    var json = JSON.parse(data);
+	    	    $('.existedProjectTaskId'+projectId).each(function() {
+		   			 var localId = this.id;
+		   			 var localValue = this.value;
+			   		    var result = ""; 
+			   		    if(projectTaskId != localId){  
+					   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){ 
+					   			    $('option', this).not(':eq(0), :selected').remove();
+					   		    }else{  
+					   		    	 $("#"+localId).empty();
+					   		   		 result = result + "<option value=''>--select option--</option>";
+					   		    }
+				    	    	for (var i=0; i<json.length; i++)
+							 	{
+					        		var opt = json[i];
+					        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
+								}
+					    	 	$("#"+localId).append(result);
+			   		    }
+			   		   
+		   	   }); 
+	    	   
+	      }
+    	  
+     }); 
+}
+</script>
+
 
 <!-- this script is for remove timesheet -->
 <script type="text/javascript">	
@@ -1065,7 +1133,7 @@ $(document).ready(function() {
 <!-- those scripts are belongs to attachments -->
 <script>
 function addAttachment(){  
-			
+			 
 			var checkMaxTsRowNum = $("#attcahmentMaxRowNumber").val();
 			var tbl = document.getElementById("attachmentTable");
 			var maxRowNum = parseInt($("input[name = 'attcahmentMaxRowNumber']").val());

@@ -58,7 +58,9 @@ window.onload = function () {
     var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
     document.getElementById("errorImage").style.display="none";
     
-    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) != 'jpg'){
+    var extension = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1).toLowerCase();
+    
+    if(extension != 'jpg'){
     	output.src = URL.createObjectURL(event.target.files[0]);
     	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
  		var msg = "."+extensionName+" extension not allowed";

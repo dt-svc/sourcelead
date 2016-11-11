@@ -33,7 +33,7 @@
 				         <!-- ####  this div is for dummy timesheets entries ( useful for add rows )   below   ####-->
 				         <div id="divadttTd1" style="display:none;" >   
 				             <div> 
-				              <select id="REPLACEROWIDsubmissionsubmissionIdtask1Id" name="REPLACEROWIDsubmissionsubmissionIdtask1Id" class="existedProjectTaskId" onchange="getProjectTasksOnChange('REPLACEROWIDsubmissionsubmissionIdtask1Id','projectId')">  
+				              <select id="REPLACEROWIDsubmissionsubmissionIdtask1Id" name="REPLACEROWIDsubmissionsubmissionIdtask1Id" class="existedProjectTaskIdprojectId" onchange="getProjectTasksOnChange('REPLACEROWIDsubmissionsubmissionIdtask1Id','projectId')">  
 				                          <%--  <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
 				                              	<option value="${task.id}">${task.taskName}</option>
 				                           </c:forEach> --%>
@@ -372,7 +372,7 @@ function addTimeSheetRow(submissionId,projectId) {
 		   $("#"+projectTaskId).empty();
 		   
 		   var avilableProjectTaskIds = [];
-		   $('.existedProjectTaskId').each(function() {
+		   $('.existedProjectTaskId'+projectId).each(function() {
 				 var localId = this.value;
 				 avilableProjectTaskIds.push(localId);
 		   }); 
@@ -382,7 +382,7 @@ function addTimeSheetRow(submissionId,projectId) {
  	      	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
  		      success :function(data) {
  		    	    var json = JSON.parse(data);
- 		    	    $('.existedProjectTaskId').each(function() {
+ 		    	    $('.existedProjectTaskId'+projectId).each(function() {
  			   			 var localId = this.id;
  			   			 var localValue = this.value;
 	 			   		    var result = ""; 
@@ -414,7 +414,7 @@ function getProjectTasksOnChange(projectTaskId,projectId){
 	   var sourceleadUrl ='${sourceleadUrl}';
 	   
 	   var avilableProjectTaskIds = [];
-	   $('.existedProjectTaskId').each(function() {
+	   $('.existedProjectTaskId'+projectId).each(function() {
 			 var localId = this.value;
 			 avilableProjectTaskIds.push(localId);
 	   }); 
@@ -424,7 +424,7 @@ function getProjectTasksOnChange(projectTaskId,projectId){
     	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
 	      success :function(data) {
 	    	    var json = JSON.parse(data);
-	    	    $('.existedProjectTaskId').each(function() {
+	    	    $('.existedProjectTaskId'+projectId).each(function() {
 		   			 var localId = this.id;
 		   			 var localValue = this.value;
 			   		    var result = ""; 
