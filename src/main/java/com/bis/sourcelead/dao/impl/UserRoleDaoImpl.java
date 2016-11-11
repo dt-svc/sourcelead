@@ -429,5 +429,23 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public UserRole getUserByUserId(Long userId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("getUserByUserId By UserId start");
+		userRole = session
+				.createQuery("from UserRole userRole where userRole.user.id = :userId  ")
+				.setLong("userId", userId).setCacheable(true).list();
+		logger.debug("getUserByUserId By UserId start");
+		if (userRole.size() > 0) {
+			return userRole.get(0);
+		} else {
+			return null;
+		}
+	}
+
 	
 }

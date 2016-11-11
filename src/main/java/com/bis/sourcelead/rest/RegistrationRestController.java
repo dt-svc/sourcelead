@@ -22,10 +22,12 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.RegistrationService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -55,6 +57,9 @@ public class RegistrationRestController {
 	 @Autowired
 	 CommonUtil commonUtil;
 	 
+	 @Autowired
+	 UserRoleService userRoleService;
+	 
 	 @RequestMapping(value = "/getOrgsList")
 		public @ResponseBody String getUsersList(HttpServletRequest request,
 				@RequestParam(value="searchByName", required=false) String searchByName,
@@ -73,6 +78,8 @@ public class RegistrationRestController {
 				regOrg.setIsMailSent(regOrg.getUser().getIsMailSent());
 				regOrg.setUserState(regOrg.getUser().getUserState());
 				regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
+				UserRole userRole = userRoleService.getUserByUserId(regOrg.getUser().getId());
+				regOrg.setUserState(userRole.getUserState());
 				regOrgsList.add(regOrg);
 			}
 		} catch (Exception e) {

@@ -112,6 +112,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public List<UserRole> getUserSpocsListByUserId(Long userId) throws Exception {
 		return userRoleDao.getUserSpocsListByUserId(userId);
 	}
+
+	@Override
+	public UserRole getUserByUserId(Long userId) throws Exception {
+		return userRoleDao.getUserByUserId(userId);
+	}
 	
 	
 

@@ -47,6 +47,8 @@ public interface UserRoleDao {
 	
 	public boolean isUserActive(Long userId) throws Exception;
 	
+	public UserRole getUserByUserId(Long userId) throws Exception;
+	
 	/*//Prasad Salina to get managers list baded on role type
 	List<UserRole> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception;
 			
