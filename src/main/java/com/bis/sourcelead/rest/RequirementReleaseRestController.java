@@ -93,7 +93,7 @@ public class RequirementReleaseRestController {
 					for (Iterator<OrgSpoc> it = contactsList.iterator(); it.hasNext(); ) {
 
 						OrgSpoc orgSpoc = it.next();
-					    if (vendorsRelationId != null && !Arrays.asList(vendorsRelationId).contains(orgSpoc.getOrgRelations().getId().toString())) {
+					    if ((vendorsRelationId != null && !Arrays.asList(vendorsRelationId).contains(orgSpoc.getOrgRelations().getId().toString())) || (orgSpoc.getSpocStatus().equalsIgnoreCase("In-Active"))) {
 					       it.remove();
 					    }
 					}

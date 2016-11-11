@@ -276,7 +276,7 @@ function getContactsLists(){
 			   	        	for (var i=0; i<json.length; i++)
 			   				{
 			   	        		var report = json[i];
-			   	        		if(report.spocStatus != "In-Active"){
+			   	        		
 				   	        		resultVendors = resultVendors + '';
 				   	        		result = result +'<tr>';
 				   	        		if(report.releasedRequirement =="true"){
@@ -306,7 +306,7 @@ function getContactsLists(){
 					        		}
 					        			result = result +'</td>';
 				   	        		    result = result +'</tr>';
-			   	        		}
+			   	        	
 			   				}
 			   	        	result = result +'</tbody>';
 			   	        	result = result +'</table>';
