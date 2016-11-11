@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
@@ -26,7 +27,7 @@ public interface OrgSpocService {
  * @param orgLocations
  * @throws Exception
  */
-	void addVendorContacts(JSONObject jsonObj,User user,OrgLocations orgLocations, String orgRelationId, String clientLocationId,String responderType)throws Exception;
+	void addVendorContacts(JSONObject jsonObj,User user,OrgLocations orgLocations, String orgRelationId, String clientLocationId,String responderType,Org org)throws Exception;
 
 	/**
 	 * @author Prasad Salina 

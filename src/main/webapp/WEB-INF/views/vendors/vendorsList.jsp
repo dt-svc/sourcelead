@@ -334,7 +334,7 @@ function getVendorContactLists(){
                   	}
    	        		
    	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-   	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.id+','+report.orgRelationId+');">Send</a></b></div></td>';
+   	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Send</a></b></div></td>';
    	        		}
    	        		
    	        		if(report.spocUserId != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
@@ -346,7 +346,7 @@ function getVendorContactLists(){
    	        		}
    	        		
    	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
-   	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.id+','+report.orgRelationId+');">Resend</a></b></div></td>';
+   	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Resend</a></b></div></td>';
    	        		}
    	        		
    	        		if(report.invitationStatus == 'Accepted'){ 
@@ -380,9 +380,8 @@ function getVendorContactLists(){
 
 <!-- This script is for resending the invitation mail -->
 <script type="text/javascript">
-function resendVendorSpocInvitation(orgSpocId,orgRelationId){alert(spocUserId);
+function resendVendorSpocInvitation(spocUserId,orgSpocId,orgRelationId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	
 	if(spocUserId != null && spocUserId != ""){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			 $.ajax({
@@ -628,7 +627,7 @@ function pagination1(){
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
-		result = result	+ '<li class="current"><a href="#tab-1" onClick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+');">Details</a></li>';
+		result = result	+ '<li class="current"><a href="#tab-1" id="spocDetailsId" onClick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+');">Details</a></li>';
 		result = result + '<li><a href="#tab-2" onClick="vendorSpocDocuments('+orgRelationId+','+spocLocationId+',\''+spocName+'\','+userId+');">Documents</a></li>'; 
 		/* result = result + '<li><a href="#tab-3">Activity</a></li>';  */
 		result = result + '<div class="clearfix"></div>'

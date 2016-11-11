@@ -131,18 +131,18 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String  dateLimit = "";
 		if(candidateState.equals(Constants.CANDIDATE_ACTIVE)){
-			  subQuery ="cnadidate.status = 1";
+			  subQuery ="(cnadidate.status = 1)";
 		}else if(candidateState.equals(Constants.CANDIDATE_ALL)){
-			  subQuery ="cnadidate.status = 1 or cnadidate.status = 0";
+			  subQuery ="(cnadidate.status = 1 or cnadidate.status = 0)";
 		}else{
-			 subQuery ="cnadidate.status = 0";
+			 subQuery ="(cnadidate.status = 0)";
 		}
     	
 			
 		if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)   && !updatedDateRange.equalsIgnoreCase("undefined")){
 			
 			// This Code is for  getting the sql enddate based on range
-		     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+		     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	    	 Calendar c = Calendar.getInstance();
 		     c.setTime(new Date()); // Now use today date.
 		     dateRange = Integer.parseInt(updatedDateRange);
@@ -150,10 +150,10 @@ public class CandidateDaoImpl implements CandidateDao {
 	         updatedDate     = dateFormat.format(c.getTime());
 	         Date parsed = dateFormat.parse(updatedDate);
 	         java.sql.Date endDate = new java.sql.Date(parsed.getTime());
+	         
 			
-   	    	 String query = "from Candidate cnadidate left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" and  cnadidate.updatedDate  between :endDate  and  :sqlCurrentDate";  
+   	    	 String query = "from Candidate cnadidate left join fetch cnadidate.orgLocationId orglocation where  cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" and ( cnadidate.updatedDate >= :endDate)  ";  
 		     candidateList = session.createQuery(query)
-				                    .setDate("sqlCurrentDate", sqlCurrentDate)
 				                    .setDate("endDate", endDate)
 				                    .setLong("orgLocationId", orgLocationId)
 				                    .setLong("orgId", orgId)

@@ -750,7 +750,7 @@ jQueryFormUtils.validateDomain = function(val) {
 
     if (!hasTopDomain) {
         return false;
-    } else if (dot < 2 || dot > 57) {
+    } else if (dot < 2 || dot > 100) {
         return false;
     } else {
         var firstChar = domain.substring(0, 1);

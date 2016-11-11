@@ -144,7 +144,7 @@ function vendorContacts(orgRelationID,clientLocationId){
 				                  	}
 				   	        		
 				   	        		if(opt.ownerUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'New'){
-				   	        			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendSpocInvitation('+opt.spocUserId+','+orgRelationID+','+vendorLocationId+');">Send</a></b>';
+				   	        			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendSpocInvitation('+opt.spocUserId+','+orgRelationID+','+vendorLocationId+','+opt.id+');">Send</a></b>';
 				   	        		}
 				   	        		if(opt.spocUserId != "${SourceLeadWeb_userId}" && opt.ownerUserId != "${SourceLeadWeb_userId}" && opt.invitationStatus == 'New'){
 				   	        			result = result +' ---';
@@ -155,7 +155,7 @@ function vendorContacts(orgRelationID,clientLocationId){
 				   	        		}
 				   	        		
 				   	        		if(opt.ownerUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'Sent'){
-				   	        			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendSpocInvitation('+opt.spocUserId+','+orgRelationID+','+vendorLocationId+');">Resend</a></b>';
+				   	        			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendSpocInvitation('+opt.spocUserId+','+orgRelationID+','+vendorLocationId+','+opt.id+');">Resend</a></b>';
 				   	        		}
 				   	        		
 				   	        		if(opt.invitationStatus == 'Accepted'){ 
@@ -271,13 +271,13 @@ $(".project_inn_mask").fadeOut(200);
 
 <!-- This script is for resending the invitation mail -->
 <script type="text/javascript">
-function resendSpocInvitation(spocUserId,orgRelationID,vendorLocationId){
+function resendSpocInvitation(spocUserId,orgRelationID,vendorLocationId,spocId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(spocUserId != null && spocUserId != ""){
 	//	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&responderType=Vendor&orgRelationID="+orgRelationID, 
+			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&orgSpocId="+spocId+"&responderType=Vendor&orgRelationID="+orgRelationID, 
 			        success: function(result) {
 			        	//$("#loading").removeAttr("style"); 
 			        	vendorContactList(orgRelationID,vendorLocationId);
@@ -456,7 +456,7 @@ $('html').click(function(){
 			$("#addClientContact").addClass('button').val('Processing..');
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId,
+						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId+"&responderType=Vendor",
 						success : function(result) {
 							$("#popUpDivContact").removeClass("edit-details-active");
 							vendorContactList(orgRelationId,vendorLocationId);
