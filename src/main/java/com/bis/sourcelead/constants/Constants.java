@@ -124,6 +124,12 @@ public class Constants {
 	public static int PAGES_INCREMENT = 10;
 	public static int PAGES_DECREMENT = -10;
 	
+	public static int MODULE_ATS = 2;
+	public static int MODULE_VMS = 3;
+	
+	public static int TAB_VENDOR = 9;
+	public static int TAB_CLIENT = 7;
+	
 	public static  String Dashboard = "Dashboard";
 	public static  String Users = "Users";
 	public static  String Projects = "Projects";

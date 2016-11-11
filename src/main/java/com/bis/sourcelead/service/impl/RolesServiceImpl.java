@@ -71,4 +71,10 @@ public class RolesServiceImpl implements RolesService{
 		return rolesDao.getUserRolesListByModule(org, orgLocationId);
 	}
 
+
+	@Override
+	public List<Roles> getClientOrVendorRolesList(Long orgLocationId,String moduleType) {
+		return rolesDao.getClientOrVendorRolesList(orgLocationId,moduleType);
+	}
+
 }

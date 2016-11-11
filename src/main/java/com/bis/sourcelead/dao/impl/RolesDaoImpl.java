@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RolesDao;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Roles;
@@ -196,12 +197,77 @@ public class RolesDaoImpl implements RolesDao{
 			subQuery = "and roles.roleName != 'ROLE_SOURCELEAD_ADMIN' ";
 		}
 		
-		String query = "from Roles roles where roles.actionId IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId) and roles.orgLocations.id = :orgLocationId ) "+subQuery+" ";
-	    List<Roles> rolesList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		String query = "select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId)) ";
+	    List<Long> actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).setCacheable(true).list();
       
+	    ArrayList<Roles> roleList = new ArrayList<>();
+		
+	    String query1 = "from Roles roles where roles.orgLocations.id = :orgLocationId "+subQuery+" ";
+	    List<Roles> rolesList = session.createQuery(query1.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		 for(Roles roles : rolesList){
+			 List<Long> roleActonList = new ArrayList<Long>();
+			 for (String s : roles.getActionId().split(",")){
+				 roleActonList.add(Long.parseLong(s));
+			 }
+			 roleActonList.retainAll(actionsList);
+			 System.out.println();
+			 if(roleActonList.size() > 0){
+				 roleList.add(roles);
+			 }
+		 }
 		
 		
-		return rolesList;
+		return roleList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Roles> getClientOrVendorRolesList(Long orgLocationId, String moduleType) {
+		
+		Long moduleId = null;
+		Long tabId = null;
+		ArrayList<Roles> roleList = new ArrayList<>();
+		
+		if(moduleType.equalsIgnoreCase("VMS")){
+			moduleId = (long) Constants.MODULE_VMS;
+			tabId = (long) Constants.TAB_VENDOR;
+		}
+		else if(moduleType.equalsIgnoreCase("ATS")){
+			moduleId = (long) Constants.MODULE_ATS;
+			tabId = (long) Constants.TAB_CLIENT;
+		}
+		
+		String subQuery = "";
+		if(orgLocationId == 1L){
+			subQuery = " and roles.roleName != 'ROLE_SOURCELEAD_ADMIN' ";
+		}
+		
+		
+		 List<Long> modulesList = new ArrayList<Long>();
+		 modulesList.add(moduleId);
+		 
+		 
+		 Session session = this.sessionFactory.getCurrentSession();
+        
+        String query = "select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId) and moduleActions.sourceleadActions.tabs.id = :tabId  ";
+	    List<Long> actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).setLong("tabId", tabId).setCacheable(true).list();
+			
+	    
+	    String query1 = "from Roles roles where roles.orgLocations.id = :orgLocationId "+subQuery+" ";
+	    List<Roles> rolesList = session.createQuery(query1.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		 for(Roles roles : rolesList){
+			 List<Long> roleActonList = new ArrayList<Long>();
+			 for (String s : roles.getActionId().split(",")){
+				 roleActonList.add(Long.parseLong(s));
+			 }
+			 roleActonList.retainAll(actionsList);
+			 System.out.println(roleActonList.size());
+			 if(roleActonList.size() > 0){
+				 roleList.add(roles);
+			 }
+		 }
+		 
+		return roleList;
 	}
 
 

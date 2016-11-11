@@ -367,6 +367,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 				orgRoles.setRoleName(roles.getRoleName());
 				orgRoles.setDisplayName(roles.getDisplayName());
 				orgRoles.setOrgLocations(orgLocations);
+				orgRoles.setOrg(orgLocations.getOrg());
 				orgRoles.setActionId(roles.getActionId());
 				orgRoles.setCreatedBy(user.getUserCode());
 				orgRoles.setCreatedDate(new Date());

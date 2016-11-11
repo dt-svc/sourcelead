@@ -325,12 +325,14 @@ public class UserServiceImpl implements UserService {
 		Roles roles = null;
 		try {
 			if(jsonObj.has("roleType") && !isNullOrEmpty(jsonObj.getString("roleType"))){
-				roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleType")));
+				Roles invitedRole = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleType")));
+				roles = rolesService.getRolesByRoleNameAndOrgLocationId(invitedRole.getRoleName(), orgLocations.getId());
+				
 			}
 			else if(jsonObj.has("roleTypeId") && !isNullOrEmpty(jsonObj.getString("roleTypeId"))){
 				roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleTypeId")));
 			}else{
-				roles = rolesService.getRolesById(2L);
+				roles = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_USER,orgLocations.getId());
 			}
 			
 		} catch (Exception e) {

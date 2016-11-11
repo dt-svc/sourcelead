@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -24,6 +25,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
@@ -36,6 +38,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -80,6 +83,9 @@ public class ClientServiceImpl implements ClientService{
 	
 	@Autowired
 	SubmissionTemplateService  submissionTemplateService;
+	
+	@Autowired
+	RolesService rolesService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -212,6 +218,7 @@ public class ClientServiceImpl implements ClientService{
 				orgLocationsList.add(clientOrgLocations);
 				org.setOrgLocationsList(orgLocationsList);
 				orgService.addOrganization(org);
+				saveOrgBasedRoles(clientOrgLocations,user);
 			}else{
 				orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
 				clientOrgLocations.setOrgRelationsList(orgRelationsList);
@@ -344,6 +351,27 @@ public class ClientServiceImpl implements ClientService{
 			org.setUpdatedDate(commonUtil.currentDate());
 			return org;
 
+		}
+		
+		
+		
+		
+		public void saveOrgBasedRoles(OrgLocations orgLocations,User user) throws Exception{
+			List<Roles> rolesList = rolesService.getSourceleadRoles(1L);
+			if(null != rolesList){
+				for(Roles roles : rolesList){
+					Roles orgRoles = new Roles();
+					orgRoles.setRoleName(roles.getRoleName());
+					orgRoles.setDisplayName(roles.getDisplayName());
+					orgRoles.setOrgLocations(orgLocations);
+					orgRoles.setOrg(orgLocations.getOrg());
+					orgRoles.setActionId(roles.getActionId());
+					orgRoles.setCreatedBy(user.getUserCode());
+					orgRoles.setCreatedDate(new Date());
+					rolesService.storeRoles(orgRoles);
+				}
+			}
+			
 		}
 		
 		
