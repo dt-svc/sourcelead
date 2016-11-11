@@ -3,8 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script>
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<script src="resources/js/bootstrap-select.min.js"></script>
 
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
@@ -209,7 +209,7 @@ function checkEmails(){
 </div>
 
 <div id="divTaskTd3" style="display: none; float: left;">
-   	 <select class="form-control block" id="REPLACEROWIDinterviewType" name="REPLACEROWIDinterviewType">
+   	 <select class="form-control block selectpicker" id="REPLACEROWIDinterviewType" name="REPLACEROWIDinterviewType">
 		<option value="">--Select Type--</option>
 		<option value="F2F">F2F</option>
 		<option value="Telephonic">Telephonic</option>

@@ -141,49 +141,15 @@ function closeCertificatePopup(){
 		result = result + '	               </div>';
 		result = result + '	               <div class="clearfix mb10">';
 		result = result + '	                 <p class="ml">Start Date</p>';
-		result = result + '	                 <div class="col-md-6">';
-		result = result	+ '	                   <select class="chosen-select"  name="startMonth" id="startMonth" onChange="validYear();">';
-		result = result	+ '	                       <option value="Select Month ">Select Month</option>';
-		result = result	+ ' 					   <option value="1&January">January</option>';
-		result = result	+ '	                       <option value="2&February">February</option>';
-		result = result	+ '	                       <option value="3&March">March</option>';
-		result = result	+ '	                       <option value="4&April">April</option>';
-		result = result	+ '	                       <option value="5&May">May</option>';
-		result = result + '	                       <option value="6&June">June</option> ';
-		result = result + '	                       <option value="7&July">July</option>';
-		result = result	+ '	                       <option value="8&August">August</option>';
-		result = result	+ '	                       <option value="9&September">September</option>';
-		result = result	+ '	                       <option value="10&October">October</option>';
-		result = result	+ '	                       <option value="11&November">November</option>';
-		result = result	+ '	                       <option value="12&December">December</option>';
-		result = result + '	                   </select>';
-		result = result + '	                   </div>';
 		result = result + '	                   <div class="col-md-6" id="startYearDiv">';
-		result = result	+ '	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear" onblur="validYear();"  placeholder="Enter Year"  field-name="Start Date" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true"  >';
+		result = result	+ '	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear"  placeholder="Enter Year"  field-name="Start Date" >';
 		result = result + '	                 </div>';
 		result = result + '	                 </div>';
 		result = result + '	                 <div id="endDateDiv">';
 		result = result + '	                 <div class="clearfix mb10 endDate">';
 		result = result + '	                 <p class="ml">End Date</p>';
-		result = result	+ '	                 <div class="col-md-6 id = "endMR"">';
-		result = result	+ '	                    <select class="chosen-select" class="required" name="endMonth" id="endMonth" onChange="validYear();">';
-		result = result	+ '	                       <option value="Select Month">Select Month</option>';
-		result = result	+ '	                       <option value="1&January">January</option>';
-		result = result	+ '	                       <option value="2&February">February</option>';
-		result = result	+ '	                       <option value="3&March">March</option>';
-		result = result	+ '	                       <option value="4&April">April</option>';
-		result = result	+ '	                       <option value="5&May">May</option>';
-		result = result + '	                       <option value="6&June">June</option> ';
-		result = result + '	                       <option value="7&July">July</option>';
-		result = result	+ '	                       <option value="8&August">August</option>';
-		result = result	+ '	                       <option value="9&September">September</option>';
-		result = result	+ '	                       <option value="10&October">October</option>';
-		result = result	+ '	                       <option value="11&November">November</option>';
-		result = result	+ '	                       <option value="12&December">December</option>';
-		result = result + '	                   </select>';
-		result = result + '	                   </div>';
 		result = result + '	                   <div class="col-md-6" >';
-		result = result	+ '	                   <input type="text" max class="form-control" id="endYear" name="endYear" field-name="End Year" onblur="validYear();" placeholder="Enter Year" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true" >';
+		result = result	+ '	                   <input type="text" max class="form-control" id="endYear" name="endYear" field-name="End Year"  placeholder="Enter Year" >';
 		result = result + '	                 </div>';
 		result = result + '	                 </div> ';
 		result = result + '	                 </div> ';
@@ -195,6 +161,38 @@ function closeCertificatePopup(){
 		$("#popUpDivEmp").empty();
 		$("#popUpDivEmp").append(result);
 
+		
+		
+		
+
+		$( "#startYear, #endYear" ).datepicker({ 
+		            changeMonth: true,
+		           changeYear: true,
+		           dateFormat: 'MM yy',            
+		           onClose: function(dateText, inst) { 
+		               var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+		               var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();             
+		               $(this).datepicker('setDate', new Date(year, month, 1));
+		           },
+		           beforeShow : function(input, inst) {
+		               if ((datestr = $(this).val()).length > 0) {
+		                   year = datestr.substring(datestr.length-4, datestr.length);
+		                   month = jQuery.inArray(datestr.substring(0, datestr.length-5), $(this).datepicker('option', 'monthNames'));
+		                   //$(this).datepicker('option', 'defaultDate', new Date(year, month, 1));
+		                   $(this).datepicker('setDate', new Date(year, month, 1));    
+		               }
+		               var other = this.id == "startYear" ? "#endYear" : "#startYear";
+		               var option = this.id == "startYear" ? "maxDate" : "minDate";        
+		               if ((selectedDate = $(other).val()).length > 0) {
+		                   year = selectedDate.substring(selectedDate.length-4, selectedDate.length);
+		                   month = jQuery.inArray(selectedDate.substring(0, selectedDate.length-5), $(this).datepicker('option', 'monthNames'));
+		                   $(this).datepicker( "option", option, new Date(year, month, 1));
+		               }
+		           }
+		       });
+		
+		
+		
 		$(".edit-details").toggleClass("edit-details-active");
 		$(".close-div").click(
 				function() {
@@ -277,71 +275,7 @@ function closeCertificatePopup(){
 								result = result + '	               </div>';
 								result = result	+ '	               <div class="clearfix mb10">';
 								result = result + '	                 <p class="ml">Start Date</p>';
-								result = result	+ '	                 <div class="col-md-6">';
-								result = result	+ '	                   <select class="chosen-select"  value="'+json.startMonth+'" name="startMonth" id="startMonth" onchange="validYearEdit();">';
-								result = result	+ '	                       <option value="Select Month ">Select Month</option>';
-								if (json.startMonth == "January") {
-									result = result + '<option selected>January</option>';
-								} else {
-									result = result	+ '<option value="1&January">January</option>';
-								}
-								if (json.startMonth == "February") {
-									result = result	+ '<option selected>February</option>';
-								} else {
-									result = result	+ '<option value="2&February">February</option>';
-								}
-								if (json.startMonth == "March") {
-									result = result	+ '<option selected>March</option>';
-								} else {
-									result = result + '<option value="3&March">March</option>';
-								}
-								if (json.startMonth == "April") {
-									result = result	+ '<option selected>April</option>';
-								} else {
-									result = result + '<option value="4&April">April</option>';
-								}
-								if (json.startMonth == "May") {
-									result = result	+ '<option selected>May</option>';
-								} else {
-									result = result + '<option value="5&May">May</option>';
-								}
-								if (json.startMonth == "June") {
-									result = result	+ '<option selected>June</option>';
-								} else {
-									result = result + '<option value="6&June">June</option>';
-								}
-								if (json.startMonth == "July") {
-									result = result	+ '<option selected>July</option>';
-								} else {
-									result = result + '<option value="7&July">July</option>';
-								}
-								if (json.startMonth == "August") {
-									result = result + '<option selected>August</option>';
-								} else {
-									result = result + '<option value="8&August">August</option>';
-								}
-								if (json.startMonth == "September") {
-									result = result	+ '<option selected>September</option>';
-								} else {
-									result = result	+ '<option value="9&September">September</option>';
-								}
-								if (json.startMonth == "October") {
-									result = result + '<option selected>October</option>';
-								} else {
-									result = result + '<option value="10&October">October</option>';
-								}
-								if (json.startMonth == "November") {
-									result = result + '<option selected>November</option>';
-								} else {
-									result = result	+ '<option value="11&November">November</option>';
-								}
-								if (json.startMonth == "December") {
-									result = result	+ '<option selected>December</option>';
-								} else {
-									result = result	+ '<option value="12&December">December</option>';
-								}
-								result = result	+'</select>';
-								result = result + '</div>';
+								
 								result = result	+ '<div class="col-md-6">';
 								if (json.startYear != null && json.startYear != '' && json.startYear != 'undefined') {
 									result = result	+ '<input type="text" max class="form-control" value="'+ json.startYear+ '" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Enter Year"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
@@ -354,76 +288,13 @@ function closeCertificatePopup(){
 								result = result	+ '<div id="endDateEditDiv">';
 								result = result	+ '<div class="clearfix mb10 endDate >';
 								result = result	+ '<p class="ml">End Date</p>';
-								result = result	+ '<div class="col-md-6 id = "endMR"">';
-								result = result	+ '<select class="chosen-select" selected  class="required" name="endMonth" id="endMonthEdit" onchange="validYearEdit();>';
-								result = result	+ '<option value="Select Month">Select Month</option>';
-								if (json.endMonth == "January") {
-									result = result + '<option selected>January</option>';
-								} else {
-									result = result	+ '<option value="1&January">January</option>';
-								}
-								if (json.endMonth == "February") {
-									result = result	+ '<option selected>February</option>';
-								} else {
-									result = result	+ '<option value="2&February">February</option>';
-								}
-								if (json.endMonth == "March") {
-									result = result	+ '<option selected>March</option>';
-								} else {
-									result = result + '<option value="3&March">March</option>';
-								}
-								if (json.endMonth == "April") {
-									result = result	+ '<option selected>April</option>';
-								} else {
-									result = result + '<option value="4&April">April</option>';
-								}
-								if (json.endMonth == "May") {
-									result = result	+ '<option selected>May</option>';
-								} else {
-									result = result + '<option value="5&May">May</option>';
-								}
-								if (json.endMonth == "June") {
-									result = result	+ '<option selected>June</option>';
-								} else {
-									result = result + '<option value="6&June">June</option>';
-								}
-								if (json.endMonth == "July") {
-									result = result	+ '<option selected>July</option>';
-								} else {
-									result = result + '<option value="7&July">July</option>';
-								}
-								if (json.endMonth == "August") {
-									result = result + '<option selected>August</option>';
-								} else {
-									result = result + '<option value="8&August">August</option>';
-								}
-								if (json.endMonth == "September") {
-									result = result	+ '<option selected>September</option>';
-								} else {
-									result = result	+ '<option value="9&September">September</option>';
-								}
-								if (json.endMonth == "October") {
-									result = result + '<option selected>October</option>';
-								} else {
-									result = result + '<option value="10&October">October</option>';
-								}
-								if (json.endMonth == "November") {
-									result = result + '<option selected>November</option>';
-								} else {
-									result = result	+ '<option value="11&November">November</option>';
-								}
-								if (json.endMonth == "December") {
-									result = result	+ '<option selected>December</option>';
-								} else {
-									result = result	+ '<option value="12&December">December</option>';
-								}
-								result = result	+ '	                   </select>';
-								result = result	+ '	                   </div>';
+								
 								result = result	+ '<div class="col-md-6">';
 								if (json.endYear != null && json.endYear != '' && json.endYear != 'undefined') {
-									result = result	+ '<input type="text" max class="form-control" value="'+ json.endYear+'" id="endYearEdit" name="endYear" onblur="validYearEdit();"  placeholder="Enter Year"  field-name="end Date" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text"  class="form-control" value="'+ json.endYear+'" id="endYearEdit" name="endYear" placeholder="Enter Year"  field-name="end Date" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="hidden" value="'+json.endYear+'" id="exisitngEndYear">';
 								}else{
-									result = result	+ '<input type="text" max class="form-control" value="" id="endYearEdit" name="endYear" onblur="validYearEdit();"  placeholder="Enter Year"  field-name="end Date" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text"  class="form-control" value="" id="endYearEdit" name="endYear" placeholder="Enter Year"  field-name="end Date" data-validation="required" data-validation-optional="true" >';
 								}
 								result = result + '</div>';
 								result = result + '</div>';
@@ -432,23 +303,53 @@ function closeCertificatePopup(){
 								result = result	+ '	               <div class="clearfix mr">';
 								result = result	+ '	                   <input type="hidden"  value="'+candidateEmpId+'" id="candidateEmpId"  name="candidateEmployeeId" >';
 								result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
-								result = result + '	                 <button type="button" id ="candidateEmployersAdd" onClick ="updateCandidateEmployers('+ candidateId+ ','+ candidateEmpId+ ');"class="btn btn-sm btn-primary pull-right">Add</button>';
+								result = result + '	                 <button type="button" id ="candidateEmployersAdd" onClick ="updateCandidateEmployers('+ candidateId+ ','+ candidateEmpId+ ');"class="btn btn-sm btn-primary pull-right">Update</button>';
 								result = result + '	               </div>';
 								result = result + '	             </div>';
 								result = result + '	        </form> ';
 								$("#popUpDivEmp").empty();
 								$("#popUpDivEmp").append(result);
 								iscurrentPositionEdit();
+								
+					$( "#startYear, #endYearEdit" ).datepicker({ 
+		            changeMonth: true,
+		           changeYear: true,
+		           dateFormat: 'MM yy',            
+		           onClose: function(dateText, inst) { 
+		               var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+		               var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();             
+		               $(this).datepicker('setDate', new Date(year, month, 1));
+		           },
+		           beforeShow : function(input, inst) {
+		               if ((datestr = $(this).val()).length > 0) {
+		                   year = datestr.substring(datestr.length-4, datestr.length);
+		                   month = jQuery.inArray(datestr.substring(0, datestr.length-5), $(this).datepicker('option', 'monthNames'));
+		                   //$(this).datepicker('option', 'defaultDate', new Date(year, month, 1));
+		                   $(this).datepicker('setDate', new Date(year, month, 1));    
+		               }
+		               var other = this.id == "startYear" ? "#endYearEdit" : "#startYear";
+		               var option = this.id == "startYear" ? "maxDate" : "minDate";        
+		               if ((selectedDate = $(other).val()).length > 0) {
+		                   year = selectedDate.substring(selectedDate.length-4, selectedDate.length);
+		                   month = jQuery.inArray(selectedDate.substring(0, selectedDate.length-5), $(this).datepicker('option', 'monthNames'));
+		                   $(this).datepicker( "option", option, new Date(year, month, 1));
+		               }
+		           }
+		       });
+					
+								
 
-								$(".edit-details").toggleClass("edit-details-active");
-								$(".close-div")	.click(function() {
-													$(this).parent("div.edit-details")
-															.removeClass("edit-details-active");
-												});
-								$(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details")
-										.click(function(e) {
-											e.stopPropagation();
-										});
+					$(".edit-details").toggleClass("edit-details-active");
+					$(".close-div").click(
+							function() {
+								$(this).parent("div.edit-details").removeClass(
+										"edit-details-active");
+							});
+					$(
+							".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details")
+							.click(function(e) {
+								e.stopPropagation();
+							});
 								/* $('html').click(function() {
 											$(".edit-details").removeClass(
 													"edit-details-active");
@@ -548,13 +449,13 @@ function closeCertificatePopup(){
 									}
 
 									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
-										result = result + '<td><div><span>'	+ opt.startMonth + ' -'	+ opt.startYear	+ '</span></div></td>';
+										result = result + '<td><div><span>'	+ opt.startYear	+ '</span></div></td>';
 									} else {
 										result = result		+ '<td><div><span>----</span></div></td>';
 									}
 
 									if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
-										result = result + ' <td><div><span>'+ opt.endMonth + '-'+ opt.endYear+ '</span></div></td>';
+										result = result + ' <td><div><span>'+ opt.endYear+ '</span></div></td>';
 									} else {
 										result = result	+ '<td><div><span>----</span></div></td>';
 									}
@@ -683,6 +584,16 @@ function employeePagination(){
 						url : sourceleadUrl
 								+ "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateExperianceId"+ candidateExperianceId,
 						success : function(result) {
+							
+							$(".edit-details").toggleClass("edit-details-active");
+							$(".close-div")	.click(function() {
+												$(this).parent("div.edit-details")
+														.removeClass("edit-details-active");
+											});
+							$(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details")
+									.click(function(e) {
+										e.stopPropagation();
+									});
 							candidateEmployersList(candidateId)
 						},
 					});
@@ -731,18 +642,21 @@ function employeePagination(){
 --%>
 <script>
 	function iscurrentPositionEdit() {
-
-		var currentposition = document.getElementById("isCurrentPositionEdit").checked;
 		
+		var currentposition = document.getElementById("isCurrentPositionEdit").checked;
 		if (currentposition) {
+			$("#isCurrentPositionEdit" ).val( 'Y' );
 			document.getElementById("endDateEditDiv").style.display = 'none';
 			$('#endYearEdit').removeAttr('data-validation');
 			$('#endMonthEdit').removeAttr('data-validation');
 		}else {
-			$( "#endYearEdit" ).val( '' );
 			document.getElementById("endDateEditDiv").style.display = '';
 			$("#endYearEdit").attr("data-validation", "required");
 			$("#endMonthEdit").attr("data-validation", "required");
+			var exisitngEndYear = document.getElementById("exisitngEndYear").value;
+			if(exisitngEndYear == null || exisitngEndYear == '' || exisitngEndYear =='undefined'){
+				$("#endYearEdit" ).val( '' );
+			}
 		}
 
 	}

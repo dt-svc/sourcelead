@@ -83,9 +83,9 @@ public class Constants {
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
-	public static String loginUserAsAdmin =":userId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1')";
+	public static String loginUserAsAdmin =":userId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1' and userRole.orgLocations.id = ts.projectMembers.projects.orgLocationsId.id)";
 	
-	public static String loginUserAsAdminWithMaxHeirarchyLevel ="(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1') and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = pm.projects.id))";
+	public static String loginUserAsAdminWithMaxHeirarchyLevel ="(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1' and userRole.orgLocations.id = pm.projects.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = pm.projects.id))";
 	
 	/** projectMember  constants**/
 	public static String MEMBER_ACTIVE = "1";

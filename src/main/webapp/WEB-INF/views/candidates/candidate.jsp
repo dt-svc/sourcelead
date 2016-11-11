@@ -5,19 +5,11 @@
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
 
+<link rel="stylesheet" href="resources/css/chosen.min.css">
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/chosen.jquery.min.js"></script> 
 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-
-<script src="resources/js/chosen.jquery.min.js"></script> 
 <script src="resources/js/bootstrap-select.min.js"></script>
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 
@@ -89,8 +81,9 @@
               <input type="file" name="uploadBtn" id="uploadBtn" class="hidden upload">
               </span> 
            </label>
+
              <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validate_Space validatedoc " >
-          </div>
+         </div>
           </div>
         </div>
         <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
@@ -272,26 +265,6 @@
               </div>
             </div>
           </div>
-        <%--  <div class="form-group">
-         <label class="col-md-3">Expected Rate</label>
-         <div class="col-md-9">
-           <div class="input-group">
-            <input type="text" id="expectedRate" name="expectedRate" value="${expectedRate}" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
-              <div class="input-group-btn selp-custom-min">
-              <select class="selectpicker" id="expectedRateCurrencey" name="expectedRateCurrencey">
-                 
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
-                 
-             </select>
-             </div>
-           </div>
-         </div>
-       </div> --%>
         
         
          <div class="form-group">
