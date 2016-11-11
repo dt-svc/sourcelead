@@ -102,4 +102,19 @@ public class ModulesDaoImpl implements ModulesDao{
 	    return modulesList;
 	}
 
+	@Override
+	public List<Long> getModulesIds() throws Exception {
+		
+		logger.debug("In ModulesDaoImpl class getOrgRegisteredModules method");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "select modules.id from Modules modules";
+		List<Long> modulesIdList =  session.createQuery(query.toString())
+									.setCacheable(true).list();
+		
+		return modulesIdList;
+
+	
+	}
+
 }

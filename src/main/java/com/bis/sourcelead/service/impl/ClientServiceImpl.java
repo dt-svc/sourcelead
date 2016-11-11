@@ -99,71 +99,7 @@ public class ClientServiceImpl implements ClientService{
 	private String duplicateValue;
 	
 
-	@Override
-	public void saveClient(JSONObject jsonObj,User user,OrgLocations orgLocations) throws Exception {
-		
-		Org org = populateOrg(jsonObj, user.getUserCode());
-		orgService.addOrganization(org);
-		OrgLocations clientOrgLocation = populateOrgLocations(jsonObj, org, orgLocations.getLocationCode(), user.getUserCode());
-		orgLocationService.addOrgLocations(clientOrgLocation);
-
-		OrgRelations orgRelations = populateOrgRelations(clientOrgLocation, orgLocations, user.getUserCode());
-		if(jsonObj.getString("level") != null && !jsonObj.getString("level").isEmpty()){
-			orgRelations.setInitiatorLevel(jsonObj.getString("level"));
-	     }
-		orgRelationsService.addOrgRelations(orgRelations);
-		
-		if(jsonObj.has("maxTsRowNum")){
-			String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
-			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
-		
-		for (int c = 1; c < maxCount; c++) {
-			Projects project = new Projects();
-			ProjectApproverHierarchy projectApproverHierarchy = new ProjectApproverHierarchy();
-			Set<ProjectApproverHierarchy> projectApproverSet = new HashSet<ProjectApproverHierarchy>();
-			project.setProjectSequeneNumber(jsonObj.getString(c + "projectId"));
-			project.setProjectName(jsonObj.getString(c + "projectName"));
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-			project.setOrgLocationsId(orgLocations);
-			project.setOrgRelationId(orgRelations); // newly Added
-
-			String startDateString = jsonObj.getString(c + "projectStartDate");
-			String endDateString = jsonObj.getString(c + "projectEndDate");// projectEndDate
-			Date startDate = getDateFormat(startDateString);
-			if(!isNullOrEmpty(endDateString)){
-				Date endDate = getDateFormat(endDateString);
-				project.setEndDate(endDate);
-			}
-			
-			project.setStartDate(startDate);
-			project.setProjectStatus(Project_Status.STARTED);
-			project.setCreatedDate(new Date());
-			projectApproverHierarchy.setProjectId(project);
-			User approverUserId1 = new User();
-			approverUserId1.setId(Long.parseLong(jsonObj.getString(c + "projectManager")));
-			projectApproverHierarchy.setApproverUserId(approverUserId1);
-			projectApproverHierarchy.setLevel(1);
-			ProjectApproverHierarchy projectApproverHierarchy1 = new ProjectApproverHierarchy();
-			if (!isNullOrEmpty(jsonObj.getString("level2Manager"))) {
-				projectApproverHierarchy1.setProjectId(project);
-				User approverUserId2 = new User();
-				approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
-				projectApproverHierarchy1.setApproverUserId(approverUserId2);
-				projectApproverHierarchy1.setLevel(2);
-				projectApproverSet.add(projectApproverHierarchy1);
-			}
-			projectApproverSet.add(projectApproverHierarchy);
-
-			project.setProjectApprovers(projectApproverSet);
-			project.setCreatedBy(user.getUserCode());
-			/* Saving for Projects */
-			projectsService.saveProject(project);
-			commonUtil.storeSourceleadTasks(user, project);
-		}
-
-	}
-		
-	}
+	
 	
 	/**
 	 * @author VenkatKesav
@@ -210,7 +146,7 @@ public class ClientServiceImpl implements ClientService{
 			}
 			
 			if(clientOrgLocations == null){
-				org = populateOrg(jsonObj, user.getUserCode());
+				org = populateOrg(jsonObj, user.getUserCode(),responderType);
 				clientOrgLocations =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode(),responderType);
 				
 				orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
@@ -330,7 +266,7 @@ public class ClientServiceImpl implements ClientService{
 	 * @return Org
 	 * @throws JSONException
 	 */
-		private Org populateOrg(JSONObject jsonObj, String loginUserCode) throws JSONException {
+		private Org populateOrg(JSONObject jsonObj, String loginUserCode,String responderType) throws JSONException {
 			Org org = new Org();
 		
 			if(jsonObj.has("orgName")){
@@ -344,6 +280,14 @@ public class ClientServiceImpl implements ClientService{
 				org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
 			}
 			org.setOrgType("Guest");
+			
+			if(responderType.equalsIgnoreCase("Client")){
+				org.setModulesId(Integer.toString(Constants.MODULE_ATS));
+			}
+			else if(responderType.equalsIgnoreCase("Vendor")){
+				org.setModulesId(Integer.toString(Constants.MODULE_VMS));
+			}
+			
 			org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 			org.setCreatedDate(commonUtil.currentDate());
 			org.setUpdatedBy(loginUserCode);

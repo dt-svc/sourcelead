@@ -9,8 +9,6 @@ import com.bis.sourcelead.entity.User;
 
 public interface ClientService {
 	
-	public void saveClient(JSONObject jsonObj,User user,OrgLocations orgLocations) throws Exception;
-	
 
 	public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType,Org org) throws Exception;
 

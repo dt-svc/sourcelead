@@ -101,9 +101,12 @@ public class LoginSessionController {
 		
 		OrgLocations orgLocations = userRole.getOrgLocations();
 		Org org = orgLocations.getOrg();
-		
 		List<Long> modulesId = modulesService.getOrgRegisteredModules(org);
-		List<Tabs> tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+		List<Tabs> tabsList = null;
+		if(org.getOrgType().equalsIgnoreCase("Company")){
+			tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+		}
+		
 		
 		SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 		
@@ -136,7 +139,11 @@ public class LoginSessionController {
 			
 			List<Long> modulesId = modulesService.getOrgRegisteredModules(org);
 			List<SourceleadActions> actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
-			List<Tabs> tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+			
+			List<Tabs> tabsList = null;
+			if(org.getOrgType().equalsIgnoreCase("Company")){
+				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+			}
 			
 			String userName = (String) authentication.getPrincipal();
 			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userName,null, buildUserAuthority(actionsList)));

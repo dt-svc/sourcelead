@@ -1,7 +1,7 @@
 package com.bis.sourcelead.web;
 
-import java.util.Collection;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.ActionRoles;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
@@ -127,39 +126,35 @@ public class RegistrationController {
 			
 		    Org org = null;
 		    OrgLocations orgLocations = null;
+		    boolean flag;
 			
 		    try {
 		    	orgLocations = orgLocationService.getOrgLocations(respondingPartyOrgLocationId);
 		    	org = orgLocations.getOrg();
-		    	
-		    	if(null != org){
+		    	String modules = org.getModulesId();
+		    	if(null != org && !org.getOrgType().equalsIgnoreCase("Company")){
 			    	org.setOrgType("Company");
-			    	if("VMS".equalsIgnoreCase(respondingOrgType)){
-			    		org.setVms(Status.Y);
-			    	}else{
-			    		org.setAts(Status.Y);
-			    	}
-					orgService.updateOrg(org);
-					
-					 List<Long> modulesId = modulesService.getModulesIdByModuleName("Recruiting,");
-					 Collection<ActionRoles> actionRolesList = actionRolesService.getSourceLeadActionRolesListByOrgId(1L,modulesId,org);
-					 if(actionRolesList != null){
-						 for(ActionRoles actionRoles : actionRolesList){
-							 ActionRoles userActionroles = actionRolesService.getActionRolesByActionIdAndRoleIdAndLocationId(actionRoles.getTabActions().getId(), actionRoles.getRoles().getId(), org.getId());
-							 if(null == userActionroles){
-								 userActionroles = new ActionRoles();
-								 userActionroles.setTabActions(actionRoles.getTabActions());
-								 userActionroles.setRoles(actionRoles.getRoles());
-								 userActionroles.setIsNotify(actionRoles.getIsNotify());
-								 userActionroles.setOrg(org);
-								 userActionroles.setOrgLocations(orgLocations);
-								 userActionroles.setCreatedDate(new Date());
-								 actionRolesService.addActionRoles(userActionroles);
-							 }
-							 
-						 }
+			    	
+			    	List<Integer> moduleIds = new ArrayList<Integer>();
+					 for (String s : org.getModulesId().split(",")){
+						 moduleIds.add(Integer.parseInt(s));
 					 }
 					 
+			    	if("VMS".equalsIgnoreCase(respondingOrgType)){
+			    		flag = moduleIds.contains(Constants.MODULE_ATS);
+			    		if(flag == false){
+			    			modules = modules+","+Constants.MODULE_ATS;
+			    		}
+			    	}else{
+			    		flag = moduleIds.contains(Constants.MODULE_VMS);
+			    		if(flag == false){
+			    			modules = modules+","+Constants.MODULE_VMS;
+			    		}
+			    	}
+			    	org.setModulesId(modules);
+			    	org.setStatus(Status.ACTIVE);
+					orgService.updateOrg(org);
+					
 					 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
 					 if(null != notifications){
 						 notifications.setUserNotificationStatus("Accepted");

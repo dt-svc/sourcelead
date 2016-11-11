@@ -44,4 +44,10 @@ private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.cla
 		return modulesDao.getRequirementSubModules();
 	}
 
+
+	@Override
+	public List<Long> getModulesIds() throws Exception {
+		return modulesDao.getModulesIds();
+	}
+
 }

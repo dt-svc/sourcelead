@@ -132,7 +132,6 @@ public class ClientRestController {
 	 
 		@RequestMapping(value = "/getRolesList", method = RequestMethod.POST)
 		public @ResponseBody String getRolesList(
-				@RequestParam(value = "orgName", required = false) String orgName,
 				@RequestParam(value = "orgLocationId", required = false) String orgLocationId,
 				@RequestParam(value = "moduleType", required = false) String moduleType,
 				HttpServletRequest request) throws Exception {

@@ -261,7 +261,6 @@ public class RolesDaoImpl implements RolesDao{
 				 roleActonList.add(Long.parseLong(s));
 			 }
 			 roleActonList.retainAll(actionsList);
-			 System.out.println(roleActonList.size());
 			 if(roleActonList.size() > 0){
 				 roleList.add(roles);
 			 }

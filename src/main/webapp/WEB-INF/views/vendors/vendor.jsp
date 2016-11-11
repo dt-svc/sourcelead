@@ -60,7 +60,7 @@ window.onload = function () {
            <h3>Vendor Details</h3>
             <div class="form-group" ><label class="col-md-3" for="Project Id">Vendor Name<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9" id="clientNameDiv">
-					<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails(); validateClientName();" field-name="Vendor Name" data-validation="required validate_Space validate_length length2-250" value="">
+					<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails(); validateClientName(); getRolesList();" field-name="Vendor Name" data-validation="required validate_Space validate_length length2-250" value="">
 					<input type="hidden" id="orgLocationId" />
 					<span class="hidden">Enter Vendor Name</span>
 				</div>
@@ -205,12 +205,6 @@ window.onload = function () {
                   <div class="col-md-9">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
 									<option value="">-Select Role-</option>
-									<option value="1">Admin</option>
-									<option value="6">Account Manager</option>
-									<option value="7">Sales Manager</option>
-									<option value="5">HR Manager</option>
-									<option value="8">Recruiter</option>
-									
 			              </select>
                   </div>
                 </div>
@@ -403,6 +397,44 @@ function validateEmail(){
 
 		});
 	}
+}
+</script>
+
+
+<script type="text/javascript">
+function getRolesList(){
+	var orgName = document.getElementById("orgName").value;
+	var orgLocationId = document.getElementById("orgLocationId").value;
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	if(orgName){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getRolesList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&moduleType=ATS", 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	output = output + "<option value=''>-- Select Role --</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.displayName+"</option>";
+				}
+	        	$("#role").empty();
+		        $("#role").append(output);
+		        $('#role').trigger("chosen:updated");
+		        $("#loading").removeAttr("style"); 
+	        },
+	    });
+	}else{
+		var output = "";
+    	 output = output + "<option value=''>-- Select Role --</option>"; 
+    	 $("#role").empty();
+	     $("#role").append(output);
+	     $('#role').trigger("chosen:updated");
+	}
+	 
 }
 </script>
 
