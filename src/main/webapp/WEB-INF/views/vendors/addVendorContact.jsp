@@ -110,7 +110,8 @@
                    </c:if>  
                  </c:forEach> 
                 </select>
-                <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new"></i> </div>
+                <!-- Temporarily Commented.. because contact user doesnt exists, so issue occurs in enrolled org list -->
+                <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" style="display: none"></i> </div>
             </div>
           </div>
           </div>
@@ -664,7 +665,7 @@ function getRolesList(){
 	var orgLocationId = array[1];
 	var sourceleadUrl ='${sourceleadUrl}';
 	
-	if(orgName){
+	if(vendorName){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	    	type: "POST",
