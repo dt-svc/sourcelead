@@ -191,15 +191,17 @@ public class TimesheetSubmissionsServiceTest {
 		
 		HashMap<String,Date> minAndMaxTimesheetSubmissionDatesForEmployee = new LinkedHashMap<>();
 		Long userId = (long) 4;
+		Long locationsId = (long) 1;
 		
-		minAndMaxTimesheetSubmissionDatesForEmployee = timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(userId);
+		minAndMaxTimesheetSubmissionDatesForEmployee = timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(userId,locationsId);
 		assertNotNull(minAndMaxTimesheetSubmissionDatesForEmployee);
 	}
 	
 	//@Test
 	public void getApprovalTimesheetSubmissions() throws Exception{
 		Long userId = 3l;
-		Collection<TimesheetSubmissions> timesheetSubmissionslist = timesheetSubmissionsService.getApprovalTimesheetSubmissions(userId);
+		Long locationsId = 1l;
+		Collection<TimesheetSubmissions> timesheetSubmissionslist = timesheetSubmissionsService.getApprovalTimesheetSubmissions(userId,locationsId);
 		assertNotNull(timesheetSubmissionslist);		
 	}
 	

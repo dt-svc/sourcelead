@@ -121,7 +121,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	 */
 	
 	@Override
-	public String newTimesheet(User user,String navigation, String startDate) throws Exception {
+	public String newTimesheet(User user,String navigation, String startDate,Long locationsId) throws Exception {
 		 
 		
 		/**
@@ -130,7 +130,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		  * (We are storing these records with employee assigned date at the time of assignment and when employee/particular approver logged in to system(if record not exist then only))
 	      *
 	    */
-		HashMap<String, Date> submissionDateRange =	timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(user.getId());
+		HashMap<String, Date> submissionDateRange =	timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(user.getId(),locationsId);
 		Date employeeStartDate = submissionDateRange.get("STARTDATE");
 		Date employeeEndDate = submissionDateRange.get("ENDDATE");
 		
