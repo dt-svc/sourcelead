@@ -26,6 +26,8 @@ public interface UserDao {
 	
 	public User findByEmailAndOrgLocationsId(String email, Long orgLocationsId)  throws Exception;
 	
+	public List<User> getReoprtingManagersByOrgLocationId(Long orgLocationsId) throws Exception;
+	
 	/**
 	 * This method to fetch only Admin role users
 	 * @param orgLocationsId

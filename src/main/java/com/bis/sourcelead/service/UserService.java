@@ -39,6 +39,8 @@ public interface UserService  {
 	
 	public User saveUserProfile(UserProfile userProfile,MultipartFile multiFile,User user) throws Exception;
 	
+	public List<User> getReoprtingManagersByOrgLocationId(Long orgLocationsId) throws Exception;
+	
 	/**
 	 * This method to fetch only Admin role users
 	 * @param orgLocationsId

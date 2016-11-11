@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,9 +21,11 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -51,6 +54,9 @@ public class UserController {
 	@Autowired
 	RolesService rolesService;
 	
+	@Autowired
+	UserRoleService userRoleService;
+	
 	/**
 	 * To forward user creation jsp page
 	 * @param request
@@ -63,13 +69,22 @@ public class UserController {
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		ModelAndView model = new ModelAndView();
 		
-		    Long userRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
-		
 			List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 		    model.addObject("org_projectsList", projectsList);
 		    
 		    List<Roles> rolesList = rolesService.getUserRolesListByModule(org,orgLocations.getId());
 		    model.addObject("rolesList", rolesList);
+		    
+		    List<User> userList = userService.getReoprtingManagersByOrgLocationId(orgLocations.getId());
+		    ArrayList<User> reportingManagersList = new ArrayList<User>();
+			for (User user : userList) {
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if(userRole != null){
+					user.setUserType(userRole.getUserType());
+				}
+				reportingManagersList.add(user);
+			}
+			model.addObject("reportingManagersList", reportingManagersList);
 		    
 		    commonUtil.highLightMenu(Constants.Users, request);
 		    

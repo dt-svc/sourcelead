@@ -463,4 +463,19 @@ public class UserDaoImpl implements UserDao {
 	}
 	
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<User> getReoprtingManagersByOrgLocationId(Long orgLocationsId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		
+		subQuery = "userRole.user.id from UserRole userRole where  userRole.roles.roleName != 'ROLE_USER' and userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE'";
+		String query = "from User user where user.id IN (select "+subQuery+" )  ";
+	    List<User> userRoleList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+        return userRoleList;
+        
+	}
+	
+	
+	
 }

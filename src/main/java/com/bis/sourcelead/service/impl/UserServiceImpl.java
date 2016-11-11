@@ -768,6 +768,11 @@ public class UserServiceImpl implements UserService {
 	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId) throws Exception {
 		return userDao.getUsersByTeamTypeAndNoCurrentUser(currentApproverId);
 	}
+
+	@Override
+	public List<User> getReoprtingManagersByOrgLocationId(Long orgLocationsId) throws Exception {
+		return userDao.getReoprtingManagersByOrgLocationId(orgLocationsId);
+	}
 	
 	
 	
