@@ -55,6 +55,7 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 			Metadata metadata = new Metadata();
 			parser.parse(stream, htmlHandler, metadata);
 			String parsedString = htmlHandler.toString();
+			System.out.println(parsedString);
 			ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
 			String name = nameFinderFromParsedTextFile(parsedString);
 			if(StringUtils.isNotEmpty(name) && name.lastIndexOf(" ") > 0){
@@ -83,7 +84,7 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 							    Boolean semicolonExists = outerKeyObj.contains(":");
 							    outerKeyObj = outerKeyObj.replaceAll(",,", ",");
 							    outerKeyObj = outerKeyObj.replaceAll(":,", "");
-							   // System.out.println("skills>>>>>>>>>>>>>>"+outerKeyObj);
+							    System.out.println("skills>>>>>>>>>>>>>>"+outerKeyObj);
 								String[] totalStrings = outerKeyObj.split(System.getProperty("line.separator"));
 								if(totalStrings != null && totalStrings.length > 0){
 									
