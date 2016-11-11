@@ -74,9 +74,10 @@ padding: 1px 280px 2px 0;
      2.parameter : csrf token .
      3.ajax url implementation in requirementListRestController.
 --%>
-
+<input type="hidden" name="noReq" id="noReq"/>
 <script>
-function requirementList(){
+function requirementList(){  
+	
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var status = [];
 		$('input:checkbox[name=requirementStatus]:checked').each(function() 
@@ -147,14 +148,33 @@ function requirementList(){
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
 		                     }
-
 		                     if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
 		                    	 result = result +"<td><div>"+opt.manager+"</div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
 		                     }
+		                     result = result +"<td><select onchange='changeStatus("+opt.id+");' id='changeStatusId'>";
+								if(opt.requirementSubmissionStatus == "ONHOLD"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									result = result +"<option value='CANCEL'>CANCEL</option>";
+								}
+								else if(opt.requirementSubmissionStatus == "CANCEL"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+
+								}else if(opt.requirementSubmissionStatus == "OPEN"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									result = result +"<option value='ONHOLD'>ON-HOLD</option>";
+									result = result +"<option value='CANCEL'>CANCEL</option>";
+								}else{
+									result = result +"<option   value='OPEN'>OPEN</option>";
+									result = result +"<option value='ONHOLD'>ON-HOLD</option>";
+									result = result +"<option value='CANCEL'>CANCEL</option>";
+								}
+								
+								result = result +" </select>";	
+			                    result = result +" </td>";
 		                     
-		                     result = result +"<td><div><b class='proj_process'>"+opt.requirementSubmissionStatus+"</b></div></td>";
+		                     
 		                     if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
 			                     result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
 
@@ -177,7 +197,7 @@ function requirementList(){
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 					 result = result+"			        <p>No Requirement Found</p>";
 					 result = result+"			 </div>";
-					
+					noRequirements();
 					$("#requirementList").empty();
 				    $("#requirementList").append(result); 
                 }
@@ -187,6 +207,11 @@ function requirementList(){
   } 
 </script>
 
+<script>
+function noRequirements(){
+	$("#noReq").val("noreq");
+}
+</script>
 <%-- 
      @author : sarath kumar.
      this script is for prepare pagination to requirementList.
@@ -968,9 +993,16 @@ function requirementPipeline(requirementId){
 		              </ul>
 		            </div>
           </li>
-         
           <li> <a href="<c:url value='/requirement'/>"><i class="fa fa-plus"></i>Add Requirement</a></li>
           <li> <a href="<c:url value='/team'/>"><i class="fa fa-plus"></i>Team</a></li>
+           <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop" onClick="mypop();"></i>
+            <div class="export_pop">
+              <ul>
+                <li onclick="exportToPdf();">PDF<i class="fa fa-file-pdf-o"></i></li>
+                <li onclick="exportToExcel();">Excel<i class="fa fa-file-excel-o"></i></li>
+              </ul>
+            </div>
+          </li>
           <div class="clearfix"></div>
         </ul>
         <div class="clearfix"></div>
@@ -1063,7 +1095,9 @@ $(document).ready(function() {
     $(".export_pop, #export-pop").click(function(e) {
         e.stopPropagation();
     });	
-});	
+});
+
+
 	
 // project side bar
 $(document).ready(function() {
@@ -1157,6 +1191,26 @@ $(".reminder").click(function(){
    });
    });
 </script>
+
+
+<script type="text/javascript">
+function changeStatus(requirementId){
+	var status = document.getElementById("changeStatusId").value;
+	$("#changeStatusId option[value=status]").remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 alert("raju"+status);
+	   $.ajax({
+         type : "POST",
+          url: sourceleadUrl+"/saveChangedStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,        
+          success :function(data) { 
+        	  $('#changeStatusId').removeAttr('value');
+        	  location.replace(sourceleadUrl+"/requirementList");
+          }
+}); 
+}
+</script>
+
+
 <script type="text/javascript">
             $(function () {
                 $('#datetimepicker5').datetimepicker({
@@ -1175,8 +1229,42 @@ $(".reminder").click(function(){
 </html>
 
 
+<script>
+    $("#export-pop").click(function(){
+		$(".export_pop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $(".export_pop").slideUp(200);
+    });
+    $(".export_pop, #export-pop").click(function(e) {
+        e.stopPropagation();
+    });	
+</script>
 
+<script>
+function exportToPdf(){
+	alert("pdf");
+}
+</script>
 
+<script>
+function exportToExcel(){
+	var req = $("#noReq").val();
+	alert("*** "+req)
+	var sourceleadUrl ='${sourceleadUrl}';
+	  var status = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() 
+	    {
+			status.push($(this).val());
+	    });
+	 var clients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() 
+	    {
+			clients.push($(this).val());
+	    });
+		//window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients;
+}
 
+</script>
   
 <jsp:include page="../masterFooter.jsp" />

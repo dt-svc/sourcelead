@@ -6,13 +6,11 @@
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
- <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 
 <script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
 
 <script src="resources/js/chosen.jquery.min.js"></script> 
 <script src="resources/js/bootstrap-select.min.js"></script>
@@ -72,7 +70,10 @@ background-color: #ccc;
 }
 .ratetype p {
 bottom: -14px;
-    left:-20px !important;
+left:-20px !important;
+}
+.pras.req-title p{
+bottom:-14px;
 }
 </style>
 
@@ -209,7 +210,7 @@ $(document).ready(function() {
 	 </div>
 </div>
 
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt pras">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt pras req-title">
            <div class="form-group">
 	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
 	         <div class="col-md-9">
@@ -227,19 +228,13 @@ $(document).ready(function() {
 	           </div>
 	         </div>
 	       </div>
-          
-          
-      
-          
-          
+	       
           <div class="form-group" id="jobIdDiv">
             <label class="col-md-3">Id</label>
             <div class="col-md-9">
               <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  onblur="validateJobId();"  onmouseout="validateJobId();" value="">
             </div>
           </div>
-          
-         
           
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
@@ -375,7 +370,7 @@ $(document).ready(function() {
                   </span>
                 </label>
                 
-                <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
+                <input type="text" class="form-control" readonly id="uploadFile" name="docFile"  value="${requirement.fileName}" type="file"   placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
               <div class="clearfix"></div> <div class="clearfix"></div>
               </div>
             </div>
@@ -385,7 +380,7 @@ $(document).ready(function() {
            <div class="form-group">
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
-             <textarea rows="2" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description" data-validation="validate_length length2-5000" data-validation-optional="true">${requirement.description}</textarea>
+             <textarea rows="2" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true">${requirement.description}</textarea>
             </div>
           </div>
           
@@ -534,11 +529,7 @@ $(document).ready(function() {
           </div>
         </div>
       </div>
-      
-      
-     
-      
-      
+
        <!-- Internal Details html -->
       <div class="clearfix">
         <div class="col-lg-12">
@@ -770,7 +761,7 @@ $(document).ready(function() {
 	         }; 
 		
 		
-if(saveType=='draft'){
+          if(saveType=='draft'){
 			
 			//For internal details in draft
 			 $('#managerId').removeAttr('data-validation');
@@ -819,13 +810,16 @@ if(saveType=='draft'){
 		 }
 		 
 		   if ($('#requirement_form').validate(false, validationSettings)){   
+			
 			var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
-			con = encodeURIComponent(con);
+			
+			//It will escape all the special characters
+			var jsonData = encodeURIComponent(con);
 			var form = $('#requirement_form')[0];
       		var formData = new FormData(form); 
-			  //It will escape all the special characters
+			  
 			var sourceleadUrl = '${sourceleadUrl}';
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
      		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
@@ -838,7 +832,7 @@ if(saveType=='draft'){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType+"&json="+con,
+						url : sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType+"&json="+jsonData,
 						success : function(result) {
 								location.replace(sourceleadUrl+"/requirementList");
 						},
@@ -1102,10 +1096,16 @@ function setTemplateValues(){
 	
  var sourceleadUrl ='${sourceleadUrl}';
 	var requirementId = document.getElementById('template').value;
+	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
+		
+	
 	$.ajax({
 	   	type: "POST",
+	   	
 	    url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 	   
 		    success: function(data) {
+		    	
+		    	
 		    	if(data != null && data != 'undefined' && data !='' ){
 		    		
 		    		var json = JSON.parse(data);
@@ -1140,12 +1140,18 @@ function setTemplateValues(){
 					}else{
 						$("#city").val('');
 					}
-					 
+					
+					$('#description').val('');
+					$('#rate').val('');
+					$('#education').val('').trigger('chosen:updated');
+					$('#skills').val('').trigger('chosen:updated');
+					
 					var skills = [];
 		            skills = json.skills.split(",");
 		            $("#skills").val(skills);
 		            $('#skills').trigger("chosen:updated");
 		            
+		           
 		            var educations = [];
 		            educations = json.education.split(",");
 		            $("#education").val(educations);
@@ -1157,7 +1163,10 @@ function setTemplateValues(){
 			    	$("#rate").val(json.rate);
 			    	$("#currencyCode").val(json.currencyCode);
 			    	$("#rateType").val(json.rateType);
-			    	$("#fileName").val(json.fileName);
+			    	
+			    	 existedFile = json.fileName;
+			    	 $("#uploadFile").val(existedFile);
+			    	 $('#uploadFile').trigger("chosen:updated");
 		    	}else{
 		    		
 		    		$("#jobTitle").val('');
@@ -1175,15 +1184,22 @@ function setTemplateValues(){
 			    	$("#rate").val('');
 			    	$("#currencyCode").val('');
 			    	$("#rateType").val('');
-			    	$("#fileName").val('');
+			    	existedFile = json.fileName;
+			    	 $("#fileName").val(existedFile);
+			    	 $('#fileName').trigger("chosen:updated");
 		    	}
-		    	
-		    	
-		    	
-		    	
-		    	
 		    }
      });
+	}else{
+		 document.getElementById("requirement_form").reset();
+		 $("#skills").trigger("chosen:updated");
+		 $("#education").trigger("chosen:updated");
+		 $("#state").trigger("chosen:updated");
+		 $("#city").trigger("chosen:updated");
+		 $("#rate").val('');
+		 $("#description").val('');
+		 
+	}
 }
 
 $(function(){

@@ -157,6 +157,7 @@ public class EMailJobScheduler {
 			 		
 					int remainderTime = -(Integer.parseInt(requirementInterview.getRemainedBefore()));
 					Date newTargetTime = DateUtils.addMinutes(requirementInterview.getStartTime(), remainderTime); 
+
 					
 					if(newTargetTime.after(date) && newTargetTime.before(targetTime)){
 					Org org = orgService.findOrgByID(requirementInterview.getSubmissionId().getOrgLocations().getOrg().getId());

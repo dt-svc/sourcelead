@@ -179,9 +179,13 @@ $('body').on('submit', '#addApplicant_form', function(e){
  	        dataType : 'json',
  	    	url : sourceleadUrl+"/saveAddApplicant?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
-	        	if((result == 'success')){
+	        	/* $(".new_side_wrap").removeClass("new_side_wrap_active");
+	    		$(".side_mask").fadeOut(200);
+	    		$("body").css('overflow-y', 'auto');
+	    		requirementPipeline(requirementId); */
+	        	 if((result == 'success')){
 	        		location.replace(sourceleadUrl+"/requirementSummary?requirementId="+requirementId); 
-		        } 
+		        }  
 	        },
 	    }); 
       return true; 
@@ -198,6 +202,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	});
   
   </script>
+  
   
   
   <script type="text/javascript">

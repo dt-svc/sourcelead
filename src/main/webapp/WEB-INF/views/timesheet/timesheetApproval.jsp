@@ -334,11 +334,11 @@ function removeTimesheetPopup(){
 
 <!-- this script is for delete  document -->	
 <script type="text/javascript">
-function deleteSubmissionDocument(submissionId,employeeId,startDate,endDate){  
+function deleteSubmissionDocument(submissionDocumentId,employeeId,startDate,endDate){  
     var sourceleadUrl ='${sourceleadUrl}';
     $.ajax({
           type : "POST",
-      	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,		
+      	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
 	      success :function(result) {
 	    		myTimesheet(employeeId,startDate,endDate)
 	      }
@@ -485,9 +485,16 @@ function addTimeSheetRow(submissionId,projectId) {
  /* this script is for get project tasks   */	     
 function getProjectTasks(projectTaskId,projectId){    
 	   var sourceleadUrl ='${sourceleadUrl}';
+	   
+	   var avilableProjectTaskIds = [];
+	   $('.existedProjectTaskId').each(function() {
+			 var localId = this.value;
+			 avilableProjectTaskIds.push(localId);
+	   }); 
+				   
 	   $.ajax({
           type : "POST",
-    	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,		
+    	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
 	      success :function(data) {
 	    	    var json = JSON.parse(data);
 	    	    var result = ""; 
@@ -496,8 +503,15 @@ function getProjectTasks(projectTaskId,projectId){
 		        		var opt = json[i];
 		        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
 				}
-	    	    $("#"+projectTaskId).empty();
-	    	    $("#"+projectTaskId).append(result);
+	    	    
+	    	    $('.existedProjectTaskId').each(function() {
+	   			 var localId = this.id;
+	   			 alert("localId"+localId);
+	   			 $("#"+localId).empty();
+		    	 $("#"+localId).append(result);
+	   	  	    }); 
+	    	    
+	    	   
 	      }
     	  
      }); 
@@ -802,7 +816,7 @@ function clearTimesheet(){
 	 /* for (var p = 1; p < 200; p++){   */
 		 $('.NEW').each(function() {
 		 var p = this.id;
-		 for (var j = 1; j < 10; j++){
+		 for (var j = 1; j < 50; j++){
 			    $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val("00:00");
 			    $("#"+j+"submission"+p+"textArea"+i+"Id").val(""); 
 		 }
@@ -911,7 +925,7 @@ function checkHours(){
 		 var total = 0;
 		 $('.timesheetrProject').each(function() {
 		 var p = this.id;
-		 for (var j = 1; j < 10; j++){
+		 for (var j = 1; j < 50; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
 			    	 var hours = btemp;
@@ -1047,6 +1061,41 @@ $(document).ready(function() {
 
 <div class="time_pop time_pop_a" id="timeSheetErrorMsg">
 </div> 
+
+<!-- those scripts are belongs to attachments -->
+<script>
+function addAttachment(){  
+			
+			var checkMaxTsRowNum = $("#attcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("attachmentTable");
+			var maxRowNum = parseInt($("input[name = 'attcahmentMaxRowNumber']").val());
+			$("input[name = 'attcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentTsRow" + maxRowNum);
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+}			
+</script>
+
+<script type="text/javascript">
+	function removeAttachmentRow(rowId) {
+		var rowNum = $("#divAttachmentTsRow"+rowId).val();
+		var maxRowNum = parseInt(rowNum);
+		 document.getElementById("divAttachmentTsRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentTsRow"+rowId).value= '';
+		 var  rId = "divAttachmentTsRow"+rowId;
+		  var r = document.getElementById("attachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+	}
+</script>
 
 </body>
 <jsp:include page="../masterFooter.jsp" />	

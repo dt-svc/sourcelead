@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -105,9 +107,19 @@ public class TimesheetEntriesRestController {
 	 */
 	@RequestMapping(value = "/projectTasksById" , method = RequestMethod.POST)
 	 public @ResponseBody  String getProjectTasks(
-			 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
-		 	 String resultJson;
-			 Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectId(projectId);
+			 @RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="avilableProjectTaskIds", required=false) String  avilableProjectTaskIds) throws Exception {
+		 	
+			 
+			List<Long> ids = new ArrayList<Long>();
+			String[] avilableProjectTaskId = avilableProjectTaskIds.split(",");
+			for(String id  : avilableProjectTaskId){
+				if(id != null && !id.isEmpty()){
+					ids.add(Long.parseLong(id));
+				}
+			}
+			
+			 String resultJson;
+			 Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectIdAndExistedProjectTaskIds(projectId, ids);
 			 resultJson = commonUtil.toJSON(taskList);
 			 return resultJson;
 		 	

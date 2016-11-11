@@ -33,10 +33,10 @@
 				         <!-- ####  this div is for dummy timesheets entries ( useful for add rows )   below   ####-->
 				         <div id="divadttTd1" style="display:none;" >   
 				             <div> 
-				              <select id="REPLACEROWIDsubmissionsubmissionIdtask1Id" name="REPLACEROWIDsubmissionsubmissionIdtask1Id" >
-				                           <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
+				              <select id="REPLACEROWIDsubmissionsubmissionIdtask1Id" name="REPLACEROWIDsubmissionsubmissionIdtask1Id" class="existedProjectTaskId" onchange="getProjectTasksOnChange('REPLACEROWIDsubmissionsubmissionIdtask1Id','projectId')">  
+				                          <%--  <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
 				                              	<option value="${task.id}">${task.taskName}</option>
-				                           </c:forEach>
+				                           </c:forEach> --%>
 				             </select>
 				             <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID','submissionId')" class="addtaskfield removetaskfield"/>
 				             </div>
@@ -88,6 +88,11 @@
 						<!-- #### this div is for dummy timesheets entries ( useful for add rows ) above  ####-->      
 	</div>
 	</div>  
+	<div id="divAttachmentTd1" style="display: none; float: left;">
+	  		<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile'> 
+	  		<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
+    </div>
+
 </form>   
 </section>
 <div class="time_pop" id="timeSheetErrorMsg"></div>
@@ -234,8 +239,10 @@ function addTimeSheetRow(submissionId,projectId) {
 			var divadttTd0Str = document.getElementById("divadttTd1").innerHTML;
 			divadttTd0Str = divadttTd0Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd0Str = divadttTd0Str.replace(/submissionId/g, (submissionId));
+			divadttTd0Str = divadttTd0Str.replace(/projectId/g, (projectId)); 
 			cell0.setAttribute("class", "pname");  
 			cell0.innerHTML = divadttTd0Str;
+			
 			
 			
 		    var cell1 = row.insertCell(1);
@@ -348,6 +355,7 @@ function addTimeSheetRow(submissionId,projectId) {
 			maskme();   
 		    
 			var projectTaskId = maxRowNum+"submission"+submissionId+"task1Id"; 
+			
 			getProjectTasks(projectTaskId,projectId); 
 		  
 			
@@ -357,21 +365,41 @@ function addTimeSheetRow(submissionId,projectId) {
         function disableInput(divId){
         	$("#"+divId+" :input").attr("disabled", "disabled");
         }
+        
+       //get project tasks 
 	   function getProjectTasks(projectTaskId,projectId){
 		   var sourceleadUrl ='${sourceleadUrl}';
+		   $("#"+projectTaskId).empty();
+		   
+		   var avilableProjectTaskIds = [];
+		   $('.existedProjectTaskId').each(function() {
+				 var localId = this.value;
+				 avilableProjectTaskIds.push(localId);
+		   }); 
+			 
 		   $.ajax({
    	          type : "POST",
- 	      	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,		
+ 	      	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
  		      success :function(data) {
  		    	    var json = JSON.parse(data);
- 		    	    var result = ""; 
- 		    	    for (var i=0; i<json.length; i++)
- 					{
- 			        		var opt = json[i];
- 			        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
- 					}
- 		    	    $("#"+projectTaskId).empty();
- 		    	    $("#"+projectTaskId).append(result);
+ 		    	    $('.existedProjectTaskId').each(function() {
+ 			   			 var localId = this.id;
+ 			   			 var localValue = this.value;
+	 			   		    var result = ""; 
+	 			   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){ 
+	 			   			    $('option', this).not(':eq(0), :selected').remove();
+	 			   		    }else{ 
+	 			   		    	 $("#"+localId).empty();
+	 			   		   		 result = result + "<option value=''>--select option--</option>";
+	 			   		    }
+	  		    	    	for (var i=0; i<json.length; i++)
+	  					 	{
+	  			        		var opt = json[i];
+	  			        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
+	  						}
+ 				    	 	$("#"+localId).append(result);
+ 			   	   }); 
+ 		    	   
  		      }
  	      	  
  	       }); 
@@ -380,6 +408,49 @@ function addTimeSheetRow(submissionId,projectId) {
 
 	 
 </script>
+<script>
+function getProjectTasksOnChange(projectTaskId,projectId){
+
+	   var sourceleadUrl ='${sourceleadUrl}';
+	   
+	   var avilableProjectTaskIds = [];
+	   $('.existedProjectTaskId').each(function() {
+			 var localId = this.value;
+			 avilableProjectTaskIds.push(localId);
+	   }); 
+		 
+	   $.ajax({
+          type : "POST",
+    	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
+	      success :function(data) {
+	    	    var json = JSON.parse(data);
+	    	    $('.existedProjectTaskId').each(function() {
+		   			 var localId = this.id;
+		   			 var localValue = this.value;
+			   		    var result = ""; 
+			   		    if(projectTaskId != localId){  
+					   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){ 
+					   			    $('option', this).not(':eq(0), :selected').remove();
+					   		    }else{  
+					   		    	 $("#"+localId).empty();
+					   		   		 result = result + "<option value=''>--select option--</option>";
+					   		    }
+				    	    	for (var i=0; i<json.length; i++)
+							 	{
+					        		var opt = json[i];
+					        		result = result + "<option value='" +opt.Id+ "'>"+opt.taskName+"</option>";
+								}
+					    	 	$("#"+localId).append(result);
+			   		    }
+			   		   
+		   	   }); 
+	    	   
+	      }
+    	  
+     }); 
+}
+</script>
+
 	
 <script type="text/javascript">
 (function ($) {
@@ -476,13 +547,13 @@ function withdrawMyTimesheet(submissionId,startdate){
 
 <!-- this script is for delete document -->
 <script type="text/javascript">
-function deleteSubmissionDocument(submissionId){  
+function deleteSubmissionDocument(submissionDocumentId){  
     var sourceleadUrl ='${sourceleadUrl}';
     var startdate;
 	var navigation;
     $.ajax({
           type : "POST",
-      	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,		
+      	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
 	      success :function(result) {
 	    		dynamicTimesheet(navigation,startdate);  
 	      }
@@ -543,7 +614,7 @@ $(document).click(function(){
 		 var total = 0;
 		 $('.timesheetrProject').each(function() {
 		 var p = this.id;
-		 for (var j = 1; j < 10; j++){
+		 for (var j = 1; j < 50; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
 			    	 var hours = btemp;
@@ -648,7 +719,7 @@ function clearTimesheet(){
 	 /* for (var p = 1; p < 200; p++){   */
 	 $('.NEW').each(function() {
 		 var p = this.id;
-		 for (var j = 1; j < 10; j++){
+		 for (var j = 1; j < 50; j++){
 			    $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val("00:00");
 			    $("#"+j+"submission"+p+"textArea"+i+"Id").val("");  
 		 }
@@ -669,7 +740,7 @@ function checkHours(){
 		 var total = 0;
 		 $('.timesheetrProject').each(function() {
 		 var p = this.id;
-		 for (var j = 1; j < 10; j++){
+		 for (var j = 1; j < 50; j++){
 			    var btemp = $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
 			    	 var hours = btemp;
@@ -752,4 +823,42 @@ function checkHours(){
 		  $("#rejectedMessage"+localId).removeClass('app_error_mes_active');
 	});	
 </script>
+
+
+
+<script>
+function addAttachment(){  
+			
+			var checkMaxTsRowNum = $("#attcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("attachmentTable");
+			var maxRowNum = parseInt($("input[name = 'attcahmentMaxRowNumber']").val());
+			$("input[name = 'attcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentTsRow" + maxRowNum);
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+}			
+</script>
+
+<script type="text/javascript">
+	function removeAttachmentRow(rowId) {
+		var rowNum = $("#divAttachmentTsRow"+rowId).val();
+		var maxRowNum = parseInt(rowNum);
+		 document.getElementById("divAttachmentTsRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentTsRow"+rowId).value= '';
+		 var  rId = "divAttachmentTsRow"+rowId;
+		  var r = document.getElementById("attachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+	}
+</script>
+
+
 
