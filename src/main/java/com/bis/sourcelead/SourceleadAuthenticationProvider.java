@@ -69,7 +69,7 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
           if(user == null){
         	  throw new BadCredentialsException("login_unRegistered_error");
           }
-          else if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.INACTIVE)){
+          else if((userRole == null) || (userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.INACTIVE))){
         	  throw new BadCredentialsException("login_inActive_error");
           }
           else{
