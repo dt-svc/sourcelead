@@ -20,6 +20,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.UserRole;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -214,7 +215,7 @@ public class PdfUtil {
 	        table.completeRow();
 	        java.util.List<String[]> candidateList = new ArrayList<>();
 	        for(Candidate candidate : candidatesList){
-	        	candidateList.add(prepareStringArray(candidate,candidatesList.size()));
+	        	candidateList.add(prepareStringArray(candidate));
 	        }
 	        
 	        for (String[] canArray: candidateList) {
@@ -241,7 +242,7 @@ public class PdfUtil {
 		return file;
 	
 	}
-	private String[] prepareStringArray(Candidate candidate, int size) {
+	private String[] prepareStringArray(Candidate candidate) {
 		String candidateArray[] = new String[Constants.CANDIDATE_EXCEL_HEADERS.length];
 
 		if(candidate.getFirstName() !=null && !"".equalsIgnoreCase(candidate.getFirstName())){
@@ -313,6 +314,134 @@ public class PdfUtil {
 		}
 		return candidateArray;
 		
+	}
+	public File getRequirementPdf(java.util.List<Requirement> requirementList, String orgName) {
+
+
+		String[] headers = Constants.REQUIREMENT_EXCEL_HEADERS;
+	    Document document = new Document(PageSize.LETTER.rotate());
+	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+	    File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");
+	    try {
+	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+	        PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
+	        boldFont.setColor(myColor1);
+            Paragraph para = new Paragraph(orgName+ " Candidates.",boldFont);
+            para.setAlignment(Element.ALIGN_CENTER);
+            document.add(para);
+	        // Create an instance of PdfPTable. After that we transform the header and
+	        PdfPTable table = new PdfPTable(headers.length);
+	        table.setWidthPercentage(100);
+            table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5,3,3});
+	        for (int i = 0; i < headers.length; i++) {
+	            String header = headers[i];
+	            PdfPCell cell = new PdfPCell();
+	            cell.setGrayFill(0.9f);
+	            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+	            BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
+	            cell.setBackgroundColor(myColor);
+	            table.addCell(cell);
+	        }
+	        table.completeRow();
+	        java.util.List<String[]> requirements = new ArrayList<>();
+	        for(Requirement requirement : requirementList){
+	        	requirements.add(prepareRequirementToArray(requirement));
+	        }
+	        
+	        for (String[] reqArray: requirements) {
+                for (int i = 0; i < reqArray.length; i++) {
+                    String datum = reqArray[i];
+                    PdfPCell cell = new PdfPCell();
+                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+                    table.addCell(cell);
+                }
+                table.completeRow();
+            }
+	        
+	        document.addTitle("Candiate List Table");
+	        table.setSpacingBefore(15f);
+	        document.add(table);
+	        logger.info("Pdf table created !!");
+	    } catch (DocumentException e) {
+	        e.printStackTrace();
+	    } catch (FileNotFoundException e) {
+	        e.printStackTrace();
+	    } finally {
+	        document.close();
+	    }
+		return file;
+	
+	
+	}
+	private String[] prepareRequirementToArray(Requirement requirement) {
+		String requirementArray[] = new String[Constants.REQUIREMENT_EXCEL_HEADERS.length];
+		if(requirement.getId() != null){
+			requirementArray[0] = requirement.getId().toString();
+		}
+		if(requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle())){
+			requirementArray[1] = requirement.getJobTitle();
+		}else{
+			requirementArray[1] = "--";
+		}
+		if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
+			requirementArray[2] = requirement.getMinExp()+"-"+requirement.getMaxExp()+" years"; 
+		}else if((requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp())) || (requirement.getMaxExp() ==null)){
+			requirementArray[2] = requirement.getMinExp()+" years";
+		}else if((requirement.getMinExp() == null ) || (requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp()))){
+			requirementArray[2] = requirement.getMaxExp()+" years";
+		}else{
+			requirementArray[2] = "--";
+		}
+		
+		if(requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()) && requirement.getRateType() != null && !"".equalsIgnoreCase(requirement.getRateType())){
+			requirementArray[3] =  requirement.getRate()+" / "+requirement.getRateType();
+		}else{
+			requirementArray[3] = "--";
+		}
+		if(requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())){
+			requirementArray[4] = requirement.getCity();
+		}else{
+			requirementArray[4] = "--";
+		}
+		if(requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())){
+			requirementArray[5] = requirement.getSkills();  
+		}else{
+			requirementArray[5] = "--";
+		}
+		if(requirement.getManager() != null && !"".equalsIgnoreCase(requirement.getManager())){
+			requirementArray[6] = requirement.getManager();
+		}else{
+			requirementArray[6] = "--";
+		}
+		if(requirement.getPriority() != null && !"".equalsIgnoreCase(requirement.getPriority())){
+			requirementArray[7] = requirement.getPriority();
+		}else{
+			requirementArray[7] = "--";
+		}
+		if(requirement.getSubmissionTemplateId() != null ){
+			requirementArray[8] = requirement.getSubmissionTemplateId().getTemplateName();
+		}else{
+			requirementArray[8] = "--";
+		}
+		if(requirement.getClientName() != null && !"".equalsIgnoreCase(requirement.getClientName())){
+			requirementArray[9] = requirement.getClientName();
+		}else{
+			requirementArray[9] = "--";
+		}
+		if(requirement.getClientContactName() != null && !"".equalsIgnoreCase(requirement.getClientContactName())){
+			requirementArray[10] = requirement.getClientContactName();
+		}else{
+			requirementArray[10] = "--";
+		}
+		if(requirement.getClientContactEmail() != null && !"".equalsIgnoreCase(requirement.getClientContactEmail())){
+			requirementArray[11] = requirement.getClientContactEmail();
+		}else{
+			requirementArray[11] = "--";
+		}
+		return requirementArray;
 	}
 
 }
