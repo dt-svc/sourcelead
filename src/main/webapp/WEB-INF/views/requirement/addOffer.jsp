@@ -28,82 +28,127 @@
 		});
 </script>
 
-
+<script type="text/javascript">
+ function getShortListAndSubmittedAndInterviewedCandidates(rowId) { 
+	 var existingApplicantsIds = [];    
+	 for(i=rowId ; i > 0; i--){
+		 var applicant = $("#"+(i)+"applicantId").val();
+		 if(applicant != null && applicant != '' && applicant != 'undefined'){
+			 existingApplicantsIds.push(applicant);
+		 }
+	 }
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var requirementId = $("#reqId").val();
+     
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
+					}
+		        	$("#"+rowId+"applicantId").empty();
+		        	$("#"+rowId+"applicantId").append(output);
+		        	$("#"+rowId+"applicantId").trigger("chosen:updated");
+			       
+		        },
+		    });
+	
+ }
+</script> 
 
 <!-- For add New Interview -->
 <script>
 function addOffer(requirementId){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
-	var result = "";
+	
+	
+	 $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getRequirementWhichIsReleasedOrNot?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	
+				var result = "";
+				result= result + '	          <div class="add_inter">';
+				
+				result = result + '<form id="addOffer_form" name="addOffer_form" enctype="multipart/form-data" method="post" >';
+				result = result + '<input type="hidden" id="maxOfferRowNum" name="maxOfferRowNum" value="1" />';
+				result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
+				
+				result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><a href="javascript:void(0)" onClick="addOfferRow(this);"><i class="fa fa-plus"></i> Add row</a>';
+				result= result + '	              <div class="clearfix"></div>';
+				result= result + '	            </div>';
+				
+				result= result + '	            <table cellpadding="0" cellspacing="0" id="addOfferTbl">';
+				result= result + '	              <tbody>';
+				result= result + '	                <tr id="divTsRow0">';
+				result= result + '	                  <th>Applicant</th>';
+				result= result + '	                  <th>Date of Joining</th>';
+				result= result + '	                  <th>Rate / Salary</th>';
+				result= result + '	                  <th>Position Type</th>';
+				result= result + '	                  <th>Attachment</th>';
+				result = result + '<th class="action">Action</th>';
+				result= result + '	                </tr>';
+				
+				result= result + '	              </tbody>';
+				result= result + '	            </table>';
+				
+				if(data =="true"){
+					result= result + '	          <div class="row pad2">';
+					result= result + '	          <div class="form-group">';
+					result= result + '<label class="col-md-3"></label>';
+					result= result + '<div class="col-md-9">';
+					result= result + '<div class="checkbox checkBox">';
+					result= result + ' <label>';
+					result= result + '<input type="checkbox" value="" onclick="NotifyToVendor();" id="notifyToVendor" name="notifyToVendor">Notify To Vendor</label>';
+				    result= result + '</div>';
+				    result= result + '</div>';
+				    result= result + '</div>';
+				}   
+				
+			    result= result + '<div class="form-group">';
+				result= result + '<label class="col-md-3"></label>';
+				result= result + '<div class="col-md-9">';
+				result= result + '<div class="checkbox checkBox">';
+				result= result + ' <label>';
+				result= result + '<input type="checkbox" value=""  onclick="NotifyToApplicant();" id="notifyToApplicant" name="notifyToApplicant">Notify To Applicant</label>';
+			    result= result + '</div>';
+			    result= result + '</div>';
+			    result= result + '</div>';
+				result= result + '	              <div class="clearfix"></div>';
+			    
+				result= result + '	            <div class="col-md-12 pad1">';
+				result = result +'				  <button type="submit" id="add_offer" class="btn btn-sm btn-primary mr">Submit</button>';
+				result= result + '	              <button type="submit" class="btn btn-sm btn-danger" onclick="cancelAddOffer();" >Cancel</button>';
+				result= result + '	            </div>';
+				result= result + '	          </div>';
+				
+				result = result + '</form>';
+				result= result + '	          </div>';
+										
+				$("#addOfferDiv").empty();
+				$("#addOfferDiv").append(result);
+				
+				$(".Datepicker").datepicker();
+				
+				$(".add_offer_wrap").addClass("add_offer_wrap_active");
+				$(".side_mask").fadeIn(200);
+				$("body").css('overflow-y', 'hidden');
+				
+				addOfferRow();
     
-	result= result + '	          <div class="add_inter">';
-	
-	result = result + '<form id="addOffer_form" name="addOffer_form" enctype="multipart/form-data" method="post" >';
-	result = result + '<input type="hidden" id="maxOfferRowNum" name="maxOfferRowNum" value="1" />';
-	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
-	
-	result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><a href="javascript:void(0)" onClick="addOfferRow(this);"><i class="fa fa-plus"></i> Add row</a>';
-	result= result + '	              <div class="clearfix"></div>';
-	result= result + '	            </div>';
-	
-	result= result + '	            <table cellpadding="0" cellspacing="0" id="addOfferTbl">';
-	result= result + '	              <tbody>';
-	result= result + '	                <tr id="divTsRow0">';
-	result= result + '	                  <th>Applicant</th>';
-	result= result + '	                  <th>Date of Joining</th>';
-	result= result + '	                  <th>Rate / Salary</th>';
-	result= result + '	                  <th>Position Type</th>';
-	result= result + '	                  <th>Attachment</th>';
-	result = result + '<th class="action">Action</th>';
-	result= result + '	                </tr>';
-	
-	result= result + '	              </tbody>';
-	result= result + '	            </table>';
-	
-	result= result + '	          <div class="row pad2">';
-	
-	
-	
-	result= result + '	          <div class="form-group">';
-	result= result + '<label class="col-md-3"></label>';
-	result= result + '<div class="col-md-9">';
-	result= result + '<div class="checkbox checkBox">';
-	result= result + ' <label>';
-	result= result + '<input type="checkbox" value="" onclick="NotifyToVendor();" id="notifyToVendor" name="notifyToVendor">Notify To Vendor</label>';
-    result= result + '</div>';
-    result= result + '</div>';
-    result= result + '</div>';
-            
-    result= result + '<div class="form-group">';
-	result= result + '<label class="col-md-3"></label>';
-	result= result + '<div class="col-md-9">';
-	result= result + '<div class="checkbox checkBox">';
-	result= result + ' <label>';
-	result= result + '<input type="checkbox" value=""  onclick="NotifyToApplicant();" id="notifyToApplicant" name="notifyToApplicant">Notify To Applicant</label>';
-    result= result + '</div>';
-    result= result + '</div>';
-    result= result + '</div>';
-    
-	result= result + '	            <div class="col-md-12 pad1">';
-	result = result +'				  <button type="submit" id="add_offer" class="btn btn-sm btn-primary mr">Submit</button>';
-	result= result + '	              <button type="submit" class="btn btn-sm btn-danger" onclick="cancelAddOffer();" >Cancel</button>';
-	result= result + '	            </div>';
-	result= result + '	          </div>';
-	
-	result = result + '</form>';
-	result= result + '	          </div>';
-							
-	$("#addOfferDiv").empty();
-	$("#addOfferDiv").append(result);
-	
-	$(".Datepicker").datepicker();
-	
-	$(".add_offer_wrap").addClass("add_offer_wrap_active");
-	$(".side_mask").fadeIn(200);
-	$("body").css('overflow-y', 'hidden');
-	
-	addOfferRow();
+	        },
+	    });
+	 
+	 
 	
 }
 </script>
