@@ -229,7 +229,7 @@
 										<c:forEach var="option" items="${add_clientList}">
 											<option value="${option.orgid}">${option.orgName}</option>
 										</c:forEach>
-									</select> <i class="fa fa-plus btn btn-default formic1" data-toggle="modal" onclick="flushProject();" data-target="#addClient"></i>
+									</select> 
 								</div>
 								<span class="hidden">Enter Project Id</span>
 							</div>
@@ -352,7 +352,7 @@
 										data-validation="required validate_email" onblur="emailVerification();">
 								</div>
 							</div>
-							<div class="form-group">
+							<!-- <div class="form-group">
 								<label class="col-lg-3">Invoice Frequency<span
 									class="text-danger">*</span></label>
 								<div class="col-lg-9">
@@ -364,7 +364,7 @@
 										<option>Monthly</option>
 									</select>
 								</div>
-							</div>
+							</div> -->
 							<div class="form-group">
 								<label class="col-lg-3"></label>
 								<div class="col-lg-9">

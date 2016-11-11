@@ -764,7 +764,7 @@ public class ClientServiceImpl implements ClientService{
 			 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 			 noificationEmailScenario.setBody(notificationbody);
 			 
-			 emailScenerioUtil.sendNotification(actionLink, loginUser, user, orgLocation, noificationEmailScenario);
+			 emailScenerioUtil.sendNotification(actionLink, loginUser, editUser, orgLocation, noificationEmailScenario);
 			
 		}
 		
