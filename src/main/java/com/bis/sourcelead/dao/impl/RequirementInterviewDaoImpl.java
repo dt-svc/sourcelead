@@ -19,8 +19,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementInterviewDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -46,6 +48,10 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 
 	@Autowired
 	RequirementSubmissionDao requirementSubmissionDao;
+	
+	
+	@Autowired
+	RequirementDao requirementDao;
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -86,14 +92,15 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId,Long orgLocationsId) throws Exception {
-		
-		RequirementSubmission requirementSubmission = requirementSubmissionDao.getRequirementSubmissionById(submissionId);
+	public List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId,Long orgLocationsId,Long requirementId) throws Exception {
+		List<RequirementInterview> interviewsList = null;
+		Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
+		if(requirement.getParentRequirement()!=null){
 		logger.debug("In RequirementInterviewDaoImpl class getRequirementInterviewsBySubmissionIdAndOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementInterview interview where interview.submissionId.id IN(Select rs.sourceSubmission.id from RequirementSubmission rs where rs.id = :submissionId and rs.requirement.id = :requirementSubmission and rs.orgLocations.id = :orgLocationsId ) and interview.notificationToSpoc='Y' ";
-		List<RequirementInterview> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("requirementSubmission", requirementSubmission.getRequirement().getId()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
-		
+		String query = "from RequirementInterview interview where interview.submissionId.id IN(Select rs.id from RequirementSubmission rs where rs.requirement.id = :requirementId and rs.vendorLocationId.id = :orgLocationsId ) and interview.notificationToSpoc='Y' ";
+		interviewsList =  session.createQuery(query).setLong("requirementId", requirement.getParentRequirement().getId()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		}
 		return interviewsList;
 	}
 	
@@ -129,8 +136,13 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
             query ="from RequirementInterview ri where ri.submissionId.orgLocations = :orgLocationsId and ri.submissionId.submissionStatus = 'INTERVIEW' and ri.submissionId.status = 1 and DATE(ri.dateOfInterview) < CURDATE() and ri.endTime < NOW()"+subQuery;
         }else if(dateRange != null && "upcoming".equals(dateRange)){
         	query ="from RequirementInterview ri where ri.submissionId.orgLocations = :orgLocationsId and ri.submissionId.submissionStatus = 'INTERVIEW' and ri.submissionId.status = 1 and DATE(ri.dateOfInterview) > CURDATE()"+subQuery;
+        }else{
+        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        	java.util.Date date = dateFormat.parse(dateRange);
+        	java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
+        	query ="from RequirementInterview ri where ri.submissionId.orgLocations = :orgLocationsId and ri.submissionId.submissionStatus = 'INTERVIEW' and ri.submissionId.status = 1 and DATE(ri.dateOfInterview) = :sqlStartDate"+subQuery;
+        	params.put("sqlStartDate",sqlStartDate);
         }
-        
         
         Query queryExe = session.createQuery(query);
         for (String str : queryExe.getNamedParameters())

@@ -1,10 +1,14 @@
 package com.bis.sourcelead.rest;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,8 +22,11 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,6 +48,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.AutoCompleteController;
 
 
 /**
@@ -53,7 +61,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 	
 @RestController
 public class CandidateListRestController {
-	
+	private static final Logger logger = LoggerFactory.getLogger(CandidateListRestController.class);
 	
 	 @Value("${sourceleadUrl}")
 	 private String sourceleadUrl;
@@ -460,7 +468,39 @@ public class CandidateListRestController {
 	 			return "success";
 	 			
 	 	 }
-	 		 
-	 	   
-		
+	 		 /**
+	 		  * @author Rajashekar
+	 		  * get candidate data to export excel and pdf
+	 		  * @param candidateStatus
+	 		  * @param updatedDateRange
+	 		  * @param request
+	 		  * @throws Exception
+	 		  */
+	 	 @RequestMapping(value = "/getCandidatesExportList")
+		 public void getCandidatesExportList(@RequestParam(value="candidateStatus", required=false) Integer  candidateStatus,
+				                             @RequestParam(value="updatedDateRange", required=false) String  updatedDateRange,
+				                             @RequestParam(value="exportType", required=false) String  exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+
+	 		 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange);
+			File file = null;
+			if(!"pdf".equalsIgnoreCase(exportType)){
+			file = candidateService.getCandidateExcelFile(candidatesList,org.getOrgName());
+			}else{
+			file = candidateService.getCandidatePdf(candidatesList,org.getOrgName());
+			}
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();	
+		 }
 	}

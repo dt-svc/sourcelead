@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest;
 
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,26 +70,41 @@ public class RequirementReleaseRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getAllContactsbyOrgLocationIdAndUserIdForRequirement")
-	public @ResponseBody String getAllContactsbyOrgLocationIdAndUserIdForRequirement(String requirementId, String status, HttpServletRequest request) throws Exception {
+	public @ResponseBody String getAllContactsbyOrgLocationIdAndUserIdForRequirement(String requirementId, String vendors, String status, HttpServletRequest request) throws Exception {
 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    String resultJson;
+	    String[] vendorsRelationId = null;
+	    if(vendors != ""){
+	    	vendorsRelationId = vendors.split(",");
+	    }
 	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),status);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<OrgSpoc>  contactsList = null;	
 		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
-				if(orgRelation.getLocationId().getId() == orgLocations.getId()){
-					contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
-				}
-				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
-					contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
-				}
+		    	
+					if(orgRelation.getLocationId().getId() == orgLocations.getId()){
+						contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
+					}
+					if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
+						contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
+					}
+					
+					for (Iterator<OrgSpoc> it = contactsList.iterator(); it.hasNext(); ) {
+
+						OrgSpoc orgSpoc = it.next();
+					    if ((vendorsRelationId != null && !Arrays.asList(vendorsRelationId).contains(orgSpoc.getOrgRelations().getId().toString())) || (orgSpoc.getSpocStatus().equalsIgnoreCase("In-Active"))) {
+					       it.remove();
+					    }
+					}
 			}
+		    if(contactsList != null){
+		    	for(OrgSpoc contact : contactsList){
+			    	Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), contact.getId());
+			    	contact.setReleasedRequirement(isJobReleased.toString());
+				}
+		    }
 		    
-		    for(OrgSpoc contact : contactsList){
-		    	Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), contact.getId());
-		    	contact.setReleasedRequirement(isJobReleased.toString());
-			}
 			 resultJson = commonUtil.toJSON(contactsList);
 			 return resultJson;
 		}
@@ -102,12 +119,12 @@ public class RequirementReleaseRestController {
 	 */
 	 
 	@RequestMapping(value = "/getVendorListsForReleaseRequirement")
-	public @ResponseBody String getVendorListsForReleaseRequirement(String requirementId, String status,HttpServletRequest request) throws Exception {
+	public @ResponseBody String getVendorListsForReleaseRequirement(String requirementId, String vendorStatus, HttpServletRequest request) throws Exception {
 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    String resultJson;
 	    
-	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),status);
+	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),vendorStatus);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    //List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
  

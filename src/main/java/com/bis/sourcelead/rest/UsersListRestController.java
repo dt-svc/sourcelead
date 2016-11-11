@@ -1,13 +1,26 @@
 package com.bis.sourcelead.rest;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Writer;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
@@ -143,6 +157,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 
 	}
 	
+	
 
 	/**
 	 * Forward to user controller by using userId as request param
@@ -226,8 +241,11 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					
 					//to assign primary role to another user
 					UserRole existinguserRole = userRoleService.getNotPrimaryUser(userId);
-					existinguserRole.setIsPrimary(1);
-					userRoleService.addUserRole(existinguserRole);
+					if(existinguserRole != null){
+						existinguserRole.setIsPrimary(1);
+						userRoleService.addUserRole(existinguserRole);
+					}
+					
 				}
 			
 				return "success";
@@ -242,6 +260,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	  */
 	 @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
 	 @ResponseBody String updateUser(@RequestParam(value="json", required=false) String json,@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value="emailId", required=false) String emailId,HttpServletRequest request) throws Exception{
+
 				
 				 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -249,6 +268,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				User user = userService.getUserById(userId);
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 				
+
 				json = "{"+json+"}";
 			    JSONObject jsonObj = new JSONObject(json);
 			    String password = "";
@@ -280,8 +300,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					userRoleService.addUserRole(userRole);
 					
 					if(isUserActive == false && !emailId.equalsIgnoreCase(jsonObj.getString("EmailId"))){
-						userService.sendEmail(user,orgLocations.getId(),loginUser,password);
-					}
+						userService.sendEmail(user,loginUser,password,orgLocations.getId());
+                     }
 				}
 			    Employees employees = employeesService.getEmployeeByUserId(userId);
 			    if(employees !=  null){

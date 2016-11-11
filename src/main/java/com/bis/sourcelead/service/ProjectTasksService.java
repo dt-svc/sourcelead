@@ -29,6 +29,8 @@ public interface ProjectTasksService {
     
     public List<ProjectTasks> getAllTasksByProjectId(Long projectId)throws Exception;
     
+    public List<ProjectTasks> getAllTasksByProjectIdAndExistedProjectTaskIds(Long projectId,List<Long> avilableProjectTaskIds)throws Exception;
+    
     public Collection	<ProjectTasks> getAllSourceleadTasks()throws Exception;
     
     public String saveProjectTasksByProjectId(Long projectId,JSONObject jsonObj) throws Exception ;

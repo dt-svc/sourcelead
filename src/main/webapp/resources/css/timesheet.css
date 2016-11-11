@@ -5,9 +5,9 @@ body {
 :focus, a:focus {
     outline:none;
     }      
-
-a { cursor:pointer;}
  
+a { cursor:pointer;}
+  
 .timesheet_out {
     width:auto; padding:0px 0px 0px 0px; position:relative;
     }
@@ -69,7 +69,7 @@ a { cursor:pointer;}
 .export_pop ul:after, .approved_pop ul:after {
     bottom: 100%; left: 80%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
     border-color: rgba(136, 183, 213, 0); border-bottom-color: #fff; border-width: 8px; margin-left: -8px;
-    
+     
     }  
 .export_pop ul li, .approved_pop ul li {
     list-style-type:none; padding:3px 10px; margin:0px 0px; width:100%; position:relative;
@@ -81,12 +81,12 @@ a { cursor:pointer;}
     }
 .approved_pop ul li label {
     margin:0px; position:relative; top:-3px; left:5px; font-weight:500; float:left;
-	overflow: hidden;
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 120px;
     }  
-    
+     
 .approved_pop ul li b {
     position:absolute; background-color:#3081cb; padding:1px 3px; border-radius:3px; margin:0px 0px 0px 7px; right:10px;
     font-size:10px; font-weight:600; color:#FFF; line-height:13px; top:5px; text-shadow:0px 1px 1px rgba(0,0,0,0.5);
@@ -99,9 +99,9 @@ a { cursor:pointer;}
 .export_pop ul li:hover, .approved_pop ul li:hover {
     background-color:#efefef;
     }
- 
-    
-        
+  
+     
+         
 .timesheet_table {
     width:100%; font-size:14px; font-weight:400; max-height:430px; overflow-y:auto;
     }
@@ -152,11 +152,11 @@ a { cursor:pointer;}
 .timesheet_table table tr td b.proj_process { background-color:#ff9800;}
 .timesheet_table table tr td b.proj_draft { background-color:#656565;} 
 .timesheet_table table tr td b.proj_withdraw { background-color:#8c1fde; cursor:pointer;}
- 
+  
 .pname {
     border-top:1px solid #ededed; padding:0px 5px !important;
     }
-    
+     
 .timesheet_table table table tr td:first-child {
     width:13%; border:none; padding:6px 5px; border-top:1px solid #dadada;
     }
@@ -188,8 +188,8 @@ a { cursor:pointer;}
 .inline_field:-ms-input-placeholder { color: #333; }
 .inline_field:placeholder { color: #333; }
 input.inline_field::-moz-placeholder { color: #333; }-->*/
- 
-            
+  
+             
 .timesheet_table table table div {
     position:relative;
     }
@@ -216,23 +216,22 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 /*.timesheet_table table table div:hover .timesheet_comm {
     visibility:visible;
     }*/
-    
+     
 .timesheet_bot {
     padding:15px;
     }
 .timesheet_week_comm {
-    float:left; width:60%;
     }      
+.commentTime {
+	float:right; width:50%;
+	}	
 .timesheet_week_comm textarea {
-    width:70%; height:60px; font-size:13px; font-weight:500; color:#333; padding:5px 10px; resize:none; border-radius:3px;
-    background-color:#fff; border:1px solid #dcdcdc; display:inline-block; float:left; margin:0px 10px 0px 0px;
+    width:100%; font-size:13px; font-weight:500; color:#333; padding:5px 10px; resize:none; border-radius:3px;
+    background-color:#fff; border:1px solid #a2d1fc;display:inline-block; float:left; margin:0px 10px 0px 0px; height:50px;
     }
 .timesheet_week_comm textarea:focus {
-    border:1px solid #c3e2ff; box-shadow:0px 0px 5px #b3dbff;
+    border:1px solid #a2d1fc; box-shadow:0px 0px 5px #a2d1fc;
     }  
-.timesheet_week_comm span {
-    position:relative; display:inline-block; float:left; width:27%; text-align:center;
-    }
 .timesheet_week_comm strong {
     position:relative; display:inline-block; float:left; width:27%;
     }
@@ -250,9 +249,22 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .timesheet_week_comm strong i {
     position:absolute; left:9px; z-index:1000; top:11px; color:#FFF;
 }
-.timesheet_week_comm span input {
-    width:100%; opacity:0; position:relative; z-index:11; height:32px; cursor:pointer;
+.commentFile {
+	width:50%; float:left;
+	}
+.timesheet_week_comm span {
+	padding:0px 0px 8px 0px; display:inline-block; width:100%;
     }
+.timesheet_week_comm span input {
+	width:85%; display:inline-block; background-color:#367fa9; height:35px; border:1px solid #1f6791; padding:5px 5px;
+	border-radius:2px; color:#fff; margin:10px 0 0 0;
+    }
+.timesheet_week_comm span i {
+	display:inline-block; font-size:20px; padding:0px 0px 0px 10px; color:#454545; cursor:pointer;
+	}
+.timesheet_week_comm span .fa-times {
+	color:#ef3d3d;
+	}		
 .timesheet_week_comm label {
     position:absolute; top:0px; left:0px; width:100%; background-color:#3081cb; padding:7px 12px 7px; z-index:10; margin:0px;
     color:#FFF; font-size:13px; border-radius:3px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; cursor:pointer;
@@ -270,7 +282,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     padding:0px 6px 0px 2px;
     }      
 .timesheet_button {
-    float:right;
+	text-align:right; padding:15px 0px 0px 0px;
     }  
 .time_btn {
     border-radius:2px; padding:5px 15px; border:1px solid #367fa9; background-color:#3c8dbc; font-size:14px; font-weight:500; color:#FFF;
@@ -291,9 +303,9 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .time_btn:hover {
     background-color:#367fa9;
     }
- 
+  
     /*    Responsive Code    */
-    
+     
 .timesheet_table_res {
     display:none;
     }
@@ -357,7 +369,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .res_total_hours span {
     font-size:13px; font-weight:500; color:#333; display:block; padding-bottom:10px;
     }  
-    
+     
     /*    Timesheet approval Css    */
 .timesheet_appr_wrap {
     background-color: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
@@ -390,9 +402,9 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     right:-4px;
     }  
 .timesheet_appr_wrap .export_pop ul li, .timesheet_appr_wrap .approved_pop ul li { margin:0px;}
- 
- 
- 
+  
+  
+  
 .timesheet_appr_table {
     width:100%;
 }  
@@ -499,9 +511,9 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     border: 1px solid #13aa37; background-color: #30c453;
     }
 .time_appr_side_wrap .time_dra:hover {background-color: #13aa37;}  
-    
+     
     /*    Timesheet approval Css    */
- 
+  
 .timesheet_status_wrap .timesheet_head ul   {
     padding:2px 0px;
     }
@@ -552,10 +564,10 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .time_newhead_pop_inn li p b {
     display:block; font-weight:400; color:#666; font-size:12px;
     }                      
- 
-    
+  
+     
     /*    Project Css    */
- 
+  
 .project_wrap {
     background-color: #f5f5f5; padding: 0px 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
     }
@@ -612,7 +624,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .project_wrap_table table tr td div b.proj_active { background-color:#34c244;}
 .project_wrap_table table tr td div b.proj_deactivate { background-color:#ef4c4c;}
 .project_wrap_table table tr td div b.proj_process { background-color:#d98f47;}
- 
+  
 .proj_show { cursor: pointer; color:#333;}                 
 .proj_show i {
     font-size:12px; color:#375d81; float:right; padding:4px 0px 0px 0px; visibility:hidden; opacity:0;
@@ -623,7 +635,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .clients_wrap_table table tr:hover .proj_show i {
     visibility:visible; opacity:1;
     }  
- 
+  
 .project_side_wrap {
     width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
     transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
@@ -635,8 +647,8 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .project_side_wrap_inn {
     position:relative; padding:10px;
     }
-    
-    
+     
+     
 .project_inn_mask {
     position:absolute; width:100%; height:100%; background-color:rgba(0,0,0,0.4); left:0px; top:0px; z-index:15000; display:none;
     }
@@ -791,7 +803,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .project_details_cta span b.proj_option { background-color:#3186d6;}
 .project_details_cta span b.proj_deactivate { background-color:#d94747;}
 .project_details_cta span b.proj_process { background-color:#d98f47;}      
-    
+     
 .project_detfield {
     width:100%; padding:1px 5px; font-size:13px; border:none; overflow: hidden; background-color:transparent;
     font-weight:500; color:#454545;
@@ -820,12 +832,12 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .project_tabs nav ul {
     float:right; margin:0px 0px; padding:8px 10px;
 }
- 
+  
 .project_wrap nav ul {
     padding:10px; margin:0px; float:right;
 }
- 
- 
+  
+  
 ::-webkit-scrollbar {
     width: 6px; height: 6px; border-radius:2px;
 }
@@ -838,10 +850,10 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 ::-webkit-scrollbar-thumb {
     background: #368ee0
 }
-    
- 
+     
+  
     /*    Clients Css    */
- 
+  
 .clients_wrap {
     background-color: #f5f5f5; padding: 0px 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
     }
@@ -941,16 +953,16 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     color:#333;
 }
 .clients_side_wrap table a .fa-edit { padding:0px;}
- 
+  
 .clients_wrap nav ul {
     padding:10px 10px; margin:0px; float:right;
 }
- 
-    
+  
+     
         /*    Clients Css    */
- 
-        /*    User summary css    */  
- 
+  
+        /*    User summary css    */ 
+  
 .user_summ_wrap {  
     }
 .user_summ_wrap .project-tabs-menu {
@@ -1015,7 +1027,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .user_change_img:hover a {
     bottom:0px;
 }
- 
+  
 .user_details_cta .project_details_cta {
     width:100%; float:none;
 }  
@@ -1048,13 +1060,13 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     width: 120px; background: url("../images/arrow-d-g.png") no-repeat 90% center; background-size: 10px;
 }
 .user_role select:focus {box-shadow: 0px 0px 2px rgba(54,142,224,1);}
- 
- 
+  
+  
 .timesheet_status_wrap .approved_pop { right:23px;}
- 
-        /*    User summary css    */  
- 
- 
+  
+        /*    User summary css    */ 
+  
+  
 .user_summ_wrap_table {
     width:100%; max-height:440px; overflow-y:auto;
 }
@@ -1090,16 +1102,16 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .user_summ_wrap_table:focus {
     font-size:13px; overflow: hidden; background-color:#fff; box-shadow:0px 0px 1px rgba(0,0,0,0.5);
     }
-    
+     
 .user_summ_wrap nav ul {padding:10px 10px; margin:0px; float:right;}
 .user_summ_wrap .project_tabs_inn_table { max-height:none; border:none; overflow:hidden;}  
- 
- 
+  
+  
 .useredit { text-align:right; padding-bottom:10px;}
 .useredit a { font-size:13px; font-weight:500; color:#454545; padding:2px; margin:0px 0px 0px 15px;}
 .useredit a i { padding:0px 6px 0px 0px;}
- 
- 
+  
+  
 .user_summary_edit {
     position:absolute; width:100%; height:100%; background-color:#FFF; box-sizing:border-box; left:40px; top:0px;
     padding:10px 10px; display:none; box-shadow:0px 0px 3px rgba(0,0,0,0.3);
@@ -1138,14 +1150,14 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .user_summary_edit_cta select.rate_sele:focus {
     width:50%; margin:0px 0px 0px 1%;
 }
- 
+  
 .remove_user_pop  {
     position:absolute !important; background-color:#f9f9f9; box-shadow:0px 0px 5px rgba(0,0,0,0.3); width:250px; right:20px; top:50px;
     z-index:100; display:none;
 }
 .remove_user_pop.remove_user_pop_a  {
     right:0px; top:25%; left:0px; margin:0px auto; z-index:15500; width:300px;
-    
+     
 }
 .remove_user_pop  p {
     padding:5px 15px; margin:0px; width:auto; float:none; text-align:left; font-size:13px; color:#666;
@@ -1160,7 +1172,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .remove_user_pop textarea {
     width:92%; margin:3px 4% 4%; padding:5px 10px; height:100px;
 }
- 
+  
 .user_summary_edit_cta input.us-btn {
     width:49%; background-color:#375d81; margin-top:10px; font-size:14px; font-weight:500; color:#fff; box-shadow:0px 0px 0px #000;
     }
@@ -1168,8 +1180,8 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     box-shadow:0px 0px 0px #000;
 }  
 .user_summary_edit_cta input.us-btn.us-btn_a {background-color:#ff4b4b;}
- 
- 
+  
+  
 .time_pop {
     position:absolute !important; bottom:35px; left:0px; display:none; margin:0px auto; width:310px; right:0px;
     z-index:800; top:80px; text-align:right; max-height:90px;
@@ -1193,15 +1205,15 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     cursor:pointer; display:inline-block; padding:2px; margin:0px 0px 0px 5px; color:red; position:absolute; right:10px;
     top:2px;
 }
- 
+  
 /*.data_loading {
     position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;
     background-image:url("../images/loading.gif"); background-position:center; background-repeat:no-repeat;
     background-size:50px;
 }*/
- 
+  
     /*   Timesheet approval div   */
- 
+  
 .timesheet_appr_table ul {
     background-color:#FFF; margin:0px 0px; padding:0px 0px; width:100%;
 }
@@ -1239,7 +1251,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .timesheet_appr_table ul.table_details li + li + li {
     padding:15px 0px;
 }
- 
+  
 .success_pop {
     position:fixed; text-align:left; margin:0px auto; left:0px; right:0px; top:54px; display:none;
     background-color:#34c244; z-index:10000; padding:3px 15px; width:350px; border-radius:4px; font-size:15px; font-weight:500;
@@ -1262,7 +1274,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .remove_pop span {
     position:relative; top:-6px;
 }
-    
+     
 .table_nodata {
     width:100%; background-color:#FFF; padding:30px 0px; text-align:center; border-top:1px solid #dedede;
     }
@@ -1279,15 +1291,15 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     display:block; font-size:15px; font-weight:500; padding:10px 0px 0px 0px;
     }
 .downicon { display:inline-block !important; width:78%; float:left; clear:both;}                           
- 
- 
+  
+  
 /********************* Back To Top *******************/
- 
+  
 .backtotop {
     width:30px; position:fixed; bottom:20px; right:10px; cursor:pointer; display: none; outline:none !important; z-index:30; text-align:center;
 }
 .backtotop img { width:100%;}
- 
+  
 .user_badg {
     background-color:#FFF; padding:8px 0px 0px 0px;
     }
@@ -1297,7 +1309,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .user_badg p strong {
     float:right; margin-top:2px;
     }
-    
+     
 .app_error_mes {
     width:300px; background-color:#FFF; border-radius:3px; position:fixed; right:-550px; top:250px; z-index:1000;
     padding:15px 20px; box-shadow:0px 0px 8px rgba(0,0,0,0.5); font-size:14px; border:1px solid #368ee0;
@@ -1306,19 +1318,19 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .app_error_mes.app_error_mes_active {
     right:160px;
     }          
-        
+         
 .side_mask {
     position:fixed; width:100%; height:100%; background-color:rgba(0,0,0,0.6); top:0px; left:0px; z-index:9999; display:none;
     background-image:"../images/cancel.png"; background-repeat:no-repeat; background-position:10% 40px;
     }      
-    
+     
 .modal-backdrop { z-index:10400;}
 .modal { z-index:10500;}
- 
- 
- 
+  
+  
+  
     /*    Vendors Css    */
- 
+  
 .vendor_wrap {
     background-color: #f5f5f5; padding: 0px 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
     }
@@ -1349,7 +1361,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .project_tabs_inn_table.vendor_wrap_inn_table tr th {
     text-align: center;
     }
- 
+  
 .vendorfild {
     border:none; border-bottom:1px solid #bdbdbd; background-color: transparent; padding:3px 5px; width:55px;
     transition:0.3s all ease-in-out; -webkit-transition:0.3s all ease-in-out; -moz-transition:0.3s all ease-in-out;
@@ -1419,16 +1431,16 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .vendor_wrap_inn_table table tr td div .fa-pencil {
     display:inline-block; color:#368ee0; padding:0px 10px 0px 0px; font-size:16px;
     }  
-    
+     
 .side_mask .proj_close {
     width:60px; height:60px; background-color:#fff; box-shadow:0px 0px 3px rgba(0,0,0,0.4); text-align:center; position:relative;
     cursor:pointer; border-radius:50%; background-image:url(../images/cancel.png); background-repeat:no-repeat; background-position:center;
     background-size:20px; left:11%;
     }  
-        
+         
     /*    Candidate Css    */
-    
-    
+     
+     
 .candidate_wrap_table {
     width:100%;
     }  
@@ -1465,15 +1477,15 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .candidate_wrap_table tr:hover .proj_show i {
     visibility:visible; opacity:1;
     }          
-    
-    
+     
+     
 /*    Requirement Css    */
-    
-    
+     
+     
 .require_wrap_table {
     width:100%; overflow-y:auto;
     }
-.require_wrap_table.recommend_table {}	  
+.require_wrap_table.recommend_table {}    
 .require_wrap_table table {
     width:100%; font-size:14px; font-weight:400; border-bottom:1px solid #CCC; border:none;
     }
@@ -1509,8 +1521,8 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }
 .require_wrap_table.recommend_table table tr td:last-child {
     width:auto; padding:5px 5px;
-    } 	
-	         
+    }   
+              
 .require_wrap_table span {
     display:inline-block; max-width:140px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;
     }  
@@ -1537,7 +1549,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .require_wrap_table .glyphicon {}
 .require_wrap_table .glyphicon:hover { color:#f15a29;}     
 .require_wrap_table .fa-edit { cursor:pointer; display: inline-block; padding: 0px 0px 0px 5px;}
-    
+     
 .pipeline_graf {
     display:none; text-align:center; padding:0px 10px 10px; background-color:#ededed;
     }
@@ -1551,7 +1563,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .graf_icon i {
     display:inline-block; padding:0px 8px 0px 0px; color:#454545; font-size:18px;
     }  
-    
+     
 .require_wrap_details {
     padding:20px; min-height:450px;
     }
@@ -1594,7 +1606,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .require_one .fa-inr {
     cursor:pointer; color:#368ee0; padding:0px 5px 0px 0px; font-size:15px;
     }  
-    
+     
 .user_summary_edit.user_summary_edit_a  {
     z-index:11000; left:0px; top:40px; height: auto; min-height:91.5%;
     }  
@@ -1613,18 +1625,18 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .calendar {
     background-image:url("../images/calendar.png"); background-repeat:no-repeat; background-position:96% center; background-size:18px;
     }          
-    
+     
 .client_summary_edit {
     left:0px; height:auto;
     }          
-    
+     
 .last_td {
     border-bottom:1px solid #dedede; padding:1px 4px !important; width:105px; text-align:center;
     }
 .last_td .glyphicon {
     font-size: 12px; padding: 0px 0px 0px 4px; cursor: pointer; margin: 0px 1px; color: #368ee0; position: relative; top: 3px;
     }  
-    
+     
 .select-fild {
     display:inline-block; padding:0px 0px 0px 10px;
     }
@@ -1636,11 +1648,11 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .select-fild select option {
     background-color:#FFF; color:#333; font-size:13px; height:20px;
     }
-    
+     
 .remove_search {
     position:absolute; right:10px; top:10px;
     }  
-    
+     
 .remove_search input {
     margin: 0px; border: none; border-bottom: 1px solid #bdbdbd; padding: 3px 25px 3px 5px; background-color: transparent;
     width: 210px; background-image: url("../images/search-icon.png"); background-repeat: no-repeat; background-position: 98% center;
@@ -1649,7 +1661,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .remove_search input:focus {
     border-bottom: 1px solid #368ee0;
     }
- 
+  
 .clients_wrap_table {
 width: 100%;
     }  
@@ -1680,9 +1692,9 @@ width: 100%;
     padding: 0px 5px 0px 0px; display: inline-block; color: #368ee0;
     }
 .clients_wrap_table table tr td div a .fa-edit { padding:0px;}         
-    
-        
-    
+     
+         
+     
 @media screen and (max-width: 1100px){
 .timesheet_table table table tr td {padding: 8px 2px;} 
 .timesheet_out { padding: 0px 0px 30px 0px;}
@@ -1691,10 +1703,10 @@ width: 100%;
 .project_side_wrap { width:85%; top:155px;}
 .timesheet_table, .project_tabs_inn_table { width:auto; overflow-x:auto;}
 .timesheet_table table, .project_tabs_inn_table table { min-width:850px;}
- 
-    
+  
+     
 }  
- 
+  
 @media screen and (max-width: 1023px){
 .timesheet_wrap {
     padding:0px; margin:0px 0px; box-shadow:0px 0px 3px rgba(0,0,0,0.4);
@@ -1705,7 +1717,7 @@ width: 100%;
 .timesheet_week_comm textarea {width:70%;}
 .timesheet_week_comm span { width:27%;}
 .res_total_hours { display:block;}
- 
+  
 .project_field { width:60%;}   
 .proj_show i {
     visibility: visible; opacity:1;
@@ -1715,13 +1727,13 @@ width: 100%;
 .clients_wrap_table { overflow:auto; width:auto;}  
 .clients_wrap_table table { min-width:900px;}
 .project_details_cta { width:100%;}
- 
+  
 .project_details textarea { width:100%;}
 .user_details_cta { width:62%;}
- 
- 
+  
+  
 }
- 
+  
 @media screen and (max-width: 766px){
 .timesheet_week_comm { width:100%; float:none; padding-bottom:12px;}
 .timesheet_button { width:100%; text-align:right; float:none;}
@@ -1732,7 +1744,7 @@ width: 100%;
 .pullRight { display:none;}
 .content-wraper .content-header { padding:6px 0px 15px 0px;}
 .content-wraper .content-header h2 {font-size:20px;}
- 
+  
 .user_summ_wrap .project_details { padding:20px 15px;}
 .user_details_cta { width:100%; padding:20px 0px 0px 0px; box-shadow:0px 0px 3px rgba(0,0,0,0.2);}
 .user_details_cta_img { width:268px; margin:10px auto 15px; float:none;}
@@ -1740,10 +1752,10 @@ width: 100%;
     position:fixed; left:0px; right:0px; z-index:10000; top:0px; padding:20px 10px 20px 10px; max-height:100%; overflow-y:auto;
     }
 .footer-area { height:auto; font-size:12px;}   
- 
- 
+  
+  
 }
- 
+  
 @media screen and (max-width: 598px){
 .timesheet_head { padding:2px 0px;}
 .timesheet_head ul { width: 100%; float:right;}
@@ -1764,21 +1776,21 @@ width: 100%;
 .project_details { padding:10px;}
 .project_details_cta { width:350px; float:none;}
 .project_details_cta span { width:52%;}
- 
+  
 .project-tabs-menu { padding:0px;}
 .project-tabs-menu li { margin:0px 2px 0px 0px;}
 .project-tabs-menu li a { padding:7px 10px;}
- 
+  
 .clients_wrap .timesheet_head ul li span { display: inline-block;}
 .clients_wrap .timesheet_head ul, .user_summ_wrap .timesheet_head ul, .project_wrap .timesheet_head ul { width:auto;}
 .clients_wrap .timesheet_head .glyphicon-play { opacity:1; top:7px; font-size:11px;}
- 
+  
 .timesheet_status_wrap .timesheet_head ul li span {display:inline-block;}
 .timesheet_status_wrap .timesheet_head .glyphicon-play { opacity:1; top:7px; font-size:11px;}
- 
+  
 .user_summ_wrap .timesheet_head ul li span {display:inline-block;}
 .user_summ_wrap .timesheet_head .glyphicon-play { opacity:1; top:7px; font-size:11px;}
- 
+  
 .pagination > li > a, .pagination > li > span { padding:6px 9px;}
 .user_summ_wrap .project_details_cta strong { width:100px;}
 .timesheet_appr_wrap .timesheet_head .glyphicon-play {
@@ -1791,17 +1803,17 @@ width: 100%;
 .timesheet_appr_wrap .timesheet_head ul li:first-child + li + li + li { width:auto; margin: 5px 0px 5px 5px;}
 .project_wrap .timesheet_head ul li:first-child + li + li + li span { display:inline-block; width:auto;}
 .project_wrap .timesheet_head ul li:first-child + li + li + li { width:auto; margin: 5px 0px 5px 5px;}
- 
+  
 .project_wrap  .timesheet_head ul li span {display:inline-block;}
- 
+  
 .user_summary_edit_cta { width:94%; margin: 0.5% 3%;}
- 
+  
 }
- 
- 
- 
+  
+  
+  
     /*   pagination styles   */
-    
+     
 .dataTables_info {
     font-size: 14px; padding: 15px 0px 0px 15px !important; color: #666 !important;
     }  
@@ -1848,22 +1860,22 @@ width: 100%;
 .dataTables_wrapper .dataTables_paginate {
     color: #333 !important; padding: 8px 15px 8px 0px !important;
     }  
-    
-    
+     
+     
 .clients_wrap_table .fa-check, .vendor_wrap_inn_table .fa-check  {
     font-size:16px; padding:2px 3px; cursor:pointer; margin:0px 3px; color:#30c453;
     }
 .clients_wrap_table .fa-times, .vendor_wrap_inn_table .fa-times {
     font-size:16px; padding:2px 3px; cursor:pointer; margin:0px 3px; color:#f04d4d;
     }
-    
+     
 .project_tabs_inn_head.team_search {
     padding:5px 245px 5px 10px;
     }
 .team_search .edit-details {
     right: 280px;
     }  
-    
+     
 .new-tabs {
     margin:0px 0px; padding:0px 0px 0px 10px; position:relative; top:1px;
     }
@@ -1902,7 +1914,7 @@ width: 100%;
 .require_wrap_table table tr:hover .new_show i {
     visibility:visible; opacity:1;
     }                              
-    
+     
 .project_side_wrap_inn_tabs {
     position:relative;
     }
@@ -1938,34 +1950,34 @@ width: 100%;
 .no_pad {
     padding:0px;
     }  
-    
+     
 .rec_head { height:40px;}      
- 
- 
+  
+  
 .add_inter {
     width:100%; padding:5px; z-index:10000; box-sizing:border-box;
     }
 .add_inter_head {
-	padding:5px 10px 10px 5px; font-size:15px; font-weight:500; color:#333; position:relative;
+    padding:5px 10px 10px 5px; font-size:15px; font-weight:500; color:#333; position:relative;
     }  
 .add_inter_head span {
-	float:left;
-	}
+    float:left;
+    }
 .add_inter_head a {
-	float:right; font-size:14px; font-weight:500; color:#333;
-	}
+    float:right; font-size:14px; font-weight:500; color:#333;
+    }
 .add_inter_head a i {
-	display:inline-block; padding:0px 5px 0px 5px;
-	}	
+    display:inline-block; padding:0px 5px 0px 5px;
+    }   
 .add_inter_head a:hover {
-	color:#3081cb;
-	}			
+    color:#3081cb;
+    }           
 .add_inter table {
     width:100%; font-size:14px; font-weight:400; border-right:1px solid #eae6e6; border-bottom:1px solid #eae6e6;
     }
 .add_inter table tr:nth-child(even) {background: #fff;}
 .add_inter table tr:nth-child(odd) {background: #f5f5f5;}      
-        
+         
 .add_inter table tr th {
     background-color:#375d81 !important; font-weight:400; color:#FFF; text-align:center; padding:0px; height:35px; border-right:1px solid #4a77a3;
     }
@@ -1988,42 +2000,42 @@ width: 100%;
     margin-top: 0px !important;
     }
 .wi1 {
-	width:100px;
-	}	
+    width:100px;
+    }   
 .add_inter .btn-group {
-	width:auto;
-	}	
+    width:auto;
+    }   
 .add_inter table .btn {
-	max-width:120px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; padding:4px 25px 4px 10px !important;
-	}	
-.add_inter table .caret	{
-	right:8px;
-	}
+    max-width:120px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; padding:4px 25px 4px 10px !important;
+    }   
+.add_inter table .caret {
+    right:8px;
+    }
 .add_inter .chosen-results {
-	float:none;
-	}
+    float:none;
+    }
 .re-one {
-	width:100%;	 visibility:visible; opacity:1; position:static;
-	}
+    width:100%;  visibility:visible; opacity:1; position:static;
+    }
 .pad1 {
-	padding:10px; text-align:right;
-	}
+    padding:10px; text-align:right;
+    }
 .pad2 {
-	padding:0px 15px 0px 10px; 
-	}			
+    padding:0px 15px 0px 10px; 
+    }           
 .add_inter .candidateHead ul li:first-child {margin-top: 0px !important;}
-
+ 
 .ne-ch {
-	display:inline-block; padding:0px 0px 0px 10px;
-	}
+    display:inline-block; padding:0px 0px 0px 10px;
+    }
 .ne-ch label {
-	display:inline-block; padding:0px 10px;
-	}
-.ne-ch input { position:relative; top:2px; display:inline-block; padding:0px 5px 0px 0px;}	
+    display:inline-block; padding:0px 10px;
+    }
+.ne-ch input { position:relative; top:2px; display:inline-block; padding:0px 5px 0px 0px;}  
 .ne-ch b {
-	font-weight:400; display:inline-block; padding:0px 0px 0px 5px;
-	}	
-
+    font-weight:400; display:inline-block; padding:0px 0px 0px 5px;
+    }   
+ 
 .new_side_wrap {
     width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
     transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
@@ -2036,8 +2048,8 @@ width: 100%;
     position:relative; margin:15px; background-color:#fff; box-sizing:border-box; border-radius:3px; box-shadow:0px 0px 3px rgba(0,0,0,0.2);
     }
 .new_side_wrap_cta {
-	width:100%; padding:15px; box-sizing:border-box;
-	}
+    width:100%; padding:15px; box-sizing:border-box;
+    }
 .add_inter_wrap {
     width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
     transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
@@ -2047,9 +2059,9 @@ width: 100%;
     right:0px;
     }
 .new_side_wrap_inn .input-groupAddon {
-	right:0px; height:30px;
-	}
-	
+    right:0px; height:30px;
+    }
+     
 .add_offer_wrap {
     width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
     transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
@@ -2059,41 +2071,41 @@ width: 100%;
     right:0px;
     }
 .add_offer_wrap .input-groupAddon {
-	right:0px;
-	}
+    right:0px;
+    }
 .block {
-	display:block !important;
-	}	
+    display:block !important;
+    }   
 .add_offer_wrap .input-group { width:200px;}
-.add_offer_wrap .input-group span { padding: 5px 25px 5px 10px !important;}	
+.add_offer_wrap .input-group span { padding: 5px 25px 5px 10px !important;} 
 .file1 { padding: 5px 12px !important; width:100px !important;}
-.file-btn { width:100px !important;}	
+.file-btn { width:100px !important;}    
 .float { float:left; margin:0px 3px;}
-
+ 
 .action-pop {
-	position:absolute; right:0px; top:30px; z-index:1000; display:none;
-	}
+    position:absolute; right:0px; top:30px; z-index:1000; display:none;
+    }
 .action-pop span {
-	background-color:#fff; padding:5px 0px !important; box-shadow:0px 0px 5px rgba(0,0,0,0.5); border-radius:5px; position:relative; display:block;
-	width:150px;
-	}	
+    background-color:#fff; padding:5px 0px !important; box-shadow:0px 0px 5px rgba(0,0,0,0.5); border-radius:5px; position:relative; display:block;
+    width:150px;
+    }   
 .action-pop span:after {
-	bottom: 100%; left: 85%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
-	border-color: rgba(136, 183, 213, 0); border-bottom-color: #ccc; border-width: 10px; margin-left: -10px;
-	}	
+    bottom: 100%; left: 85%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+    border-color: rgba(136, 183, 213, 0); border-bottom-color: #ccc; border-width: 10px; margin-left: -10px;
+    }   
 .action-pop a {
-	display:block; font-size:13.5px; padding:5px 12px; border-bottom:1px dotted #f1f1f1; color:#454545;
-	}
+    display:block; font-size:13.5px; padding:5px 12px; border-bottom:1px dotted #f1f1f1; color:#454545;
+    }
 .action-pop a i {
-	display:inline-block; padding:0px 5px 0px 0px;
-	}
+    display:inline-block; padding:0px 5px 0px 0px;
+    }
 .action {
-	}
+    }
 .action i {
-	display:inline-block; padding:0px 5px 0px 8px !important; color:#454545;
-	}	
-	
-	
+    display:inline-block; padding:0px 5px 0px 8px !important; color:#454545;
+    }   
+     
+     
 .shortlist-wrap {
     width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
     transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
@@ -2102,7 +2114,7 @@ width: 100%;
 .shortlist-wrap.shortlist-wrap_active {
     right:0px;
     }
-	
+     
 .submitnew-wrap {
     width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
     transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
@@ -2111,20 +2123,58 @@ width: 100%;
 .submitnew-wrap.submitnew-wrap_active {
     right:0px;
     }
-	
+     
 .sub-btn1 {
-	position:absolute; background-color:#3186d6; color:#fff !important; right:0px; padding:4px 20px; border-radius:2px; top:1px;
-	border:1px solid #2677c4;
-	}				
+    position:absolute; background-color:#3186d6; color:#fff !important; right:0px; padding:4px 20px; border-radius:2px; top:1px;
+    border:1px solid #2677c4;
+    }               
 .sub-btn1:hover {
-	background-color:#2677c4;
-	}	
-	
+    background-color:#2677c4;
+    }   
+     
 .pras {}
 .pras p {
     position: absolute; left:0px;
 }
 .pad-sea {
     display: inline-block; padding: 1px 280px 2px 0;
-}			
-		 		
+}           
+
+.pname .jquery_form_error_message{
+padding: 0px !important;
+font-size: 11px !important;
+color: red !important;
+display: block !important;
+width: 100% !important;
+}
+
+.timesheetAttachment {
+border: none !important;
+width: 60% !important;
+background-color: transparent !important;
+margin-bottom:15px !important;
+}
+.timesheetAttachment tr { background-color: transparent !important;}
+.timesheetAttachment td {
+	padding: 0px !important;
+	border: none !important;
+	width: 100% !important;
+	background-color: transparent !important;
+}
+
+.timesheetDocs{
+	width: 40%; float: left;
+}
+.timesheetDocs strong {
+	float: none; width: 100%;
+	}
+.timesheetDocs .commentFile	{
+	width: 100%;
+}
+#assignEmployeePagination_paginate { display: none !important;}	
+#assignEmployeePagination_info { display: none !important;}	
+.wrap_employeeTable  { height: 380px !important; overflow-y:scroll !important; overflow-x:hidden !important;}		 	
+	
+#assignEmployeePagination_wrapper .dataTables_filter {position: fixed !important; top: 69px !important; right: 3px !important;}	
+
+#assignTeam .modal-footer { border-top: none;}	

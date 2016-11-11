@@ -1,14 +1,28 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +54,8 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
@@ -52,9 +68,11 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TeamService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.PdfUtil;
 
 /**
  * 
@@ -98,6 +116,10 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	private RolesService rolesService;
 	
+	@Autowired
+	private UserRoleService userRoleService;
+	
+	
 	 @Autowired
 	 private  RequirementSubmissionService requirementSubmissionService;
 	 
@@ -109,6 +131,9 @@ public class RequirementServiceImpl implements RequirementService {
 	 
 	 @Autowired
 	 private OrgRelationsService orgRelationsService;
+	 
+	 @Autowired
+	 private PdfUtil pdfUtil;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -141,8 +166,15 @@ public class RequirementServiceImpl implements RequirementService {
 	        StringBuilder location = new StringBuilder();
 
 		    
-		    if (jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())){
+	        if (jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())){
 				requirement.setId(Long.parseLong(jsonObj.getString("requirementId")));
+				requirement.setUpdatedBy(user.getUserCode());
+				requirement.setUpdatedDate(commonUtil.currentDate());
+			}else{
+				requirement.setCreatedDate(commonUtil.currentDate());
+				requirement.setCreatedBy(user.getUserCode());
+				requirement.setUpdatedBy(user.getUserCode());
+				requirement.setUpdatedDate(commonUtil.currentDate());
 			}
 		    
 			if(orgLocations != null){
@@ -368,11 +400,13 @@ public class RequirementServiceImpl implements RequirementService {
 						rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
 						rah.setLevel(1);
 						  
+						rah.setHierarchyType(HIERARCHY_TYPE.PARALLEL);
 						rah.setCreatedDate(commonUtil.currentDate());
 						rah.setCreatedBy(user.getUserCode());
 						rah.setUpdatedBy(user.getUserCode());
 						rah.setUpdatedDate(commonUtil.currentDate());
 						  
+						
 						requirementApproverHierarchyList.add(rah);
 						  approverEmailScenario(user,approverUser,requirement,location);
 
@@ -393,6 +427,8 @@ public class RequirementServiceImpl implements RequirementService {
 					  
 					  rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
 					  rah.setLevel(1);
+					  
+					  rah.setHierarchyType(HIERARCHY_TYPE.SEQUENTIAL);
 					  
 					  rah.setCreatedDate(commonUtil.currentDate());
 					  rah.setCreatedBy(user.getUserCode());
@@ -416,6 +452,7 @@ public class RequirementServiceImpl implements RequirementService {
 					  rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
 					  rah.setLevel(2);
 					  
+					  rah.setHierarchyType(HIERARCHY_TYPE.SEQUENTIAL);
 					  rah.setCreatedDate(commonUtil.currentDate());
 					  rah.setCreatedBy(user.getUserCode());
 					  rah.setUpdatedBy(user.getUserCode());
@@ -467,12 +504,12 @@ public class RequirementServiceImpl implements RequirementService {
 						
 						requirementAssignTo.setRequirementId(requirement);
 						
-						requirementAssignTo.setCreatedDate(commonUtil.currentDate());
-						requirementAssignTo.setCreatedBy(user.getUserCode());
-						requirementAssignTo.setUpdatedBy(user.getUserCode());
-						requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
+						
 						requirementAssignTo.setTeamId(team);
-						requirementAssignTo.setRoleId(rolesService.getRolesByDisplayName(assUser.getUserType()));
+						
+						
+						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
+						requirementAssignTo.setRoleId(userRole.getRoles());
 						requirementAssignToList.add(requirementAssignTo);
 						AssignToTeamMembersEmail(user, assUser, requirement,location);
 
@@ -1293,7 +1330,13 @@ public class RequirementServiceImpl implements RequirementService {
 
 		
 	}
-
+	
+	@Override
+    public Requirement getRequirementByParentRequirementId(Long requirementId) throws Exception {
+        return requirementDao.getRequirementByParentRequirementId(requirementId);
+    }
+	
+	
 	@Override
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode)
 			throws Exception {
@@ -1308,5 +1351,203 @@ public class RequirementServiceImpl implements RequirementService {
 		
 			return requirementDao.getAssignedRequirementApproverListByOrgLocationIDAndUserId(orgLocationId,userId);
 			
+	}
+	
+	@Override
+	public List<Requirement> getRequirementListById(Long requirementId)throws Exception {
+			return requirementDao.getRequirementListById(requirementId);
+	}
+
+	@Override
+	public Integer validateJobId(Long id) throws Exception {
+		return requirementDao.validateJobId(id);
+	}
+
+
+	@Override
+	public File getExportRequirementFile(List<Requirement> requirementList, String orgName,String exportType) throws Exception {
+		
+		File file = null;
+		if (!"pdf".equalsIgnoreCase(exportType)) {
+			Workbook createExcelworkbook = new XSSFWorkbook();
+			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + dateFormat.format(new Date()));
+			Row writeRow = null;
+			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook);
+			int column = 0;
+			for (Requirement requirement : requirementList) {
+				writeRow = createExcelsheet.createRow(column + 9);
+				createExcelsheet = createXlsSheet(createExcelsheet, writeRow, requirement);
+				column++;
+			}
+			file = new File(orgName + "_Requirements_" + dateFormat.format(new Date()) + ".xls");
+			FileOutputStream fos = new FileOutputStream(file);
+			try {
+				createExcelworkbook.write(fos);
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else{
+			file = pdfUtil.getRequirementPdf(requirementList,orgName);
+		}
+			return file;	 
+	}
+
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Requirement requirement) {
+		
+		if(requirement.getId() != null){
+			 writeRow.createCell(0).setCellValue(requirement.getId()); 
+		}
+		if(requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle())){
+			 writeRow.createCell(1).setCellValue(requirement.getJobTitle()); 
+		}
+		if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
+			 writeRow.createCell(2).setCellValue(requirement.getMinExp()+"-"+requirement.getMaxExp()+" years"); 
+		}if((requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp())) || (requirement.getMaxExp() ==null)){
+			 writeRow.createCell(2).setCellValue(requirement.getMinExp()+" years");
+		}if((requirement.getMinExp() == null ) || (requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp()))){
+			 writeRow.createCell(2).setCellValue(requirement.getMaxExp()+" years");
+		}
+		
+		if(requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()) && requirement.getRateType() != null && !"".equalsIgnoreCase(requirement.getRateType())){
+			 writeRow.createCell(3).setCellValue(requirement.getRate()+" / "+requirement.getRateType()); 
+		}
+		if(requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())){
+			 writeRow.createCell(4).setCellValue(requirement.getCity()); 
+		}
+		if(requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())){
+			 writeRow.createCell(5).setCellValue(requirement.getSkills()); 
+		}
+		if(requirement.getManager() != null && !"".equalsIgnoreCase(requirement.getManager())){
+			 writeRow.createCell(6).setCellValue(requirement.getManager()); 
+		}
+		if(requirement.getPriority() != null && !"".equalsIgnoreCase(requirement.getPriority())){
+			 writeRow.createCell(7).setCellValue(requirement.getPriority()); 
+		}
+		if(requirement.getSubmissionTemplateId() != null ){
+			 writeRow.createCell(8).setCellValue(requirement.getSubmissionTemplateId().getTemplateName()); 
+		}
+		if(requirement.getClientName() != null && !"".equalsIgnoreCase(requirement.getClientName())){
+			 writeRow.createCell(9).setCellValue(requirement.getClientName()); 
+		}
+		if(requirement.getClientContactName() != null && !"".equalsIgnoreCase(requirement.getClientContactName())){
+			 writeRow.createCell(10).setCellValue(requirement.getClientContactName()); 
+		}
+		if(requirement.getClientContactEmail() != null && !"".equalsIgnoreCase(requirement.getClientContactEmail())){
+			 writeRow.createCell(12).setCellValue(requirement.getClientContactEmail()); 
+		}
+		return createExcelsheet;
+	}
+
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook) {
+		
+		CellStyle style = createExcelworkbook.createCellStyle();
+		style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		Font font = createExcelworkbook.createFont();
+		font.setColor(IndexedColors.BLACK.getIndex());
+		style.setFont(font);
+
+		writeRow = createExcelsheet.createRow(1);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell1 = writeRow.createCell(0);
+		cell1.setCellValue("Draft :");
+		cell1.setCellStyle(style);
+		Cell cell2 = writeRow.createCell(1);
+	    cell2.setCellValue("6");
+		cell2.setCellStyle(style);
+
+		writeRow = createExcelsheet.createRow(2);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell3 = writeRow.createCell(0);
+		cell3.setCellValue("Open :");
+		cell3.setCellStyle(style);
+
+		Cell cell4 = writeRow.createCell(1);
+		cell4.setCellValue("8");
+		cell4.setCellStyle(style);
+
+		writeRow = createExcelsheet.createRow(3);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell5 = writeRow.createCell(0);
+		cell5.setCellValue("New : ");
+		cell5.setCellStyle(style);
+
+		Cell cell6 = writeRow.createCell(1);
+		cell6.setCellValue("8");
+		cell6.setCellStyle(style);
+		
+		
+		writeRow = createExcelsheet.createRow(4);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell7 = writeRow.createCell(0);
+		cell7.setCellValue("Submitted : ");
+		cell7.setCellStyle(style);
+
+		Cell cell8 = writeRow.createCell(1);
+		cell8.setCellValue("9");
+		cell8.setCellStyle(style);
+		
+		writeRow = createExcelsheet.createRow(5);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell9 = writeRow.createCell(0);
+		cell9.setCellValue("On Hold : ");
+		cell9.setCellStyle(style);
+
+		Cell cell10 = writeRow.createCell(1);
+		cell10.setCellValue("4");
+		cell10.setCellStyle(style);
+		
+		writeRow = createExcelsheet.createRow(6);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell11 = writeRow.createCell(0);
+		cell11.setCellValue("Closed : ");
+		cell11.setCellStyle(style);
+
+		Cell cell12 = writeRow.createCell(1);
+		cell12.setCellValue("4");
+		cell12.setCellStyle(style);
+		createExcelsheet = setExcelHeader(createExcelsheet, style);
+
+		return createExcelsheet;
+	}
+
+	private Sheet setExcelHeader(Sheet createExcelsheet, CellStyle style) {
+		String headers [] = Constants.REQUIREMENT_EXCEL_HEADERS;
+		Row excelHeader = createExcelsheet.createRow(8);
+		 for (int i=0; i<headers.length;i++){
+		         Cell cell = excelHeader.createCell(i);
+		         cell.setCellValue(headers[i]);
+		         cell.setCellStyle(style);
+		     }
+		return createExcelsheet;
+
+	}
+	@Override
+	public Boolean checkRequirementIsReleasedOrNot(Long requirementId,Long orgLocationId) throws Exception {
+		   
+			Requirement  req = requirementDao.checkRequirementIsReleasedOrNot(requirementId,orgLocationId);
+			Boolean requirementReleased = true;
+			if(req!=null){
+				
+				return requirementReleased;
+			}else{
+				
+				return false;
+			}
+
 	}
 }

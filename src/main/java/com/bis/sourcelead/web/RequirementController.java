@@ -113,6 +113,11 @@ public class RequirementController {
 			model.addObject("requirementId",requirementId);
 			if(requirement.getClientId() != null){
 				List<OrgSpoc> clientContactList  = orgSpocService.getAllSpocsByOrgRelationId(requirement.getClientId().getId(), loginUser.getId(),orgLocations.getId());
+				if(clientContactList != null){
+					for(OrgSpoc orgSpoc : clientContactList){
+						orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName());
+					}
+				}
 			    model.addObject("clientContactList", clientContactList);
 			}
 		    
@@ -232,6 +237,13 @@ public class RequirementController {
 		}else{
 			model.addObject("clientSubmissions","N");
 		}
+		
+		Requirement parentRequirement = requirementService.getRequirementByParentRequirementId(requirementId);
+        if(parentRequirement != null){
+            model.addObject("parentRequirement","Y");
+        }else{
+            model.addObject("parentRequirement","N");
+        }
 		
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;

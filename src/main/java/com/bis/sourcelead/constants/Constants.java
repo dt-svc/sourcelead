@@ -40,7 +40,7 @@ public class Constants {
 	public static final String VENDOR_NAME = "Vendor Name*";
 
 	public static final Integer RECORD_ACTIVE = 1;
-	public static final Integer RECORD_INACTIVE = 1;
+	public static final Integer RECORD_INACTIVE = 0;
 	
 	
 	public static final Integer LEVEL1 = 1;
@@ -60,14 +60,17 @@ public class Constants {
 	
 	public static String ACCEPT_CLIENT_INVITATION = "Accept Client Invitation";
 	public static String ACCEPT_VENDOR_INVITATION = "Accept Vendor Invitation";
-	
+	public static String OFFER_MAIL_TO_VENDORS="Client to Vendor Acceptence";
 	public static String APPLICANT_INTERVIEW = "Applicant Interview";
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
 	
 	public static String SUBMIT_TO_CLIENT = "Submit To Client";
-	
+	public static String ADD_OFFER_MAIL ="Forward the Mail";
+
 	public static String VENDOR_INTERVIEW = "Vendors Interview";
 	public static String VENDOR_INVITATION = "Vendor Invitation";
+	
+	public static String EDIT_CLIENTCONTACT = "Edit SpocContact";
 	
 	public static String SHORTLIST_APPLICANTS = "ShortList Applicants";
 	
@@ -79,6 +82,10 @@ public class Constants {
 	public static String ENTITY_TYPE_NOTIFICATION = "Notification";
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
+	
+	public static String loginUserAsAdmin =":userId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1' and userRole.orgLocations.id = ts.projectMembers.projects.orgLocationsId.id)";
+	
+	public static String loginUserAsAdminWithMaxHeirarchyLevel ="(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1' and userRole.orgLocations.id = pm.projects.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = pm.projects.id))";
 	
 	/** projectMember  constants**/
 	public static String MEMBER_ACTIVE = "1";
@@ -217,4 +224,8 @@ public class Constants {
 	public static String[] ROLE_DROPDOWN = {"Admin","Project Manager","HR Manager","Recruiter"};
 	public static String[] STATUS_DROPDOWN = {"Active","In-Active","New","Negotiation","Contracted"};
 	public static String[] LEVEL_DROPDOWN = {"Level-1","Level-2","Level-3","Level-4","Level-5"};
+	public static String[] USER_EXCEL_HEADERS = { "Employee Id", "First Name", "Last Name", "Email-id", "Phone Number",
+			"Date Of Join", "Rate", "Location", "Role", "Manager", "status" };
+	public static String[] CANDIDATE_EXCEL_HEADERS = {"Firstname","Last name","Email id","Phone Number","Location","Designation","Education","Experience","Skills","Rate"};
+    public static String[] REQUIREMENT_EXCEL_HEADERS = {"Requirement id","Requirement Title","Experience","Rate","Location","Skills","Manager","Priority","Application Form Name","Client Name","Client Contact Name","Client Contact Email"};
 }

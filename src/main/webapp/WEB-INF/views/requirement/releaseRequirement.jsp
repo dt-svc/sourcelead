@@ -45,21 +45,23 @@
                   <li class="li-vendor hidden">
                     <input type="text" class="vendorfild">
                     <i class="fa fa-search"></i>|</li>
-                  <li><i class="fa fa-filter"></i><span>Level 1 (5, 10)</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
+                  <li id="vendorStatus"><i class="fa fa-filter"></i><span>Level</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
                     <div class="export_pop">
                       <ul>
-                        <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-                        <li>Excel<i class="fa fa-file-excel-o"></i></li>
-                        <li>Word<i class="fa fa-file-word-o"></i></li>
-                      </ul>
+                        <li><input id="c5" type="checkbox"  name="vendorStatus"  value ="Level-1" onclick="getVendorLists();"><label>Level 1</label></li>
+						<li><input id="c6" type="checkbox"  name="vendorStatus"  value ="Level-2" onclick="getVendorLists();"><label>Level 2</label></li>
+						<li><input id="c7" type="checkbox"  name="vendorStatus"  value ="Level-3" onclick="getVendorLists();"><label>Level 3</label></li>
+						<li><input id="c8" type="checkbox"  name="vendorStatus"  value ="Level-4" onclick="getVendorLists();"><label>Level 4</label></li>
+              			<li><input id="c9" type="checkbox"  name="vendorStatus"  value ="Level-5" onclick="getVendorLists();"><label>Level 5</label></li>
+                       </ul>
                     </div>
                   </li>
-                  <li><i class="fa fa-filter"></i><span>Select Group</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
+                  <li id="vendorSelected" style="display:none"><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play" id="export-popp"></i>
                     <div class="export_pop">
                       <ul>
-                        <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-                        <li>Excel<i class="fa fa-file-excel-o"></i></li>
-                        <li>Word<i class="fa fa-file-word-o"></i></li>
+                      	  <c:forEach var="report" items="${vendor_list}">  
+	                      	<li><input id="vendorName${report.id}" name="vendorSelected" value ="${report.id}" onclick="getContactsLists();" type="checkbox"><label>${report.clientName}</label></li>
+						  </c:forEach>
                       </ul>
                     </div>
                   </li>
@@ -174,7 +176,7 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <input type="button" class="btn btn-primary ml" onclick="releaseTo();" value="Release">
-            <input type="button" class="btn btn-default ml" value="Cancel">
+            <input type="button" class="btn btn-default ml" value="Cancel" onClick="javascript:location.href = '<c:url value='requirementList'/>'">
           </div>
         </div>
       </div>
@@ -233,71 +235,101 @@ function releaseToOneContact(contactscheckboxId){
 
 <script>
 function getContactsLists(){
+	var vendors = [];
+	$('input:checkbox[name=vendorSelected]:checked').each(function() 
+    {
+		vendors.push($(this).val());
+    });
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var requirementId = '${param.requirementId}';
-	
 	  $.ajax({
 		   	type: "GET",
-		    url: sourceleadUrl+"/getAllContactsbyOrgLocationIdAndUserIdForRequirement?requirementId="+requirementId, 	   
+		    url: sourceleadUrl+"/getAllContactsbyOrgLocationIdAndUserIdForRequirement?requirementId="+requirementId+"&vendors="+vendors+"&status="+status, 	   
    		    success: function(data) {
-   		    	var json = JSON.parse(data);
-   	        	var result = "";
-   	        	
-                result = result +'<div class="require_wrap_table release-jobs-tbl">';
-                result = result +'<table >';
-                result = result +'<tbody>';
-   	        	result = result +'<thead>';
-   	        	result = result +'<tr>';
-   	            result = result +'<th><input type="checkbox" id="contactscheckbox" onclick="toggle(this);"/></th>'; 
-   	        	result = result +'  <th>Name</th>';
-   	        	result = result +'  <th>Email</th>';
-   	        	result = result +' <th>Ph</th>';
-   	        	result = result +' <th>Vendor</th>';
-   	        	result = result +' <th>Release</th>';
-   	        	result = result +'</tr>';
-   	        	result = result +'</thead>';
-   	        	
-   	        	for (var i=0; i<json.length; i++)
-   				{  
-   	        		var report = json[i];
-   	        		
-   	        		result = result +'<tr>';
-   	        		if(report.releasedRequirement =="true"){
-   	        			result = result +'  <td><input type="checkbox" checked disabled readonly id="'+report.id+'"/></td>';
-   	        		}
-   	        		if(report.releasedRequirement =="false"){
-   	        			result = result +'  <td><input name="contactscheckbox" type="checkbox" id="'+report.id+'"/></td>';
-   	        		}
-	        			result = result +'<td>';
-	        			result = result +'<div><span>'+report.spocName+'</span></div>';
-	        			result = result +'</td>';
-	        			result = result +'<td>';
-	        			result = result +'<div><span>'+report.spocEmail+'</span></div>';
-	        			result = result +'</td>';
-	        			result = result +'<td>';
-	        			result = result +'<div><span>'+report.spocMobilePhone+'</span></div>';
-	        			result = result +'</td>';
-	        			result = result +'<td>';
-	        			result = result +'<div><span>'+report.orgName+'</span></div>';
-	        			result = result +'</td>';
-	        			result = result +'<td>';
-	        		if(report.releasedRequirement =="true"){
-	        			result = result +'<div><b class="proj_active">Released</b></div>';
-	        		}
-					if(report.releasedRequirement =="false"){
-						result = result +'<div><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneContact('+report.id+');"></i></a></div>';
-	        		}
-	        			result = result +'</td>';
-   	        		    result = result +'</tr>';
-   				}
-   	        	result = result +'</tbody>';
-   	        	result = result +'</table>';
-   	        	result = result +' </div>';
-   	        
-   	    	    $("#vendor").empty();  
-   	    	    $("#vendorContacts").append(result)
-   		    }
+   		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
+   		    		if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+               		 else if (data.indexOf('exception') >= 0) {
+               			 location.replace(sourceleadUrl+"/errorPage");
+               		 }
+               		 else{
+			   		    	var json = JSON.parse(data);
+			   	        	var result = "";
+			   	        	var resultVendors = "";
+			   	        	
+			                result = result +'<div class="require_wrap_table release-jobs-tbl">';
+			                result = result +'<table >';
+			                result = result +'<tbody>';
+			   	        	result = result +'<thead>';
+			   	        	result = result +'<tr>';
+			   	            result = result +'<th><input type="checkbox" id="contactscheckbox" onclick="toggle(this);"/></th>'; 
+			   	        	result = result +'  <th>Name</th>';
+			   	        	result = result +'  <th>Email</th>';
+			   	        	result = result +' <th>Phone</th>';
+			   	        	result = result +' <th>Vendor</th>';
+			   	        	result = result +' <th>Release</th>';
+			   	        	result = result +'</tr>';
+			   	        	result = result +'</thead>';
+			   	        	
+			   	        	for (var i=0; i<json.length; i++)
+			   				{
+			   	        		var report = json[i];
+			   	        		
+				   	        		resultVendors = resultVendors + '';
+				   	        		result = result +'<tr>';
+				   	        		if(report.releasedRequirement =="true"){
+				   	        			result = result +'  <td><input type="checkbox" checked disabled readonly id="'+report.id+'"/></td>';
+				   	        		}
+				   	        		if(report.releasedRequirement =="false"){
+				   	        			result = result +'  <td><input name="contactscheckbox" type="checkbox" id="'+report.id+'"/></td>';
+				   	        		}
+					        			result = result +'<td>';
+					        			result = result +'<div><span>'+report.spocName+'</span></div>';
+					        			result = result +'</td>';
+					        			result = result +'<td>';
+					        			result = result +'<div><span>'+report.spocEmail+'</span></div>';
+					        			result = result +'</td>';
+					        			result = result +'<td>';
+					        			result = result +'<div><span>'+report.spocMobilePhone+'</span></div>';
+					        			result = result +'</td>';
+					        			result = result +'<td>';
+					        			result = result +'<div><span>'+report.orgName+'</span></div>';
+					        			result = result +'</td>';
+					        			result = result +'<td>';
+					        		if(report.releasedRequirement =="true"){
+					        			result = result +'<div><b class="proj_active">Released</b></div>';
+					        		}
+									if(report.releasedRequirement =="false"){
+										result = result +'<div><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneContact('+report.id+');"></i></a></div>';
+					        		}
+					        			result = result +'</td>';
+				   	        		    result = result +'</tr>';
+			   	        	
+			   				}
+			   	        	result = result +'</tbody>';
+			   	        	result = result +'</table>';
+			   	        	result = result +' </div>';
+			   	        	
+			   	        	$("#vendorStatus").hide();
+			   	        	$("#vendorSelected").show();
+			   	        
+			   	    	    $("#vendor").empty();
+			   	    	 	$("#vendorContacts").empty();
+			   	    	    $("#vendorContacts").append(result);
+               		}
+	   		    	}else{
+	               	 $("#vendorContacts").removeAttr("style");
+		    	     var result ="";
+					 result = result+"	<div class='blank-pages'>";
+					 result = result+"		<p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 result = result+"		<p>No Contacts Found</p>";
+					 result = result+"	</div>";
+					$("#vendorContacts").empty();
+				    $("#vendorContacts").append(result); 
+	            }
+   		    },
 	 });
 }	
 </script>
@@ -305,16 +337,17 @@ function getContactsLists(){
 
 <script>
 function pagination(){  
-    $('#candidatePagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": ""
-     	}
-    } );
+   	$('#vendor').DataTable( { 
+       	"scrollCollapse": false,
+       	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+       	"bLengthChange": false,
+       	"bDestroy": true,
+       	"ordering": false,
+       	"oLanguage": {
+        		"sSearch": ""
+        	}
+   		
+       } );
 }
 </script>
 
@@ -329,89 +362,118 @@ function pagination(){
 
 <script>
 function getVendorLists(){
+	var vendorStatus = [];
+	$('input:checkbox[name=vendorStatus]:checked').each(function() 
+    {
+		vendorStatus.push($(this).val());
+    });
+	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var requirementId = '${param.requirementId}';
 	
 	  $.ajax({
 		   	type: "GET",
-		    url: sourceleadUrl+"/getVendorListsForReleaseRequirement?requirementId="+requirementId, 	   
+		    url: sourceleadUrl+"/getVendorListsForReleaseRequirement?requirementId="+requirementId+"&vendorStatus="+vendorStatus, 	   
    		    success: function(data) {
-   		    	var json = JSON.parse(data);
-   	        	var result = "";
-   	        	
-                result = result +'<div class="require_wrap_table release-jobs-tbl">';
-                result = result +'<table>';
-                result = result +'<tbody>';
-   	        	result = result +'<thead>';
-   	        	result = result +'<tr>';
-   	            result = result +'<th><input type="checkbox" id="checkbox1" onclick="toggle(this);"/></th>'; 
-   	        	result = result +'  <th>Name</th>';
-   	        	result = result +'  <th>Location</th>';
-   	        	result = result +' <th>No. of contacts</th>';
-   	        	result = result +' <th>Level</th>';
-   	        	result = result +' <th>Release</th>';
-   	        	result = result +'</tr>';
-   	        	result = result +'</thead>';
-   	        	
-   	        	for (var i=0; i<json.length; i++)
-   				{  
-   	        		var report = json[i];
-   	        		var location = "";
-   	        		if(report.city != null && report.city != '' && report.city != 'undefined'){
-   	        			location = report.country+", "+report.state+", "+report.city;
-   	        		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
-   	        			location = report.country+", "+report.state;
-   	        		}else{
-   	        			location = report.country;
-   	        		}
-   	        		
-   	        		result = result +'<tr>';
-   	        	    
-   	        	 	if(report.noOfNonReleasedContacts == 0){
-   	        	 		result = result +'  <td><input type="checkbox" checked disabled readonly id="'+report.id+'" /></td>';
-	        		}else{
-	        			result = result +'  <td><input name="vendorcheckbox" type="checkbox" id="'+report.id+'" /></td>';
-	        		}
-   	        	 
-   	        		if( report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
-   	        			result = result +'<td>';
-   	        			result = result +'<div  class="tbldata-dotdot-sm text-left">';
-   	        			result = result +'<span title='+report.orgName+'>'+report.orgName+'</span>';
-   	        			result = result +'</div>';
-   	        			result = result +'</td>';
-   	        		}else{
-   	        			result = result +'<td><div>--</div></td>';
-   	        		}
-   	        		
-   	        		if(location != null && location  != '' && location  != 'undefined'){
-   	        			result = result +'<td>';
-   	        			result = result +'<div  class="tbldata-dotdot-sm text-left">';
-   	        			result = result +'<span title="'+location+'">'+location+'</span>';
-   	        			result = result +'</div>';
-   	        			result = result +'</td>';
-   	        		}else{
-   	        			result = result +'<td><div>--</div></td>';
-   	        		}
-	       		result = result +'<td><div class="tbldata-dotdot-sm text-left">'+report.noOfContatcs+'</div></td>';
-	       		result = result +' <td><div class="tbldata-dotdot-sm text-left"><span  title="'+report.level+'">'+report.level+'</span></td>';
-	       		result = result +'<td>';
-	       		if(report.noOfNonReleasedContacts == 0){
-        			result = result +'<div><b class="proj_active">Released</b></div>';
-        		}
-        		result = result +'</td>';
-   	        	result = result +'</tr>';
-   				}
-   	        	result = result +'</tbody>';
-   	        	result = result +'</table>';
-   	        	result = result +' </div>';
-   	    	    $("#vendorContacts").empty();  
-   	    	 	$("#vendor").empty();
-   	    	    $("#vendor").append(result);
-   	    	    
-   		    }
+   		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
+   		    		if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+               		 else if (data.indexOf('exception') >= 0) {
+               			 location.replace(sourceleadUrl+"/errorPage");
+               		 }
+               		 else{
+	               			var json = JSON.parse(data);
+	           	        	var result = "";
+	           	        	
+	                        result = result +'<div class="require_wrap_table release-jobs-tbl">';
+	                        result = result +'<table>';
+	                        result = result +'<tbody>';
+	           	        	result = result +'<thead>';
+	           	        	result = result +'<tr>';
+	           	            result = result +'<th><input type="checkbox" id="checkbox1" onclick="toggle(this);"/></th>'; 
+	           	        	result = result +'  <th>Name</th>';
+	           	        	result = result +'  <th>Location</th>';
+	           	        	result = result +' <th>No. of contacts</th>';
+	           	        	result = result +' <th>Level</th>';
+	           	        	result = result +' <th>Release</th>';
+	           	        	result = result +'</tr>';
+	           	        	result = result +'</thead>';
+	           	        	
+	           	        	for (var i=0; i<json.length; i++)
+	           				{  
+	           	        		var report = json[i];
+	           	        		var location = "";
+	           	        		if(report.city != null && report.city != '' && report.city != 'undefined'){
+	           	        			location = report.country+", "+report.state+", "+report.city;
+	           	        		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
+	           	        			location = report.country+", "+report.state;
+	           	        		}else{
+	           	        			location = report.country;
+	           	        		}
+	           	        		
+	           	        		result = result +'<tr>';
+	           	        	    
+	           	        	 	if(report.noOfNonReleasedContacts == 0){
+	           	        	 		result = result +'  <td><input type="checkbox" checked disabled readonly id="'+report.id+'" /></td>';
+	        	        		}else{
+	        	        			result = result +'  <td><input name="vendorcheckbox" type="checkbox" id="'+report.id+'" /></td>';
+	        	        		}
+	           	        	 
+	           	        		if( report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
+	           	        			result = result +'<td>';
+	           	        			result = result +'<div  class="tbldata-dotdot-sm text-left">';
+	           	        			result = result +'<span title='+report.orgName+'>'+report.orgName+'</span>';
+	           	        			result = result +'</div>';
+	           	        			result = result +'</td>';
+	           	        		}else{
+	           	        			result = result +'<td><div>--</div></td>';
+	           	        		}
+	           	        		
+	           	        		if(location != null && location  != '' && location  != 'undefined'){
+	           	        			result = result +'<td>';
+	           	        			result = result +'<div  class="tbldata-dotdot-sm text-left">';
+	           	        			result = result +'<span title="'+location+'">'+location+'</span>';
+	           	        			result = result +'</div>';
+	           	        			result = result +'</td>';
+	           	        		}else{
+	           	        			result = result +'<td><div>--</div></td>';
+	           	        		}
+	        	       		result = result +'<td><div class="tbldata-dotdot-sm text-left">'+report.noOfContatcs+'</div></td>';
+	        	       		result = result +' <td><div class="tbldata-dotdot-sm text-left"><span  title="'+report.level+'">'+report.level+'</span></td>';
+	        	       		result = result +'<td>';
+	        	       		if(report.noOfNonReleasedContacts == 0){
+	                			result = result +'<div><b class="proj_active">Released</b></div>';
+	                		}
+	                		result = result +'</td>';
+	           	        	result = result +'</tr>';
+	           				}
+	           	        	result = result +'</tbody>';
+	           	        	result = result +'</table>';
+	           	        	result = result +' </div>';
+	           	        	
+	           	        	$("#vendorStatus").show();
+	           	        	$("#vendorSelected").hide();
+	           	        	
+	           	    	    $("#vendorContacts").empty();  
+	           	    	 	$("#vendor").empty();
+	           	    	    $("#vendor").append(result);
+	           	    	 	/* pagination(); */
+               		 }
+   		    		
+	   		    	}else{
+	               	 $("#vendor").removeAttr("style");
+		    	     var result ="";
+					 result = result+"	<div class='blank-pages'>";
+					 result = result+"		<p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 result = result+"		<p>No Vendors Found</p>";
+					 result = result+"	</div>";
+					$("#vendor").empty();
+				    $("#vendor").append(result); 
+	            }
+   		    },
 	 });
-	
 }	
 </script>
 
@@ -495,4 +557,26 @@ $('input:checkbox:not(#checkbox1)').click(function() {
     }
 });
 }
+</script>
+
+<script>
+
+//dropdown script
+
+$(document).ready(function() {
+    $("#export-pop").click(function(){
+		//$(".export_pop").slideToggle(200);
+	    $(this).next(".export_pop").slideToggle(200);
+	});
+    $("#export-popp").click(function(){
+		//$(".export_pop").slideToggle(200);
+    	 $(this).next(".export_pop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $(".export_pop").slideUp(200);
+    });
+    $(".export_pop, #export-pop, #export-popp").click(function(e) {
+        e.stopPropagation();
+    });	
+});	
 </script>

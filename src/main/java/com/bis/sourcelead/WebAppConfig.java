@@ -49,7 +49,7 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 	    includeFilters = @Filter(
 	        type = FilterType.ANNOTATION,
 	        value = Controller.class))
-@PropertySource({"${propertyLocation:app.properties}", "classpath:exception.properties"})
+@PropertySource({"${propertyLocation:app.properties}", "classpath:exception.properties", "classpath:config.properties"})
 @EnableTransactionManagement
 @EnableGlobalMethodSecurity(prePostEnabled=true)
 public class WebAppConfig extends WebMvcConfigurationSupport {

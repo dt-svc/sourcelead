@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -199,6 +200,13 @@ public class ProjectsRestController {
 		 	String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 		    Collection<Employees> employeList=employeesService.getAllEmployeesByOrgLocationIdAndSearchByName(loginOrgLocations.getId(),level1Manager,level2Manager,searchByName);
+		    
+		    for (Employees employees : employeList) {
+		    	UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(employees.getUser().getId(), loginOrgLocations.getId());
+		    	if(userRole != null){
+		    		employees.setUserType(userRole.getUserType());
+		    	}
+			}
 		    return  commonUtil.toJSON(employeList);
 			
 	  }

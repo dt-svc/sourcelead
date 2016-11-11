@@ -160,7 +160,8 @@ public class UserServiceTest {
 		User loginUser =new User();
 		//loginUser.setId(12l);
 		String password="bis12334";
-		userService.sendEmail(user,1l,loginUser,password);
+
+		userService.sendEmail(user,loginUser,password,1l);
 	}
 
 	@Test

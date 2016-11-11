@@ -170,7 +170,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 											}
 										}
 										
-										OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(row.getCell(3).toString(), orgRelationId, ownerUser.getId());
+										OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(row.getCell(3).toString(), orgRelationId, ownerUser.getId(),Constants.RECORD_ACTIVE);
 										 if(orgSpoc == null){
 											 if(ownerUser.getId() != null){
 												 client.setOwnerUserId(ownerUser.getId());

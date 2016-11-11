@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
@@ -58,7 +61,8 @@ public class TimesheetEntriesRestController {
 	@RequestMapping(value = "/newTimesheet", method = RequestMethod.POST )    
 	public @ResponseBody String newTimesheet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String result = timesheetEntriesService.newTimesheet(user, navigation, startDate);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String result = timesheetEntriesService.newTimesheet(user, navigation, startDate,orgLocations.getId());
 		return result;
 	}
 	/**
@@ -105,9 +109,19 @@ public class TimesheetEntriesRestController {
 	 */
 	@RequestMapping(value = "/projectTasksById" , method = RequestMethod.POST)
 	 public @ResponseBody  String getProjectTasks(
-			 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
-		 	 String resultJson;
-			 Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectId(projectId);
+			 @RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="avilableProjectTaskIds", required=false) String  avilableProjectTaskIds) throws Exception {
+		 	
+			 
+			List<Long> ids = new ArrayList<Long>();
+			String[] avilableProjectTaskId = avilableProjectTaskIds.split(",");
+			for(String id  : avilableProjectTaskId){
+				if(id != null && !id.isEmpty()){
+					ids.add(Long.parseLong(id));
+				}
+			}
+			
+			 String resultJson;
+			 Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectIdAndExistedProjectTaskIds(projectId, ids);
 			 resultJson = commonUtil.toJSON(taskList);
 			 return resultJson;
 		 	

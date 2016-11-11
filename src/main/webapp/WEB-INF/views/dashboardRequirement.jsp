@@ -8,22 +8,22 @@ $(document).ready(function(){
 });
 </script>
 <div class="col-md-6">
-        <div class="dashboard-widget">
-          <h4 class="clearfix">Requirement &nbsp;&nbsp;<a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a></h4>
+        <div class="dashboard-widget dashboard-widget-icons">
+          <h4 class="clearfix">Requirement &nbsp;&nbsp;<!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-          <div class="clearfix require_wrap_table dashboard-data">
+          <div class="clearfix require_wrap_table dashboard-data mt">
             <ul class="nav nav-tabs">
               <li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');" href="#today-req">Today</a></li>
               <li><a data-toggle="tab" onclick="requirementSubmissionsCount('previous');" href="#prev-req">Previous</a></li>
             </ul>
-            <div class="tab-content clearfix mt">
+            <div class="tab-content clearfix">
               <div id="today-req" class="tab-pane fade in active">
-                <div class="db-widget-sm">
+                <div class="db-widget-sm row">
                   <div class="col-xs-12 col-sm-3 mb">
                     <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-check-square" aria-hidden="true"></i> </span>
                       <div class="info-box-content text-center">
                         <p class="info-box-number"><span id="submissionsCount">${submissionsCount}</span></p>
-                        <p class="info-box-text"> <a href="timesheet-status.html">Submission</a> </p>
+                        <p class="info-box-text"> <a href="#">Submission</a> </p>
                       </div>
                     </div>
                   </div>
@@ -31,7 +31,7 @@ $(document).ready(function(){
                     <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-black-tie" aria-hidden="true"></i> </span>
                       <div class="info-box-content text-center">
                         <p class="info-box-number"><span id="applicantsCount"></span></p>
-                        <p class="info-box-text"> <a href="timesheet-status.html">Applicants</a> </p>
+                        <p class="info-box-text"> <a href="#">Applicants</a> </p>
                       </div>
                     </div>
                   </div>
@@ -39,7 +39,7 @@ $(document).ready(function(){
                     <div class="info-box"> <span class="info-box-icon bg-blue"> <i class="fa fa-graduation-cap" aria-hidden="true"></i> </span>
                       <div class="info-box-content text-center">
                         <p class="info-box-number"><span id="interviewsCount"></span></p>
-                        <p class="info-box-text"><a href="timesheet-status.html">Interviews</a></p>
+                        <p class="info-box-text"><a href="#">Interviews</a></p>
                       </div>
                     </div>
                   </div>
@@ -47,7 +47,7 @@ $(document).ready(function(){
                     <div class="info-box"> <span class="info-box-icon bg-orange"> <i class="fa fa-tags" aria-hidden="true"></i> </span>
                       <div class="info-box-content text-center">
                         <p class="info-box-number"><span id="offersCount"></span></p>
-                        <p class="info-box-text"><a href="timesheet-status.html">Offers</a></p>
+                        <p class="info-box-text"><a href="#">Offers</a></p>
                       </div>
                     </div>
                   </div>

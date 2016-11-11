@@ -123,7 +123,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	
 	@Override
-	public void addRegistration(Registration registration,User loginUser,String modules,String subModules) throws Exception {
+	public void addRegistration(Registration registration,User loginUser,String modules,String subModules, Long orgLocationsId) throws Exception {
 		
 		String[] registredModules =  modules.split(",");
 		
@@ -202,10 +202,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
 		
-		userService.sendEmail(user,orgLocations.getId(), loginUser, password);
-		
-		
-		
+		userService.sendEmail(user, loginUser, password,orgLocationsId);
+	
 	}
 	
 	private Org getOrgDetails(Registration registration,String subModules,String modules){

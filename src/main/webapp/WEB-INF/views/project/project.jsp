@@ -90,7 +90,7 @@
 						<div class="form-group">
 							<label class="col-md-3"> Project Description </label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-500"
+								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-5000"
 									data-validation-optional="true"></textarea>
 								<span class="hidden">Project Description</span>
 							</div>
@@ -229,7 +229,7 @@
 										<c:forEach var="option" items="${add_clientList}">
 											<option value="${option.orgid}">${option.orgName}</option>
 										</c:forEach>
-									</select> <i class="fa fa-plus btn btn-default formic1" data-toggle="modal" onclick="flushProject();" data-target="#addClient"></i>
+									</select> 
 								</div>
 								<span class="hidden">Enter Project Id</span>
 							</div>
@@ -352,7 +352,7 @@
 										data-validation="required validate_email" onblur="emailVerification();">
 								</div>
 							</div>
-							<div class="form-group">
+							<!-- <div class="form-group">
 								<label class="col-lg-3">Invoice Frequency<span
 									class="text-danger">*</span></label>
 								<div class="col-lg-9">
@@ -364,7 +364,7 @@
 										<option>Monthly</option>
 									</select>
 								</div>
-							</div>
+							</div> -->
 							<div class="form-group">
 								<label class="col-lg-3"></label>
 								<div class="col-lg-9">
@@ -417,14 +417,14 @@
                        </div>
                        
                        <div class="form-group">
-			              <label class="col-md-3">Level</label>
+			              <label class="col-md-3">Tier</label>
 			              <div class="col-md-9">
 			                  <select class="form-control selectpicker" id="level" name="level">
-			                    <option value="Level-1">Level-1</option>
-			                    <option value="Level-2">Level-2</option>
-			                    <option value="Level-3">Level-3</option>
-			                    <option value="Level-4">Level-4</option>
-			                    <option selected="selected" value="Level-5">Level-5</option>
+			                    <option value="Tier-1">Tier-1</option>
+			                    <option value="Tier-2">Tier-2</option>
+			                    <option value="Tier-3">Tier-3</option>
+			                    <option value="Tier-4">Tier-4</option>
+			                    <option selected="selected" value="Tier-5">Tier-5</option>
 			                  </select>
 			              </div>
                       </div>
@@ -924,7 +924,7 @@ function getOrgDetails()
 						success : function(data) {
 							var json = JSON.parse(data);
 							var output = "";
-	
+							output = output+' <div class="wrap_employeeTable">';
 							output = output + ' <table cols="0" id="assignEmployeePagination" class="table table-bordered table-striped  clearfix">';
 							output = output + ' <thead>';
 							output = output + ' <tr>';
@@ -942,10 +942,10 @@ function getOrgDetails()
 								// var projectEndDate = $('#EndDate').val();
 								var opt = json[i];
 								var role = '';
-								if (opt.user.userType != null
-										&& opt.user.userType != ''
-										&& opt.user.userType != 'undefined') {
-									role = opt.user.userType;
+								if (opt.userType != null
+										&& opt.userType != ''
+										&& opt.userType != 'undefined') {
+									role = opt.userType;
 								} else {
 									role = 'Employee';
 								}
@@ -984,7 +984,7 @@ function getOrgDetails()
 							}
 							output = output + ' </tbody>';
 							output = output + ' </table>';
-	
+							output = output+' </div>';
 							$("#employeesList").empty();
 							$("#employeesList").append(output);
 
@@ -1049,7 +1049,7 @@ function getOrgDetails()
 function assignEmployeespagination(){  
     $('#assignEmployeePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -1066,9 +1066,7 @@ function assignEmployeespagination(){
 	function assignEmployee() {
 		var result = "";
 		var count = 1;
-		$(".myCheckbox")
-				.each(
-						function() {
+		$(".myCheckbox").each(function() {
 							var localId = this.id;
 							if ($(this).is(':checked')) {
 								var startDate = $("#startDate" + localId).val();
@@ -1380,4 +1378,4 @@ function validateClientName(){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				});
- 		</script>
+</script>

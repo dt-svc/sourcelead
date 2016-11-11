@@ -17,10 +17,19 @@ public interface RequirementDao {
 	public Boolean getRequirementByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception;
 	
 	public List<Requirement> getJobTitleByJobTemplateStatusAndOrgLocationId(Long orgLocationId)throws Exception;
+	
+	public Requirement getRequirementByParentRequirementId(Long requirementId) throws Exception;
 
 	public List<RequirementAssignTo> getUserAssignJobCount(Long userId)throws Exception;
 	
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
 	
 	public List<Requirement> getAssignedRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId,Long  userId) throws Exception;
+
+	public List<Requirement> getRequirementListById(Long requirementId);
+	
+	public Requirement checkRequirementIsReleasedOrNot(Long requirementId,Long orgLocationId) throws Exception;
+	
+	
+	Integer validateJobId(Long id) throws Exception;
 }

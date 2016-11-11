@@ -338,7 +338,9 @@ public class UserRestController {
 	 			}
 	 			user.setIsMailSent(Status.Y);
 	 			userService.addUser(user);
-	 			userService.sendEmail(user,orgLocations.getId(),loginUser,password);
+
+	 			userService.sendEmail(user,loginUser,password,orgLocations.getId());
+
 	 		}
 		
 	 	  return "success";
@@ -594,6 +596,13 @@ public class UserRestController {
 					userRole.setUserState(userRole.getPreviousUserState());
 					userRole.setPreviousUserState(userRole.getUserState());
 					userRoleService.addUserRole(userRole);
+					
+					//to assign primary role to another user
+					UserRole existinguserRole = userRoleService.getLoginUserPrimaryRole(Long.parseLong(userID));
+					if(existinguserRole == null){
+						userRole.setIsPrimary(1);
+						userRoleService.addUserRole(userRole);
+					}
 				}
                 return "updated";
          }

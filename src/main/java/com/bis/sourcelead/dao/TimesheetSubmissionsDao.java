@@ -24,9 +24,9 @@ public interface TimesheetSubmissionsDao {
     
     public TimesheetSubmissions getAllApprovalEmployeeTimesheetSubmissionsByEmployeeUserId(Date startDate,Date endDate,Long userId,Long empUserId,Long employeeId)throws Exception;
     
-    public HashMap<String,Date> getMinAndMaxTimesheetSubmissionDatesForEmployee(Long  userId) throws Exception;
+    public HashMap<String,Date> getMinAndMaxTimesheetSubmissionDatesForEmployee(Long  userId,Long locationsId) throws Exception;
     
-    public HashMap<String,Date> getMinAndMaxTimesheetSubmissionDatesForApprover(Long  approverUserId,Long empUserId) throws Exception;
+    public HashMap<String,Date> getMinAndMaxTimesheetSubmissionDatesForApprover(Long  approverUserId,Long empUserId,Long locationsId) throws Exception;
     
     Date getLeftNavStartDateForApproverBasedOnCurrentStartDate(Long  approverUserId,Long empUserId,Date currentStartDate);
     
@@ -40,7 +40,7 @@ public interface TimesheetSubmissionsDao {
     
     Date getRightNavStartDateForEmployeeBasedOnCurrentStartDate(Long userId,Date currentStartDate);
     
-    public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissions(Long userId) throws Exception ;
+    public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissions(Long userId,Long locationsId) throws Exception ;
     
     public Collection<TimesheetSubmissions> getTimesheetSubmissionsByAproverId(Long projectMemberId,Long userId,Date startDate) throws Exception ;
 

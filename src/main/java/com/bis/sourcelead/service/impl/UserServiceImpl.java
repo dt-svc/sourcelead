@@ -197,7 +197,8 @@ public class UserServiceImpl implements UserService {
 			if(("".equals(responderType))  && (sourceType.equalsIgnoreCase("CREATEUSER") || sourceType.equalsIgnoreCase("PROJECTS"))
 					 &&  (jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent")))
 					 && ("Y".equals(jsonObj.getString("isMailSent")))){
-				sendEmail(user,orgLocations.getId(),loginuser,password);
+
+				sendEmail(user,loginuser,password,orgLocations.getId());
 			}
 			
 			if((("Client".equals(responderType) || "Vendor".equals(responderType)) 
@@ -211,9 +212,9 @@ public class UserServiceImpl implements UserService {
 			 * @throws Exception 
 			 * 
 			 */
-			if(userRole != null && StringUtils.isNotEmpty(userRole.getRoles().getRoleName()) && userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)){
+			/*if(userRole != null && StringUtils.isNotEmpty(userRole.getRoles().getRoleName()) && userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)){
 				commonUtil.addAdminAsSecondLevelManager(orgLocations.getId(), user, loginuser);
-			}
+			}*/
 		 
         return user1;
 				
@@ -264,7 +265,8 @@ public class UserServiceImpl implements UserService {
 		
 		//send mail to user
 		if((jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) && ("Y".equals(jsonObj.getString("isMailSent")))){
-			sendEmail(user,orgLocationsId,loginUser,password);
+
+			sendEmail(user,loginUser,password,orgLocationsId);
 		}
 		 
 	}
@@ -427,19 +429,23 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public void sendEmail(User user,Long orgLocationsId, User loginUser, String password) throws Exception {
+	public void sendEmail(User user, User loginUser, String password, Long locationId) throws Exception {
 		
-		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationsId);
+		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), locationId);
+		 if(userRole == null){
+		    userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		 }
 		 
 		 boolean isUserActive = false;
 		 isUserActive = userRoleService.isUserActive(user.getId());
 		 
+
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 emailMessage.setOrgLocationId(locationId);
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -757,6 +763,12 @@ public class UserServiceImpl implements UserService {
 		 
 		 emailScenerioUtil.sendNotification(actionLink, loginUser, user, respondingPartyOrgLocation, noificationEmailScenario);
 	}
+	
+	@Override
+	public List<User> getUserListExceptExistedUsersList(List<Long> userIds, Long orgLocationId)
+			throws Exception {
+		return userDao.getUserListExceptExistedUsersList(userIds, orgLocationId);
+	}
 
 	@Override
 	public List<User> getUsersByTeamType(Long id, String teamType) throws Exception {
@@ -765,8 +777,14 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId) throws Exception {
-		return userDao.getUsersByTeamTypeAndNoCurrentUser(currentApproverId);
+	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId, Long orgLocationsId) throws Exception {
+		return userDao.getUsersByTeamTypeAndNoCurrentUser(currentApproverId,orgLocationsId);
+	}
+	
+	@Override
+	public List<User> getUserListExceptExistedTeamMembersList(List<Long> teamMembersId, Long orgLocationId)
+			throws Exception {
+		return userDao.getUserListExceptExistedTeamMembersList(teamMembersId, orgLocationId);
 	}
 
 	@Override

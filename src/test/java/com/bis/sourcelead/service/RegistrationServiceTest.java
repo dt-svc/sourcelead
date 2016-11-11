@@ -50,7 +50,7 @@ public class RegistrationServiceTest {
 		registration.setWebsite("www.tesla.com");
 		User user = new User();
 		user.setId(3L);
-		registrationService.addRegistration(registration, user, " ", " ");
+		registrationService.addRegistration(registration, user, " ", " ",1l);
 		logger.info("registration added successfully");
 		
 	}
