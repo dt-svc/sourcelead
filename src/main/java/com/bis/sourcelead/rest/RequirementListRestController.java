@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -271,19 +272,22 @@ public class RequirementListRestController {
 		 @RequestMapping(value = "/getRequirementAssignedListByRequirementId" , method = RequestMethod.POST)
 		 public @ResponseBody  String getRequirementAssignedListByRequirementId(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
 				String resultJson = null;
-				List<RequirementAssignTo> requirementAssignToList = null;
+				List<RequirementAssignTo> requirementAssignToList = new ArrayList<RequirementAssignTo>();
+				
 				if(requirementId !=null && !requirementId.isEmpty()){
-			       requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
+			        Collection<RequirementAssignTo>  requirementAssignToListdb = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
 
-			       if(requirementAssignToList !=null && !requirementAssignToList.isEmpty()){
-			           for (RequirementAssignTo assing : requirementAssignToList) { 
-					       assing.setAssignedUserName(assing.getAssignUserId().getFirstName()+" "+assing.getAssignUserId().getLastName());
+			       if(requirementAssignToListdb !=null && !requirementAssignToListdb.isEmpty()){
+			           for (RequirementAssignTo assing : requirementAssignToListdb) { 
+			        	   RequirementAssignTo ra = new  RequirementAssignTo();
+			        	   ra.setAssignedUserName(assing.getAssignUserId().getFirstName()+" "+assing.getAssignUserId().getLastName());
 					       if(assing.getRoleId() != null ){
-					    	   assing.setAssignedUserRole(assing.getRoleId().getDisplayName());
+					    	   ra.setAssignedUserRole(assing.getRoleId().getDisplayName());
 					       }
 					       if(assing.getTeamId() != null ){
-					    	   assing.setTeamName(assing.getTeamId().getName());
+					    	   ra.setTeamName(assing.getTeamId().getName());
 					       }
+					       requirementAssignToList.add(ra);
 				      }
 			       }
 					resultJson = commonUtil.toJSON(requirementAssignToList);
