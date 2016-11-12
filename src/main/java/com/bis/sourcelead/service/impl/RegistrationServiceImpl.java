@@ -190,15 +190,15 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		
 		
-		if(registredModules.length == 2){
-			if(registredModules[1].equalsIgnoreCase("TimeSheet")){
-				saveProject(registration, orgLocations, user, employee);
-			}
-		}else if(registredModules.length == 1){
-			if(registredModules[0].equalsIgnoreCase("TimeSheet")){
-				saveProject(registration, orgLocations, user, employee);
-			}
-		}
+		List<Integer> moduleIds = new ArrayList<Integer>();
+		 for (String s : org.getModulesId().split(",")){
+			 moduleIds.add(Integer.parseInt(s));
+		 }
+		 
+		  boolean flag = moduleIds.contains(Constants.MODULE_TIMESHEET);
+		  if(flag == true){
+			  saveProject(registration, orgLocations, user, employee);
+ 		}
 		
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
 		

@@ -303,7 +303,7 @@ public class UserDaoImpl implements UserDao {
 	public List<User> getOwnersByOrgLocationId(Long orgLocationsId) throws Exception {
 		
 	 Session session = this.sessionFactory.getCurrentSession();
-     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.roles != '2' and userRole.orgLocations=:orgLocationsId and userRole.userState != 'INACTIVE')  ";
+     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName != 'ROLE_USER' and userRole.orgLocations=:orgLocationsId and userRole.userState != 'INACTIVE')  ";
      List<User> userRoleList = session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
      return userRoleList;
         

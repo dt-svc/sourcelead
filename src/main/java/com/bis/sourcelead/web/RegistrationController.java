@@ -132,7 +132,7 @@ public class RegistrationController {
 		    	orgLocations = orgLocationService.getOrgLocations(respondingPartyOrgLocationId);
 		    	org = orgLocations.getOrg();
 		    	String modules = org.getModulesId();
-		    	if(null != org && !org.getOrgType().equalsIgnoreCase("Company")){
+		    	if(null != org){
 			    	org.setOrgType("Company");
 			    	
 			    	List<Integer> moduleIds = new ArrayList<Integer>();

@@ -133,6 +133,7 @@ public class Constants {
 	
 	public static int MODULE_ATS = 2;
 	public static int MODULE_VMS = 3;
+	public static int MODULE_TIMESHEET = 4;
 	
 	public static int TAB_VENDOR = 9;
 	public static int TAB_CLIENT = 7;
