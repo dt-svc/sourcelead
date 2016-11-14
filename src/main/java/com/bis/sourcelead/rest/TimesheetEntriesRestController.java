@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.testng.log4testng.Logger;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -21,6 +22,7 @@ import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
+import com.bis.sourcelead.service.ExportTimesheetEntries;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
@@ -46,6 +48,9 @@ public class TimesheetEntriesRestController {
 	
 	@Autowired
 	public TimeSheetExcelView timeSheetExcelView;
+	
+	@Autowired
+	private ExportTimesheetEntries exportTimesheetEntries;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -208,6 +213,21 @@ public class TimesheetEntriesRestController {
 	//sarath kumar punnana : this method is for null check
 	public static boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
+	}
+	
+	/**
+	 * @author Rajashekar
+	 * @param request
+	 * @param navigation
+	 * @param startDate
+	 * @return JSON
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/exportTimeShhet")    
+	public void ExportTimeShhet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		exportTimesheetEntries.exportTimesheets(user, navigation, startDate);
+       System.out.println("****************************************************");
 	}
  
 }
