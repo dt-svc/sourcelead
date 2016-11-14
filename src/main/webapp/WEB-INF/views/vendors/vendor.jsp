@@ -60,7 +60,7 @@ window.onload = function () {
            <h3>Vendor Details</h3>
             <div class="form-group" ><label class="col-md-3" for="Project Id">Vendor Name<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9" id="clientNameDiv">
-					<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails(); validateClientName(); getRolesList();" field-name="Vendor Name" data-validation="required validate_Space validate_length length2-250" value="">
+					<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails(); validateClientName();" field-name="Vendor Name" data-validation="required validate_Space validate_length length2-250" value="">
 					<input type="hidden" id="orgLocationId" />
 					<span class="hidden">Enter Vendor Name</span>
 				</div>
@@ -200,14 +200,14 @@ window.onload = function () {
             </div>
             
             <!-- These are the default sourelead roles we are providing for spoc in client creation -->
-              <div class="form-group" id="roleDiv" style="display: block;">
+              <!-- <div class="form-group" id="roleDiv" style="display: block;">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
 									<option value="">-Select Role-</option>
 			              </select>
                   </div>
-                </div>
+                </div> -->
                 
                 <div class="form-group" id="userRoleDiv" style="display: none;">
 					<label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
@@ -275,9 +275,9 @@ function getOrgName(){
 	document.getElementById("cityDiv").style.display="";
 	document.getElementById("orgCityDiv").style.display="none";
 	
-	$("#role" ).val('');
+	/* $("#role" ).val('');
 	$("#role").attr("data-validation", "required");
-	document.getElementById("roleDiv").style.display="";
+	document.getElementById("roleDiv").style.display=""; */
 	document.getElementById("userRoleDiv").style.display="none";
 	
 	$.ajax({                           
@@ -540,16 +540,16 @@ function getSpocUserDetails(){
 	        		 
 	        		 
 	        		 if(json[3] != null && json[3] != ''){
-		        			$("#role").removeAttr("data-validation");
+		        			/* $("#role").removeAttr("data-validation");
 		        			$("#role" ).val('');
-	        			    document.getElementById("roleDiv").style.display="none";
+	        			    document.getElementById("roleDiv").style.display="none"; */
 	   	        			document.getElementById("userRoleDiv").style.display="";
 	   	        			$("#userRole").val(json[3]);
 	   	        			$("#userRoleText").val(json[4]);
 		        		 }else{
-		        			 $("#role").attr("data-validation", "required");
+		        			/*  $("#role").attr("data-validation", "required"); */
 		        			 $("#userRole" ).val('');
-		        			 document.getElementById("roleDiv").style.display="";
+		        			/*  document.getElementById("roleDiv").style.display=""; */
 		        			 document.getElementById("userRoleDiv").style.display="none";
 		        		 }
 	        	}
@@ -567,9 +567,9 @@ function getSpocUserDetails(){
 	    $("#phoneNumber").attr("disabled", false);
 	    $("#phoneNumber").val('');
 	    
-	    $("#role").attr("data-validation", "required");
+	   /*  $("#role").attr("data-validation", "required"); */
 	    $("#userRole" ).val('');
-	    document.getElementById("roleDiv").style.display="";
+	    /* document.getElementById("roleDiv").style.display=""; */
 		document.getElementById("userRoleDiv").style.display="none";
 	   
 	}

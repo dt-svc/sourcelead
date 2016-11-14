@@ -137,6 +137,8 @@ public class Constants {
 	
 	public static int TAB_VENDOR = 9;
 	public static int TAB_CLIENT = 7;
+	public static int TAB_MY_TIMESHEET = 5;
+	public static int TAB_TIMESHEET_APPROVAL = 6;
 	
 	public static  String Dashboard = "Dashboard";
 	public static  String Users = "Users";
@@ -186,6 +188,7 @@ public class Constants {
 	public static String ACCOUNT_MANAGER = "ROLE_ACCOUNT_MANAGER";
 	public static String SALES_MANAGER = "ROLE_SALES_MANAGER";
 	public static String RECRUITER = "ROLE_RECRUITER";
+	public static String ROLE_MANAGER = "ROLE_MANAGER";
 
 
 	

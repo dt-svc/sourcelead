@@ -46,6 +46,10 @@ public class Roles {
 	@Type(type="text")
 	private String actionId;
 	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "HIERARCHY_ID")
+	private RoleHierarchy roleHierarchy;
+	
 	@Column(name = "STATUS")
 	private String status;
 	
@@ -163,6 +167,14 @@ public class Roles {
 
 	public void setActionId(String actionId) {
 		this.actionId = actionId;
+	}
+
+	public RoleHierarchy getRoleHierarchy() {
+		return roleHierarchy;
+	}
+
+	public void setRoleHierarchy(RoleHierarchy roleHierarchy) {
+		this.roleHierarchy = roleHierarchy;
 	}
 
 	

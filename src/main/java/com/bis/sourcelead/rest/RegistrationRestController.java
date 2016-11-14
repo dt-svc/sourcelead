@@ -75,12 +75,15 @@ public class RegistrationRestController {
 		try {
 			orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName);
 			for(Org regOrg : orgsList){
-				regOrg.setEmail(regOrg.getUser().getEmail());
-				regOrg.setIsMailSent(regOrg.getUser().getIsMailSent());
-				regOrg.setUserState(regOrg.getUser().getUserState());
-				regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
-				UserRole userRole = userRoleService.getUserByUserId(regOrg.getUser().getId());
-				regOrg.setUserState(userRole.getUserState());
+				if(null != regOrg.getUser()){
+					regOrg.setEmail(regOrg.getUser().getEmail());
+					regOrg.setIsMailSent(regOrg.getUser().getIsMailSent());
+					regOrg.setUserState(regOrg.getUser().getUserState());
+					regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
+					UserRole userRole = userRoleService.getUserByUserId(regOrg.getUser().getId());
+					regOrg.setUserState(userRole.getUserState());
+				}
+				
 				regOrgsList.add(regOrg);
 			}
 		} catch (Exception e) {

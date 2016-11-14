@@ -191,14 +191,30 @@ public class RolesDaoImpl implements RolesDao{
         List<Long> modulesList = new ArrayList<Long>();
 		for (String s : org.getModulesId().split(",")){
 			modulesList.add(Long.parseLong(s));
-		 }	
+		 }
+		
+		List<Long> tabsList = new ArrayList<Long>();
+		
+		if(modulesList.contains((long)Constants.MODULE_ATS)){
+			tabsList.add((long)Constants.TAB_CLIENT);
+		}
+		
+		if(modulesList.contains((long)Constants.MODULE_VMS)){
+			tabsList.add((long)Constants.TAB_VENDOR);
+		}
+		
+		if(modulesList.contains((long)Constants.MODULE_TIMESHEET)){
+			tabsList.add((long)Constants.TAB_MY_TIMESHEET);
+			tabsList.add((long)Constants.TAB_TIMESHEET_APPROVAL);
+		}
+		
 		
 		if("slead".equalsIgnoreCase(org.getOrgCode())){
 			subQuery = "and roles.roleName != 'ROLE_SOURCELEAD_ADMIN' ";
 		}
 		
-		String query = "select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId)) ";
-	    List<Long> actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).setCacheable(true).list();
+		String query = "select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId) and moduleActions.sourceleadActions.tabs.id IN(:tabsList) ";
+	    List<Long> actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).setParameterList("tabsList", tabsList).setCacheable(true).list();
       
 	    ArrayList<Roles> roleList = new ArrayList<>();
 		
@@ -210,7 +226,6 @@ public class RolesDaoImpl implements RolesDao{
 				 roleActonList.add(Long.parseLong(s));
 			 }
 			 roleActonList.retainAll(actionsList);
-			 System.out.println();
 			 if(roleActonList.size() > 0){
 				 roleList.add(roles);
 			 }

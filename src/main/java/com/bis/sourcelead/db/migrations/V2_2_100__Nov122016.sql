@@ -1,3 +1,0 @@
-
-UPDATE `sourcelead`.`USER_ROLE` SET `USER_STATE`='ACTIVE' WHERE `ID`='1';
-UPDATE `sourcelead`.`USER_ROLE` SET `USER_STATE`='ACTIVE' WHERE `ID`='3';

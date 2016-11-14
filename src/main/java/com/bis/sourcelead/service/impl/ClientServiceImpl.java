@@ -31,6 +31,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
@@ -45,6 +46,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
@@ -100,6 +102,9 @@ public class ClientServiceImpl implements ClientService{
 	
 	@Autowired
 	RolesService rolesService;
+	
+	@Autowired
+	RoleHierarchyService roleHierarchyService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -168,6 +173,7 @@ public class ClientServiceImpl implements ClientService{
 				orgLocationsList.add(clientOrgLocations);
 				org.setOrgLocationsList(orgLocationsList);
 				orgService.addOrganization(org);
+				saveOrgRoleHierarchy(clientOrgLocations,user);
 				saveOrgBasedRoles(clientOrgLocations,user);
 			}else{
 				orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
@@ -186,13 +192,8 @@ public class ClientServiceImpl implements ClientService{
 			
 			if(jsonObj.has("email")){
 				spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
-				if(!isNullOrEmpty(jsonObj.getString("roleType")) && null == clientOrgLocations.getUser() && null == org.getUser()){
-					clientOrgLocations.setUser(spocUser);
-					org.setUser(spocUser);
-					orgLocationService.updateOrgLocations(clientOrgLocations);
-					orgService.addOrganization(org);
-				}
 			}
+			
 			if(jsonObj.has("owner")){
 				String ownersId =null;
 				try{
@@ -313,6 +314,22 @@ public class ClientServiceImpl implements ClientService{
 		
 		
 		
+		public void saveOrgRoleHierarchy(OrgLocations orgLocations,User user) throws Exception{
+			List<RoleHierarchy> hierarchyList = roleHierarchyService.getRoleHierarchyByOrgLocationId(1L);
+			if(null != hierarchyList){
+				for(RoleHierarchy roleHierarchy : hierarchyList){
+					RoleHierarchy orgRoleHierarchy = new RoleHierarchy();
+					orgRoleHierarchy.setHierarchyName(roleHierarchy.getHierarchyName());
+					orgRoleHierarchy.setHierarchyLevel(roleHierarchy.getHierarchyLevel());
+					orgRoleHierarchy.setOrgLocations(orgLocations);
+					orgRoleHierarchy.setStatus(roleHierarchy.getStatus());
+					orgRoleHierarchy.setCreatedBy(user.getUserCode());
+					orgRoleHierarchy.setCreatedDate(new Date());
+					roleHierarchyService.saveRoleHierarchy(orgRoleHierarchy);
+				}
+			}
+			
+		}
 		
 		public void saveOrgBasedRoles(OrgLocations orgLocations,User user) throws Exception{
 			List<Roles> rolesList = rolesService.getSourceleadRoles(1L);

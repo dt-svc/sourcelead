@@ -99,7 +99,7 @@
             <label class="col-md-3">Select Vendor <span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
               <div class="form-icon">
-                <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="validateEmail();getSpocUserDetails();getRolesList();">
+                <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="validateEmail();getSpocUserDetails();">
                   <option value="">Select Vendor</option>
                    <c:forEach var="report" items="${vendorList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  
@@ -165,14 +165,14 @@
 	              </div>
 	            </div>
 	            
-	            <div class="form-group" id="roleDiv" style="display: block;">
+	            <!-- <div class="form-group" id="roleDiv" style="display: block;">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
 	                            <option value="">-Select Role-</option>
 			             </select>
                   </div>
-                </div>
+                </div> -->
                 
                 <div class="form-group" id="userRoleDiv" style="display: none;">
 					<label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
@@ -248,9 +248,9 @@ function getOrgName(){
 	$("#webSite").attr("disabled", false);
 	$("#webSite" ).val('');
 	
-	$("#role" ).val('');
+	/* $("#role" ).val('');
 	$("#role").attr("data-validation", "required");
-	document.getElementById("roleDiv").style.display="";
+	document.getElementById("roleDiv").style.display=""; */
 	document.getElementById("userRoleDiv").style.display="none";
 	
 	$.ajax({                           
@@ -658,16 +658,16 @@ function getSpocUserDetails(){
 	        		 
 	        		 
 	        		 if(json[3] != null && json[3] != ''){
-	        			$("#role").removeAttr("data-validation");
-	        			$("#role" ).val('');
-        			    document.getElementById("roleDiv").style.display="none";
+	        			 /*$("#role").removeAttr("data-validation");
+	        			 $("#role" ).val('');
+        			    document.getElementById("roleDiv").style.display="none"; */
    	        			document.getElementById("userRoleDiv").style.display="";
    	        			$("#userRole").val(json[3]);
    	        			$("#userRoleText").val(json[4]);
 	        		 }else{
-	        			 $("#role").attr("data-validation", "required");
+	        			/*  $("#role").attr("data-validation", "required"); */
 	        			 $("#userRole" ).val('');
-	        			 document.getElementById("roleDiv").style.display="";
+	        			/*  document.getElementById("roleDiv").style.display=""; */
 	        			 document.getElementById("userRoleDiv").style.display="none";
 	        		 }
 			      	 
@@ -686,9 +686,9 @@ function getSpocUserDetails(){
 	    $("#phoneNumber").attr("disabled", false);
 	    $("#phoneNumber").val('');
 	    
-	    $("#role").attr("data-validation", "required");
+	    /* $("#role").attr("data-validation", "required"); */
 	    $("#userRole" ).val('');
-	    document.getElementById("roleDiv").style.display="";
+	  /*   document.getElementById("roleDiv").style.display=""; */
 		document.getElementById("userRoleDiv").style.display="none";
 	   
 	}

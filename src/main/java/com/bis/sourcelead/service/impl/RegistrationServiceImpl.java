@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
@@ -45,6 +46,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RegistrationService;
+import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -117,6 +119,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	private SubmissionTemplateService  submissionTemplateService;
 	
+	@Autowired
+	private RoleHierarchyService roleHierarchyService;
 	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -170,6 +174,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		
+		saveOrgRoleHierarchy(orgLocations,user);
 		
 		saveOrgBasedRoles(orgLocations,user);
 		
@@ -356,6 +361,22 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	
 	
+	public void saveOrgRoleHierarchy(OrgLocations orgLocations,User user) throws Exception{
+		List<RoleHierarchy> hierarchyList = roleHierarchyService.getRoleHierarchyByOrgLocationId(1L);
+		if(null != hierarchyList){
+			for(RoleHierarchy roleHierarchy : hierarchyList){
+				RoleHierarchy orgRoleHierarchy = new RoleHierarchy();
+				orgRoleHierarchy.setHierarchyName(roleHierarchy.getHierarchyName());
+				orgRoleHierarchy.setHierarchyLevel(roleHierarchy.getHierarchyLevel());
+				orgRoleHierarchy.setOrgLocations(orgLocations);
+				orgRoleHierarchy.setStatus(roleHierarchy.getStatus());
+				orgRoleHierarchy.setCreatedBy(user.getUserCode());
+				orgRoleHierarchy.setCreatedDate(new Date());
+				roleHierarchyService.saveRoleHierarchy(orgRoleHierarchy);
+			}
+		}
+		
+	}
 	
 	public void saveOrgBasedRoles(OrgLocations orgLocations,User user) throws Exception{
 		List<Roles> rolesList = rolesService.getSourceleadRoles(1L);
@@ -365,8 +386,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 				orgRoles.setRoleName(roles.getRoleName());
 				orgRoles.setDisplayName(roles.getDisplayName());
 				orgRoles.setOrgLocations(orgLocations);
+				RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyByHierarchyLevelAndOrgLocationId(roles.getRoleHierarchy().getHierarchyLevel(), orgLocations.getId());
+				orgRoles.setRoleHierarchy(roleHierarchy);
 				orgRoles.setOrg(orgLocations.getOrg());
 				orgRoles.setActionId(roles.getActionId());
+				orgRoles.setStatus(roles.getStatus());
 				orgRoles.setCreatedBy(user.getUserCode());
 				orgRoles.setCreatedDate(new Date());
 				rolesService.storeRoles(orgRoles);
