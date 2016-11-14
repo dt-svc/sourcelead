@@ -166,7 +166,6 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setUpdatedBy(user.getUserCode());
 				requirement.setUpdatedDate(commonUtil.currentDate());
 			}else{
-				
 				requirement.setCreatedDate(commonUtil.currentDate());
 				requirement.setCreatedBy(user.getUserCode());
 				requirement.setUpdatedBy(user.getUserCode());
@@ -500,10 +499,7 @@ public class RequirementServiceImpl implements RequirementService {
 						
 						requirementAssignTo.setRequirementId(requirement);
 						
-						requirementAssignTo.setCreatedDate(commonUtil.currentDate());
-						requirementAssignTo.setCreatedBy(user.getUserCode());
-						requirementAssignTo.setUpdatedBy(user.getUserCode());
-						requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
+						
 						requirementAssignTo.setTeamId(team);
 						requirementAssignTo.setRoleId(rolesService.getRolesByDisplayName(assUser.getUserType()));
 						requirementAssignToList.add(requirementAssignTo);
@@ -1359,6 +1355,7 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementDao.validateJobId(id);
 	}
 
+
 	@Override
 	public File getExportRequirementFile(List<Requirement> requirementList, String orgName,String exportType) throws Exception {
 		
@@ -1529,5 +1526,20 @@ public class RequirementServiceImpl implements RequirementService {
 		         cell.setCellStyle(style);
 		     }
 		return createExcelsheet;
+
+	
+	@Override
+	public Boolean checkRequirementIsReleasedOrNot(Long requirementId,Long orgLocationId) throws Exception {
+		   
+			Requirement  req = requirementDao.checkRequirementIsReleasedOrNot(requirementId,orgLocationId);
+			Boolean requirementReleased = true;
+			if(req!=null){
+				
+				return requirementReleased;
+			}else{
+				
+				return false;
+			}
+
 	}
 }

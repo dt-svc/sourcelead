@@ -27,7 +27,7 @@ public interface TimesheetEntriesService {
     
     public Collection<TimesheetEntries> getAllTimesheetEntriesBySubmissionId(Long submissionId)throws Exception; 
     
-    public String newTimesheet(User user,String navigation, String startDate) throws Exception;
+    public String newTimesheet(User user,String navigation, String startDate,Long locationsId) throws Exception;
     
     public String dynamicTimesheetpopUp(User user, Long employeeId,String startDate,String endDate) throws Exception ;
     
