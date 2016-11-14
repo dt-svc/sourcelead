@@ -360,6 +360,7 @@ $(document).ready(function() {
             </div>
          
           <div class="form-group">
+            <input type="hidden" name="templateId" id="templateId" value="" />
             <label class="col-md-3">Attachment</label>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
             <div class="col-md-9">
@@ -380,7 +381,7 @@ $(document).ready(function() {
            <div class="form-group">
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
-             <textarea rows="2" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true">${requirement.description}</textarea>
+             <textarea rows="2" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description" data-validation="validate_length length2-5000" data-validation-optional="true">${requirement.description}</textarea>
             </div>
           </div>
           
@@ -1106,9 +1107,14 @@ function setTemplateValues(){
 		    success: function(data) {
 		    	
 		    	
-		    	if(data != null && data != 'undefined' && data !='' ){
+		    	if(data != null && data != 'undefined' && data !='' ){ 
 		    		
 		    		var json = JSON.parse(data);
+		    		
+		    		if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
+		    			$("#templateId").val(json.id);
+		    		}
+		    		
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
 			    	$("#jobId").val(json.jobId);

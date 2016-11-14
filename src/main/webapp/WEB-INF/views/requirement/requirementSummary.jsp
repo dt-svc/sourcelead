@@ -71,6 +71,16 @@ color:#333 !important;
 width: 92% !important;
 margin-top:10px;
 }
+.require_wrap_details_cta.require_uploadfile span{
+width:auto !important;
+}
+.require_wrap_details_cta.require_uploadfile a {
+margin-left:10px;
+float: left !important;
+}
+.require_wrap_details_cta.require_uploadfile .glyphicon-download-alt {
+color:blue;
+}
 </style>
  
 <script>
@@ -1443,7 +1453,7 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-					            result = result +'     <div class="require_wrap_details_cta"> <b>Attachment:</b> <span>'+json.fileName+'</span>';
+					            	result = result +'<div class="require_wrap_details_cta require_uploadfile"><b>Attachment:</b> <span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
 					            }
 					            else{
 					            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
