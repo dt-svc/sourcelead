@@ -720,6 +720,7 @@ public class ClientServiceImpl implements ClientService{
 			 emailMessage.setLastName(editUser.getLastName());
 			 emailMessage.setToEmail(editUser.getEmail());
 			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 			 
 			 

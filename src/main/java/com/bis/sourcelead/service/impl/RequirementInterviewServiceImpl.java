@@ -233,6 +233,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		}
 		 emailMessage.setToEmail(interviewerUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 		 
 		 String candidateName = candidate.getFirstName();
@@ -313,6 +314,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailMessage.setLastName(candidate.getLastName());
 		 emailMessage.setToEmail(candidate.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 		 
 		 String time = "";
@@ -460,6 +462,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailMessage.setLastName(candidate.getLastName());
 		 emailMessage.setToEmail(candidate.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 		 
 		 String time = "";
