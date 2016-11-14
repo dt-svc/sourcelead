@@ -301,7 +301,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				pm.setUpdatedBy(user.getUserCode());
 				pm.setMemberHistoryList(pmhList);
 				saveProjectMember(pm);
-				//commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
+				commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
 				
 				/**
 			     * This method for send Email to team member while assign employee from project dashboard
