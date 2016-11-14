@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -56,6 +57,18 @@ public class CandidateComments {
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	private String commentTime;
+	
+	@Transient
+	private String commentAuthor;
+	
+	@Transient
+	private Long commentAuthorUserId;
+	
+	@Transient
+	private String candidateName;
 
 	public Long getId() {
 		return id;
@@ -128,5 +141,38 @@ public class CandidateComments {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+
+	public String getCommentTime() {
+		return commentTime;
+	}
+
+	public void setCommentTime(String commentTime) {
+		this.commentTime = commentTime;
+	}
+
+	public String getCommentAuthor() {
+		return commentAuthor;
+	}
+
+	public void setCommentAuthor(String commentAuthor) {
+		this.commentAuthor = commentAuthor;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public Long getCommentAuthorUserId() {
+		return commentAuthorUserId;
+	}
+
+	public void setCommentAuthorUserId(Long commentAuthorUserId) {
+		this.commentAuthorUserId = commentAuthorUserId;
+	}
+	
 
 }
