@@ -226,7 +226,8 @@ public class TimesheetEntriesRestController {
 	@RequestMapping(value = "/exportTimeShhet")    
 	public void ExportTimeShhet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		exportTimesheetEntries.exportTimesheets(user, navigation, startDate);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		exportTimesheetEntries.exportTimesheets(user, navigation, startDate,orgLocations);
        System.out.println("****************************************************");
 	}
  

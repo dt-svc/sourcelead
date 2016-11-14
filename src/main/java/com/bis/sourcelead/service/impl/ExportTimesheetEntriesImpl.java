@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
@@ -97,7 +98,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	private String sourceleadUrl;
 
 	@Override
-	public void exportTimesheets(User user, String navigation, String startDate) throws Exception {
+	public void exportTimesheets(User user, String navigation, String startDate,OrgLocations orgLocations) throws Exception {
 
 		
 		Workbook createExcelworkbook = new XSSFWorkbook();
@@ -105,7 +106,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		Sheet createExcelsheet = createExcelworkbook.createSheet(user.getFirstName() + "_" + dateFormat.format(new Date()));
 		Row writeRow = null;
 		
-		HashMap<String, Date> submissionDateRange =	timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(user.getId());
+		HashMap<String, Date> submissionDateRange =	timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(user.getId(),orgLocations.getId());
 		Date employeeStartDate = submissionDateRange.get("STARTDATE");
 		Date employeeEndDate = submissionDateRange.get("ENDDATE");
 		
@@ -377,6 +378,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 						            	  if(timesheetEntries.getProjectTask() != null){
 						            	  sb.append("<p>"+timesheetEntries.getProjectTask().getTaskName()+"</p>");
 						            	  /*ram1*/
+						            	logger.info("--------------------"+timesheetEntries.getProjectTask().getTaskName());
 						            	  if(timesheetEntries.getProjectTask() != null ){
 						     				 writeRow.createCell(1).setCellValue(timesheetEntries.getProjectTask().getTaskName()); 
 						     			}
