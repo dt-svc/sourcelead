@@ -209,7 +209,7 @@ function checkEmails(){
 </div>
 
 <div id="divTaskTd3" style="display: none; float: left;">
-   	 <select class="form-control block selectpicker" id="REPLACEROWIDinterviewType" name="REPLACEROWIDinterviewType">
+   	 <select class="form-control block" id="REPLACEROWIDinterviewType" name="REPLACEROWIDinterviewType">
 		<option value="">--Select Type--</option>
 		<option value="F2F">F2F</option>
 		<option value="Telephonic">Telephonic</option>
