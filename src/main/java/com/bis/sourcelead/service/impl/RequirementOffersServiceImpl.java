@@ -216,6 +216,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setLastName(loginUser.getLastName());
             emailMessage.setToEmail(req.getSpocId().getSpocUser().getEmail());
             emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+            emailMessage.setCreatedBy(loginUser.getUserCode());
             emailMessage.setFromName(loginUser.getFirstName() + " " + loginUser.getLastName());
 
             // setting the class filed values
@@ -282,6 +283,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setLastName(loginUser.getLastName());
             emailMessage.setToEmail(applicant.getCandidate().getEmail());
             emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+            emailMessage.setCreatedBy(loginUser.getUserCode());
             emailMessage.setFromName(loginUser.getFirstName() + " " + loginUser.getLastName());
 
             // setting the class filed values
