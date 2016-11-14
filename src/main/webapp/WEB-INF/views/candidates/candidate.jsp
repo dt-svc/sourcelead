@@ -218,7 +218,7 @@
                  <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
                  <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
                  <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}><a href="#">GBP</a></option>
                  <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
                  <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
                  
@@ -241,7 +241,7 @@
                  <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
                  <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
                  <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}><a href="#">GBP</a></option>
                  <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
                  <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
                  
@@ -290,7 +290,7 @@
         <div class="form-group">
               <label class="col-md-3">Skills</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="candidateSkills" id="candidateSkills" data-validation="validate_Space" data-validation-optional="true">
+                <select multiple class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">
                 <c:forEach var="skill" items="${skillsList}">
 	                     <option value="${skill.name}">${skill.name}</option>
                 </c:forEach>
@@ -650,8 +650,8 @@ function getCities(){
 							 }
 						}
 						
-						$("#firstName").val(firstName);
-						$("#lastName").val(lastName);
+						$("#firstName").val(firstName.replace(".",""));
+						$("#lastName").val(lastName.replace(".",""));
 						$("#email").val(json.email);
 						$("#mobilePhone").val(json.phoneNumbers);
 						validateCandidateEmail();
