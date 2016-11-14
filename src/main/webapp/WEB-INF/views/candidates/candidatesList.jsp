@@ -601,14 +601,11 @@ function refreshImageBlock(candidateId){
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
 						 result = result+' </div>';
 						 $("#candidateImageId").append(result);
-						 
-			    	} 
-                } 
-         },
-           
+			    	}
+                }
+         	},
       }); 
-				
-}
+   }
 </script>
 
 
