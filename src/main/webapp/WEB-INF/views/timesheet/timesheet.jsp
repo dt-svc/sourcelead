@@ -168,7 +168,7 @@ function timesheetAttachmentValidationFun(){
 		           deleteLink[i].addEventListener('change', function(event) {
 		        	     	var attach_id = this.id;
 		        	     	var size = $('#'+attach_id)[0].files[0].size;
-		        	     	if(size > 2097152){ 
+		        	     	if(size > 2000000){ 
 		        		    	  $("#"+attach_id).val('');
 		        		    	  $("#"+attach_id+"uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
 		        	     	}
@@ -571,15 +571,15 @@ function withdrawMyTimesheet(submissionId,startdate){
 
 <!-- this script is for delete document -->
 <script type="text/javascript">
-function deleteSubmissionDocument(submissionDocumentId){  
+function deleteSubmissionDocument(submissionDocumentId,startdate){  
     var sourceleadUrl ='${sourceleadUrl}';
-    var startdate;
+    /*  var startdate; */
 	var navigation;
     $.ajax({
           type : "POST",
       	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
 	      success :function(result) {
-	    		dynamicTimesheet(navigation,startdate);  
+	    		dynamicTimesheet("left",startdate); 
 	      }
       	  
     }); 

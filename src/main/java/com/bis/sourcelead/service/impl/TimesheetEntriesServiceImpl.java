@@ -740,7 +740,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 									
 									if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
 									}else{
-										documentBuffer.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\");' >");
+										documentBuffer.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\",\""+startDate+"\");' >");
 									}
 									documentBuffer.append("</strong>");
 							} 
@@ -1813,6 +1813,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			 emailMessage.setLastName(projectManager.getLastName());
 			 emailMessage.setToEmail(projectManager.getEmail());
 			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 			 
 			 String pattern = "dd-MM-yyyy";
