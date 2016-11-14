@@ -313,6 +313,7 @@ public class SubmissionsRestController {
 		 emailMessage.setLastName(requirement.getManagerUserId().getLastName());
 		 emailMessage.setToEmail(requirement.getManagerUserId().getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(user.getUserCode());
 		 emailMessage.setFromName(user.getFirstName()+" "+user.getLastName());
 		 
 		//setting the class filed values

@@ -3,6 +3,8 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Map;
 
+import javax.persistence.Column;
+
 public class EmailMessage implements Serializable {
 
 	/**
@@ -31,6 +33,8 @@ public class EmailMessage implements Serializable {
 	private String password;
 	
 	private Long orgLocationId;
+	
+	private String createdBy;
 	
 	private Map<String, Object> model;
 	
@@ -138,5 +142,13 @@ public class EmailMessage implements Serializable {
 
 	public void setAttachmentFiles(String[] attachmentFiles) {
 		this.attachmentFiles = attachmentFiles;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 }
