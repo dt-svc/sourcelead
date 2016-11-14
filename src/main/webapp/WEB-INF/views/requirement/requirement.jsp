@@ -290,7 +290,7 @@ $(document).ready(function() {
 	                 <option ${requirement.currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
 	                 <option ${requirement.currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
 	                 <option ${requirement.currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-	                 <option ${requirement.currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+	                 <option ${requirement.currencyCode  == 'GBP' ? 'selected' : ''}><a href="#">GBP</a></option>
 	                 <option ${requirement.currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
 	                 <option ${requirement.currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
                 </select>
@@ -470,7 +470,7 @@ $(document).ready(function() {
                       <option value=''>-- Select Contact --</option>
                       <c:forEach var="report" items="${clientContactList}">
 			         		<%-- <option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocId.SpocUser.firstName}&nbsp;${report.spocId.SpocUser.lastName}</option> --%>
-			         		<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName}</option> 
+			         		<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option> 
 					     </c:forEach>
                     </select>
                     <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i> 
@@ -489,7 +489,7 @@ $(document).ready(function() {
 		                 <option  ${requirement.clientCurrencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
 		                 <option  ${requirement.clientCurrencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
 		                 <option  ${requirement.clientCurrencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-		                 <option  ${requirement.clientCurrencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+		                 <option  ${requirement.clientCurrencyCode  == 'GBP' ? 'selected' : ''}><a href="#">GBP</a></option>
 		                 <option  ${requirement.clientCurrencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
 		                 <option  ${requirement.clientCurrencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
 	                </select>

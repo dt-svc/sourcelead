@@ -288,6 +288,15 @@ public class ClientRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId());
+		if(orgSpocsList != null){
+			for(OrgSpoc orgSpoc : orgSpocsList){
+				String ownerLastName = "";
+				if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getLastName() != null){
+					ownerLastName = orgSpoc.getOwnerUser().getLastName();
+				}
+				orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+ownerLastName);
+			}
+		}
 		return commonUtil.toJSON(orgSpocsList);
 	}
 	
@@ -710,5 +719,6 @@ public class ClientRestController {
 	protected static boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
 	}
+
 
 }

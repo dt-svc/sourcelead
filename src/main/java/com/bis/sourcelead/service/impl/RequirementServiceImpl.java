@@ -68,6 +68,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TeamService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -114,6 +115,10 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	private RolesService rolesService;
+	
+	@Autowired
+	private UserRoleService userRoleService;
+	
 	
 	 @Autowired
 	 private  RequirementSubmissionService requirementSubmissionService;
@@ -501,7 +506,10 @@ public class RequirementServiceImpl implements RequirementService {
 						
 						
 						requirementAssignTo.setTeamId(team);
-						requirementAssignTo.setRoleId(rolesService.getRolesByDisplayName(assUser.getUserType()));
+						
+						
+						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
+						requirementAssignTo.setRoleId(userRole.getRoles());
 						requirementAssignToList.add(requirementAssignTo);
 						AssignToTeamMembersEmail(user, assUser, requirement,location);
 
@@ -620,6 +628,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(approverUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 		 
 		//setting the class filed values
@@ -716,6 +725,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(approverUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 		 
 		//setting the class filed values
@@ -788,6 +798,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(intiatorUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 		 
 		//setting the class filed values
@@ -1007,6 +1018,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(managerUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 		 
 		//setting the class filed values
@@ -1090,6 +1102,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(assUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 		 
 		//setting the class filed values
@@ -1168,6 +1181,7 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setLastName(loginUser.getLastName());
 		emailMessage.setToEmail(initiatorUser.getEmail());
 		emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		emailMessage.setCreatedBy(loginUser.getUserCode());
 		emailMessage.setFromName(loginUser.getFirstName() + " " + loginUser.getLastName());
 
 		// setting the class filed values
@@ -1248,6 +1262,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(vendorContactUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 		 
 		//setting the class filed values
@@ -1527,7 +1542,7 @@ public class RequirementServiceImpl implements RequirementService {
 		     }
 		return createExcelsheet;
 
-	
+	}
 	@Override
 	public Boolean checkRequirementIsReleasedOrNot(Long requirementId,Long orgLocationId) throws Exception {
 		   

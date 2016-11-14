@@ -720,6 +720,7 @@ public class ClientServiceImpl implements ClientService{
 			 emailMessage.setLastName(editUser.getLastName());
 			 emailMessage.setToEmail(editUser.getEmail());
 			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 			 
 			 
@@ -764,7 +765,7 @@ public class ClientServiceImpl implements ClientService{
 			 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 			 noificationEmailScenario.setBody(notificationbody);
 			 
-			 emailScenerioUtil.sendNotification(actionLink, loginUser, user, orgLocation, noificationEmailScenario);
+			 emailScenerioUtil.sendNotification(actionLink, loginUser, editUser, orgLocation, noificationEmailScenario);
 			
 		}
 		

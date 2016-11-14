@@ -69,9 +69,9 @@ window.onload = function () {
   </section>
   
       <!-- Content Area Ends--> 
-
+	<div class="backtotop"><img src="resources/images/backtotop.png"></div>  
       <jsp:include page="../masterFooter.jsp" />
-      <div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
+      
       
       
       
@@ -194,7 +194,7 @@ function resendInvitation(userId){
 <script>
 // Back To Top 
     $(window).scroll(function() {
-        if ($(this).scrollTop() > 200) {
+        if ($(this).scrollTop() > 50) {
             $('.backtotop').fadeIn('slow');
         } else {
             $('.backtotop').fadeOut('slow');

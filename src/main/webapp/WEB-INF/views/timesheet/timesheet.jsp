@@ -89,8 +89,10 @@
 	</div>
 	</div>  
 	<div id="divAttachmentTd1" style="display: none; float: left;">
-	  		<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile'> 
-	  		<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
+			<div id='REPLACEROWIDdocFileuploadFileGroup'>
+	  			<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation"> 
+	  			<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
+	  		</div>
     </div>
 
 </form>   
@@ -108,6 +110,8 @@ $(document).ready(function() {
 	dynamicTimesheet(navigation,startdate);  
 });
 </script>
+
+
 
 <script type="text/javascript">
 function dynamicTimesheet(navigation , startDate){ 
@@ -129,6 +133,9 @@ function dynamicTimesheet(navigation , startDate){
 							       $("#dynamic").append(data);
 							       maskme();  
 							       $("html").trigger('click');
+							       
+							       timesheetAttachmentValidationFun();
+						       
 				    	       }else{
 				    	    	    $("#dynamic").removeAttr("style");
 				    	    	    var result ="";
@@ -153,6 +160,23 @@ function dynamicTimesheet(navigation , startDate){
 
 <!-- this script is for timesheet screen  above -->   
 
+<!-- this script is for validate size of attachments -->
+<script type="text/javascript">
+function timesheetAttachmentValidationFun(){
+		       var deleteLink = document.querySelectorAll('.timesheetAttachmentValidation');
+		       for (var i = 0; i < deleteLink.length; i++) {
+		           deleteLink[i].addEventListener('change', function(event) {
+		        	     	var attach_id = this.id;
+		        	     	var size = $('#'+attach_id)[0].files[0].size;
+		        	     	if(size > 2000000){ 
+		        		    	  $("#"+attach_id).val('');
+		        		    	  $("#"+attach_id+"uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+		        	     	}
+		           });
+		       }
+}   
+</script>
+	
 <!-- this script is for timesheet comment  shown and hide  -->	      
 <script type="text/javascript">
 function timesheetComment(local){ 
@@ -547,15 +571,15 @@ function withdrawMyTimesheet(submissionId,startdate){
 
 <!-- this script is for delete document -->
 <script type="text/javascript">
-function deleteSubmissionDocument(submissionDocumentId){  
+function deleteSubmissionDocument(submissionDocumentId,startdate){  
     var sourceleadUrl ='${sourceleadUrl}';
-    var startdate;
+    /*  var startdate; */
 	var navigation;
     $.ajax({
           type : "POST",
       	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
 	      success :function(result) {
-	    		dynamicTimesheet(navigation,startdate);  
+	    		dynamicTimesheet("left",startdate); 
 	      }
       	  
     }); 
@@ -716,16 +740,15 @@ function removeTimeSheetRow(rowId,submissionId) {
 <script>
 function clearTimesheet(){ 
 	for (var i = 1; i < 8; i++){
-	 /* for (var p = 1; p < 200; p++){   */
 	 $('.NEW').each(function() {
 		 var p = this.id;
 		 for (var j = 1; j < 50; j++){
 			    $("#"+j+"submission"+p+"timeSheetDay"+i+"Id").val("00:00");
 			    $("#"+j+"submission"+p+"textArea"+i+"Id").val("");  
 		 }
-    /*  } */
-	 });  
+    	 });  
 	}
+	$("#weekComment").val('');
 }
 </script>
 
@@ -842,6 +865,8 @@ function addAttachment(){
 			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
 			cell0.innerHTML = divAttachmentTdStr;
 			
+			timesheetAttachmentValidationFun();
+			
 }			
 </script>
 
@@ -872,6 +897,7 @@ $(".export_pop, #export-pop").click(function(e) {
 });  
 }
 
+
 </script>
 
 <script>
@@ -889,3 +915,5 @@ function exportExcel(startDate){
 	 window.location.href = sourceleadUrl+"/exportTimeShhet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate;
 }
 </script>
+
+
