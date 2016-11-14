@@ -340,6 +340,9 @@ public class ClientServiceImpl implements ClientService{
 					orgRoles.setDisplayName(roles.getDisplayName());
 					orgRoles.setOrgLocations(orgLocations);
 					orgRoles.setOrg(orgLocations.getOrg());
+					RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyByHierarchyLevelAndOrgLocationId(roles.getRoleHierarchy().getHierarchyLevel(), orgLocations.getId());
+					orgRoles.setRoleHierarchy(roleHierarchy);
+					orgRoles.setStatus(roles.getStatus());
 					orgRoles.setActionId(roles.getActionId());
 					orgRoles.setCreatedBy(user.getUserCode());
 					orgRoles.setCreatedDate(new Date());
