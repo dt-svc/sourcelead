@@ -160,6 +160,7 @@ public class UserServiceImpl implements UserService {
 		   userRole = getUserRoleDetails(jsonObj,user,loginuser.getUserCode(),orgLocations.getId());
 		   if(null == user.getId()){
 				userRole.setIsPrimary(1);
+				userRole.setUserType("Employee");
 		  }else{
 				userRole.setIsPrimary(0);
 			}
