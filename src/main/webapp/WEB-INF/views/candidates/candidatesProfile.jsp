@@ -113,11 +113,42 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							
+							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
-							result = result + '<textarea class="form-control input-sm" placeholder="Summary"  name="summary" rows="2" cols="0" > '+json.summary+'</textarea>';
+							result = result + '<input type="text" class="form-control input-sm" name="expectedRate"  value="'+json.expectedRate+'" placeholder="Expected Rate">';
+							result = result + '</div>';
+							result = result + '</div>';
+							
+							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="col-md-6">';
+							result = result + '<input type="text" class="form-control input-sm" name="experienceYears"  value="'+json.experienceYears+'" placeholder=" Experience Years">';
+							result = result + '</div>';
+							
+							result = result + '<div class="col-md-6 custom-fields select-arrow">';
+							result = result + '<select  class="chosen-select form-control select-bg" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths">';
+							result = result + '<option value="">Select Months</option>';
+							result = result  +'<option value="1" '  + (json.experienceMonths == 1 ? "selected" : '') +  '>1</option>';
+							result = result  +'<option value="2"  '+ (json.experienceMonths == 2 ? "selected" : '') +' >2</option>';
+							result = result  +'<option value="3"  '+ (json.experienceMonths == 3 ? "selected" : '') +' >3</option>';
+							result = result  +'<option value="4"  '+ (json.experienceMonths == 4 ? "selected" : '') +' >4</option>';
+							result = result  +'<option value="5"  '+ (json.experienceMonths == 5 ? "selected" : '') +' >5</option>';
+							result = result  +'<option value="6"  '+ (json.experienceMonths == 6 ? "selected" : '') +' >6</option>';
+							result = result  +'<option value="7"  '+ (json.experienceMonths == 7 ? "selected" : '') +' >7</option>';
+							result = result  +'<option value="8"  '+ (json.experienceMonths == 8 ? "selected" : '') +' >8</option>';
+							result = result  +'<option value="9"  '+ (json.experienceMonths == 9 ? "selected" : '') +' >9</option>';
+							result = result  +'<option value="10"  '+ (json.experienceMonths == 10 ? "selected" : '') +' >10</option>';
+							result = result  +'<option value="11"  '+ (json.experienceMonths == 11 ? "selected" : '') +' >11</option>';
+							
+							result = result + '</select>';
+							result = result + '</div>';
+							result = result + '</div>';
+												
+							result = result + '<div class="col-md-6">';
+							result = result + '<textarea class="form-control input-sm" placeholder = "Summary"  name="summary" rows="2" cols="0" > '+json.summary+'</textarea>';
 							//result = result + ''+json.summary+'</textarea>';
 							result = result + ' </div>';
 							result = result + '</div>';
+							 
 							result = result + '<div class="clearfix mr">';
 							result = result + '<div class="pull-right">';
 							result = result + '<button type="button"  onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
@@ -148,6 +179,7 @@ function editCandidate(candidateId){
 							    $("#country").chosen();
 							    $("#state").chosen();
 							    $("#city").chosen();
+							   
 							    
 							    $("#country").on('change', function (e) {
 							 	   getStates();
@@ -186,6 +218,19 @@ function editCandidate(candidateId){
         getAllCountries(); 
 }
 </script>
+
+<!-- <script type="text/javascript">
+function disableMonths() {
+    $("#experienceYears").change(function() {
+   	 
+        if ($(this).val() == '25+'){
+            $("#experienceMonths").attr("disabled", true);
+            $("#experienceMonths").val("disabled", true);
+        }else
+       	 $("#experienceMonths").attr("disabled", false); 
+    });
+}
+</script> -->
 
 <!-- Country,State,City Script Starts Here -->
 
