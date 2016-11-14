@@ -650,8 +650,8 @@ function getCities(){
 							 }
 						}
 						
-						$("#firstName").val(firstName);
-						$("#lastName").val(lastName);
+						$("#firstName").val(firstName.replace(".",""));
+						$("#lastName").val(lastName.replace(".",""));
 						$("#email").val(json.email);
 						$("#mobilePhone").val(json.phoneNumbers);
 						validateCandidateEmail();
