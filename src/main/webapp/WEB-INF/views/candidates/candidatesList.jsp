@@ -15,6 +15,7 @@
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="candidatesActivities.jsp"></jsp:include>
+<jsp:include page="candidatesCommentsList.jsp"></jsp:include>
 
 <script>
  window.onload = function() {
@@ -361,10 +362,6 @@ function clientSideBar(candidateId){
 			            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
 			            result = result+'            </button>';
 			            result = result+'            <div class="add-comment">';
-			            
-			   
-			            
-			            
 			            result = result+'            </div>';
 			            result = result+'          </span>';
 			            result = result+'          <a href="javascript:void(0)" class="comments-view">View more <span class="label label-warning">4</span></a>';
@@ -381,10 +378,11 @@ function clientSideBar(candidateId){
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
 			             result = result+'     <ul class="project-tabs-menu">';
 			             result = result+'       <li class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
-			             result = result+'       <li><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');" >Resume</a></li>';
+			             result = result+'       <li><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); CandidateResume('+candidateId+');" >Resume</a></li>';
 			             result = result+'       <li><a href="#tab-3" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
 			             result = result+'       <li><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
 			             result = result+'       <li><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
+			             result = result+'       <li><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
 			             /* result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; */
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
@@ -405,6 +403,8 @@ function clientSideBar(candidateId){
 						 result = result + '</div>';
 						 
 						 result = result + '<div id="tab-6" class="project_tabs_inn">';
+						 result = result + '</div>';
+						 result = result + '<div id="tab-7" class="project_tabs_inn">';
 						 result = result + '</div>';
 			             result = result+'     </div>';
 			             result = result+'   </div>';
@@ -962,9 +962,10 @@ function showComment(candidateId){
 		result = result+'	        </form>';
 	$('.add-comment').empty();
 	$('.add-comment').append(result);
+	$('.add-comment').toggle(200);
 }
 function closeComment(){
-	$('.add-comment').empty();
+	$('.add-comment').toggle(200);
 }
 </script>
 
