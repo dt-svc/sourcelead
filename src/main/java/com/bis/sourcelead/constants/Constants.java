@@ -220,4 +220,6 @@ public class Constants {
 			"Date Of Join", "Rate", "Location", "Role", "Manager", "status" };
 	public static String[] CANDIDATE_EXCEL_HEADERS = {"Firstname","Last name","Email id","Phone Number","Location","Designation","Education","Experience","Skills","Rate"};
     public static String[] REQUIREMENT_EXCEL_HEADERS = {"Requirement id","Requirement Title","Experience","Rate","Location","Skills","Manager","Priority","Application Form Name","Client Name","Client Contact Name","Client Contact Email"};
+    
+    public static String[] TIMESHEET_EXCEL_HEADERS = {"Projects","Tasks","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Status"};
 }

@@ -859,6 +859,33 @@ function addAttachment(){
 		    } 
 	}
 </script>
+<script>
+function exportType(){
+	 $("#export-pop").click(function(){
+         $(".export_pop").slideToggle(200);
+ });
+$("html").click(function() {
+ $(".export_pop").slideUp(200);
+});
+$(".export_pop, #export-pop").click(function(e) {
+ e.stopPropagation();
+});  
+}
 
+</script>
 
+<script>
+function exportPdf(){
+	alert("Pdf");
+}
+</script>
 
+<script>
+function exportExcel(startDate){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var navigation = "left";
+	alert("navigation "+navigation);
+	alert("startdate "+startDate);
+	 window.location.href = sourceleadUrl+"/exportTimeShhet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate;
+}
+</script>
