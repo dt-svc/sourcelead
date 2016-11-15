@@ -1,5 +1,9 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +17,7 @@ import com.bis.sourcelead.entity.CandidateComments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCommentsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -30,6 +35,9 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 	
 	@Autowired
 	private CandidateCommentsDao candidateCommentsDao;
+	
+	@Autowired
+	UserService userService;
 
 	/**
 	 * @author Venkat Kesav
@@ -66,6 +74,43 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 			candidateComments.setUpdatedDate(commonUtil.currentDate());
 		candidateCommentsDao.storeCandidateComments(candidateComments);
 		return candidateComments;
+	}
+	
+	
+	/**
+	 * @author Venkat Kesav
+	 * @since  Nov 10 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to getAllCommentsOnCandidateByCandidateIdAndOrgLocation from candidate_Comments table.
+	 * 
+	 * @param candidate This is the first parameter to getAllCommentsOnCandidateByCandidateIdAndOrgLocation method
+	 * @param orgLocation This is the second parameter to getAllCommentsOnCandidateByCandidateIdAndOrgLocation method
+	 * 
+	 * @return CandidateComments
+	 * 
+	 * @throws NullPointer
+	 */
+	@Override
+	public List<CandidateComments> getAllCommentsOnCandidateByCandidateIdAndOrgLocation(Candidate candidate, OrgLocations orgLocation) throws Exception {
+		
+		List<CandidateComments> candidateCommentsList = candidateCommentsDao.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(candidate.getId(), orgLocation.getId());
+		for(CandidateComments candidateComments: candidateCommentsList){
+			
+			User user = userService.getUserByUserCode(candidateComments.getUpdatedBy());
+			if(null != user){
+				String authorLastName = "";
+				if(StringUtils.isNotEmpty(user.getFirstName())){
+					authorLastName = user.getLastName();
+				}
+				candidateComments.setCommentAuthor(user.getFirstName()+" "+authorLastName);
+				candidateComments.setCommentAuthorUserId(user.getId());
+			}
+			
+			candidateComments.setCommentTime(candidateComments.getUpdatedDate().toString());
+		}
+		
+		return candidateCommentsList;
 	}
 	
 }

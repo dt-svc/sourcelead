@@ -508,32 +508,38 @@ function validateClientName(){
 	if(clientName.match(/^[^\s-](.*)*$/) != null){
 		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
 	if (clientName != null && clientName != '') {
-		//$("#save_client").attr("disabled", "disabled");
-		// $( "#save_client" ).addClass('button').val('Processing..');
-		$.ajax({
-			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName+"&responderType=Client",
-			success : function(data) {
-				var result = data;
-				if (result == true) {
-					//duplicate client
-					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as client</span>");
-					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
-					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as client");
-					
-				}else {
-					//New WebSite class="form-control"
-					//$("#save_client").removeAttr("disabled");
-					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
-					$('input#orgName').attr('class','valid form-control');
-					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
-					$("#save_client").click(function() {
+		if(clientName.length > 1){
+			//$("#save_client").attr("disabled", "disabled");
+			// $( "#save_client" ).addClass('button').val('Processing..');
+			$.ajax({
+				type : "GET",
+				url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName+"&responderType=Client",
+				success : function(data) {
+					var result = data;
+					if (result == true) {
+						//duplicate client
+						$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as client</span>");
+						$("#save_client").attr("disabled", true);
+						//document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
+						//document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +" is already existed as client");
 						
-					});
-				}
-			},
-
-		});
+					}else {
+						//New WebSite class="form-control"
+						//$("#save_client").removeAttr("disabled");
+						$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
+						$('input#orgName').attr('class','valid form-control');
+						$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+						$("#save_client").attr("disabled", false);
+						$("#save_client").click(function() {
+							
+						});
+					}
+				},
+	
+			});
+		}else{
+			$("orgName").attr("data-validation", "required validate_Space validate_length length2-250");
+		}
 	}
   }
 }
