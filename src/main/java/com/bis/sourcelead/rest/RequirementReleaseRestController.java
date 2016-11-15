@@ -83,20 +83,79 @@ public class RequirementReleaseRestController {
 		List<OrgSpoc>  contactsList = null;	
 		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
 		    	
-					if(orgRelation.getLocationId().getId() == orgLocations.getId()){
+		    	contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active",null,"Accepted");
+		    	
+		    	for (OrgSpoc orgSpoc : contactsList) {
+		    		
+
+					if(orgSpoc.getSpocUser().getId() == user.getId() || orgSpoc.getOwnerUser().getId() == user.getId()){
+						//if login user is spoc
+						if(orgSpoc.getSpocUser().getId() == user.getId()){
+		    				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+		    				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+		    				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+		    				 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+		    				// orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+		    				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+		    				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+						}
+						//if login user is Owner
+						else if(orgSpoc.getOwnerUser().getId() == user.getId()){
+								 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+								 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+								 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+								 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+								 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+								 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+								 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+							}
+							
+						 
+					}else{
+						if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
+							 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+							 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+							 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+							 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+							 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+							 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
+						 }
+						if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
+						 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+						 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+						 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+						 orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+						 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
+						 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
+						}
+					}
+					if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
+						orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
+						orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
+					}
+					if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
+						orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
+						orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
+					}
+					
+					orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
+					orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
+					orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());
+		    	}
+					/*if(orgRelation.getLocationId().getId() == orgLocations.getId()){
 						contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
 					}
 					if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
 						contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
-					}
+					}*/
 					
-					for (Iterator<OrgSpoc> it = contactsList.iterator(); it.hasNext(); ) {
+					/*for (Iterator<OrgSpoc> it = contactsList.iterator(); it.hasNext(); ) {
 
 						OrgSpoc orgSpoc = it.next();
 					    if ((vendorsRelationId != null && !Arrays.asList(vendorsRelationId).contains(orgSpoc.getOrgRelations().getId().toString())) || (orgSpoc.getSpocStatus().equalsIgnoreCase("In-Active"))) {
 					       it.remove();
 					    }
-					}
+					}*/
 			}
 		    if(contactsList != null){
 		    	for(OrgSpoc contact : contactsList){

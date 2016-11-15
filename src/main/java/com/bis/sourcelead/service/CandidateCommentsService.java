@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service;
 
+import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,11 +22,12 @@ public interface CandidateCommentsService {
 	 * @param user
 	 * @param candidate
 	 * @param orgLocation
-	 * @param multiFile
 	 * @return
 	 * @throws JSONException
 	 * @throws Exception
 	 */
 	public CandidateComments storeCandidateComments(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocation) throws JSONException,Exception;
+	
+	public List<CandidateComments> getAllCommentsOnCandidateByCandidateIdAndOrgLocation(Candidate candidate, OrgLocations orgLocation) throws Exception;
 	
 }
