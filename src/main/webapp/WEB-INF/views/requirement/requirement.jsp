@@ -212,11 +212,11 @@ $(document).ready(function() {
 </div>
 
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt pras req-title">
-           <div class="form-group">
+           <div class="form-group" id="jobTitleDiv">
 	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
 	         <div class="col-md-9">
 	          <div class="input-group">
-	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length2-250"   value="" class="form-control">
+	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length2-250"   value="" class="form-control" onblur="validateJobtitle();" onmouseout="validateJobtitle();">
 	             <div class="input-group-btn selp-custom-min">
 	             <select class="selectpicker" id="jobType" name="jobType">
 	                 <option  ${requirement.jobType  == 'c2c' ? 'selected' : ''}><a href="#">C2C</a></option>
@@ -1862,6 +1862,32 @@ function minMaxExperience(){
     	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");
 		$('#expId').find('p.jquery_form_error_message').remove();
     }
+}
+</script>
+
+<script type="text/javascript">
+function validateJobtitle(){
+var jobName = document.getElementById("jobTitle").value; 
+$('#jobTitleDiv').find('p.jquery_form_error_message').remove();
+var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/validatejobName?${_csrf.parameterName}=${_csrf.token}&jobName="+jobName, 
+	        success: function(data) {
+	        	if(data == "true"){
+	        		  $('#jobTitleDiv').find('p.jquery_form_error_message').remove();
+					  $("input#jobTitle").after("<p class='jquery_form_error_message'>"+jobName+" is Already Existed</span>");
+					  document.getElementById("jobTitle").setAttribute('record-exist','yes');
+					  document.getElementById("jobTitle").setAttribute('record-exist-errorMsg',jobName+' is Already Existed'); 
+	        	}
+	        	else{
+	        		 $('input#jobTitle').removeAttr( "record-exist record-exist-errormsg");
+	        		 $('#jobTitleDiv').find('p.jquery_form_error_message').remove(); 
+	        		 $("#requirement_form" ).addClass('button').val('Save');
+                    $("#requirement_form").removeAttr("disabled");
+	        	}
+	        },
+	    });
 }
 </script>
 

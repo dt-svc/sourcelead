@@ -1566,4 +1566,10 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 
 	}
+	
+	@Override
+	public Boolean validateRequirementTitle(String jobName,Long orgLocationId) throws Exception {
+		return requirementDao.validateRequirementTitle(jobName, orgLocationId);
+	}
+	
 }
