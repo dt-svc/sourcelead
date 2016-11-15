@@ -1423,8 +1423,18 @@ function requirementDetails(requirementId){
 					           	 result = result +'   <textarea placeholder="Enter description" readonly>'+json.description+'</textarea>';
 					         }
 					         else{
-					           	 result = result +'   <textarea placeholder="Enter description" readonly> NO DATA</textarea>';
+					           	 result = result +'   <textarea readonly> NO DATA</textarea>';
 				    	        }
+				            
+				            result = result +'   <h1>Skills:</h1>';
+				            if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
+					            result = result +'     <textarea placeholder="Enter description" readonly>'+json.skills+'</textarea>';
+					            }
+					            else{
+					            result = result +'<textarea readonly> NO Skills</textarea>';	
+					            }
+				            
+				            
 				            result = result +'   <h2> Requirement Details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            if(json.positions != null && json.positions != '' && json.positions != 'undefined'){
@@ -1450,12 +1460,7 @@ function requirementDetails(requirementId){
 					            }				            
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
-				            if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
-					            result = result +'     <div class="require_wrap_details_cta"> <b>Skills:</b> <span>'+json.skills+'</span>';
-					            }
-					            else{
-					            result = result +'<div class="require_wrap_details_cta"> <b>Skills:</b> <span> -- </span>';	
-					            }				   
+				            				   
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
 				            result = result +'     <div class="clearfix"></div>';
@@ -1845,7 +1850,7 @@ function requirementPipeline(requirementId){
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
 				           
 				            
-				            result = result +' <li><a href="javascript:void(0)" onclick="getActions();" class="action"> Action <i class="fa fa-caret-down"></i></a>';
+				            result = result +' <li><a href="javascript:void(0)" class="action"> Action <i onclick="getActions();" class="fa fa-caret-down"></i></a>';
 				            result = result +'<div class="action-pop">';
 				            result = result +'	<span>';
 				            result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
