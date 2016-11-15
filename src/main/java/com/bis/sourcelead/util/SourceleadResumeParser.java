@@ -93,7 +93,7 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 	  HttpSession session = request.getSession();
 		ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(session.getServletContext());
 		LookUpDataService lookUpDataService = (LookUpDataService) ctx.getBean("lookUpDataService");
-	  List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+	    List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 		for(String sLine : totalLines) 
 		{
 		    for(String searchWord: skillsList)
