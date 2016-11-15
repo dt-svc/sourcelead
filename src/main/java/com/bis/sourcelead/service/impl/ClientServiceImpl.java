@@ -197,7 +197,7 @@ public class ClientServiceImpl implements ClientService{
 			SubmissionTemplate submissionTemplate = null;
 			SubmissionTemplate sourceLeadDefaultTemplate = null;
 			if(jsonObj.has("orgLocationId")){
-				clientOrgLocations = orgLocationService.getOrgLocations(Long.parseLong(jsonObj.getString("orgLocationId")));
+				clientOrgLocations = orgLocationService.getOrgLocations(jsonObj.getLong("orgLocationId"));
 				if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
 					clientOrgLocations.setCountry(jsonObj.getString("country"));
 				}else if(jsonObj.has("orgCountry") && !isNullOrEmpty(jsonObj.getString("orgCountry"))){

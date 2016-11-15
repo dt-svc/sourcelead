@@ -396,7 +396,10 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		
 		String[] tokens = status.split(",");
 		String[] invitations = invitationStatus.split(",");
-		String[] client = vendorIds.split(",");
+		String[] client = null;
+		if(vendorIds != null){
+			client = vendorIds.split(",");
+		}
 		
 		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUserId,orgLocationId);
 		
@@ -447,7 +450,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		
 		
 		//vendor length based on vendors List
-		if (client[0] != null && client[0].length() > 0) {
+		if (client != null && client[0] != null && client[0].length() > 0) {
 			if(!spocStatus.equalsIgnoreCase("") && !spocInvitationStatus.equalsIgnoreCase("")){
 				spocStatus = spocStatus +" and ";
 			}
