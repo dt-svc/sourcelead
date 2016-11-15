@@ -248,11 +248,17 @@ public class RequirementListRestController {
 					
 					Integer highestLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(requirementId));
 					ArrayList<String> ar = new ArrayList<String>();
-					for(RequirementApproverHierarchy approverN :list ){
-						ar.add(approverN.getApproverUserId().getFirstName() +""+ approverN.getApproverUserId().getLastName());
+					if(list !=null && list.size() >0){
+						for(RequirementApproverHierarchy approverN :list ){
+							ar.add(approverN.getApproverUserId().getFirstName() +""+ approverN.getApproverUserId().getLastName());
+						}
+						requirement.setHighestLevel(highestLevel);
+						requirement.setApproverNames(ar);
+					}else{
+						
+						requirement.setApproverNames(ar);
 					}
-					requirement.setHighestLevel(highestLevel);
-					requirement.setApproverNames(ar);
+					
 
 					resultJson = commonUtil.toJSON(requirement);
 			

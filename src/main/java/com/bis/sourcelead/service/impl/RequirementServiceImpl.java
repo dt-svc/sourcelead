@@ -63,6 +63,7 @@ import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -106,6 +107,10 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	UserService userService;
+			
+	@Autowired
+	RequirementApproverHierarchyService requirementApproverHierarchyService;
+		
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
@@ -357,10 +362,7 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			
 			requirement.setStatus(Constants.TEAM_ACTIVE);
-			requirement.setCreatedDate(commonUtil.currentDate());
-			requirement.setCreatedBy(user.getUserCode());
-			requirement.setUpdatedBy(user.getUserCode());
-			requirement.setUpdatedDate(commonUtil.currentDate());
+			
 			
 			//requirement status 
 			if(jsonObj.has("saveType")){            
@@ -396,7 +398,64 @@ public class RequirementServiceImpl implements RequirementService {
 				
 			     String[] approvers = parallelApprovers.split(",");
 			  	  
-				  for(String approver : approvers){
+			     
+			     
+			     
+			     for(String approver : approvers){
+					  
+					  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
+					  User approverUser = userService.getUserById(Long.parseLong(approver));
+					  
+					  //to delete the  unselected approvers in edit Mode
+					  removedApproversInRequirementForParallel(approvers,requirement);			  
+					 
+					   
+					    // if  the Requirement is in Edit Mode
+					    if(requirement.getId() != null){
+					    	   rah =  requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), Long.parseLong(approver));
+								// In Edit Mode if We add New Approvers In The Requirement
+						    	 if(rah == null){
+						    		   rah = new RequirementApproverHierarchy();
+	                            	  	User approverUserId = new User();
+		  								approverUserId.setId(Long.parseLong(approver));
+		  								rah.setApproverUserId(approverUserId);
+		  								rah.setRequirementId(requirement);
+		  								rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
+		  								rah.setLevel(1);
+		  								rah.setHierarchyType(HIERARCHY_TYPE.PARALLEL);
+		  								rah.setCreatedDate(commonUtil.currentDate());
+		  								rah.setCreatedBy(user.getUserCode());
+		  								rah.setUpdatedBy(user.getUserCode());
+		  								rah.setUpdatedDate(commonUtil.currentDate());
+	                             }else{
+	                            	   rah.setCreatedDate(commonUtil.currentDate());
+	 								   rah.setCreatedBy(user.getUserCode());
+	 								   rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
+	 								   rah.setUpdatedBy(user.getUserCode());
+	 								   rah.setUpdatedDate(commonUtil.currentDate());
+	                             }
+					    }else{
+								User approverUserId = new User();
+								approverUserId.setId(Long.parseLong(approver));
+								rah.setApproverUserId(approverUserId);
+								rah.setRequirementId(requirement);
+								rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
+								rah.setLevel(1);
+								rah.setHierarchyType(HIERARCHY_TYPE.PARALLEL);
+								rah.setCreatedDate(commonUtil.currentDate());
+								rah.setCreatedBy(user.getUserCode());
+								rah.setUpdatedBy(user.getUserCode());
+								rah.setUpdatedDate(commonUtil.currentDate());
+					    }
+						  requirementApproverHierarchyList.add(rah);
+						  approverEmailScenario(user,approverUser,requirement,location);
+
+				  }
+
+
+			     
+			     
+				  /*for(String approver : approvers){
 					    
 					    RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
 					    User approverUser = userService.getUserById(Long.parseLong(approver));
@@ -419,7 +478,7 @@ public class RequirementServiceImpl implements RequirementService {
 						requirementApproverHierarchyList.add(rah);
 						  approverEmailScenario(user,approverUser,requirement,location);
 
-				  }
+				  }*/
 				 
 			} 
 			//approval saving for parallel
@@ -428,6 +487,9 @@ public class RequirementServiceImpl implements RequirementService {
 				  if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
 					  User approverUser = userService.getUserById(Long.parseLong(approverNames));
 					  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
+					  
+					  //to remove the unselected approvers in Dropdown
+					  removedApproversInRequirementForSequential(approverUser,requirement,Constants.LEVEL1);
 					  
 					  User approverUserId = new User();
 					  approverUserId.setId(Long.parseLong(jsonObj.getString("sequentialApprover1")));
@@ -454,7 +516,12 @@ public class RequirementServiceImpl implements RequirementService {
 					  
 					  User approverUserId = new User();
 					  approverUserId.setId(Long.parseLong(jsonObj.getString("sequentialApprover2")));
+					  				  
 					  rah.setApproverUserId(approverUserId);
+					  
+					 //to remove the unselected approvers in Dropdown
+					  removedApproversInRequirementForSequential(approverUserId,requirement,Constants.LEVEL2);
+					  
 					  
 					  rah.setRequirementId(requirement);
 					  
@@ -1572,4 +1639,47 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementDao.validateRequirementTitle(jobName, orgLocationId);
 	}
 	
+	
+	
+	
+
+	
+	
+public void removedApproversInRequirementForParallel(String[] approver , Requirement requirement) throws Exception{
+		
+		if(requirement.getId() !=null){
+			
+			List<RequirementApproverHierarchy> requirementApproverHierarchies = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
+			
+			if(requirementApproverHierarchies != null ){
+			    for(String app : approver){
+					for(RequirementApproverHierarchy rah:requirementApproverHierarchies){  
+							if(!app.equalsIgnoreCase(rah.getApproverUserId().getId().toString())){
+								requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(rah);
+							}
+					 }
+				 }
+			}
+		}
+		
+		
+		
+	}
+
+public void removedApproversInRequirementForSequential(User approver , Requirement requirement,Integer level) throws Exception{
+	
+			if(requirement.getId() !=null){
+				List<RequirementApproverHierarchy> requirementApproverHierarchies = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
+			    	if(requirementApproverHierarchies != null ){
+						     for(RequirementApproverHierarchy rah:requirementApproverHierarchies){
+						            if(approver.getId() != rah.getApproverUserId().getId() && level.equals(rah.getLevel())){
+							                requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(rah);
+						              }
+						
+							    }
+					}
+			}
+	
+	
+}
 }
