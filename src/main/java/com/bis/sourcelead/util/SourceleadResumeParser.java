@@ -98,7 +98,7 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 		{
 		    for(String searchWord: skillsList)
 		    {
-		    	Matcher skillMatcher = Pattern.compile("(\\b"+searchWord+"\\b)",Pattern.CASE_INSENSITIVE).matcher(sLine);
+		    	Matcher skillMatcher = Pattern.compile("\\b"+searchWord+"\\b",Pattern.CASE_INSENSITIVE).matcher(sLine);
 		    	  while(skillMatcher.find()){
 		    		 if(duplicateSkills.add(skillMatcher.group().toUpperCase())){
 		    			  skills.add(skillMatcher.group());
@@ -107,7 +107,7 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 		    }
 		 }
 		return skills;
-  }
+     }
 	
     /**
 	 * Name finder from parsed text file
