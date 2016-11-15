@@ -179,7 +179,7 @@
          <label class="col-md-3">Designation</label>
          <div class="col-md-9">
           <div class="input-group ratetype">
-             <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
+             <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
              <div class="input-group-btn selp-custom-min">
              <select class="selectpicker" id="designationType" name="designationType">
                  <option><a href="#">C2C</a></option>
