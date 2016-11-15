@@ -2282,7 +2282,7 @@ function assignedMemberList(requirementId){
             		 }
             		 else{ 
 							var result = '';
-							result = result +'     <div class="heightScroll mt10 mb">';
+							/* result = result +'     <div class="heightScroll mt10 mb">'; */
 						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
 						    result = result +'         <thead>';
 						    result = result +'         <tr>';
@@ -2312,11 +2312,11 @@ function assignedMemberList(requirementId){
 						    result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
 						    result = result +'         </tr>';
 			   				}
-						    result = result +'         </tbody>';
-						    result = result +'         </table>';
-						    result = result +'     </div>';
-						    result = result +'     </div>';
-						    result = result +' </div> ';
+						    /* result = result +'         </tbody>';
+						    result = result +'         </table>'; */
+						    /* result = result +'     </div>';
+						    result = result +'     </div>'; */
+						    /* result = result +' </div> '; */
 						    
 						    $("#assignedMemberList").empty();
 						    $("#assignedMemberList").append(result);
