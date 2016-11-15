@@ -762,7 +762,7 @@ function storeTeam(){
 		     var jsonData = encodeURIComponent(con);
 			 var sourceleadUrl = '${sourceleadUrl}';
 			
-			 $("#team_form").attr("disabled", "disabled");
+			 $("#add_team").attr("disabled", "disabled");
 			
 			$.ajax({
 					type : "POST",

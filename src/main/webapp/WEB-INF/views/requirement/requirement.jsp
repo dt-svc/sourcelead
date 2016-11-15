@@ -762,8 +762,8 @@ $(document).ready(function() {
                         </div>
                       </div>
                       <div class="modal-footer">
-                        <button class="btn btn-primary" type="button" id="team_form" onclick="storeTeam();" >Save</button>
-                        <button data-dismiss="modal" class="btn btn-default" id="team_form"  type="button">Cancel</button>
+                        <button class="btn btn-primary" type="button" id="add_team" onclick="storeTeam();" >Save</button>
+                        <button data-dismiss="modal" class="btn btn-default"   type="button">Cancel</button>
                       </div>
                     </div>
                     </form>
@@ -896,16 +896,15 @@ function storeTeam(){
 		     var jsonData = encodeURIComponent(con);
 			 var sourceleadUrl = '${sourceleadUrl}';
 			
-			 $("#team_form").attr("disabled", "disabled");
+			 $("#add_team").attr("disabled", "disabled");
 			
 			$.ajax({
 					type : "POST",
 					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
 					success :function(data) { 
-						  /* location.replace(sourceleadUrl+"/team"); */
 						$('#addTeam').modal('hide');
 				      }, 
-		    }); 
+		    });  
 			return true; 
 	   }else{ 
 			return false;
@@ -1644,6 +1643,7 @@ function assignMembers() {
 	function flushStoreTeam() { 
 		document.getElementById("team_form").reset();
 		$('#assignTeamDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("add_team").removeAttribute("disabled");
 	}
 </script>
 
