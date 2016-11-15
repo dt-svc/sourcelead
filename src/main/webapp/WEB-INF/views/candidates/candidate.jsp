@@ -301,7 +301,7 @@
         <div class="form-group">
           <label class="col-md-3">Summary</label>
           <div class="col-md-9">
-            <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true"></textarea>
+            <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
           </div>
         </div>
         
