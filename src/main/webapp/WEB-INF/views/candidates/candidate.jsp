@@ -65,7 +65,7 @@
     <div class="pull-left">
       <h2>Add Candidate Details</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;<a href="candidatesList"> Candidate List</a> &raquo; Create Candidate</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Create Candidate</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
