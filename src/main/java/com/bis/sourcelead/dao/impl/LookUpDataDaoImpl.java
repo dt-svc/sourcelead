@@ -32,12 +32,23 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	 */
 	
 	@Override
+	@Transactional
 	public List<LookUpData> getLookUpDataByCategory(String category) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from LookUpData lookupdata where lookupdata.category = :category ";
 	    List<LookUpData> educationsList = session.createQuery(query.toString()).setString("category", category).setCacheable(true).list();
       
 	    return educationsList;
+	}
+
+	@Override
+	@Transactional
+	public List<String> getAllSkillsBySkillCategory() throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "select lookupdata.name from LookUpData lookupdata where lookupdata.category = 'Skills' ";
+	    List<String> skillsList = session.createQuery(query.toString()).setCacheable(true).list();
+      
+	    return skillsList;
 	}
 	
 	
