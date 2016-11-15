@@ -181,58 +181,21 @@ public class RolesDaoImpl implements RolesDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Roles> getUserRolesListByModule(Org org, Long orgLocationId) {
+	public List<Roles> getUserRolesListByModuleAndLoginUserRoleHierarchy(Org org, Long orgLocationId,Long hierarchyId) {
 		
 		
         Session session = this.sessionFactory.getCurrentSession();
         
         String subQuery = "";
 		
-        List<Long> modulesList = new ArrayList<Long>();
-		for (String s : org.getModulesId().split(",")){
-			modulesList.add(Long.parseLong(s));
-		 }
-		
-		List<Long> tabsList = new ArrayList<Long>();
-		
-		if(modulesList.contains((long)Constants.MODULE_ATS)){
-			tabsList.add((long)Constants.TAB_CLIENT);
-		}
-		
-		if(modulesList.contains((long)Constants.MODULE_VMS)){
-			tabsList.add((long)Constants.TAB_VENDOR);
-		}
-		
-		if(modulesList.contains((long)Constants.MODULE_TIMESHEET)){
-			tabsList.add((long)Constants.TAB_MY_TIMESHEET);
-			tabsList.add((long)Constants.TAB_TIMESHEET_APPROVAL);
-		}
-		
-		
-		if("slead".equalsIgnoreCase(org.getOrgCode())){
+        if("slead".equalsIgnoreCase(org.getOrgCode())){
 			subQuery = "and roles.roleName != 'ROLE_SOURCELEAD_ADMIN' ";
 		}
+        
+	    String query = "from Roles roles where roles.roleHierarchy.id between ("+hierarchyId+") and (select max(rh.id) from RoleHierarchy rh where rh.orgLocations.id = :orgLocationId)  "+subQuery+" ";
+	    List<Roles> rolesList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		
-		String query = "select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId) and moduleActions.sourceleadActions.tabs.id IN(:tabsList) ";
-	    List<Long> actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).setParameterList("tabsList", tabsList).setCacheable(true).list();
-      
-	    ArrayList<Roles> roleList = new ArrayList<>();
-		
-	    String query1 = "from Roles roles where roles.orgLocations.id = :orgLocationId "+subQuery+" ";
-	    List<Roles> rolesList = session.createQuery(query1.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
-		 for(Roles roles : rolesList){
-			 List<Long> roleActonList = new ArrayList<Long>();
-			 for (String s : roles.getActionId().split(",")){
-				 roleActonList.add(Long.parseLong(s));
-			 }
-			 roleActonList.retainAll(actionsList);
-			 if(roleActonList.size() > 0){
-				 roleList.add(roles);
-			 }
-		 }
-		
-		
-		return roleList;
+		return rolesList;
 	}
 
 	@Override

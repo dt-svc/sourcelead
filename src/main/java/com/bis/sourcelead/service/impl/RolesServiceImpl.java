@@ -67,8 +67,8 @@ public class RolesServiceImpl implements RolesService{
 
 
 	@Override
-	public List<Roles> getUserRolesListByModule(Org org, Long orgLocationId) {
-		return rolesDao.getUserRolesListByModule(org, orgLocationId);
+	public List<Roles> getUserRolesListByModuleAndLoginUserRoleHierarchy(Org org, Long orgLocationId,Long hierarchyId) {
+		return rolesDao.getUserRolesListByModuleAndLoginUserRoleHierarchy(org, orgLocationId,hierarchyId);
 	}
 
 

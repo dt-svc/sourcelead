@@ -23,7 +23,7 @@ public interface RolesService {
 	
 	public Roles getRolesByRoleNameAndOrgLocationId(String roleName,Long orgLocationId) throws Exception;
 	
-	List<Roles> getUserRolesListByModule(Org org, Long orgLocationId);
+	List<Roles> getUserRolesListByModuleAndLoginUserRoleHierarchy(Org org, Long orgLocationId,Long hierarchyId);
 	
 	List<Roles> getClientOrVendorRolesList(Long orgLocationId,String moduleType);
 

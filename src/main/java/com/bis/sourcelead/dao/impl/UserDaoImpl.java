@@ -311,36 +311,15 @@ public class UserDaoImpl implements UserDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<User> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception {
+	public List<User> getManagersByUserRolesAndOrgLocationId(Long roleId , Long orgLocationsId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
 		
-		if(roleType != null && !"".equals(roleType) && "1".equals(roleType)){
-			subQuery = "userRole.user.id from UserRole userRole where  userRole.userType = 'Admin' and userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE'";
-		}
-		else if(roleType != null && !"".equals(roleType) && "3".equals(roleType)){
-			subQuery = "userRole.user.id from UserRole userRole where  (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager') and userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE'";
-		}
-		else if(roleType != null && !"".equals(roleType) && "2".equals(roleType)){
-			subQuery = "userRole.user.id from UserRole userRole where  (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Account Manager' OR userRole.userType = 'Sales Manager' OR userRole.userType = 'Recruiter' OR userRole.userType = 'Team Lead') and userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE'";
-		}
-		else if(roleType != null && !"".equals(roleType) && "6".equals(roleType)){
-			subQuery = "userRole.user.id from UserRole userRole where  (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Account Manager') and userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE'";
-		}
-		else if(roleType != null && !"".equals(roleType) && "5".equals(roleType)){
-			subQuery = "userRole.user.id from UserRole userRole where  (userRole.userType = 'Admin' OR userRole.userType = 'HR Manager') and userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE'";
-		}
-		else if(roleType != null && !"".equals(roleType) && "7".equals(roleType)){
-			subQuery = "userRole.user.id from UserRole userRole where  (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Account Manager' OR userRole.userType = 'Sales Manager') and userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE'";
-		}
-		else if(roleType != null && !"".equals(roleType) && "8".equals(roleType)){
-			subQuery = "userRole.user.id from UserRole userRole where  (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Account Manager' OR userRole.userType = 'Sales Manager' OR userRole.userType = 'Recruiter' OR userRole.userType = 'Team Lead') and userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE'";
-		}
-		else if(roleType != null && !"".equals(roleType) && "9".equals(roleType)){
-			subQuery = "userRole.user.id from UserRole userRole where  (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Project Manager' OR userRole.userType = 'Team Lead') and userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE'";
-		}
+		
+		subQuery = "userRole.user.id from UserRole userRole where  (userRole.roles.roleHierarchy.id <= (select r.roleHierarchy.id from Roles r where r.id = :roleId)) and userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE'";
+		
 		String query = "from User user where user.id IN (select "+subQuery+" )  ";
-	    List<User> userRoleList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+	    List<User> userRoleList = session.createQuery(query).setLong("roleId", roleId).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
         return userRoleList;
         
 	}

@@ -593,8 +593,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception {
-		return userDao.getManagersByUserRolesAndOrgLocationId(roleType, orgLocationsId);
+	public List<User> getManagersByUserRolesAndOrgLocationId(Long roleId , Long orgLocationsId) throws Exception {
+		return userDao.getManagersByUserRolesAndOrgLocationId(roleId, orgLocationsId);
 	}
 	
 	@Override

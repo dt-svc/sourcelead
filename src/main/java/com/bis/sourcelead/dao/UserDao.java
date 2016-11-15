@@ -61,7 +61,7 @@ public interface UserDao {
 	public List<User> getOwnersByOrgLocationId(Long orgLocationsId) throws Exception;
 	
 	//Prasad Salina to get managers list baded on role type
-	List<User> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception;
+	List<User> getManagersByUserRolesAndOrgLocationId(Long roleId , Long orgLocationsId) throws Exception;
 			
 	//Prasad Salina to get managers list baded on role type and except current user
 	List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception;

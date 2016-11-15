@@ -91,7 +91,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
-                         <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required" >
+                         <select class="form-control select-bg" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
 		                        <option value="">-Select Role-</option>
 		                        <c:forEach var="option" items="${rolesList}">
 									<option value="${option.id}">${option.displayName}</option>
@@ -105,9 +105,9 @@
                   <div class="col-md-9">
                       <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Manager">
                         <option value="">-Select Manager-</option>
-                        <c:forEach var="option" items="${reportingManagersList}">
+                        <%-- <c:forEach var="option" items="${reportingManagersList}">
 								<option value="${option.id}">${option.firstName} ${option.lastName} (${option.userType})</option>
-						</c:forEach>
+						</c:forEach> --%>
                       </select>
                   </div>
             </div>

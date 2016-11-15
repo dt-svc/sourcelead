@@ -69,10 +69,12 @@ public class UserController {
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		ModelAndView model = new ModelAndView();
 		
+		    Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		
 			List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 		    model.addObject("org_projectsList", projectsList);
 		    
-		    List<Roles> rolesList = rolesService.getUserRolesListByModule(org,orgLocations.getId());
+		    List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 		    model.addObject("rolesList", rolesList);
 		    
 		    List<User> userList = userService.getReoprtingManagersByOrgLocationId(orgLocations.getId());
