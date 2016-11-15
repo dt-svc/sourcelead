@@ -4029,11 +4029,17 @@ p.comment-text{
 	background: #ededed;
 	border-radius:5px;
 }
-.pipeline-count ul li:hover{
-	background:#0cc2aa;
+.pipeline-count ul li:hover a{
+	color:#505050;
+}
+.pipeline-count ul li.pipeline-active a{
+	color:#fff;
+}
+.pipeline-count ul li.pipeline-active{
+	background-color:#3081cb;
 }
 .pipeline-count ul li a{
-	color:#333;
+	color:#909090;
 }
 .pipeline-count ul li span{
 	color: #fff !important;
@@ -4066,6 +4072,15 @@ ul.pipeline li{
     float: left !important;
     margin: 0 !important;
     padding: 0 10px !important;
+}
+.roles_list label a{
+	color:#fff;
+}
+.roles_list label:hover{
+	background-color:#333;
+}
+.collapse-div-adduser.addrole {
+	right:25px;
 }
 /* media 320px */
 @media (max-width: 320px) {

@@ -84,4 +84,16 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 	    return actionsList;
 	}
 
+	@Override
+	@Transactional
+	public List<SourceleadActions> getAllSourceleadActions() throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+        		
+	    String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' ";
+	    List<SourceleadActions> actionsList = session.createQuery(query.toString()).setCacheable(true).list();
+     
+	    return actionsList;
+	}
+
 }

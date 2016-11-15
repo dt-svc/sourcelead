@@ -10,4 +10,5 @@ public interface SourceleadActionsDao {
 	
 	List<SourceleadActions> getLoginUserRoleActionsByOrgLocationId(List<Long> modulesId,Long roleId,Long orgLocationId) throws Exception;
 
+	List<SourceleadActions> getAllSourceleadActions() throws Exception;
 }

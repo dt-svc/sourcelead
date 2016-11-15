@@ -68,6 +68,12 @@ public class Roles {
 	@Transient
 	private Integer rolesCount;
 	
+	@Transient
+	private String hierarchyName;
+	
+	@Transient
+	private Integer actionsCount;
+	
 	
 	
 	
@@ -177,7 +183,21 @@ public class Roles {
 		this.roleHierarchy = roleHierarchy;
 	}
 
-	
-	
+	public String getHierarchyName() {
+		return hierarchyName;
+	}
+
+	public void setHierarchyName(String hierarchyName) {
+		this.hierarchyName = hierarchyName;
+	}
+
+	public Integer getActionsCount() {
+		return actionsCount;
+	}
+
+	public void setActionsCount(Integer actionsCount) {
+		this.actionsCount = actionsCount;
+	}
+
 
 }

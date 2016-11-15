@@ -247,5 +247,23 @@ public class RolesDaoImpl implements RolesDao{
 		return roleList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Roles> getOrgEnrolledRolesByOrgLocationId(Org org, Long orgLocationId) throws Exception {
+		
+        Session session = this.sessionFactory.getCurrentSession();
+        
+        String subQuery = "";
+		
+        if("slead".equalsIgnoreCase(org.getOrgCode())){
+			subQuery = "and roles.roleName != 'ROLE_SOURCELEAD_ADMIN' ";
+		}
+        
+	    String query = "from Roles roles where roles.orgLocations.id = :orgLocationId and roles.status = '1'  "+subQuery+" ";
+	    List<Roles> rolesList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+		return rolesList;
+	}
+
 
 }
