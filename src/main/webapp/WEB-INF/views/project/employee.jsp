@@ -84,7 +84,7 @@
                           <input type="text" class="form-control" value="" name="email" id="EmailId" field-name="Email" data-validation="required validate_email" onblur="emailVerification();">
                           </div>
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                         <label class="col-lg-3">Invoice Frequency<span class="text-danger">*</span></label>
                         <div class="col-lg-9">
                           <select class="form-control" name="invoiceFrequency" id="invoiceFrequency" field-name="Invoice Frequency" data-validation="required">
@@ -95,7 +95,7 @@
                       <option>Monthly</option>
                     </select>
                           </div>
-                        </div>
+                        </div> -->
                         <div class="form-group">
                         <label class="col-lg-3"></label>
                         <div class="col-lg-9">
@@ -396,8 +396,8 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
      	       // var projectEndDate = $('#EndDate').val();
 	        		var opt = json[i];
 	        		var role = '';
-	        		if(opt.user.userType != null && opt.user.userType != '' && opt.user.userType != 'undefined'){
-	        			role = opt.user.userType; 
+	        		if(opt.userType != null && opt.userType != '' && opt.userType != 'undefined'){
+	        			role = opt.userType; 
 	        		}else{
 	        			role = 'Employee';
 	        		}

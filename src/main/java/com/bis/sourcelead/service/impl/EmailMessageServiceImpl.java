@@ -221,6 +221,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		emailNotification.setDeliveryStatus("N");
 	    Date date= new Date();
 		emailNotification.setCreatedDate(new Timestamp(date.getTime()));
+		emailNotification.setCreatedBy(emailMessage.getCreatedBy());
 		emailNotificationService.save(emailNotification);
 		
 		return emailNotification.getId();

@@ -153,9 +153,11 @@ function requirementList(){
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
 		                     }
-		                     result = result +"<td><select onchange='changeStatus("+opt.id+");' id='changeStatusId'>";
-								if(opt.requirementSubmissionStatus == "ONHOLD"){
+result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");' id='changeStatusId"+opt.id+"'>";
+		                     
+		                     if(opt.requirementSubmissionStatus == "DRAFT"){
 									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									result = result +"<option value='ONHOLD'>ONHOLD</option>";
 									result = result +"<option value='CANCEL'>CANCEL</option>";
 								}
 								else if(opt.requirementSubmissionStatus == "CANCEL"){
@@ -163,14 +165,41 @@ function requirementList(){
 
 								}else if(opt.requirementSubmissionStatus == "OPEN"){
 									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-									result = result +"<option value='ONHOLD'>ON-HOLD</option>";
+									result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
+									result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
+									result = result +"<option value='ONHOLD'>ONHOLD</option>";
 									result = result +"<option value='CANCEL'>CANCEL</option>";
-								}else{
-									result = result +"<option   value='OPEN'>OPEN</option>";
-									result = result +"<option value='ONHOLD'>ON-HOLD</option>";
+								}
+								else if(opt.requirementSubmissionStatus == "NEW"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									result = result +"<option value='OPEN'>OPEN</option>";
+									result = result +"<option value='ONHOLD'>ONHOLD</option>";
 									result = result +"<option value='CANCEL'>CANCEL</option>";
 								}
 								
+								else if(opt.requirementSubmissionStatus == "SUBMITTED"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									result = result +"<option value='ONHOLD'>ONHOLD</option>";
+									result = result +"<option value='CANCEL'>CANCEL</option>";
+									
+								}else if(opt.requirementSubmissionStatus == "ONHOLD"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									result = result +"<option value='SUBMITTED'>SUBMITTED</option>";
+									result = result +"<option value='CANCEL'>CANCEL</option>";
+								}else if(opt.requirementSubmissionStatus == "UNFILLEDCLOSED"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
+									result = result +"<option value='OPEN'>OPEN</option>";
+									result = result +"<option value='ONHOLD'>ONHOLD</option>";
+									result = result +"<option value='CANCEL'>CANCEL</option>";
+								}else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
+									result = result +"<option value='OPEN'>OPEN</option>";
+									result = result +"<option value='ONHOLD'>ONHOLD</option>";
+									result = result +"<option value='CANCEL'>CANCEL</option>";
+								}
+
 								result = result +" </select>";	
 			                    result = result +" </td>";
 		                     
@@ -186,6 +215,7 @@ function requirementList(){
 	                     }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
+	                     $("#noReq").val('');
 	                     $("#requirementList").append(result); 
 	                     pagination(); 
 			    	} 
@@ -198,6 +228,7 @@ function requirementList(){
 					 result = result+"			        <p>No Requirement Found</p>";
 					 result = result+"			 </div>";
 					noRequirements();
+					$("#noReq").val("noreq");
 					$("#requirementList").empty();
 				    $("#requirementList").append(result); 
                 }
@@ -207,11 +238,6 @@ function requirementList(){
   } 
 </script>
 
-<script>
-function noRequirements(){
-	$("#noReq").val("noreq");
-}
-</script>
 <%-- 
      @author : sarath kumar.
      this script is for prepare pagination to requirementList.
@@ -1195,15 +1221,14 @@ $(".reminder").click(function(){
 
 <script type="text/javascript">
 function changeStatus(requirementId){
-	var status = document.getElementById("changeStatusId").value;
-	$("#changeStatusId option[value=status]").remove();
+	var status = document.getElementById('changeStatusId' + requirementId).value;
+	/* $("#changeStatusId option[value=status]").remove(); */
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 alert("raju"+status);
 	   $.ajax({
          type : "POST",
           url: sourceleadUrl+"/saveChangedStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,        
           success :function(data) { 
-        	  $('#changeStatusId').removeAttr('value');
+        	  $("#changeStatusId" +requirementId).val('');
         	  location.replace(sourceleadUrl+"/requirementList");
           }
 }); 
@@ -1243,14 +1268,26 @@ function changeStatus(requirementId){
 
 <script>
 function exportToPdf(){
-	alert("pdf");
+	var req = $("#noReq").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	  var status = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() 
+	    {
+			status.push($(this).val());
+	    });
+	 var clients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() 
+	    {
+			clients.push($(this).val());
+	    });
+		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=pdf";
 }
 </script>
 
 <script>
 function exportToExcel(){
 	var req = $("#noReq").val();
-	alert("*** "+req)
+	
 	var sourceleadUrl ='${sourceleadUrl}';
 	  var status = [];
 		$('input:checkbox[name=requirementStatus]:checked').each(function() 
@@ -1262,7 +1299,7 @@ function exportToExcel(){
 	    {
 			clients.push($(this).val());
 	    });
-		//window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients;
+		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=xls";
 }
 
 </script>

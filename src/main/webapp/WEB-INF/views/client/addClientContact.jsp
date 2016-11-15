@@ -152,7 +152,7 @@ function getOrgDetails()
                  </div>
               </div>
              <div class="modal-footer">
-              <button  class="btn btn-primary" type="button" onclick="saveClient();">Save</button>
+              <button  class="btn btn-primary" type="button"  id="save_client" onclick="saveClient();">Save</button>
               <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
              </div>
           </div>
@@ -447,8 +447,8 @@ function validateEmail(){
 			  //It will escape all the special characters
 	        var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
-			$("#save_client").attr("disabled", "disabled");
-			$("#save_client").addClass('button').val('Processing..');
+			/* $("#save_client").attr("disabled", "disabled");
+			$("#save_client").addClass('button').val('Processing..'); */
 			$.ajax({
 						type : "POST",
 						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgLocationId="+orgLocationId+"&responderType=Client",
@@ -475,6 +475,7 @@ function validateClientName(){
 	if(clientName.match(/^[^\s-](.*)*$/) != null){
 		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
 	if (clientName != null && clientName != '') {
+	/* 	$("#save_client").attr("disabled", "disabled"); */
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName+"&responderType=Client",

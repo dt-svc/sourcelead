@@ -70,6 +70,8 @@ public class Constants {
 	public static String VENDOR_INTERVIEW = "Vendors Interview";
 	public static String VENDOR_INVITATION = "Vendor Invitation";
 	
+	public static String EDIT_CLIENTCONTACT = "Edit SpocContact";
+	
 	public static String SHORTLIST_APPLICANTS = "ShortList Applicants";
 	
 	public static String MAIL_PROJECT_MANAGER_TIMESHEET = "Mail To Manager At Timesheet Submission";
@@ -219,5 +221,7 @@ public class Constants {
 	public static String[] USER_EXCEL_HEADERS = { "Employee Id", "First Name", "Last Name", "Email-id", "Phone Number",
 			"Date Of Join", "Rate", "Location", "Role", "Manager", "status" };
 	public static String[] CANDIDATE_EXCEL_HEADERS = {"Firstname","Last name","Email id","Phone Number","Location","Designation","Education","Experience","Skills","Rate"};
-    public static String[] REQUIREMENT_EXCEL_HEADERS = {"Requirement id","Requirement Title","Experience","Rate","Location","Skills","Manager","Assign To","Priority","Application Form","Client Name","Client Contact"};
+    public static String[] REQUIREMENT_EXCEL_HEADERS = {"Requirement id","Requirement Title","Experience","Rate","Location","Skills","Manager","Priority","Application Form Name","Client Name","Client Contact Name","Client Contact Email"};
+    
+    public static String[] TIMESHEET_EXCEL_HEADERS = {"Projects","Tasks","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Status"};
 }

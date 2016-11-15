@@ -231,6 +231,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private String noOfOfferedApplicants;
+	
+	@Transient
+	private String clientContactName;
+	
+	@Transient
+	private String clientContactEmail;
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -715,6 +721,22 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setNoOfOfferedApplicants(String noOfOfferedApplicants) {
 		this.noOfOfferedApplicants = noOfOfferedApplicants;
+	}
+
+	public String getClientContactName() {
+		return clientContactName;
+	}
+
+	public void setClientContactName(String clientContactName) {
+		this.clientContactName = clientContactName;
+	}
+
+	public String getClientContactEmail() {
+		return clientContactEmail;
+	}
+
+	public void setClientContactEmail(String clientContactEmail) {
+		this.clientContactEmail = clientContactEmail;
 	}
 
 }

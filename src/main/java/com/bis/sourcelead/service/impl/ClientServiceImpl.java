@@ -7,7 +7,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -18,6 +20,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -29,6 +35,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.ClientService;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -39,6 +46,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
@@ -77,6 +85,12 @@ public class ClientServiceImpl implements ClientService{
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
 	
 	@Autowired
 	SubmissionTemplateService  submissionTemplateService;
@@ -602,7 +616,7 @@ public class ClientServiceImpl implements ClientService{
 		}
 		
 		@Override
-		public void updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId, User loginUser ,Long ownerId, Long spocUserId) throws Exception {
+		public void updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId, User loginUser ,Long ownerId, Long spocUserId,OrgLocations orgLocation) throws Exception {
 			
 			//OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(vendorLocationId,orgRelationId);
 			
@@ -617,6 +631,7 @@ public class ClientServiceImpl implements ClientService{
 			
 			if(null != orgSpoc){
 				/*User user = orgSpoc.getSpocUser();*/
+				User editUser =null;
 				if(jsonObj.getString("existingSpocUserId") != null && !jsonObj.getString("existingSpocUserId").isEmpty()){
 					User existingUser = userService.getUserById(Long.parseLong(jsonObj.getString("existingSpocUserId")));
 					if(jsonObj.getString(vendorContactFirstName) != null && !jsonObj.getString(vendorContactFirstName).isEmpty()){
@@ -640,7 +655,7 @@ public class ClientServiceImpl implements ClientService{
 					}else{
 						existingUser.setEmail("");
 					}
-					userService.addUser(existingUser);
+					editUser = userService.addUser(existingUser);
 				}
 				
 				if(jsonObj.getString(spocStatus) != null && !jsonObj.getString(spocStatus).isEmpty()){
@@ -681,14 +696,78 @@ public class ClientServiceImpl implements ClientService{
 					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
 						User spocUser = new User();
 						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
+						orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
 						orgSpoc.setOwnerUser(spocUser);
 					}
 				}
 				orgSpocService.addOrgSpoc(orgSpoc);
+				
+				if(orgSpoc.getTempOwnerId() != orgSpoc.getOwnerUser().getId()){
+					user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
+					sendEmailToClientContact(user,editUser,orgLocation,loginUser);
+				}
+				
 			}else{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
 				throw new SourceLeadObjectNotFoundException(message.toString());
 			}
 
 		}
+
+		private void sendEmailToClientContact(User user, User editUser, OrgLocations orgLocation,User loginUser) throws Exception {
+			 EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(editUser.getFirstName());
+			 emailMessage.setLastName(editUser.getLastName());
+			 emailMessage.setToEmail(editUser.getEmail());
+			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setCreatedBy(loginUser.getUserCode());
+			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+			 
+			 
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+				 globalVarsMap.put("clientFirstName", emailMessage.getFirstName());
+				 globalVarsMap.put("clientLastName",emailMessage.getLastName());
+				 globalVarsMap.put("loginUser", emailMessage.getFromName());
+				 globalVarsMap.put("loginOrgName",orgLocation.getOrg().getOrgName());
+				 globalVarsMap.put("ownerName", user.getFirstName());
+				 globalVarsMap.put("ownerEmail",user.getEmail());
+				 
+				 //setting the Recipient information
+				 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+				 EmailRecipient emailRecipient = new EmailRecipient();
+				 emailRecipient.setEmail(emailMessage.getToEmail());
+				 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+				 emailRecipientList.add(emailRecipient);
+			
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = null;
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.EDIT_CLIENTCONTACT,Constants.ENTITY_TYPE_EMAIL);
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = "";
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+			 
+			 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.EDIT_CLIENTCONTACT,Constants.ENTITY_TYPE_NOTIFICATION); 
+			 String actionLink = "";
+			 
+			 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
+			 noificationEmailScenario.setBody(notificationbody);
+			 
+			 emailScenerioUtil.sendNotification(actionLink, loginUser, editUser, orgLocation, noificationEmailScenario);
+			
+		}
+		
+		
 }

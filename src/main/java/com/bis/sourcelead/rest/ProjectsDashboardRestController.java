@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -278,7 +279,12 @@ public class ProjectsDashboardRestController {
 			OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 			
 			 List<Employees>  employeList = employeesService.getEmployeesExcludeTeamMembersBySearchByName(projectId, loginOrgLocations.getId(), searchByName);
-			 
+			 for (Employees employees : employeList) {
+			    	UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(employees.getUser().getId(), loginOrgLocations.getId());
+			    	if(userRole != null){
+			    		employees.setUserType(userRole.getUserType());
+			    	}
+				}
 			 resultJson = commonUtil.toJSON(employeList);
 			 return resultJson;
 		}

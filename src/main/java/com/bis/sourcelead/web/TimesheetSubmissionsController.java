@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
@@ -36,6 +37,7 @@ public class TimesheetSubmissionsController {
 			ModelAndView model = new ModelAndView();
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
@@ -46,7 +48,7 @@ public class TimesheetSubmissionsController {
 			
 			request.getSession().setAttribute("sessionData",sessionData);
 			
-			Collection<TimesheetSubmissions> timesheetSubmissionsList =  timesheetSubmissionsService.getApprovalTimesheetSubmissions(user.getId());
+			Collection<TimesheetSubmissions> timesheetSubmissionsList =  timesheetSubmissionsService.getApprovalTimesheetSubmissions(user.getId(),orgLoc.getId());
 			model.addObject("sourcelead_timesheetSubmissionsList",timesheetSubmissionsList);
 			
 			

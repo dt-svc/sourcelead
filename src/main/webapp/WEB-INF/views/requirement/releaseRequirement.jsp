@@ -267,46 +267,46 @@ function getContactsLists(){
 			   	            result = result +'<th><input type="checkbox" id="contactscheckbox" onclick="toggle(this);"/></th>'; 
 			   	        	result = result +'  <th>Name</th>';
 			   	        	result = result +'  <th>Email</th>';
-			   	        	result = result +' <th>Ph</th>';
+			   	        	result = result +' <th>Phone</th>';
 			   	        	result = result +' <th>Vendor</th>';
 			   	        	result = result +' <th>Release</th>';
 			   	        	result = result +'</tr>';
 			   	        	result = result +'</thead>';
 			   	        	
 			   	        	for (var i=0; i<json.length; i++)
-			   				{  
+			   				{
 			   	        		var report = json[i];
 			   	        		
-			   	        		resultVendors = resultVendors + '';
-			   	        		
-			   	        		result = result +'<tr>';
-			   	        		if(report.releasedRequirement =="true"){
-			   	        			result = result +'  <td><input type="checkbox" checked disabled readonly id="'+report.id+'"/></td>';
-			   	        		}
-			   	        		if(report.releasedRequirement =="false"){
-			   	        			result = result +'  <td><input name="contactscheckbox" type="checkbox" id="'+report.id+'"/></td>';
-			   	        		}
-				        			result = result +'<td>';
-				        			result = result +'<div><span>'+report.spocName+'</span></div>';
-				        			result = result +'</td>';
-				        			result = result +'<td>';
-				        			result = result +'<div><span>'+report.spocEmail+'</span></div>';
-				        			result = result +'</td>';
-				        			result = result +'<td>';
-				        			result = result +'<div><span>'+report.spocMobilePhone+'</span></div>';
-				        			result = result +'</td>';
-				        			result = result +'<td>';
-				        			result = result +'<div><span>'+report.orgName+'</span></div>';
-				        			result = result +'</td>';
-				        			result = result +'<td>';
-				        		if(report.releasedRequirement =="true"){
-				        			result = result +'<div><b class="proj_active">Released</b></div>';
-				        		}
-								if(report.releasedRequirement =="false"){
-									result = result +'<div><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneContact('+report.id+');"></i></a></div>';
-				        		}
-				        			result = result +'</td>';
-			   	        		    result = result +'</tr>';
+				   	        		resultVendors = resultVendors + '';
+				   	        		result = result +'<tr>';
+				   	        		if(report.releasedRequirement =="true"){
+				   	        			result = result +'  <td><input type="checkbox" checked disabled readonly id="'+report.id+'"/></td>';
+				   	        		}
+				   	        		if(report.releasedRequirement =="false"){
+				   	        			result = result +'  <td><input name="contactscheckbox" type="checkbox" id="'+report.id+'"/></td>';
+				   	        		}
+					        			result = result +'<td>';
+					        			result = result +'<div><span>'+report.spocName+'</span></div>';
+					        			result = result +'</td>';
+					        			result = result +'<td>';
+					        			result = result +'<div><span>'+report.spocEmail+'</span></div>';
+					        			result = result +'</td>';
+					        			result = result +'<td>';
+					        			result = result +'<div><span>'+report.spocMobilePhone+'</span></div>';
+					        			result = result +'</td>';
+					        			result = result +'<td>';
+					        			result = result +'<div><span>'+report.orgName+'</span></div>';
+					        			result = result +'</td>';
+					        			result = result +'<td>';
+					        		if(report.releasedRequirement =="true"){
+					        			result = result +'<div><b class="proj_active">Released</b></div>';
+					        		}
+									if(report.releasedRequirement =="false"){
+										result = result +'<div><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneContact('+report.id+');"></i></a></div>';
+					        		}
+					        			result = result +'</td>';
+				   	        		    result = result +'</tr>';
+			   	        	
 			   				}
 			   	        	result = result +'</tbody>';
 			   	        	result = result +'</table>';

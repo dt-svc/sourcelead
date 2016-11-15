@@ -101,6 +101,9 @@ public class Employees {
 	
 	@Transient
 	List<User> allReportingManagers;
+	
+	@Transient
+    private String userType;
 
 	public Long getId() {
 		return id;
@@ -285,6 +288,14 @@ public class Employees {
 
 	public void setProjectEndDate(String projectEndDate) {
 		this.projectEndDate = projectEndDate;
+	}
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
 	}
 	
 }

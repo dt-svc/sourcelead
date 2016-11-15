@@ -1195,6 +1195,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 emailMessage.setLastName(projectManager.getLastName());
 				 emailMessage.setToEmail(projectManager.getEmail());
 				 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+				 emailMessage.setCreatedBy(loginUser.getUserCode());
 				 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 
 				 //setting the class filed values
@@ -1258,6 +1259,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 emailMessage.setLastName(emp.getUser().getLastName());
 					 emailMessage.setToEmail(emp.getUser().getEmail());
 					 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+					 emailMessage.setCreatedBy(loginUser.getUserCode());
 					 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 
 					 //setting the class filed values

@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -60,7 +62,11 @@ public interface RequirementService {
 
 	public List<Requirement> getRequirementListById(Long requirementId) throws Exception;
 	
+	public Boolean checkRequirementIsReleasedOrNot(Long requirementId,Long orgLocationId) throws Exception;
+	
 	Integer validateJobId(Long id) throws Exception;
+
+	public File getExportRequirementFile(List<Requirement> requirementList, String orgName, String exportType)throws Exception;
 
 
 
