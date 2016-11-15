@@ -81,6 +81,7 @@ bottom:-14px;
 <script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
+			disableMonths();
 			/*  $(".isClient").click(function(){  
 		        $(".clientDetails").toggleClass('hidden', 500);
 		    });  */
@@ -266,7 +267,7 @@ $(document).ready(function() {
          <div class="form-group" >
             <label class="col-md-3">Experience</label>
             <div class="col-md-9">
-              <div class="row">
+              <%-- <div class="row">
 	                <div class="col-md-6">
 	                 <input type="text" class="form-control" placeholder="minExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
 	                </div>
@@ -276,7 +277,28 @@ $(document).ready(function() {
               </div>
               <div class="row" id="expId">
                   <input type="hidden" name="expValidation" id="expValidation">
-              </div>
+              </div> --%>
+                 <div class="row">
+             <div class="col-xs-6 col-md-6">
+             		<select class="form-control" id="minExp" name="minExp"  onchange="disableMonths();">
+             		  <option selected disabled>Year</option>
+             		  <c:forEach begin="0" end="24" varStatus="loop">
+						    <option  ${requirement.minExp == loop.index ? 'selected' : ''} >${loop.index}</option>
+						</c:forEach>
+             		     <option>25+</option>
+             		</select>
+             </div>
+             
+             <div class="col-xs-6 col-md-6">
+             		<select class="form-control" id="maxExp" value = "" name="maxExp">
+             		<option selected disabled>Month</option>
+             		 <c:forEach begin="0" end="11" varStatus="loop">
+						    <option  ${requirement.maxExp == loop.index ? 'selected' : ''}>${loop.index}</option>
+						</c:forEach>
+             		</select>
+             </div>
+            </div>
+              
             </div>
           </div>
           
@@ -1090,7 +1112,18 @@ function getTemplateVal(){
 
 </script>
 
-
+<script type="text/javascript">
+ function disableMonths() {
+     $("#minExp").change(function() {
+    	 
+         if ($(this).val() == '25+'){
+             $("#maxExp").attr("disabled", true);
+             $("#maxExp").val("disabled", true);
+         }else
+        	 $("#maxExp").attr("disabled", false); 
+     });
+ }
+ </script>
 
 <script>
 function setTemplateValues(){
