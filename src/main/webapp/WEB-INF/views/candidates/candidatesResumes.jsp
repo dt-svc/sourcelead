@@ -249,7 +249,6 @@ function addResume(candidateId) {
 --%>
 <script>
   function candidateResumesList(candidateId){ 	
-	  alert("hi.....");
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var candidateId = candidateId;
 	  var result = "";
