@@ -270,7 +270,6 @@ function getEditTeamOwners(teamOwnerUserId,teamOwnerName,teamId){
 	    	type: "POST",
 	        url: sourceleadUrl+"/getTeamMembersListExceptExistedTeamMembersList?${_csrf.parameterName}=${_csrf.token}&existedTeamMembersIds="+existedTeamMembersIds+"&teamId="+teamId,
 	        success: function(data) {
-	        	alert("json"+data);
 	        	var json = JSON.parse(data);
 	        	var output = "";
 	        	output = output + "<option disabled >-Select Team Members-</option>"; 
