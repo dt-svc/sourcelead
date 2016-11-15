@@ -10,7 +10,7 @@
       <div class="pull-left">
         <h2>Notifications</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo; Notifications</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Notifications</div>
     </section>
     <div class="content-dashboard clearfix">
       <section class="action-btns clearfix hidden">
