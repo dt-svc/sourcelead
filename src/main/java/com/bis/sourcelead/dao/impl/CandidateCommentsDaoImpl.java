@@ -1,7 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -12,8 +14,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateCommentsDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateComments;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 /**
@@ -60,7 +64,7 @@ public class CandidateCommentsDaoImpl implements CandidateCommentsDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateComments storeCandidateComments(CandidateComments candidateComments) throws Exception {
-		logger.debug("Storing Candidate");
+		logger.debug("Storing Candidate comment");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (candidateComments != null) {
@@ -72,6 +76,34 @@ public class CandidateCommentsDaoImpl implements CandidateCommentsDao {
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return candidateComments;
+	}
+	
+	
+	/**
+	 * @author Venkat Kesav
+	 * @since  nov 10 2016
+	 * @version 0.0.1
+	 * 
+	 * This method is used to get Candidate Comments list in candidate_Comments table.
+	 *  
+	 * @param candidateId This is the first parameter to getAllCommentsOnCandidateByCandidateIdAndOrgLocation method
+	 * 
+	 * @param orgLocationId This is the second parameter to getAllCommentsOnCandidateByCandidateIdAndOrgLocation method
+	 * 
+	 * @return CandidateComments
+	 * 
+	 * @throws NullPointer
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateComments> getAllCommentsOnCandidateByCandidateIdAndOrgLocation(Long candidateId, Long orgLocationId) throws Exception {
+		logger.debug("get Candidate comments");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<CandidateComments> candidateCommentsList = null;
+		Query candidateCommentsListQuery= session.createQuery("from CandidateComments comments where comments.orgLocationId.id = :orgLocationId "
+				+ "and comments.status = '1' and comments.candidateId.id = :candidateId ORDER BY comments.updatedDate DESC");
+		candidateCommentsList = candidateCommentsListQuery.setLong("orgLocationId", orgLocationId).setLong("candidateId", candidateId).setCacheable(true).list();
+		return candidateCommentsList;
 	}
 	
 }

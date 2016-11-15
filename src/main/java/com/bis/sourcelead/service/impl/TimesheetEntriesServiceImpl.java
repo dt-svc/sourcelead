@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,6 +13,8 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -54,14 +55,11 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Service
 public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
-
+	
+	private static final Logger logger = LoggerFactory.getLogger(TimesheetEntriesServiceImpl.class);
 	@Autowired
 	TimesheetEntriesDao timesheetEntriesDao;
 	
@@ -223,12 +221,11 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		sb.append("	<div class='timesheet_head'>");
 		sb.append("   	<ul>");
 		sb.append("       	<li><i class='glyphicon glyphicon-print'></i></li>");
-		sb.append("           <li><i class='glyphicon glyphicon-export'></i><span>Export</span><i class='glyphicon glyphicon-play' id='export-pop'></i>|");
+		sb.append("           <li><i class='glyphicon glyphicon-export'></i><span>Export</span><i class='glyphicon glyphicon-play' id='export-pop' onclick='exportType();'></i>|");
 		sb.append("           	<div class='export_pop'>");
 		sb.append("               	<ul>");
-		sb.append("                   	<li>PDF<i class='fa fa-file-pdf-o'></i></li>");
-		sb.append("                       <li>Excel<i class='fa fa-file-excel-o'></i></li>");
-		sb.append("                       <li>Word<i class='fa fa-file-word-o'></i></li>");
+		sb.append("                   	<li onclick='exportPdf();'>PDF<i class='fa fa-file-pdf-o'></i></li>");
+		sb.append("                       <li onclick='exportExcel();'>Excel<i class='fa fa-file-excel-o'></i></li>");
 		sb.append("                   </ul>");
 		sb.append("               </div>");
 		sb.append("           </li><li>");
@@ -740,7 +737,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 									
 									if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
 									}else{
-										documentBuffer.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\");' >");
+										documentBuffer.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\",\""+startDate+"\");' >");
 									}
 									documentBuffer.append("</strong>");
 							} 
@@ -1873,14 +1870,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	public static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
+
 	
-	private String toJSON(Object obj){
-	    XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-	        public HierarchicalStreamWriter createWriter(Writer writer) {
-	            return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-	        }
-	    });
-	    return xstream.toXML(obj);
-	}
 
 }
