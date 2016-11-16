@@ -138,7 +138,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		}
 		
 		if(requirement.getManagerUserId().getId()== user.getId()){
-			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId";
+			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId and reqSub.sourceSubmission IS NULL ";
 			requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
 		}
 		
