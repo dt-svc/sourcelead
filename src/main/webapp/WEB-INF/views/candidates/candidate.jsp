@@ -65,7 +65,7 @@
     <div class="pull-left">
       <h2>Add Candidate Details</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;<a href="candidatesList"> Candidate List</a> &raquo; Create Candidate</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Create Candidate</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -553,13 +553,31 @@ function getCities(){
 	       $("#state").chosen();
 	       $("#city").chosen();
 	       
+	       
+	        //Adding Customized Skills to the list
+	        var select, chosen;
+		    select = $("#candidateSkills");
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.on('keyup', function(e)
+		    {
+		    	var newSkill = this.value.replace(",","");
+		        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		        {
+		            var option = $("<option>").val(newSkill).text(newSkill);
+		            select.append(option);
+		            select.find(option).prop('selected', true);
+		            select.trigger("chosen:updated");
+		        }
+		    });
+		    //Adding Customized Skills to the list
+	       
 	       $("#country").on('change', function (e) {
 	    	   getStates();
 	       });
 	       $("#state").on('change', function (e) {
 	    	   getCities();
 	       });
-		       
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}

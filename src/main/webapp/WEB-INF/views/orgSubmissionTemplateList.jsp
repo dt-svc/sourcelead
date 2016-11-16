@@ -424,7 +424,7 @@ function validateTemplateName(){
     <div class="pull-left">
       <h2>Submission Templates</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="orgSubmissionTemplate">Submission Template</a></div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgSubmissionTemplate'/>">Submission Template</a></div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
