@@ -340,30 +340,33 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
         																	  .setLong("id", sah.getId())
         				                                                      .setParameter("startDate", sqlStartDate).list();
 	    		
-	    		//Boolean isAdmin = userRoleDao.isUserAdmin(approverUserId);
-                if(sah.getHeirarchyId().getLevel()==(maxLevel)){
                 	if(approversList != null && !approversList.isEmpty()){
                 		for(SubmissionApproverHierarchy approver  :  approversList){
-                			if(status!=null && status.equalsIgnoreCase("REJECTED")){
-                				approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
-                				approver.setSubmissionStatus(Submission_Status.REJECTED);
-                				approver.setActionPerformedBy("Rejected By "+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
-                				approver.setRejectedReason(rejectedReason);
-                        	 	
-            	             }else if(status!=null && status.equalsIgnoreCase("APPROVED")){
-            	            	 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
-            	            	 approver.setSubmissionStatus(Submission_Status.APPROVED);
-            	            	 approver.setActionPerformedBy("Approved By "+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
-            	             }
-                			 try {
-             					updateSubmissionApproverHierarchy(approver);
+                			  //If logged in user is high level approver then all appropriate submission will be reflected
+	                	      if(sah.getHeirarchyId().getLevel()==(maxLevel)){
+		                			if(status!=null && status.equalsIgnoreCase("REJECTED")){
+		                				approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
+		                				approver.setSubmissionStatus(Submission_Status.REJECTED);
+		                				approver.setActionPerformedBy("Rejected By "+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
+		                				approver.setRejectedReason(rejectedReason);
+		                        	 	
+		            	             }else if(status!=null && status.equalsIgnoreCase("APPROVED")){
+		            	            	 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
+		            	            	 approver.setSubmissionStatus(Submission_Status.APPROVED);
+		            	            	 approver.setActionPerformedBy("Approved By "+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
+		            	             }
+	                		 }
+	                	      //if logged in user is low level approver then record will be submitted to high level approver
+	                	     else{
+	                	    	 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
+            	            	 approver.setSubmissionStatus(Submission_Status.SUBMITTED);
+	                	     }
+                	        try {
+             			 		updateSubmissionApproverHierarchy(approver);
              				} catch (Exception e) {
-             					// TODO Auto-generated catch block
-             					e.printStackTrace();
              				}
-                		}
+                	   }
                 	}
-	    		}
 	    	   //}	 
 	    	}
 	    }
