@@ -71,6 +71,15 @@ color:#333 !important;
 width: 92% !important;
 margin-top:10px;
 }
+#tab-2 {
+overflow-y:hidden;
+}
+.table-overflow-hide {
+overflow-y:inherit !important;
+}
+.require_wrap_table {
+overflow-y:visible !important;
+
 .require_wrap_details_cta.require_uploadfile span{
 width:auto !important;
 }
@@ -80,6 +89,7 @@ float: left !important;
 }
 .require_wrap_details_cta.require_uploadfile .glyphicon-download-alt {
 color:blue;
+
 }
 </style>
  
@@ -112,14 +122,14 @@ $(document).ready(function() {
             
           </div>
     
-    <div class="side_mask">
+    <!-- <div class="side_mask">
       <div class="proj_close"></div>
-    </div>
+    </div> -->
       
       <!-- End Raj --> 
     
     
-    <div class="side_mask">
+<div class="side_mask">
       <div class="proj_close"></div>
     </div>
   </div>
@@ -599,11 +609,18 @@ function requirementDetails(requirementId){
 				            
 				            result = result +' <div class="pull-right">';
 				            
-				            if(((json.requirementSubmissionStatus  == "DRAFT" && json.createdBy == '${SourceLeadWeb_userCode}') || (json.requirementSubmissionStatus  == "SUBMITTED" ||  json.requirementSubmissionStatus  == "OPEN"   ||  json.requirementSubmissionStatus  == "NEW"   || json.createdBy == '${SourceLeadWeb_userCode}') && (json.requirementApproverHierarchyStatus =='APPROVED' || json.requirementApproverHierarchyStatus =='REJECTED')) ){ 
+				          /*   if(((json.requirementSubmissionStatus  == "DRAFT" && json.createdBy == '${SourceLeadWeb_userCode}') || (json.requirementSubmissionStatus  == "SUBMITTED" ||  json.requirementSubmissionStatus  == "OPEN"   ||  json.requirementSubmissionStatus  == "NEW"   || json.createdBy == '${SourceLeadWeb_userCode}') && (json.requirementApproverHierarchyStatus =='APPROVED' || json.requirementApproverHierarchyStatus =='REJECTED')) ){ 
                             	result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
-				             }else if((json.requirementSubmissionStatus  != 'DRAFT') && (json.requirementApproverHierarchyStatus =='APPROVED'  || json.requirementSubmissionStatus  == "SUBMITTED"  || json.requirementApproverHierarchyStatus =='REJECTED'  ||  json.requirementApproverHierarchyStatus  == "NEW" ) ){ 
+				            }else if((json.requirementSubmissionStatus  != 'DRAFT') && (json.requirementApproverHierarchyStatus =='APPROVED'  || json.requirementSubmissionStatus  == "SUBMITTED"  || json.requirementApproverHierarchyStatus =='REJECTED'  ||  json.requirementApproverHierarchyStatus  == "NEW" ) ){ 
 				            	 result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
-				             }
+				            }
+				             */
+				            
+				            if( (json.requirementSubmissionStatus =='NEW'  || json.requirementSubmissionStatus =='DRAFT' || json.requirementSubmissionStatus =='SUBMITTED'  || json.requirementSubmissionStatus  == "APPROVED"  || json.requirementSubmissionStatus =='REJECTED'  ||  json.requirementSubmissionStatus  == "OPEN" ||  json.requirementSubmissionStatus  == "ONHOLD" ) &&  json.isLoginUserAsTeamMember == "false"){ 
+				            	 result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
+				            }
+				            
+				            
 				            var APPROVED = "APPROVED";     
 				            var REJECTED = "REJECTED";
 
@@ -1073,6 +1090,7 @@ function requirementPipeline(requirementId){
 				            result = result +'    <div class="clearfix"></div>';
 				           result = result + '   </div>';
 				           result = result + '   <div class="require_wrap_table overflow-data">';
+				           result = result + '   <div class="table-overflow-hide">';
 				           result = result + '     <table id="requirementsPagination" class="display" cellspacing="0" width="100%"">';
 				           result = result + '       <thead>';
 				           result = result + '         <tr>';
@@ -1162,6 +1180,7 @@ function requirementPipeline(requirementId){
 				           
 				           result = result + '       </tbody>';
 				           result = result + '     </table>';
+				           result = result + '   </div>';
 				           result = result + '   </div>';
 				            
 				            

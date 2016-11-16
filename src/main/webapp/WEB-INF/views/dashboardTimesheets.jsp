@@ -8,7 +8,8 @@
               <div class="col-xs-12 col-sm-3">
                 <div class="info-box"> <span class="info-box-icon bg-orange"> <i class="fa fa-floppy-o" aria-hidden="true"></i> </span>
                   <div class="info-box-content text-center">
-                    <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/NEW">Saved</a></p>
+                    <!-- <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/NEW">Saved</a></p> -->
+                     <p class="info-box-text"><a href="#">Saved</a></p>
                     <p class="info-box-number"><span id="savedTimesheetsSubmissionsCount"></span></p>
                   </div>
                 </div>
@@ -16,7 +17,8 @@
               <div class="col-xs-12 col-sm-3">
                 <div class="info-box"> <span class="info-box-icon bg-blue"> <i class="fa fa-clock-o" aria-hidden="true"></i> </span>
                   <div class="info-box-content text-center">
-                    <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/SUBMITTED">Waiting</a></p>
+                   <!--  <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/SUBMITTED">Waiting</a></p> -->
+                    <p class="info-box-text"><a href="#">Waiting</a></p>
                     <p class="info-box-number"><strong><span  id="waitingTimesheetsSubmissionsCount"></span></strong></p>
                   </div>
                 </div>
@@ -24,7 +26,8 @@
               <div class="col-xs-12 col-sm-3">
                 <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
                   <div class="info-box-content text-center">
-                    <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/APPROVED">Approved</a></p>
+                   <!--  <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/APPROVED">Approved</a></p> -->
+                    <p class="info-box-text"><a href="#">Approved</a></p>
                     <p class="info-box-number"><strong><span id="approvalTimesheetsSubmissionsCount"></span></strong></p>
                   </div>
                 </div>
@@ -32,7 +35,8 @@
               <div class="col-xs-12 col-sm-3">
                 <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-ban" aria-hidden="true"></i> </span>
                   <div class="info-box-content text-center">
-                    <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/REJECTED">Rejected</a></p>
+                   <!--  <p class="info-box-text"><a href="/sourcelead/totalTimesheetList/REJECTED">Rejected</a></p> -->
+                    <p class="info-box-text"><a href="#">Rejected</a></p>
                     <p class="info-box-number"><strong><span id="rejectedTimesheetsSubmissionsCount"></span></strong></p>
                   </div>
                 </div>

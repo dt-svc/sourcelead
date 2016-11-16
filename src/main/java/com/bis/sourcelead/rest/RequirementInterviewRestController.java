@@ -145,13 +145,22 @@ public class RequirementInterviewRestController {
 		 
 		 RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewId);
 		 
-		 if(requirementInterview.getInterviewStatus() == null && !("").equals(requirementInterview.getInterviewStatus())){
+		 String message = " ";
+/*		 if(requirementInterview.getInterviewStatus() == null && !("").equals(requirementInterview.getInterviewStatus())){*/
 			 requirementInterview.setInterviewStatus(interviewStatus);
 			 requirementInterviewService.saveRequirementInterview(requirementInterview);
-		 }
-		 
-		return interviewStatus;
-	 }		
+			 if(interviewStatus.equalsIgnoreCase("Attending")){
+				 message = "You have Accepted the Interview.";
+			 }
+			 if(interviewStatus.equalsIgnoreCase("Not Attending")){
+				 message = "You have Rejected the Interview.";
+			 }
+			 if(interviewStatus.equalsIgnoreCase("Maybe")){
+				 message = "Not sure for the Interview.";
+			 }
+		return message;
+	 }	
+	 
 	 @RequestMapping(value = "/sendMailToapplicant")
 	 @ResponseBody String sendMailToapplicant(@RequestParam(value="submissionId", required=false) String submissionId,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,

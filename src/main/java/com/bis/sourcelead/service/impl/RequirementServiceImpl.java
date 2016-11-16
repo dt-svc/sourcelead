@@ -201,9 +201,9 @@ public class RequirementServiceImpl implements RequirementService {
 			if(jsonObj.has("positions")){
 			requirement.setPositions(jsonObj.getString("positions"));
 			}
-			if(jsonObj.has("country")){
-			requirement.setCountry(jsonObj.getString("country"));
-			location.append(jsonObj.getString("country"));
+			if(jsonObj.has("countryReq")){
+			requirement.setCountry(jsonObj.getString("countryReq"));
+			location.append(jsonObj.getString("countryReq"));
 			location.append(",");
 			}
 			
