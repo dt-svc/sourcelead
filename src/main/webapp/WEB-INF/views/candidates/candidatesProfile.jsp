@@ -1089,7 +1089,7 @@ function removeSkillById(candidateId, skillId){
 									} else {
 										name = " ";
 									}
-									if (opt.designation != null	&& opt.designation && opt.designation != 'undefined') {
+									if (opt.designation != null	&& opt.designation!='' && opt.designation != 'undefined') {
 										designation = opt.designation;
 									} else {
 										designation = " "; 

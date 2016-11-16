@@ -6,7 +6,7 @@ import com.bis.sourcelead.entity.TeamMembers;
 
 public interface TeamMemberDao {
 
-	public List<TeamMembers>  getTeamMembersListByTeamID(Long teamId) throws Exception;
+	public List<TeamMembers>  getTeamMembersListByTeamID(Long teamId,Long orgLocationId) throws Exception;
 	
 	public TeamMembers getTeamMemberByIdAndLocationId(Long teamMmeberId,Long orgLocationId) throws Exception;
 	
