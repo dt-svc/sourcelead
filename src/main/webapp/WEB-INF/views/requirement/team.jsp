@@ -91,9 +91,9 @@ function teamList(){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
 	                    	
-				             name:result = result +"<td><div><span>"+opt.name+"</span></div></td>";
+				             result = result +"<td><div><span>"+opt.name+"</span></div></td>";
 				             if(opt.teamOwnerName != null && opt.teamOwnerName != '' && opt.teamOwnerName != 'undefined'){
-				             teamOwnerName:result = result +"<td><div><span>"+opt.teamOwnerName+"</span></div></td>";
+				             result = result +"<td><div><span>"+opt.teamOwnerName+"</span></div></td>";
 				             }else{
 				            	 result = result +"<td>-----</td>";
 				             }

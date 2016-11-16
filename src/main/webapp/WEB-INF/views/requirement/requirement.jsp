@@ -497,6 +497,8 @@ $(document).ready(function() {
 					     </c:forEach>
                     </select>
                     <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i> 
+                 	<div id="addContact" class="modal fade" role="dialog">
+                    </div>
                  </div>
                   
                 </div>

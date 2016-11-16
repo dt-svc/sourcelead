@@ -2417,7 +2417,7 @@ function requirementRecommendations(requirementId){
 		    if(report.isCandidateAdedd == true){
 		    	result = result +'<input type="button" value="Added" class="btn btn-primary btn-sm">';
 		    }else{
-		    	result = result +'<input type="button" value="Add" class="btn btn-primary btn-sm">';
+		    	result = result +'<input type="button" value="--" class="btn btn-primary btn-sm">';
 		    }
 		    
 		   /*  result = result +'<select>';
