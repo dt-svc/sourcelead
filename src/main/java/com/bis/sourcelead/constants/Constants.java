@@ -44,6 +44,8 @@ public class Constants {
 	
 	
 	public static final Integer LEVEL1 = 1;
+	
+	public static final Integer LEVEL2 = 2;
 	   
 	public static transient DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static transient DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");
@@ -113,6 +115,13 @@ public class Constants {
 	public static String ASSIGNTEAMMEMBERSFORREQUIREMENT = "AssignToTeamMembers";
 	public static String  WEEK_TIME_SHEET_SUBMISSION= "Week Time Sheet Submission";
 	public static String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";
+	
+
+	public static String OFFERREJECT_EMAIL = "Vendor Offer Reject";
+	
+	public static String OFFERACCEPT_EMAIL = "VendorAcceptedOffer";
+	
+
 
 	public static String YES = "Y";
 	public static String NO  = "N";

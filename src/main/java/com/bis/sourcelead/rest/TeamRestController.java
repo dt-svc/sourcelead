@@ -300,6 +300,28 @@ public class TeamRestController {
 		  }
 		 
 		 
+		 
+		 
+		 /**
+		  * This method for delete team by id
+		  * @param teamMemberId
+		  * @return
+		  * @throws Exception
+		  */
+		 @RequestMapping(value = "/getTeamByTeamID", method = RequestMethod.POST,headers="Accept=application/json")
+		 public String getTeamByTeamID(@RequestParam( value = "teamId", required = false) Long teamId) throws Exception { 
+			
+			  String  resultJson =null;
+			  
+			  Team team  = teamService.getTeamByTeamId(teamId);
+			  team.setTeamOwnerName(team.getOwnerUserId().getFirstName()+" "+team.getOwnerUserId().getLastName());
+			  
+			  resultJson = commonUtil.toJSON(team);
+			  return resultJson;
+		  }
+		 
+		 
+		 
 		 /**
 		   * @author David Raju
 		   * @since  sep 14 2016
@@ -325,6 +347,17 @@ public class TeamRestController {
 			resultJson = commonUtil.toJSON(freshUserList);
 			return resultJson;
 		 } 
+		  
+		  
+		  
+		  @RequestMapping(value = "/storeEditedTeam")
+		  public @ResponseBody String storeEditedTeam(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String json1 = "{" + json + "}";
+				JSONObject jsonObj = new JSONObject(json1);
+				teamService.storeTeam(jsonObj,orgLocations);
+				return "success";
+			}
 
 	 
 }

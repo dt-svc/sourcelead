@@ -31,11 +31,22 @@ public class RequirementListController {
 	
 	
 	@RequestMapping(value = "/requirementList")
-	public ModelAndView requirementList(HttpServletRequest request) {
+	public ModelAndView requirementList(HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementList");
+		
+		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		
+		  List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
+	        for(OrgRelations orgRelations:orgClientList){
+	        	orgRelations.setClientName(orgRelations.getResponderLocationId().getOrg().getOrgName());
+	        }
+	        model.addObject("add_client", orgClientList);
+	        model.addObject(orgClientList);
+	        
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
