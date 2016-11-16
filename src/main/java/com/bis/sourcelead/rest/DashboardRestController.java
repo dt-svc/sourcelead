@@ -388,7 +388,7 @@ public class DashboardRestController {
 					    	for(RequirementApproverHierarchy rah :list1){
 					    		if(maxLevel.equals(rah.getLevel())){
 									User approverUser = userService.getUserById(rah.getApproverUserId().getId());
-									requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null);
+									requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null,orgLocation);
 								   } 
 					    	} 
 			    }
@@ -396,7 +396,7 @@ public class DashboardRestController {
 			    
 				requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
 				User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
-				requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement);
+				requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement,orgLocation);
 				
 			}
 			if(status.equalsIgnoreCase("REJECTED")){
@@ -410,7 +410,7 @@ public class DashboardRestController {
 				requirementApproverHierarchy.setRejectedReason(reason);
 				
 				User initiatorUser = userService.getUserByUserCode(requirement.getCreatedBy()); 
-				requirementService.rejectedEmailScenario(loginUser, initiatorUser, requirement,null,reason); 
+				requirementService.rejectedEmailScenario(loginUser, initiatorUser, requirement,null,reason,orgLocation); 
 			}
 			requirementService.addRequirement(requirement);
 			requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);

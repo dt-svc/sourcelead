@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 
@@ -31,8 +32,9 @@ public interface RequirementDao {
 	public Requirement checkRequirementIsReleasedOrNot(Long requirementId,Long orgLocationId) throws Exception;
 	
 	
-	Integer validateJobId(Long id) throws Exception;
+	Integer validateJobId(Long id,Long orgLocationId) throws Exception;
 
 	public Boolean validateRequirementTitle(String jobName, Long orgLocationId);
+
 
 }

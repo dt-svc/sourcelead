@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -271,7 +272,7 @@ public class RequirementReleaseRestController {
 						releasetype = Constants.CONTACTS;
 						OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(contact));
 						Requirement requirement  = new Requirement();
-						releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc);
+						releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc,null);
 						requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype,null);
 
 				}
@@ -281,14 +282,24 @@ public class RequirementReleaseRestController {
 			if(vendors != null &&  vendors.length>0 && vendors[0] != null && vendors[0] != ""){
 				for(String vendor   : vendors){
 					
-					List<OrgSpoc> orgSpocList = orgSpocService.getAllContactsbyOrgId(Long.parseLong(vendor));
+					//List<OrgSpoc> orgSpocList = orgSpocService.getAllContactsbyOrgId(Long.parseLong(vendor));
+					
+					OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(vendor));
+					Long locationId = null;
+					if(StringUtils.equals(orgRelations.getInitiatorType(), "Vendor")){
+						locationId = orgRelations.getLocationId().getId();
+					}else if(StringUtils.equals(orgRelations.getInitiatorType(), "Client")){
+						locationId = orgRelations.getResponderLocationId().getId();
+					}
+					
+					List<OrgSpoc> orgSpocList = orgSpocService.getAllContactsbyOrgRelationIdAndLocationId(Long.parseLong(vendor), locationId, orgRelations.getInitiatorType());
 					for(OrgSpoc orgSpoc : orgSpocList){
 						
 					    Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(requirementId, orgSpoc.getId());
 					    if(isJobReleased.toString().equalsIgnoreCase("false")){
 					    	Requirement requirement  = new Requirement();
 					    	releasetype = Constants.VENDORSTYPE;
-							releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc);
+							releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc, orgRelations.getInitiatorType());
 							requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype,null);
 
 					    }
@@ -299,12 +310,17 @@ public class RequirementReleaseRestController {
 			return "vendorsList";
 	}
 
-	private void releaseJobToVendorOrContacts(Requirement requirement, Requirement parentRequirement, OrgSpoc orgSpoc) throws Exception {
+	private void releaseJobToVendorOrContacts(Requirement requirement, Requirement parentRequirement, OrgSpoc orgSpoc, String initiator) throws Exception {
 		
 		//requirement = parentRequirement;
 		
 		requirement.setParentRequirement(parentRequirement);
-		requirement.setOrgLocationId(orgSpoc.getResponderLocationId());
+		if(StringUtils.equalsIgnoreCase(initiator, "Vendor")){
+			requirement.setOrgLocationId(orgSpoc.getInitiatorLocationId());
+		}else{
+			requirement.setOrgLocationId(orgSpoc.getResponderLocationId());
+		}
+		
 		requirement.setJobTitle(parentRequirement.getJobTitle());
 		requirement.setJobType(parentRequirement.getJobType());
 		requirement.setJobId(parentRequirement.getJobId());
@@ -342,9 +358,15 @@ public class RequirementReleaseRestController {
 		if(orgSpoc != null){
 			requirement.setSpocId(orgSpoc);
 			requirement.setClientId(orgSpoc.getOrgRelations());
-			requirement.setUpdatedBy(orgSpoc.getSpocUser().getUserCode());
-			requirement.setCreatedBy(orgSpoc.getSpocUser().getUserCode());
-			requirement.setManagerUserId(orgSpoc.getSpocUser());
+			if(StringUtils.equalsIgnoreCase(initiator, "Vendor")){
+				requirement.setUpdatedBy(orgSpoc.getOwnerUser().getUserCode());
+				requirement.setCreatedBy(orgSpoc.getOwnerUser().getUserCode());
+				requirement.setManagerUserId(orgSpoc.getOwnerUser());
+			}else{
+				requirement.setUpdatedBy(orgSpoc.getSpocUser().getUserCode());
+				requirement.setCreatedBy(orgSpoc.getSpocUser().getUserCode());
+				requirement.setManagerUserId(orgSpoc.getSpocUser());
+			}
 		}
 		
 		requirement.setCreatedDate(commonUtil.currentDate());
