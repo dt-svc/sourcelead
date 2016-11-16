@@ -194,9 +194,10 @@ function shortlist(requirementId){
 		    	type: "POST",
 		    	url: sourceleadUrl+"/candidateShortList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionsList="+selectedsubmissionslists,
 		        success: function(result) {
-		        	if((result == 'success')){
-		        		location.replace(sourceleadUrl+"/requirementSummary?requirementId="+requirementId); 
-			        } 
+		        	$(".shortlist-wrap").removeClass("shortlist-wrap_active");
+	        		$(".side_mask").fadeOut(200);
+	        		$("body").css('overflow-y', 'auto');
+	        		requirementPipeline(requirementId); 
 		        },
 		 }); 
 	 }else{

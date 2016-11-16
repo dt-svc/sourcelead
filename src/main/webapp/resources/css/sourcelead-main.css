@@ -4067,11 +4067,13 @@ ul.pipeline li{
     margin: 0 !important;
     padding: 0 10px !important;
 }
-.require_wrap_table.overflow-data{
-	overflow: inherit !important;
-}
 .headersummary ul{
 	padding: 2px 245px 2px 0px !important;
+}
+.table-overflow-hide {
+	overflow-y:auto;
+	clear: both;
+	display: both;
 }
 /* media 320px */
 @media (max-width: 320px) {
