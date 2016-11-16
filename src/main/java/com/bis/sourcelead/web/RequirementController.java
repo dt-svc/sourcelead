@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -168,10 +169,13 @@ public class RequirementController {
 		
 		//OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		
-        model.addObject("loginCountryName", countries.getName());
-        model.addObject("currencyCode", countries.getCurrency());
+		if(orgLocations != null && StringUtils.isNotEmpty(orgLocations.getCountry())){
+			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			model.addObject("loginCountryName", countries.getName());
+	        model.addObject("currencyCode", countries.getCurrency());
+		}
+        
         
         List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
