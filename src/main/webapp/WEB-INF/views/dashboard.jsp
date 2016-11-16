@@ -249,10 +249,11 @@ float: none !important;
 	     <!--  <div class="pull-right brud-crum">Dashboard</div> -->
 	    </section>
 	    
-	    <div class="clearfix row mb"> 
+	    <div class="clearfix row mb">
+	    	 <jsp:include page="dashboardTimesheets.jsp"></jsp:include> 
 	     	 <jsp:include page="dashboardRequirement.jsp"></jsp:include>
 	      	 <%-- <jsp:include page="dashboardTasks.jsp"></jsp:include> --%>
-	      	 <jsp:include page="dashboardTimesheets.jsp"></jsp:include>
+	      	 
 	    </div>
     
     	<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include>
