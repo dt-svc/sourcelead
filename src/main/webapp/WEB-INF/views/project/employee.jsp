@@ -67,7 +67,7 @@
                     <div class="form-horizontal custom-form clearfix">
                       <div class="col-xs-12 col-md-12 col-lg-12">
                         <div class="form-group">
-                        <label class="col-lg-3">Frist Name<span class="text-danger">*</span></label>
+                        <label class="col-lg-3">First Name<span class="text-danger">*</span></label>
                         <div class="col-lg-9">
                           <input type="text" class="form-control" value="" name="firstName" id="firstName" field-name="Frist Name" data-validation="required">
                           </div>
