@@ -93,12 +93,12 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 	  HttpSession session = request.getSession();
 		ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(session.getServletContext());
 		LookUpDataService lookUpDataService = (LookUpDataService) ctx.getBean("lookUpDataService");
-	  List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+	    List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 		for(String sLine : totalLines) 
 		{
 		    for(String searchWord: skillsList)
 		    {
-		    	Matcher skillMatcher = Pattern.compile("(\\b"+searchWord+"\\b)",Pattern.CASE_INSENSITIVE).matcher(sLine);
+		    	Matcher skillMatcher = Pattern.compile("\\b"+searchWord+"\\b",Pattern.CASE_INSENSITIVE).matcher(sLine);
 		    	  while(skillMatcher.find()){
 		    		 if(duplicateSkills.add(skillMatcher.group().toUpperCase())){
 		    			  skills.add(skillMatcher.group());
@@ -107,7 +107,7 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 		    }
 		 }
 		return skills;
-  }
+     }
 	
     /**
 	 * Name finder from parsed text file
