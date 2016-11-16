@@ -241,24 +241,33 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 candidateName=candidateName+" "+candidate.getLastName();
 		 }
 		 
-		 
-		 
 		 String dateOfInterviewValue ="";
 		 if(requirementInterview.getDateOfInterview()!=null){
 			 dateOfInterviewValue = Constants.DMY.format(requirementInterview.getDateOfInterview());
 		 }
-			 String time = Constants.DMY.format(requirementInterview.getStartTime());
-			 if(requirementInterview.getEndTime()!=null){
-				  time=time+" "+Constants.DMY.format(requirementInterview.getEndTime());
-			 }
-			 dateOfInterviewValue = dateOfInterviewValue +" "+time;
-			 String interviewTypeValue="--";
-			 if(requirementInterview.getInterviewType() !=null){
-				 interviewTypeValue = requirementInterview.getInterviewType();
-			 }
+		 String interviewTypeValue="--";
+		 if(requirementInterview.getInterviewType() !=null){
+			 interviewTypeValue = requirementInterview.getInterviewType();
+		 }
+	 
+		 String time = "";
+		 String endTime = ""; 
+		 if(requirementInterview.getStartTime() != null){
+	    	 String hours = requirementInterview.getStartTime().getHours()+"";
+	    	 String minutes = requirementInterview.getStartTime().getMinutes()+"";
+	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
+	    }
+	    
+	    if(requirementInterview.getEndTime() != null){
+	    	 String hours = requirementInterview.getEndTime().getHours()+"";
+	    	 String minutes = requirementInterview.getEndTime().getMinutes()+"";
+	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
+	    }
 		 
-		 
-		 
+		 if(endTime!=null){
+			  time=time+" - "+endTime;
+		 }
+		 dateOfInterviewValue = dateOfInterviewValue +" "+time;
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("interviewerFirstName", emailMessage.getFirstName());
