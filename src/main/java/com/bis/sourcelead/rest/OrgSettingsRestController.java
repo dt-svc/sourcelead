@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +35,17 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -66,6 +71,12 @@ public class OrgSettingsRestController {
 	
 	@Autowired
 	RolesService rolesService;
+	
+	@Autowired
+	RoleHierarchyService roleHierarchyService;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	
    @RequestMapping(value = "/saveOrgSettings" , method = RequestMethod.POST)
@@ -153,9 +164,11 @@ public class OrgSettingsRestController {
 		for(Roles roles : orgRolesList){
 			roles.setHierarchyName(roles.getRoleHierarchy().getHierarchyName());
 			List<Long> roleActonsList = new ArrayList<Long>();
-			for (String s : roles.getActionId().split(",")){
-				 roleActonsList.add(Long.parseLong(s));
-			 }
+			if(null != roles.getActionId()){
+				for (String s : roles.getActionId().split(",")){
+					 roleActonsList.add(Long.parseLong(s));
+				 }
+			}
 			roles.setActionsCount(roleActonsList.size());
 			rolesList.add(roles);
 		}
@@ -187,6 +200,54 @@ public class OrgSettingsRestController {
 	return "success";
    }
    
+   
+   @RequestMapping(value = "/validateRoleName" , method = RequestMethod.GET)
+   public String validateRoleName(@RequestParam(value="roleName", required=false) String roleName,HttpServletRequest request) throws Exception {
+	
+	   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	   Roles roles = rolesService.getRolesByRoleDisplayNameAndOrgLocationId(roleName,orgLocations.getId());
+	   if(null != roles){
+		   return "invalid";
+	   }else{
+		   return "valid";
+	   }
+	
+   }
+   
+   
+   
+   @RequestMapping(value = "/addNewRole" , method = RequestMethod.POST)
+	 public  String addNewRole(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+		 	
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 	
+	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+	 	
+	 	 Roles roles = new Roles();
+	 	if(jsonObj.has("roleName") && !isNullOrEmpty(jsonObj.getString("roleName"))){
+	 		roles.setRoleName("ROLE_"+jsonObj.getString("roleName").replaceAll(" ", "_").toUpperCase());
+	 		roles.setDisplayName(jsonObj.getString("roleName"));
+	 		roles.setOrg(org);
+	 		roles.setOrgLocations(orgLocations);
+	 		roles.setStatus("1");
+	 		RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyById(Long.parseLong(jsonObj.getString("level")));
+	 		roles.setRoleHierarchy(roleHierarchy);
+	 		roles.setCreatedBy(user.getUserCode());
+	 		roles.setCreatedDate(new Date());
+	 		roles = rolesService.storeRoles(roles);
+	 	}
+	 	
+	 	ArrayList<String> rolesList = new ArrayList<String>();
+	 	rolesList.add(roles.getId().toString());
+	 	return commonUtil.toJSON(rolesList);
+	   }
+   
+   
+	 
    
    private String toJSON(Object obj){
        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

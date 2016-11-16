@@ -192,7 +192,7 @@ public class RolesDaoImpl implements RolesDao{
 			subQuery = "and roles.roleName != 'ROLE_SOURCELEAD_ADMIN' ";
 		}
         
-	    String query = "from Roles roles where roles.roleHierarchy.id between ("+hierarchyId+") and (select max(rh.id) from RoleHierarchy rh where rh.orgLocations.id = :orgLocationId)  "+subQuery+" ";
+	    String query = "from Roles roles where roles.roleHierarchy.id between ("+hierarchyId+") and (select max(rh.id) from RoleHierarchy rh where rh.orgLocations.id = :orgLocationId) and (roles.actionId IS NOT NULL)  "+subQuery+" ";
 	    List<Roles> rolesList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		
 		return rolesList;
@@ -272,6 +272,21 @@ public class RolesDaoImpl implements RolesDao{
 		List<Roles> roles = new ArrayList<Roles>();
 		logger.debug("Roles start");
 		roles = session.createQuery("from Roles role where role.id = :id and role.orgLocations.id = :orgLocationId" ).setLong( "id", id ).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		logger.debug("Roles end");
+		if (roles.size() > 0) {
+			return roles.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional
+	public Roles getRolesByRoleDisplayNameAndOrgLocationId(String roleName, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Roles> roles = new ArrayList<Roles>();
+		logger.debug("Roles start");
+		roles = session.createQuery("from Roles roles where roles.displayName = :displayName and roles.orgLocations.id = :orgLocationId " ).setString( "displayName", roleName ).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		logger.debug("Roles end");
 		if (roles.size() > 0) {
 			return roles.get(0);

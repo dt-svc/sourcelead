@@ -4067,6 +4067,12 @@ ul.pipeline li{
     margin: 0 !important;
     padding: 0 10px !important;
 }
+.roles_list label a{
+	color:#fff;
+}
+.roles_list label:hover{
+	background-color:#333;
+}
 .headersummary ul{
 	padding: 2px 245px 2px 0px !important;
 }

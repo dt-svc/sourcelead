@@ -77,17 +77,7 @@ public class UserController {
 		    List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 		    model.addObject("rolesList", rolesList);
 		    
-		    List<User> userList = userService.getReoprtingManagersByOrgLocationId(orgLocations.getId());
-		    ArrayList<User> reportingManagersList = new ArrayList<User>();
-			for (User user : userList) {
-				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-				if(userRole != null){
-					user.setUserType(userRole.getUserType());
-				}
-				reportingManagersList.add(user);
-			}
-			model.addObject("reportingManagersList", reportingManagersList);
-		    
+		   		    
 		    commonUtil.highLightMenu(Constants.Users, request);
 		    
 			model.setViewName("users/userCreation");

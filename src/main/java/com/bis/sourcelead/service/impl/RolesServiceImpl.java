@@ -89,4 +89,10 @@ public class RolesServiceImpl implements RolesService{
 		return rolesDao.getRolesByIdAndOrgLocationId(id, orgLocationId);
 	}
 
+
+	@Override
+	public Roles getRolesByRoleDisplayNameAndOrgLocationId(String roleName, Long orgLocationId) throws Exception {
+		return rolesDao.getRolesByRoleDisplayNameAndOrgLocationId(roleName, orgLocationId);
+	}
+
 }

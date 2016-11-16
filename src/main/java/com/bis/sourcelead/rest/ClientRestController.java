@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -36,6 +37,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -94,6 +96,9 @@ public class ClientRestController {
 	@Autowired
 	SubmissionTemplateService submissionTemplateService;
 	
+	@Autowired
+	private RolesService rolesService;
+	
 	
 	/**
 	 * Handles to get Orgs
@@ -123,6 +128,23 @@ public class ClientRestController {
 			}
 			return commonUtil.toJSON(hm);
 	    }
+	 
+	 
+	 @RequestMapping(value = "/getRolesList", method = RequestMethod.POST)
+		public @ResponseBody String getRolesList(
+				@RequestParam(value = "orgLocationId", required = false) String orgLocationId,
+				@RequestParam(value = "moduleType", required = false) String moduleType,
+				HttpServletRequest request) throws Exception {
+			
+			List<Roles> rolesList  = null;
+			if(!isNullOrEmpty(orgLocationId)){
+				rolesList = rolesService.getClientOrVendorRolesList(Long.parseLong(orgLocationId), moduleType);
+			}else{
+				rolesList = rolesService.getClientOrVendorRolesList(1L, moduleType);
+			}
+			
+			return commonUtil.toJSON(rolesList);
+		}
 	 
 	 
 	 /**

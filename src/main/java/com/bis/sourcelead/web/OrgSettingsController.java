@@ -18,8 +18,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -41,6 +43,9 @@ public class OrgSettingsController {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	RoleHierarchyService roleHierarchyService;
 	
 	
 	@RequestMapping(value = "/orgSettings")
@@ -65,8 +70,16 @@ public class OrgSettingsController {
 	
 	@RequestMapping(value = "/orgRolesList")
  	public ModelAndView orgRolesList(HttpServletRequest request) {
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    ModelAndView model = new ModelAndView();
  			commonUtil.highLightMenu(Constants.OrgSettings, request);
+ 			List<RoleHierarchy> hierarchyList = null;
+ 			try {
+				 hierarchyList = roleHierarchyService.getRoleHierarchyByOrgLocationId(orgLocations.getId());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+ 			model.addObject("hierarchyList", hierarchyList);
  			model.setViewName("orgRolesList");
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			return model;
@@ -88,22 +101,27 @@ public class OrgSettingsController {
 			
 			List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadActions(org);
 			
-			ArrayList<SourceleadActions> sourceleadActionsList = new ArrayList<SourceleadActions>();
-			List<Long> roleActonList = new ArrayList<Long>();
-			 for (String s : roles.getActionId().split(",")){
-				 roleActonList.add(Long.parseLong(s));
-			 }
-			 
-			 for(SourceleadActions sleadActions : actionsList){
-				 if(roleActonList.contains(sleadActions.getId())){
-					 sleadActions.setIsActionConfigured(Constants.YES);
-				 }else{
-					 sleadActions.setIsActionConfigured(Constants.NO);
+			if(null != roles.getActionId()){
+				ArrayList<SourceleadActions> sourceleadActionsList = new ArrayList<SourceleadActions>();
+				List<Long> roleActonList = new ArrayList<Long>();
+				 for (String s : roles.getActionId().split(",")){
+					 roleActonList.add(Long.parseLong(s));
 				 }
-				 sourceleadActionsList.add(sleadActions);
-			 }
-			 
-			 model.addObject("actionsList", sourceleadActionsList);
+				 
+				 for(SourceleadActions sleadActions : actionsList){
+					 if(roleActonList.contains(sleadActions.getId())){
+						 sleadActions.setIsActionConfigured(Constants.YES);
+					 }else{
+						 sleadActions.setIsActionConfigured(Constants.NO);
+					 }
+					 sourceleadActionsList.add(sleadActions);
+				 }
+				 
+				 model.addObject("actionsList", sourceleadActionsList);
+			}else{
+				 model.addObject("actionsList", actionsList);
+			}
+			
 			 model.addObject("roleId",roleId);
 			 model.addObject("roleName",roles.getDisplayName());
 			 model.setViewName("enrollRoleActions");

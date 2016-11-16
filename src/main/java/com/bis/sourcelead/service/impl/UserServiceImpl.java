@@ -315,8 +315,9 @@ public class UserServiceImpl implements UserService {
 		
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		
+		Roles roles = null;
+		
 		if(jsonObj.has("roleType")){
-			Roles roles;
 			try {
 				roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleType")));
 				userRole.setUserType(roles.getDisplayName());
@@ -327,14 +328,17 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		
-		Roles roles = null;
+		
 		try {
 			
-			if(jsonObj.has("roleTypeId") && !isNullOrEmpty(jsonObj.getString("roleTypeId"))){
-				roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleTypeId")));
-			}else{
-				roles = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER,orgLocations.getId());
+			if(jsonObj.has("roleTypeId")){
+				if(!isNullOrEmpty(jsonObj.getString("roleTypeId"))){
+					roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleTypeId")));
+				}else{
+					roles = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER,orgLocations.getId());
+				}
 			}
+			
 			
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));

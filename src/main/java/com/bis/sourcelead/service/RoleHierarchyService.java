@@ -11,4 +11,6 @@ public interface RoleHierarchyService {
 	List<RoleHierarchy> getRoleHierarchyByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	RoleHierarchy getRoleHierarchyByHierarchyLevelAndOrgLocationId(Integer hierarchyLevel,Long orgLocationId) throws Exception;
+	
+	RoleHierarchy getRoleHierarchyById(Long id) throws Exception;
 }

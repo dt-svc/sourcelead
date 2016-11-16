@@ -75,4 +75,19 @@ public class RoleHierarchyDaoImpl implements RoleHierarchyDao {
 		}
 	}
 
+	@Override
+	@Transactional
+	public RoleHierarchy getRoleHierarchyById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RoleHierarchy> roleHierarchy = new ArrayList<RoleHierarchy>();
+		logger.debug("RoleHierarchy start");
+		roleHierarchy = session.createQuery("from RoleHierarchy roleHierarchy where roleHierarchy.id = :id" ).setLong("id", id).setCacheable(true).list();
+		logger.debug("RoleHierarchy end");
+		if (roleHierarchy.size() > 0) {
+			return roleHierarchy.get(0);
+		} else {
+			return null;
+		}
+	}
+
 }

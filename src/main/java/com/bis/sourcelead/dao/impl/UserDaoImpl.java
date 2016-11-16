@@ -316,7 +316,7 @@ public class UserDaoImpl implements UserDao {
 		String subQuery = "";
 		
 		
-		subQuery = "userRole.user.id from UserRole userRole where  (userRole.roles.roleHierarchy.id <= (select r.roleHierarchy.id from Roles r where r.id = :roleId)) and userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE'";
+		subQuery = "userRole.user.id from UserRole userRole where  (userRole.roles.roleHierarchy.id <= (select r.roleHierarchy.id from Roles r where r.id = :roleId)) and (userRole.roles.actionId IS NOT NULL) and userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE'";
 		
 		String query = "from User user where user.id IN (select "+subQuery+" )  ";
 	    List<User> userRoleList = session.createQuery(query).setLong("roleId", roleId).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
