@@ -52,9 +52,9 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 	
 	 
 	@Override
-	public List<TeamMembers> getTeamMembersListByTeamID(Long teamId) throws Exception {
+	public List<TeamMembers> getTeamMembersListByTeamID(Long teamId,Long orgLocationId) throws Exception {
 		
-		return teamMemberDao.getTeamMembersListByTeamID(teamId);
+		return teamMemberDao.getTeamMembersListByTeamID(teamId,orgLocationId);
 		
 	}
 
