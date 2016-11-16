@@ -602,7 +602,7 @@ function requirementDetails(requirementId){
 				            }
 				             */
 				            
-				            if((json.requirementApproverHierarchyStatus =='NEW'  || json.requirementApproverHierarchyStatus =='DRAFT' || json.requirementApproverHierarchyStatus =='SUBMITTED'  || json.requirementSubmissionStatus  == "APPROVED"  || json.requirementApproverHierarchyStatus =='REJECTED'  ||  json.requirementApproverHierarchyStatus  == "OPEN" ||  json.requirementApproverHierarchyStatus  == "ONHOLD" ) ){ 
+				            if( (json.requirementSubmissionStatus =='NEW'  || json.requirementSubmissionStatus =='DRAFT' || json.requirementSubmissionStatus =='SUBMITTED'  || json.requirementSubmissionStatus  == "APPROVED"  || json.requirementSubmissionStatus =='REJECTED'  ||  json.requirementSubmissionStatus  == "OPEN" ||  json.requirementSubmissionStatus  == "ONHOLD" ) &&  json.isLoginUserAsTeamMember == "false"){ 
 				            	 result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
 				            }
 				            

@@ -259,9 +259,9 @@ public class RequirementListRestController {
 						requirement.setApproverNames(ar);
 					}
 					
-
+					Boolean isLoginUserAsTeamMember =   requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
+					requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
 					resultJson = commonUtil.toJSON(requirement);
-			
 				 
 			}
 			
