@@ -595,11 +595,18 @@ function requirementDetails(requirementId){
 				            
 				            result = result +' <div class="pull-right">';
 				            
-				            if(((json.requirementSubmissionStatus  == "DRAFT" && json.createdBy == '${SourceLeadWeb_userCode}') || (json.requirementSubmissionStatus  == "SUBMITTED" ||  json.requirementSubmissionStatus  == "OPEN"   ||  json.requirementSubmissionStatus  == "NEW"   || json.createdBy == '${SourceLeadWeb_userCode}') && (json.requirementApproverHierarchyStatus =='APPROVED' || json.requirementApproverHierarchyStatus =='REJECTED')) ){ 
+				          /*   if(((json.requirementSubmissionStatus  == "DRAFT" && json.createdBy == '${SourceLeadWeb_userCode}') || (json.requirementSubmissionStatus  == "SUBMITTED" ||  json.requirementSubmissionStatus  == "OPEN"   ||  json.requirementSubmissionStatus  == "NEW"   || json.createdBy == '${SourceLeadWeb_userCode}') && (json.requirementApproverHierarchyStatus =='APPROVED' || json.requirementApproverHierarchyStatus =='REJECTED')) ){ 
                             	result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
-				             }else if((json.requirementSubmissionStatus  != 'DRAFT') && (json.requirementApproverHierarchyStatus =='APPROVED'  || json.requirementSubmissionStatus  == "SUBMITTED"  || json.requirementApproverHierarchyStatus =='REJECTED'  ||  json.requirementApproverHierarchyStatus  == "NEW" ) ){ 
+				            }else if((json.requirementSubmissionStatus  != 'DRAFT') && (json.requirementApproverHierarchyStatus =='APPROVED'  || json.requirementSubmissionStatus  == "SUBMITTED"  || json.requirementApproverHierarchyStatus =='REJECTED'  ||  json.requirementApproverHierarchyStatus  == "NEW" ) ){ 
 				            	 result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
-				             }
+				            }
+				             */
+				            
+				            if((json.requirementApproverHierarchyStatus =='NEW'  || json.requirementApproverHierarchyStatus =='DRAFT' || json.requirementApproverHierarchyStatus =='SUBMITTED'  || json.requirementSubmissionStatus  == "APPROVED"  || json.requirementApproverHierarchyStatus =='REJECTED'  ||  json.requirementApproverHierarchyStatus  == "OPEN" ||  json.requirementApproverHierarchyStatus  == "ONHOLD" ) ){ 
+				            	 result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
+				            }
+				            
+				            
 				            var APPROVED = "APPROVED";     
 				            var REJECTED = "REJECTED";
 
