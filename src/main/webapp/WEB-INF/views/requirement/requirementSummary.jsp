@@ -71,6 +71,15 @@ color:#333 !important;
 width: 92% !important;
 margin-top:10px;
 }
+#tab-2 {
+overflow-y:hidden;
+}
+.table-overflow-hide {
+overflow-y:inherit !important;
+}
+.require_wrap_table {
+overflow-y:visible !important;
+
 .require_wrap_details_cta.require_uploadfile span{
 width:auto !important;
 }
@@ -80,6 +89,7 @@ float: left !important;
 }
 .require_wrap_details_cta.require_uploadfile .glyphicon-download-alt {
 color:blue;
+
 }
 </style>
  
@@ -112,14 +122,14 @@ $(document).ready(function() {
             
           </div>
     
-    <div class="side_mask">
+    <!-- <div class="side_mask">
       <div class="proj_close"></div>
-    </div>
+    </div> -->
       
       <!-- End Raj --> 
     
     
-    <div class="side_mask">
+<div class="side_mask">
       <div class="proj_close"></div>
     </div>
   </div>
@@ -1073,6 +1083,7 @@ function requirementPipeline(requirementId){
 				            result = result +'    <div class="clearfix"></div>';
 				           result = result + '   </div>';
 				           result = result + '   <div class="require_wrap_table overflow-data">';
+				           result = result + '   <div class="table-overflow-hide">';
 				           result = result + '     <table id="requirementsPagination" class="display" cellspacing="0" width="100%"">';
 				           result = result + '       <thead>';
 				           result = result + '         <tr>';
@@ -1162,6 +1173,7 @@ function requirementPipeline(requirementId){
 				           
 				           result = result + '       </tbody>';
 				           result = result + '     </table>';
+				           result = result + '   </div>';
 				           result = result + '   </div>';
 				            
 				            
