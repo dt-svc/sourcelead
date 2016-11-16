@@ -175,7 +175,7 @@ function templatepagination(){
 		            result = result  +'<label>Template Name<span class="text-danger">&nbsp;*</label>';
 			    	result = result  +'	<div class="mt10">';
 			    	if(templateName){
-			    		result = result  +'	<input type="text" class="form-control input-sm" value="'+templateName+'" readonly="readonly" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';	
+			    		result = result  +'	<input type="text" class="form-control input-sm" value="'+templateName+'"  onblur="validateTemplateName('+clientLocationId+')" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';	
 			    	}else{
 			    		result = result  +'	<input type="text" class="form-control input-sm"  onblur="validateTemplateName('+clientLocationId+')" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';
 			    	}
@@ -277,11 +277,15 @@ function templatepagination(){
 <script type="text/javascript">
 function validateTemplateName(clientLocationId){
 	var templateName = document.getElementById("templateName").value; 
+	var templateId = $("#templateId").val();
+	if(templateId == 'undefined' || templateId == null){
+		templateId = '';
+	}
 	if(templateName){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/validateTemplateName?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&templateName="+templateName, 
+	    	url : sourceleadUrl+"/validateTemplateName?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&templateName="+templateName+"&templateId="+templateId, 
 	        success: function(result) {
 	        	if (result == 'invalid') {
 	        		$("#save_button").attr("disabled", "disabled");

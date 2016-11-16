@@ -344,7 +344,7 @@ function cancelAddOffer(){
         con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
         var sourceleadUrl ='${sourceleadUrl}'; 
-       
+        var requirementId = '${requirementId}';
         $("#add_offer").attr("disabled", "disabled");
  		$("#add_offer" ).addClass('button').val('Processing..'); 
  		var form = $('#addOffer_form')[0];
@@ -363,6 +363,7 @@ function cancelAddOffer(){
 	        	$(".add_offer_wrap").removeClass("add_offer_wrap_active");
         		$(".side_mask").fadeOut(200);
         		$("body").css('overflow-y', 'auto');
+        		requirementPipeline(requirementId); 
 	        },
 	    });   
         return true;
