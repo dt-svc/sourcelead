@@ -440,7 +440,7 @@ public class RequirementOfferRestController {
     @ResponseBody  String acceptOrRejectOffer(@RequestParam(value="offerStatus", required=false) String offerStatus,
                            @RequestParam(value = "submissionId", required = false) Long submissionId,
                     HttpServletRequest request) throws Exception {
-            
+			 String setofferStatus = "";
             RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferId(submissionId);
             RequirementSubmission requirementSubmission   =requirementSubmissionService.getRequirementSubmissionById(submissionId);
             if(offerStatus.equalsIgnoreCase("Accepted")){
@@ -450,6 +450,7 @@ public class RequirementOfferRestController {
                     	 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
                          requirementOffers.setOfferStatus("OFFERACCEPTED");
                         requirementOffersService.saveOfferStatus(requirementOffers);
+                        setofferStatus ="you have accepted the offer";
                      }
                       
                     
@@ -459,11 +460,12 @@ public class RequirementOfferRestController {
                     	requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
                         requirementOffers.setOfferStatus("OFFERREJECTED");
                         requirementOffersService.saveOfferStatus(requirementOffers);
+                        setofferStatus ="you have rejected the offer";
                     }
                     
             }
             
-           return offerStatus;
+           return setofferStatus;
     }                
 
 
