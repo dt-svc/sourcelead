@@ -17,6 +17,7 @@ public interface RequirementApproverHierarchyDao {
 	
 	public List<RequirementApproverHierarchy> getRequirementApproverHierarchyListByRequirementId(Long requirementId) throws Exception;
 
+	Boolean deleteTheRequirementApproverByRequirementIdAndApproverId(RequirementApproverHierarchy requirementApproverHierarchy) throws Exception;
 	
 }
 
