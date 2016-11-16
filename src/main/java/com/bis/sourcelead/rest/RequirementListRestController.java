@@ -229,7 +229,9 @@ public class RequirementListRestController {
 						requirement.setRequirementApproverHierarchyStatus(requirementApproverHierarchy.getRequirementApproverStatus().toString());
 					}
 					if(requirement.getSpocId() !=null){
-					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+						if(requirement.getClientId() !=null ){
+							requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+						}
 					requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
 					requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
 					requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
