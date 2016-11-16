@@ -81,7 +81,6 @@ bottom:-14px;
 <script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
-			disableMonths();
 			/*  $(".isClient").click(function(){  
 		        $(".clientDetails").toggleClass('hidden', 500);
 		    });  */
@@ -212,11 +211,11 @@ $(document).ready(function() {
 </div>
 
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt pras req-title">
-           <div class="form-group" id="jobTitleDiv">
+           <div class="form-group">
 	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
 	         <div class="col-md-9">
 	          <div class="input-group">
-	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length2-250"   value="" class="form-control" onblur="validateJobtitle();" onmouseout="validateJobtitle();">
+	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length2-250"   value="" class="form-control">
 	             <div class="input-group-btn selp-custom-min">
 	             <select class="selectpicker" id="jobType" name="jobType">
 	                 <option  ${requirement.jobType  == 'c2c' ? 'selected' : ''}><a href="#">C2C</a></option>
@@ -267,7 +266,7 @@ $(document).ready(function() {
          <div class="form-group" >
             <label class="col-md-3">Experience</label>
             <div class="col-md-9">
-              <%-- <div class="row">
+              <div class="row">
 	                <div class="col-md-6">
 	                 <input type="text" class="form-control" placeholder="minExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
 	                </div>
@@ -277,28 +276,7 @@ $(document).ready(function() {
               </div>
               <div class="row" id="expId">
                   <input type="hidden" name="expValidation" id="expValidation">
-              </div> --%>
-                 <div class="row">
-             <div class="col-xs-6 col-md-6">
-             		<select class="form-control" id="minExp" name="minExp"  onchange="disableMonths();">
-             		  <option selected disabled>Year</option>
-             		  <c:forEach begin="0" end="24" varStatus="loop">
-						    <option  ${requirement.minExp == loop.index ? 'selected' : ''} >${loop.index}</option>
-						</c:forEach>
-             		     <option>25+</option>
-             		</select>
-             </div>
-             
-             <div class="col-xs-6 col-md-6">
-             		<select class="form-control" id="maxExp" value = "" name="maxExp">
-             		<option selected disabled>Month</option>
-             		 <c:forEach begin="0" end="11" varStatus="loop">
-						    <option  ${requirement.maxExp == loop.index ? 'selected' : ''}>${loop.index}</option>
-						</c:forEach>
-             		</select>
-             </div>
-            </div>
-              
+              </div>
             </div>
           </div>
           
@@ -382,7 +360,6 @@ $(document).ready(function() {
             </div>
          
           <div class="form-group">
-            <input type="hidden" name="templateId" id="templateId" value="" />
             <label class="col-md-3">Attachment</label>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
             <div class="col-md-9">
@@ -403,7 +380,7 @@ $(document).ready(function() {
            <div class="form-group">
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
-             <textarea rows="2" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description" data-validation="validate_length length2-5000" data-validation-optional="true">${requirement.description}</textarea>
+             <textarea rows="2" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true">${requirement.description}</textarea>
             </div>
           </div>
           
@@ -722,9 +699,7 @@ $(document).ready(function() {
   </div>
     </form:form>
   <!-- Content Area Ends-->
-  <div id="addContact" class="modal fade" role="dialog">
-  </div>
-                    
+  
      		 <!-- Modal content Demo Popup: Need to Update -->
                 <div role="dialog" id="addTeam" class="modal fade">
                   <div class="modal-dialog">
@@ -764,8 +739,8 @@ $(document).ready(function() {
                         </div>
                       </div>
                       <div class="modal-footer">
-                        <button class="btn btn-primary" type="button" id="add_team" onclick="storeTeam();" >Save</button>
-                        <button data-dismiss="modal" class="btn btn-default"   type="button">Cancel</button>
+                        <button class="btn btn-primary" type="button" id="team_form" onclick="storeTeam();" >Save</button>
+                        <button data-dismiss="modal" class="btn btn-default" id="team_form"  type="button">Cancel</button>
                       </div>
                     </div>
                     </form>
@@ -898,15 +873,16 @@ function storeTeam(){
 		     var jsonData = encodeURIComponent(con);
 			 var sourceleadUrl = '${sourceleadUrl}';
 			
-			 $("#add_team").attr("disabled", "disabled");
+			 $("#team_form").attr("disabled", "disabled");
 			
 			$.ajax({
 					type : "POST",
 					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
 					success :function(data) { 
+						  /* location.replace(sourceleadUrl+"/team"); */
 						$('#addTeam').modal('hide');
 				      }, 
-		    });  
+		    }); 
 			return true; 
 	   }else{ 
 			return false;
@@ -1113,18 +1089,7 @@ function getTemplateVal(){
 
 </script>
 
-<script type="text/javascript">
- function disableMonths() {
-     $("#minExp").change(function() {
-    	 
-         if ($(this).val() == '25+'){
-             $("#maxExp").attr("disabled", true);
-             $("#maxExp").val("disabled", true);
-         }else
-        	 $("#maxExp").attr("disabled", false); 
-     });
- }
- </script>
+
 
 <script>
 function setTemplateValues(){
@@ -1141,14 +1106,9 @@ function setTemplateValues(){
 		    success: function(data) {
 		    	
 		    	
-		    	if(data != null && data != 'undefined' && data !='' ){ 
+		    	if(data != null && data != 'undefined' && data !='' ){
 		    		
 		    		var json = JSON.parse(data);
-		    		
-		    		if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
-		    			$("#templateId").val(json.id);
-		    		}
-		    		
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
 			    	$("#jobId").val(json.jobId);
@@ -1645,7 +1605,6 @@ function assignMembers() {
 	function flushStoreTeam() { 
 		document.getElementById("team_form").reset();
 		$('#assignTeamDiv').find('p.jquery_form_error_message').remove();
-		document.getElementById("add_team").removeAttribute("disabled");
 	}
 </script>
 
@@ -1864,32 +1823,6 @@ function minMaxExperience(){
     	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");
 		$('#expId').find('p.jquery_form_error_message').remove();
     }
-}
-</script>
-
-<script type="text/javascript">
-function validateJobtitle(){
-var jobName = document.getElementById("jobTitle").value; 
-$('#jobTitleDiv').find('p.jquery_form_error_message').remove();
-var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/validatejobName?${_csrf.parameterName}=${_csrf.token}&jobName="+jobName, 
-	        success: function(data) {
-	        	if(data == "true"){
-	        		  $('#jobTitleDiv').find('p.jquery_form_error_message').remove();
-					  $("input#jobTitle").after("<p class='jquery_form_error_message'>"+jobName+" is Already Existed</span>");
-					  document.getElementById("jobTitle").setAttribute('record-exist','yes');
-					  document.getElementById("jobTitle").setAttribute('record-exist-errorMsg',jobName+' is Already Existed'); 
-	        	}
-	        	else{
-	        		 $('input#jobTitle').removeAttr( "record-exist record-exist-errormsg");
-	        		 $('#jobTitleDiv').find('p.jquery_form_error_message').remove(); 
-	        		 $("#requirement_form" ).addClass('button').val('Save');
-                    $("#requirement_form").removeAttr("disabled");
-	        	}
-	        },
-	    });
 }
 </script>
 
