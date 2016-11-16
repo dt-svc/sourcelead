@@ -520,6 +520,11 @@ $(document).ready(function() {
                   <div class="form-icon">
                     <select class="chosen-select form-control" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
                       <option value="">-- Select Submission Form --</option>
+                      <c:forEach var="report" items="${submissionTempletesList}">
+							 	<c:if test="${report.id == loginOrgLocId}">  
+			                    	<option value="${report.id}" ${report.id  == loginOrgLocId ? 'selected' : ''} >${report.templateName}</option>
+			                    </c:if>  
+						</c:forEach>
                     </select>
                   </div>
                   
