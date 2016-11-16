@@ -383,7 +383,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				User  approverUserId2 =new User();
 				approverUserId2.setId(Long.valueOf(jsonObj.getString("level2Manager")));
 				if(!jsonObj.getString("level2Manager").isEmpty() && approverUserId2 != null && user.getId() != approverUserId2.getId()){
-					sendEmailToProjectManager(projects, user, approverUserId2, loginOrgLocation, employeesList(jsonObj, updatedProjects, approverUserId2, loginOrgLocation, loginOrgCode), loginOrgCode);
+					sendEmailToProjectManager(projects, user, approverUserId2, loginOrgLocation, "", loginOrgCode);
 				}
 			}
 		}
