@@ -131,26 +131,28 @@ public class RequirementController {
 			Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(requirementId));
 			if(maxLevel != null && maxLevel >1){
 				approverMode = "Sequential";
-				for(RequirementApproverHierarchy requirementApproverHierarchy :requirementApproverHierarchyList){
-					 
-					if(requirementApproverHierarchy.getLevel() == 1){
-						sequentialApprover1 = requirementApproverHierarchy.getApproverUserId().getId();
+				if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty()){
+					for(RequirementApproverHierarchy requirementApproverHierarchy :requirementApproverHierarchyList){
+						if(requirementApproverHierarchy.getLevel() == 1){
+							sequentialApprover1 = requirementApproverHierarchy.getApproverUserId().getId();
+						}
+						if(requirementApproverHierarchy.getLevel() == 2){
+							sequentialApprover2 = requirementApproverHierarchy.getApproverUserId().getId();
+						}
 					}
-					if(requirementApproverHierarchy.getLevel() == 2){
-						sequentialApprover2 = requirementApproverHierarchy.getApproverUserId().getId();
-					}
-					
 				}
 			}else{
 				approverMode = "Parallel";
 				int i = 0;
-				for(RequirementApproverHierarchy requirementApproverHierarchy :requirementApproverHierarchyList){
-					if(parallelApproverIds != null && parallelApproverIds != ""){
-						parallelApproverIds =  parallelApproverIds +","+ requirementApproverHierarchy.getApproverUserId().getId().toString();
-					}else{
-						parallelApproverIds =  requirementApproverHierarchy.getApproverUserId().getId().toString();
+				if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty()){
+					for(RequirementApproverHierarchy requirementApproverHierarchy :requirementApproverHierarchyList){
+						if(parallelApproverIds != null && parallelApproverIds != ""){
+							parallelApproverIds =  parallelApproverIds +","+ requirementApproverHierarchy.getApproverUserId().getId().toString();
+						}else{
+							parallelApproverIds =  requirementApproverHierarchy.getApproverUserId().getId().toString();
+						}
+						i++;
 					}
-					i++;
 				}
 			}
 			model.addObject("approverMode",approverMode);
