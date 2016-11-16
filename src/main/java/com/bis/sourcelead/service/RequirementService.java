@@ -39,9 +39,9 @@ public interface RequirementService {
 	
 	public void  approverEmailScenario(User user,User approverUser,Requirement requirement, StringBuilder location,OrgLocations loginOrgLocation) throws Exception;
 
-	public void  approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location) throws Exception;
+	public void  approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location,OrgLocations orgLocations) throws Exception;
 	
-	public void acceptEmailScenario(User loginUser, User approverUser, Requirement requirement) throws Exception;
+	public void acceptEmailScenario(User loginUser, User approverUser, Requirement requirement,OrgLocations orgLocations) throws Exception;
 	
 	public void mailRequirementtoManager(User loginUser, User intiatorUser, Requirement requirement,StringBuilder location) throws Exception;
 	
@@ -69,8 +69,6 @@ public interface RequirementService {
 	public File getExportRequirementFile(List<Requirement> requirementList, String orgName, String exportType)throws Exception;
 
 	public Boolean validateRequirementTitle(String jobName, Long orgLocationId) throws Exception;
-
-
 
 
 	
