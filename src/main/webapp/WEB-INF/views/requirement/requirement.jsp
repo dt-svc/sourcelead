@@ -78,6 +78,32 @@ bottom:-14px;
 </style>
 
 
+<script>
+$(document).ready(function() {
+	var requirementAssignedIds ='${requirementAssignedIds}';
+	if (requirementAssignedIds != null && requirementAssignedIds !=  '' && requirementAssignedIds !='undefined')
+	{
+		
+		if(requirementAssignedIds != null && requirementAssignedIds != 'undefined' && requirementAssignedIds != ''){
+			var result = "";
+			var requirementAssignedToIds = [];
+			requirementAssignedToIds = requirementAssignedIds.split("&");
+			var count = 1;
+			
+			for (i=0;i < requirementAssignedToIds.length;i++)
+	        {
+	        	 result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+requirementAssignedToIds[i]+"' />";
+	        	 count++;
+	        }
+			result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
+			$("#assignedToSavingDiv").empty();
+			$("#assignedToSavingDiv").append(result); 
+			assignedToValidation();
+		}	
+	} 
+});
+</script>
+
 <script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
@@ -100,7 +126,7 @@ bottom:-14px;
 		});
 </script>
 
- <script>
+<script>
 $(document).ready(function () {
    /*  var selectedUserRole = document.getElementById('SelectedUserRole').value; */
     var approverMode = '${approverMode}';
@@ -144,30 +170,6 @@ $(document).ready(function () {
 </script>
     
 
-<script>
-$(document).ready(function() {
-	if ($('#requirementAssignedIds').length)
-	{
-		var requirementAssignedIds ='${requirementAssignedIds}';
-		if(requirementAssignedIds != null && requirementAssignedIds != 'undefined' && requirementAssignedIds != ''){
-			var result = "";
-			var requirementAssignedToIds = [];
-			requirementAssignedToIds = requirementAssignedIds.split("&");
-			var count = 1;
-			
-			for (i=0;i < requirementAssignedToIds.length;i++)
-	        {
-	        	 result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+requirementAssignedToIds[i]+"' />";
-	        	 count++;
-	        }
-			result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
-			$("#assignedToSavingDiv").empty();
-			$("#assignedToSavingDiv").append(result); 
-			assignedToValidation();
-		}	
-	} 
-});
-</script>
 <!-- Content Area -->
 <section class="content-wraper">
   <section class="content-header clearfix">
@@ -497,8 +499,6 @@ $(document).ready(function() {
 					     </c:forEach>
                     </select>
                     <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i> 
-                 	<div id="addContact" class="modal fade" role="dialog">
-                    </div>
                  </div>
                   
                 </div>

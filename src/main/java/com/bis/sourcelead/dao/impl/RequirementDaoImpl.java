@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.User;
@@ -435,12 +436,12 @@ public class RequirementDaoImpl implements RequirementDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer validateJobId(Long id) throws Exception {
+	public Integer validateJobId(Long id,Long orgLocationId) throws Exception {
 	Session session = this.sessionFactory.getCurrentSession();
 		
-		String query ="select count(*)from Requirement requirement where requirement.jobId = :id";
+		String query ="select count(*)from Requirement requirement where requirement.jobId = :id and requirement.orgLocationId.id =:orgLocationId";
 		
-		List<Long> jobCount =   session.createQuery(query.toString()).setLong("id", id).list();
+		List<Long> jobCount =   session.createQuery(query.toString()).setLong("id", id).setLong("orgLocationId", orgLocationId).list();
 			Integer count = 0;
 			if(jobCount != null && !jobCount.isEmpty()){
 					count = jobCount.get(0).intValue();

@@ -175,6 +175,14 @@ result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange
 									result = result +"<option value='OPEN'>OPEN</option>";
 									result = result +"<option value='ONHOLD'>ONHOLD</option>";
 									result = result +"<option value='CANCEL'>CANCEL</option>";
+									
+								}else if(opt.requirementSubmissionStatus == "APPROVED"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									
+								}
+								else if(opt.requirementSubmissionStatus == "REJECTED"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									
 								}
 								
 								else if(opt.requirementSubmissionStatus == "SUBMITTED"){
