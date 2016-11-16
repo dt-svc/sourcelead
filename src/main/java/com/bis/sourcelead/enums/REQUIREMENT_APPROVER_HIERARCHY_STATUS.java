@@ -5,6 +5,8 @@ public enum REQUIREMENT_APPROVER_HIERARCHY_STATUS {
 	NEW("new"),
 	SUBMITTEDFORAPPROVAL("submitted for approval"),
 	APPROVED("approved"),
+	OPEN("open"),
+	DRAFT("draft"),
 	REJECTED("rejected");
 	
     private String value;

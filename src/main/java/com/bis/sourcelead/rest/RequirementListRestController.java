@@ -310,6 +310,11 @@ public class RequirementListRestController {
 					       if(assing.getTeamId() != null ){
 					    	   ra.setTeamName(assing.getTeamId().getName());
 					       }
+					       
+					       if(assing.getAssignUserId()  != null){
+					    	   Integer applicantCount =   requirementSubmissionService.getApplicantCountByrequirementIdandAssignedUsercode(Long.parseLong(requirementId), assing.getAssignUserId().getUserCode());
+						       ra.setApplicantCount(applicantCount.toString());
+					       }
 					       requirementAssignToList.add(ra);
 				      }
 			       }

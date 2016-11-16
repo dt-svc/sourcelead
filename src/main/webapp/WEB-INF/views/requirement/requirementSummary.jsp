@@ -1286,7 +1286,7 @@ function assignedMemberList(requirementId){
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
-						    result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
+						    result = result +'         <td><div class="tbldata-dotdot-sm">'+report.applicantCount+'</div></td>';
 						    result = result +'         </tr>';
 			   				}
 						    /* result = result +'         </tbody>';
