@@ -9,13 +9,18 @@
 <link rel="stylesheet" href="resources/css/jquery-ui.css" type="text/css" >
 
 
+
+
+
+
+
+
 <!-- For add New Applicant -->
 <script>
 function getAddApplicant(requirementId){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
 	generateOrgSubmissionForm(sourceleadUrl,requirementId)
-	var candidatesList ='${candidatesList}';
 	var result = "";
 	result = result + '<form id="addApplicant_form" name="addApplicant_form" enctype="multipart/form-data" method="post">';
 	result = result + '<h3>Add Applicant</h3>';
@@ -28,9 +33,6 @@ function getAddApplicant(requirementId){
 	result = result + '<label>Select Candiate</label>';
 	result = result + '<select  onchange="getCandidateResumes();" onclick="getCandidateDetails();" name="candidateId" id="candidateId" field-name="Candidate" class="form-control  block">';
 	result = result + '<option value="">--Select Candidate--</option>';
-	result = result + '<c:forEach var="option" items='${candidatesList}'>';
-	result = result + '<option value="'+${option.id}+'">${option.firstName} ${option.lastName}</option>';
-	result = result + '</c:forEach>';
 	result = result + '</select>';
 	result = result + '</div>';		
 	result = result + '<div id="orConditionDiv" class="text-center text-info col-md-2" style="display: block;">';
@@ -69,7 +71,7 @@ function getAddApplicant(requirementId){
 	result = result + '</div>';  
 	result = result + '</form>';
 	 
-    
+	getCandidatesList(requirementId);
 	
 	$("#addApplicantDiv").empty();
 	$("#addApplicantDiv").append(result);
@@ -81,6 +83,39 @@ function getAddApplicant(requirementId){
 }
 </script>
 
+
+
+<script type="text/javascript">
+ function getCandidatesList(requirementId) {
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(requirementId != null && requirementId != "" && requirementId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getCandidatesList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Candidate --</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#candidateId").empty();
+			        $("#candidateId").append(output);
+			        $('#candidateId').trigger("chosen:updated");
+		        },
+		    });
+	 }else{
+		 var output = "";
+     	 output = output + "<option value=''>-- Select Candidate --</option>"; 
+     	 $("#candidateId").empty();
+	     $("#candidateId").append(output);
+	     $('#candidateId').trigger("chosen:updated");
+	 }
+	
+ }
+</script>
 
 <!-- For add New Applicant -->
 <script>
@@ -179,13 +214,11 @@ $('body').on('submit', '#addApplicant_form', function(e){
  	        dataType : 'json',
  	    	url : sourceleadUrl+"/saveAddApplicant?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
-	        	/* $(".new_side_wrap").removeClass("new_side_wrap_active");
+	        	 $(".new_side_wrap").removeClass("new_side_wrap_active");
 	    		$(".side_mask").fadeOut(200);
 	    		$("body").css('overflow-y', 'auto');
-	    		requirementPipeline(requirementId); */
-	        	 if((result == 'success')){
-	        		location.replace(sourceleadUrl+"/requirementSummary?requirementId="+requirementId); 
-		        }  
+	    		requirementPipeline(requirementId); 
+	        	
 	        },
 	    }); 
       return true; 
@@ -239,6 +272,8 @@ $('body').on('submit', '#addApplicant_form', function(e){
 
 <script type="text/javascript">
  function getCandidateResumes() {
+	 $("#save_button").removeAttr("disabled");
+	 $('.jquery_form_error_message').remove();
 	 var candidateId = document.getElementById("candidateId").value
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
@@ -247,7 +282,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 		 document.getElementById("browseDiv").style.display="none";
 		 document.getElementById("orConditionDiv").style.display="none";
 		 $("#uploadFile").removeAttr("data-validation");
-		 $("#uploadFile").removeAttr("data-validation");
+		 $("#uploadFile").val('');
 		 $('.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "POST",

@@ -314,29 +314,73 @@ public class ClientRestController {
 	
 	@RequestMapping(value = "/validateTemplateName", method = RequestMethod.POST)
 	@ResponseBody String validateTemplateName(@RequestParam(value = "clientLocationId", required = false) Long clientLocationId,
-			@RequestParam(value = "templateName", required = false) String templateName) throws Exception {
+			@RequestParam(value = "templateName", required = false) String templateName,
+			@RequestParam(value = "templateId", required = false) String templateId) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
-		SubmissionTemplate submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateName(clientLocationId, orgLocations.getId(), templateName);
-		if(null != submissiontTemplate){
-			return "invalid";
-		}else{
-			return "valid";
+		String result = null;
+		SubmissionTemplate submissiontTemplate = null;
+		
+		if(!isNullOrEmpty(templateId)){
+			submissiontTemplate  = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
+			if(submissiontTemplate.getTemplateName().equalsIgnoreCase(templateName)){
+				result = "valid";
+			}else{
+				submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateName(clientLocationId, orgLocations.getId(), templateName);
+				if(null != submissiontTemplate){
+					result = "invalid";
+				}else{
+					result = "valid";
+				}
+			}
 		}
+		
+		else{
+			submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateName(clientLocationId, orgLocations.getId(), templateName);
+			if(null != submissiontTemplate){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+		return result;
 		
 	}
 	
 
 	@RequestMapping(value = "/validateTemplateNameByOrg", method = RequestMethod.POST)
-	@ResponseBody String validateTemplateNameByOrg(@RequestParam(value = "templateName", required = false) String templateName) throws Exception {
+	@ResponseBody String validateTemplateNameByOrg(@RequestParam(value = "templateName", required = false) String templateName,
+			@RequestParam(value = "templateId", required = false) String templateId) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
-		SubmissionTemplate submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(orgLocations.getId(), templateName);
-		if(null != submissiontTemplate){
-			return "invalid";
-		}else{
-			return "valid";
+		SubmissionTemplate submissiontTemplate = null;
+		String result = null;
+		
+		if(!isNullOrEmpty(templateId)){
+			submissiontTemplate  = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
+			if(submissiontTemplate.getTemplateName().equalsIgnoreCase(templateName)){
+				result = "valid";
+			}else{
+				submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(orgLocations.getId(), templateName);
+				if(null != submissiontTemplate){
+					result = "invalid";
+				}else{
+					result = "valid";
+				}
+			}
 		}
+		
+		else{
+			submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(orgLocations.getId(), templateName);
+			if(null != submissiontTemplate){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+		return result;
 		
 	}
 	
