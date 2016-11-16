@@ -43,9 +43,9 @@ public interface RequirementService {
 	
 	public void acceptEmailScenario(User loginUser, User approverUser, Requirement requirement,OrgLocations orgLocations) throws Exception;
 	
-	public void mailRequirementtoManager(User loginUser, User intiatorUser, Requirement requirement,StringBuilder location) throws Exception;
+	public void mailRequirementtoManager(User loginUser, User intiatorUser, Requirement requirement,StringBuilder location,OrgLocations loginOrgLocation) throws Exception;
 	
-	public void AssignToTeamMembersEmail(User loginUser, User managerUser, Requirement requirement,StringBuilder location) throws Exception;
+	public void AssignToTeamMembersEmail(User loginUser, User managerUser, Requirement requirement,StringBuilder location,OrgLocations orgLocations) throws Exception;
 
 	void rejectedEmailScenario(User loginUser, User initiatorUser, Requirement requirement,
 			StringBuilder location,String rejectedReason) throws Exception;
@@ -70,6 +70,4 @@ public interface RequirementService {
 
 	public Boolean validateRequirementTitle(String jobName, Long orgLocationId) throws Exception;
 
-
-	
 }
