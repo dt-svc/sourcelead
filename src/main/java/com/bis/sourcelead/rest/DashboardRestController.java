@@ -410,7 +410,7 @@ public class DashboardRestController {
 				requirementApproverHierarchy.setRejectedReason(reason);
 				
 				User initiatorUser = userService.getUserByUserCode(requirement.getCreatedBy()); 
-				requirementService.rejectedEmailScenario(loginUser, initiatorUser, requirement,null,reason); 
+				requirementService.rejectedEmailScenario(loginUser, initiatorUser, requirement,null,reason,orgLocation); 
 			}
 			requirementService.addRequirement(requirement);
 			requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);

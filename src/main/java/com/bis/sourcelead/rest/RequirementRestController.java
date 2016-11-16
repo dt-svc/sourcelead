@@ -207,7 +207,7 @@ public class RequirementRestController {
 					    // Email for Reject requirement  from approver level Two to Initiator.
 
 		    		    User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
-		    			requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason); 
+		    			requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation); 
 				   }else{
 					    requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 					    requirementApproverHierarchy.setUpdatedBy(loginUser.getUserCode());
@@ -217,7 +217,7 @@ public class RequirementRestController {
 					    
 					    // Email for Reject requirement  from approver level One to Initiator.
 					    User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
-		    			requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason); 
+		    			requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation); 
 						//User approverUser = userService.getUserById(requirementApproverHierarchy.getApproverUserId().getId());
 						//requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null,orgLocation);
 				   }
