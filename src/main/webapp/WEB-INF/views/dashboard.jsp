@@ -250,10 +250,13 @@ float: none !important;
 	    </section>
 	    
 	    <div class="clearfix row mb">
-	    	 <jsp:include page="dashboardTimesheets.jsp"></jsp:include> 
-	     	 <jsp:include page="dashboardRequirement.jsp"></jsp:include>
+	    <c:forEach var="report" items="${SourceLeadWeb_tabsList}">  
+			<c:if test = "${report.tabName == 'Timesheets'}">      
+			   <jsp:include page="dashboardTimesheets.jsp"></jsp:include>  
+			</c:if>
+		 </c:forEach>
+		 <jsp:include page="dashboardRequirement.jsp"></jsp:include> 
 	      	 <%-- <jsp:include page="dashboardTasks.jsp"></jsp:include> --%>
-	      	 
 	    </div>
     
     	<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include>
