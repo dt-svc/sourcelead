@@ -373,18 +373,19 @@ public class ProjectsServiceImpl implements ProjectsService{
 				
 			}
 			
+
 			/*
-			 * As per the request  by the Ba as of now only level2 manager mailing is Blocked
+			 * This is Mailing for Level2 Manager who was assigned to Project
+			 * 
 			 */
 			
-			
-			/*if(jsonObj.has("level2Manager") && jsonObj.getString("level2Manager") != null && !jsonObj.getString("level2Manager").isEmpty()){
+			if(jsonObj.has("level2Manager") && jsonObj.getString("level2Manager") != null && !jsonObj.getString("level2Manager").isEmpty()){
 				User  approverUserId2 =new User();
 				approverUserId2.setId(Long.valueOf(jsonObj.getString("level2Manager")));
 				if(!jsonObj.getString("level2Manager").isEmpty() && approverUserId2 != null && user.getId() != approverUserId2.getId()){
 					sendEmailToProjectManager(projects, user, approverUserId2, loginOrgLocation, employeesList(jsonObj, updatedProjects, approverUserId2, loginOrgLocation, loginOrgCode), loginOrgCode);
 				}
-			}*/
+			}
 		}
 		 
 	  SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Successfully you have created a project");
