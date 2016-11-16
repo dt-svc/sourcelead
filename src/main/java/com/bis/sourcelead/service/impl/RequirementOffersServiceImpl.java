@@ -368,5 +368,172 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             
             
     }
+	
+	
+	
+	@Override
+	public void offerAcceptEmailScenario(User loginUser,Requirement requirement,RequirementOffers requirementOffers,RequirementSubmission requirementSubmission)
+			throws Exception {
+
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(loginUser.getFirstName());
+		emailMessage.setLastName(loginUser.getLastName());
+		emailMessage.setToEmail(requirement.getSpocId().getSpocUser().getEmail());
+		emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+			
+			if(requirementSubmission.getCandidateName() != null && !"".equalsIgnoreCase(requirementSubmission.getCandidateName())){
+				globalVarsMap.put("ApplicantName", requirementSubmission.getCandidateName());	
+			}
+			else{
+				globalVarsMap.put("ApplicantName", "---");	
+			}
+			if(requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle())){
+				globalVarsMap.put("requirementName", requirement.getJobTitle());
+			}
+			else{
+				globalVarsMap.put("requirementName", "---");
+
+			}
+			if(requirementOffers.getDateOfJoining() != null ){
+			requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));	
+			globalVarsMap.put("JoinDate", requirementOffers.getDateOfJoiningStr());
+			}
+			else{
+			globalVarsMap.put("JoinDate", "---");
+			}
+			if(requirementOffers.getAmount() != null && !"".equalsIgnoreCase(requirementOffers.getAmount())){
+			globalVarsMap.put("Rate",requirementOffers.getAmount() );
+			}
+			else{
+			globalVarsMap.put("Rate","---" );
+	
+			}
+			if(requirement.getSpocId().getSpocUser().getFirstName() != null && !"".equalsIgnoreCase(requirement.getSpocId().getSpocUser().getFirstName())){
+			globalVarsMap.put("ClientContactName", requirement.getSpocId().getSpocUser().getFirstName()+ " " +requirement.getSpocId().getSpocUser().getLastName());
+
+			}
+			else{
+			globalVarsMap.put("ClientContactName", "---");
+	
+			}
+			globalVarsMap.put("VendorContact",loginUser.getFirstName()+" "+loginUser.getLastName() );
+		
+		
+		// setting the Recipient information
+		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		EmailRecipient emailRecipient = new EmailRecipient();
+		emailRecipient.setEmail(emailMessage.getToEmail());
+		emailRecipient.setName(emailMessage.getFirstName() + " " + emailMessage.getLastName());
+		emailRecipientList.add(emailRecipient);
+
+		// getting the current EmailScenario by EmailScenario unique name and
+		// entity type
+		EmailScenario emailScenario = emailScenarioService
+				.getEmailScenarioByUniqueName(Constants.OFFERACCEPT_EMAIL, Constants.ENTITY_TYPE_EMAIL);
+
+		// covert subject,body and signature
+		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
+		String url = "";
+
+		// construct HTML template using required data
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
+				signature, url, new Org());
+		emailMessage.setSubject(subject);
+		emailMessage.setMessageBody(emailTemplate);
+
+		// calling the sendEmail method of emailScenerioUtil
+		emailScenerioUtil.sendEmail(emailMessage, emailRecipientList, new ArrayList<EmailAttachment>());
+	}
+	
+	@Override
+	public void offerRejectEmailScenario(User loginUser,Requirement requirement,RequirementOffers requirementOffers,RequirementSubmission requirementSubmission)
+			throws Exception {
+
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(loginUser.getFirstName());
+		emailMessage.setLastName(loginUser.getLastName());
+		emailMessage.setToEmail(requirement.getSpocId().getSpocUser().getEmail());
+		emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		emailMessage.setFromName(loginUser.getFirstName()+""+loginUser.getLastName());
+
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		
+		if(requirementSubmission.getCandidateName() != null && !"".equalsIgnoreCase(requirementSubmission.getCandidateName())){
+			globalVarsMap.put("ApplicantName", requirementSubmission.getCandidateName());	
+		}
+		else{
+			globalVarsMap.put("ApplicantName", "---");	
+		}
+		if(requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle())){
+			globalVarsMap.put("requirementName", requirement.getJobTitle());
+		}
+		else{
+			globalVarsMap.put("requirementName", "---");
+
+		}
+		if(requirementOffers.getDateOfJoining() != null ){
+		requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));	
+		globalVarsMap.put("JoinDate", requirementOffers.getDateOfJoiningStr());
+		}
+		else{
+		globalVarsMap.put("JoinDate", "---");
+		}
+		if(requirementOffers.getAmount() != null && !"".equalsIgnoreCase(requirementOffers.getAmount())){
+		globalVarsMap.put("Rate",requirementOffers.getAmount() );
+		}
+		else{
+		globalVarsMap.put("Rate","---" );
+
+		}
+		if(requirement.getSpocId().getSpocUser().getFirstName() != null && !"".equalsIgnoreCase(requirement.getSpocId().getSpocUser().getFirstName())){
+			globalVarsMap.put("ClientContactName", requirement.getSpocId().getSpocUser().getFirstName()+ " " +requirement.getSpocId().getSpocUser().getLastName());
+
+			}
+			else{
+			globalVarsMap.put("ClientContactName", "---");
+	
+			}		
+		globalVarsMap.put("VendorContact", loginUser.getFirstName()+" "+loginUser.getLastName());
+		
+		
+		// setting the Recipient information
+		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		EmailRecipient emailRecipient = new EmailRecipient();
+		emailRecipient.setEmail(emailMessage.getToEmail());
+		emailRecipient.setName(emailMessage.getFirstName() + " " + emailMessage.getLastName());
+		emailRecipientList.add(emailRecipient);
+
+		// getting the current EmailScenario by EmailScenario unique name and
+		// entity type
+		EmailScenario emailScenario = emailScenarioService
+				.getEmailScenarioByUniqueName(Constants.OFFERREJECT_EMAIL, Constants.ENTITY_TYPE_EMAIL);
+
+		// covert subject,body and signature
+		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
+		String url = "";
+
+		// construct HTML template using required data
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
+				signature, url, new Org());
+		emailMessage.setSubject(subject);
+		emailMessage.setMessageBody(emailTemplate);
+
+		// calling the sendEmail method of emailScenerioUtil
+		emailScenerioUtil.sendEmail(emailMessage, emailRecipientList, new ArrayList<EmailAttachment>());
+	}
+
+
+
+
+
 
 }

@@ -79,6 +79,17 @@ overflow-y:inherit !important;
 }
 .require_wrap_table {
 overflow-y:visible !important;
+
+.require_wrap_details_cta.require_uploadfile span{
+width:auto !important;
+}
+.require_wrap_details_cta.require_uploadfile a {
+margin-left:10px;
+float: left !important;
+}
+.require_wrap_details_cta.require_uploadfile .glyphicon-download-alt {
+color:blue;
+
 }
 </style>
  
@@ -396,7 +407,7 @@ function sideBar(requirementId){
 				        result = result+'<ul class="list-unstyled can-perdt">';
 				        if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined' && json.minExp != null && json.minExp != '' && json.minExp != 'undefined')
 				        	{
-				       	result = result+'<li><i class="fa fa-black-tie"></i><span>Experience: '+json.minExp+'-'+json.maxExp+' years</span></li>';
+				       	result = result+'<li><i class="fa fa-black-tie"></i><span>Experience: '+json.minExp+'Years'+json.maxExp+' Months</span></li>';
 				        	}
 					   
 				        else{
@@ -501,8 +512,12 @@ function sideBar(requirementId){
 					    result = result+'  <div class="project_side_wrap_inn_tabs">';
 					    result = result+'    <ul class="project-tabs-menu">';
 					    result = result+'      <li class="current"><a href="#tab-1" onclick="requirementDetails('+requirementId+');">Details</a></li>';
-					    result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+');">Pipeline</a></li>';
-					    result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
+					   
+					    if(json.requirementSubmissionStatus != 'SUBMITTED'){
+					    	result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+');">Pipeline</a></li>';
+					    	 result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
+					    }
+					   
 					    result = result+'      <div class="clearfix"></div>';
 					    result = result+'    </ul>';
 					    result = result+'    <div class="project_tabs">';
@@ -655,7 +670,7 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-					            result = result +'     <div class="require_wrap_details_cta"> <b>Attachment:</b> <span>'+json.fileName+'</span>';
+					            	result = result +'<div class="require_wrap_details_cta require_uploadfile"><b>Attachment:</b> <span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
 					            }
 					            else{
 					            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
@@ -1237,7 +1252,7 @@ function assignedMemberList(requirementId){
             		 }
             		 else{ 
 							var result = '';
-							result = result +'     <div class="heightScroll mt10 mb">';
+							 result = result +'     <div class="heightScroll mt10 mb">'; 
 						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
 						    result = result +'         <thead>';
 						    result = result +'         <tr>';
@@ -1267,11 +1282,11 @@ function assignedMemberList(requirementId){
 						    result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
 						    result = result +'         </tr>';
 			   				}
-						    result = result +'         </tbody>';
-						    result = result +'         </table>';
-						    result = result +'     </div>';
-						    result = result +'     </div>';
-						    result = result +' </div> ';
+						    /* result = result +'         </tbody>';
+						    result = result +'         </table>'; */
+						    /* result = result +'     </div>';
+						    result = result +'     </div>'; */
+						     result = result +' </div> '; 
 						    
 						    $("#assignedMemberList").empty();
 						    $("#assignedMemberList").append(result);
@@ -1372,7 +1387,7 @@ function requirementRecommendations(requirementId){
 		    if(report.isCandidateAdedd == true){
 		    	result = result +'<input type="button" value="Added" class="btn btn-primary btn-sm">';
 		    }else{
-		    	result = result +'<input type="button" value="Add" class="btn btn-primary btn-sm">';
+		    	result = result +'<input type="button" value="--" class="btn btn-primary btn-sm">';
 		    }
 		    
 		   /*  result = result +'<select>';

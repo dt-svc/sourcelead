@@ -436,8 +436,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 		String query ="select count(*)from Requirement requirement where requirement.jobId = :id";
 		
-		List<Long> jobCount =   session.createQuery(query.toString()).setLong("id", id)
-        										.list();
+		List<Long> jobCount =   session.createQuery(query.toString()).setLong("id", id).list();
 			Integer count = 0;
 			if(jobCount != null && !jobCount.isEmpty()){
 					count = jobCount.get(0).intValue();
@@ -461,6 +460,23 @@ public class RequirementDaoImpl implements RequirementDao {
 			requirement = (Requirement) requirementList.iterator().next();
 		}
 		return requirement;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateRequirementTitle(String jobName,Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query ="from Requirement requirement where requirement.jobTitle = :jobName and requirement.orgLocationId.id =:orgLocationId";
+		List<Requirement> requirementList = session.createQuery(query).setString("jobName", jobName).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		if(requirementList !=null && requirementList.size() >0){
+			flag = true;
+			return flag;
+		}else{
+			return flag;
+		}
+			
+		
 	}
 	
 

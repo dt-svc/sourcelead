@@ -886,18 +886,17 @@ function addAttachment(){
 </script>
 <script>
 function exportType(){
-	 $("#export-pop").click(function(){
-         $(".export_pop").slideToggle(200);
- });
+	$(".export_pop").toggle();
+	 /* $("#export-pop").click(function(){
+         $(".export_pop").slideToggle();
+ }); */
 $("html").click(function() {
- $(".export_pop").slideUp(200);
+ $(".export_pop").hide();
 });
 $(".export_pop, #export-pop").click(function(e) {
  e.stopPropagation();
 });  
 }
-
-
 </script>
 
 <script>
