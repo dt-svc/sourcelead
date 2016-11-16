@@ -547,7 +547,8 @@ $(document).ready(function() {
 							 	<c:if test="${report.id == loginOrgLocId}">  
 			                    	<option value="${report.id}" ${report.id  == loginOrgLocId ? 'selected' : ''} >${report.templateName}</option>
 			                    </c:if>  
-						</c:forEach>                    </select>
+						</c:forEach>
+						</select>
                   </div>
                   
                 </div>
