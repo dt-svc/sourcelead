@@ -133,7 +133,7 @@ public class CandidateListRestController {
 			Org loginOrgCode = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			 
 			Candidate can = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),loginOrgLocation.getId());
-			
+			logger.info("=================================="+can.getCountry());
 			String skillsList = "";
 			//Set<CandidateSkills> candidateSkills = can.getCandidateSkills();
 			List<CandidateSkills> candidateSkills = candidateSkillsService.getCandidateSkillsByCandidateId(candidateId);
