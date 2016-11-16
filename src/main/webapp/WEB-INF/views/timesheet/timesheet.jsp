@@ -910,8 +910,6 @@ function exportPdf(){
 function exportExcel(startDate){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var navigation = "left";
-	alert("navigation "+navigation);
-	alert("startdate "+startDate);
 	 window.location.href = sourceleadUrl+"/exportTimeShhet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate;
 }
 </script>

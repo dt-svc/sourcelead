@@ -75,5 +75,7 @@ public interface UserRoleService {
 	public File getPdfFile(List<UserRole> activeList,
 			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
 			String userState, String orgName) throws Exception;
+
+	 UserRole getUserRoleByUserId(Long userId)throws Exception;
 	
 }

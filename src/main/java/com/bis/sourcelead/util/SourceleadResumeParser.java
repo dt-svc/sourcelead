@@ -1,41 +1,37 @@
 package com.bis.sourcelead.util;
 
-import static gate.Utils.stringFor;
-
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.xml.sax.SAXException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.UserLoginLogoutSessionService;
+import com.bis.sourcelead.service.impl.LookUpDataServiceImpl;
 import com.google.i18n.phonenumbers.PhoneNumberMatch;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.rometools.utils.Strings;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
-
-import gate.Annotation;
-import gate.AnnotationSet;
-import gate.Corpus;
-import gate.Document;
-import gate.Factory;
-import gate.FeatureMap;
-import gate.util.GateException;
 public class SourceleadResumeParser {
 	
 /**@param
@@ -46,8 +42,16 @@ public class SourceleadResumeParser {
  * @throws GateException 
  *  @date: 17-October-2016
  */
+	@Configuration
+	static class LookUpDataServiceContextConfiguration {
+		@Bean
+		public LookUpDataService lookUpDataService() {
+			return new LookUpDataServiceImpl();
+		}
+	}
+	
 public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest request)
-				throws IOException, SAXException, TikaException, GateException {
+				throws Exception {
 				
     	    BodyContentHandler htmlHandler = new BodyContentHandler();
     	    ByteArrayInputStream stream = new ByteArrayInputStream(source);
@@ -69,132 +73,42 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 			jsonUtil.setEmail(emailFinderFromParsedTextFile(parsedString));
 			jsonUtil.setPhoneNumbers(phoneNumberFinderFromParsedTextFile(parsedString));
 			
-			JSONObject jObject = loadGateAndAnnie(parsedString,request);
-			String skills = "";
-			if(jObject != null && !jObject.isEmpty()){
-				JSONArray outerArr = (JSONArray)jObject.get("skills");
-				if(outerArr != null && !outerArr.isEmpty()){
-					for (int i = 0; i < outerArr.size(); i++) {
-						JSONObject innerObj = (JSONObject) outerArr.get(i);
-						if(innerObj != null && !innerObj.isEmpty()){
-							Iterator x = innerObj.keySet().iterator();
-							while (x.hasNext()){
-							    String key = (String) x.next();
-							    String outerKeyObj = (String) innerObj.get(key);
-							    Boolean semicolonExists = outerKeyObj.contains(":");
-							    outerKeyObj = outerKeyObj.replaceAll(",,", ",");
-							    outerKeyObj = outerKeyObj.replaceAll(":,", "");
-							    //System.out.println("skills>>>>>>>>>>>>>>"+outerKeyObj);
-								String[] totalStrings = outerKeyObj.split(System.getProperty("line.separator"));
-								if(totalStrings != null && totalStrings.length > 0){
-									
-									for(String skillSeperator :totalStrings){
-										String[] arr = skillSeperator.split(":");
-										if(arr != null && arr.length>1){
-											if(StringUtils.isNotEmpty(arr[1])  && arr[1] !=":"){
-												if(StringUtils.isEmpty(skills)){
-													skills = skills+(arr[1].replaceAll(":", "").trim());
-												}
-												else if(!skills.contains(arr[1])){
-													skills= skills+(",");
-													skills= skills+(arr[1].trim());
-												}
-											}
-										}
-										else{
-											arr = skillSeperator.split("\\t");
-											if(arr != null && arr.length>1){
-												if(StringUtils.isNotEmpty(arr[1]) && arr[1] !=":"){
-													if(StringUtils.isEmpty(skills)){
-														skills= skills+(arr[1].trim());
-													}
-													else if(!skills.contains(arr[1])){
-														skills= skills+(",");
-														skills= skills+(arr[1].trim());
-													}
-												}
-											}
-											else if(arr != null && arr.length>0 && !semicolonExists){
-												if(StringUtils.isNotEmpty(arr[0])  && arr[0] !=":" ){
-													if(StringUtils.isEmpty(skills)){
-														skills= skills+(arr[0].trim());
-													}
-													else if(!skills.contains(arr[0])){
-														skills= skills+(",");
-														skills= skills+(arr[0].trim());
-													} 
-												}
-											}
-										}
-										
-									}
-								}
-								
-							}
-						}
-					}
-				}
-				
-			}
-			if(skills != null){
-				jsonUtil.setSkills(skills.toString().replaceAll("\\/", " and ").replaceAll("[^a-zA-Z0-9\\.\\#\\,\\/\\s\\&\\+\\(\\)]", ""));
+			HashSet<String> skillsList = skillFinderFromParsedTextFile(parsedString,request);
+			if(skillsList != null && !skillsList.isEmpty()){
+				String skills = String.join(", ", skillsList);
+				jsonUtil.setSkills(skills);
 			}
 		    return toJSON(jsonUtil);
    }
 
-
-	public static JSONObject loadGateAndAnnie(String paramString,HttpServletRequest request) throws GateException,IOException {
-		Annie annie = (Annie) request.getServletContext().getAttribute("Annie");
-		Corpus corpus = Factory.newCorpus("Annie corpus");
-		FeatureMap params = Factory.newFeatureMap();
-		params.put("stringContent", paramString);
-		Document resume = (Document) Factory.createResource(
-			"gate.corpora.DocumentImpl", params);
-		corpus.add(resume);
-		annie.setCorpus(corpus);
-		annie.execute();
-		return parseResumeContentJsonForm(corpus,paramString);
-	} 
-	@SuppressWarnings("unchecked")
-	public static JSONObject parseResumeContentJsonForm(Corpus corpus,String paramString){
-		Iterator<Document> iter = corpus.iterator();
-		JSONObject parsedJSON = new JSONObject();
-
-		if (iter.hasNext()) { 
-			JSONObject profileJSON = new JSONObject();
-			Document doc = (Document) iter.next();
-			AnnotationSet defaultAnnotSet = doc.getAnnotations();
-
-			AnnotationSet curAnnSet;
-			Iterator it;
-			Annotation currAnnot;
-			// skills
-			String[] otherSections = new String[] { "skills"};
-			for (String otherSection : otherSections) {
-				curAnnSet = defaultAnnotSet.get(otherSection);
-				it = curAnnSet.iterator();
-				JSONArray subSections = new JSONArray();
-				while (it.hasNext()) {
-					JSONObject subSection = new JSONObject();
-					currAnnot = (Annotation) it.next();
-					String key = (String) currAnnot.getFeatures().get(
-							"sectionHeading");
-					String value = stringFor(doc, currAnnot);
-					if (!StringUtils.isBlank(key)
-							&& !StringUtils.isBlank(value)) {
-						subSection.put(key, value);
-					}
-					if (!subSection.isEmpty()) {
-						subSections.add(subSection);
-					}
-				}
-				if (!subSections.isEmpty()) {
-					parsedJSON.put(otherSection, subSections);
-				}
-			}
-		}
-		return parsedJSON;
-	}
+   /**
+	 * Skill finder from parsed text file
+	 * Here we used java regular expression logic for resolving name from text file 
+ * @throws Exception 
+	 */  
+  private  HashSet<String> skillFinderFromParsedTextFile(String parsedString,HttpServletRequest request) throws Exception{
+	  String[] totalLines = parsedString.split(System.getProperty("line.separator"));
+	  HashSet<String> skills = new HashSet<String>();
+	  HashSet<String> duplicateSkills = new HashSet<String>();
+	  HttpSession session = request.getSession();
+		ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(session.getServletContext());
+		LookUpDataService lookUpDataService = (LookUpDataService) ctx.getBean("lookUpDataService");
+	    List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+		for(String sLine : totalLines) 
+		{
+		    for(String searchWord: skillsList)
+		    {
+		    	Matcher skillMatcher = Pattern.compile("\\b"+searchWord+"\\b",Pattern.CASE_INSENSITIVE).matcher(sLine);
+		    	  while(skillMatcher.find()){
+		    		 if(duplicateSkills.add(skillMatcher.group().toUpperCase())){
+		    			  skills.add(skillMatcher.group());
+		    		 }
+		    	  }
+		    }
+		 }
+		return skills;
+     }
+	
     /**
 	 * Name finder from parsed text file
 	 * Here we used java regular expression logic for resolving name from text file 
