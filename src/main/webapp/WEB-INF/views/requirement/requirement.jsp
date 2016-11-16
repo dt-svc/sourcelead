@@ -340,7 +340,7 @@ $(document).ready(function() {
           <div class="form-group">
 				<label class="col-md-3">Country</label>
 				<div class="col-md-9">
-				 <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country"  >
+				 <select class="chosen-select form-control select-bg" name="countryReq" id="countryReq" field-name="Country"  >
                  </select>
 				</div>
 		</div>
@@ -956,18 +956,18 @@ function getAllCountries(){
     	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
-        	$('#country').empty();
-        	$('#country').append('<option value="">---select---</option>');
+        	$('#countryReq').empty();
+        	$('#countryReq').append('<option value="">---select---</option>');
             for(var i=0;i<json.length;i++){
             	if(json[i] == '${loginCountryName}'){
-            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            		$('#countryReq').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{
-            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+            		$('#countryReq').append('<option value="'+json[i]+'">'+json[i]+'</option>');
             	}
             	
             }
-            $('#country').trigger("chosen:updated");
+            $('#countryReq').trigger("chosen:updated");
             getStates();
         },
         error: function(e){
@@ -979,7 +979,7 @@ function getAllCountries(){
 
 <script>
 function getStates(){
-	var countryName = $("#country").val();
+	var countryName = $("#countryReq").val();
 	
 	//to set existing state value(Auto populate)
 	var stateName = $("#state").val();
@@ -1022,7 +1022,7 @@ function getStates(){
 <script>
 function getCities(){
 	
-	var countryName = $("#country").val();
+	var countryName = $("#countryReq").val();
 	var stateName = $("#state").val();
 	
 	//to set existing city value(Auto populate)
@@ -1074,11 +1074,11 @@ function getCities(){
 			  '.chosen-select-width'     : {width:"95%"}
 			}
 			
-		  $("#country").chosen();
+		  $("#countryReq").chosen();
 	       $("#state").chosen();
 	       $("#city").chosen();
 	       
-	       $("#country").on('change', function (e) {
+	       $("#countryReq").on('change', function (e) {
 	    	   getStates();
 	       });
 	       $("#state").on('change', function (e) {
@@ -1166,8 +1166,8 @@ function setTemplateValues(){
 					 var city = '';
 					
 					getAllCountries(); 
-					if(json.country != null && json.country !='' && json.country !='undefined'){
-						$("#country").val(json.country);
+					if(json.countryReq != null && json.countryReq !='' && json.countryReq !='undefined'){
+						$("#countryReq").val(json.countryReq);
 					}
 					 
 					getStates();
@@ -1219,7 +1219,7 @@ function setTemplateValues(){
 			    	$("#positions").val('');
 			    	$("#minExp").val('');
 			    	$("#maxExp").val('');
-					$("#country").val('');
+					$("#countryReq").val('');
 					$("#state").val('');
 					$("#city").val('');
 		            $("#skills").val('');
@@ -1254,12 +1254,12 @@ $(function(){
 		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 		  '.chosen-select-width'     : {width:"95%"}
 		}
-    $("#country").chosen();
+    $("#countryReq").chosen();
     $("#state").chosen();
     $("#city").chosen();
     $("#owner").chosen();
     
-    $("#country").on('change', function (e) {
+    $("#countryReq").on('change', function (e) {
  	   getStates();
     });
    
