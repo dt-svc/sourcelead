@@ -136,13 +136,18 @@ public class ClientRestController {
 	 
 	 @RequestMapping(value = "/getOrgDetails",  method = RequestMethod.POST)
 	    public @ResponseBody String getOrgDetails(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
-	    		@RequestParam(value="json", required=false) String json) {
+	    		@RequestParam(value="orgName", required=false) String orgName,
+	    		@RequestParam(value="json", required=false) String json) throws Exception {
 			
 			ArrayList<String> orgsList = new ArrayList<String>();
 			
-			OrgLocations orgLocations = null;
+			Org org = orgService.getOrgByOrgName(orgName);
+			
+			
+			OrgLocations orgLocations = orgLocationService.getOrgLocationsByOrgCode(org.getId().toString());
+			
 			try {
-				orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+				orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
 			} catch (Exception e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
@@ -482,7 +487,13 @@ public class ClientRestController {
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
 			@RequestParam(value = "responderType", required = false) String responderType) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		return orgService.isClientNameValid(clientName,orgLocation.getId(),responderType);
+		List<Org> org =orgService.getOrgs();
+	    boolean flag = false;
+		
+			flag = orgService.isClientNameValid(clientName,orgLocation.getId(),responderType);
+		
+		
+		return flag;
 	}
 /**
  * Verifies Client Email
