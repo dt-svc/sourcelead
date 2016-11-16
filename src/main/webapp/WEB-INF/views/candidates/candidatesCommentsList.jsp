@@ -5,7 +5,8 @@
 <script>
 function candidateCommentsList(candidateId){
 	
-	
+	$("#tab-7").show();
+	/* $('#tab-7')[0].click(); */
 	
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
