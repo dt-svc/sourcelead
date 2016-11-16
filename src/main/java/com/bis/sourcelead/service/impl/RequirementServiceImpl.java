@@ -1464,8 +1464,8 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public Integer validateJobId(Long id) throws Exception {
-		return requirementDao.validateJobId(id);
+	public Integer validateJobId(Long id,Long orgLocation) throws Exception {
+		return requirementDao.validateJobId(id,orgLocation);
 	}
 
 

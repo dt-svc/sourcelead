@@ -401,10 +401,11 @@ public class RequirementRestController {
 	 * @throws Exception
 	 */
 	 @RequestMapping(value = "/validateJobId",  method = RequestMethod.POST)
-	    public @ResponseBody String validateJobId(@RequestParam(value="jobId", required=false) Long jobId) throws Exception {
+	    public @ResponseBody String validateJobId(@RequestParam(value="jobId", required=false) Long jobId,HttpServletRequest request) throws Exception {
 		    	String result;
 				String resultJson;
-				Integer jobIdCount = requirementService.validateJobId(jobId);
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Integer jobIdCount = requirementService.validateJobId(jobId,orgLocation.getId());
 				if(jobIdCount>0){
 					result = "duplicate";
 				}
