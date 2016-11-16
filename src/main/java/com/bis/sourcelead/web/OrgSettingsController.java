@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
@@ -79,12 +80,13 @@ public class OrgSettingsController {
 		   
 		    ModelAndView model = new ModelAndView();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
 			
 			Roles roles = rolesService.getRolesByIdAndOrgLocationId(roleId,orgLocations.getId());
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			if(null != roles){
 			
-			List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadActions();
+			List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadActions(org);
 			
 			ArrayList<SourceleadActions> sourceleadActionsList = new ArrayList<SourceleadActions>();
 			List<Long> roleActonList = new ArrayList<Long>();

@@ -14,15 +14,22 @@
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/jquery.tree-multiselect.css">
 
-
+<script type="text/javascript">
+window.onload = function () {
+	
+	var roleName = '${roleName}';
+	$("#role").val(roleName);
+	$("#role").append(roleName);
+ };
+</script>
 
 <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Create Role</h2>
+        <h2>Role Actions</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="orgRolesList">Roles List</a> &raquo; Create Role </div>
+      <div class="pull-right brud-crum"><a href="orgRolesList">Roles List</a> &raquo; Role Actions </div>
     </section>
     
    <!-- Role Persmission -->
@@ -30,6 +37,7 @@
      <div class="select-role clearfix section-action-btns">
      <div id="loading"></div>
      <div class="clearfix mt">
+     <h3 id="role"></h3>
 	<select id="test-select" multiple="multiple">
 		 <c:forEach var="action" items="${actionsList}">
 		  <option value="${action.id}" data-section="${action.tabs.tabName == 'My Timesheets' || action.tabs.tabName == 'Timesheet Approval' ? 'Timesheets' : action.tabs.tabName}" ${action.isActionConfigured  == 'Y' ? 'selected' : ''} >${action.actionName}</option>

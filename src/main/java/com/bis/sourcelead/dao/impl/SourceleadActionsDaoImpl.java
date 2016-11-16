@@ -1,9 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.SourceleadActionsDao;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 
@@ -86,12 +85,17 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 
 	@Override
 	@Transactional
-	public List<SourceleadActions> getAllSourceleadActions() throws Exception {
+	public List<SourceleadActions> getAllSourceleadActions(Org org) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
+		
+		 List<Long> modulesList = new ArrayList<Long>();
+			for (String s : org.getModulesId().split(",")){
+				modulesList.add(Long.parseLong(s));
+			 }
         		
-	    String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' ";
-	    List<SourceleadActions> actionsList = session.createQuery(query.toString()).setCacheable(true).list();
+	    String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId))";
+	    List<SourceleadActions> actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).setCacheable(true).list();
      
 	    return actionsList;
 	}

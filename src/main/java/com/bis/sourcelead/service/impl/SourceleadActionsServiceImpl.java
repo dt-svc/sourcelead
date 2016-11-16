@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.SourceleadActionsDao;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.service.SourceleadActionsService;
 
@@ -27,8 +28,8 @@ public class SourceleadActionsServiceImpl implements SourceleadActionsService {
 	}
 
 	@Override
-	public List<SourceleadActions> getAllSourceleadActions() throws Exception {
-		return sourceleadActionsDao.getAllSourceleadActions();
+	public List<SourceleadActions> getAllSourceleadActions(Org org) throws Exception {
+		return sourceleadActionsDao.getAllSourceleadActions(org);
 	}
 
 }

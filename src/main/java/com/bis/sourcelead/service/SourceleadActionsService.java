@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.SourceleadActions;
 
 public interface SourceleadActionsService {
@@ -10,5 +11,5 @@ public interface SourceleadActionsService {
 	
 	List<SourceleadActions> getLoginUserRoleActionsByOrgLocationId(List<Long> modulesId,Long roleId,Long orgLocationId) throws Exception;
 	
-	List<SourceleadActions> getAllSourceleadActions() throws Exception;
+	List<SourceleadActions> getAllSourceleadActions(Org org) throws Exception;
 }
