@@ -89,22 +89,25 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
   private  HashSet<String> skillFinderFromParsedTextFile(String parsedString,HttpServletRequest request) throws Exception{
 	  String[] totalLines = parsedString.split(System.getProperty("line.separator"));
 	  HashSet<String> skills = new HashSet<String>();
+	  HashSet<String> duplicateSkills = new HashSet<String>();
 	  HttpSession session = request.getSession();
 		ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(session.getServletContext());
 		LookUpDataService lookUpDataService = (LookUpDataService) ctx.getBean("lookUpDataService");
-	  List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+	    List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 		for(String sLine : totalLines) 
 		{
 		    for(String searchWord: skillsList)
 		    {
-		    	Matcher skillMatcher = Pattern.compile("("+searchWord+")",Pattern.CASE_INSENSITIVE).matcher(sLine);
+		    	Matcher skillMatcher = Pattern.compile("\\b"+searchWord+"\\b",Pattern.CASE_INSENSITIVE).matcher(sLine);
 		    	  while(skillMatcher.find()){
-		    		  skills.add(skillMatcher.group());
+		    		 if(duplicateSkills.add(skillMatcher.group().toUpperCase())){
+		    			  skills.add(skillMatcher.group());
+		    		 }
 		    	  }
 		    }
 		 }
 		return skills;
-  }
+     }
 	
     /**
 	 * Name finder from parsed text file
