@@ -14,4 +14,6 @@ public interface LookUpDataDao {
 
 	public List<LookUpData> getLookUpDataByCategory(String category) throws Exception;
 	
+	public List<String> getAllSkillsBySkillCategory() throws Exception;
+	
 }

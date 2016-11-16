@@ -40,5 +40,7 @@ public interface OrgDao {
 	public boolean isOrgNameExisted(String orgName) throws Exception;
 	
 	 List<Org> isSpocExistedTheOwner(String clientName,Long orgLocationId,String responderType) throws Exception ;
+
+	public Org getOrgByOrgName(String orgName);
 	
 }

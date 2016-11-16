@@ -203,7 +203,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
                Date sDate  =  Constants.DMY.parse(startDate);
 			   startCal.setTime(sDate);
 		  }
-		 
+		 String weekStartDate = format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime());
 		 startDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime()));
          endDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime()));
          sb1.append("<th>Mon<i>"+startDateBuilder+"</i></th>"); 
@@ -224,8 +224,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		sb.append("           <li><i class='glyphicon glyphicon-export'></i><span>Export</span><i class='glyphicon glyphicon-play' id='export-pop' onclick='exportType();'></i>|");
 		sb.append("           	<div class='export_pop'>");
 		sb.append("               	<ul>");
-		sb.append("                   	<li onclick='exportPdf();'>PDF<i class='fa fa-file-pdf-o'></i></li>");
-		sb.append("                       <li onclick='exportExcel();'>Excel<i class='fa fa-file-excel-o'></i></li>");
+		sb.append("                   	<li onclick='exportPdf();'>PDF &nbsp;&nbsp;<i class='fa fa-file-pdf-o'></i></li>");
+		sb.append("                       <li onclick='exportExcel(\""+weekStartDate+"\");'>Excel &nbsp;&nbsp;<i class='fa fa-file-excel-o'></i></li>");
 		sb.append("                   </ul>");
 		sb.append("               </div>");
 		sb.append("           </li><li>");

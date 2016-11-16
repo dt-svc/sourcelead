@@ -47,7 +47,7 @@ window.onload = function () {
 		<div class="pull-left">
 			<h2>Create Client</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;<a href="clientDashboard"> Client List</a>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a>
 			&raquo; Client</div>
 	</section>
 	
@@ -324,12 +324,12 @@ function getOrgName(){
 function getOrgDetails()
 {
 	var orgName = document.getElementById("orgName").value;
-	var orgLocationId = document.getElementById("orgLocationId").value;
+ 	var orgLocationId = document.getElementById("orgLocationId").value; 
 	var sourceleadUrl = '${sourceleadUrl}';
-	if(orgName && orgLocationId){
+	if(orgName){
    	 $.ajax({
    	    	type: "POST",
-   	    	url : sourceleadUrl+"/getOrgDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+   	    	url : sourceleadUrl+"/getOrgDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&orgName="+orgName,
    	        contentType: "application/json; charset=utf-8",
    	        dataType: "json",
    	        success: function(data) {

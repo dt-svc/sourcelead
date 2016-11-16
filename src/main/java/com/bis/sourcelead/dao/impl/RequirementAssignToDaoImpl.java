@@ -118,6 +118,27 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 			return requirementAssignTo;
 		}
 
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(Long requirementId, Long userId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean isAvilable= false;
+		String query = "from RequirementAssignTo  rato   where rato.requirementId.id = :requirementId and rato.assignUserId.id = :assignUserId";
+		List<RequirementAssignTo> requirementAssignToList =  session.createQuery(query.toString()).setLong("requirementId", requirementId).setLong("assignUserId", userId)
+				.setCacheable(true).list();
+		
+
+		RequirementAssignTo requirementAssignTo = null;
+		if (requirementAssignToList != null && requirementAssignToList.size() > 0) {
+			requirementAssignTo = (RequirementAssignTo) requirementAssignToList.iterator().next();
+			isAvilable = true;
+		}
+		return isAvilable;
+	}
+
     
   }
 

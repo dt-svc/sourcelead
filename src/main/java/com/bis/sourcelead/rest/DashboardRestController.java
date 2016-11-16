@@ -337,7 +337,10 @@ public class DashboardRestController {
 				
 				requirementInterview.setInterviewStartDateTimeStr(requirementInterview.getStartTime().toString());
 				
-				requirementInterview.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
+				if(requirementInterview.getSubmissionId().getRequirement().getClientId() != null){
+					
+					requirementInterview.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
+				}
 				
 			}
 			

@@ -24,9 +24,11 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -64,6 +66,9 @@ public class TeamRestController {
 	 @Autowired
 	 UserService userService;
 	 
+	 @Autowired
+	 private UserRoleService userRoleService;
+	 
 	 /**
 	   * @author sarath kumar
 	   * @since  sep 14 2016
@@ -88,7 +93,7 @@ public class TeamRestController {
 		for(Team team : teamList){
 			
 			team.setTeamOwnerName(team.getOwnerUserId().getFirstName()+""+team.getOwnerUserId().getLastName());
-			Collection<TeamMembers>	teamMembersList  = teamMembersService.getTeamMembersListByTeamID(team.getId());
+			Collection<TeamMembers>	teamMembersList  = teamMembersService.getTeamMembersListByTeamID(team.getId(),loginOrgLocation.getId());
 			team.setTeamMembersCount(teamMembersList.size());
 			
 			 
@@ -142,7 +147,8 @@ public class TeamRestController {
 	  public String getTeamMembersListByTeamID(@RequestParam(value="teamId", required=false) String  teamId,HttpServletRequest request) throws Exception {
 
 		String resultJson;
-		List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByTeamID(Long.parseLong(teamId));
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByTeamID(Long.parseLong(teamId),orgLocation.getId());
 		for(TeamMembers  teamMembers : teamMembersList){
 			
 			
@@ -150,7 +156,8 @@ public class TeamRestController {
 			 teamMembers.setOwnerName(teamMembers.getTeamId().getOwnerUserId().getFirstName() +""+teamMembers.getTeamId().getOwnerUserId().getLastName() );
 			 teamMembers.setMemberName(teamMembers.getMemberUserId().getFirstName()+""+teamMembers.getMemberUserId().getLastName());
 			 teamMembers.setEmail(teamMembers.getTeamId().getOwnerUserId().getEmail());
-			 teamMembers.setUserType(teamMembers.getMemberUserId().getUserType());
+			 UserRole userRole = userRoleService.getUserRoleByUserId(teamMembers.getMemberUserId().getId());
+			 teamMembers.setUserType(userRole.getUserType());
 			 
 			 teamMembers.setTeamMemberUserId(teamMembers.getMemberUserId().getId());
 			
@@ -293,6 +300,28 @@ public class TeamRestController {
 		  }
 		 
 		 
+		 
+		 
+		 /**
+		  * This method for delete team by id
+		  * @param teamMemberId
+		  * @return
+		  * @throws Exception
+		  */
+		 @RequestMapping(value = "/getTeamByTeamID", method = RequestMethod.POST,headers="Accept=application/json")
+		 public String getTeamByTeamID(@RequestParam( value = "teamId", required = false) Long teamId) throws Exception { 
+			
+			  String  resultJson =null;
+			  
+			  Team team  = teamService.getTeamByTeamId(teamId);
+			  team.setTeamOwnerName(team.getOwnerUserId().getFirstName()+" "+team.getOwnerUserId().getLastName());
+			  
+			  resultJson = commonUtil.toJSON(team);
+			  return resultJson;
+		  }
+		 
+		 
+		 
 		 /**
 		   * @author David Raju
 		   * @since  sep 14 2016
@@ -318,6 +347,17 @@ public class TeamRestController {
 			resultJson = commonUtil.toJSON(freshUserList);
 			return resultJson;
 		 } 
+		  
+		  
+		  
+		  @RequestMapping(value = "/storeEditedTeam")
+		  public @ResponseBody String storeEditedTeam(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String json1 = "{" + json + "}";
+				JSONObject jsonObj = new JSONObject(json1);
+				teamService.storeTeam(jsonObj,orgLocations);
+				return "success";
+			}
 
 	 
 }

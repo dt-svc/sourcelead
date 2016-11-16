@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,8 +76,12 @@ public class CandidateController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("candidates/candidatesList");
 		
-		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-        model.addObject("loginCountryName", countries.getName());
+		if(orgLocations != null && StringUtils.isNotEmpty(orgLocations.getCountry())){
+			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+	        model.addObject("loginCountryName", countries.getName());
+		}
+		
+        
 		
 	/*	List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(orgLocations.getId(),org.getId(),Constants.CANDIDATE_ACTIVE,"");
 		model.addObject("candidatesList", candidatesList);*/

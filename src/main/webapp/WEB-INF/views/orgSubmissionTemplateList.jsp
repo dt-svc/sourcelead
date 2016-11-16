@@ -141,7 +141,7 @@ function templatepagination(){
 		            result = result  +'<label>Template Name<span class="text-danger">&nbsp;*</label>';
 			    	result = result  +'	<div class="mt10">';
 			    	if(templateName){
-			    		result = result  +'	<input type="text" class="form-control input-sm" value="'+templateName+'" readonly="readonly" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';	
+			    		result = result  +'	<input type="text" class="form-control input-sm" value="'+templateName+'" onblur="validateTemplateName()" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';	
 			    	}else{
 			    		result = result  +'	<input type="text" class="form-control input-sm"  onblur="validateTemplateName()" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';
 			    	}
@@ -361,11 +361,15 @@ function cancel(){
 <script type="text/javascript">
 function validateTemplateName(){
 	var templateName = document.getElementById("templateName").value; 
+	var templateId = $("#templateId").val();
+	if(templateId == 'undefined' || templateId == null){
+		templateId = '';
+	}
 	if(templateName){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/validateTemplateNameByOrg?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName, 
+	    	url : sourceleadUrl+"/validateTemplateNameByOrg?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName+"&templateId="+templateId, 
 	        success: function(result) {
 	        	if (result == 'invalid') {
 	        		$("#save_button").attr("disabled", "disabled");
@@ -424,7 +428,7 @@ function validateTemplateName(){
     <div class="pull-left">
       <h2>Submission Templates</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="orgSubmissionTemplate">Submission Template</a></div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgSubmissionTemplate'/>">Submission Template</a></div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
