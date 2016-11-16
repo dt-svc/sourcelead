@@ -719,7 +719,6 @@ function getAllCountriesForClient(){
     	dataType: "json",
     	 url: '${sourceleadUrl}'+"/sourceLeadCountryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
-        	alert(data);
         	var json = JSON.parse(data);
         	$('#country').empty();
         	$('#country').append('<option value="">---select---</option>');
