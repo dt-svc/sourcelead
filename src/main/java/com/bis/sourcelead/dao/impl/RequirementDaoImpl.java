@@ -138,10 +138,14 @@ public class RequirementDaoImpl implements RequirementDao {
 		params.put("level2",2);
 		
 		
+		String subQuery4 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+		params.put("managerUserId",userId);
+		
+		
 		
 		String subQuery = "";
-		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
-			subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") )";
+		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" ){
+			subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery3+")  or ("+subQuery4+") )";
 			params.put("orgLocationId",orgLocationId);
 		}
 		String whereCondition = subQuery;
@@ -149,7 +153,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		Query query = session.createQuery(from+" "+whereCondition);
 		for (String str : query.getNamedParameters())
         {
-			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId")){
+			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId") || str.equalsIgnoreCase("managerUserId")){
 				query.setLong(str, (long) params.get( str ));
 			}
 			if(str.equalsIgnoreCase("level") || str.equalsIgnoreCase("level1") || str.equalsIgnoreCase("level2")){
