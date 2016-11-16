@@ -448,7 +448,7 @@ public class RequirementServiceImpl implements RequirementService {
 								rah.setUpdatedDate(commonUtil.currentDate());
 					    }
 						  requirementApproverHierarchyList.add(rah);
-						  approverEmailScenario(user,approverUser,requirement,location);
+						  approverEmailScenario(user,approverUser,requirement,location,orgLocations);
 
 				  }
 
@@ -507,7 +507,7 @@ public class RequirementServiceImpl implements RequirementService {
 					  rah.setUpdatedDate(commonUtil.currentDate());
 					  
 					  requirementApproverHierarchyList.add(rah);
-						approverEmailScenario(user, approverUser ,requirement,location);
+						approverEmailScenario(user, approverUser ,requirement,location,orgLocations);
 
 				  }
 				  
@@ -697,7 +697,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 
 	@Override
-	public void approverEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location) throws Exception {
+	public void approverEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location,OrgLocations loginOrgLocation) throws Exception {
 		
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
@@ -774,6 +774,8 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
 		
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
@@ -781,12 +783,17 @@ public class RequirementServiceImpl implements RequirementService {
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 		 String url = "";
 		 
+		 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
-		 //calling the sendEmail method of emailScenerioUtil
+		 String actionLink="";
+		//calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, loginOrgLocation, notificationScenario);
 		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
 	
 }

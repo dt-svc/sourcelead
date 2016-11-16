@@ -37,7 +37,7 @@ public interface RequirementService {
 
 	public List<RequirementAssignTo> getUserAssignJobCount(Long userId) throws Exception;
 	
-	public void  approverEmailScenario(User user,User approverUser,Requirement requirement, StringBuilder location) throws Exception;
+	public void  approverEmailScenario(User user,User approverUser,Requirement requirement, StringBuilder location,OrgLocations loginOrgLocation) throws Exception;
 
 	public void  approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location) throws Exception;
 	
