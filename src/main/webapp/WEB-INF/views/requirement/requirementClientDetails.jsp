@@ -5,6 +5,7 @@
      this script is for add client popup window
      1.usage     : onclick
 --%>
+
 <script>
 function addClientPopUp() {
 	var result = "";
@@ -31,6 +32,15 @@ function addClientPopUp() {
 	result = result+'                <input type="text" id="webSite" name="webSite" class="form-control" value="" field-name="Client Website" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">';
 	result = result+'              </div>';
 	result = result+'            </div>';
+	
+	result = result+'            <div class="form-group" id="countryDiv" style="display: block;">';
+	result = result+'            <label class="col-lg-3">Country<span class="text-danger"> *</span></label>';
+	result = result+'            <div class="col-md-9">';
+	result = result+'             <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country" data-validation="required" >';
+	result = result+'             </select>';
+	result = result+'            </div>';
+	result = result+'            </div>';
+	
 	result = result+'            <div class="form-group">';
 	result = result+'              <label class="col-lg-3">First Name<span class="text-danger"> *</span></label>';
 	result = result+'              <div class="col-lg-9">';
@@ -107,6 +117,7 @@ function addClientPopUp() {
 				$this.next().css({'width': '100%'});
 		  })
 	});
+	getAllCountriesForClient();
 }
 </script>
 
@@ -698,4 +709,52 @@ function getSpocUserDetails(){
 	}
 	
 }
+</script>
+
+
+<script type="text/javascript">
+function getAllCountriesForClient(){
+	$.ajax({
+    	type: "POST",
+    	dataType: "json",
+    	 url: '${sourceleadUrl}'+"/sourceLeadCountryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+        success: function(data) {
+        	alert(data);
+        	var json = JSON.parse(data);
+        	$('#country').empty();
+        	$('#country').append('<option value="">---select---</option>');
+            for(var i=0;i<json.length;i++){
+            	if(json[i] == '${loginCountryName}'){
+            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            	}
+            	else{
+            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+            	}
+            	
+            }
+            $('#country').trigger("chosen:updated");
+            getStates();
+        },
+        error: function(e){
+        }
+    });
+} 
+</script>
+
+<script type="text/javascript">
+$(function(){
+	       var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	       $("#country").chosen();
+	       
+	       $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+});
 </script>
