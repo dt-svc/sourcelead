@@ -238,6 +238,9 @@ function disableMonths() {
 function getAllCountries(){
 	setTimeout(function(){ 
 	var countryName = $("#updateCountry").val();
+	alert("*countryName******* "+countryName);
+	var loginCountryName = '${loginCountryName}';
+	alert("*loginCountryName******* "+loginCountryName);
 	$.ajax({
     	type: "POST",
     	dataType: "json",
@@ -249,7 +252,7 @@ function getAllCountries(){
             for(var i=0;i<json.length;i++){
             	if(json[i] == countryName){
             		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}else if(json[i] == '${loginCountryName}'){
+            	}else if(json[i] == '${loginCountryName}' && countryName ==null && countryName ==''){
             		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{ 
