@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TeamDao;
 import com.bis.sourcelead.dao.TeamMemberDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
@@ -87,10 +88,11 @@ public class TeamServiceImpl implements TeamService {
 		}else{
 			team = new Team();
 		}
-		User user = new User();
-		user.setId(Long.parseLong(jsonObj.getString("ownerUserId")));
-		
-	//	Team team = new Team();
+
+		if(jsonObj.has("editOwnerUserId") && !jsonObj.getString("editOwnerUserId").isEmpty()){
+			User user = userService.getUserById(Long.parseLong(jsonObj.getString("editOwnerUserId")));
+			team.setOwnerUserId(user);
+		}
 		if(orgLocations != null){
 			team.setOrgLocationsId(orgLocations);;
 			}
@@ -98,7 +100,9 @@ public class TeamServiceImpl implements TeamService {
 		if(jsonObj.has("name")){
 			team.setName(jsonObj.getString("name"));
 			}
-		if(jsonObj.has("ownerUserId")){
+		if(jsonObj.has("ownerUserId") && !jsonObj.getString("ownerUserId").isEmpty()){
+			User user = new User();
+			user.setId(Long.parseLong(jsonObj.getString("ownerUserId")));
 			team.setOwnerUserId(user);
 		}
 		team.setStatus(Constants.TEAM_ACTIVE);

@@ -71,6 +71,16 @@ color:#333 !important;
 width: 92% !important;
 margin-top:10px;
 }
+.require_wrap_details_cta.require_uploadfile span{
+width:auto !important;
+}
+.require_wrap_details_cta.require_uploadfile a {
+margin-left:10px;
+float: left !important;
+}
+.require_wrap_details_cta.require_uploadfile .glyphicon-download-alt {
+color:blue;
+}
 </style>
  
 <script>
@@ -387,7 +397,7 @@ function sideBar(requirementId){
 				        result = result+'<ul class="list-unstyled can-perdt">';
 				        if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined' && json.minExp != null && json.minExp != '' && json.minExp != 'undefined')
 				        	{
-				       	result = result+'<li><i class="fa fa-black-tie"></i><span>Experience: '+json.minExp+'-'+json.maxExp+' years</span></li>';
+				       	result = result+'<li><i class="fa fa-black-tie"></i><span>Experience: '+json.minExp+'Years'+json.maxExp+' Months</span></li>';
 				        	}
 					   
 				        else{
@@ -616,8 +626,18 @@ function requirementDetails(requirementId){
 					           	 result = result +'   <textarea placeholder="Enter description" readonly>'+json.description+'</textarea>';
 					         }
 					         else{
-					           	 result = result +'   <textarea placeholder="Enter description" readonly> NO DATA</textarea>';
+					           	 result = result +'   <textarea readonly> NO DATA</textarea>';
 				    	        }
+				            
+				            result = result +'   <h1>Skills:</h1>';
+				            if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
+					            result = result +'     <textarea placeholder="Enter description" readonly>'+json.skills+'</textarea>';
+					            }
+					            else{
+					            result = result +'<textarea readonly> NO Skills</textarea>';	
+					            }
+				            
+				            
 				            result = result +'   <h2> Requirement Details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            if(json.positions != null && json.positions != '' && json.positions != 'undefined'){
@@ -636,19 +656,14 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-					            result = result +'     <div class="require_wrap_details_cta"> <b>Attachment:</b> <span>'+json.fileName+'</span>';
+					            	result = result +'<div class="require_wrap_details_cta require_uploadfile"><b>Attachment:</b> <span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
 					            }
 					            else{
 					            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
 					            }				            
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
-				            if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
-					            result = result +'     <div class="require_wrap_details_cta"> <b>Skills:</b> <span>'+json.skills+'</span>';
-					            }
-					            else{
-					            result = result +'<div class="require_wrap_details_cta"> <b>Skills:</b> <span> -- </span>';	
-					            }				   
+				            				   
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
 				            result = result +'     <div class="clearfix"></div>';
@@ -1037,7 +1052,7 @@ function requirementPipeline(requirementId){
 				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
 				           
 				            
-				            result = result +' <li><a href="javascript:void(0)" onclick="getActions();" class="action"> Action <i class="fa fa-caret-down"></i></a>';
+				            result = result +' <li><a href="javascript:void(0)" class="action"> Action <i onclick="getActions();" class="fa fa-caret-down"></i></a>';
 				            result = result +'<div class="action-pop">';
 				            result = result +'	<span>';
 				            result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
@@ -1221,7 +1236,7 @@ function assignedMemberList(requirementId){
             		 }
             		 else{ 
 							var result = '';
-							result = result +'     <div class="heightScroll mt10 mb">';
+							 result = result +'     <div class="heightScroll mt10 mb">'; 
 						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
 						    result = result +'         <thead>';
 						    result = result +'         <tr>';
@@ -1251,11 +1266,11 @@ function assignedMemberList(requirementId){
 						    result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
 						    result = result +'         </tr>';
 			   				}
-						    result = result +'         </tbody>';
-						    result = result +'         </table>';
-						    result = result +'     </div>';
-						    result = result +'     </div>';
-						    result = result +' </div> ';
+						    /* result = result +'         </tbody>';
+						    result = result +'         </table>'; */
+						    /* result = result +'     </div>';
+						    result = result +'     </div>'; */
+						     result = result +' </div> '; 
 						    
 						    $("#assignedMemberList").empty();
 						    $("#assignedMemberList").append(result);
@@ -1356,7 +1371,7 @@ function requirementRecommendations(requirementId){
 		    if(report.isCandidateAdedd == true){
 		    	result = result +'<input type="button" value="Added" class="btn btn-primary btn-sm">';
 		    }else{
-		    	result = result +'<input type="button" value="Add" class="btn btn-primary btn-sm">';
+		    	result = result +'<input type="button" value="--" class="btn btn-primary btn-sm">';
 		    }
 		    
 		   /*  result = result +'<select>';

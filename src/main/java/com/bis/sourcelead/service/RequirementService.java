@@ -37,7 +37,7 @@ public interface RequirementService {
 
 	public List<RequirementAssignTo> getUserAssignJobCount(Long userId) throws Exception;
 	
-	public void  approverEmailScenario(User user,User approverUser,Requirement requirement, StringBuilder location) throws Exception;
+	public void  approverEmailScenario(User user,User approverUser,Requirement requirement, StringBuilder location,OrgLocations loginOrgLocation) throws Exception;
 
 	public void  approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location) throws Exception;
 	
@@ -67,6 +67,8 @@ public interface RequirementService {
 	Integer validateJobId(Long id) throws Exception;
 
 	public File getExportRequirementFile(List<Requirement> requirementList, String orgName, String exportType)throws Exception;
+
+	public Boolean validateRequirementTitle(String jobName, Long orgLocationId) throws Exception;
 
 
 

@@ -62,5 +62,11 @@ public class RequirementApproverHierarchyServiceImpl implements RequirementAppro
 		   return requirementApproverHierarchyDao.getRequirementApproverHierarchyListByRequirementId(requirementId);
 
 	}
+
+	@Override
+	public Boolean deleteTheRequirementApproverByRequirementIdAndApproverId(RequirementApproverHierarchy requirementApproverHierarchy)
+			throws Exception {
+		return requirementApproverHierarchyDao.deleteTheRequirementApproverByRequirementIdAndApproverId(requirementApproverHierarchy);
+	}
 	
 }
