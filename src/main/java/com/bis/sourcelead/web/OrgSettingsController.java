@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,14 +17,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
-import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
-import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -37,6 +34,9 @@ public class OrgSettingsController {
 	
 	@Autowired
 	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	private RolesService rolesService;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -79,11 +79,36 @@ public class OrgSettingsController {
 		   
 		    ModelAndView model = new ModelAndView();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			model.setViewName("enrollRoleActions");
+			
+			Roles roles = rolesService.getRolesByIdAndOrgLocationId(roleId,orgLocations.getId());
 			model.addObject("sourceleadUrl", sourceleadUrl);
+			if(null != roles){
 			
 			List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadActions();
-			model.addObject("actionsList", actionsList);
+			
+			ArrayList<SourceleadActions> sourceleadActionsList = new ArrayList<SourceleadActions>();
+			List<Long> roleActonList = new ArrayList<Long>();
+			 for (String s : roles.getActionId().split(",")){
+				 roleActonList.add(Long.parseLong(s));
+			 }
+			 
+			 for(SourceleadActions sleadActions : actionsList){
+				 if(roleActonList.contains(sleadActions.getId())){
+					 sleadActions.setIsActionConfigured(Constants.YES);
+				 }else{
+					 sleadActions.setIsActionConfigured(Constants.NO);
+				 }
+				 sourceleadActionsList.add(sleadActions);
+			 }
+			 
+			 model.addObject("actionsList", sourceleadActionsList);
+			 model.addObject("roleId",roleId);
+			 model.addObject("roleName",roles.getDisplayName());
+			 model.setViewName("enrollRoleActions");
+			}
+			else{
+				model.setViewName("registration/persmissionDenied");
+			}
 		
 		return model;
 

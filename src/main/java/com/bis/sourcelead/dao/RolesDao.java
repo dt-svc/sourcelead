@@ -28,5 +28,7 @@ public interface RolesDao {
 	List<Roles> getClientOrVendorRolesList(Long orgLocationId,String moduleType);
 	
 	List<Roles> getOrgEnrolledRolesByOrgLocationId(Org org,Long orgLocationId) throws Exception;
+	
+	Roles getRolesByIdAndOrgLocationId(Long id,Long orgLocationId) throws Exception;
 
 }

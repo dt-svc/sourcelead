@@ -40,6 +40,9 @@ public class SourceleadActions {
 	@JoinColumn(name = "TAB_ID")
 	private Tabs tabs;
 	
+	@Transient
+	private String isActionConfigured;
+	
 	
 
 	public Long getId() {
@@ -72,6 +75,14 @@ public class SourceleadActions {
 
 	public void setTabs(Tabs tabs) {
 		this.tabs = tabs;
+	}
+
+	public String getIsActionConfigured() {
+		return isActionConfigured;
+	}
+
+	public void setIsActionConfigured(String isActionConfigured) {
+		this.isActionConfigured = isActionConfigured;
 	}
 
 	

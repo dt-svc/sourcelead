@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,8 +32,11 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
@@ -167,6 +171,21 @@ public class OrgSettingsRestController {
 			response.sendRedirect("/sourcelead/enrollRoleActions?roleId="+roleId);
 			
 	   }
+   
+   
+   
+   @RequestMapping(value = "/saveRoleActions" , method = RequestMethod.POST)
+   public String saveRoleActions(@RequestParam(value="roleId", required=false) Long roleId,
+		   @RequestParam(value="actionIds", required=false) String actionIds,HttpServletRequest request) throws Exception {
+	
+	   Roles roles = rolesService.getRolesById(roleId);
+	   if(null != roles){
+		   roles.setActionId(actionIds);
+		   rolesService.storeRoles(roles);
+	   }
+	   
+	return "success";
+   }
    
    
    private String toJSON(Object obj){
