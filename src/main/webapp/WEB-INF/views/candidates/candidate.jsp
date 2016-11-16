@@ -367,6 +367,17 @@
 <script type="text/javascript">
 	function storeCandidate() {
 		
+		var expectedRate = document.getElementById("expectedRate").value; 
+		 if(expectedRate != null && expectedRate != ""){
+			
+			 $('#rateType').removeAttr('data-validation-optional');
+			 $('#rateType').attr("data-validation","required"); 
+		 }else{
+		 $('#rateType').removeAttr('data-validation');
+		 $('#rateType').attr("data-validation-optional","true"); 
+		 }
+		 
+		
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',
