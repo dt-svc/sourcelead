@@ -422,6 +422,7 @@ function cancelAddInterviewDiv(){
         con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
         var sourceleadUrl ='${sourceleadUrl}';
+        var requirementId = '${requirementId}';
         
         $("#add_interview").attr("disabled", "disabled");
  		$("#add_interview" ).addClass('button').val('Processing..');
@@ -433,6 +434,7 @@ function cancelAddInterviewDiv(){
 	        	    $(".add_inter_wrap").removeClass("add_inter_wrap_active");
 	        		$(".side_mask").fadeOut(200);
 	        		$("body").css('overflow-y', 'auto');
+	        		requirementPipeline(requirementId); 
 	        },
 	    });   
         return true;

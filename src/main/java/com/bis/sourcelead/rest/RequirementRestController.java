@@ -423,4 +423,10 @@ public class RequirementRestController {
         });
         return xstream.toXML(obj);
     }
+	 @RequestMapping(value = "/validatejobName",  method = RequestMethod.POST)
+	    public @ResponseBody String validatejobName(@RequestParam(value="jobName", required=false) String jobName,HttpServletRequest request) throws Exception {
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Boolean validatejobName = requirementService.validateRequirementTitle(jobName,orgLocation.getId());
+				return validatejobName.toString();
+		    }
 }

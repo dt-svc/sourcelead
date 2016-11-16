@@ -347,6 +347,22 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 * This block is for Email To Managers and Project Members
 		 * 
 		 */
+		
+		//send mail to assigned team members
+		if((jsonObj.has("isMailToTeamMembers") && !isNullOrEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("Y".equals(jsonObj.getString("isMailToTeamMembers")))){
+			for(ProjectMembers projectMembers : projectMemberList){
+				if(projectMembers.getEmployee() != null){
+					Employees emp = projectMembers.getEmployee();
+					if(jsonObj.has("level1Manager") && jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
+						User  approverUserId1 =new User();
+						approverUserId1.setId(Long.valueOf(jsonObj.getString("level1Manager")));
+						sendEmailToTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation, loginOrgCode);
+					}
+				}
+			}
+		}
+		
+		
 		if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotBlank(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
 			if(jsonObj.has("level1Manager") && jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
 				User  approverUserId1 =new User();

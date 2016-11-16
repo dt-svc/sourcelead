@@ -147,7 +147,7 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
 	public List<SubmissionTemplate> getOrgSubmissionTemplatesByOrgLocationId(Long orgLocationId) throws Exception {
 		logger.debug("getOrgSubmissionTemplatesByOrgLocationId start");
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from SubmissionTemplate st where st.orgLocationId.id = :orgLocationId and (st.clientLocationId IS NULL or st.clientLocationId = '') and st.status = '1' ";
+	    String query = "from SubmissionTemplate st where st.orgLocationId.id = :orgLocationId";
 	    List<SubmissionTemplate> submissionTemplateList = session.createQuery(query).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
         return submissionTemplateList;
         
