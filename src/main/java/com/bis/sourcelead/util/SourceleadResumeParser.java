@@ -84,7 +84,7 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
    /**
 	 * Skill finder from parsed text file
 	 * Here we used java regular expression logic for resolving name from text file 
- * @throws Exception 
+     * @throws Exception 
 	 */  
   private  HashSet<String> skillFinderFromParsedTextFile(String parsedString,HttpServletRequest request) throws Exception{
 	  String[] totalLines = parsedString.split(System.getProperty("line.separator"));
