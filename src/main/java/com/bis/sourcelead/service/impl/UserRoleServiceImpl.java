@@ -243,7 +243,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 			 if(emp.getHireDate() !=null){
 				 writeRow.createCell(5).setCellValue(emp.getHireDateStr()); 
 			 }
-			 if(emp.getRate() !=null){
+			 if(emp.getRate() !=null && !"".equalsIgnoreCase(emp.getRate())){
 				 writeRow.createCell(6).setCellValue(emp.getRate()+"/"+emp.getRatePer());
 			 }
   	    } 
@@ -260,7 +260,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 			   writeRow.createCell(4).setCellValue(userRoles.getUser().getMobilePhone());
 		   }
 		   if(userRoles.getUser().getUserType() != null){
-			   writeRow.createCell(8).setCellValue(userRoles.getUser().getUserType());
+			   writeRow.createCell(8).setCellValue(userRoles.getUserType());
 		   }
 		   if(userRoles.getUser().getLocation() !=null){
 			   writeRow.createCell(7).setCellValue(userRoles.getUser().getLocation());
@@ -269,7 +269,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 			   writeRow.createCell(9).setCellValue(userRoles.getReportingManager().getFirstName());
 		   }
 		   if(userRoles.getUser().getStatus() !=null){
-			   writeRow.createCell(10).setCellValue(userRoles.getUser().getStatus());
+			   writeRow.createCell(10).setCellValue(userRoles.getUserState().toString());
 		   }
 		return createExcelsheet;
 		
@@ -280,6 +280,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
 			String userState,String orgName) throws Exception {
 		return pdfUtil.createPdfTable(activeList, inactiveList, notLoggedInList, userRolesList, userState,orgName);
+	}
+
+	@Override
+	public UserRole getUserRoleByUserId(Long userId) throws Exception {
+		return userRoleDao.getUserRoleByUserId(userId);
 	}
 	
 

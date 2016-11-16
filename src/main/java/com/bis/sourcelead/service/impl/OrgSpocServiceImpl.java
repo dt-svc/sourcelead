@@ -65,7 +65,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	 * Add Vendor contact
 	 */
 	@Override
-	public void addVendorContacts(JSONObject jsonObj, User user, OrgLocations orgLocations, String orgRelationId, String clientLocationId,String responderType) throws Exception {
+	public void addVendorContacts(JSONObject jsonObj, User user, OrgLocations orgLocations, String orgRelationId, String clientLocationId,String responderType,Org loginOrg) throws Exception {
 		
 		
 		OrgRelations orgRelation = null;
@@ -80,14 +80,20 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 			respondingOrgLocation = orgLocationService.getOrgLocations(Long.parseLong(realtionId[1]));
 		}
 		
-		User spocUser = userService.storeUser(jsonObj,user,respondingOrgLocation,"CREATEUSER",responderType,new Org());
+		User spocUser = userService.storeUser(jsonObj,user,respondingOrgLocation,"CREATEUSER",responderType,loginOrg);
 		
 		if(jsonObj.has("owner")){
 			String ownersId = jsonObj.getString("owner");
 			ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]","");
 			String[] owners = ownersId.split(",");
 			for(int i=0 ;i<owners.length;i++ ){
-				OrgSpoc orgSpoc = new OrgSpoc();
+				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
+				OrgSpoc orgSpoc = orgSpocDao.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(jsonObj.getString("email"), Long.parseLong(orgRelationId), ownerUser.getId(),Constants.RECORD_INACTIVE);
+			     if(orgSpoc == null){
+			    	 orgSpoc = new OrgSpoc();
+			    	 orgSpoc.setCreatedDate(CommonUtil.currentDate());
+					 orgSpoc.setCreatedBy(user.getUserCode());
+			     }
 				orgSpoc.setOrgRelations(orgRelation);
 				orgSpoc.setSpocUser(spocUser);
 				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
@@ -104,7 +110,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				}*/
 				
 				orgSpoc.setInitiatorLocationId(orgLocations);
-				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
+				//User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
 				orgSpoc.setOwnerUser(ownerUser);
 			
 				if(jsonObj.has("isMailSent")){
@@ -119,8 +125,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 					orgSpoc.setSpocStatus(Constants.ACTIVE);
 				}
 				
-				orgSpoc.setCreatedDate(CommonUtil.currentDate());
-				orgSpoc.setCreatedBy(user.getUserCode());
+				
 				orgSpoc.setUpdatedDate(CommonUtil.currentDate());
 				orgSpoc.setUpdatedBy(user.getUserCode());
 				orgSpocDao.addOrgSpoc(orgSpoc);
@@ -295,15 +300,20 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	}
 	
 	@Override
-	public OrgSpoc validateSpacEmailIdByOwnerUserIdAndOrgRelationId(String email, Long orgRelationId, Long userId) throws Exception {
+	public OrgSpoc validateSpacEmailIdByOwnerUserIdAndOrgRelationId(String email, Long orgRelationId, Long userId,Integer status) throws Exception {
 		logger.debug("In OrgSpocService class...");
-		return orgSpocDao.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(email, orgRelationId, userId);
+		return orgSpocDao.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(email, orgRelationId, userId, status);
 	}
 
 	@Override
 	public List<Long> getOwnerIdbySpocId(Long spocUserId,Long ownerId) {
 		return orgSpocDao.getOwnerIdbySpocId(spocUserId,ownerId);	
 		}
+	
+	@Override
+	public List<Long> getOwnerUserIdsbySpocEmailAndOrgRelationId(String email, Long orgRelationId) throws Exception{
+		return orgSpocDao.getOwnerUserIdsbySpocEmailAndOrgRelationId(email,orgRelationId);	
+	 }
 	
 	@Override
 	public OrgSpoc getSpocUserByUserId(Long spocUserId) throws Exception {

@@ -486,7 +486,7 @@ function candidateProfile(candidateId){
 
 							}
 							result = result + '<div id="profileEditPopup"></div>';
-							result = result +'<div class="require_wrap_details">';	 
+							result = result +'<div class="require_wrap_details candidate_wrap_details">';	 
 							result = result +'		<h1>Summary:</h1>';
 							if(json.summary != null && json.summary != '' && json.summary != 'undifined'){
 							result = result +'	    <textarea placeholder="Enter description" readonly>'+json.summary+'</textarea>';
@@ -495,7 +495,7 @@ function candidateProfile(candidateId){
 					           	 result = result +'   <textarea placeholder="Enter description" readonly> NO DATA</textarea>';
 				    	        }
 							
-							result = result +'		<div class="clearfix mt dashboard-widget">                                                                                                    ';
+							result = result +'		<div class="clearfix dashboard-widget candidate-profile">                                                                                                    ';
 							result = result +'		  <ul class="nav nav-tabs">                                                                                                                   ';
 							result = result +'		    <li class="active"><a data-toggle="tab" href="#skills">General View</a></li>                                                              ';
 							//result = result +'		    <li><a data-toggle="tab" href="#milestone">Milestone View</a></li>                                                                        ';
@@ -1044,7 +1044,7 @@ function removeSkillById(candidateId, skillId){
 									} else {
 										name = " ";
 									}
-									if (opt.designation != null	&& opt.designation && opt.designation != 'undefined') {
+									if (opt.designation != null	&& opt.designation!='' && opt.designation != 'undefined') {
 										designation = opt.designation;
 									} else {
 										designation = " "; 

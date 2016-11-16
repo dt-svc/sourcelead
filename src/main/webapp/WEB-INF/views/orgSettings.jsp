@@ -58,7 +58,9 @@ window.onload = function () {
     var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
     document.getElementById("errorImage").style.display="none";
     
-    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) != 'jpg'){
+    var extension = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1).toLowerCase();
+    
+    if(extension != 'jpg'){
     	output.src = URL.createObjectURL(event.target.files[0]);
     	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
  		var msg = "."+extensionName+" extension not allowed";
@@ -151,7 +153,7 @@ function cancel(){
       <div class="pull-left">
         <h2>Org Settings</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
     </section>
     <div class="content-area clearfix">
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">

@@ -62,7 +62,7 @@
 		<div class="pull-left">
 			<h2>Create Project</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo;<a href="projectDashboard">ProjectList</a> &raquo;Create Project
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/projectDashboard'/>">ProjectList</a> &raquo;Create Project
 	</section>
 	<div class="content-area clearfix">
 		<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
@@ -229,7 +229,7 @@
 										<c:forEach var="option" items="${add_clientList}">
 											<option value="${option.orgid}">${option.orgName}</option>
 										</c:forEach>
-									</select> <i class="fa fa-plus btn btn-default formic1" data-toggle="modal" onclick="flushProject();" data-target="#addClient"></i>
+									</select> 
 								</div>
 								<span class="hidden">Enter Project Id</span>
 							</div>
@@ -352,7 +352,7 @@
 										data-validation="required validate_email" onblur="emailVerification();">
 								</div>
 							</div>
-							<div class="form-group">
+							<!-- <div class="form-group">
 								<label class="col-lg-3">Invoice Frequency<span
 									class="text-danger">*</span></label>
 								<div class="col-lg-9">
@@ -364,7 +364,7 @@
 										<option>Monthly</option>
 									</select>
 								</div>
-							</div>
+							</div> -->
 							<div class="form-group">
 								<label class="col-lg-3"></label>
 								<div class="col-lg-9">
@@ -417,14 +417,14 @@
                        </div>
                        
                        <div class="form-group">
-			              <label class="col-md-3">Level</label>
+			              <label class="col-md-3">Tier</label>
 			              <div class="col-md-9">
 			                  <select class="form-control selectpicker" id="level" name="level">
-			                    <option value="Level-1">Level-1</option>
-			                    <option value="Level-2">Level-2</option>
-			                    <option value="Level-3">Level-3</option>
-			                    <option value="Level-4">Level-4</option>
-			                    <option selected="selected" value="Level-5">Level-5</option>
+			                    <option value="Tier-1">Tier-1</option>
+			                    <option value="Tier-2">Tier-2</option>
+			                    <option value="Tier-3">Tier-3</option>
+			                    <option value="Tier-4">Tier-4</option>
+			                    <option selected="selected" value="Tier-5">Tier-5</option>
 			                  </select>
 			              </div>
                       </div>
@@ -942,10 +942,10 @@ function getOrgDetails()
 								// var projectEndDate = $('#EndDate').val();
 								var opt = json[i];
 								var role = '';
-								if (opt.user.userType != null
-										&& opt.user.userType != ''
-										&& opt.user.userType != 'undefined') {
-									role = opt.user.userType;
+								if (opt.userType != null
+										&& opt.userType != ''
+										&& opt.userType != 'undefined') {
+									role = opt.userType;
 								} else {
 									role = 'Employee';
 								}
@@ -1378,4 +1378,4 @@ function validateClientName(){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				});
- 		</script>
+</script>

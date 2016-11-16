@@ -47,7 +47,7 @@ window.onload = function () {
 		<div class="pull-left">
 			<h2>Create Client</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;<a href="clientDashboard"> Client List</a>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a>
 			&raquo; Client</div>
 	</section>
 	
@@ -448,9 +448,9 @@ function validateEmail(){
 				var result = data;
 				if(result == 'Invalid Email') {
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-					$("input#email").after( "<p class='jquery_form_error_message'>" + email + " should not your login email</span>");
+					$("input#email").after( "<p class='jquery_form_error_message'>" + email + " should not your org users email</span>");
 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
-					document.getElementById("email").setAttribute( 'record-exist-errorMsg', email +"  should not your login email");
+					document.getElementById("email").setAttribute( 'record-exist-errorMsg', email +"  should not your org users email");
 					
 				}else if(result == 'Valid Email') {
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");
@@ -561,6 +561,8 @@ function validateClientName(){
 				var result = data;
 				if (result == true) {
 					//duplicate client
+					$("#save_client").removeAttr("disabled");
+			        $("#save_client").attr("disabled", "disabled");
 					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as client</span>");
 					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
 					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as client");
@@ -569,6 +571,7 @@ function validateClientName(){
 				}else {
 					//New WebSite class="form-control"
 					//$("#save_client").removeAttr("disabled");
+					$("#save_client").removeAttr("disabled");
 					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
 					$('input#orgName').attr('class','valid form-control');
 					$('#clientNameDiv').find('p.jquery_form_error_message').remove();

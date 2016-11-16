@@ -331,12 +331,12 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		 */
 		
 		@Override
-		public String getArrovalSubmissions(String employeeId,User user) throws Exception {
+		public String getArrovalSubmissions(String employeeId,User user,Long locationsId) throws Exception {
 			
 			/**
 		     * Get all employeeList(who is member in the project,in which logged in user is approver or logged in user is admin)  with date range
 			*/
-			Collection<TimesheetSubmissions> timesheetSubmissionsList =  getApprovalTimesheetSubmissions(user.getId());
+			Collection<TimesheetSubmissions> timesheetSubmissionsList =  getApprovalTimesheetSubmissions(user.getId(),locationsId);
 	        StringBuilder sb = new StringBuilder();
 			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
 				
@@ -442,7 +442,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	        	   }
 	        	   
 	        	   
-	        	  String rows = dynamicTimesheet(user, "left", startDate, ts.getProjectMembers().getId(), ts.getProjectMembers().getEmployee().getUser().getId(), ts.getProjectMembers().getEmployee().getId());
+	        	  String rows = dynamicTimesheet(user, "left", startDate, ts.getProjectMembers().getId(), ts.getProjectMembers().getEmployee().getUser().getId(), ts.getProjectMembers().getEmployee().getId(),locationsId);
 	        	  sb.append("<tr id='row"+ts.getProjectMembers().getEmployee().getUser().getId()+"'>");
 	        	  sb.append(rows);
 	        	  sb.append("</tr>");
@@ -472,9 +472,9 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		 */
 		
 		@Override
-		public String dynamicTimesheet(User user,String navigation,String startDate,Long memberId,Long projectMemberUserId, Long employeeId) throws Exception {
+		public String dynamicTimesheet(User user,String navigation,String startDate,Long memberId,Long projectMemberUserId, Long employeeId,Long locationsId) throws Exception {
 			 
-			HashMap<String, Date> submissionDateRange =	 timesheetSubmissionsDao.getMinAndMaxTimesheetSubmissionDatesForApprover(user.getId(),projectMemberUserId);
+			HashMap<String, Date> submissionDateRange =	 timesheetSubmissionsDao.getMinAndMaxTimesheetSubmissionDatesForApprover(user.getId(),projectMemberUserId,locationsId);
 			Date employeeStartDate = submissionDateRange.get("STARTDATE");
 			Date employeeEndDate = submissionDateRange.get("ENDDATE");
 			
@@ -573,7 +573,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			   ts.setFullName(ts.getProjectMembers().getEmployee().getUser().getFirstName()+" "+ts.getProjectMembers().getEmployee().getUser().getLastName());
 		   }
 		   		
-	         sb.append("  <td><div class='time_appr_user'>");
+	         sb.append("  <td><div class='time_appr_user tbldata-dotdot-me'>");
 	         sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='"+request.getContextPath()+"/displayUserImage/"+ts.getProjectMembers().getEmployee().getUser().getId()+"' alt='Profile Image' class='img-circle img-responsive'>");
 	         sb.append("    <span><b>"+ts.getFullName()+"</b></span>");
 	         sb.append(" <div></td>");
@@ -757,8 +757,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		 * @throws NullPointer
 		 */
 		@Override
-		public HashMap<String, Date> getMinAndMaxTimesheetSubmissionDatesForEmployee(Long userId) throws Exception {
-			return timesheetSubmissionsDao.getMinAndMaxTimesheetSubmissionDatesForEmployee(userId);
+		public HashMap<String, Date> getMinAndMaxTimesheetSubmissionDatesForEmployee(Long userId,Long locationsId) throws Exception {
+			return timesheetSubmissionsDao.getMinAndMaxTimesheetSubmissionDatesForEmployee(userId,locationsId);
 		}
 
 		/**
@@ -949,8 +949,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		 * @throws NullPointer
 		 */
 		@Override
-		public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissions(Long userId) throws Exception {
-			Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getApprovalTimesheetSubmissions(userId);
+		public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissions(Long userId,Long locationsId) throws Exception {
+			Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getApprovalTimesheetSubmissions(userId,locationsId);
 			return list;
 		}
 

@@ -160,6 +160,9 @@ public class UserServiceImpl implements UserService {
 		   userRole = getUserRoleDetails(jsonObj,user,loginuser.getUserCode(),orgLocations.getId());
 		   if(null == user.getId()){
 				userRole.setIsPrimary(1);
+				 if(sourceType.equalsIgnoreCase("PROJECTS")){
+					 userRole.setUserType("Employee");
+				 }
 		  }else{
 				userRole.setIsPrimary(0);
 			}
@@ -443,6 +446,7 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setOrgLocationId(locationId);
 		 
 		//setting the class filed values
@@ -658,6 +662,7 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 		 
 		//setting the class filed values
@@ -760,6 +765,12 @@ public class UserServiceImpl implements UserService {
 		 noificationEmailScenario.setUUID(UUID);
 		 
 		 emailScenerioUtil.sendNotification(actionLink, loginUser, user, respondingPartyOrgLocation, noificationEmailScenario);
+	}
+	
+	@Override
+	public List<User> getUserListExceptExistedUsersList(List<Long> userIds, Long orgLocationId)
+			throws Exception {
+		return userDao.getUserListExceptExistedUsersList(userIds, orgLocationId);
 	}
 
 	@Override

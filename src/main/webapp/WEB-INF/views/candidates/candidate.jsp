@@ -5,19 +5,11 @@
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
 
+<link rel="stylesheet" href="resources/css/chosen.min.css">
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/chosen.jquery.min.js"></script> 
 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-
-<script src="resources/js/chosen.jquery.min.js"></script> 
 <script src="resources/js/bootstrap-select.min.js"></script>
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 
@@ -73,7 +65,7 @@
     <div class="pull-left">
       <h2>Add Candidate Details</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;<a href="candidatesList"> Candidate List</a> &raquo; Create Candidate</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Create Candidate</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -89,8 +81,9 @@
               <input type="file" name="uploadBtn" id="uploadBtn" class="hidden upload">
               </span> 
            </label>
-             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required" >
-          </div>
+
+             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validate_Space validatedoc " >
+         </div>
           </div>
         </div>
         <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
@@ -225,7 +218,7 @@
                  <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
                  <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
                  <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}><a href="#">GBP</a></option>
                  <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
                  <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
                  
@@ -248,7 +241,7 @@
                  <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
                  <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
                  <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}><a href="#">GBP</a></option>
                  <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
                  <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
                  
@@ -272,26 +265,6 @@
               </div>
             </div>
           </div>
-        <%--  <div class="form-group">
-         <label class="col-md-3">Expected Rate</label>
-         <div class="col-md-9">
-           <div class="input-group">
-            <input type="text" id="expectedRate" name="expectedRate" value="${expectedRate}" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
-              <div class="input-group-btn selp-custom-min">
-              <select class="selectpicker" id="expectedRateCurrencey" name="expectedRateCurrencey">
-                 
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
-                 
-             </select>
-             </div>
-           </div>
-         </div>
-       </div> --%>
         
         
          <div class="form-group">
@@ -317,7 +290,7 @@
         <div class="form-group">
               <label class="col-md-3">Skills</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="candidateSkills" id="candidateSkills" data-validation="validate_Space" data-validation-optional="true">
+                <select multiple class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">
                 <c:forEach var="skill" items="${skillsList}">
 	                     <option value="${skill.name}">${skill.name}</option>
                 </c:forEach>
@@ -381,20 +354,24 @@
 </script> 
 <script type="text/javascript">
 	function storeCandidate() {
+		
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd'
 			};
+		
 		 if ($('#candidate_form').validate(false, validationSettings)){ 
+			
+			var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#candidate_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
-			 con = con.replace(/[{}]/g, ""); 
+			con = con.replace(/[{}]/g, ""); 
+		    var jsonData = encodeURIComponent(con);
 			var form = $('#candidate_form')[0];
       		var formData = new FormData(form); 
-			  //It will escape all the special characters
-			var sourceleadUrl = '${sourceleadUrl}';
+			//It will escape all the special characters
 			$("#store_candidate").attr("disabled", "disabled");
 			$("#store_candidate").addClass('button').val('Processing..');
 
@@ -406,7 +383,7 @@
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}&json="+con,
+						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(result) {
 								location.replace(sourceleadUrl+"/candidatesList");
 						},
@@ -576,13 +553,31 @@ function getCities(){
 	       $("#state").chosen();
 	       $("#city").chosen();
 	       
+	       
+	        //Adding Customized Skills to the list
+	        var select, chosen;
+		    select = $("#candidateSkills");
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.on('keyup', function(e)
+		    {
+		    	var newSkill = this.value.replace(",","");
+		        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		        {
+		            var option = $("<option>").val(newSkill).text(newSkill);
+		            select.append(option);
+		            select.find(option).prop('selected', true);
+		            select.trigger("chosen:updated");
+		        }
+		    });
+		    //Adding Customized Skills to the list
+	       
 	       $("#country").on('change', function (e) {
 	    	   getStates();
 	       });
 	       $("#state").on('change', function (e) {
 	    	   getCities();
 	       });
-		       
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
@@ -673,8 +668,8 @@ function getCities(){
 							 }
 						}
 						
-						$("#firstName").val(firstName);
-						$("#lastName").val(lastName);
+						$("#firstName").val(firstName.replace(".",""));
+						$("#lastName").val(lastName.replace(".",""));
 						$("#email").val(json.email);
 						$("#mobilePhone").val(json.phoneNumbers);
 						validateCandidateEmail();

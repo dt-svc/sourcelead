@@ -172,6 +172,7 @@ public class Candidate {
 	 private String reqSubmissionId;
 	 
 	 
+	 
 	 @Transient
 	 private List<RequirementSubmission> requirementSubmisstions;
 	 

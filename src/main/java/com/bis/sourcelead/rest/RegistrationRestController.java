@@ -73,13 +73,15 @@ public class RegistrationRestController {
 		try {
 			orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName);
 			for(Org regOrg : orgsList){
-				regOrg.setEmail(regOrg.getUser().getEmail());
-				regOrg.setIsMailSent(regOrg.getUser().getIsMailSent());
-				UserRole userRole =userRoleService.getLoginUserPrimaryRole(regOrg.getUser().getId());
-                if(userRole != null){
-                    regOrg.setUserState(userRole.getUserState());
-                }
-				regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
+				if(regOrg.getUser() != null){
+					regOrg.setEmail(regOrg.getUser().getEmail());
+					regOrg.setIsMailSent(regOrg.getUser().getIsMailSent());
+					UserRole userRole =userRoleService.getLoginUserPrimaryRole(regOrg.getUser().getId());
+	                if(userRole != null){
+	                    regOrg.setUserState(userRole.getUserState());
+	                }
+					regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
+				}
 				regOrgsList.add(regOrg);
 			}
 		} catch (Exception e) {
@@ -214,7 +216,7 @@ public class RegistrationRestController {
 			    List<Org> org =orgService.getOrgs();
 			    for(Org orgList : org ){
 			    	//String Name = companyName.toUpperCase();
-			    	if(orgList.getOrgName().equals(companyName)){
+			    	if(orgList.getOrgName().equalsIgnoreCase(companyName)){
 			    		flag = true;
 			    	}
 			    }

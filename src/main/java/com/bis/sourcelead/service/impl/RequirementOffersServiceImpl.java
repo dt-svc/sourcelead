@@ -85,15 +85,15 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		
 		
 		for (long c = 1; c < maxCount; c++) {
-				if(jsonObj.has(c+"applicant")){
+				if(jsonObj.has(c+"applicantId")){
 						
 						String applicantslist =null;
 						try{
-							JSONArray jsonArray = jsonObj.getJSONArray(c+"applicant");
+							JSONArray jsonArray = jsonObj.getJSONArray(c+"applicantId");
 							applicantslist = jsonArray.toString();
 						}
 						catch(JSONException e){
-							applicantslist =jsonObj.getString(c+"applicant");
+							applicantslist =jsonObj.getString(c+"applicantId");
 						}
 						applicantslist = applicantslist.replaceAll("\\[", "").replaceAll("\\]","");
 						applicantslist = applicantslist.replaceAll("\"", "");
@@ -170,14 +170,14 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					            if(jsonObj.has("notifyToVendor")  && !jsonObj.getString("notifyToVendor").isEmpty()){
 									List<Requirement> vendorRequirement = requirementService.getRequirementListById(requirementSubmission.getRequirement().getId());
 									Requirement clientRequirement= requirementService.getRequirementByRequirementId(requirementSubmission.getRequirement().getId());
-									//offerMailToVendors(loginUser,clientRequirement,vendorRequirement);
+									offerMailToVendors(loginUser,clientRequirement,vendorRequirement);
 					            }
 					            
 					            // This is to  notify  the Applicant
 					            if(jsonObj.has("notifyToApplicant")  && !jsonObj.getString("notifyToApplicant").isEmpty()){
 								           RequirementSubmission candidatsub  = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
 								           Candidate candidate=candidateService.getCandidateByCandidateId(candidatsub.getCandidate().getId());
-								         //  addOfferMailScenario(loginUser, candidatsub, orgLocations, requirementOffers, candidate);
+								          addOfferMailScenario(loginUser, candidatsub, orgLocations, requirementOffers, candidate);
 						        }
 							}
 					     
@@ -216,6 +216,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setLastName(loginUser.getLastName());
             emailMessage.setToEmail(req.getSpocId().getSpocUser().getEmail());
             emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+            emailMessage.setCreatedBy(loginUser.getUserCode());
             emailMessage.setFromName(loginUser.getFirstName() + " " + loginUser.getLastName());
 
             // setting the class filed values
@@ -282,6 +283,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setLastName(loginUser.getLastName());
             emailMessage.setToEmail(applicant.getCandidate().getEmail());
             emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+            emailMessage.setCreatedBy(loginUser.getUserCode());
             emailMessage.setFromName(loginUser.getFirstName() + " " + loginUser.getLastName());
 
             // setting the class filed values

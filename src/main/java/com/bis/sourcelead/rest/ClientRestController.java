@@ -187,10 +187,12 @@ public class ClientRestController {
 		
 		
 		 @RequestMapping(value = "/validateClientOrVendorEmail",  method = RequestMethod.POST)
-		    public @ResponseBody String validateClientOrVendorEmail(@RequestParam(value="email", required=false) String email) {
+		    public @ResponseBody String validateClientOrVendorEmail(@RequestParam(value="email", required=false) String email) throws Exception {
 			 
-			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			 if(!email.equalsIgnoreCase(user.getEmail())){
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 
+			 UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(email, orgLocation.getId());
+			 if(userRole == null){
 				 return "Valid Email";
 			 }else{
 				 return "Invalid Email";
@@ -286,6 +288,15 @@ public class ClientRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId());
+		if(orgSpocsList != null){
+			for(OrgSpoc orgSpoc : orgSpocsList){
+				String ownerLastName = "";
+				if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getLastName() != null){
+					ownerLastName = orgSpoc.getOwnerUser().getLastName();
+				}
+				orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+ownerLastName);
+			}
+		}
 		return commonUtil.toJSON(orgSpocsList);
 	}
 	
@@ -383,7 +394,7 @@ public class ClientRestController {
 	 @ResponseBody String validateSpocEmailId(@RequestParam(value = "email", required = false) String email, @RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			String result;
-			OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(email, orgRelationId, user.getId()); 
+			OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(email, orgRelationId, user.getId(), Constants.RECORD_ACTIVE); 
 			if (orgSpoc != null) {
 				result = "true";
 			} else {
@@ -583,7 +594,7 @@ public class ClientRestController {
 	       JSONObject jsonObj = new JSONObject(jsonVal);
 	       User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId);
+	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation);
 
 		return jsonObj.getString("owner");
 	}
@@ -604,7 +615,18 @@ public class ClientRestController {
 	
 	
 	
-	
+	@RequestMapping(value = "/getAllOwners")
+	public @ResponseBody String getAllOwners(@RequestParam(value="email", required=false) String email,@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		String resultJson = null;
+		
+		List<Long> existingOwnerUserIds = orgSpocService.getOwnerUserIdsbySpocEmailAndOrgRelationId(email,orgRelationId);
+		List<User> userList = userService.getUserListExceptExistedUsersList(existingOwnerUserIds,orgLocations.getId());
+		resultJson = commonUtil.toJSON(userList);
+		return resultJson;
+
+	}	
 	
 	
 	
@@ -697,5 +719,6 @@ public class ClientRestController {
 	protected static boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
 	}
+
 
 }

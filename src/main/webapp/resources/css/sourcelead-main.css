@@ -1382,6 +1382,7 @@ transform: rotate(0)
 	border-radius: 3px;
 	padding: 8px 0 2px;
 	text-align: center;
+	float:left;
 }
 .imageParent {
 	height: 80px;
@@ -2512,6 +2513,9 @@ ul.sl-jobboard li img {
 	padding-left: 15px;
 	line-height: 22px;
 }
+.candidate-details ul{
+	margin-bottom:0;
+}
 .candidate-details h4 {
 	font-size: 20px;
 	margin-bottom: 5px;
@@ -2521,18 +2525,21 @@ ul.sl-jobboard li img {
 }
 .other-detials {
 	position: relative;
-	top: -15px;
+/*	top: -15px;
 	margin-left: 95px;
+*/	margin-top:5px;
 }
 .professinal-details ul li {
 	margin-right: 5px;
-	padding: 2px 4px;
+	padding: 0px 3px;
 	cursor: pointer;
 	transition: all 0.5s ease-in-out;
 	border-radius: 3px;
 	background-color: #BBDEFB;
 	border: 1px solid #90CAF9;
 	font-size: 13px;
+	margin-bottom:5px;
+	line-height:18px;
 }
 .professinal-details ul li:hover {
 	background-color: #fff;
@@ -2542,15 +2549,17 @@ ul.sl-jobboard li img {
 	margin-left: 0;
 }
 .socialnetwork-details {
-	margin-top: 15px;
+	margin-top: 5px;
+	margin-bottom:10px;
 }
 .socialnetwork-details ul li {
 	border-radius: 3px;
 	cursor: pointer;
-	padding: 4px 5px;
+	padding: 3px 2px;
 	text-align: center;
 	width: 30px;
-	margin-right: 2px;
+	margin-right:2px;
+	line-height:12px;
 }
 .socialnetwork-details ul li .fa {
 	font-size: 20px;
@@ -2560,7 +2569,7 @@ ul.sl-jobboard li img {
 	color: #909090;
 }
 ul.can-perdt li {
-	line-height: 20px; padding:2px 0px;/*	display:block;
+	line-height: 20px; padding:1px 0px;/*	display:block;
     max-width:200px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -3760,6 +3769,195 @@ ul.addTasUl li .fa{
 .ratepop-parent {
 	position:relative;
 }
+.ratepop{
+	border-radius:3px;
+	/*box-shadow:1px 1px 2px #b6b6b6;*/
+	padding:10px;
+	position:absolute;
+	top:35px;
+	background:#ccc;
+	z-index:999;
+	right:0;
+	text-wrap:none;
+	font-style:normal;
+	display:none;
+	box-shadow: 0 0 10px rgba(0,0,0,0.6); -moz-box-shadow: 0 0 10px rgba(0,0,0,0.6); -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.6); -o-box-shadow: 0 0 10px rgba(0,0,0,0.6) - See more at: http://www.corelangs.com/css/box/shadow.html#sthash.guUWDf7m.dpuf
+}
+.ratepop section.tbl-scroll{
+	margin-bottom:15px;
+	height:175px;	
+	overflow-y:scroll;
+}
+.ratepop section.tbl-scroll .fa{
+	padding:0 2px;
+}
+.require_wrap_table.tbl-rate{ 
+  overflow-y:visible !important;
+}
+.ratepop:after{
+	bottom: 100%;
+	right:20px;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(255, 255, 255, 0);
+	border-bottom-color: #ccc;
+	border-width: 15px;
+	margin-left: -20px;
+}
+.ratepop table tr th{
+height:35px !important;
+}
+.showRate{
+	cursor:pointer;
+	color:#00527A;
+}
+.ratepop .close-ratepop{
+	background-color: #d94747;
+    color: #fff;
+    left: -10px;
+    padding: 4px 5px;
+    position: absolute;
+    top: -5px;
+	border-radius:3px;
+	cursor:pointer;
+}
+/* Comments styles */
+.comments-div {
+	padding:5px;
+	border:1px solid #ccc;
+	font-size:12px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-ms-border-radius: 3px;
+	border-radius: 3px;
+	position:relative;
+	margin-bottom:15px;
+}
+.comments-div .commentsimg {
+	/*background:#337ab7;*/
+	padding:4px 0px;
+	margin-right:5px;
+		-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-ms-border-radius: 3px;
+	border-radius: 3px;
+	float:left;
+	position:relative;
+}
+.comments-div .commentsimg .fa-comments {
+	color: #5cb85c;
+    font-size: 20px;
+    left: 35px;
+    position: absolute;
+    top: -4px;
+    z-index: 9999;
+}
+.comments-div .commentsimg-inner{
+	width:50px;
+	height:50px;
+	text-align:center;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+}
+.comments-div .comments-content{
+  float:left; width:435px;
+  height:auto;
+}
+.comments-div .comments-content p{
+	margin-bottom:5px;
+}
+.commentsimg-inner img{
+	height: auto;
+	margin: auto;
+	max-height: 100%;
+	max-width: 100%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	top: 0;
+	vertical-align: middle;
+	width: auto;
+    -ms-border-radius:50%;
+	-webkit-border-radius:50%;
+	-moz-border-radius:50%;
+	border-radius:50%;
+}
+p.comment-by .text-danger{
+	width:180px;
+	display:inline-block;
+	color:#d34836;
+	white-space:nowrap;
+	text-overflow:ellipsis;
+	overflow:hidden;
+	font-weight:600;
+	position:relative;
+	top:4px;
+	left:2px;
+	font-size:13px;
+}
+p.comment-by .small{
+	font-size:11px;
+	color:#909090;
+}
+.comments-button{
+	position:relative;
+}
+.comments-button .btn-primary{
+	padding:1px 5px;
+}
+.cmt-button{
+	position:absolute;
+	right:0;
+	top:0;
+}
+a.comments-view{
+	bottom: -40px;
+    position: absolute;
+    right: 10px;
+    width: 65px;
+}
+a.comments-view:hover{
+	color:#909090;
+}
+a.comments-view span{
+	position: absolute;
+    right:-5px;
+    top: -5px;
+}
+ul.can-perdt{
+	margin-bottom:5px;
+}
+.add-comment{
+	position:absolute;
+	top:15px;right:2px !important;
+	width:250px;
+	z-index:999;
+	background:#337ab7;
+	border:1px solid #337ab7;
+	padding:5px;
+	display:none;
+}
+.add-comment .btn-sm{
+	padding:2px 5px;
+}
+p.comment-text{
+      line-clamp: 2;
+    -webkit-box-orient: vertical;
+	overflow:hidden;
+	height:25px;
+	text-overflow:ellipsis;
+	white-space:nowrap;
+	max-width:400px;
+	display:block;
+}
+/* srinivas-candidate profile  Nov. 10th, 2016 */
 .ratepop-parent .ratepop{
 	border:1px solid red;
 	padding:10px;
@@ -3770,6 +3968,112 @@ ul.addTasUl li .fa{
 	z-index:999;
 	left:0;
 }
+.require_wrap_details.candidate_wrap_details{
+	padding: 0;
+}
+.dashboard-widget.candidate-profile {
+	padding: 0;
+}
+.dashboard-widget.candidate-profile .nav-tabs {
+  border-bottom: 1px solid #f60;
+  position: relative;
+  top:0px;
+  right:0px;
+}
+.dashboard-widget.candidate-profile .nav-tabs li a{
+	border-bottom:none;	
+	padding:5px 15px;
+	margin: 0;
+}
+.dashboard-widget.candidate-profile .nav-tabs li a:hover {
+	border:none;
+	border-bottom:none;
+	color:#2F2F2F;
+	background-color: #ccc;
+	-webkit-border-radius:4px 4px 0 0;
+	-moz-border-radius:4px 4px 0 0;
+	-ms-border-radius:4px 4px 0 0;
+	border-radius:4px 4px 0 0;
+}
+.uploadfile.uploadfile-candidate{
+	left: 5%;
+}
+.uploadfile.uploadfile-candidate .btn-sm {
+	padding:3px 6px;
+}
+/* srinivas-candidate profile  Nov. 10th, 2016 Ends */
+.search-piple {
+    border:none; border-bottom:1px solid #bdbdbd; background-color: transparent; padding:3px 5px; width:175px;
+    transition:0.3s all ease-in-out; -webkit-transition:0.3s all ease-in-out; -moz-transition:0.3s all ease-in-out;
+    font-size:14px; font-weight:500; color:#333;
+    }
+.pipeline-count {
+	
+    min-height: 20px;
+	border-bottom:1px solid #ddd;
+}
+.pipeline-count ul{
+	float: none;
+    margin-bottom: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-top:5px;
+    padding: 10px !important;
+    position: relative;
+}
+.pipeline-count ul li{
+	margin:0 5px !important;
+	float:none;
+    padding: 5px 6px 0px 6px !important;
+	line-height:20px;
+	background: #ededed;
+	border-radius:5px;
+}
+.pipeline-count ul li:hover{
+	background:#0cc2aa;
+}
+.pipeline-count ul li a{
+	color:#333;
+}
+.pipeline-count ul li span{
+	color: #fff !important;
+    font-size: 13px !important;
+    margin-left: 2px;
+    padding: 3px 6px !important;
+    position: relative;
+    top: -10px;
+	margin-left:5px;
+	-moz-border-radius:20px;
+	-webkit-border-radius:20px;
+	-o-border-radius:20px;
+	-ms-border-radius:20px;
+	border-radius:20px;
+}
+ul.pipeline{
+	margin:10px 0 !important;
+	float:none;
+}
+ul.pipeline li a{
+	color:#909090;
+	transition:all 0.2s;
+	font-size:16px;
+}
+ul.pipeline li a:hover{
+	color:#333;
+}
+ul.pipeline li{
+	border-right: 1px solid #f1f1f1;
+    float: left !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+}
+.require_wrap_table.overflow-data{
+	overflow: inherit !important;
+}
+.headersummary ul{
+	padding: 2px 245px 2px 0px !important;
+}
+/* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {
 	display: none !important;
@@ -3796,6 +4100,9 @@ div.pages-404.width {
 }
 
 @media (max-width:767px) {
+.require_wrap_table span{
+	max-width:100%;
+}
 .theme-color {
 	top: 150px;
 }

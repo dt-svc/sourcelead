@@ -3,8 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script>
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<script src="resources/js/bootstrap-select.min.js"></script>
 
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
@@ -275,7 +275,7 @@ function checkEmails(){
 		});
 		
 		var cell3 = row.insertCell(3);
-		cell3.innerHTML = "<div class='pull-left mr' id='"+maxRowNum+"timeDiv'> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='Start Time' name='"+maxRowNum+"startTime' id='"+maxRowNum+"startTime'  type='text' data-validation='required' field-name='Start Time'/><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span></span> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='End Time' name='"+maxRowNum+"endTime' id='"+maxRowNum+"endTime'  type='text' field-name='End Time' /><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span></span> </div> ";
+		cell3.innerHTML = "<div class='pull-left mr' id='"+maxRowNum+"timeDiv'> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='Start Time' name='"+maxRowNum+"startTime' id='"+maxRowNum+"startTime' onBlur='validateEndTime("+maxRowNum+");' type='text' data-validation='required' field-name='Start Time'/><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span></span> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='End Time' name='"+maxRowNum+"endTime' id='"+maxRowNum+"endTime' onBlur='validateEndTime("+maxRowNum+");' type='text' field-name='End Time' /><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span></span> </div> ";
 		
 		$("#"+maxRowNum+"startTime").timepicker({
 			'showDuration': true
@@ -320,6 +320,43 @@ function checkEmails(){
 		    
 				
 }		
+</script>
+
+<script type="text/javascript">
+	function validateEndTime(maxRowNum) {
+		var rowId = $("#maxTsRowNum").val();
+		
+		 var allStartTimes = [];
+		 var allEndTimes = [];
+		 $("#"+maxRowNum+"timeDiv").find('p.jquery_form_error_message').remove();
+		 
+		for(i=1 ; i<=rowId; i++){
+			
+			var startTime = $("#"+(i)+"startTime").val();
+			 var endTime = $("#"+(i)+"endTime").val();
+			if(endTime != null && endTime != '' && endTime != 'undefined'){
+				if(startTime == endTime){
+					 $("#"+(i)+"timeDiv").find('p.jquery_form_error_message').remove();
+			         $("#add_interview").removeAttr("disabled");
+			        $("#add_interview").attr("disabled", "disabled");
+			        $("#"+(i)+"timeDiv").append("<p class='jquery_form_error_message'>End Time should greater than Start Time</span>");
+			    }else{
+			         $("#"+(i)+"timeDiv").find('p.jquery_form_error_message').remove();
+			         $("#add_interview").removeAttr("disabled");
+			   	}
+			}
+		}
+		 for(i=1 ; i<=rowId; i++){
+			var startTime1 = $("#"+(i)+"startTime").val();
+			 var endTime1 = $("#"+(i)+"endTime").val();
+			if(endTime1 != null && endTime1 != '' && endTime1 != 'undefined'){
+				if(startTime1 == endTime1){
+					 $("#add_interview").attr("disabled", "disabled");
+				}
+			}
+		 }
+		
+	}
 </script>
 
 <script type="text/javascript">

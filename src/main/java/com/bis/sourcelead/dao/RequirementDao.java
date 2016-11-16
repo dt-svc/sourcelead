@@ -28,5 +28,8 @@ public interface RequirementDao {
 
 	public List<Requirement> getRequirementListById(Long requirementId);
 	
+	public Requirement checkRequirementIsReleasedOrNot(Long requirementId,Long orgLocationId) throws Exception;
+	
+	
 	Integer validateJobId(Long id) throws Exception;
 }
