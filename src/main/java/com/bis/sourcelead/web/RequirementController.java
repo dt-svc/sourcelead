@@ -6,6 +6,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -41,7 +44,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @Controller
 public class RequirementController {
 	
-	
+	private static final Logger logger = LoggerFactory.getLogger(RequirementController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
@@ -211,7 +214,8 @@ public class RequirementController {
 		
 		//approver list
 		List<SubmissionTemplate>   submissionTempletesList = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationId(orgLocations.getId());
-				model.addObject("submissionTempletesList", submissionTempletesList);
+		
+		model.addObject("submissionTempletesList", submissionTempletesList);
 		
 
 		return model;
@@ -223,12 +227,10 @@ public class RequirementController {
 		 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		List<Candidate> candidatesList = candidateService.getCandidatesByOrgLocationID(orgLocations.getId(),requirementId);
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		
 		ModelAndView model = new ModelAndView();
 		model.setViewName("requirement/requirementSummary");
-		model.addObject("candidatesList",candidatesList);
 		model.addObject("requirementId",requirementId);
 		
 		//to get time zone list
