@@ -179,7 +179,7 @@ function loadRemiderDiv(){
 
 <div id="divOfferTd3" style="display: none; float: left;">
    	 <div class="positionRelative float">
-           <select class="form-control selectpicker" id="REPLACEROWIDPaymentType" name="REPLACEROWIDPaymentType"  >
+           <select class="form-control" id="REPLACEROWIDPaymentType" name="REPLACEROWIDPaymentType"  >
 	           <option>Rupee</option>
 	           <option>Dollar</option>
            </select>
@@ -188,7 +188,7 @@ function loadRemiderDiv(){
      	  <input type="text" value="" class="form-control input-sm" id="REPLACEROWIDAmount" name="REPLACEROWIDpaymentTypAmount" >
      </div>
    	 <div class="positionRelative float">
-           <select class="form-control selectpicker" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode">
+           <select class="form-control" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode">
            <option>Yearly</option>
            <option>Monthly</option>
            </select>
@@ -196,7 +196,7 @@ function loadRemiderDiv(){
 </div> 
 
 <div id="divOfferTd4" style="display: none; float: left;">
- 	<select class="form-control selectpicker" id="REPLACEROWIDPositionType" name="REPLACEROWIDPositionType">
+ 	<select class="form-control" id="REPLACEROWIDPositionType" name="REPLACEROWIDPositionType">
 	                      <option>Fulltime</option>
 	                      <option>Parttime</option>
 	                      <option>C2C</option>
@@ -344,7 +344,7 @@ function cancelAddOffer(){
         con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
         var sourceleadUrl ='${sourceleadUrl}'; 
-       
+        var requirementId = '${requirementId}';
         $("#add_offer").attr("disabled", "disabled");
  		$("#add_offer" ).addClass('button').val('Processing..'); 
  		var form = $('#addOffer_form')[0];
@@ -363,6 +363,7 @@ function cancelAddOffer(){
 	        	$(".add_offer_wrap").removeClass("add_offer_wrap_active");
         		$(".side_mask").fadeOut(200);
         		$("body").css('overflow-y', 'auto');
+        		requirementPipeline(requirementId); 
 	        },
 	    });   
         return true;

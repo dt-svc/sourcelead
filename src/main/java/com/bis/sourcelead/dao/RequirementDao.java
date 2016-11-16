@@ -32,4 +32,7 @@ public interface RequirementDao {
 	
 	
 	Integer validateJobId(Long id) throws Exception;
+
+	public Boolean validateRequirementTitle(String jobName, Long orgLocationId);
+
 }

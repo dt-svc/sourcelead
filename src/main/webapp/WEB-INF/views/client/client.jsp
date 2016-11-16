@@ -47,7 +47,7 @@ window.onload = function () {
 		<div class="pull-left">
 			<h2>Create Client</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;<a href="clientDashboard"> Client List</a>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a>
 			&raquo; Client</div>
 	</section>
 	
@@ -69,7 +69,7 @@ window.onload = function () {
 			<div class="form-group " id="companyWebsiteDiv">
 				<label class="col-md-3">Website</label>
 				<div class="col-md-9">
-				<input type="text" class="form-control" id="webSite" name="webSite" value="" field-name="Client Website" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
+				<input type="text" class="form-control" id="webSite" name="webSite" value="" field-name="Client Website"  onblur="validateWebsite();" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
 				</div>
 			</div>
 						
@@ -320,12 +320,12 @@ function getOrgName(){
 function getOrgDetails()
 {
 	var orgName = document.getElementById("orgName").value;
-	var orgLocationId = document.getElementById("orgLocationId").value;
+ 	var orgLocationId = document.getElementById("orgLocationId").value; 
 	var sourceleadUrl = '${sourceleadUrl}';
-	if(orgName && orgLocationId){
+	if(orgName){
    	 $.ajax({
    	    	type: "POST",
-   	    	url : sourceleadUrl+"/getOrgDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+   	    	url : sourceleadUrl+"/getOrgDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&orgName="+orgName,
    	        contentType: "application/json; charset=utf-8",
    	        dataType: "json",
    	        success: function(data) {
@@ -673,6 +673,7 @@ function validateClientName(){
 					var result = data;
 					if (result == "Website Duplicated" || result == "Invalid Website") {
 						//existed website
+						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 						$("input#webSite").after("<p class='jquery_form_error_message'>"+ website+ " is "+result+"</span>");
 						document.getElementById("webSite").setAttribute('record-exist', 'yes');
 						document.getElementById("webSite").setAttribute('record-exist-errorMsg',website + ' is '+result);

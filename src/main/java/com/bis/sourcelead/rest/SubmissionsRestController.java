@@ -313,6 +313,7 @@ public class SubmissionsRestController {
 		 emailMessage.setLastName(requirement.getManagerUserId().getLastName());
 		 emailMessage.setToEmail(requirement.getManagerUserId().getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(user.getUserCode());
 		 emailMessage.setFromName(user.getFirstName()+" "+user.getLastName());
 		 
 		//setting the class filed values
@@ -329,16 +330,16 @@ public class SubmissionsRestController {
 				 globalVarsMap.put("requirementExperience"," 0 ");
 			 }
 			 else if((requirement.getMaxExp() != null && requirement.getMaxExp() != "" && requirement.getMaxExp() != "undefiend") && (requirement.getMinExp() != null && requirement.getMinExp() != "" && requirement.getMinExp() != "undefiend" )){
-				 globalVarsMap.put("requirementExperience",requirement.getMaxExp() +" - "+requirement.getMinExp());
+				 globalVarsMap.put("requirementExperience",requirement.getMinExp() +" - "+requirement.getMaxExp());
 			 }
 			 else if((requirement.getMaxExp() != null && requirement.getMaxExp() != "" && requirement.getMaxExp() != "undefiend") && (requirement.getMinExp() == null || requirement.getMinExp() == "" || requirement.getMinExp() == "undefiend" )){
-				 globalVarsMap.put("requirementExperience",requirement.getMinExp());
+				 globalVarsMap.put("requirementExperience",requirement.getMaxExp());
 			 }
 			 else if((requirement.getMaxExp() == null || requirement.getMaxExp() == "" || requirement.getMaxExp() == "undefiend") && (requirement.getMinExp() != null && requirement.getMinExp() != "" && requirement.getMinExp() != "undefiend" )){
-				 globalVarsMap.put("requirementExperience",requirement.getMaxExp() );
+				 globalVarsMap.put("requirementExperience",requirement.getMinExp() );
 			 }
 			 if(requirement.getRate() != null && requirement.getRate() != "" && requirement.getRate() != "undefiend"){
-				 globalVarsMap.put("requirementRate",requirement.getRate());
+				 globalVarsMap.put("requirementRate",requirement.getRate() +" "+requirement.getRateType());
 			 }
 			 if(requirement.getSkills() != null && requirement.getSkills() != "" && requirement.getSkills() != "undefiend"){
 				 globalVarsMap.put("requirementSkill",requirement.getSkills());

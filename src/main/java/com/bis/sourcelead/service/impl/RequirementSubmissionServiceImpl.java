@@ -597,8 +597,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     			 emailMessage.setToEmail(requirementManager.getEmail());
     		 }
     	
-		 
-		 
+    	 emailMessage.setCreatedBy(user.getUserCode());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setFromName(fullName);
 		 

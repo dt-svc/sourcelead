@@ -287,7 +287,7 @@ function validateCompanyName(){
 </script>
 
 <script type="text/javascript">
-function validateWebsite(){
+function (){
       var website = document.getElementById("companyWebsite").value; 
      var sourceleadUrl ='${sourceleadUrl}';
      var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}';

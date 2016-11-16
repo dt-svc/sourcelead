@@ -25,7 +25,6 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -33,7 +32,6 @@ import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
-import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -61,9 +59,6 @@ public class ClientRestController {
 
 	@Autowired
 	private OrgService orgService;
-	
-	@Autowired
-	private RolesService rolesService;
 
 	@Autowired
 	private OrgLocationService orgLocationService;
@@ -129,21 +124,6 @@ public class ClientRestController {
 			return commonUtil.toJSON(hm);
 	    }
 	 
-	 @RequestMapping(value = "/getRolesList", method = RequestMethod.POST)
-		public @ResponseBody String getRolesList(
-				@RequestParam(value = "orgLocationId", required = false) String orgLocationId,
-				@RequestParam(value = "moduleType", required = false) String moduleType,
-				HttpServletRequest request) throws Exception {
-			
-			List<Roles> rolesList  = null;
-			if(!isNullOrEmpty(orgLocationId)){
-				rolesList = rolesService.getClientOrVendorRolesList(Long.parseLong(orgLocationId), moduleType);
-			}else{
-				rolesList = rolesService.getClientOrVendorRolesList(1L, moduleType);
-			}
-			
-			return commonUtil.toJSON(rolesList);
-		}
 	 
 	 /**
 		 * Handles to get Org Deatils
@@ -156,13 +136,18 @@ public class ClientRestController {
 	 
 	 @RequestMapping(value = "/getOrgDetails",  method = RequestMethod.POST)
 	    public @ResponseBody String getOrgDetails(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
-	    		@RequestParam(value="json", required=false) String json) {
+	    		@RequestParam(value="orgName", required=false) String orgName,
+	    		@RequestParam(value="json", required=false) String json) throws Exception {
 			
 			ArrayList<String> orgsList = new ArrayList<String>();
 			
-			OrgLocations orgLocations = null;
+			Org org = orgService.getOrgByOrgName(orgName);
+			
+			
+			OrgLocations orgLocations = orgLocationService.getOrgLocationsByOrgCode(org.getId().toString());
+			
 			try {
-				orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+				orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
 			} catch (Exception e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
@@ -334,29 +319,73 @@ public class ClientRestController {
 	
 	@RequestMapping(value = "/validateTemplateName", method = RequestMethod.POST)
 	@ResponseBody String validateTemplateName(@RequestParam(value = "clientLocationId", required = false) Long clientLocationId,
-			@RequestParam(value = "templateName", required = false) String templateName) throws Exception {
+			@RequestParam(value = "templateName", required = false) String templateName,
+			@RequestParam(value = "templateId", required = false) String templateId) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
-		SubmissionTemplate submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateName(clientLocationId, orgLocations.getId(), templateName);
-		if(null != submissiontTemplate){
-			return "invalid";
-		}else{
-			return "valid";
+		String result = null;
+		SubmissionTemplate submissiontTemplate = null;
+		
+		if(!isNullOrEmpty(templateId)){
+			submissiontTemplate  = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
+			if(submissiontTemplate.getTemplateName().equalsIgnoreCase(templateName)){
+				result = "valid";
+			}else{
+				submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateName(clientLocationId, orgLocations.getId(), templateName);
+				if(null != submissiontTemplate){
+					result = "invalid";
+				}else{
+					result = "valid";
+				}
+			}
 		}
+		
+		else{
+			submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateName(clientLocationId, orgLocations.getId(), templateName);
+			if(null != submissiontTemplate){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+		return result;
 		
 	}
 	
 
 	@RequestMapping(value = "/validateTemplateNameByOrg", method = RequestMethod.POST)
-	@ResponseBody String validateTemplateNameByOrg(@RequestParam(value = "templateName", required = false) String templateName) throws Exception {
+	@ResponseBody String validateTemplateNameByOrg(@RequestParam(value = "templateName", required = false) String templateName,
+			@RequestParam(value = "templateId", required = false) String templateId) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
-		SubmissionTemplate submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(orgLocations.getId(), templateName);
-		if(null != submissiontTemplate){
-			return "invalid";
-		}else{
-			return "valid";
+		SubmissionTemplate submissiontTemplate = null;
+		String result = null;
+		
+		if(!isNullOrEmpty(templateId)){
+			submissiontTemplate  = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
+			if(submissiontTemplate.getTemplateName().equalsIgnoreCase(templateName)){
+				result = "valid";
+			}else{
+				submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(orgLocations.getId(), templateName);
+				if(null != submissiontTemplate){
+					result = "invalid";
+				}else{
+					result = "valid";
+				}
+			}
 		}
+		
+		else{
+			submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(orgLocations.getId(), templateName);
+			if(null != submissiontTemplate){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+		return result;
 		
 	}
 	
@@ -502,7 +531,13 @@ public class ClientRestController {
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
 			@RequestParam(value = "responderType", required = false) String responderType) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		return orgService.isClientNameValid(clientName,orgLocation.getId(),responderType);
+		List<Org> org =orgService.getOrgs();
+	    boolean flag = false;
+		
+			flag = orgService.isClientNameValid(clientName,orgLocation.getId(),responderType);
+		
+		
+		return flag;
 	}
 /**
  * Verifies Client Email
@@ -614,7 +649,7 @@ public class ClientRestController {
 	       JSONObject jsonObj = new JSONObject(jsonVal);
 	       User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId, orgLocation);
+	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation);
 
 		return jsonObj.getString("owner");
 	}

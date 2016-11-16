@@ -144,7 +144,7 @@ public class ClientServiceImpl implements ClientService{
 			SubmissionTemplate submissionTemplate = null;
 			SubmissionTemplate sourceLeadDefaultTemplate = null;
 			if(jsonObj.has("orgLocationId")){
-				clientOrgLocations = orgLocationService.getOrgLocations(Long.parseLong(jsonObj.getString("orgLocationId")));
+				clientOrgLocations = orgLocationService.getOrgLocations(jsonObj.getLong("orgLocationId"));
 				if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
 					clientOrgLocations.setCountry(jsonObj.getString("country"));
 				}else if(jsonObj.has("orgCountry") && !isNullOrEmpty(jsonObj.getString("orgCountry"))){
@@ -712,6 +712,7 @@ public class ClientServiceImpl implements ClientService{
 			 emailMessage.setLastName(editUser.getLastName());
 			 emailMessage.setToEmail(editUser.getEmail());
 			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 			 
 			 

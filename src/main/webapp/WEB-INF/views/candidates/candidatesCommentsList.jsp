@@ -4,43 +4,90 @@
 
 <script>
 function candidateCommentsList(candidateId){
+	
+	
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+         success :function(data) {
+        	 var result = "";
+              if(data != null && data != 'undefined' && data != ""){
+              	 	 var json = JSON.parse(data);
+            		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+            		 else if (data.indexOf('exception') >= 0) {
+            			 location.replace(sourceleadUrl+"/errorPage");
+            		 }
+            		 else{
+            			  result  = result + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+            	          for(var i=0;i<json.length;i++){
+            	            	var report = json[i];
+            	        	  	result = result+'<div class="comments-div clearfix">';
+            	        	    result = result+'    <div class="commentsimg">';
+            	        	    result = result+'    <i class="fa fa-comments"></i>';
+            	        	    result = result+'        <div class="commentsimg-inner">';
+            	        	    /* result = result+'        	<img onerror="predefineProfileImage(this);"  src="<c:url value="/displayUserImage/'+report.commentAuthorUserId'+"/>" alt="User Comment" title="User Comment">'; */
+            	        	    result = result+'        	<img onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/${SourceLeadWeb_userId}"/>">';
+            	        	    result = result+'        </div>';
+            	        	    result = result+'    </div>';
+            	        	    result = result+'     <div class="comments-content">';
+            	        	    result = result+'         <div class="pull-left">';
+            	        	    result = result+'         <p class="comment-by">';
+            	        	    result = result+'            By <span class="text-danger">'+report.commentAuthor+'</span>';
+            	        	    result = result+'            <span class="small">('+report.commentTime+')</span></p>';
+            	        	    result = result+'         <p class="comment-text">'+report.comment+'</p>';
+            	        	    result = result+'         </div>';
+            	        	    result = result+'     </div>';
+            	        	    result = result+'</div>';
+            	          }
+            		 }
+	              }else{
+	               	 	 $("#tab-7").removeAttr("style");
+	 	    	         var result ="";
+			    	     result = result+"   <div class='row'>"; 
+						 result = result+"	<div class='col-lg-12'>"; 
+						 result = result+"		<div class='content-area clearfix'>"; 
+						 result = result+"			<div class='blank-pages'>";
+						 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+						 result = result+"			        <p>No Comments Found</p>";
+						 result = result+"			 </div>";
+						 result = result+"		</div>"; 
+						 result = result+"	</div>"; 
+						 result = result+"  </div> "; 
+	                }
+          	  result  = result + '              </div>';
+          	  
+              $("#tab-1").empty();
+              $("#tab-2").empty(); 
+              $("#tab-3").empty();  
+              $("#tab-4").empty();  
+              $("#tab-5").empty();  
+              $("#tab-6").empty();
+              $("#tab-7").empty();
+              $("#tab-7").append(result);
+         },
+         
+      });
+
+	
+	
+	
+	
+	
 	 
-	var result = "";
-	result  = result + '<div class="project_tabs_inn_head">';
+	/* result  = result + '<div class="project_tabs_inn_head">';
 	result  = result + '              <input class="vendorfild" type="text"><i class="fa fa-search"></i> </div>';
 	result  = result + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-	result  = result + '                <table>';
-	result  = result + '                  <tbody>';
-	result  = result + '                    <tr>';
-	result  = result + '                      <th>By</th>';
-	result  = result + '                      <th>To</th>';
-	result  = result + '                      <th>Date & Time</th>';
-	result  = result + '                      <th>Action</th>';
-	result  = result + '                    </tr>';
-	result  = result + '                    <tr>';
-	result  = result + '                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>';
-	result  = result + '                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>';
-	result  = result + '                      <td><div><span>30/08/2016 7:30 AM</span></div></td>';
-	result  = result + '                      <td><div><a href="javascript:void(0)">View</a></div></td>';
-	result  = result + '                    </tr>';
-	result  = result + '                    <tr>';
-	result  = result + '                      <td><div><span class="mid-span">Vannam (vannam@bis.com)</span></div></td>';
-	result  = result + '                      <td><div><span class="mid-span">Mahesh (mahesh@amazon.in)</span></div></td>';
-	result  = result + '                      <td><div><span>30/08/2016 7:30 AM</span></div></td>';
-	result  = result + '                      <td><div><a href="javascript:void(0)">View</a></div></td>';
-	result  = result + '                    </tr>';
-	result  = result + '                  </tbody>';
-	result  = result + '                </table>';
-	result  = result + '              </div>';
+	 */
+	
+	
+	
 
-    $("#tab-1").empty();
-    $("#tab-2").empty(); 
-    $("#tab-3").empty();  
-    $("#tab-4").empty();  
-    $("#tab-5").empty();  
-    $("#tab-6").empty();
-    $("#tab-7").empty();
-    $("#tab-7").append(result);
+    
+    
     
 }
 </script>

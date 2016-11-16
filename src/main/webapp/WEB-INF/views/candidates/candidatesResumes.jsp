@@ -47,7 +47,7 @@ function candidateResume(candidateId){
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		result  = result + '   <div id="resumesList" ></div>';
 		result  = result + '   </div>';
-	result = result+'	    </div>';
+		result = result+'	    </div>';
 	
     $("#tab-1").empty();
     $("#tab-2").empty(); 
@@ -248,7 +248,7 @@ function addResume(candidateId) {
      3.ajax url implementation in CandidateResumeRestController.
 --%>
 <script>
-  function candidateResumesList(candidateId){ 	 
+  function candidateResumesList(candidateId){ 	
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var candidateId = candidateId;
 	  var result = "";

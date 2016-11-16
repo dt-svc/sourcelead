@@ -378,7 +378,7 @@ function clientSideBar(candidateId){
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
 			             result = result+'     <ul class="project-tabs-menu">';
 			             result = result+'       <li class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
-			             result = result+'       <li><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); CandidateResume('+candidateId+');" >Resume</a></li>';
+			             result = result+'       <li><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');" >Resume</a></li>';
 			             result = result+'       <li><a href="#tab-3" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
 			             result = result+'       <li><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
 			             result = result+'       <li><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
@@ -601,14 +601,11 @@ function refreshImageBlock(candidateId){
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
 						 result = result+' </div>';
 						 $("#candidateImageId").append(result);
-						 
-			    	} 
-                } 
-         },
-           
+			    	}
+                }
+         	},
       }); 
-				
-}
+   }
 </script>
 
 
@@ -624,7 +621,9 @@ function loadFile(event,candidateId){
 	    var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
 	    document.getElementById("errorImage").style.display="none"; 
 	    
-	    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) != 'jpg'){
+	    var extension = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1).toLowerCase();
+	    
+	    if(extension != 'jpg'){
 	    	output.src = URL.createObjectURL(event.target.files[0]);
 	    	
 	    	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
@@ -706,7 +705,7 @@ function cancel(candidateId){
     <div class="pull-left">
       <h2>Candidate List</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="dashboard">Home </a> &raquo;Candidate List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo;Candidate List</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">

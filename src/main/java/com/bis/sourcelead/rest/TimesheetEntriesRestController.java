@@ -1,12 +1,19 @@
 package com.bis.sourcelead.rest;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,6 +28,7 @@ import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
+import com.bis.sourcelead.service.ExportTimesheetEntries;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
@@ -46,6 +54,9 @@ public class TimesheetEntriesRestController {
 	
 	@Autowired
 	public TimeSheetExcelView timeSheetExcelView;
+	
+	@Autowired
+	private ExportTimesheetEntries exportTimesheetEntries;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -208,6 +219,33 @@ public class TimesheetEntriesRestController {
 	//sarath kumar punnana : this method is for null check
 	public static boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
+	}
+	
+	/**
+	 * @author Rajashekar
+	 * @param request
+	 * @param navigation
+	 * @param startDate
+	 * @return JSON
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/exportTimeShhet")    
+	public void ExportTimeShhet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate,HttpServletResponse response) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		File file = exportTimesheetEntries.exportTimesheets(user, navigation, startDate,orgLocations);
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
 	}
  
 }

@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,7 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateComments;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCommentsService;
 import com.bis.sourcelead.service.CandidateService;
@@ -81,6 +85,41 @@ public class CandidateCommentsRestController {
 			SourceLeadSessionManager.setSessionAttribute(request, "resumeAddMessage",
 					"Successfully you have added");
 			return "success";
+		}else{
+			return "exception";
+		}
+	}
+	
+	
+	
+	
+	/**
+	* @author Venkat Kesav 
+	* 
+	* Handles Comment list for Candidate
+	* 
+	* @param candidateId
+	* 
+	* @param request
+	* 
+	* @return ResponseBody
+	* 
+	* @throws Exception
+	*/
+	@RequestMapping(value = "/getAllCommentsOnCandidateByCandidateIdAndOrgLocation", method = RequestMethod.POST)
+	public @ResponseBody String getAllCommentsOnCandidateByCandidateIdAndOrgLocation(String candidateId, HttpServletRequest request) throws Exception {
+
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		if(StringUtils.isNotEmpty(candidateId)){
+			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
+			
+			List<CandidateComments> candidateCommentsList = candidateCommentsService.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(candidate, orgLocation);
+
+			String resultJson = commonUtil.toJSON(candidateCommentsList);
+			return resultJson;
 		}else{
 			return "exception";
 		}

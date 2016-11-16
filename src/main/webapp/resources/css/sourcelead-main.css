@@ -569,7 +569,7 @@ ul.timesheet-menu li a {
 }
 ul.timesheet-menu li a::before {
 	color: #f0ad4e;
-	content: "";
+	content: "ïˆ­";
 	font-family: fontawesome;
 	padding-right: 5px;
 }
@@ -4029,17 +4029,11 @@ p.comment-text{
 	background: #ededed;
 	border-radius:5px;
 }
-.pipeline-count ul li:hover a{
-	color:#505050;
-}
-.pipeline-count ul li.pipeline-active a{
-	color:#fff;
-}
-.pipeline-count ul li.pipeline-active{
-	background-color:#3081cb;
+.pipeline-count ul li:hover{
+	background:#0cc2aa;
 }
 .pipeline-count ul li a{
-	color:#909090;
+	color:#333;
 }
 .pipeline-count ul li span{
 	color: #fff !important;
@@ -4073,14 +4067,13 @@ ul.pipeline li{
     margin: 0 !important;
     padding: 0 10px !important;
 }
-.roles_list label a{
-	color:#fff;
+.headersummary ul{
+	padding: 2px 245px 2px 0px !important;
 }
-.roles_list label:hover{
-	background-color:#333;
-}
-.collapse-div-adduser.addrole {
-	right:25px;
+.table-overflow-hide {
+	overflow-y:auto;
+	clear: both;
+	display: both;
 }
 /* media 320px */
 @media (max-width: 320px) {

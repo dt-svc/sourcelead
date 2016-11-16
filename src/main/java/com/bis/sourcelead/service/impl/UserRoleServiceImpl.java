@@ -285,6 +285,14 @@ public class UserRoleServiceImpl implements UserRoleService{
 			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
 			String userState,String orgName) throws Exception {
 		return pdfUtil.createPdfTable(activeList, inactiveList, notLoggedInList, userRolesList, userState,orgName);
+
 	}	
+
+
+	@Override
+	public UserRole getUserRoleByUserId(Long userId) throws Exception {
+		return userRoleDao.getUserRoleByUserId(userId);
+	}
+
 
 }

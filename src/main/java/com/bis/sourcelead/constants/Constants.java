@@ -44,6 +44,8 @@ public class Constants {
 	
 	
 	public static final Integer LEVEL1 = 1;
+	
+	public static final Integer LEVEL2 = 2;
 	   
 	public static transient DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static transient DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");
@@ -113,6 +115,13 @@ public class Constants {
 	public static String ASSIGNTEAMMEMBERSFORREQUIREMENT = "AssignToTeamMembers";
 	public static String  WEEK_TIME_SHEET_SUBMISSION= "Week Time Sheet Submission";
 	public static String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";
+	
+
+	public static String OFFERREJECT_EMAIL = "Vendor Offer Reject";
+	
+	public static String OFFERACCEPT_EMAIL = "VendorAcceptedOffer";
+	
+
 
 	public static String YES = "Y";
 	public static String NO  = "N";
@@ -232,4 +241,6 @@ public class Constants {
 			"Date Of Join", "Rate", "Location", "Role", "Manager", "status" };
 	public static String[] CANDIDATE_EXCEL_HEADERS = {"Firstname","Last name","Email id","Phone Number","Location","Designation","Education","Experience","Skills","Rate"};
     public static String[] REQUIREMENT_EXCEL_HEADERS = {"Requirement id","Requirement Title","Experience","Rate","Location","Skills","Manager","Priority","Application Form Name","Client Name","Client Contact Name","Client Contact Email"};
+    
+    public static String[] TIMESHEET_EXCEL_HEADERS = {"Projects","Tasks","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Status"};
 }

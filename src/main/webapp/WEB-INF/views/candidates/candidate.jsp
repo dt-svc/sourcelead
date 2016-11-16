@@ -52,10 +52,22 @@
 	bottom:-16px;
 	}
 	.selp-custom-min .btn-default{
-	z-index: -55 !important;
+	/* z-index: -55 !important; */
+	-webkit-border-radius:0 3px 3px 0;
+	-moz-border-radius:0 3px 3px 0;
+	-ms-border-radius:0 3px 3px 0;
+	border-radius:0 3px 3px 0;
 	}
 	.selp-custom-min .open {
 	z-index: 999999999 !important;
+	}
+	.ratetype p {
+	bottom: -14px;
+	left:0px !important;
+	position: absolute;
+	}
+	.pras.req-title p{
+	bottom:-14px;
 	}
 	</style>
 
@@ -65,7 +77,7 @@
     <div class="pull-left">
       <h2>Add Candidate Details</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;<a href="candidatesList"> Candidate List</a> &raquo; Create Candidate</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Create Candidate</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -166,8 +178,8 @@
         <div class="form-group">
          <label class="col-md-3">Designation</label>
          <div class="col-md-9">
-          <div class="input-group">
-             <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
+          <div class="input-group ratetype">
+             <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
              <div class="input-group-btn selp-custom-min">
              <select class="selectpicker" id="designationType" name="designationType">
                  <option><a href="#">C2C</a></option>
@@ -210,7 +222,7 @@
          <div class="form-group">
          <label class="col-md-3">Current Rate</label>
          <div class="col-md-9">
-           <div class="input-group">
+           <div class="input-group ratetype">
              <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate"  data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
              <div class="input-group-btn selp-custom-min">
              <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
@@ -233,7 +245,7 @@
         <div class="form-group">
             <label class="col-md-3">Expected Rate</label>
             <div class="col-md-9">
-             <div class="input-group er">
+             <div class="input-group er ratetype">
                 <div class="input-group-btn tblminwidth-75">
                   
                   <select class="selectpicker" id="expectedRateCurrencey" name="expectedRateCurrencey">
@@ -249,7 +261,7 @@
                 
                 </div>
                  <input type="text" id="expectedRate" name="expectedRate" value="${expectedRate}" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
-                <div class="input-group-btn tblminwidth-75">
+                <div class="input-group-btn tblminwidth-75 ratetype">
                   <select class="selectpicker" id="rateType" name="rateType" field-name="Rate Type">
                     <option value="">Rate Per</option>
                     <option ${rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
@@ -290,7 +302,7 @@
         <div class="form-group">
               <label class="col-md-3">Skills</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="candidateSkills" id="candidateSkills" data-validation="validate_Space" data-validation-optional="true">
+                <select multiple class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">
                 <c:forEach var="skill" items="${skillsList}">
 	                     <option value="${skill.name}">${skill.name}</option>
                 </c:forEach>
@@ -553,13 +565,31 @@ function getCities(){
 	       $("#state").chosen();
 	       $("#city").chosen();
 	       
+	       
+	        //Adding Customized Skills to the list
+	        var select, chosen;
+		    select = $("#candidateSkills");
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.on('keyup', function(e)
+		    {
+		    	var newSkill = this.value.replace(",","");
+		        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		        {
+		            var option = $("<option>").val(newSkill).text(newSkill);
+		            select.append(option);
+		            select.find(option).prop('selected', true);
+		            select.trigger("chosen:updated");
+		        }
+		    });
+		    //Adding Customized Skills to the list
+	       
 	       $("#country").on('change', function (e) {
 	    	   getStates();
 	       });
 	       $("#state").on('change', function (e) {
 	    	   getCities();
 	       });
-		       
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}

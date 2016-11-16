@@ -292,4 +292,16 @@ public class OrgDaoImpl implements OrgDao {
 		            return isOrgFound;
 	}
 
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Org getOrgByOrgName(String orgName) {
+		Session session = this.sessionFactory.getCurrentSession();
+		 String query ="from Org org where org.orgName = :orgName ";
+		 
+		         List<Org> orglist = session.createQuery(query.toString()).setString("orgName", orgName).setCacheable(true).list();
+		return orglist.get(0);
+	}
+
 }
+

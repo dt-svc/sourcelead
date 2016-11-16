@@ -63,6 +63,7 @@ import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -106,6 +107,10 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	UserService userService;
+			
+	@Autowired
+	RequirementApproverHierarchyService requirementApproverHierarchyService;
+		
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
@@ -196,9 +201,9 @@ public class RequirementServiceImpl implements RequirementService {
 			if(jsonObj.has("positions")){
 			requirement.setPositions(jsonObj.getString("positions"));
 			}
-			if(jsonObj.has("country")){
-			requirement.setCountry(jsonObj.getString("country"));
-			location.append(jsonObj.getString("country"));
+			if(jsonObj.has("countryReq")){
+			requirement.setCountry(jsonObj.getString("countryReq"));
+			location.append(jsonObj.getString("countryReq"));
 			location.append(",");
 			}
 			
@@ -292,13 +297,22 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			 }
 			
+			
 			 if(multiFile != null && multiFile.getOriginalFilename() != null && !multiFile.getOriginalFilename().isEmpty()){
 				 requirement.setDocFile(multiFile.getBytes());
 				 requirement.setFileName(multiFile.getOriginalFilename());
 				 requirement.setFileContentType(multiFile.getContentType());
 			 }else{
-					requirement.setIsClientJob("N");
-				}
+				    if(jsonObj.has("templateId") && StringUtils.isNotEmpty(jsonObj.getString("templateId"))){
+						String templateId =  jsonObj.getString("templateId");
+						Requirement templateRequirement = getRequirementByRequirementId(Long.parseLong(templateId));
+						requirement.setDocFile(templateRequirement.getDocFile());
+						requirement.setFileName(templateRequirement.getFileName());
+						requirement.setFileContentType(templateRequirement.getFileContentType());
+					 }
+				     requirement.setIsClientJob("N");
+			 }	
+			 
 			 
 			if(jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y") && StringUtils.isNotEmpty(jsonObj.getString("isClient"))){
 					requirement.setIsClientJob(jsonObj.getString("isClient"));
@@ -348,10 +362,7 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			
 			requirement.setStatus(Constants.TEAM_ACTIVE);
-			requirement.setCreatedDate(commonUtil.currentDate());
-			requirement.setCreatedBy(user.getUserCode());
-			requirement.setUpdatedBy(user.getUserCode());
-			requirement.setUpdatedDate(commonUtil.currentDate());
+			
 			
 			//requirement status 
 			if(jsonObj.has("saveType")){            
@@ -387,7 +398,64 @@ public class RequirementServiceImpl implements RequirementService {
 				
 			     String[] approvers = parallelApprovers.split(",");
 			  	  
-				  for(String approver : approvers){
+			     
+			     
+			     
+			     for(String approver : approvers){
+					  
+					  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
+					  User approverUser = userService.getUserById(Long.parseLong(approver));
+					  
+					  //to delete the  unselected approvers in edit Mode
+					  removedApproversInRequirementForParallel(approvers,requirement);			  
+					 
+					   
+					    // if  the Requirement is in Edit Mode
+					    if(requirement.getId() != null){
+					    	   rah =  requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), Long.parseLong(approver));
+								// In Edit Mode if We add New Approvers In The Requirement
+						    	 if(rah == null){
+						    		   rah = new RequirementApproverHierarchy();
+	                            	  	User approverUserId = new User();
+		  								approverUserId.setId(Long.parseLong(approver));
+		  								rah.setApproverUserId(approverUserId);
+		  								rah.setRequirementId(requirement);
+		  								rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
+		  								rah.setLevel(1);
+		  								rah.setHierarchyType(HIERARCHY_TYPE.PARALLEL);
+		  								rah.setCreatedDate(commonUtil.currentDate());
+		  								rah.setCreatedBy(user.getUserCode());
+		  								rah.setUpdatedBy(user.getUserCode());
+		  								rah.setUpdatedDate(commonUtil.currentDate());
+	                             }else{
+	                            	   rah.setCreatedDate(commonUtil.currentDate());
+	 								   rah.setCreatedBy(user.getUserCode());
+	 								   rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
+	 								   rah.setUpdatedBy(user.getUserCode());
+	 								   rah.setUpdatedDate(commonUtil.currentDate());
+	                             }
+					    }else{
+								User approverUserId = new User();
+								approverUserId.setId(Long.parseLong(approver));
+								rah.setApproverUserId(approverUserId);
+								rah.setRequirementId(requirement);
+								rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
+								rah.setLevel(1);
+								rah.setHierarchyType(HIERARCHY_TYPE.PARALLEL);
+								rah.setCreatedDate(commonUtil.currentDate());
+								rah.setCreatedBy(user.getUserCode());
+								rah.setUpdatedBy(user.getUserCode());
+								rah.setUpdatedDate(commonUtil.currentDate());
+					    }
+						  requirementApproverHierarchyList.add(rah);
+						  approverEmailScenario(user,approverUser,requirement,location,orgLocations);
+
+				  }
+
+
+			     
+			     
+				  /*for(String approver : approvers){
 					    
 					    RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
 					    User approverUser = userService.getUserById(Long.parseLong(approver));
@@ -410,7 +478,7 @@ public class RequirementServiceImpl implements RequirementService {
 						requirementApproverHierarchyList.add(rah);
 						  approverEmailScenario(user,approverUser,requirement,location);
 
-				  }
+				  }*/
 				 
 			} 
 			//approval saving for parallel
@@ -419,6 +487,9 @@ public class RequirementServiceImpl implements RequirementService {
 				  if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
 					  User approverUser = userService.getUserById(Long.parseLong(approverNames));
 					  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
+					  
+					  //to remove the unselected approvers in Dropdown
+					  removedApproversInRequirementForSequential(approverUser,requirement,Constants.LEVEL1);
 					  
 					  User approverUserId = new User();
 					  approverUserId.setId(Long.parseLong(jsonObj.getString("sequentialApprover1")));
@@ -436,7 +507,7 @@ public class RequirementServiceImpl implements RequirementService {
 					  rah.setUpdatedDate(commonUtil.currentDate());
 					  
 					  requirementApproverHierarchyList.add(rah);
-						approverEmailScenario(user, approverUser ,requirement,location);
+						approverEmailScenario(user, approverUser ,requirement,location,orgLocations);
 
 				  }
 				  
@@ -445,7 +516,12 @@ public class RequirementServiceImpl implements RequirementService {
 					  
 					  User approverUserId = new User();
 					  approverUserId.setId(Long.parseLong(jsonObj.getString("sequentialApprover2")));
+					  				  
 					  rah.setApproverUserId(approverUserId);
+					  
+					 //to remove the unselected approvers in Dropdown
+					  removedApproversInRequirementForSequential(approverUserId,requirement,Constants.LEVEL2);
+					  
 					  
 					  rah.setRequirementId(requirement);
 					  
@@ -621,13 +697,14 @@ public class RequirementServiceImpl implements RequirementService {
 
 
 	@Override
-	public void approverEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location) throws Exception {
+	public void approverEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location,OrgLocations loginOrgLocation) throws Exception {
 		
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(approverUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 		 
 		//setting the class filed values
@@ -697,6 +774,8 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
 		
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
@@ -704,12 +783,17 @@ public class RequirementServiceImpl implements RequirementService {
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 		 String url = "";
 		 
+		 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
-		 //calling the sendEmail method of emailScenerioUtil
+		 String actionLink="";
+		//calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, loginOrgLocation, notificationScenario);
 		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
 	
 }
@@ -724,6 +808,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(approverUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 		 
 		//setting the class filed values
@@ -796,6 +881,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(intiatorUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 		 
 		//setting the class filed values
@@ -1015,6 +1101,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(managerUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 		 
 		//setting the class filed values
@@ -1098,6 +1185,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(assUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 		 
 		//setting the class filed values
@@ -1176,6 +1264,7 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setLastName(loginUser.getLastName());
 		emailMessage.setToEmail(initiatorUser.getEmail());
 		emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		emailMessage.setCreatedBy(loginUser.getUserCode());
 		emailMessage.setFromName(loginUser.getFirstName() + " " + loginUser.getLastName());
 
 		// setting the class filed values
@@ -1256,6 +1345,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(vendorContactUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 		 
 		//setting the class filed values
@@ -1550,4 +1640,53 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 
 	}
+	
+	@Override
+	public Boolean validateRequirementTitle(String jobName,Long orgLocationId) throws Exception {
+		return requirementDao.validateRequirementTitle(jobName, orgLocationId);
+	}
+	
+	
+	
+	
+
+	
+	
+public void removedApproversInRequirementForParallel(String[] approver , Requirement requirement) throws Exception{
+		
+		if(requirement.getId() !=null){
+			
+			List<RequirementApproverHierarchy> requirementApproverHierarchies = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
+			
+			if(requirementApproverHierarchies != null ){
+			    for(String app : approver){
+					for(RequirementApproverHierarchy rah:requirementApproverHierarchies){  
+							if(!app.equalsIgnoreCase(rah.getApproverUserId().getId().toString())){
+								requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(rah);
+							}
+					 }
+				 }
+			}
+		}
+		
+		
+		
+	}
+
+public void removedApproversInRequirementForSequential(User approver , Requirement requirement,Integer level) throws Exception{
+	
+			if(requirement.getId() !=null){
+				List<RequirementApproverHierarchy> requirementApproverHierarchies = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
+			    	if(requirementApproverHierarchies != null ){
+						     for(RequirementApproverHierarchy rah:requirementApproverHierarchies){
+						            if(approver.getId() != rah.getApproverUserId().getId() && level.equals(rah.getLevel())){
+							                requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(rah);
+						              }
+						
+							    }
+					}
+			}
+	
+	
+}
 }

@@ -15,6 +15,7 @@ public interface RequirementAssignToService {
 	public Integer getAssignedTeamMembersCountByTeamMemberUserId(Long assignUserId, String jobType);
 	
 	public RequirementAssignTo getRequirementAssignToByRequirementId(Long requirementId)  throws Exception;
-
+	
+	Boolean checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(Long requirementId,Long userId)  throws Exception;
 	
 }

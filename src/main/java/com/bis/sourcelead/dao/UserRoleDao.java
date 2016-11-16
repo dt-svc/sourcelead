@@ -66,5 +66,7 @@ public interface UserRoleDao {
 	 */
 	public List<UserRole> getUserSpocsListByUserId(Long userId) throws Exception;
 
+	public UserRole getUserRoleByUserId(Long userId) throws Exception;
+
 
 }

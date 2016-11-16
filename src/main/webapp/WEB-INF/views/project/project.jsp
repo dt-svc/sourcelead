@@ -62,7 +62,7 @@
 		<div class="pull-left">
 			<h2>Create Project</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo;<a href="projectDashboard">ProjectList</a> &raquo;Create Project
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/projectDashboard'/>">ProjectList</a> &raquo;Create Project
 	</section>
 	<div class="content-area clearfix">
 		<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
@@ -1087,44 +1087,6 @@ function assignEmployeespagination(){
 	}
 </script>
 <!-- this script is for Assign Employee functionality Ends -->
-
-<!-- this script is for Email verfication functionality Start -->
-<script type="text/javascript">
-	function emailVerification() {
-		var EmailId = document.getElementById("EmailId").value;
-		var sourceleadUrl = '${sourceleadUrl}';
-		$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-		if (EmailId != null && EmailId != "") {
-			$
-					.ajax({
-						type : "POST",
-						url : sourceleadUrl
-								+ "/getEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="
-								+ EmailId,
-						success : function(data) {
-							if (data == 'true') {
-								$("input#EmailId").after(
-										"<p class='jquery_form_error_message'>"
-												+ EmailId
-												+ " is Already Existed</span>");
-								document.getElementById("EmailId")
-										.setAttribute('record-exist', 'yes');
-								document
-										.getElementById("EmailId")
-										.setAttribute('record-exist-errorMsg',
-												EmailId + ' is Already Existed');
-							} else {
-								$('input#EmailId').removeAttr(
-										"record-exist record-exist-errormsg");
-								$('#EmailIdDiv').find(
-										'p.jquery_form_error_message').remove();
-							}
-						},
-					});
-		}
-	}
-</script>
-<!-- this script is for Email verfication functionality Ends -->
 
 <!-- this script is for website validation functionality Start -->
 <script type="text/javascript">

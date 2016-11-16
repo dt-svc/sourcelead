@@ -301,7 +301,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				pm.setUpdatedBy(user.getUserCode());
 				pm.setMemberHistoryList(pmhList);
 				saveProjectMember(pm);
-				//commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
+				commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
 				
 				/**
 			     * This method for send Email to team member while assign employee from project dashboard
@@ -331,6 +331,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		 emailMessage.setLastName(emp.getUser().getLastName());
 		 emailMessage.setToEmail(emp.getUser().getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 
 		 //setting the class filed values

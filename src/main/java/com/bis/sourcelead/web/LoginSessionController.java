@@ -204,8 +204,10 @@ public class LoginSessionController {
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRoleId", userRole.getRoles().getId());
-			SourceLeadSessionManager.setSessionAttribute(request, "userType", userRole.getRoles().getDisplayName());
+
 			SourceLeadSessionManager.setSessionAttribute(request, "roleHierarchyId", userRole.getRoles().getRoleHierarchy().getId());
+
+			SourceLeadSessionManager.setSessionAttribute(request, "userType", userRole.getUserType());
 			
 			
 		} catch (Exception e) {

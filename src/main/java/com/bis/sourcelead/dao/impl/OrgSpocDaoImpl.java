@@ -174,13 +174,15 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			List<OrgSpoc> spocsList;
 			Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUserId,orgLocationId);
-			if (isadmin){
-				Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser left join fetch spoc.responderLocationId responderLocationId  left join fetch responderLocationId.org  left join fetch spoc.orgRelations orgrelation where spoc.status <> '0' and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType ))");
-				spocsList = query.setString("relationType", relationType).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			
+			if (isadmin) {
+	            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and spoc.status <> '0' ");
+	            spocsList = query.setLong("orgLocationId", orgLocationId).setString("relationType", relationType).setCacheable(true).list();
 			}else{
-	            Query query= session.createQuery("from OrgSpoc spoc   left join fetch spoc.responderLocationId responderLocationId  left join fetch responderLocationId.org left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where (spoc.ownerUser.id = :loginUserId OR spoc.spocUser.id =:loginUserId) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and spoc.status <> '0' ");
+	            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where (spoc.ownerUser.id = :loginUserId OR spoc.spocUser.id =:loginUserId) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and spoc.status <> '0' ");
 	            spocsList = query.setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setString("relationType", relationType).setCacheable(true).list();
-	        }
+			}
+			
 			return spocsList;
 		}
 
@@ -198,5 +200,21 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			return spocsList;
 			
 		}
-
+		
+		
+		/*@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<OrgSpoc> getAllContactsbyOrgRelationId(Long orgId) throws Exception {
+			
+			logger.debug("In OrgSpocDaoImpl getAllContactsbyOrgRelationId method");
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			List<OrgSpoc> spocsList;
+			 
+			Query query= session.createQuery("from OrgSpoc spoc  left join fetch spoc.orgRelations orgrelation where spoc.orgRelations.id=:orgId and spoc.status <> '0' "); 
+			spocsList = query.setLong("orgId", orgId).setCacheable(true).list();
+			return spocsList;
+			
+		}
+*/
 }

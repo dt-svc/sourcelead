@@ -237,6 +237,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private String clientContactEmail;
+	
+	@Transient
+	private String isLoginUserAsTeamMember;
+	
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -737,6 +741,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setClientContactEmail(String clientContactEmail) {
 		this.clientContactEmail = clientContactEmail;
+	}
+
+	public String getIsLoginUserAsTeamMember() {
+		return isLoginUserAsTeamMember;
+	}
+
+	public void setIsLoginUserAsTeamMember(String isLoginUserAsTeamMember) {
+		this.isLoginUserAsTeamMember = isLoginUserAsTeamMember;
 	}
 
 }

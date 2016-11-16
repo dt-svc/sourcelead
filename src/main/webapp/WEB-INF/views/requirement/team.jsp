@@ -27,6 +27,20 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 
+<style type="text/css">
+.teamEditDetails {
+margin-bottom: 50px;
+border-bottom:1px solid #ccc;
+padding-bottom:5px;
+}
+.teamEditDetails select.form-control{
+width:100% !important;
+padding: 0 10px !important;
+border: 1px solid #ccc;
+background:url("resources/images/arrow-w.png") no-repeat 95% center; background-size:10px;
+}
+</style>
+
 <!-- end files for autocomplete with tagit -->
 <script>
  window.onload = function() { 
@@ -142,19 +156,23 @@ function pagination(){
 
 <script>
 function sideBar(teamId){
-	  
+	
+	    var sourceleadUrl ='${sourceleadUrl}';
+	      
 	    var outPut = '';
 	    outPut = outPut+'<div id="removeCandidateAlert" ></div>  ';
 		outPut = outPut+ '	<div class="project_side_wrap_inn_tabs">';
 		outPut = outPut+ '    <div class="project_tabs">';
 		outPut = outPut+ '      <div id="tab-1" class="project_tabs_inn">';
-		outPut = outPut+ '        <div  class="project_tabs_inn_head team_search"> <a href="#" class="addUser-org" onClick="addMember('+teamId+');getTeamMembersListExceptExistedTeamMembersList('+teamId+');"> <i class="glyphicon glyphicon-plus"></i>Add Member</a> ';
+		outPut = outPut+ '        <div  class="project_tabs_inn_head"> <a href="#" class="addUser-org" onClick="addMember('+teamId+');getTeamMembersListExceptExistedTeamMembersList('+teamId+');"> <i class="glyphicon glyphicon-plus"></i>Add Member</a> ';
 		
 		outPut = outPut  +'     <div id="popUpDivTeam" class="edit-details col-md-4"> ';
 		outPut = outPut  +'     </div>  ';
 		outPut = outPut  +'     </div>  ';
 				
 		outPut = outPut+ ' <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		
+		outPut = outPut+ ' <div id="teamEditDiv"></div>';
 		outPut = outPut+ ' <div id="projectMemberList"></div>';
 		outPut = outPut+ '        </div>';
 		outPut = outPut+ '      </div>';
@@ -174,6 +192,145 @@ function sideBar(teamId){
 		
 }
 </script>
+
+<%-- 
+     @author : shivayogi
+     this script is for Edit team Details
+     1.usage     : used in projectMemberList();
+--%>
+<script type="text/javascript">
+function teamEditDetails(teamId){
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getTeamByTeamID?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId,
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var outPut = '';
+	        	outPut = outPut+'<form role="form"  id="edit_team_form" name="team_form" method="post" > ';
+	        	outPut = outPut+ '<div class="form-horizontal clearfix teamEditDetails">';
+	        	outPut = outPut+ '<div class="clearfix mb10">';
+	        	outPut = outPut+ '<div class="col-md-6">';
+	        	outPut = outPut +'<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">';
+	        	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
+	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="'+json.name+'">';
+	        	outPut = outPut+ '                </div>';
+	        	
+	        	
+	        	outPut = outPut+ '                <div class="col-md-5">';
+	        	outPut = outPut+ '                <label>Team Lead<b class="text-danger">*</b> </label>';
+	        	outPut = outPut + '<select   class="form-control" name="editOwnerUserId" value="'+json.teamOwnerName+'" id="editOwnerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead">';
+	            outPut = outPut + '</select>';
+	        	outPut = outPut+ '                </div>';
+	        	outPut = outPut+ '                <div class="col-md-1">';
+	        	outPut = outPut+ '                <label class="col-md-12">&nbsp;</label>';
+	        	outPut = outPut+ '<button type="button" id="edit_team" class="btn btn-primary btn-sm btn-block" onclick="storeEditedTeam();">Add</button>';
+	        	outPut = outPut+ '              </div>';
+	        	outPut = outPut+ '              </div>';
+	        	outPut = outPut+ '              </div> ';
+	        	outPut = outPut+ '              <div class="clearfix mr">';
+	        	/* outPut = outPut+ '<button type="button" id="edit_team" class="btn btn-sm btn-primary pull-left" onclick="storeEditedTeam();">Add</button>'; */
+	        	outPut = outPut+ '              </div>';
+	        	outPut = outPut+ '            </div>'
+	        	outPut = outPut+ '</form>';
+	        	
+	        	outPut = outPut+ '  </hr>';
+	        	outPut = outPut+ '  </hr>';
+	        	outPut = outPut+ '  </hr>';
+	        	$("#teamEditDiv").empty();
+	        	$("#teamEditDiv").append(outPut); 
+	        	getEditTeamOwners(json.ownerUserId.id,json.teamOwnerName,teamId);
+	        },
+	        error: function(e){
+	            
+	        }
+	    }); 
+	 
+}
+</script>
+
+
+<%-- 
+     @author : shivayogi
+     this script is for get team owners
+     1.usage     : used in teamEditDetails();
+--%>
+<script type="text/javascript">
+function getEditTeamOwners(teamOwnerUserId,teamOwnerName,teamId){ 
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	/*  var editOwnerUserId = document.getElementById("editOwnerUserId").value; */
+	 var existedTeamMembersIds = [];
+	 $('.existedTeamMember').each(function() {
+		 var localId = this.value;
+		 existedTeamMembersIds.push(localId);
+	 });  
+      
+     $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getTeamMembersListExceptExistedTeamMembersList?${_csrf.parameterName}=${_csrf.token}&existedTeamMembersIds="+existedTeamMembersIds+"&teamId="+teamId,
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	output = output + "<option disabled >-Select Team Members-</option>"; 
+	        	output = output + "<option selected value="+teamOwnerUserId+" >"+teamOwnerName+"</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+				}
+	        	$("#editOwnerUserId").empty();
+		        $("#editOwnerUserId").append(output);
+		        $("#editOwnerUserId").trigger("chosen:updated");
+	        },
+	        error: function(e){
+	            
+	        }
+});
+     
+     
+     
+} 
+</script>
+
+<script>
+function storeEditedTeam(){
+	
+	   var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         };
+	   if ($('#edit_team_form').validate(false, validationSettings)){ 
+			var frm = $('#edit_team_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+		  
+		     var jsonData = encodeURIComponent(con);
+			 var sourceleadUrl = '${sourceleadUrl}';
+			 $("#team_form").attr("disabled", "disabled");
+			
+			$.ajax({
+					type : "POST",
+					url : sourceleadUrl+"/storeEditedTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
+					success :function(data) {  
+						location.replace(sourceleadUrl+"/team");
+				      }, 
+		    });
+			return true; 
+	   }else{ 
+			return false;
+	        } 
+		} 
+ 
+		$('body').on('blur', '#team_form', function() {
+			$("#team_form").showHelpOnFocus();
+			$("#team_form").validateOnBlur(false, validationSettings);
+		});
+
+
+</script>   
 
 <script>
 function addTeam(){ 
@@ -345,7 +502,17 @@ function projectMemberList(teamId){
 	               		 else{
 				    	     $("#projectMemberList").removeAttr("style");
 		                	 $("#projectMemberList").empty();
+		                	 
+		                	 
+		                	
+		                      
+		                      
+		                	 
 		                	 var result = "";
+		                	 
+		                	
+		                	 result = result +"";
+		                	 
 		                	 result = result +"<table id='teamMemberPagination' class='display' cellspacing='0' width='100%' >"; 
 		                     result = result +"<thead>"; 
 		                     result = result+ '              <tr>';
@@ -360,8 +527,21 @@ function projectMemberList(teamId){
 		                     result = result +"<tbody>"; 
 		                     
 		                     var json = JSON.parse(data);
+		                     
+		                     
 		                     for (var i = 0; i < json.length; i++) { 
-		                    	 var opt = json[i]; 
+		                    	 var opt = json[i];
+		                    	 var  output = "";
+		                    	 
+		                    	 
+		                    	 
+		                        /* 	 output = output
+				     				+ '<div><input type="text" onBlur="inlineEditForProjectsTasks('+opt.teamName+',\'taskName\');"  id="teamName'+ opt.teamName+ '" value="'+ opt.teamName+ '"  class="project_inline_field"></div>';
+				     				
+				                      $("#TeamName").append(output); 
+				                       */
+				                      
+				                      
 		                    	 result = result+ '<tr>';
 		                    	 if(opt.memberName != null && opt.memberName != '' && opt.memberName !="undefined"){
 		                    	 result = result+ '<td><div><span>'+opt.memberName+'</span></div></td>';
@@ -388,6 +568,7 @@ function projectMemberList(teamId){
 		                     result = result +"</table>"; 
 		                     $("#projectMemberList").append(result); 
 		                     TeamMemberpagination(); 
+		                     teamEditDetails(teamId);
 				    	} 
 	                 }else{
 	                	 $("#projectMemberList").removeAttr("style");
@@ -501,7 +682,7 @@ function TeamMemberpagination(){
     <div class="pull-left">
       <h2>Team</h2>
     </div>
-    <div class="pull-right brud-crum">Home &raquo; Team</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Team</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -581,7 +762,7 @@ function storeTeam(){
 		     var jsonData = encodeURIComponent(con);
 			 var sourceleadUrl = '${sourceleadUrl}';
 			
-			 $("#team_form").attr("disabled", "disabled");
+			 $("#add_team").attr("disabled", "disabled");
 			
 			$.ajax({
 					type : "POST",
