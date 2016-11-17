@@ -186,8 +186,8 @@ $(document).ready(function () {
         <div class="col-lg-12">
           <h3>Add Requirement Details</h3>
         </div>
-  <div class="col-md-12 clearfix">
-	  <div class="col-md-12">
+	       <div class="col-md-12 clearfix">
+        	  <div class="col-md-12">
 	          <div style="margin:0 auto" class="input-group col-md-6">
 	            <label class="input-group-btn">
 	            	<span class="btn btn-primary">Select Template
@@ -200,6 +200,7 @@ $(document).ready(function () {
                      </c:forEach>   
                 </select>
 	          </div>
+	          
 	          <div class="text-center clearfix mt text-muted">
 	          	<div class="clearfix text-center mb">
 	          <span class="text-info">
@@ -218,7 +219,8 @@ $(document).ready(function () {
 	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
 	         <div class="col-md-9">
 	          <div class="input-group">
-	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length2-250"   value="" class="form-control" onblur="validateJobtitle();" onmouseout="validateJobtitle();">
+	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length2-250"   value="" class="form-control" onblur="getTemplateVal();">
+	             
 	             <div class="input-group-btn selp-custom-min">
 	             <select class="selectpicker" id="jobType" name="jobType">
 	                 <option  ${requirement.jobType  == 'c2c' ? 'selected' : ''}><a href="#">C2C</a></option>
@@ -367,7 +369,7 @@ $(document).ready(function () {
          <div class="form-group">
               <label class="col-md-3">Skills</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation="validate_Space" data-validation-optional="true">
+                <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation-optional="true">
                <c:forEach var="skill" items="${skillsList}">
                 <option  value="${skill.name}">${skill.name}</option>
 	                     <c:forEach var="skillExist" items="${requirement.reqSkillsList}">
@@ -1075,9 +1077,10 @@ function getCities(){
 			  '.chosen-select-width'     : {width:"95%"}
 			}
 			
-		  $("#countryReq").chosen();
+		   $("#countryReq").chosen();
 	       $("#state").chosen();
 	       $("#city").chosen();
+	       
 	       
 	       $("#countryReq").on('change', function (e) {
 	    	   getStates();
@@ -1086,6 +1089,24 @@ function getCities(){
 	    	   getCities();
 	       });
 		       
+	     //Adding Customized Skills to the list
+           var select, chosen;
+           select = $("#skills");
+           select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+           chosen = select.data('chosen');
+           chosen.search_field.on('keyup', function(e)
+           {
+        	   var newSkill = this.value.replace(",","");
+               if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+               {
+                   var option = $("<option>").val(newSkill).text(newSkill);
+                   select.append(option);
+                   select.find(option).prop('selected', true);
+                   $("#skills").trigger("chosen:updated");
+               }
+           });
+           //Adding Customized Skills to the list
+           
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
@@ -1094,6 +1115,10 @@ function getCities(){
 			$this.next().css({'width': '100%'});
 			})
 			
+			
+			 
+            
+            
 			/* upload file script */
 			document.getElementById("uploadBtn").onchange = function () {
 			//document.getElementById("uploadFile").value = this.value;
@@ -1107,10 +1132,9 @@ function getCities(){
 
 <script>
 function getTemplateVal(){
-	
     if(document.getElementById('isTemplate').checked) {
         $("#isTemplate").val('Y');
-       
+        checkTemplateforDouplicate();
     }else{
         $("#isTemplate").val('N');
     }
@@ -1870,22 +1894,23 @@ function minMaxExperience(){
 		$('#expId').find('p.jquery_form_error_message').remove();
     }
 }
+
 </script>
 
 <script type="text/javascript">
-function validateJobtitle(){
-var jobName = document.getElementById("jobTitle").value; 
+function checkTemplateforDouplicate(){
+var templateName = document.getElementById("jobTitle").value; 
 $('#jobTitleDiv').find('p.jquery_form_error_message').remove();
 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/validatejobName?${_csrf.parameterName}=${_csrf.token}&jobName="+jobName, 
+	        url: sourceleadUrl+"/validatetemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName, 
 	        success: function(data) {
 	        	if(data == "true"){
 	        		  $('#jobTitleDiv').find('p.jquery_form_error_message').remove();
-					  $("input#jobTitle").after("<p class='jquery_form_error_message'>"+jobName+" is Already Existed</span>");
+					  $("input#jobTitle").after("<p class='jquery_form_error_message'><span>Template Already Exists</span>");
 					  document.getElementById("jobTitle").setAttribute('record-exist','yes');
-					  document.getElementById("jobTitle").setAttribute('record-exist-errorMsg',jobName+' is Already Existed'); 
+					  document.getElementById("jobTitle").setAttribute('record-exist-errorMsg','Template Already Exists'); 
 	        	}
 	        	else{
 	        		 $('input#jobTitle').removeAttr( "record-exist record-exist-errormsg");
@@ -1897,5 +1922,6 @@ var sourceleadUrl ='${sourceleadUrl}';
 	    });
 }
 </script>
+
 
 <jsp:include page="../masterFooter.jsp" />
