@@ -388,10 +388,12 @@ public class RequirementListRestController {
 			
 			 
 			 Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+			 REQUIREMENT_SUBMISSION_STATUS previousStatus = requirement.getRequirementSubmissionStatus();
 			 
 			 REQUIREMENT_SUBMISSION_STATUS changedStatus = Enum.valueOf(REQUIREMENT_SUBMISSION_STATUS.class, status);
-			 
 			 requirement.setRequirementSubmissionStatus(changedStatus);
+			 requirement.setRequirementSubmissionPreviousStatus(previousStatus);
+			 
 			 requirementService.addRequirement(requirement); 
 			return "success";
 		 }

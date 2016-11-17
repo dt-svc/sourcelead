@@ -162,7 +162,7 @@ function requirementList(){
 		                     }
 result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");' id='changeStatusId"+opt.id+"'>";
 		                     
-		                     if(opt.requirementSubmissionStatus == "DRAFT"){
+		                        if(opt.requirementSubmissionStatus == "DRAFT"){
 									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 									result = result +"<option value='ONHOLD'>ONHOLD</option>";
 									result = result +"<option value='CANCEL'>CANCEL</option>";
@@ -198,21 +198,32 @@ result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange
 									result = result +"<option value='CANCEL'>CANCEL</option>";
 									
 								}else if(opt.requirementSubmissionStatus == "ONHOLD"){
-									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-									result = result +"<option value='SUBMITTED'>SUBMITTED</option>";
-									result = result +"<option value='CANCEL'>CANCEL</option>";
+									
+									if(opt.requirementSubmissionPreviousStatus == "OPEN" || opt.requirementSubmissionPreviousStatus == null || opt.requirementSubmissionPreviousStatus == '' || opt.requirementSubmissionPreviousStatus == 'undefined' ){
+												result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+												result = result +"<option value='OPEN'>OPEN</option>";
+												result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
+												result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
+												result = result +"<option value='CANCEL'>CANCEL</option>";
+									}
+									if(opt.requirementSubmissionPreviousStatus == "DRAFT"){
+										result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+										result = result +"<option value='DRAFT'>DRAFT</option>";
+										result = result +"<option value='CANCEL'>CANCEL</option>";
+									}
+									if(opt.requirementSubmissionPreviousStatus == "SUBMITTED"){
+										result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+										result = result +"<option value='SUBMITTED'>SUBMITTED</option>";
+										result = result +"<option value='CANCEL'>CANCEL</option>";
+									}
+									 
 								}else if(opt.requirementSubmissionStatus == "UNFILLEDCLOSED"){
 									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-									result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
 									result = result +"<option value='OPEN'>OPEN</option>";
-									result = result +"<option value='ONHOLD'>ONHOLD</option>";
-									result = result +"<option value='CANCEL'>CANCEL</option>";
+									
 								}else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
 									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-									result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
-									result = result +"<option value='OPEN'>OPEN</option>";
-									result = result +"<option value='ONHOLD'>ONHOLD</option>";
-									result = result +"<option value='CANCEL'>CANCEL</option>";
+									
 								}
 
 								result = result +" </select>";	
