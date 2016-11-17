@@ -367,6 +367,17 @@
 <script type="text/javascript">
 	function storeCandidate() {
 		
+		var expectedRate = document.getElementById("expectedRate").value; 
+		 if(expectedRate != null && expectedRate != ""){
+			
+			 $('#rateType').removeAttr('data-validation-optional');
+			 $('#rateType').attr("data-validation","required"); 
+		 }else{
+		 $('#rateType').removeAttr('data-validation');
+		 $('#rateType').attr("data-validation-optional","true"); 
+		 }
+		 
+		
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',
@@ -576,10 +587,13 @@ function getCities(){
 		    	var newSkill = this.value.replace(",","");
 		        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 		        {
+		        	var par = this.parent;
+		        	alert(par);
 		            var option = $("<option>").val(newSkill).text(newSkill);
 		            select.append(option);
 		            select.find(option).prop('selected', true);
-		            select.trigger("chosen:updated");
+	        		$("#candidateSkills").trigger("chosen:updated");
+	        		
 		        }
 		    });
 		    //Adding Customized Skills to the list
@@ -714,7 +728,8 @@ function getCities(){
 
 /* upload file script */
 document.getElementById("uploadBtn").onchange = function () {
-   document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+  // document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
 };
  
 </script>

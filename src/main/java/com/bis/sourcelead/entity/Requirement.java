@@ -244,6 +244,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String isLoginUserAsApprover;
 	
+	@Transient
+	private String isLoginUserAsManager;
+	
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -760,6 +763,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setIsLoginUserAsApprover(String isLoginUserAsApprover) {
 		this.isLoginUserAsApprover = isLoginUserAsApprover;
+	}
+
+	public String getIsLoginUserAsManager() {
+		return isLoginUserAsManager;
+	}
+
+	public void setIsLoginUserAsManager(String isLoginUserAsManager) {
+		this.isLoginUserAsManager = isLoginUserAsManager;
 	}
 
 }

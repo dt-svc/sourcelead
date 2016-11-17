@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.User;
@@ -482,6 +481,25 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 			
 		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long requirementId, Long userId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query ="from Requirement requirement where requirement.id = :requirementId and requirement.managerUserId.id =:userId";
+		List<Requirement> requirementList = session.createQuery(query).setLong("requirementId", requirementId).setLong("userId", userId).setCacheable(true).list();
+		if(requirementList !=null && requirementList.size() >0){
+			flag = true;
+			return flag;
+		}else{
+			return flag;
+		}
+			
+	
 	}
 	
 

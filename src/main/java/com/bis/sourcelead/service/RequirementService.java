@@ -68,6 +68,8 @@ public interface RequirementService {
 	public File getExportRequirementFile(List<Requirement> requirementList, String orgName, String exportType)throws Exception;
 
 	public Boolean validateRequirementTitle(String jobName, Long orgLocationId) throws Exception;
+	
+	Boolean checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long requirementId,Long userId)  throws Exception;
 
 
 }
