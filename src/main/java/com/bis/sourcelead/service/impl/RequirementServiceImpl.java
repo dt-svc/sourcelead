@@ -1690,7 +1690,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	
 	
-public void removedApproversInRequirementForParallel(String[] approver , Requirement requirement) throws Exception{
+	public void removedApproversInRequirementForParallel(String[] approver , Requirement requirement) throws Exception{
 		
 		if(requirement.getId() !=null){
 			
@@ -1711,20 +1711,27 @@ public void removedApproversInRequirementForParallel(String[] approver , Require
 		
 	}
 
-public void removedApproversInRequirementForSequential(User approver , Requirement requirement,Integer level) throws Exception{
+	public void removedApproversInRequirementForSequential(User approver , Requirement requirement,Integer level) throws Exception{
+		
+				if(requirement.getId() !=null){
+					List<RequirementApproverHierarchy> requirementApproverHierarchies = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
+				    	if(requirementApproverHierarchies != null ){
+							     for(RequirementApproverHierarchy rah:requirementApproverHierarchies){
+							            if(approver.getId() != rah.getApproverUserId().getId() && level.equals(rah.getLevel())){
+								                requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(rah);
+							              }
+							
+								    }
+						}
+				}
+		
+		
+	}
+
+	@Override
+	public Boolean checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long requirementId, Long userId)
+			throws Exception {
+		 	return  requirementDao.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirementId, userId);
+	}
 	
-			if(requirement.getId() !=null){
-				List<RequirementApproverHierarchy> requirementApproverHierarchies = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
-			    	if(requirementApproverHierarchies != null ){
-						     for(RequirementApproverHierarchy rah:requirementApproverHierarchies){
-						            if(approver.getId() != rah.getApproverUserId().getId() && level.equals(rah.getLevel())){
-							                requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(rah);
-						              }
-						
-							    }
-					}
-			}
-	
-	
-}
 }
