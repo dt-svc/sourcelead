@@ -384,16 +384,20 @@ public class RequirementListRestController {
 		 
 		 @RequestMapping(value = "/saveChangedStatus" , method = RequestMethod.POST)
 		 @ResponseBody  String saveChangedStatus(@RequestParam(value="requirementId", required=false) Long  requirementId,
-				 @RequestParam(value="status", required=false) String  status) throws Exception {
+				 @RequestParam(value="status", required=false) String  status,HttpServletRequest request) throws Exception {
 			
 			 
+			 
+			 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
 			 Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 			 REQUIREMENT_SUBMISSION_STATUS previousStatus = requirement.getRequirementSubmissionStatus();
 			 
 			 REQUIREMENT_SUBMISSION_STATUS changedStatus = Enum.valueOf(REQUIREMENT_SUBMISSION_STATUS.class, status);
 			 requirement.setRequirementSubmissionStatus(changedStatus);
 			 requirement.setRequirementSubmissionPreviousStatus(previousStatus);
-			 
+			 requirement.setUpdatedBy(loginUser.getUserCode());
+			 requirement.setUpdatedDate(commonUtil.currentDate());
 			 requirementService.addRequirement(requirement); 
 			return "success";
 		 }

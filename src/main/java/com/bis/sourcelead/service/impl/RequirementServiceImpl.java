@@ -172,7 +172,9 @@ public class RequirementServiceImpl implements RequirementService {
 
 		    
 	        if (jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())){
-				requirement.setId(Long.parseLong(jsonObj.getString("requirementId")));
+	        	
+	        	requirement = requirementDao.getRequirementByRequirementId(Long.parseLong(jsonObj.getString("requirementId")));
+				requirement.setId(requirement.getId());
 				requirement.setUpdatedBy(user.getUserCode());
 				requirement.setUpdatedDate(commonUtil.currentDate());
 			}else{
