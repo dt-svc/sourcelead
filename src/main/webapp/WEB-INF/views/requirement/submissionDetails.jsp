@@ -476,13 +476,13 @@ function changeInterviewStatus(submissionId,interviewId,interviewStatus){
 		    success: function(data) {
 		    	 jQuery("#"+(interviewId)+"actionDiv").css("display","none");
 		    	 if(interviewStatus == "Attending"){
-           		    $("#"+(interviewId)+"showStatus").html("<font color='green' size='16'>Attending</font>");
+           		    $("#"+(interviewId)+"showStatus").html("<font color='green' >Attending</font>");
 	           	 }
 	           	 if(interviewStatus == "Not Attending"){
-	           		$("#"+(interviewId)+"showStatus").html("<font color='red' size='16'>Not Attending</font>");
+	           		$("#"+(interviewId)+"showStatus").html("<font color='red' >Not Attending</font>");
 	           	 }
 	           	 if(interviewStatus == "Maybe"){
-	           		$("#"+(interviewId)+"showStatus").html("<font color='orange' size='16'>Maybe</font>");
+	           		$("#"+(interviewId)+"showStatus").html("<font color='orange' >Maybe</font>");
 	           	 }
 		    }
 	   });
