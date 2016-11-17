@@ -4,9 +4,12 @@
 
 <script>
 function candidateCommentsList(candidateId){
-	
 	$("#tab-7").show();
-	/* $('#tab-7')[0].click(); */
+	$('.current').each(function() {
+		    var currentId = this.id;
+		    $("#"+currentId).removeClass("current");
+	});
+	$("#candidateCommentTab").addClass("current");
 	
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
