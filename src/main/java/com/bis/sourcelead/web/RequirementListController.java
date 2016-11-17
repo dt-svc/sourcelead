@@ -64,7 +64,7 @@ public class RequirementListController {
 	
 	
 	@RequestMapping(value = "/releaseRequirementToClientOrVendors")
-	public ModelAndView releaseRequirementToClientOrVendors(String requirementId,HttpServletRequest request) {
+	public ModelAndView releaseRequirementToClientOrVendors(String requirementId,HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
@@ -80,10 +80,16 @@ public class RequirementListController {
 		}
 		sessionData.setNav(Constants.Requirement);
 		
+		//List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
+		List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLoc.getId(), "");
 		
-		List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
 		for(OrgRelations orgRelation :vendorsList){
-			orgRelation.setClientName(orgRelation.getLocationId().getOrg().getOrgName());
+			if(orgRelation.getLocationId().getId() == orgLoc.getId()){
+				orgRelation.setClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+			}
+			if(orgRelation.getResponderLocationId().getId() == orgLoc.getId()){
+				orgRelation.setClientName(orgRelation.getLocationId().getOrg().getOrgName());
+			}
 		}
 		model.addObject("vendor_list", vendorsList);
         model.addObject(vendorsList);
