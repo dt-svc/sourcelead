@@ -77,7 +77,6 @@ bottom:-14px;
 }
 </style>
 
-
 <script>
 $(document).ready(function() {
 	var requirementAssignedIds ='${requirementAssignedIds}';
@@ -104,6 +103,7 @@ $(document).ready(function() {
 });
 </script>
 
+
 <script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
@@ -117,7 +117,7 @@ $(document).ready(function() {
 		    });
 			
 		 };
-</script>
+</script> 
 
  <script>
 		$(document).ready(function() {
@@ -271,18 +271,18 @@ $(document).ready(function () {
          <div class="form-group" >
             <label class="col-md-3">Experience</label>
             <div class="col-md-9">
-              <%-- <div class="row">
+              <div class="row">
 	                <div class="col-md-6">
-	                 <input type="text" class="form-control" placeholder="minExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                 <input type="text" class="form-control" placeholder="minExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-2 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
 	                </div>
 	                <div class="col-md-6" >
-	                <input type="text" class="form-control" id="maxExp" name="maxExp" placeholder="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-5 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                <input type="text" class="form-control" id="maxExp" name="maxExp" placeholder="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-2 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
 	                </div>
               </div>
               <div class="row" id="expId">
                   <input type="hidden" name="expValidation" id="expValidation">
-              </div> --%>
-                 <div class="row">
+              </div> 
+        <%--          <div class="row">
              <div class="col-xs-6 col-md-6">
              		<select class="form-control" id="minExp" name="minExp"  onchange="disableMonths();">
              		  <option selected disabled>Year</option>
@@ -301,7 +301,7 @@ $(document).ready(function () {
 						</c:forEach>
              		</select>
              </div>
-            </div>
+            </div> --%>
               
             </div>
           </div>
@@ -322,7 +322,7 @@ $(document).ready(function () {
                 </select>
                 
                 </div>
-                <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true"  value="">
+                <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Type">
                     <option value="">Rate Per</option>
@@ -520,7 +520,7 @@ $(document).ready(function () {
 	                </select>
 	                
 	                </div>
-	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true">
+	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
 	                 <select class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Type" value="${requirement.clientRateType}" name="clientRateType">
 	                    
@@ -1142,7 +1142,7 @@ function getTemplateVal(){
 
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
  function disableMonths() {
      $("#minExp").change(function() {
     	 
@@ -1153,7 +1153,7 @@ function getTemplateVal(){
         	 $("#maxExp").attr("disabled", false); 
      });
  }
- </script>
+ </script> -->
 
 <script>
 function setTemplateValues(){

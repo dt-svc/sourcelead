@@ -5,6 +5,7 @@ import java.util.List;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.User;
 
 public interface RequirementDao {
 
@@ -35,6 +36,8 @@ public interface RequirementDao {
 	Integer validateJobId(Long id,Long orgLocationId) throws Exception;
 
 	public Boolean validateRequirementTitle(String jobName, Long orgLocationId);
+
+	List<Requirement> getAllReleasedJobsForVendor(Long orgLocationId, Long orgRelationId, User user, OrgLocations orgLocations) throws Exception;
 	
 	Boolean checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long requirementId,Long userId)  throws Exception;
 	

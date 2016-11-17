@@ -358,6 +358,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		}
 		return  contactsList;
 	}
+
 	
 	@Override
 	public List<OrgSpoc> getAllContactsbyOrgRelationIdAndLocationId(Long relationId, Long locationId, String initiator) throws Exception {
@@ -377,6 +378,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		}
 		return  contactsList;
 	}
+
 
 	
 }
