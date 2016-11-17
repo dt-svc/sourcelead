@@ -143,7 +143,7 @@ public class RequirementController {
 						}
 					}
 				}
-			}else{
+			}else if(maxLevel != null && maxLevel ==1){
 				approverMode = "Parallel";
 				int i = 0;
 				if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty()){

@@ -135,9 +135,8 @@ $(document).ready(function () {
     var sequentialApprover2 = '${sequentialApprover2}';
 	if(approverMode != null && approverMode != '' && approverMode != 'undefined'){
 			/*  $("#apprverReq").prop('checked', true); */
-			$('#apprverReq').click();
-			
 		    if(approverMode == 'Sequential'){
+		    		$('#apprverReq').click();
 		    	    approvalType('Sequential');     
 		    	    var str_array = sequentialApprover1.split(',');
 		    	    for (var i = 0; i < str_array.length; i++) {
@@ -154,7 +153,7 @@ $(document).ready(function () {
 		    	    
 		    } 
 			if(approverMode == 'Parallel'){
-				
+				$('#apprverReq').click();
 				approvalType('Parallel');
 				var str_array = parallelApproverIds.split(',');
 			    for (var i = 0; i < str_array.length; i++) {
@@ -163,6 +162,9 @@ $(document).ready(function () {
 			    $("#parallelApprover").val(str_array).trigger("chosen:updated");
 		    	
 		    } 
+			if(approverMode == 'noApprovers'){
+				 $("#apprverReq").prop('checked', false); 
+			}
 	}
     
     
