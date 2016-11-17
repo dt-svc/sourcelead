@@ -70,7 +70,7 @@ public interface RequirementService {
 
 	public Boolean validateRequirementTitle(String jobName, Long orgLocationId) throws Exception;
 
-
+	public List<Requirement> getAllReleasedJobsForVendor(Long orgLocationId, Long orgRelationId, User user, OrgLocations orgLocations) throws Exception;
 
 
 	

@@ -358,6 +358,5 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		}
 		return  contactsList;
 	}
-
 	
 }
