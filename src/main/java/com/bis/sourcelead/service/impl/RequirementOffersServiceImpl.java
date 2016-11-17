@@ -384,7 +384,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailScenerioUtil.sendEmail(emailMessage, emailRecipientList, new ArrayList<EmailAttachment>());
             String actionLink="";
             User applicantuser = applicant.getOrgLocations().getOrg().getUser();
-			emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, emailScenario);
+			emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, notificationScenario);
             
             
     }
