@@ -139,7 +139,6 @@ function addOffer(requirementId){
 				$("#addOfferDiv").empty();
 				$("#addOfferDiv").append(result);
 				
-				$(".Datepicker").datepicker();
 				
 				$(".add_offer_wrap").addClass("add_offer_wrap_active");
 				$(".side_mask").fadeIn(200);
@@ -237,8 +236,7 @@ function loadRemiderDiv(){
 		
 		var cell1 = row.insertCell(1);
 		cell1.innerHTML = "<div class='positionRelative date'><input class='form-control input-sm Datepicker' placeholder='Date' name='"+maxRowNum+"joiningDate' id='"+maxRowNum+"joiningDate'  readonly='readonly'  type='text' data-validation='required' field-name='Joining Date' > <span class='input-group-addon input-groupAddon'><i class='fa fa-calendar'></i></span> </div>";
-		$(".Datepicker").datepicker(); 
-				
+		
 		var cell2 = row.insertCell(2);
 		var divTsTd3Str = document.getElementById("divOfferTd3").innerHTML;
 		divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
@@ -263,6 +261,7 @@ function loadRemiderDiv(){
 		
 		$("#"+maxRowNum+"applicantId").chosen();
 		
+		$(".Datepicker").datepicker();  
 		
 		$(".add_offer_wrap").addClass("add_offer_wrap_active");
 		$(".side_mask").fadeIn(200);
@@ -352,8 +351,9 @@ function cancelAddOffer(){
  		var form = $('#addOffer_form')[0];
   		var formData = new FormData(form); 
  		
-  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-   	    $.ajax({
+   		  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+    
+ 			$.ajax({
 	    	type: "POST",
     	    data: formData,
     	    contentType : 'application/json; charset=utf-8',

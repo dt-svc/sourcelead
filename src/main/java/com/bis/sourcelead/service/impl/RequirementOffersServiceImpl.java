@@ -1,12 +1,16 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.MessagingException;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -272,7 +276,17 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setMessageBody(emailTemplate);
 
             // calling the sendEmail method of emailScenerioUtil
-            emailScenerioUtil.sendEmail(emailMessage, emailRecipientList, new ArrayList<EmailAttachment>());
+            
+            try {
+    			
+                emailScenerioUtil.sendEmail(emailMessage, emailRecipientList, new ArrayList<EmailAttachment>());
+        		}catch (MessagingException e) {
+        			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
+        		} catch (UnsupportedEncodingException e) {
+        			logger.error(ExceptionUtils.getFullStackTrace(e));
+        		}
+            
+            
 		}
 }
 	
@@ -381,7 +395,15 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setSubject(subject);
             emailMessage.setMessageBody(emailTemplate);
 
+
+    		try {
+    			
             emailScenerioUtil.sendEmail(emailMessage, emailRecipientList, new ArrayList<EmailAttachment>());
+    		}catch (MessagingException e) {
+    			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
+    		} catch (UnsupportedEncodingException e) {
+    			logger.error(ExceptionUtils.getFullStackTrace(e));
+    		}
             String actionLink="";
             User applicantuser = applicant.getOrgLocations().getOrg().getUser();
 			emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, notificationScenario);
