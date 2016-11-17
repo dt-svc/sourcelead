@@ -180,8 +180,14 @@ public class RequirementRestController {
 					    requirementApproverHierarchy.setUpdatedBy(loginUser.getUserCode());
 					    requirementApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
 					    requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
-						User approverUser = userService.getUserById(requirementApproverHierarchy.getApproverUserId().getId());
-						requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null,orgLocation);
+					    
+					    //This For Mailing to approver two 
+					    RequirementApproverHierarchy level2approver  =  requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(requirementId);
+						if(level2approver !=null ){
+							     User approverUser = userService.getUserById(level2approver.getApproverUserId().getId());
+								 requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null,orgLocation);
+						}
+					   
 		          }
             }
 		}
