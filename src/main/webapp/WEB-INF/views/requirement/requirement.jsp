@@ -322,7 +322,7 @@ $(document).ready(function () {
                 </select>
                 
                 </div>
-                <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true"  value="">
+                <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Type">
                     <option value="">Rate Per</option>
@@ -520,7 +520,7 @@ $(document).ready(function () {
 	                </select>
 	                
 	                </div>
-	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true">
+	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
 	                 <select class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Type" value="${requirement.clientRateType}" name="clientRateType">
 	                    

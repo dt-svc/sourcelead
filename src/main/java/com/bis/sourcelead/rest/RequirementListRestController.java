@@ -358,6 +358,7 @@ public class RequirementListRestController {
 								requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 								requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 								requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+								requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
 								if(requirementSubmission.getCreatedDate() != null){
 									requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 								}
