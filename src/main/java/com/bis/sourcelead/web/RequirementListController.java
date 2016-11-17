@@ -83,7 +83,7 @@ public class RequirementListController {
 		
 		List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
 		for(OrgRelations orgRelation :vendorsList){
-			orgRelation.setClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+			orgRelation.setClientName(orgRelation.getLocationId().getOrg().getOrgName());
 		}
 		model.addObject("vendor_list", vendorsList);
         model.addObject(vendorsList);
