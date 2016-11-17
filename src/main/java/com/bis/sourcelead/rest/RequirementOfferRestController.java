@@ -177,13 +177,14 @@ public class RequirementOfferRestController {
 		    req = requirementService.getRequirementByRequirementId(requirementSubmission.getRequirement().getId());
 			List<RequirementAssignTo>  requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(requirementSubmission.getRequirement().getId());
 			
+			String loginUserType =  (String) SourceLeadSessionManager.getSessionAttribute(request, "userType");
 			if(requirementAssignToList !=null &&  requirementAssignToList.size()>0){
 				for(RequirementAssignTo requirementAssignTo :requirementAssignToList){
 					     // if we have  Assigned any team 
 						if(requirementAssignTo.getTeamId()!=null){
 							if(requirementAssignTo.getAssignUserId().getUserCode().equalsIgnoreCase(requirementSubmission.getCreatedBy())
 							    ||  ( loginUser.getId() == requirementAssignTo.getTeamId().getOwnerUserId().getId())
-							    || (loginUser.getUserType().equalsIgnoreCase(Constants.ADMIN) )
+							    || (loginUserType.equalsIgnoreCase(Constants.ADMIN) )
 									|| (req.getManagerUserId().getId() == loginUser.getId())){
 									
 									// This is for Cleint Submission Check  for Offer
@@ -211,7 +212,7 @@ public class RequirementOfferRestController {
 							
 							// if we have   not  selected the Team
 						}else if(requirementAssignTo.getAssignUserId().getUserCode().equalsIgnoreCase(requirementSubmission.getCreatedBy())
-						    || (loginUser.getUserType().equalsIgnoreCase(Constants.ADMIN) )
+						    || (loginUserType.equalsIgnoreCase(Constants.ADMIN) )
 							|| (req.getManagerUserId().getId() == loginUser.getId())){
 						
 						// This is for Cleint Submission Check  for Offer
@@ -440,8 +441,10 @@ public class RequirementOfferRestController {
     @ResponseBody  String acceptOrRejectOffer(@RequestParam(value="offerStatus", required=false) String offerStatus,
                            @RequestParam(value = "submissionId", required = false) Long submissionId,
                     HttpServletRequest request) throws Exception {
-            
-            RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferId(submissionId);
+
+			 String setofferStatus = "";
+            RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submissionId);
+
             RequirementSubmission requirementSubmission   =requirementSubmissionService.getRequirementSubmissionById(submissionId);
             if(offerStatus.equalsIgnoreCase("Accepted")){
                      requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
@@ -450,6 +453,7 @@ public class RequirementOfferRestController {
                     	 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
                          requirementOffers.setOfferStatus("OFFERACCEPTED");
                         requirementOffersService.saveOfferStatus(requirementOffers);
+                        setofferStatus ="you have accepted the offer";
                      }
                       
                     
@@ -459,11 +463,12 @@ public class RequirementOfferRestController {
                     	requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
                         requirementOffers.setOfferStatus("OFFERREJECTED");
                         requirementOffersService.saveOfferStatus(requirementOffers);
+                        setofferStatus ="you have rejected the offer";
                     }
                     
             }
             
-           return offerStatus;
+           return setofferStatus;
     }                
 
 

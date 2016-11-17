@@ -587,7 +587,7 @@ public class RequirementServiceImpl implements RequirementService {
 						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
 						requirementAssignTo.setRoleId(userRole.getRoles());
 						requirementAssignToList.add(requirementAssignTo);
-						AssignToTeamMembersEmail(user, assUser, requirement,location);
+						AssignToTeamMembersEmail(user, assUser, requirement,location,orgLocations);
 
 					}
 				}
@@ -596,7 +596,7 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
-		mailRequirementtoManager(user,user,requirement,location);
+		mailRequirementtoManager(user,user,requirement,location,orgLocations);
 		return savedRequirement;
 	}
 
@@ -801,7 +801,7 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	
 	@Override
-	public void approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location) throws Exception {
+	public void approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location,OrgLocations orgLocations) throws Exception {
 		
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
@@ -854,12 +854,17 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
-		
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		 
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 		 String url = "";
+		 
+		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
@@ -868,13 +873,16 @@ public class RequirementServiceImpl implements RequirementService {
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 String actionLink="";
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocations, notificationScenario);
+
 
 	}
 
 
 	@SuppressWarnings("unused")
 	@Override
-	public void acceptEmailScenario(User loginUser, User intiatorUser, Requirement requirement) throws Exception {
+	public void acceptEmailScenario(User loginUser, User intiatorUser, Requirement requirement,OrgLocations orgLocations) throws Exception {
 		
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
@@ -926,12 +934,16 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVED_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
-		
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVED_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 		 String url = "";
+		 
+		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
@@ -940,6 +952,9 @@ public class RequirementServiceImpl implements RequirementService {
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 String actionLink="";
+		emailScenerioUtil.sendNotification(actionLink, loginUser,intiatorUser, orgLocations, notificationScenario);
+
 
 	}
 	
@@ -1090,7 +1105,7 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@SuppressWarnings("unused")
 	@Override
-	public void mailRequirementtoManager(User loginUser, User managerUser, Requirement requirement,StringBuilder location) throws Exception {
+	public void mailRequirementtoManager(User loginUser, User managerUser, Requirement requirement,StringBuilder location,OrgLocations loginOrgLocation) throws Exception {
 	
 		 if(requirement.getManagerUserId() != null ){
 			managerUser = userService.getUserById(requirement.getManagerUserId().getId());
@@ -1158,12 +1173,18 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAILREQUIREMENTTOMANAGER,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAILREQUIREMENTTOMANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
+
 		
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 		 String url = "";
+		 
+		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
@@ -1172,12 +1193,15 @@ public class RequirementServiceImpl implements RequirementService {
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 String actionLink="";
+		 emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario);
+
 
 	}
 
 	@SuppressWarnings("unused")
 	@Override
-	public void AssignToTeamMembersEmail(User loginUser, User assUser, Requirement requirement,StringBuilder location) throws Exception {
+	public void AssignToTeamMembersEmail(User loginUser, User assUser, Requirement requirement,StringBuilder location,OrgLocations orgLocations) throws Exception {
 			assUser= userService.getUserById(assUser.getId());
 
 		 EmailMessage emailMessage = new EmailMessage();
@@ -1236,12 +1260,18 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ASSIGNTEAMMEMBERSFORREQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ASSIGNTEAMMEMBERSFORREQUIREMENT,Constants.ENTITY_TYPE_NOTIFICATION);
+
 		
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 		 String url = "";
+		 
+		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
@@ -1250,14 +1280,15 @@ public class RequirementServiceImpl implements RequirementService {
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		String actionLink="";
+		emailScenerioUtil.sendNotification(actionLink, loginUser,assUser, orgLocations, notificationScenario);
+
 
 	}
 
 
 	@Override
-	public void rejectedEmailScenario(User loginUser, User initiatorUser, Requirement requirement,
-			StringBuilder location,String rejectedReason)
-			throws Exception {
+	public void rejectedEmailScenario(User loginUser, User initiatorUser, Requirement requirement,StringBuilder location,String rejectedReason,OrgLocations loginOrgLocation)throws Exception {
 
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(loginUser.getFirstName());
@@ -1310,14 +1341,19 @@ public class RequirementServiceImpl implements RequirementService {
 
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = emailScenarioService
-				.getEmailScenarioByUniqueName(Constants.REJECTED_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_EMAIL);
+		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECTED_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_EMAIL);
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECTED_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+
 
 		// covert subject,body and signature
 		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
 		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
 		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
 		String url = "";
+		
+		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+		notificationScenario.setBody(notificationbody);
+
 
 		// construct HTML template using required data
 		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
@@ -1327,6 +1363,8 @@ public class RequirementServiceImpl implements RequirementService {
 
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, emailRecipientList, new ArrayList<EmailAttachment>());
+		String actionLink="";
+		emailScenerioUtil.sendNotification(actionLink, loginUser, initiatorUser, loginOrgLocation, notificationScenario);
 	}
 
 	@Override
@@ -1449,8 +1487,8 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public Integer validateJobId(Long id) throws Exception {
-		return requirementDao.validateJobId(id);
+	public Integer validateJobId(Long id,Long orgLocation) throws Exception {
+		return requirementDao.validateJobId(id,orgLocation);
 	}
 
 
@@ -1652,7 +1690,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	
 	
-public void removedApproversInRequirementForParallel(String[] approver , Requirement requirement) throws Exception{
+	public void removedApproversInRequirementForParallel(String[] approver , Requirement requirement) throws Exception{
 		
 		if(requirement.getId() !=null){
 			
@@ -1673,24 +1711,32 @@ public void removedApproversInRequirementForParallel(String[] approver , Require
 		
 	}
 
-public void removedApproversInRequirementForSequential(User approver , Requirement requirement,Integer level) throws Exception{
+	public void removedApproversInRequirementForSequential(User approver , Requirement requirement,Integer level) throws Exception{
+		
+				if(requirement.getId() !=null){
+					List<RequirementApproverHierarchy> requirementApproverHierarchies = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
+				    	if(requirementApproverHierarchies != null ){
+							     for(RequirementApproverHierarchy rah:requirementApproverHierarchies){
+							            if(approver.getId() != rah.getApproverUserId().getId() && level.equals(rah.getLevel())){
+								                requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(rah);
+							              }
+							
+								    }
+						}
+				}
+		
+		
+	}
+
+	@Override
+	public Boolean checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long requirementId, Long userId)
+			throws Exception {
+		 	return  requirementDao.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirementId, userId);
+	}
 	
-			if(requirement.getId() !=null){
-				List<RequirementApproverHierarchy> requirementApproverHierarchies = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
-			    	if(requirementApproverHierarchies != null ){
-						     for(RequirementApproverHierarchy rah:requirementApproverHierarchies){
-						            if(approver.getId() != rah.getApproverUserId().getId() && level.equals(rah.getLevel())){
-							                requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(rah);
-						              }
-						
-							    }
-					}
-			}
-	
-	
-}
 
 public List<Requirement> getAllReleasedJobsForVendor(Long orgLocationId, Long orgRelationId, User user,OrgLocations orgLocations) throws Exception{
 	return requirementDao.getAllReleasedJobsForVendor(orgLocationId, orgRelationId, user,orgLocations);
 }
 }
+

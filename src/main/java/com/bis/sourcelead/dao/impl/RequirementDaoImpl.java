@@ -443,12 +443,12 @@ public class RequirementDaoImpl implements RequirementDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer validateJobId(Long id) throws Exception {
+	public Integer validateJobId(Long id,Long orgLocationId) throws Exception {
 	Session session = this.sessionFactory.getCurrentSession();
 		
-		String query ="select count(*)from Requirement requirement where requirement.jobId = :id";
+		String query ="select count(*)from Requirement requirement where requirement.jobId = :id and requirement.orgLocationId.id =:orgLocationId";
 		
-		List<Long> jobCount =   session.createQuery(query.toString()).setLong("id", id).list();
+		List<Long> jobCount =   session.createQuery(query.toString()).setLong("id", id).setLong("orgLocationId", orgLocationId).list();
 			Integer count = 0;
 			if(jobCount != null && !jobCount.isEmpty()){
 					count = jobCount.get(0).intValue();
@@ -490,6 +490,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 		
 	}
+
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Requirement> getAllReleasedJobsForVendor(Long orgLocationId, Long orgRelationId,User user,OrgLocations loginOrgLocations) throws Exception {
@@ -512,6 +513,27 @@ public class RequirementDaoImpl implements RequirementDao {
         return releasedJobsList;
 		
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long requirementId, Long userId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query ="from Requirement requirement where requirement.id = :requirementId and requirement.managerUserId.id =:userId";
+		List<Requirement> requirementList = session.createQuery(query).setLong("requirementId", requirementId).setLong("userId", userId).setCacheable(true).list();
+		if(requirementList !=null && requirementList.size() >0){
+			flag = true;
+			return flag;
+		}else{
+			return flag;
+		}
+			
+	
+	}
+	
 
 	
 	

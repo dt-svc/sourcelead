@@ -209,7 +209,7 @@ public class RequirementController {
 		model.addObject("spocOwnersList", userList);
 		
 		//approver list
-		List<User> approverList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		List<User> approverList = userService.getAllUsersByOrgLocationCodeExcludingEmployees(orgLocations.getId());
 		model.addObject("approverList", approverList);
 		
 		//approver list

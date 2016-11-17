@@ -224,9 +224,11 @@ public class RequirementListRestController {
 				Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
 				
 				// to get the RequirementApproverHierarchy to set the Status
-				RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(Long.parseLong(requirementId), user.getId());
+				    Boolean isLoginUserAsApprover = false;
+					RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(Long.parseLong(requirementId), user.getId());
 					if(requirementApproverHierarchy!=null){
 						requirement.setRequirementApproverHierarchyStatus(requirementApproverHierarchy.getRequirementApproverStatus().toString());
+						isLoginUserAsApprover = true;
 					}
 					if(requirement.getSpocId() !=null){
 						if(requirement.getClientId() !=null ){
@@ -263,6 +265,14 @@ public class RequirementListRestController {
 					
 					Boolean isLoginUserAsTeamMember =   requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
 					requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
+					
+					requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
+					
+					Boolean isLoginUserAsManager =   requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
+					requirement.setIsLoginUserAsManager(isLoginUserAsManager.toString());
+					
+					
+					
 					resultJson = commonUtil.toJSON(requirement);
 				 
 			}
@@ -303,6 +313,11 @@ public class RequirementListRestController {
 					       }
 					       if(assing.getTeamId() != null ){
 					    	   ra.setTeamName(assing.getTeamId().getName());
+					       }
+					       
+					       if(assing.getAssignUserId()  != null){
+					    	   Integer applicantCount =   requirementSubmissionService.getApplicantCountByrequirementIdandAssignedUsercode(Long.parseLong(requirementId), assing.getAssignUserId().getUserCode());
+						       ra.setApplicantCount(applicantCount.toString());
 					       }
 					       requirementAssignToList.add(ra);
 				      }

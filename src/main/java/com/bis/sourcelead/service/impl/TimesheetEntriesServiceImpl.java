@@ -1410,13 +1410,14 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		                   		       
 		                   		       tsd.setTimesheetSubmissions(timesheetSubmissions);
 		                               MultipartFile  multiFile = (MultipartFile)files.get(a+"docFile");
-		                               tsd.setDocFile(multiFile.getBytes());
-		                               tsd.setFileName(multiFile.getOriginalFilename());
-		                               
-		                               if(multiFile.getContentType()!=null){
-		                            	   tsd.setFileContentType(multiFile.getContentType());
+		                               if(multiFile != null && !multiFile.isEmpty()){
+			                               tsd.setDocFile(multiFile.getBytes());
+			                               tsd.setFileName(multiFile.getOriginalFilename());
+			                               
+			                               if(multiFile.getContentType()!=null){
+			                            	   tsd.setFileContentType(multiFile.getContentType());
+			                               }
 		                               }
-		                              
 		                               
 		                               tsd.setStatus(Constants.CANDIDATE_ACTIVE);
 		                               tsd.setCreatedDate(commonUtil.currentDate());
