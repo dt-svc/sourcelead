@@ -424,10 +424,10 @@ public class RequirementRestController {
         });
         return xstream.toXML(obj);
     }
-	 @RequestMapping(value = "/validatejobName",  method = RequestMethod.POST)
-	    public @ResponseBody String validatejobName(@RequestParam(value="jobName", required=false) String jobName,HttpServletRequest request) throws Exception {
+	 @RequestMapping(value = "/validatetemplateName",  method = RequestMethod.POST)
+	    public @ResponseBody String validatejobName(@RequestParam(value="templateName", required=false) String templateName,HttpServletRequest request) throws Exception {
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				Boolean validatejobName = requirementService.validateRequirementTitle(jobName,orgLocation.getId());
+				Boolean validatejobName = requirementService.validateRequirementTitle(templateName,orgLocation.getId());
 				return validatejobName.toString();
 		    }
 }

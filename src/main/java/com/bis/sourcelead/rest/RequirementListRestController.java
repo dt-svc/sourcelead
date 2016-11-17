@@ -268,6 +268,10 @@ public class RequirementListRestController {
 					
 					requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
 					
+					Boolean isLoginUserAsManager =   requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
+					requirement.setIsLoginUserAsManager(isLoginUserAsManager.toString());
+					
+					
 					
 					resultJson = commonUtil.toJSON(requirement);
 				 
