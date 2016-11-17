@@ -187,12 +187,12 @@ public class RequirementOfferRestController {
 							    || (loginUserType.equalsIgnoreCase(Constants.ADMIN) )
 									|| (req.getManagerUserId().getId() == loginUser.getId())){
 									
-									// This is for Cleint Submission Check  for Offer
+									// This is for vendor Submission Check  for Offer
 									RequirementSubmission sourcesubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(submissionId, orgLocations.getId());
 									if(sourcesubmission!=null){
 										requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(sourcesubmission.getId());
 											if(requirementOffers!=null){
-													if(requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y")){
+													if(requirementOffers.getNotifyToVendor() !=null && requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y")){
 														requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
 														if(sourcesubmission.getVendorLocationId() !=null){
 															requirementOffers.setClientName(sourcesubmission.getVendorLocationId().getOrg().getOrgName());
@@ -201,7 +201,7 @@ public class RequirementOfferRestController {
 													}
 											}
 									}else{
-										// This is for normal Own Submission Check  for Offer
+										// This is for normal Own clent Submission Check  for Offer
 										    requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(requirementSubmission.getId());
 												if(requirementOffers!=null){
 													requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
@@ -215,12 +215,12 @@ public class RequirementOfferRestController {
 						    || (loginUserType.equalsIgnoreCase(Constants.ADMIN) )
 							|| (req.getManagerUserId().getId() == loginUser.getId())){
 						
-						// This is for Cleint Submission Check  for Offer
+						// This is for vendor Submission Check  for Offer
 						RequirementSubmission sourcesubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(submissionId, orgLocations.getId());
 						if(sourcesubmission!=null){
 							requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(sourcesubmission.getId());
 								if(requirementOffers!=null){
-									if((requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y")) && (requirementOffers.getNotifyToVendor() !=null)){											requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
+									if( (requirementOffers.getNotifyToVendor() != null) && (requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y"))){											requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
 								        	requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
 								        	if(sourcesubmission.getVendorLocationId() !=null){
 												requirementOffers.setClientName(sourcesubmission.getVendorLocationId().getOrg().getOrgName());
@@ -229,7 +229,7 @@ public class RequirementOfferRestController {
 										}
 								}
 						}else{
-							// This is for normal Submission Check  for Offer
+							// This is for normal cleint  Submission Check  for Offer
 							    requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(requirementSubmission.getId());
 							    if(requirementOffers!=null){
 							    	  requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
@@ -243,7 +243,7 @@ public class RequirementOfferRestController {
 				if(sourcesubmission!=null){
 					requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(sourcesubmission.getId());
 					if(requirementOffers != null){
-                        if("Y".equalsIgnoreCase(requirementOffers.getNotifyToVendor()) && requirementOffers.getNotifyToVendor() != null && !requirementOffers.getNotifyToVendor().isEmpty()){
+                        if( requirementOffers.getNotifyToVendor() != null && "Y".equalsIgnoreCase(requirementOffers.getNotifyToVendor()) && !requirementOffers.getNotifyToVendor().isEmpty()){
                             requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
                             resultJson = commonUtil.toJSON(requirementOffers);
                         }

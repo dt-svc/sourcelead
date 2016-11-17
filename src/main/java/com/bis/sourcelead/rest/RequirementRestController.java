@@ -162,13 +162,13 @@ public class RequirementRestController {
 		if(status.equalsIgnoreCase("APPROVED")){ 
 		    if(maxLevel!=null){
 		    	 if(maxLevel.equals(requirementApproverHierarchy.getLevel())){
-		    		     requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.APPROVED);
+		    		     requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
 		    		     requirement.setUpdatedBy(loginUser.getUserCode());
 				    	 requirement.setUpdatedDate(commonUtil.currentDate());
 				    	 requirementService.addRequirement(requirement);
 				      List<RequirementApproverHierarchy> list1  =  requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
 		    		    for(RequirementApproverHierarchy rah :list1){
-			    		      rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+			    		      rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.OPEN);
 			    		      rah.setUpdatedBy(loginUser.getUserCode());
 							  rah.setUpdatedDate(commonUtil.currentDate());
 			    		      requirementApproverHierarchyService.addRequirementApproverHierarchy(rah);
@@ -176,7 +176,7 @@ public class RequirementRestController {
 		    		    User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
 		    			requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement,orgLocation); 
 				 }else{
-					    requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+					    requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.OPEN);
 					    requirementApproverHierarchy.setUpdatedBy(loginUser.getUserCode());
 					    requirementApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
 					    requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
