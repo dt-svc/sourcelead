@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -202,19 +203,24 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 		}
 		
 		
-		/*@Override
+		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public List<OrgSpoc> getAllContactsbyOrgRelationId(Long orgId) throws Exception {
+		public List<OrgSpoc> getAllContactsbyOrgRelationIdAndLocationId(Long relationId, Long locationId, String initiator) throws Exception {
 			
-			logger.debug("In OrgSpocDaoImpl getAllContactsbyOrgRelationId method");
+			logger.debug("In OrgSpocDaoImpl getAllContactsbyOrgRelationIdAndLocationId method");
 			
 			Session session = this.sessionFactory.getCurrentSession();
-			List<OrgSpoc> spocsList;
+			List<OrgSpoc> spocsList = null;
 			 
-			Query query= session.createQuery("from OrgSpoc spoc  left join fetch spoc.orgRelations orgrelation where spoc.orgRelations.id=:orgId and spoc.status <> '0' "); 
-			spocsList = query.setLong("orgId", orgId).setCacheable(true).list();
+			if(StringUtils.equals(initiator, "Vendor")){
+				Query query= session.createQuery("from OrgSpoc spoc where spoc.orgRelations.id=:relationId and spoc.initiatorLocationId.id=:locationId and spoc.status <> '0' ");
+				spocsList = query.setLong("relationId", relationId).setLong("locationId", locationId).setCacheable(true).list();
+			}else if(StringUtils.equals(initiator, "Client")){
+				Query query= session.createQuery("from OrgSpoc spoc where spoc.orgRelations.id=:relationId and spoc.responderLocationId.id=:locationId and spoc.status <> '0' ");
+				spocsList = query.setLong("relationId", relationId).setLong("locationId", locationId).setCacheable(true).list();
+			}
+			 
 			return spocsList;
 			
 		}
-*/
 }

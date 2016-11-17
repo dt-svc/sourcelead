@@ -126,7 +126,14 @@ function requirementList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
-		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+	                    	 if(opt.jobId != '' && opt.jobId != null){
+		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"-"+opt.jobId+"'>"+opt.jobTitle+"-"+opt.jobId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+	                    	 }
+	                    	 else
+	                    		 {
+			                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"-"+opt.jobId+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+
+	                    		 }
 		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
 		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
 		                     }else{
@@ -175,6 +182,14 @@ result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange
 									result = result +"<option value='OPEN'>OPEN</option>";
 									result = result +"<option value='ONHOLD'>ONHOLD</option>";
 									result = result +"<option value='CANCEL'>CANCEL</option>";
+									
+								}else if(opt.requirementSubmissionStatus == "APPROVED"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									
+								}
+								else if(opt.requirementSubmissionStatus == "REJECTED"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									
 								}
 								
 								else if(opt.requirementSubmissionStatus == "SUBMITTED"){

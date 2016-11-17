@@ -177,21 +177,22 @@ public class RequirementOfferRestController {
 		    req = requirementService.getRequirementByRequirementId(requirementSubmission.getRequirement().getId());
 			List<RequirementAssignTo>  requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(requirementSubmission.getRequirement().getId());
 			
+			String loginUserType =  (String) SourceLeadSessionManager.getSessionAttribute(request, "userType");
 			if(requirementAssignToList !=null &&  requirementAssignToList.size()>0){
 				for(RequirementAssignTo requirementAssignTo :requirementAssignToList){
 					     // if we have  Assigned any team 
 						if(requirementAssignTo.getTeamId()!=null){
 							if(requirementAssignTo.getAssignUserId().getUserCode().equalsIgnoreCase(requirementSubmission.getCreatedBy())
 							    ||  ( loginUser.getId() == requirementAssignTo.getTeamId().getOwnerUserId().getId())
-							    || (loginUser.getUserType().equalsIgnoreCase(Constants.ADMIN) )
+							    || (loginUserType.equalsIgnoreCase(Constants.ADMIN) )
 									|| (req.getManagerUserId().getId() == loginUser.getId())){
 									
-									// This is for Cleint Submission Check  for Offer
+									// This is for vendor Submission Check  for Offer
 									RequirementSubmission sourcesubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(submissionId, orgLocations.getId());
 									if(sourcesubmission!=null){
 										requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(sourcesubmission.getId());
 											if(requirementOffers!=null){
-													if(requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y")){
+													if(requirementOffers.getNotifyToVendor() !=null && requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y")){
 														requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
 														if(sourcesubmission.getVendorLocationId() !=null){
 															requirementOffers.setClientName(sourcesubmission.getVendorLocationId().getOrg().getOrgName());
@@ -200,7 +201,7 @@ public class RequirementOfferRestController {
 													}
 											}
 									}else{
-										// This is for normal Own Submission Check  for Offer
+										// This is for normal Own clent Submission Check  for Offer
 										    requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(requirementSubmission.getId());
 												if(requirementOffers!=null){
 													requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
@@ -211,15 +212,15 @@ public class RequirementOfferRestController {
 							
 							// if we have   not  selected the Team
 						}else if(requirementAssignTo.getAssignUserId().getUserCode().equalsIgnoreCase(requirementSubmission.getCreatedBy())
-						    || (loginUser.getUserType().equalsIgnoreCase(Constants.ADMIN) )
+						    || (loginUserType.equalsIgnoreCase(Constants.ADMIN) )
 							|| (req.getManagerUserId().getId() == loginUser.getId())){
 						
-						// This is for Cleint Submission Check  for Offer
+						// This is for vendor Submission Check  for Offer
 						RequirementSubmission sourcesubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(submissionId, orgLocations.getId());
 						if(sourcesubmission!=null){
 							requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(sourcesubmission.getId());
 								if(requirementOffers!=null){
-									if((requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y")) && (requirementOffers.getNotifyToVendor() !=null)){											requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
+									if( (requirementOffers.getNotifyToVendor() != null) && (requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y"))){											requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
 								        	requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
 								        	if(sourcesubmission.getVendorLocationId() !=null){
 												requirementOffers.setClientName(sourcesubmission.getVendorLocationId().getOrg().getOrgName());
@@ -228,7 +229,7 @@ public class RequirementOfferRestController {
 										}
 								}
 						}else{
-							// This is for normal Submission Check  for Offer
+							// This is for normal cleint  Submission Check  for Offer
 							    requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(requirementSubmission.getId());
 							    if(requirementOffers!=null){
 							    	  requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
@@ -242,7 +243,7 @@ public class RequirementOfferRestController {
 				if(sourcesubmission!=null){
 					requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(sourcesubmission.getId());
 					if(requirementOffers != null){
-                        if("Y".equalsIgnoreCase(requirementOffers.getNotifyToVendor()) && requirementOffers.getNotifyToVendor() != null && !requirementOffers.getNotifyToVendor().isEmpty()){
+                        if( requirementOffers.getNotifyToVendor() != null && "Y".equalsIgnoreCase(requirementOffers.getNotifyToVendor()) && !requirementOffers.getNotifyToVendor().isEmpty()){
                             requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
                             resultJson = commonUtil.toJSON(requirementOffers);
                         }
@@ -440,8 +441,10 @@ public class RequirementOfferRestController {
     @ResponseBody  String acceptOrRejectOffer(@RequestParam(value="offerStatus", required=false) String offerStatus,
                            @RequestParam(value = "submissionId", required = false) Long submissionId,
                     HttpServletRequest request) throws Exception {
-            
-            RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferId(submissionId);
+
+			 String setofferStatus = "";
+            RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submissionId);
+
             RequirementSubmission requirementSubmission   =requirementSubmissionService.getRequirementSubmissionById(submissionId);
             if(offerStatus.equalsIgnoreCase("Accepted")){
                      requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
@@ -450,6 +453,7 @@ public class RequirementOfferRestController {
                     	 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
                          requirementOffers.setOfferStatus("OFFERACCEPTED");
                         requirementOffersService.saveOfferStatus(requirementOffers);
+                        setofferStatus ="you have accepted the offer";
                      }
                       
                     
@@ -459,11 +463,12 @@ public class RequirementOfferRestController {
                     	requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
                         requirementOffers.setOfferStatus("OFFERREJECTED");
                         requirementOffersService.saveOfferStatus(requirementOffers);
+                        setofferStatus ="you have rejected the offer";
                     }
                     
             }
             
-           return offerStatus;
+           return setofferStatus;
     }                
 
 

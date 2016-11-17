@@ -105,6 +105,16 @@ public interface UserService  {
 	List<User> getAllUsersByOrgLocationCode(Long orgLocationsId) throws Exception;
 	
 	
+	/**
+	 * @author Sammeta David
+	 * to fetch get All Users By OrgLocation Code who are not Employees
+	 * @param orgLocationsId
+	 * @return List<User> 
+	 */
+	List<User> getAllUsersByOrgLocationCodeExcludingEmployees(Long orgLocationsId) throws Exception;
+	
+	
+	
 	
 	/**
 	 * @author Sammeta David

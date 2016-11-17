@@ -789,6 +789,12 @@ public class UserServiceImpl implements UserService {
 			throws Exception {
 		return userDao.getUserListExceptExistedTeamMembersList(teamMembersId, orgLocationId);
 	}
+
+	@Override
+	public List<User> getAllUsersByOrgLocationCodeExcludingEmployees(Long orgLocationsId) throws Exception {
+		
+		return userDao.getAllUsersByOrgLocationCodeExcludingEmployees(orgLocationsId);
+	}
 	
 	
 	
