@@ -598,7 +598,13 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     	 EmailMessage emailMessage = new EmailMessage();
     	
     		 if(requirement.getSpocId() != null){
-    			 Long managerId = requirement.getSpocId().getOwnerUser().getId();
+    			 Long managerId = null;
+    			 if(null != requirement.getParentRequirement()){
+    				 managerId = requirement.getSpocId().getOwnerUser().getId();
+    			 }else{
+    				 managerId = requirement.getSpocId().getSpocUser().getId();
+    			 }
+    			 
     			 User requirementManager = userDao.getUserById(managerId);
     			 emailMessage.setFirstName(requirementManager.getFirstName());
     			 emailMessage.setLastName(requirementManager.getLastName());
