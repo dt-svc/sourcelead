@@ -445,11 +445,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 		return projectsDao.getUserAssignedProjectsCount(userId, orgLocationId);
 	}
 
-	@Override
+	/*@Override
 	public HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception {
 		
 		return projectsDao.getAllUserTimeSheetSubmissionStatus();
-	}
+	}*/
 
 	@Override
 	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,HashSet<TimesheetSubmissions> timesheetSubmissions) throws Exception {
@@ -536,11 +536,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 			emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario);		
 	}
 
-	@Override
+	/*@Override
 	public HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
 		
 		return projectsDao.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency);
-	}
+	}*/
 
 	@Override
 	public void saveAllProjects(List<Projects> projectsList) throws Exception {
@@ -1406,9 +1406,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 				return teamMembersList;
 				}
 
-			@Override
+			/*@Override
 			public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() throws Exception {
 				return projectsDao.getAllUserTimeSheetSubmissionStatusCurrentWeek();
 			}
-			  
+			  */
 }

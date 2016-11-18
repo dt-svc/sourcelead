@@ -56,11 +56,11 @@ public interface ProjectsService {
 	
 		Integer getUserAssignedProjectsCount(Long userId,Long orgLocationId);
 		
-		HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
+		//HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
 		
 		void  userEmailNotificationForTimeSheetSubmission(User user,Long locationsId, HashSet<TimesheetSubmissions> timesheetSubmissions) throws Exception;
 		
-		HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
+		//HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 		
 		String getProjectDetailsByProjectIdAndLoginOrgId(Long projectId,User user,String loginOrgLocation) throws Exception ;
 	
@@ -74,7 +74,7 @@ public interface ProjectsService {
         
 		String  storeProject(JSONObject jsonObj) throws Exception;
 		
-		HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() throws Exception;
+		//HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() throws Exception;
 		
 		
 		

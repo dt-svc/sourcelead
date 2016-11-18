@@ -21,6 +21,7 @@ import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -32,6 +33,9 @@ public class ProjectsServiceTest {
 
 	@Autowired
 	ProjectsService projectsService;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
@@ -199,20 +203,20 @@ public class ProjectsServiceTest {
 	 */
 	@Test
 	public void getAllUserTimeSheetSubmissionStatus() throws Exception{
-		HashSet<User> usrList = projectsService.getAllUserTimeSheetSubmissionStatus();
-		for(User user : usrList){
-			if("Admin".equalsIgnoreCase(user.getUserType()))
+		HashSet<UserRole> usrRoleList = userRoleService.getAllUserTimeSheetSubmissionStatusCurrentWeek();
+		for(UserRole userRole : usrRoleList){
+			if("Admin".equalsIgnoreCase(userRole.getUserType()))
 				continue;
-			HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
+			HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(userRole.getUser().getId(),userRole.getOrgLocations().getId());
 			//projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
-			logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+usrList.size());
+			logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+usrRoleList.size());
 			
 		}
 	}
 
 	//@Test
 	public void getPreviousWeekTimeShhetSubmissionStatus() throws Exception{
-		HashSet<User> usrList  = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus("Weekly");
+		HashSet<UserRole> usrList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus("Weekly");
 		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+usrList.size());
 		
 	}
