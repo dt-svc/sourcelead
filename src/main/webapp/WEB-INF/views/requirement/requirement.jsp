@@ -107,7 +107,9 @@ $(document).ready(function() {
 <script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
+			removeEditButton();
 			disableMonths();
+			
 			/*  $(".isClient").click(function(){  
 		        $(".clientDetails").toggleClass('hidden', 500);
 		    });  */
@@ -1930,5 +1932,14 @@ var sourceleadUrl ='${sourceleadUrl}';
 }
 </script>
 
-
+<script type="text/javascript">
+function removeEditButton() {
+	var reqId = document.getElementById("requirementId").value;
+	if(reqId != null && reqId != 0){
+		 var draftId = document.getElementById("draft");
+		 draftId.parentNode.removeChild(draftId);
+		    return false;
+	}
+}
+</script>
 <jsp:include page="../masterFooter.jsp" />
