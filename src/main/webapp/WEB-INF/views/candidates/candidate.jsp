@@ -588,7 +588,6 @@ function getCities(){
 		        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 		        {
 		        	var par = this.parent;
-		        	alert(par);
 		            var option = $("<option>").val(newSkill).text(newSkill);
 		            select.append(option);
 		            select.find(option).prop('selected', true);

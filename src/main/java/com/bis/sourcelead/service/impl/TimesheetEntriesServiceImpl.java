@@ -1269,23 +1269,28 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 							    String startDate1  =  sdf.format(tsFirst.getStartDate());
 							    String endDate1  =  sdf.format(tsFirst.getEndDate());
-							    documentBuffer.append("<input class='dele' type='button'  onClick='deleteSubmissionDocument(\""+tsd.getId()+"\",\""+tsFirst.getProjectMembers().getEmployee().getId()+"\",\""+startDate1+"\",\""+endDate1+"\");'>");
-								
+							    if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){ 
+								}else{
+									documentBuffer.append("<input class='dele' type='button'  onClick='deleteSubmissionDocument(\""+tsd.getId()+"\",\""+tsFirst.getProjectMembers().getEmployee().getId()+"\",\""+startDate1+"\",\""+endDate1+"\");'>");
+								}
+							    
 							    documentBuffer.append("</strong>");
 						} 
 					}
 				} 
 		
-				 
-            	documentBuffer.append("<div class='commentFile'>"); 
-				documentBuffer.append("<span>"); 
-				documentBuffer.append("<table class='timesheetAttachment' id='attachmentTable' cellpadding='0' cellspacing='0'>");
-						documentBuffer.append("<tr id='divAttachmentTsRow0'>");
-						documentBuffer.append("<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' class='timesheetAttachmentValidation' ><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ");           
-						documentBuffer.append("</tr>");
-				documentBuffer.append("</table>");
-				documentBuffer.append("</span>");
-				documentBuffer.append("</div>");
+				if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){ 
+				}else{
+	            	documentBuffer.append("<div class='commentFile'>"); 
+					documentBuffer.append("<span>"); 
+					documentBuffer.append("<table class='timesheetAttachment' id='attachmentTable' cellpadding='0' cellspacing='0'>");
+							documentBuffer.append("<tr id='divAttachmentTsRow0'>");
+							documentBuffer.append("<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' class='timesheetAttachmentValidation' ><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ");           
+							documentBuffer.append("</tr>");
+					documentBuffer.append("</table>");
+					documentBuffer.append("</span>");
+					documentBuffer.append("</div>");
+				}
 				documentBuffer.append("</div>"); 
 				sb.append(documentBuffer);
 		
@@ -1852,7 +1857,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			 emailMessage.setMessageBody(emailTemplate);
 			 
 			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+			 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 			 
 			 
 			//calling the sendNotification method of emailScenerioUtil

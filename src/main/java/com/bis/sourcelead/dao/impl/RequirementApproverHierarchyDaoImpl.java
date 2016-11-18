@@ -126,6 +126,28 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 		return true;
 
 }
+
+	@Transactional(rollbackFor = { Exception.class })
+	@Override
+	public RequirementApproverHierarchy getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(
+			Long requirementId) throws Exception {
+
+
+
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementApproverHierarchy rah where rah.requirementId.id =:requirementId and  rah.level = 2";
+		List requirementApproverHierarchyList =  session.createQuery(query).setLong("requirementId", requirementId).list();
+		
+		RequirementApproverHierarchy requirementApproverHierarchy = null;
+		if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty())
+		{
+			requirementApproverHierarchy = (RequirementApproverHierarchy) requirementApproverHierarchyList.iterator().next();
+		}
+		return requirementApproverHierarchy;
+		
+		
+	}
 	
     
   }

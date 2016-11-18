@@ -23,7 +23,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,6 @@ import com.bis.sourcelead.entity.EmailNotification;
 import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SubmissionXls;
-import com.bis.sourcelead.rest.RegistrationRestController;
 import com.bis.sourcelead.service.EmailMessageService;
 import com.bis.sourcelead.service.EmailNotificationService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -49,6 +47,7 @@ import com.bis.sourcelead.service.SubmissionXlsService;
  */
 @Service
 public class EmailMessageServiceImpl implements EmailMessageService {
+	
 	
 	private static final Logger logger = LoggerFactory.getLogger(EmailMessageServiceImpl.class);
 	
@@ -75,7 +74,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	
 	
 	@Override
-	public String sendEmail(EmailMessage emailMessage, ArrayList<EmailRecipient> emailRecipientList, List<EmailAttachment> attachmentList) throws Exception {
+	public String sendEmail(EmailMessage emailMessage,Long locationsId, ArrayList<EmailRecipient> emailRecipientList, List<EmailAttachment> attachmentList) throws Exception {
 		if(emailMessage != null)
 		{
 			Long emailNotificationd = null;
@@ -83,7 +82,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			// if non prod and send email in non prod is true then call or prod
 			if(environment.equalsIgnoreCase("prod"))
 			{
-				OrgLocations orgLocations = orgLocationService.getOrgLocations(emailMessage.getOrgLocationId());
+				OrgLocations orgLocations = orgLocationService.getOrgLocations(locationsId);
 				if(orgLocations != null && orgLocations.getFromEmail() !=null && orgLocations.getFromEmailPassword() != null){
 					emailMessage.setUserName(orgLocations.getFromEmail());
 					emailMessage.setPassword(orgLocations.getFromEmailPassword());

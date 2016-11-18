@@ -173,7 +173,8 @@ public class RequirementInterviewRestController {
 		 
 		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		 requirementInterviewService.sendEmailToApplicants(requirementSubmission.getCandidate(), requirementSubmission, loginUser,org, requirementInterview);
+		 OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 requirementInterviewService.sendEmailToApplicants(requirementSubmission.getCandidate(),orgLoc, requirementSubmission, loginUser,org, requirementInterview);
 		 
 		 requirementInterview.setNotificationToApplicant("Y");
 		 requirementInterviewService.saveRequirementInterview(requirementInterview);
@@ -192,8 +193,9 @@ public class RequirementInterviewRestController {
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+
 		 requirementInterviewService.sendEmailToVendors(requirementSubmission.getCandidate(), requirementSubmission, loginUser,org, requirementInterview,orgLocations);
-		 
+	 
 		 requirementInterview.setNotificationToSpoc("Y");
 		 requirementInterviewService.saveRequirementInterview(requirementInterview);
 		 

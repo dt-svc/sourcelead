@@ -43,7 +43,7 @@ public interface TimesheetSubmissionsService {
     
     public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissions(Long userId,Long locationsId) throws Exception ;
     
-    public Collection<TimesheetSubmissions> getTimesheetSubmissionsByAproverId(Long projectMemberId,Long userId,Date startDate) throws Exception ;
+    public List<TimesheetSubmissions> getTimesheetSubmissionsByAproverId(Long projectMemberId,Long userId,Date startDate) throws Exception ;
     
     public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception;
 
@@ -77,5 +77,5 @@ public interface TimesheetSubmissionsService {
 	
 	public String dynamicTimesheet(User user,String navigation,String startDate,Long memberId,Long projectMemberUserId, Long employeeId,Long locationsId) throws Exception ;
 	
-	public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId) throws Exception;
+	public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId,Long LocationsId) throws Exception;
 }

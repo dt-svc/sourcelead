@@ -463,8 +463,8 @@ public class RequirementDaoImpl implements RequirementDao {
 
         Session session = this.sessionFactory.getCurrentSession();
 		
-		String query = "from Requirement requirement left join fetch requirement.parentRequirement  where requirement.parentRequirement.id =:requirementId and requirement.orgLocationId.id =:orgLocationId ";
-		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		String query = "from Requirement requirement left join fetch requirement.parentRequirement  where requirement.parentRequirement.id =:requirementId";
+		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
 		
 		Requirement requirement = null;
 		if(requirementList != null && !requirementList.isEmpty())
