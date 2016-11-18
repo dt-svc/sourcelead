@@ -397,7 +397,7 @@ $(document).ready(function () {
                   </span>
                 </label>
                 
-                <input type="text" class="form-control" readonly id="uploadFile" name="docFile"  value="${requirement.fileName}" type="file"   placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
+                <input type="text" class="form-control" readonly id="uploadFile" name="docFile"  value="${requirement.fileName}" type="file"   placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc" data-validation-optional="true">
               <div class="clearfix"></div> <div class="clearfix"></div>
               </div>
             </div>
