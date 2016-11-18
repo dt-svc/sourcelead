@@ -342,8 +342,9 @@ public class UserServiceTest {
 	@Test
 	public void getManagersByUserRolesAndOrgLocationId() throws Exception{
 		String roleType = "2";
-		Long orgLocationsId = 3l;
-		List<User> list = userService.getManagersByUserRolesAndOrgLocationId(roleType, orgLocationsId);
+		Long roleId = 1L;
+		Long orgLocationsId = 1l;
+		List<User> list = userService.getManagersByUserRolesAndOrgLocationId(roleId, orgLocationsId);
 		assertFalse(list.isEmpty());
 	}
 	
