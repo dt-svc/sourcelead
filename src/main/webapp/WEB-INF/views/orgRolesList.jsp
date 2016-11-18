@@ -42,7 +42,7 @@ window.onload = function () {
                               </div>
                             </div>
                             <div class="clearfix mb10">
-                              <div class="col-md-12">
+                              <div class="col-md-12" id="levelDiv">
                                 <select class="form-control chosen-select" data-validation="required" field-name="Level" id="level" name="level">
                                 	 <option value="">-Select Level-</option>
 			                         <c:forEach var="option" items="${hierarchyList}">
@@ -117,6 +117,7 @@ function validateRoleName(){
 		$('#level').val('');
 		$(".error").removeClass("error");
 		$('#roleDiv').find('p.jquery_form_error_message').remove();
+		$('#levelDiv').find('p.jquery_form_error_message').remove();
 		
 	}
 </script>
@@ -301,8 +302,4 @@ $(".addcon-pop").click(function(){
  $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
 	 e.stopPropagation();
  });
- $('html').click(function(){
-    $(".collapse-div-adduser").removeClass("show-div");
-	$(".collapse-div").removeClass("show-div");
-   });
 </script>
