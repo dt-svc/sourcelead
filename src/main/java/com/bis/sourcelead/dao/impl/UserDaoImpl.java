@@ -329,34 +329,8 @@ public class UserDaoImpl implements UserDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String subQuery = "";
 		
-		if(roleType != null && !"".equals(roleType) && "Admin".equals(roleType)){
-			subQuery = "userRole.user.id from UserRole userRole where userRole.userType = 'Admin' and userRole.orgLocations=:orgLocationsId and userRole.userState != 'INACTIVE' and userRole.user.id <> :userId ";
-		}
-		else if(roleType != null && !"".equals(roleType) && "Project Manager".equals(roleType)){
-			subQuery = "userRole.user.id from UserRole userRole where (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager') and userRole.orgLocations=:orgLocationsId and userRole.userState != 'INACTIVE' and userRole.user.id <> :userId";
-		}
-		else if(roleType != null && !"".equals(roleType) && "Employee".equals(roleType)){
-			subQuery = "userRole.user.id from UserRole userRole where (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Account Manager' OR userRole.userType = 'Sales Manager' OR userRole.userType = 'Recruiter' OR userRole.userType = 'Team Lead') and userRole.orgLocations=:orgLocationsId and userRole.userState != 'INACTIVE' and userRole.user.id <> :userId";
-		}
-		else if(roleType != null && !"".equals(roleType) && "Account Manager".equals(roleType)){
-			subQuery = "userRole.user.id from UserRole userRole where (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Account Manager') and userRole.orgLocations=:orgLocationsId and userRole.userState != 'INACTIVE' and userRole.user.id <> :userId";
-		}
-		else if(roleType != null && !"".equals(roleType) && "HR Manager".equals(roleType)){
-			subQuery = "userRole.user.id from UserRole userRole where (userRole.userType = 'Admin' OR userRole.userType = 'HR Manager') and userRole.orgLocations=:orgLocationsId and userRole.userState != 'INACTIVE' and userRole.user.id <> :userId";
-		}
-		else if(roleType != null && !"".equals(roleType) && "Sales Manager".equals(roleType)){
-			subQuery = "userRole.user.id from UserRole userRole where (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Account Manager' OR userRole.userType = 'Sales Manager') and userRole.orgLocations=:orgLocationsId and userRole.userState != 'INACTIVE' and userRole.user.id <> :userId";
-		}
-		else if(roleType != null && !"".equals(roleType) && "Recruiter".equals(roleType)){
-			subQuery = "userRole.user.id from UserRole userRole where (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Account Manager' OR userRole.userType = 'Sales Manager' OR userRole.userType = 'Recruiter' OR userRole.userType = 'Team Lead') and userRole.orgLocations=:orgLocationsId and userRole.userState != 'INACTIVE' and userRole.user.id <> :userId ";
-		}
-		else if(roleType != null && !"".equals(roleType) && "Team Lead".equals(roleType)){
-			subQuery = "userRole.user.id from UserRole userRole where (userRole.userType = 'Admin' OR userRole.userType = 'Project Manager' OR userRole.userType = 'HR Manager' OR userRole.userType = 'Project Manager' OR userRole.userType = 'Team Lead') and userRole.orgLocations=:orgLocationsId and userRole.userState != 'INACTIVE' and userRole.user.id <> :userId";
-		}
-		
-		String query = "from User user where user.id IN (select "+subQuery+" )  ";
+		String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationsId and userRole.userState != 'INACTIVE' and userRole.user.id <> :userId)  ";
 	    List<User> userRoleList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setLong( "userId", userId).setCacheable(true).list();
         return userRoleList;
         
