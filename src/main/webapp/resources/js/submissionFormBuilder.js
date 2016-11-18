@@ -140,7 +140,11 @@ function addField(fieldType,value,labelValue,sourceleadUrl,templateId,labelValid
     	DeleteButtion = '<button type="button"  class="delete btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>'
     }else{
     	DeleteButtion = '<button type="button"  class="btnDisable btn btn-default disabled"><i class="glyphicon glyphicon-remove"></i></button>'
-    	checkbox = 'disabled="disabled"'
+    	
+    		if(labelValue == 'First Name' || labelValue == 'Phone Number' || labelValue == 'Email Id'){
+    			checkbox = 'disabled="disabled"'
+    		}
+    		
     }
     
     if(labelValue == 'N' || labelValue == 'undefined' || null == labelValue || labelValue == ''){
