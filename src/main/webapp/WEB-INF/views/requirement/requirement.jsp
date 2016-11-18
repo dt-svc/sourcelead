@@ -348,7 +348,7 @@ $(document).ready(function () {
           <div class="form-group">
 				<label class="col-md-3">Country</label>
 				<div class="col-md-9">
-				 <select class="chosen-select form-control select-bg" name="countryReq" id="countryReq" field-name="Country"  >
+				 <select class="chosen-select form-control select-bg" name="countryReq" id="countryReq" field-name="Country" onchange="changeCurrency();" >
                  </select>
                    <input type="hidden" id="existingCountry" value="${requirement.country}" >
 				</div>
@@ -1965,4 +1965,35 @@ function removeEditButton() {
 	}
 }
 </script>
+
+<script>
+function changeCurrency(requirement){
+	var cntrynme = document.getElementById("countryReq").value;
+
+	 if (cntrynme == "United States") {
+			    $("#currencyCode").val("USD");
+			    $("#currencyCode").change();
+			  }else if(cntrynme == "India"){
+				  $("#currencyCode").val("INR");
+				    $("#currencyCode").change();
+			  }else if(cntrynme == "Australia"){
+				  $("#currencyCode").val("AUD");
+				    $("#currencyCode").change();
+			  }else if(cntrynme == "United Kingdom"){
+				  $("#currencyCode").val("GBP");
+				    $("#currencyCode").change();
+			  }else if(cntrynme == "Singapore"){
+				  $("#currencyCode").val("SGD");
+				    $("#currencyCode").change();
+			  }else if(cntrynme == "Germany"){
+				  $("#currencyCode").val("EUR");
+				    $("#currencyCode").change();
+			  }else {
+				  $("#currencyCode").val("INR");
+				  $("#currencyCode").change();
+			  }
+}
+</script>
+
+
 <jsp:include page="../masterFooter.jsp" />
