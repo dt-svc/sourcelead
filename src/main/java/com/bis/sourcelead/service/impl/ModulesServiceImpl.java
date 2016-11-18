@@ -50,4 +50,10 @@ private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.cla
 		return modulesDao.getModulesIds();
 	}
 
+
+	@Override
+	public List<Modules> getRequirementSubModulesByParentId(Long moduleId) throws Exception {
+		return modulesDao.getRequirementSubModulesByParentId(moduleId);
+	}
+
 }

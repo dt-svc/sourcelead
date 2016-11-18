@@ -19,5 +19,7 @@ public interface OrgLocationsDao {
     
     public List<OrgLocations> getOrgsListForClientAndVendorOrgSearch(String orgCode) throws Exception;
     
+    public OrgLocations getOrgLocationByOrgId(Long orgId) throws Exception;
+    
     
 }

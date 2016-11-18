@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -43,6 +44,12 @@ public class Modules {
 	@Column(name = "IS_ENROLED")
 	@Enumerated(EnumType.STRING)
 	private Status isEnrolled;
+	
+	@Transient
+	private String isModuleConfigured;
+	
+	@Transient
+	private String isRecruitingConfigured;
 	
 	
 	
@@ -86,6 +93,22 @@ public class Modules {
 
 	public void setParentModule(Modules parentModule) {
 		this.parentModule = parentModule;
+	}
+
+	public String getIsModuleConfigured() {
+		return isModuleConfigured;
+	}
+
+	public void setIsModuleConfigured(String isModuleConfigured) {
+		this.isModuleConfigured = isModuleConfigured;
+	}
+
+	public String getIsRecruitingConfigured() {
+		return isRecruitingConfigured;
+	}
+
+	public void setIsRecruitingConfigured(String isRecruitingConfigured) {
+		this.isRecruitingConfigured = isRecruitingConfigured;
 	}
 
 	

@@ -16,4 +16,6 @@ public interface ModulesService {
 	List<Modules> getRequirementSubModules() throws Exception;
 	
 	List<Long> getModulesIds() throws Exception;
+	
+	List<Modules> getRequirementSubModulesByParentId(Long moduleId) throws Exception;
 }

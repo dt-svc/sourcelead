@@ -16,4 +16,6 @@ public interface ModulesDao {
 	List<Modules> getRequirementSubModules() throws Exception;
 	
 	List<Long> getModulesIds() throws Exception;
+	
+	List<Modules> getRequirementSubModulesByParentId(Long moduleId) throws Exception;
 }

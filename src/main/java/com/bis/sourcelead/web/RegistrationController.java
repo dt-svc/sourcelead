@@ -20,6 +20,10 @@ import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.ActionRolesService;
 import com.bis.sourcelead.service.ModulesService;
@@ -174,6 +178,62 @@ public class RegistrationController {
 				return "redirect:/dashboard/"+respondingPartyOrgLocationId+"";
 			}
 			
+		}
+	 
+	 
+	 
+	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	 @RequestMapping(value = "/enrolledOrgSummary")
+		public ModelAndView enrolledOrgSummary(HttpServletRequest request,
+				@RequestParam(value = "orgId", required = false) Long orgId) throws Exception {
+			    ModelAndView model = new ModelAndView();
+			
+				OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(orgId);
+
+				List<Modules> modulesList = null;
+				List<Modules> requirementSubModulesList = null;
+				
+				if(null != orgLocations.getOrg().getModulesId()){
+					ArrayList<Modules> registeredModulesList = new ArrayList<Modules>();
+					ArrayList<Modules> registeredSubModulesList = new ArrayList<Modules>();
+					modulesList = modulesService.getSourceLeadModules();
+					requirementSubModulesList = moduleService.getRequirementSubModules();
+					
+					List<Long> orgModulesList = new ArrayList<Long>();
+					 for (String s : orgLocations.getOrg().getModulesId().split(",")){
+						 orgModulesList.add(Long.parseLong(s));
+					 }
+					 
+					 for(Modules modules : modulesList){
+						 if((orgModulesList.contains(modules.getId()))){
+							 modules.setIsModuleConfigured(Constants.YES);
+						 }else{
+							 modules.setIsModuleConfigured(Constants.NO);
+						 }
+						 registeredModulesList.add(modules);
+					 }
+					 
+					 for(Modules modules : requirementSubModulesList){
+						 if(orgModulesList.contains(modules.getId())){
+							 modules.setIsModuleConfigured(Constants.YES);
+						 }else{
+							 modules.setIsModuleConfigured(Constants.NO);
+						 }
+						 registeredSubModulesList.add(modules);
+					 }
+					 
+					 model.addObject("registeredModulesList", registeredModulesList);
+					 model.addObject("registeredSubModulesList", registeredSubModulesList);
+				}
+				
+				model.addObject("orgloc",orgLocations);
+				model.addObject("orgId",orgId);
+				model.setViewName("registration/enrolledOrgSummary");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				
+			
+			return model;
+
 		}
 		
 	 

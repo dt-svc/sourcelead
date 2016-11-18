@@ -152,4 +152,9 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
+
+	@Override
+	public OrgLocations getOrgLocationByOrgId(Long orgId) throws Exception {
+		return orgLocationsDao.getOrgLocationByOrgId(orgId);
+	}
 }

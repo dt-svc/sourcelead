@@ -103,6 +103,7 @@ public class ModulesDaoImpl implements ModulesDao{
 	}
 
 	@Override
+	@Transactional
 	public List<Long> getModulesIds() throws Exception {
 		
 		logger.debug("In ModulesDaoImpl class getOrgRegisteredModules method");
@@ -115,6 +116,17 @@ public class ModulesDaoImpl implements ModulesDao{
 		return modulesIdList;
 
 	
+	}
+
+	@Override
+	@Transactional
+	public List<Modules> getRequirementSubModulesByParentId(Long moduleId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from Modules modules where modules.parentModule.id = :moduleId ";
+	    List<Modules> modulesList = session.createQuery(query.toString()).setLong("moduleId", moduleId).setCacheable(true).list();
+      
+	    return modulesList;
 	}
 
 }

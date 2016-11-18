@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -125,6 +129,57 @@ public class RegistrationRestController {
 			return "orgList";
 	     
 	   }
+	
+	
+	
+	
+	@RequestMapping(value = "/updateOrgModules" , method = RequestMethod.POST)
+	   public String updateOrgModules(
+				@RequestParam(value="json", required=false) String json ,
+				@RequestParam(value="orgId", required=false) Long orgId ,
+				@RequestParam(value="modulesList", required=false) String modulesList ,
+				@RequestParam(value="submodulesList", required=false) String submodulesList ,
+	   			HttpServletRequest request) throws Exception {
+
+			 json = "{"+json+"}";
+			 JSONObject jsonObj = new JSONObject(json);
+			 Org org = orgService.findOrgByID(orgId);
+			 String orgModules = "";
+			 
+			 if(!isNullOrEmpty(submodulesList)){
+					String[] registeredSubModules =  submodulesList.split(",");
+					for(int i=0; i<registeredSubModules.length; i++){
+							orgModules = orgModules+registeredSubModules[i]+",";
+					}
+				}
+				
+				if(!isNullOrEmpty(modulesList)){
+					String[] registeredModules =  modulesList.split(",");
+					for(int i=0; i<registeredModules.length; i++){
+						if(Long.parseLong(registeredModules[i]) != 1L){
+							orgModules = orgModules+registeredModules[i]+",";
+						}
+					}
+				}
+				
+				
+				orgModules = orgModules.substring(0, orgModules.length()-1);
+				org.setModulesId(orgModules);
+				orgService.addOrganization(org);
+			
+			return "success";
+	     
+	   }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	@RequestMapping(value = "/resetPasswordWithUserName" , method = RequestMethod.GET)
 	public String resetPasswordWithUserName(@RequestParam(value = "json", required = false) String json,
@@ -256,6 +311,13 @@ public class RegistrationRestController {
 			return commonUtil.toJSON(userList);
 			
 		}
+	   
+	   @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")	   
+	   @RequestMapping(value = "/orgSummary/{orgId}" , method = RequestMethod.GET)
+		 public @ResponseBody void orgSummary(@PathVariable Long orgId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+				response.sendRedirect("/sourcelead/enrolledOrgSummary?orgId="+orgId);
+				
+		   }
 	   
 	   
 	   
