@@ -674,13 +674,7 @@ function requirementDetails(requirementId){
 				            }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
-				            if(json.education != null && json.education != '' && json.education != 'undefined'){
-					            result = result +'     <div class="require_wrap_details_cta"> <b>Education:</b> <span>'+json.education+'</span>';
-					            }else{
-					           	result = result +'<div class="require_wrap_details_cta"> <b>Education:</b> <span> -- </span>';
-					            }
-				            result = result +'       <div class="clearfix"></div>';
-				            result = result +'     </div>';
+				            
 				            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 					            	result = result +'<div class="require_wrap_details_cta require_uploadfile"><b>Attachment:</b> <span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
 					            }
@@ -689,7 +683,15 @@ function requirementDetails(requirementId){
 					            }				            
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
-				            				   
+				            
+				            if(json.education != null && json.education != '' && json.education != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta require_education"> <b>Education:</b> <span>'+json.education+'</span>';
+					            }else{
+					           	result = result +'<div class="require_wrap_details_cta"> <b>Education:</b> <span> -- </span>';
+					            }
+				            result = result +'       <div class="clearfix"></div>';
+				            result = result +'     </div>';
+				            
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
 				            result = result +'     <div class="clearfix"></div>';
