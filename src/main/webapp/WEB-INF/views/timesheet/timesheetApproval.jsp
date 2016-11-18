@@ -203,7 +203,7 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
           <div class="pull-left">
             <h2>Timesheet approval</h2>
           </div>
-           <div class="pull-right brud-crum"><a href="dashboard">Home</a> » TimeSheet List</div>
+            <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; TimeSheet List</div>
         </section>
         
 <div class="timesheet-content">
@@ -251,7 +251,7 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 				  <input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
 	                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment1Id');"></i>
-	                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment1Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment1Id" ></textarea></span>
+	                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment1Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment1Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea1Id" ></textarea></span>
                   </div>
 	     	</div>
                   

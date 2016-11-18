@@ -22,7 +22,7 @@
     <div class="pull-left">
       <h2>Timesheets</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="dashboard">Home</a> » TimeSheets
+  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; TimeSheets</div>
   </section>
     <div class="timesheet_out"> 
 	<div class="timesheet_wrap">
@@ -46,7 +46,7 @@
 					    	   <input type="text" onblur='checkHours()'  id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay1Id" class="inline_field" placeholder="HH:MM" />	
 				               <div class="timesheet_comm">
 				                <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment1Id');"></i>
-				                <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment1Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment1Id" ></textarea></span>
+				                <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment1Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment1Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea1Id" ></textarea></span>
 				               </div>
 				   		</div>
 				        <div id="divadttTd3" style="display:none;">
@@ -886,18 +886,17 @@ function addAttachment(){
 </script>
 <script>
 function exportType(){
-	 $("#export-pop").click(function(){
-         $(".export_pop").slideToggle(200);
- });
+	$(".export_pop").toggle();
+	 /* $("#export-pop").click(function(){
+         $(".export_pop").slideToggle();
+ }); */
 $("html").click(function() {
- $(".export_pop").slideUp(200);
+ $(".export_pop").hide();
 });
 $(".export_pop, #export-pop").click(function(e) {
  e.stopPropagation();
 });  
 }
-
-
 </script>
 
 <script>

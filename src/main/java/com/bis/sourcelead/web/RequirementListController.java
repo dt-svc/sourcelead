@@ -31,11 +31,22 @@ public class RequirementListController {
 	
 	
 	@RequestMapping(value = "/requirementList")
-	public ModelAndView requirementList(HttpServletRequest request) {
+	public ModelAndView requirementList(HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementList");
+		
+		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		
+		  List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
+	        for(OrgRelations orgRelations:orgClientList){
+	        	orgRelations.setClientName(orgRelations.getResponderLocationId().getOrg().getOrgName());
+	        }
+	        model.addObject("add_client", orgClientList);
+	        model.addObject(orgClientList);
+	        
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
@@ -53,7 +64,7 @@ public class RequirementListController {
 	
 	
 	@RequestMapping(value = "/releaseRequirementToClientOrVendors")
-	public ModelAndView releaseRequirementToClientOrVendors(String requirementId,HttpServletRequest request) {
+	public ModelAndView releaseRequirementToClientOrVendors(String requirementId,HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
@@ -69,10 +80,16 @@ public class RequirementListController {
 		}
 		sessionData.setNav(Constants.Requirement);
 		
+		//List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
+		List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLoc.getId(), "");
 		
-		List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
 		for(OrgRelations orgRelation :vendorsList){
-			orgRelation.setClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+			if(orgRelation.getLocationId().getId() == orgLoc.getId()){
+				orgRelation.setClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+			}
+			if(orgRelation.getResponderLocationId().getId() == orgLoc.getId()){
+				orgRelation.setClientName(orgRelation.getLocationId().getOrg().getOrgName());
+			}
 		}
 		model.addObject("vendor_list", vendorsList);
         model.addObject(vendorsList);

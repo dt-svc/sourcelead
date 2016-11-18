@@ -37,18 +37,17 @@ public interface RequirementService {
 
 	public List<RequirementAssignTo> getUserAssignJobCount(Long userId) throws Exception;
 	
-	public void  approverEmailScenario(User user,User approverUser,Requirement requirement, StringBuilder location) throws Exception;
+	public void  approverEmailScenario(User user,User approverUser,Requirement requirement, StringBuilder location,OrgLocations loginOrgLocation) throws Exception;
 
-	public void  approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location) throws Exception;
+	public void  approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location,OrgLocations orgLocations) throws Exception;
 	
-	public void acceptEmailScenario(User loginUser, User approverUser, Requirement requirement) throws Exception;
+	public void acceptEmailScenario(User loginUser, User approverUser, Requirement requirement,OrgLocations orgLocations) throws Exception;
 	
-	public void mailRequirementtoManager(User loginUser, User intiatorUser, Requirement requirement,StringBuilder location) throws Exception;
+	public void mailRequirementtoManager(User loginUser, User intiatorUser, Requirement requirement,StringBuilder location,OrgLocations loginOrgLocation) throws Exception;
 	
-	public void AssignToTeamMembersEmail(User loginUser, User managerUser, Requirement requirement,StringBuilder location) throws Exception;
+	public void AssignToTeamMembersEmail(User loginUser, User managerUser, Requirement requirement,StringBuilder location,OrgLocations orgLocations) throws Exception;
 
-	void rejectedEmailScenario(User loginUser, User initiatorUser, Requirement requirement,
-			StringBuilder location,String rejectedReason) throws Exception;
+	void rejectedEmailScenario(User loginUser, User initiatorUser, Requirement requirement,StringBuilder location,String rejectedReason,OrgLocations loginOrgLocation) throws Exception;
 
 	void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc, OrgLocations loginOrgLocation,String releasetype,StringBuilder location) throws Exception;
 
@@ -64,12 +63,14 @@ public interface RequirementService {
 	
 	public Boolean checkRequirementIsReleasedOrNot(Long requirementId,Long orgLocationId) throws Exception;
 	
-	Integer validateJobId(Long id) throws Exception;
+	Integer validateJobId(Long id, Long orgLocation) throws Exception;
 
 	public File getExportRequirementFile(List<Requirement> requirementList, String orgName, String exportType)throws Exception;
 
-
-
-
+	public Boolean validateRequirementTitle(String jobName, Long orgLocationId) throws Exception;
 	
+	Boolean checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long requirementId,Long userId)  throws Exception;
+
+	public List<Requirement> getAllReleasedJobsForVendor(Long orgLocationId, Long orgRelationId, User user, OrgLocations orgLocations) throws Exception;
+
 }

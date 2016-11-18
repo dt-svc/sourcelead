@@ -43,4 +43,7 @@ public interface OrgService {
 	
 	 List<Org> isSpocExistedTheOwner(String clientName,Long orgLocationId,String responderType) throws Exception ;
 
+	public Org getOrgByOrgName(String orgName);
+
+
 }

@@ -651,29 +651,18 @@
 		var sourceleadUrl = '${sourceleadUrl}';
 		$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
 		if (EmailId != null && EmailId != "") {
-			$
-					.ajax({
+			$ .ajax({
 						type : "POST",
-						url : sourceleadUrl
-								+ "/getEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="
-								+ EmailId,
+						url : sourceleadUrl + "/getEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId=" + EmailId,
 						success : function(data) {
 							if (data == 'true') {
-								$("input#EmailId").after(
-										"<p class='jquery_form_error_message'>"
-												+ EmailId
-												+ " is Already Existed</span>");
-								document.getElementById("EmailId")
-										.setAttribute('record-exist', 'yes');
-								document
-										.getElementById("EmailId")
-										.setAttribute('record-exist-errorMsg',
-												EmailId + ' is Already Existed');
+								$("input#EmailId").after( "<p class='jquery_form_error_message'>" + EmailId + " is Already Existed</span>");
+								document.getElementById("EmailId") .setAttribute('record-exist', 'yes');
+								document .getElementById("EmailId") .setAttribute('record-exist-errorMsg', EmailId + ' is Already Existed');
+								$('input#EmailId').removeAttr( "record-exist record-exist-errorMsg");
 							} else {
-								$('input#EmailId').removeAttr(
-										"record-exist record-exist-errormsg");
-								$('#EmailIdDiv').find(
-										'p.jquery_form_error_message').remove();
+								$('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+								$('#EmailIdDiv').find( 'p.jquery_form_error_message').remove();
 							}
 						},
 					});

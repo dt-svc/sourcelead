@@ -5,6 +5,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -40,7 +44,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @Controller
 public class RequirementController {
 	
-	
+	private static final Logger logger = LoggerFactory.getLogger(RequirementController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
@@ -131,26 +135,28 @@ public class RequirementController {
 			Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(requirementId));
 			if(maxLevel != null && maxLevel >1){
 				approverMode = "Sequential";
-				for(RequirementApproverHierarchy requirementApproverHierarchy :requirementApproverHierarchyList){
-					 
-					if(requirementApproverHierarchy.getLevel() == 1){
-						sequentialApprover1 = requirementApproverHierarchy.getApproverUserId().getId();
+				if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty()){
+					for(RequirementApproverHierarchy requirementApproverHierarchy :requirementApproverHierarchyList){
+						if(requirementApproverHierarchy.getLevel() == 1){
+							sequentialApprover1 = requirementApproverHierarchy.getApproverUserId().getId();
+						}
+						if(requirementApproverHierarchy.getLevel() == 2){
+							sequentialApprover2 = requirementApproverHierarchy.getApproverUserId().getId();
+						}
 					}
-					if(requirementApproverHierarchy.getLevel() == 2){
-						sequentialApprover2 = requirementApproverHierarchy.getApproverUserId().getId();
-					}
-					
 				}
 			}else{
 				approverMode = "Parallel";
 				int i = 0;
-				for(RequirementApproverHierarchy requirementApproverHierarchy :requirementApproverHierarchyList){
-					if(parallelApproverIds != null && parallelApproverIds != ""){
-						parallelApproverIds =  parallelApproverIds +","+ requirementApproverHierarchy.getApproverUserId().getId().toString();
-					}else{
-						parallelApproverIds =  requirementApproverHierarchy.getApproverUserId().getId().toString();
+				if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty()){
+					for(RequirementApproverHierarchy requirementApproverHierarchy :requirementApproverHierarchyList){
+						if(parallelApproverIds != null && parallelApproverIds != ""){
+							parallelApproverIds =  parallelApproverIds +","+ requirementApproverHierarchy.getApproverUserId().getId().toString();
+						}else{
+							parallelApproverIds =  requirementApproverHierarchy.getApproverUserId().getId().toString();
+						}
+						i++;
 					}
-					i++;
 				}
 			}
 			model.addObject("approverMode",approverMode);
@@ -166,10 +172,13 @@ public class RequirementController {
 		
 		//OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		
-        model.addObject("loginCountryName", countries.getName());
-        model.addObject("currencyCode", countries.getCurrency());
+		if(orgLocations != null && StringUtils.isNotEmpty(orgLocations.getCountry())){
+			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			model.addObject("loginCountryName", countries.getName());
+	        model.addObject("currencyCode", countries.getCurrency());
+		}
+        
         
         List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
@@ -200,12 +209,13 @@ public class RequirementController {
 		model.addObject("spocOwnersList", userList);
 		
 		//approver list
-		List<User> approverList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		List<User> approverList = userService.getAllUsersByOrgLocationCodeExcludingEmployees(orgLocations.getId());
 		model.addObject("approverList", approverList);
 		
 		//approver list
 		List<SubmissionTemplate>   submissionTempletesList = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationId(orgLocations.getId());
-				model.addObject("submissionTempletesList", submissionTempletesList);
+		
+		model.addObject("submissionTempletesList", submissionTempletesList);
 		
 
 		return model;

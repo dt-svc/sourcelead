@@ -52,10 +52,22 @@
 	bottom:-16px;
 	}
 	.selp-custom-min .btn-default{
-	z-index: -55 !important;
+	/* z-index: -55 !important; */
+	-webkit-border-radius:0 3px 3px 0;
+	-moz-border-radius:0 3px 3px 0;
+	-ms-border-radius:0 3px 3px 0;
+	border-radius:0 3px 3px 0;
 	}
 	.selp-custom-min .open {
 	z-index: 999999999 !important;
+	}
+	.ratetype p {
+	bottom: -14px;
+	left:0px !important;
+	position: absolute;
+	}
+	.pras.req-title p{
+	bottom:-14px;
 	}
 	</style>
 
@@ -166,8 +178,8 @@
         <div class="form-group">
          <label class="col-md-3">Designation</label>
          <div class="col-md-9">
-          <div class="input-group">
-             <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
+          <div class="input-group ratetype">
+             <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
              <div class="input-group-btn selp-custom-min">
              <select class="selectpicker" id="designationType" name="designationType">
                  <option><a href="#">C2C</a></option>
@@ -210,7 +222,7 @@
          <div class="form-group">
          <label class="col-md-3">Current Rate</label>
          <div class="col-md-9">
-           <div class="input-group">
+           <div class="input-group ratetype">
              <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate"  data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
              <div class="input-group-btn selp-custom-min">
              <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
@@ -218,7 +230,7 @@
                  <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
                  <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
                  <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}><a href="#">GBP</a></option>
+                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
                  <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
                  <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
                  
@@ -233,7 +245,7 @@
         <div class="form-group">
             <label class="col-md-3">Expected Rate</label>
             <div class="col-md-9">
-             <div class="input-group er">
+             <div class="input-group er ratetype">
                 <div class="input-group-btn tblminwidth-75">
                   
                   <select class="selectpicker" id="expectedRateCurrencey" name="expectedRateCurrencey">
@@ -241,7 +253,7 @@
                  <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
                  <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
                  <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}><a href="#">GBP</a></option>
+                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
                  <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
                  <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
                  
@@ -249,7 +261,7 @@
                 
                 </div>
                  <input type="text" id="expectedRate" name="expectedRate" value="${expectedRate}" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
-                <div class="input-group-btn tblminwidth-75">
+                <div class="input-group-btn tblminwidth-75 ratetype">
                   <select class="selectpicker" id="rateType" name="rateType" field-name="Rate Type">
                     <option value="">Rate Per</option>
                     <option ${rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
@@ -301,7 +313,7 @@
         <div class="form-group">
           <label class="col-md-3">Summary</label>
           <div class="col-md-9">
-            <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true"></textarea>
+            <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
           </div>
         </div>
         
@@ -354,6 +366,17 @@
 </script> 
 <script type="text/javascript">
 	function storeCandidate() {
+		
+		var expectedRate = document.getElementById("expectedRate").value; 
+		 if(expectedRate != null && expectedRate != ""){
+			
+			 $('#rateType').removeAttr('data-validation-optional');
+			 $('#rateType').attr("data-validation","required"); 
+		 }else{
+		 $('#rateType').removeAttr('data-validation');
+		 $('#rateType').attr("data-validation-optional","true"); 
+		 }
+		 
 		
 		var validationSettings = {
 				errorMessagePosition : 'element',
@@ -564,10 +587,12 @@ function getCities(){
 		    	var newSkill = this.value.replace(",","");
 		        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 		        {
+		        	var par = this.parent;
 		            var option = $("<option>").val(newSkill).text(newSkill);
 		            select.append(option);
 		            select.find(option).prop('selected', true);
-		            select.trigger("chosen:updated");
+	        		$("#candidateSkills").trigger("chosen:updated");
+	        		
 		        }
 		    });
 		    //Adding Customized Skills to the list
@@ -668,8 +693,8 @@ function getCities(){
 							 }
 						}
 						
-						$("#firstName").val(firstName.replace(".",""));
-						$("#lastName").val(lastName.replace(".",""));
+						$("#firstName").val(firstName);
+						$("#lastName").val(lastName);
 						$("#email").val(json.email);
 						$("#mobilePhone").val(json.phoneNumbers);
 						validateCandidateEmail();
@@ -702,7 +727,8 @@ function getCities(){
 
 /* upload file script */
 document.getElementById("uploadBtn").onchange = function () {
-   document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+  // document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
 };
  
 </script>

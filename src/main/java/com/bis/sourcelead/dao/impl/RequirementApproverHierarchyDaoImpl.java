@@ -103,8 +103,50 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementApproverHierarchy rah where rah.requirementId.id =:requirementId ";
-		return session.createQuery(query).setLong("requirementId", requirementId).list();
+		List<RequirementApproverHierarchy> list =  session.createQuery(query).setLong("requirementId", requirementId).list();
+		if(list!=null && list.size()>0){
+			return list;
+		}else{
+			return null;
+		}
+		
 	
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean deleteTheRequirementApproverByRequirementIdAndApproverId(RequirementApproverHierarchy requirementApproverHierarchy) throws Exception{
+		
+		Session session = this.sessionFactory.getCurrentSession();
+
+		RequirementApproverHierarchy cat = new RequirementApproverHierarchy();
+		cat.setId(requirementApproverHierarchy.getId());
+		session.delete(cat); 
+		 
+		return true;
+
+}
+
+	@Transactional(rollbackFor = { Exception.class })
+	@Override
+	public RequirementApproverHierarchy getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(
+			Long requirementId) throws Exception {
+
+
+
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementApproverHierarchy rah where rah.requirementId.id =:requirementId and  rah.level = 2";
+		List requirementApproverHierarchyList =  session.createQuery(query).setLong("requirementId", requirementId).list();
+		
+		RequirementApproverHierarchy requirementApproverHierarchy = null;
+		if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty())
+		{
+			requirementApproverHierarchy = (RequirementApproverHierarchy) requirementApproverHierarchyList.iterator().next();
+		}
+		return requirementApproverHierarchy;
+		
+		
 	}
 	
     

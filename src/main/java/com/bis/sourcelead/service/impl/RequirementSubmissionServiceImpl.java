@@ -18,6 +18,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -450,13 +451,20 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 RequirementSubmission submission = requirementSubmissionDao.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
     		 RequirementSubmission clientSubmission = new RequirementSubmission();
     		 
-    		 if(requirement.getParentRequirement() != null){
+    		 if(requirement.getParentRequirement() != null && requirement.getIsClientJob() != null &&  requirement.getIsClientJob().equalsIgnoreCase("Y")){
     			 clientSubmission.setRequirement(requirement.getParentRequirement());
     			 clientSubmission.setOrgLocations(requirement.getParentRequirement().getOrgLocationId());
-        	 }else{
-        		 clientSubmission.setRequirement(requirement);
-        		 clientSubmission.setOrgLocations(loginOrgLocation);
         	 }
+    		 else if(requirement.getParentRequirement() == null && requirement.getIsClientJob() != null &&  requirement.getIsClientJob().equalsIgnoreCase("Y")){
+    			 clientSubmission.setRequirement(requirement);
+    			 if("sladmin".equalsIgnoreCase(user.getUserCode())){
+                     clientSubmission.setOrgLocations(requirement.getClientId().getResponderLocationId());
+                 }else{
+                     clientSubmission.setOrgLocations(requirement.getClientId().getLocationId());    
+                 }
+    			 
+        	 }
+    		 
     		 clientSubmission.setCandidate(submission.getCandidate());
     		 clientSubmission.setCandidateResumes(submission.getCandidateResumes());
     		 clientSubmission.setSourceSubmission(submission);
@@ -711,4 +719,15 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(sourceSubmissionId,orgLocationsId);
 		
 	}
+
+	@Override
+	public Integer getApplicantCountByrequirementIdandAssignedUsercode(Long requirementId, String userCode)
+			throws Exception {
+		
+		    return requirementSubmissionDao.getApplicantCountByrequirementIdandAssignedUsercode(requirementId, userCode);
+	}
+
+	 
+	
+	
 }

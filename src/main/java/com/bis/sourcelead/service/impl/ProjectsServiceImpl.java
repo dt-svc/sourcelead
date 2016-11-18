@@ -347,6 +347,22 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 * This block is for Email To Managers and Project Members
 		 * 
 		 */
+		
+		//send mail to assigned team members
+		if((jsonObj.has("isMailToTeamMembers") && !isNullOrEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("Y".equals(jsonObj.getString("isMailToTeamMembers")))){
+			for(ProjectMembers projectMembers : projectMemberList){
+				if(projectMembers.getEmployee() != null){
+					Employees emp = projectMembers.getEmployee();
+					if(jsonObj.has("level1Manager") && jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
+						User  approverUserId1 =new User();
+						approverUserId1.setId(Long.valueOf(jsonObj.getString("level1Manager")));
+						sendEmailToTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation, loginOrgCode);
+					}
+				}
+			}
+		}
+		
+		
 		if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotBlank(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
 			if(jsonObj.has("level1Manager") && jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
 				User  approverUserId1 =new User();
@@ -357,18 +373,19 @@ public class ProjectsServiceImpl implements ProjectsService{
 				
 			}
 			
+
 			/*
-			 * As per the request  by the Ba as of now only level2 manager mailing is Blocked
+			 * This is Mailing for Level2 Manager who was assigned to Project
+			 * 
 			 */
 			
-			
-			/*if(jsonObj.has("level2Manager") && jsonObj.getString("level2Manager") != null && !jsonObj.getString("level2Manager").isEmpty()){
+			if(jsonObj.has("level2Manager") && jsonObj.getString("level2Manager") != null && !jsonObj.getString("level2Manager").isEmpty()){
 				User  approverUserId2 =new User();
 				approverUserId2.setId(Long.valueOf(jsonObj.getString("level2Manager")));
 				if(!jsonObj.getString("level2Manager").isEmpty() && approverUserId2 != null && user.getId() != approverUserId2.getId()){
-					sendEmailToProjectManager(projects, user, approverUserId2, loginOrgLocation, employeesList(jsonObj, updatedProjects, approverUserId2, loginOrgLocation, loginOrgCode), loginOrgCode);
+					sendEmailToProjectManager(projects, user, approverUserId2, loginOrgLocation, "", loginOrgCode);
 				}
-			}*/
+			}
 		}
 		 
 	  SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Successfully you have created a project");

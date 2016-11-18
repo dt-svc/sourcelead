@@ -71,6 +71,26 @@ color:#333 !important;
 width: 92% !important;
 margin-top:10px;
 }
+#tab-2 {
+overflow-y:hidden;
+}
+.table-overflow-hide {
+overflow-y:inherit !important;
+}
+.require_wrap_table {
+overflow-y:visible !important;
+
+.require_wrap_details_cta.require_uploadfile span{
+width:auto !important;
+}
+.require_wrap_details_cta.require_uploadfile a {
+margin-left:10px;
+float: left !important;
+}
+.require_wrap_details_cta.require_uploadfile .glyphicon-download-alt {
+color:blue;
+
+}
 </style>
  
 <script>
@@ -102,14 +122,14 @@ $(document).ready(function() {
             
           </div>
     
-    <div class="side_mask">
+    <!-- <div class="side_mask">
       <div class="proj_close"></div>
-    </div>
+    </div> -->
       
       <!-- End Raj --> 
     
     
-    <div class="side_mask">
+<div class="side_mask">
       <div class="proj_close"></div>
     </div>
   </div>
@@ -368,7 +388,13 @@ function sideBar(requirementId){
               			var result = '';
               			
               			result = result+'    <div class="profile_details requirement_details clearfix">';
-				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
+              			if(json.jobId != '' && json.jobId != null){
+				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'<i></i></h4></a>';
+              			}
+              			else{
+    				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
+	
+              			}
 				        result = result+'<div class="hide-row">';
 				        
 				       /*  result = result+'    <div class="profile_details requirement_details clearfix">'; */
@@ -387,7 +413,7 @@ function sideBar(requirementId){
 				        result = result+'<ul class="list-unstyled can-perdt">';
 				        if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined' && json.minExp != null && json.minExp != '' && json.minExp != 'undefined')
 				        	{
-				       	result = result+'<li><i class="fa fa-black-tie"></i><span>Experience: '+json.minExp+'-'+json.maxExp+' years</span></li>';
+				       	result = result+'<li><i class="fa fa-black-tie"></i><span>Experience: '+json.minExp+'Years'+json.maxExp+' Months</span></li>';
 				        	}
 					   
 				        else{
@@ -589,21 +615,27 @@ function requirementDetails(requirementId){
 				            
 				            result = result +' <div class="pull-right">';
 				            
-				            if(((json.requirementSubmissionStatus  == "DRAFT" && json.createdBy == '${SourceLeadWeb_userCode}') || (json.requirementSubmissionStatus  == "SUBMITTED" ||  json.requirementSubmissionStatus  == "OPEN"   ||  json.requirementSubmissionStatus  == "NEW"   || json.createdBy == '${SourceLeadWeb_userCode}') && (json.requirementApproverHierarchyStatus =='APPROVED' || json.requirementApproverHierarchyStatus =='REJECTED')) ){ 
+				            /*   if(((json.requirementSubmissionStatus  == "DRAFT" && json.createdBy == '${SourceLeadWeb_userCode}') || (json.requirementSubmissionStatus  == "SUBMITTED" ||  json.requirementSubmissionStatus  == "OPEN"   ||  json.requirementSubmissionStatus  == "NEW"   || json.createdBy == '${SourceLeadWeb_userCode}') && (json.requirementApproverHierarchyStatus =='APPROVED' || json.requirementApproverHierarchyStatus =='REJECTED')) ){ 
                             	result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
-				             }else if((json.requirementSubmissionStatus  != 'DRAFT') && (json.requirementApproverHierarchyStatus =='APPROVED'  || json.requirementSubmissionStatus  == "SUBMITTED"  || json.requirementApproverHierarchyStatus =='REJECTED'  ||  json.requirementApproverHierarchyStatus  == "NEW" ) ){ 
+				            }else if((json.requirementSubmissionStatus  != 'DRAFT') && (json.requirementApproverHierarchyStatus =='APPROVED'  || json.requirementSubmissionStatus  == "SUBMITTED"  || json.requirementApproverHierarchyStatus =='REJECTED'  ||  json.requirementApproverHierarchyStatus  == "NEW" ) ){ 
 				            	 result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
-				             }
+				            }
+				             */
+				             
+				            if( (json.requirementSubmissionStatus =='NEW'  || json.requirementSubmissionStatus =='DRAFT' || json.requirementSubmissionStatus =='SUBMITTED'  || json.requirementSubmissionStatus  == "APPROVED"  || json.requirementSubmissionStatus =='REJECTED'  ||  json.requirementSubmissionStatus  == "OPEN" ||  json.requirementSubmissionStatus  == "ONHOLD" ) && ( json.isLoginUserAsTeamMember == "false" || ( json.isLoginUserAsTeamMember == "true" && json.isLoginUserAsApprover  == "true") || ( json.isLoginUserAsTeamMember == "true" && json.isLoginUserAsManager  == "true") ) ){ 
+				            	 result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
+				            }
+				            
 				            var APPROVED = "APPROVED";     
 				            var REJECTED = "REJECTED";
 
-				             if(json.requirementSubmissionStatus  !='DRAFT'  &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED' && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
+				             if(json.requirementSubmissionStatus  !='DRAFT'  &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
                					 result = result +'<button  class="btn btn-success mr" type="button" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
                		             result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
-   				           	 }else if(json.requirementApproverHierarchyStatus == 'APPROVED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
-      						              result = result +'<button  id="requirementStatus" class="btn btn-success pull-right mr" type="button">'+json.requirementApproverHierarchyStatus+'</button>';
+   				           	 }else if(json.requirementApproverHierarchyStatus == 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
+      						              result = result +'<button  id="requirementStatus" class="btn btn-success pull-right mr" type="button">OPEN</button>';
     				         }else if( json.requirementSubmissionStatus  !='DRAFT'  && json.requirementApproverHierarchyStatus == 'REJECTED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
-					              result = result +'<button  id="requirementStatus" class="btn btn-danger pull-right mr" type="button">'+json.requirementApproverHierarchyStatus+'</button>';
+					              result = result +'<button  id="requirementStatus" class="btn btn-danger pull-right mr" type="button">REJECTED</button>';
 		                     }
 				             
 				             
@@ -650,7 +682,7 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-					            result = result +'     <div class="require_wrap_details_cta"> <b>Attachment:</b> <span>'+json.fileName+'</span>';
+					            	result = result +'<div class="require_wrap_details_cta require_uploadfile"><b>Attachment:</b> <span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
 					            }
 					            else{
 					            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
@@ -1063,6 +1095,7 @@ function requirementPipeline(requirementId){
 				            result = result +'    <div class="clearfix"></div>';
 				           result = result + '   </div>';
 				           result = result + '   <div class="require_wrap_table overflow-data">';
+				           result = result + '   <div class="table-overflow-hide">';
 				           result = result + '     <table id="requirementsPagination" class="display" cellspacing="0" width="100%"">';
 				           result = result + '       <thead>';
 				           result = result + '         <tr>';
@@ -1102,7 +1135,7 @@ function requirementPipeline(requirementId){
 						    	     }
 						           
 						           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.id+'\"></a>&nbsp;&nbsp;'+report.resumeName+'</span></div></td>';
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a>&nbsp;&nbsp;'+report.resumeName+'</span></div></td>';
 							           }
 							       else{
 							    	   result = result + '         <td><div>--</div></td>';
@@ -1152,6 +1185,7 @@ function requirementPipeline(requirementId){
 				           
 				           result = result + '       </tbody>';
 				           result = result + '     </table>';
+				           result = result + '   </div>';
 				           result = result + '   </div>';
 				            
 				            
@@ -1230,7 +1264,7 @@ function assignedMemberList(requirementId){
             		 }
             		 else{ 
 							var result = '';
-							result = result +'     <div class="heightScroll mt10 mb">';
+							 result = result +'     <div class="heightScroll mt10 mb">'; 
 						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
 						    result = result +'         <thead>';
 						    result = result +'         <tr>';
@@ -1257,14 +1291,14 @@ function assignedMemberList(requirementId){
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
-						    result = result +'         <td><div class="tbldata-dotdot-sm">020</div></td>';
+						    result = result +'         <td><div class="tbldata-dotdot-sm">'+report.applicantCount+'</div></td>';
 						    result = result +'         </tr>';
 			   				}
-						    result = result +'         </tbody>';
-						    result = result +'         </table>';
-						    result = result +'     </div>';
-						    result = result +'     </div>';
-						    result = result +' </div> ';
+						    /* result = result +'         </tbody>';
+						    result = result +'         </table>'; */
+						    /* result = result +'     </div>';
+						    result = result +'     </div>'; */
+						     result = result +' </div> '; 
 						    
 						    $("#assignedMemberList").empty();
 						    $("#assignedMemberList").append(result);
@@ -1365,7 +1399,7 @@ function requirementRecommendations(requirementId){
 		    if(report.isCandidateAdedd == true){
 		    	result = result +'<input type="button" value="Added" class="btn btn-primary btn-sm">';
 		    }else{
-		    	result = result +'<input type="button" value="Add" class="btn btn-primary btn-sm">';
+		    	result = result +'<input type="button" value="--" class="btn btn-primary btn-sm">';
 		    }
 		    
 		   /*  result = result +'<select>';

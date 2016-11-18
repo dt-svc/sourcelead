@@ -108,6 +108,9 @@ public class OrgRelations {
 	private Integer noOfContatcs;
 	
 	@Transient
+	private Integer noOfReleasedJobs;
+	
+	@Transient
 	private Integer noOfNonReleasedContacts;
 	
 	@Transient
@@ -423,4 +426,14 @@ public class OrgRelations {
 	public void setLocationID(String locationID) {
 		this.locationID = locationID;
 	}
+
+	public Integer getNoOfReleasedJobs() {
+		return noOfReleasedJobs;
+	}
+
+	public void setNoOfReleasedJobs(Integer noOfReleasedJobs) {
+		this.noOfReleasedJobs = noOfReleasedJobs;
+	}
+	
+	
 }

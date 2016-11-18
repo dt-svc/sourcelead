@@ -82,7 +82,7 @@ public class HomeController {
 		logger.debug(" *** HomeController init with: " + applicationContext);
 	}
 
-	@RequestMapping(value = { "/", "/welcome**" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/**"},  method = { RequestMethod.GET, RequestMethod.POST })
 	public String defaultPage() {
 		 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		 if(auth != null && auth.getPrincipal() != null){

@@ -1,9 +1,12 @@
 package com.bis.sourcelead.rest;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +33,6 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -49,7 +51,6 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.service.impl.RecommendationsServiceImpl;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -223,12 +224,16 @@ public class RequirementListRestController {
 				Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
 				
 				// to get the RequirementApproverHierarchy to set the Status
-				RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(Long.parseLong(requirementId), user.getId());
+				    Boolean isLoginUserAsApprover = false;
+					RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(Long.parseLong(requirementId), user.getId());
 					if(requirementApproverHierarchy!=null){
 						requirement.setRequirementApproverHierarchyStatus(requirementApproverHierarchy.getRequirementApproverStatus().toString());
+						isLoginUserAsApprover = true;
 					}
 					if(requirement.getSpocId() !=null){
-					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+						if(requirement.getClientId() !=null ){
+							requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+						}
 					requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
 					requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
 					requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
@@ -247,14 +252,28 @@ public class RequirementListRestController {
 					
 					Integer highestLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(requirementId));
 					ArrayList<String> ar = new ArrayList<String>();
-					for(RequirementApproverHierarchy approverN :list ){
-						ar.add(approverN.getApproverUserId().getFirstName() +""+ approverN.getApproverUserId().getLastName());
+					if(list !=null && list.size() >0){
+						for(RequirementApproverHierarchy approverN :list ){
+							ar.add(approverN.getApproverUserId().getFirstName() +""+ approverN.getApproverUserId().getLastName());
+						}
+						requirement.setHighestLevel(highestLevel);
+						requirement.setApproverNames(ar);
+					}else{
+						
+						requirement.setApproverNames(ar);
 					}
-					requirement.setHighestLevel(highestLevel);
-					requirement.setApproverNames(ar);
-
+					
+					Boolean isLoginUserAsTeamMember =   requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
+					requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
+					
+					requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
+					
+					Boolean isLoginUserAsManager =   requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
+					requirement.setIsLoginUserAsManager(isLoginUserAsManager.toString());
+					
+					
+					
 					resultJson = commonUtil.toJSON(requirement);
-			
 				 
 			}
 			
@@ -295,6 +314,11 @@ public class RequirementListRestController {
 					       if(assing.getTeamId() != null ){
 					    	   ra.setTeamName(assing.getTeamId().getName());
 					       }
+					       
+					       if(assing.getAssignUserId()  != null){
+					    	   Integer applicantCount =   requirementSubmissionService.getApplicantCountByrequirementIdandAssignedUsercode(Long.parseLong(requirementId), assing.getAssignUserId().getUserCode());
+						       ra.setApplicantCount(applicantCount.toString());
+					       }
 					       requirementAssignToList.add(ra);
 				      }
 			       }
@@ -334,6 +358,7 @@ public class RequirementListRestController {
 								requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 								requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 								requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+								requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
 								if(requirementSubmission.getCreatedDate() != null){
 									requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 								}
@@ -360,14 +385,20 @@ public class RequirementListRestController {
 		 
 		 @RequestMapping(value = "/saveChangedStatus" , method = RequestMethod.POST)
 		 @ResponseBody  String saveChangedStatus(@RequestParam(value="requirementId", required=false) Long  requirementId,
-				 @RequestParam(value="status", required=false) String  status) throws Exception {
+				 @RequestParam(value="status", required=false) String  status,HttpServletRequest request) throws Exception {
 			
 			 
+			 
+			 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
 			 Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+			 REQUIREMENT_SUBMISSION_STATUS previousStatus = requirement.getRequirementSubmissionStatus();
 			 
 			 REQUIREMENT_SUBMISSION_STATUS changedStatus = Enum.valueOf(REQUIREMENT_SUBMISSION_STATUS.class, status);
-			 
 			 requirement.setRequirementSubmissionStatus(changedStatus);
+			 requirement.setRequirementSubmissionPreviousStatus(previousStatus);
+			 requirement.setUpdatedBy(loginUser.getUserCode());
+			 requirement.setUpdatedDate(commonUtil.currentDate());
 			 requirementService.addRequirement(requirement); 
 			return "success";
 		 }
@@ -471,4 +502,45 @@ public class RequirementListRestController {
 				response.getOutputStream().flush();	
 			
 		 }
+		 
+		 
+		 /**
+		* @author sarath kumar
+		* 
+		* This method is used to download attachment of requirement
+		* 
+		* @param requirementId
+		* @param request
+		* 
+		* @return resultJson
+		* 
+		* @throws Exception
+		*/
+		@RequestMapping(value = "/downloadRequirementAttachment", method = RequestMethod.GET)
+	    public void downloadRequirementAttachment(@RequestParam(value="requirementId", required=false) String requirementId ,HttpServletResponse response) throws Exception {
+			
+				Requirement requirement =  requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
+			    
+			    response.setContentType("application/octet-stream");
+		        response.setHeader("Content-Disposition",
+		                "attachment;filename="+requirement.getFileName());
+			    
+				InputStream inputStream = new ByteArrayInputStream(requirement.getDocFile());
+				try {
+					OutputStream outStream = response.getOutputStream();
+
+					byte[] buffer = new byte[4096];
+					int bytesRead = -1;
+
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						outStream.write(buffer, 0, bytesRead);
+					}
+
+					inputStream.close();
+					outStream.close();
+
+				} catch (FileNotFoundException e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				} 
+     }
 }

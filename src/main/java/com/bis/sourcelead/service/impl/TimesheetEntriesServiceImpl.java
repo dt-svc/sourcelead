@@ -224,8 +224,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		sb.append("           <li><i class='glyphicon glyphicon-export'></i><span>Export</span><i class='glyphicon glyphicon-play' id='export-pop' onclick='exportType();'></i>|");
 		sb.append("           	<div class='export_pop'>");
 		sb.append("               	<ul>");
-		sb.append("                   	<li onclick='exportPdf();'>PDF<i class='fa fa-file-pdf-o'></i></li>");
-		sb.append("                       <li onclick='exportExcel(\""+weekStartDate+"\");'>Excel<i class='fa fa-file-excel-o'></i></li>");
+		sb.append("                   	<li onclick='exportPdf();'>PDF &nbsp;&nbsp;<i class='fa fa-file-pdf-o'></i></li>");
+		sb.append("                       <li onclick='exportExcel(\""+weekStartDate+"\");'>Excel &nbsp;&nbsp;<i class='fa fa-file-excel-o'></i></li>");
 		sb.append("                   </ul>");
 		sb.append("               </div>");
 		sb.append("           </li><li>");
@@ -1269,23 +1269,28 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 							    String startDate1  =  sdf.format(tsFirst.getStartDate());
 							    String endDate1  =  sdf.format(tsFirst.getEndDate());
-							    documentBuffer.append("<input class='dele' type='button'  onClick='deleteSubmissionDocument(\""+tsd.getId()+"\",\""+tsFirst.getProjectMembers().getEmployee().getId()+"\",\""+startDate1+"\",\""+endDate1+"\");'>");
-								
+							    if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){ 
+								}else{
+									documentBuffer.append("<input class='dele' type='button'  onClick='deleteSubmissionDocument(\""+tsd.getId()+"\",\""+tsFirst.getProjectMembers().getEmployee().getId()+"\",\""+startDate1+"\",\""+endDate1+"\");'>");
+								}
+							    
 							    documentBuffer.append("</strong>");
 						} 
 					}
 				} 
 		
-				 
-            	documentBuffer.append("<div class='commentFile'>"); 
-				documentBuffer.append("<span>"); 
-				documentBuffer.append("<table class='timesheetAttachment' id='attachmentTable' cellpadding='0' cellspacing='0'>");
-						documentBuffer.append("<tr id='divAttachmentTsRow0'>");
-						documentBuffer.append("<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' class='timesheetAttachmentValidation' ><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ");           
-						documentBuffer.append("</tr>");
-				documentBuffer.append("</table>");
-				documentBuffer.append("</span>");
-				documentBuffer.append("</div>");
+				if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){ 
+				}else{
+	            	documentBuffer.append("<div class='commentFile'>"); 
+					documentBuffer.append("<span>"); 
+					documentBuffer.append("<table class='timesheetAttachment' id='attachmentTable' cellpadding='0' cellspacing='0'>");
+							documentBuffer.append("<tr id='divAttachmentTsRow0'>");
+							documentBuffer.append("<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' class='timesheetAttachmentValidation' ><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ");           
+							documentBuffer.append("</tr>");
+					documentBuffer.append("</table>");
+					documentBuffer.append("</span>");
+					documentBuffer.append("</div>");
+				}
 				documentBuffer.append("</div>"); 
 				sb.append(documentBuffer);
 		
@@ -1410,13 +1415,14 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		                   		       
 		                   		       tsd.setTimesheetSubmissions(timesheetSubmissions);
 		                               MultipartFile  multiFile = (MultipartFile)files.get(a+"docFile");
-		                               tsd.setDocFile(multiFile.getBytes());
-		                               tsd.setFileName(multiFile.getOriginalFilename());
-		                               
-		                               if(multiFile.getContentType()!=null){
-		                            	   tsd.setFileContentType(multiFile.getContentType());
+		                               if(multiFile != null && !multiFile.isEmpty()){
+			                               tsd.setDocFile(multiFile.getBytes());
+			                               tsd.setFileName(multiFile.getOriginalFilename());
+			                               
+			                               if(multiFile.getContentType()!=null){
+			                            	   tsd.setFileContentType(multiFile.getContentType());
+			                               }
 		                               }
-		                              
 		                               
 		                               tsd.setStatus(Constants.CANDIDATE_ACTIVE);
 		                               tsd.setCreatedDate(commonUtil.currentDate());
