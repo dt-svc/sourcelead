@@ -346,34 +346,36 @@ public class RequirementListRestController {
 						List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
 						if(requirementSubmissions != null){
 							for (RequirementSubmission requirementSubmission : requirementSubmissions) {
-								CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
-								RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
-								String candidateName = requirementSubmissionTemplateFields.getFirstName();
-								if(requirementSubmissionTemplateFields.getLastName()!=null){
-									candidateName = candidateName+" "+requirementSubmissionTemplateFields.getLastName();
-								}
-								requirementSubmission.setCandidateName(candidateName);
-								requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
-								requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
-								requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
-								requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
-								requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
-								requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
-								if(requirementSubmission.getCreatedDate() != null){
-									requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
-								}
-								User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-								requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
-								requirementSubmission.setResumeName(candidateResumes.getFileName());
-								Candidate candidate = candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
-								List<Candidate> candidateList = new ArrayList<>();
-								candidateList.add(candidate);
-								List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScore(candidateList,requirementSubmission.getRequirement());
-								if(candidateListCopy !=null && candidateListCopy.size() >0){
-									requirementSubmission.setScore(candidateListCopy.get(0).getCandidateScore()+"%");
-									logger.info("size of score is "+candidateListCopy.get(0).getCandidateScore());
-								}else{
-									requirementSubmission.setScore("0 %");
+								if(requirementSubmission.getCandidateResumes() != null){
+									CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+									RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+									String candidateName = requirementSubmissionTemplateFields.getFirstName();
+									if(requirementSubmissionTemplateFields.getLastName()!=null){
+										candidateName = candidateName+" "+requirementSubmissionTemplateFields.getLastName();
+									}
+									requirementSubmission.setCandidateName(candidateName);
+									requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
+									requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
+									requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
+									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
+									requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+									requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
+									if(requirementSubmission.getCreatedDate() != null){
+										requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
+									}
+									User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+									requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
+									requirementSubmission.setResumeName(candidateResumes.getFileName());
+									Candidate candidate = candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
+									List<Candidate> candidateList = new ArrayList<>();
+									candidateList.add(candidate);
+									List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScore(candidateList,requirementSubmission.getRequirement());
+									if(candidateListCopy !=null && candidateListCopy.size() >0){
+										requirementSubmission.setScore(candidateListCopy.get(0).getCandidateScore()+"%");
+										logger.info("size of score is "+candidateListCopy.get(0).getCandidateScore());
+									}else{
+										requirementSubmission.setScore("0 %");
+									}
 								}
 							}
 						}

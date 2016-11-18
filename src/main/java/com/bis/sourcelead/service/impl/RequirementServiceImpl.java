@@ -559,18 +559,19 @@ public class RequirementServiceImpl implements RequirementService {
 			HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
 			if (jsonObj.has("assignedToMaxCount")){
 				String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
-				if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId"))){
-						String assignedTeamId = jsonObj.getString("assignedTeamId");
 						Long teamId = 0L;
 						Team team = null;
-					    if (!"undefined".equalsIgnoreCase(assignedTeamId) && !"All".equalsIgnoreCase(assignedTeamId)
-							&& !"Account Manager".equalsIgnoreCase(assignedTeamId)
-							&& !"HR Manager".equalsIgnoreCase(assignedTeamId) && !"Recruiter".equalsIgnoreCase(assignedTeamId)
-							&& !"Admin".equalsIgnoreCase(assignedTeamId)) {
-						    teamId = Long.parseLong(assignedTeamId);
-						     team = teamService.getTeamByTeamId(teamId);
-						}
-					    //User roleUser = team.getOwnerUserId();
+						if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId"))){
+							String assignedTeamId = jsonObj.getString("assignedTeamId");
+						    if (jsonObj.has("assignedTeamId") && !"undefined".equalsIgnoreCase(assignedTeamId) && !"All".equalsIgnoreCase(assignedTeamId)
+								&& !"Account Manager".equalsIgnoreCase(assignedTeamId)
+								&& !"HR Manager".equalsIgnoreCase(assignedTeamId) && !"Recruiter".equalsIgnoreCase(assignedTeamId)
+								&& !"Admin".equalsIgnoreCase(assignedTeamId)) {
+							    teamId = Long.parseLong(assignedTeamId);
+							    team = teamService.getTeamByTeamId(teamId);
+							}
+						}   
+					    // User roleUser = team.getOwnerUserId();
 						if(StringUtils.isNotEmpty(assignedToMaxCount)){
 						int MaxCount = Integer.parseInt(assignedToMaxCount);
 							for (int c = 1; c < MaxCount; c++) {
@@ -594,7 +595,6 @@ public class RequirementServiceImpl implements RequirementService {
 		
 							}
 						}
-			}	
 			}
 			requirement.setRequirementAssignTo(requirementAssignToList);
 			

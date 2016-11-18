@@ -172,7 +172,11 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from CandidateResumes candidateResumes where candidateResumes.createdDate IN (SELECT max(canresume.createdDate) FROM CandidateResumes canresume where canresume.candidateId.id =:candidateId) and candidateResumes.status = :status";  
 			List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setInteger("status", status).setCacheable(true).list();
-			return candidateResumesList.get(0);
+			CandidateResumes candidateResumes = null;
+			if(candidateResumesList != null && !candidateResumesList.isEmpty()){
+				candidateResumes = candidateResumesList.iterator().next();
+			}
+			return candidateResumes;
 }
 
 }
