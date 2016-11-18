@@ -14,6 +14,7 @@
 
 <script src="resources/js/chosen.jquery.min.js"></script> 
 <script src="resources/js/bootstrap-select.min.js"></script>
+
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
  
 <!-- these files for autocomplete with tagit -->
@@ -27,7 +28,11 @@
 <jsp:include page="requirementClientDetails.jsp"></jsp:include>
 <jsp:include page="requirementInternalDetails.jsp"></jsp:include>
 
-
+                <script>
+                $(function(){
+                $('[data-toggle="tooltip"]').tooltip();
+                });
+                </script>	
 <style type="text/css">
 .modal-bodyCustom {
 margin-bottom: 15px;
@@ -397,7 +402,7 @@ $(document).ready(function () {
                   </span>
                 </label>
                 
-                <input type="text" class="form-control" readonly id="uploadFile" name="docFile"  value="${requirement.fileName}" type="file"   placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
+                <input type="text" class="form-control" readonly id="uploadFile" name="docFile"  value="${requirement.fileName}" type="file"   placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc" data-validation-optional="true">
               <div class="clearfix"></div> <div class="clearfix"></div>
               </div>
             </div>
@@ -580,11 +585,11 @@ $(document).ready(function () {
                 <div  class="ml pull-left apprverReq" style="display:none;">
                 <label class="rad" id="parallel">
                 <input type="radio" name="approver"  checked="checked" onClick="approvalType('Parallel');">
-                <i class="fa fa-align-center" data-placement="top" data-toggle="tooltip"  title="Parallel"></i>
+                <i class="fa fa-align-center"  title="Parallel"></i>
                 </label>
                 <label class="rad" id="sequential">
                 <input type="radio" name="approver" onClick="approvalType('Sequential');">
-                <i class="fa fa-retweet" data-placement="top" data-toggle="tooltip" title="Sequential"></i>
+                <i class="fa fa-retweet" title="Sequential"></i>
                 </label>
                 
                  <i data-placement="top" data-toggle="tooltip" class="glyphicon glyphicon-info-sign text-info ml" title="info"></i>
@@ -1922,6 +1927,5 @@ var sourceleadUrl ='${sourceleadUrl}';
 	    });
 }
 </script>
-
 
 <jsp:include page="../masterFooter.jsp" />
