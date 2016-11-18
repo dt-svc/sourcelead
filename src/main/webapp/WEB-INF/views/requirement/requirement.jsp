@@ -787,6 +787,11 @@ $(document).ready(function () {
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
+		
+		$('#addClient').empty();
+		$('#addContact').empty();
+		$('#addTeam').empty();
+		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
