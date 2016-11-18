@@ -350,6 +350,7 @@ $(document).ready(function () {
 				<div class="col-md-9">
 				 <select class="chosen-select form-control select-bg" name="countryReq" id="countryReq" field-name="Country"  >
                  </select>
+                   <input type="hidden" id="existingCountry" value="${requirement.country}" >
 				</div>
 		</div>
 			
@@ -359,6 +360,7 @@ $(document).ready(function () {
 				<div class="col-md-9">
 				<select  class="chosen-select form-control select-bg" name="state" id="state" field-name="State"  >
                  </select>
+                 <input type="hidden" id="existingState" value="${requirement.state}" >
 				</div>
 		 </div>
 		 
@@ -367,6 +369,7 @@ $(document).ready(function () {
 			<div class="col-md-9">
 			     <select  class="chosen-select form-control select-bg" name="city" id="city" field-name="City"  >
                  </select>
+                 <input type="hidden" id="existingCity" value="${requirement.city}" >
 			</div>
 		</div>
 		
@@ -961,7 +964,18 @@ function storeTeam(){
 
 <script type="text/javascript">
 function getAllCountries(){
-	var countryName = $("#existingCountry").val();
+	var countryName ;
+	
+	 if ($('#existingCountry').length)
+	 {
+		 countryName = document.getElementById("existingCountry").value; 
+	 }
+	 else
+	 {
+		 countryName = '';
+	 }
+	 
+	 
 	$.ajax({
     	type: "POST",
     	dataType: "json",
@@ -969,9 +983,13 @@ function getAllCountries(){
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#countryReq').empty();
-        	$('#countryReq').append('<option value="">---select---</option>');
-            for(var i=0;i<json.length;i++){
-            	if(json[i] == '${loginCountryName}'){
+        	$('#countryReq').append('<option value="">---select Country---</option>');
+        	for(var i=0;i<json.length;i++){
+            	if(json[i] == countryName ){
+            		$('#countryReq').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            	}
+            	else if((countryName ==null ||  countryName =='' || countryName =='undefined') && (json[i] == '${loginCountryName}')){
+            		
             		$('#countryReq').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{
@@ -995,6 +1013,9 @@ function getStates(){
 	
 	//to set existing state value(Auto populate)
 	var stateName = $("#state").val();
+	if(stateName == null || stateName == 'undefined' || stateName == ''){
+		stateName = document.getElementById("existingState").value;
+	}
 	//end state Auto populate
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
@@ -1004,7 +1025,7 @@ function getStates(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select---</option>');
+	        	$('#state').append('<option value="">---select State---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == stateName){
 	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -1021,10 +1042,10 @@ function getStates(){
 	    });
 	}else{
 		$('#state').empty();
-    	$('#state').append('<option value="">---select---</option>');
+    	$('#state').append('<option value="">---select State---</option>');
     	$('#state').trigger("chosen:updated");
     	$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').append('<option value="">---select State---</option>');
         $('#city').trigger("chosen:updated");
 	}
 }
@@ -1039,6 +1060,9 @@ function getCities(){
 	
 	//to set existing city value(Auto populate)
 	var cityName = $("#city").val();
+	if(cityName == null || cityName == 'undefined' || cityName == ''){
+		cityName = document.getElementById("existingCity").value;
+	}
 	//end city Auto populate
 	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
@@ -1049,7 +1073,7 @@ function getCities(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select---</option>');
+	        	$('#city').append('<option value="">---select City---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == cityName){
 	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -1065,7 +1089,7 @@ function getCities(){
 	    });
 	}else{
 		$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').append('<option value="">---select City---</option>');
     	$('#city').trigger("chosen:updated");
 	}
 }
@@ -1074,7 +1098,6 @@ function getCities(){
 
 
 <!-- Country,State,City Script Ends Here -->
-
 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
