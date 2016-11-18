@@ -113,8 +113,8 @@ z-index: 9999999999 !important;
 					</div>
 					<div class="clearfix">
 					<div class="pull-left">
-					<input type="submit" value="Save" onclick="updateModules();" id="save_button" class="btn btn-primary mr">
-					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/dashboard'">
+					<input type="button" value="Upgrade" onclick="updateModules();" id="save_button" class="btn btn-primary mr">
+					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/enrolledOrgsList'">
 					</div>
 					</div>
 					</div>
@@ -137,66 +137,47 @@ z-index: 9999999999 !important;
 
 
 
-<script type="text/javascript">
-   function updateModules(){
-	var frm = $('#update_module_form').serializeFormJSON();
-	var con = JSON.stringify(frm);
-	con = con.replace(/[{}]/g, ""); 
-	var jsonData = encodeURIComponent(con);
-	var sourceleadUrl ='${sourceleadUrl}'; 
-	var orgId = '${orgId}';
-	
-	 var modulesList = [];
-	 $("input[name='modulesList[]']:checked").each( function (i) {
-		modulesList[i] = $(this).val();
-	});
-	 
-	
-	 var submodulesList = [];
-	 $("input[name='submodulesList[]']:checked").each( function (i) {
-		submodulesList[i] = $(this).val();
-	});
-	 
-	
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	 	$.ajax({
-		    type: "POST",
-		    contentType : 'application/json; charset=utf-8',
-		    dataType : 'json',
-			  url: sourceleadUrl+"/updateOrgModules?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&orgId="+orgId+"&json="+jsonData,
-		  	success: function(result) {
-		    	if(result == 'success'){
-		    		location.replace(sourceleadUrl+"/orgSummary?orgId="+orgId); 
-		    	}
-		    	
-		    	
-		    },   
-        }); 
-   
-   }
-	</script>
-	
-	
-<script type="text/javascript">
-(function ($) {
-   $.fn.serializeFormJSON = function () {
 
-       var o = {};
-       var a = this.serializeArray();
-       $.each(a, function () {
-           if (o[this.name]) {
-               if (!o[this.name].push) {
-                   o[this.name] = [o[this.name]];
-               }
-               o[this.name].push(this.value || '');
-           } else {
-               o[this.name] = this.value || '';
-           }
-       });
-       return o;
-   };
-})(jQuery);
+<script type="text/javascript">
+	function updateModules() {
+		
+		var roleId = '${roleId}';
+		var sourceleadUrl = '${sourceleadUrl}';
+			var sourceleadUrl ='${sourceleadUrl}'; 
+			var orgId = '${orgId}';
+			
+			 var modulesList = [];
+			 $("input[name='modulesList[]']:checked").each( function (i) {
+				modulesList[i] = $(this).val();
+			});
+			 
+			
+			 var submodulesList = [];
+			 $("input[name='submodulesList[]']:checked").each( function (i) {
+				submodulesList[i] = $(this).val();
+			});
+			 
+		 
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$.ajax({ 
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&orgId="+orgId,
+		        success: function(result) {
+		        	if((result == 'success')){
+		        		location.replace(sourceleadUrl+"/enrolledOrgSummary?orgId="+orgId);
+			        } 
+		        },
+		 }); 
+		 
+	}
+
 </script>
+    
+
+
+	
+	
+
 
 
 <jsp:include page="../masterFooter.jsp" />

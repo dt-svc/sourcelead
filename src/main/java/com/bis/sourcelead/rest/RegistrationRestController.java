@@ -25,6 +25,7 @@ import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
@@ -130,20 +131,15 @@ public class RegistrationRestController {
 	     
 	   }
 	
-	
-	
-	
-	@RequestMapping(value = "/updateOrgModules" , method = RequestMethod.POST)
-	   public String updateOrgModules(
-				@RequestParam(value="json", required=false) String json ,
-				@RequestParam(value="orgId", required=false) Long orgId ,
+	   
+	   @RequestMapping(value = "/updateOrgModules" , method = RequestMethod.POST)
+	   public String updateOrgModules(@RequestParam(value="orgId", required=false) Long orgId,
 				@RequestParam(value="modulesList", required=false) String modulesList ,
 				@RequestParam(value="submodulesList", required=false) String submodulesList ,
-	   			HttpServletRequest request) throws Exception {
-
-			 json = "{"+json+"}";
-			 JSONObject jsonObj = new JSONObject(json);
-			 Org org = orgService.findOrgByID(orgId);
+			    @RequestParam(value="actionIds", required=false) String actionIds,
+			    HttpServletRequest request) throws Exception {
+		
+		   Org org = orgService.findOrgByID(orgId);
 			 String orgModules = "";
 			 
 			 if(!isNullOrEmpty(submodulesList)){
@@ -166,14 +162,9 @@ public class RegistrationRestController {
 				orgModules = orgModules.substring(0, orgModules.length()-1);
 				org.setModulesId(orgModules);
 				orgService.addOrganization(org);
-			
-			return "success";
-	     
+		   
+		return "success";
 	   }
-	
-	
-	
-	
 	
 	
 	
