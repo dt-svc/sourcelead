@@ -559,40 +559,42 @@ public class RequirementServiceImpl implements RequirementService {
 			HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
 			if (jsonObj.has("assignedToMaxCount")){
 				String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
-				String assignedTeamId = jsonObj.getString("assignedTeamId");
-				Long teamId = 0L;
-				Team team = null;
-			if (!"undefined".equalsIgnoreCase(assignedTeamId) && !"All".equalsIgnoreCase(assignedTeamId)
-					&& !"Account Manager".equalsIgnoreCase(assignedTeamId)
-					&& !"HR Manager".equalsIgnoreCase(assignedTeamId) && !"Recruiter".equalsIgnoreCase(assignedTeamId)
-					&& !"Admin".equalsIgnoreCase(assignedTeamId)) {
-				    teamId = Long.parseLong(assignedTeamId);
-				     team = teamService.getTeamByTeamId(teamId);
-				}
-//			    User roleUser = team.getOwnerUserId();
-				if(StringUtils.isNotEmpty(assignedToMaxCount)){
-				int MaxCount = Integer.parseInt(assignedToMaxCount);
-					for (int c = 1; c < MaxCount; c++) {
-						RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
-						
-//						User assUser = new User();
-//						assUser.setId(Long.parseLong(jsonObj.getString("assignUserId"+c)));
-						User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
-						requirementAssignTo.setAssignUserId(assUser);
-						
-						requirementAssignTo.setRequirementId(requirement);
-						
-						
-						requirementAssignTo.setTeamId(team);
-						
-						
-						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
-						requirementAssignTo.setRoleId(userRole.getRoles());
-						requirementAssignToList.add(requirementAssignTo);
-						AssignToTeamMembersEmail(user, assUser, requirement,location,orgLocations);
-
-					}
-				}
+				if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId"))){
+						String assignedTeamId = jsonObj.getString("assignedTeamId");
+						Long teamId = 0L;
+						Team team = null;
+					    if (!"undefined".equalsIgnoreCase(assignedTeamId) && !"All".equalsIgnoreCase(assignedTeamId)
+							&& !"Account Manager".equalsIgnoreCase(assignedTeamId)
+							&& !"HR Manager".equalsIgnoreCase(assignedTeamId) && !"Recruiter".equalsIgnoreCase(assignedTeamId)
+							&& !"Admin".equalsIgnoreCase(assignedTeamId)) {
+						    teamId = Long.parseLong(assignedTeamId);
+						     team = teamService.getTeamByTeamId(teamId);
+						}
+					    //User roleUser = team.getOwnerUserId();
+						if(StringUtils.isNotEmpty(assignedToMaxCount)){
+						int MaxCount = Integer.parseInt(assignedToMaxCount);
+							for (int c = 1; c < MaxCount; c++) {
+								RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
+								
+		//						User assUser = new User();
+		//						assUser.setId(Long.parseLong(jsonObj.getString("assignUserId"+c)));
+								User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
+								requirementAssignTo.setAssignUserId(assUser);
+								
+								requirementAssignTo.setRequirementId(requirement);
+								
+								
+								requirementAssignTo.setTeamId(team);
+								
+								
+								UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
+								requirementAssignTo.setRoleId(userRole.getRoles());
+								requirementAssignToList.add(requirementAssignTo);
+								AssignToTeamMembersEmail(user, assUser, requirement,location,orgLocations);
+		
+							}
+						}
+			}	
 			}
 			requirement.setRequirementAssignTo(requirementAssignToList);
 			
