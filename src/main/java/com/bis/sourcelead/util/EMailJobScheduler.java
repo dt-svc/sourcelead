@@ -79,6 +79,8 @@ public class EMailJobScheduler {
 	RequirementInterviewerService requirementInterviewerService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(EMailJobScheduler.class);
+	
+	/*97--125--210--233--256*/
 /**
  * Fires at 7:00 PM Every Day	
  */
@@ -94,7 +96,7 @@ public class EMailJobScheduler {
 					if("Admin".equalsIgnoreCase(user.getUserType()))
 						continue;
 					HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
-					projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
+				//	projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
 					logger.info("########## Mail Sent to: "+user.getEmail()+" ##########");
 				}	
 			}
@@ -120,7 +122,7 @@ public class EMailJobScheduler {
 					for(TimesheetSubmissions ft :timesheetSubmissions){
 						logger.info("****************************************"+ft.getStartDate());
 					}
-					projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
+					//projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
 					logger.info("########## Mail Sent to: "+user.getEmail()+" ##########");
 				}
 			}
@@ -172,10 +174,10 @@ public class EMailJobScheduler {
 					}
 					
 					if(requirementInterview.getNotificationToApplicant().equalsIgnoreCase("Y")){
-								requirementInterviewService.sendEmailToApplicants(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId(), user, org, requirementInterview);
+								requirementInterviewService.sendEmailToApplicants(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId().getOrgLocations(),requirementInterview.getSubmissionId(), user, org, requirementInterview);
 					}
 					if(requirementInterview.getNotificationToSpoc().equalsIgnoreCase("Y")){
-						requirementInterviewService.sendEmailToVendors(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId(), user,org, requirementInterview);
+						requirementInterviewService.sendEmailToVendors(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId().getOrgLocations(),requirementInterview.getSubmissionId(), user,org, requirementInterview);
 					}
 					
 					if(requirementInterview.getNotificationToOthers().equalsIgnoreCase("Y")){
@@ -205,7 +207,7 @@ public class EMailJobScheduler {
 					if("Admin".equalsIgnoreCase(user.getUserType()))
 						continue;
 					HashSet<TimesheetSubmissions>  timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
-					projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
+					//projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
 					logger.info("########## Mail Sent to: "+user.getEmail()+" ##########");
 				}
 			}
@@ -228,7 +230,7 @@ public class EMailJobScheduler {
 					if("Admin".equalsIgnoreCase(user.getUserType()))
 						continue;
 					HashSet<TimesheetSubmissions>  timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
-					projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
+					//projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
 					logger.info("########## Mail Sent to: "+user.getEmail()+" ##########");
 				}
 			}
@@ -251,7 +253,7 @@ public class EMailJobScheduler {
 					if("Admin".equalsIgnoreCase(user.getUserType()))
 						continue;
 					HashSet<TimesheetSubmissions>  timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
-					projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
+				//	projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
 					logger.info("########## Mail Sent to: "+user.getEmail()+" ##########");
 				}
 			}

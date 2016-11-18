@@ -35,7 +35,9 @@ public class ProjectsServiceTest {
 	
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
-	
+	/**
+	 * line 205 commented
+	 */
 	/**
 	 * this method for save project
 	 * @throws Exception
@@ -202,7 +204,7 @@ public class ProjectsServiceTest {
 			if("Admin".equalsIgnoreCase(user.getUserType()))
 				continue;
 			HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(user.getId());
-			projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
+			//projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
 			logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+usrList.size());
 			
 		}

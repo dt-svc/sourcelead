@@ -269,7 +269,7 @@ public class SubmissionsRestController {
  	 int shotListCount = submissionId.length;
  	  Requirement requirement  = requirementService.getRequirementByRequirementId(requirementId);
  	  if(requirement.getManagerUserId().getEmail() != null){
- 		 sendEmailToManages(requirement,user,shotListCount,loginOrg);
+ 		 sendEmailToManages(requirement,orgLocations,user,shotListCount,loginOrg);
  	  }
  	return "success";
  }
@@ -307,7 +307,7 @@ public class SubmissionsRestController {
 
 	//vendors mail sending the private method
 
-	public void sendEmailToManages(Requirement requirement, User user,Integer shotListCount,Org loginOrg)	throws Exception {
+	public void sendEmailToManages(Requirement requirement,OrgLocations loginOrgLocations,User user,Integer shotListCount,Org loginOrg)	throws Exception {
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(requirement.getManagerUserId().getFirstName());
 		 emailMessage.setLastName(requirement.getManagerUserId().getLastName());
@@ -371,7 +371,7 @@ public class SubmissionsRestController {
 		 
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 		 
 	}	
 

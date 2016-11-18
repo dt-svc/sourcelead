@@ -58,7 +58,7 @@ public class RegistrationServiceTest {
 	public void sendEmail() throws Exception{
 		Registration registration = new Registration();
 		registration.setEmail("shiva@gmail.com");
-		registrationService.sendEmail(registration);
+		registrationService.sendEmail(registration,1l);
 		logger.info("email added successfully");
 	}
 	@Test
@@ -67,7 +67,7 @@ public class RegistrationServiceTest {
 		user.setId(1l);
 		user.setUserCode("pAw1ghoN");
 		user.setEmail("shivayog@gmail.com");
-		registrationService.sendResetPasswordEmail(user, "bis123");
+		registrationService.sendResetPasswordEmail(user,1l, "bis123");
 		logger.info("sendResetPasswordEmail added successfully");
 	}
 	
@@ -110,7 +110,7 @@ public class RegistrationServiceTest {
 		user.setUserRole(userRole);
 		user.setWorkPhone("12345");
 		user.getIsMailSent();
-		registrationService.sendUpdatePasswordEmail(user);
+		registrationService.sendUpdatePasswordEmail(user,1l);
 		logger.info("sendUpdatePasswordEmail added successfully");
 	}
 	

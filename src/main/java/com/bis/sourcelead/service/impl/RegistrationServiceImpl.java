@@ -421,7 +421,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 
 	@Override
-	public void sendEmail(Registration registration) throws Exception {
+	public void sendEmail(Registration registration,Long locationsId) throws Exception {
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(registration.getFirstName());
 		 emailMessage.setLastName(registration.getLastName());
@@ -457,12 +457,12 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,locationsId,emailRecipientList,new ArrayList<EmailAttachment>());
 		
 	}
 	
 	@Override
-	public void sendResetPasswordEmail(User user, String verificationCode) throws Exception {
+	public void sendResetPasswordEmail(User user,Long locationsId, String verificationCode) throws Exception {
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
@@ -499,13 +499,13 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,locationsId,emailRecipientList,new ArrayList<EmailAttachment>());
 		
 	}
 	
 	
 	@Override
-	public void sendUpdatePasswordEmail(User user) throws Exception {
+	public void sendUpdatePasswordEmail(User user,Long locationsId) throws Exception {
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
@@ -540,7 +540,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		//calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,locationsId,emailRecipientList,new ArrayList<EmailAttachment>());
 		
 		
 	}

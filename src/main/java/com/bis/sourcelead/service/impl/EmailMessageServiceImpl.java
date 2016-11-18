@@ -75,7 +75,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	
 	
 	@Override
-	public String sendEmail(EmailMessage emailMessage, ArrayList<EmailRecipient> emailRecipientList, List<EmailAttachment> attachmentList) throws Exception {
+	public String sendEmail(EmailMessage emailMessage,Long locationsId, ArrayList<EmailRecipient> emailRecipientList, List<EmailAttachment> attachmentList) throws Exception {
 		if(emailMessage != null)
 		{
 			Long emailNotificationd = null;

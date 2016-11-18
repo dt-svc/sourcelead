@@ -653,7 +653,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 emailAttachment.setName(UUID);
 		 attachmentList.add(emailAttachment);
 		 
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,attachmentList);
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,attachmentList);
 		
 	}
 

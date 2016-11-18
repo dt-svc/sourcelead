@@ -58,7 +58,7 @@ public interface ProjectsService {
 		
 		HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
 		
-		void  userEmailNotificationForTimeSheetSubmission(User user, HashSet<TimesheetSubmissions> timesheetSubmissions) throws Exception;
+		void  userEmailNotificationForTimeSheetSubmission(User user,Long locationsId, HashSet<TimesheetSubmissions> timesheetSubmissions) throws Exception;
 		
 		HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 		

@@ -1857,7 +1857,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			 emailMessage.setMessageBody(emailTemplate);
 			 
 			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+			 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 			 
 			 
 			//calling the sendNotification method of emailScenerioUtil
