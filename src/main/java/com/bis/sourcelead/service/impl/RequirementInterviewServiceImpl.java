@@ -467,11 +467,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	
 	//vendors mail sending the private method
 	@Override
-<<<<<<< HEAD
-	public void sendEmailToVendors(Candidate candidate, RequirementSubmission requirementSubmission, User loginUser,Org loginOrg,RequirementInterview requirementInterview,OrgLocations orgLocations)	throws Exception {
-=======
-	public void sendEmailToVendors(Candidate candidate,OrgLocations loginOrgLocations, RequirementSubmission requirementSubmission, User loginUser,Org loginOrg,RequirementInterview requirementInterview)	throws Exception {
->>>>>>> b441605e0a965663e4ead96592781be854811d5d
+	public void sendEmailToVendors(Candidate candidate, RequirementSubmission requirementSubmission, User loginUser,Org loginOrg,RequirementInterview requirementInterview,OrgLocations loginOrgLocations)	throws Exception {
 		 EmailMessage emailMessage = new EmailMessage();
 		 User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 		 emailMessage.setFirstName(user.getFirstName());
