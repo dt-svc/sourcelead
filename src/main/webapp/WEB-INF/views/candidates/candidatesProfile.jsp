@@ -52,6 +52,34 @@ function editCandidate(candidateId){
             			 location.replace(sourceleadUrl+"/errorPage");
             		 }
             		 else{   
+            			 	var lastName = '';
+            			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
+            			 		lastName = json.lastName;            			 		
+            			 	}
+            			 	var mobilePhone = '';
+            			 	if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
+            			 		mobilePhone = json.mobilePhone;            			 		
+            			 	}
+            			 	var designation = '';
+            			 	if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
+            			 		designation = json.designation;            			 		
+            			 	}
+            			 	var currentRate = '';
+            			 	if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
+            			 		currentRate = json.currentRate;            			 		
+            			 	}
+            			 	var expectedRate = '';
+            			 	if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
+            			 		expectedRate = json.expectedRate;            			 		
+            			 	}
+            			 	var experienceYears = '';
+            			 	if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
+            			 		experienceYears = json.experienceYears;            			 		
+            			 	}
+            			 	var summary = '';
+            			 	if(json.summary != null && json.summary != '' && json.summary != 'undefined'){
+            			 		summary = json.summary;            			 		
+            			 	}
 							var result ='';
 							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
@@ -63,7 +91,7 @@ function editCandidate(candidateId){
 							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="validate_Space required">';
 							result = result + '		          </div>';
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+json.lastName+'" placeholder="Last Name">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name">';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							
@@ -73,7 +101,7 @@ function editCandidate(candidateId){
 							result = result + '		          </div>';
 							
 							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="mobilePhone"  value="'+json.mobilePhone+'" placeholder="Mobile">';
+							result = result + '<input type="text" class="form-control input-sm" name="mobilePhone"  value="'+mobilePhone+'" placeholder="Mobile">';
 							result = result + '</div>';
 							result = result + '</div>';
 							
@@ -102,26 +130,26 @@ function editCandidate(candidateId){
 							
 							
 							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<input type="text" class="form-control input-sm" name="designation"  value="'+json.designation+'" placeholder="Designation">';
+							result = result + '<input type="text" class="form-control input-sm" name="designation"  value="'+designation+'" placeholder="Designation">';
 							result = result + '</div>';
 							result = result + '</div>';
 							
 							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="currentRate"  value="'+json.currentRate+'" placeholder="Current Rate">';
+							result = result + '<input type="text" class="form-control input-sm" name="currentRate"  value="'+currentRate+'" placeholder="Current Rate">';
 							result = result + '</div>';
 							
 							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="expectedRate"  value="'+json.expectedRate+'" placeholder="Expected Rate">';
+							result = result + '<input type="text" class="form-control input-sm" name="expectedRate"  value="'+expectedRate+'" placeholder="Expected Rate">';
 							result = result + '</div>';
 							result = result + '</div>';
 							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="experienceYears"  value="'+json.experienceYears+'" placeholder=" Experience Years">';
+							result = result + '<input type="text" class="form-control input-sm" name="experienceYears"  value="'+experienceYears+'" placeholder=" Experience Years">';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow">';
@@ -144,7 +172,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 												
 							result = result + '<div class="col-md-6">';
-							result = result + '<textarea class="form-control input-sm" placeholder = "Summary"  name="summary" rows="2" cols="0" > '+json.summary+'</textarea>';
+							result = result + '<textarea class="form-control input-sm" placeholder = "Summary"  name="summary" rows="2" cols="0" > '+summary+'</textarea>';
 							//result = result + ''+json.summary+'</textarea>';
 							result = result + ' </div>';
 							result = result + '</div>';
@@ -238,9 +266,7 @@ function disableMonths() {
 function getAllCountries(){
 	setTimeout(function(){ 
 	var countryName = $("#updateCountry").val();
-	alert("*countryName******* "+countryName);
 	var loginCountryName = '${loginCountryName}';
-	alert("*loginCountryName******* "+loginCountryName);
 	$.ajax({
     	type: "POST",
     	dataType: "json",
