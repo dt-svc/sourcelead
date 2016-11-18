@@ -36,7 +36,9 @@ $(document).ready(function() {
 
 
 <style>
- 
+.tbldata-dotdot span{
+max-width:220px;
+} 
  .clsDatePicker {
    z-index: 100000 !important;
 }
@@ -72,7 +74,7 @@ padding: 1px 280px 2px 0;
      2.parameter : csrf token .
      3.ajax url implementation in requirementListRestController.
 --%>
-
+<input type="hidden" name="noReq" id="noReq"/>
 <script>
 function requirementList(){  
 	
@@ -87,7 +89,8 @@ function requirementList(){
 	    {
 			clients.push($(this).val());
 	    });
-	
+	var orgATS = '${SourceLeadWeb_org.ats}';
+	var orgVMS = '${SourceLeadWeb_org.vms}';
 	
 	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
@@ -123,8 +126,19 @@ function requirementList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
-		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show'><span>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-		                     result = result +"<td><div><span>Client</span></div></td>";
+	                    	 if(opt.jobId != '' && opt.jobId != null){
+		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"-"+opt.jobId+"'>"+opt.jobTitle+"-"+opt.jobId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+	                    	 }
+	                    	 else
+	                    		 {
+			                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"-"+opt.jobId+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+
+	                    		 }
+		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
+		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
 		                     if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
 		                    	 result = result +"<td><div>"+opt.jobType+"</div></td>";
 		                     }else{
@@ -141,28 +155,93 @@ function requirementList(){
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
 		                     }
-	                    	 result = result +"<td><div>-----</div></td>";
-
-		                     /* f(opt.managerUserId.firstName != null && opt.managerUserId.firstName !='' && opt.managerUserId.firstName !='undefined'){
-		                    	 result = result +"<td><div>"+opt.managerUserId.firstName+" "+opt.managerUserId.lastName+"</div></td>";
+		                     if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
+		                    	 result = result +"<td><div>"+opt.manager+"</div></td>";
 		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
-		                     } */
+		                    	 result = result +"<td><div>----</div></td>";
+		                     }
+result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");' id='changeStatusId"+opt.id+"'>";
+		                     
+		                        if(opt.requirementSubmissionStatus == "DRAFT"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									result = result +"<option value='ONHOLD'>ONHOLD</option>";
+									result = result +"<option value='CANCEL'>CANCEL</option>";
+								}
+								else if(opt.requirementSubmissionStatus == "CANCEL"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+
+								}else if(opt.requirementSubmissionStatus == "OPEN"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
+									result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
+									result = result +"<option value='ONHOLD'>ONHOLD</option>";
+									result = result +"<option value='CANCEL'>CANCEL</option>";
+								}
+								else if(opt.requirementSubmissionStatus == "NEW"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									result = result +"<option value='OPEN'>OPEN</option>";
+									result = result +"<option value='ONHOLD'>ONHOLD</option>";
+									result = result +"<option value='CANCEL'>CANCEL</option>";
+									
+								}else if(opt.requirementSubmissionStatus == "APPROVED"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									
+								}
+								else if(opt.requirementSubmissionStatus == "REJECTED"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									
+								}
+								
+								else if(opt.requirementSubmissionStatus == "SUBMITTED"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									result = result +"<option value='ONHOLD'>ONHOLD</option>";
+									result = result +"<option value='CANCEL'>CANCEL</option>";
+									
+								}else if(opt.requirementSubmissionStatus == "ONHOLD"){
+									
+									if(opt.requirementSubmissionPreviousStatus == "OPEN" || opt.requirementSubmissionPreviousStatus == null || opt.requirementSubmissionPreviousStatus == '' || opt.requirementSubmissionPreviousStatus == 'undefined' ){
+												result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+												result = result +"<option value='OPEN'>OPEN</option>";
+												result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
+												result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
+												result = result +"<option value='CANCEL'>CANCEL</option>";
+									}
+									if(opt.requirementSubmissionPreviousStatus == "DRAFT"){
+										result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+										result = result +"<option value='DRAFT'>DRAFT</option>";
+										result = result +"<option value='CANCEL'>CANCEL</option>";
+									}
+									if(opt.requirementSubmissionPreviousStatus == "SUBMITTED"){
+										result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+										result = result +"<option value='SUBMITTED'>SUBMITTED</option>";
+										result = result +"<option value='CANCEL'>CANCEL</option>";
+									}
+									 
+								}else if(opt.requirementSubmissionStatus == "UNFILLEDCLOSED"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									result = result +"<option value='OPEN'>OPEN</option>";
+									
+								}else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
+									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+									
+								}
+
+								result = result +" </select>";	
+			                    result = result +" </td>";
 		                     
 		                     
-		                     result = result +"<td><div><b class='proj_process'>"+opt.requirementSubmissionStatus+"</b></div></td>";
-		                     if(opt.requirementSubmissionStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN'){
+		                     if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
 			                     result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
 
 		                     }else{
 			                     result = result +"<td><div>--</div></td>";
- 
 		                     }
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";
 	                     }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
+	                     $("#noReq").val('');
 	                     $("#requirementList").append(result); 
 	                     pagination(); 
 			    	} 
@@ -174,7 +253,8 @@ function requirementList(){
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 					 result = result+"			        <p>No Requirement Found</p>";
 					 result = result+"			 </div>";
-					
+					noRequirements();
+					$("#noReq").val("noreq");
 					$("#requirementList").empty();
 				    $("#requirementList").append(result); 
                 }
@@ -958,16 +1038,23 @@ function requirementPipeline(requirementId){
 		              <ul>
                 		    <li><input id="c6" type="checkbox" name="requirementStatus" value ="New"  onclick="requirementList();"><label for="c6">New</label></li>
 							<li><input id="c7" name="requirementStatus" type="checkbox" value ="Draft"  onclick="requirementList();"><label for="c7">Draft</label></li>
-							<li><input id="c8" type="checkbox"  name="requirementStatus"  type="checkbox" value ="Waiting for approval"  onclick="requirementList();"><label for="c8">Waiting for approval</label></li>
-               				<li><input id="c9" type="checkbox"  name="requirementStatus"  type="checkbox" value ="Open"  onclick="requirementList();"><label for="c8">Open</label></li>
-               				<li><input id="c10" type="checkbox"  name="requirementStatus"  type="checkbox" value ="On Hold"  onclick="requirementList();"><label for="c8">On Hold</label></li>
+							<li><input id="c8" type="checkbox"  name="requirementStatus"  type="checkbox" value ="submitted"  onclick="requirementList();"><label for="c8">Waiting for approval</label></li>
+               				<li><input id="c9" type="checkbox"  name="requirementStatus"  type="checkbox" value ="open"  onclick="requirementList();"><label for="c8">Open</label></li>
+               				<li><input id="c10" type="checkbox"  name="requirementStatus"  type="checkbox" value ="onhold"  onclick="requirementList();"><label for="c8">On Hold</label></li>
                				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="Cancelled"  onclick="requirementList();"><label for="c8">Cancelled</label></li>
 		              </ul>
 		            </div>
           </li>
-         
           <li> <a href="<c:url value='/requirement'/>"><i class="fa fa-plus"></i>Add Requirement</a></li>
           <li> <a href="<c:url value='/team'/>"><i class="fa fa-plus"></i>Team</a></li>
+           <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop" onClick="mypop();"></i>
+            <div class="export_pop">
+              <ul>
+                <li onclick="exportToPdf();">PDF<i class="fa fa-file-pdf-o"></i></li>
+                <li onclick="exportToExcel();">Excel<i class="fa fa-file-excel-o"></i></li>
+              </ul>
+            </div>
+          </li>
           <div class="clearfix"></div>
         </ul>
         <div class="clearfix"></div>
@@ -1060,7 +1147,9 @@ $(document).ready(function() {
     $(".export_pop, #export-pop").click(function(e) {
         e.stopPropagation();
     });	
-});	
+});
+
+
 	
 // project side bar
 $(document).ready(function() {
@@ -1154,6 +1243,25 @@ $(".reminder").click(function(){
    });
    });
 </script>
+
+
+<script type="text/javascript">
+function changeStatus(requirementId){
+	var status = document.getElementById('changeStatusId' + requirementId).value;
+	/* $("#changeStatusId option[value=status]").remove(); */
+	 var sourceleadUrl ='${sourceleadUrl}';
+	   $.ajax({
+         type : "POST",
+          url: sourceleadUrl+"/saveChangedStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,        
+          success :function(data) { 
+        	  $("#changeStatusId" +requirementId).val('');
+        	  location.replace(sourceleadUrl+"/requirementList");
+          }
+}); 
+}
+</script>
+
+
 <script type="text/javascript">
             $(function () {
                 $('#datetimepicker5').datetimepicker({
@@ -1172,8 +1280,54 @@ $(".reminder").click(function(){
 </html>
 
 
+<script>
+    $("#export-pop").click(function(){
+		$(".export_pop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $(".export_pop").slideUp(200);
+    });
+    $(".export_pop, #export-pop").click(function(e) {
+        e.stopPropagation();
+    });	
+</script>
 
+<script>
+function exportToPdf(){
+	var req = $("#noReq").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	  var status = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() 
+	    {
+			status.push($(this).val());
+	    });
+	 var clients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() 
+	    {
+			clients.push($(this).val());
+	    });
+		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=pdf";
+}
+</script>
 
+<script>
+function exportToExcel(){
+	var req = $("#noReq").val();
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	  var status = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() 
+	    {
+			status.push($(this).val());
+	    });
+	 var clients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() 
+	    {
+			clients.push($(this).val());
+	    });
+		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=xls";
+}
 
+</script>
   
 <jsp:include page="../masterFooter.jsp" />

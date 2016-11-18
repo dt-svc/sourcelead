@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -97,12 +98,12 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public OrgSpoc validateSpacEmailIdByOwnerUserIdAndOrgRelationId(String email, Long orgRelationId, Long userId) throws Exception {
+	public OrgSpoc validateSpacEmailIdByOwnerUserIdAndOrgRelationId(String email, Long orgRelationId, Long userId, Integer status) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgSpoc> orgSpocs = new ArrayList<OrgSpoc>();
 		logger.debug("validateSpacEmailIdByOwnerUserIdAndOrgRelationId start");
-		orgSpocs = session.createQuery("from OrgSpoc spoc where spoc.spocUser.email =:email and spoc.ownerUser.id = :userId and spoc.orgRelations.id = :orgRelationId").setCacheable(true).setLong( "userId", userId)
-				 .setString( "email", email).setLong( "orgRelationId", orgRelationId).setCacheable(true).list();
+		orgSpocs = session.createQuery("from OrgSpoc spoc where spoc.spocUser.email =:email and spoc.ownerUser.id = :userId and spoc.orgRelations.id = :orgRelationId and spoc.status = :status").setCacheable(true).setLong( "userId", userId)
+				 .setString( "email", email).setLong( "orgRelationId", orgRelationId).setInteger( "status", status).setCacheable(true).list();
 		logger.debug("validateSpacEmailIdByOwnerUserIdAndOrgRelationId end");
 		if (orgSpocs.size() > 0) {
 			return orgSpocs.get(0);
@@ -139,6 +140,21 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getOwnerUserIdsbySpocEmailAndOrgRelationId(String email, Long orgRelationId) {
+		logger.debug("getOwnerIdbySpocId start");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Long> ownersList = null;;
+		if(orgRelationId != null && email != null){
+			String query = "select spoc.ownerUser.id from OrgSpoc spoc where spoc.spocUser.email = :email and spoc.orgRelations.id = :orgRelationId and spoc.status = '1' ";
+		    ownersList = session.createQuery(query).setString( "email", email ).setLong( "orgRelationId", orgRelationId ).setCacheable(true).list();
+		}
+	    
+        return ownersList;
+        
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public OrgSpoc getSpocUserByUserId(Long spocUserId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgSpoc> orgSpocs = new ArrayList<OrgSpoc>();
@@ -159,13 +175,15 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			List<OrgSpoc> spocsList;
 			Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUserId,orgLocationId);
-			if (isadmin){
-				Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.ownerUser left join fetch spoc.responderLocationId responderLocationId  left join fetch responderLocationId.org  left join fetch spoc.orgRelations orgrelation where spoc.status <> '0' and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType ))");
-				spocsList = query.setString("relationType", relationType).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			
+			if (isadmin) {
+	            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and spoc.status <> '0' ");
+	            spocsList = query.setLong("orgLocationId", orgLocationId).setString("relationType", relationType).setCacheable(true).list();
 			}else{
-	            Query query= session.createQuery("from OrgSpoc spoc   left join fetch spoc.responderLocationId responderLocationId  left join fetch responderLocationId.org left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where (spoc.ownerUser.id = :loginUserId OR spoc.spocUser.id =:loginUserId) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and spoc.status <> '0' ");
+	            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where (spoc.ownerUser.id = :loginUserId OR spoc.spocUser.id =:loginUserId) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and spoc.status <> '0' ");
 	            spocsList = query.setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setString("relationType", relationType).setCacheable(true).list();
-	        }
+			}
+			
 			return spocsList;
 		}
 
@@ -183,5 +201,26 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			return spocsList;
 			
 		}
-
+		
+		
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<OrgSpoc> getAllContactsbyOrgRelationIdAndLocationId(Long relationId, Long locationId, String initiator) throws Exception {
+			
+			logger.debug("In OrgSpocDaoImpl getAllContactsbyOrgRelationIdAndLocationId method");
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			List<OrgSpoc> spocsList = null;
+			 
+			if(StringUtils.equals(initiator, "Vendor")){
+				Query query= session.createQuery("from OrgSpoc spoc where spoc.orgRelations.id=:relationId and spoc.initiatorLocationId.id=:locationId and spoc.status <> '0' ");
+				spocsList = query.setLong("relationId", relationId).setLong("locationId", locationId).setCacheable(true).list();
+			}else if(StringUtils.equals(initiator, "Client")){
+				Query query= session.createQuery("from OrgSpoc spoc where spoc.orgRelations.id=:relationId and spoc.responderLocationId.id=:locationId and spoc.status <> '0' ");
+				spocsList = query.setLong("relationId", relationId).setLong("locationId", locationId).setCacheable(true).list();
+			}
+			 
+			return spocsList;
+			
+		}
 }

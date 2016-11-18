@@ -3,6 +3,8 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Map;
 
+import javax.persistence.Column;
+
 public class EmailMessage implements Serializable {
 
 	/**
@@ -25,6 +27,14 @@ public class EmailMessage implements Serializable {
 	private String messageBody;
 	
 	private String signature;
+	
+    private String userName;
+	
+	private String password;
+	
+	private Long orgLocationId;
+	
+	private String createdBy;
 	
 	private Map<String, Object> model;
 	
@@ -94,6 +104,30 @@ public class EmailMessage implements Serializable {
 		this.signature = signature;
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Long getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
 	public Map<String, Object> getModel() {
 		return model;
 	}
@@ -108,5 +142,13 @@ public class EmailMessage implements Serializable {
 
 	public void setAttachmentFiles(String[] attachmentFiles) {
 		this.attachmentFiles = attachmentFiles;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 }

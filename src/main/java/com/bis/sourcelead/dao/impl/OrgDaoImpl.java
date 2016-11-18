@@ -265,7 +265,7 @@ public class OrgDaoImpl implements OrgDao {
 		
 		String userStateSubQuery = "";
 		if (!isNullOrEmpty(userState)) {
-			userStateSubQuery = "and org.user.userState = '" + userState + "'";
+			userStateSubQuery = "and org.user.id IN(select ur.user.id from UserRole ur where ur.userState = '" + userState + "')";
 		}
 		
 		String orgNameSubQuery = "";
@@ -290,6 +290,16 @@ public class OrgDaoImpl implements OrgDao {
 		            	isOrgFound = true;
 		            }
 		            return isOrgFound;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Org getOrgByOrgName(String orgName) {
+		Session session = this.sessionFactory.getCurrentSession();
+		 String query ="from Org org where org.orgName = :orgName ";
+		 
+		         List<Org> orglist = session.createQuery(query.toString()).setString("orgName", orgName).setCacheable(true).list();
+		return orglist.get(0);
 	}
 
 }

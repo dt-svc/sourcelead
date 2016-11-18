@@ -1,7 +1,10 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,10 +12,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 	@Entity
 	@Table(name = "REQUIREMENT_INTERVIEW", catalog = "sourcelead")
@@ -35,10 +42,13 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	private Date dateOfInterview;
 	
 	@Column(name = "START_TIME")
-	private String startTime;
+	private Date startTime;
 	
 	@Column(name = "END_TIME")
-	private String endTime;
+	private Date endTime;
+	
+	@Column(name = "TIME_ZONE", columnDefinition = "TEXT default NULL")
+	private String timeZone;
 	
 	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
 	private String location;
@@ -72,8 +82,55 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
-
 	
+	@Transient
+	private String remainderTime;
+	
+	@Transient
+	private String dateOfInterviewStr;
+	
+	@Transient
+	private String startTimeStr;
+	
+	@Transient
+	private String endTimeStr;
+	
+	@Transient
+	private String interviewersList;
+	
+	@Transient
+	private String candidateName;
+	
+	@Transient
+	private String requirementTitle;
+	
+	@Transient
+   	private String requirementId;
+	
+	@Transient
+	private String interviewStartDateTimeStr;
+	
+	@Transient
+	private String interviewEndtDateTimeStr;
+	
+	@Transient
+	private String clientName;
+	
+	@OneToMany(mappedBy = "requirementInterview",cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+	private Set<RequirementInterviewer> requirementInterviewers = new HashSet<RequirementInterviewer>(0);
+
+	@Column(name = "INTERVIEW_STATUS", columnDefinition = "TEXT default NULL")
+	private String interviewStatus;
+	
+	public String getInterviewStatus() {
+		return interviewStatus;
+	}
+
+	public void setInterviewStatus(String interviewStatus) {
+		this.interviewStatus = interviewStatus;
+	}
+
 	public Date getDateOfInterview() {
 		return dateOfInterview;
 	}
@@ -105,21 +162,28 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setInterviewType(String interviewType) {
 		this.interviewType = interviewType;
 	}
-
-	public String getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(String startTime) {
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 
-	public String getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(String endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+
+	public String getTimeZone() {
+		return timeZone;
+	}
+
+	public void setTimeZone(String timeZone) {
+		this.timeZone = timeZone;
 	}
 
 	public String getLocation() {
@@ -212,7 +276,100 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
-	
-	
+
+	public String getRemainderTime() {
+		return remainderTime;
+	}
+
+	public void setRemainderTime(String remainderTime) {
+		this.remainderTime = remainderTime;
+	}
+
+	public String getDateOfInterviewStr() {
+		return dateOfInterviewStr;
+	}
+
+	public void setDateOfInterviewStr(String dateOfInterviewStr) {
+		this.dateOfInterviewStr = dateOfInterviewStr;
+	}
+
+	public String getStartTimeStr() {
+		return startTimeStr;
+	}
+
+	public void setStartTimeStr(String startTimeStr) {
+		this.startTimeStr = startTimeStr;
+	}
+
+	public String getEndTimeStr() {
+		return endTimeStr;
+	}
+
+	public void setEndTimeStr(String endTimeStr) {
+		this.endTimeStr = endTimeStr;
+	}
+
+	public String getInterviewersList() {
+		return interviewersList;
+	}
+
+	public void setInterviewersList(String interviewersList) {
+		this.interviewersList = interviewersList;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public String getRequirementTitle() {
+		return requirementTitle;
+	}
+
+	public void setRequirementTitle(String requirementTitle) {
+		this.requirementTitle = requirementTitle;
+	}
+
+	public String getRequirementId() {
+		return requirementId;
+	}
+
+	public void setRequirementId(String requirementId) {
+		this.requirementId = requirementId;
+	}
+
+	public String getInterviewStartDateTimeStr() {
+		return interviewStartDateTimeStr;
+	}
+
+	public void setInterviewStartDateTimeStr(String interviewStartDateTimeStr) {
+		this.interviewStartDateTimeStr = interviewStartDateTimeStr;
+	}
+
+	public String getInterviewEndtDateTimeStr() {
+		return interviewEndtDateTimeStr;
+	}
+
+	public void setInterviewEndtDateTimeStr(String interviewEndtDateTimeStr) {
+		this.interviewEndtDateTimeStr = interviewEndtDateTimeStr;
+	}
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
+	}
+
+	public Set<RequirementInterviewer> getRequirementInterviewers() {
+		return requirementInterviewers;
+	}
+
+	public void setRequirementInterviewers(Set<RequirementInterviewer> requirementInterviewers) {
+		this.requirementInterviewers = requirementInterviewers;
+	}
 }

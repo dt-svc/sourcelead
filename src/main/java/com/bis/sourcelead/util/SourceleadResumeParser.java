@@ -1,20 +1,31 @@
 package com.bis.sourcelead.util;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
-import org.xml.sax.SAXException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.UserLoginLogoutSessionService;
+import com.bis.sourcelead.service.impl.LookUpDataServiceImpl;
 import com.google.i18n.phonenumbers.PhoneNumberMatch;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.thoughtworks.xstream.XStream;
@@ -28,10 +39,19 @@ public class SourceleadResumeParser {
  *  Using this we can able to get candidate details from upload resume
  *   
  *  @author: Naresh Bolisetty
+ * @throws GateException 
  *  @date: 17-October-2016
  */
-public  String getCandidateDetailsFromResume(byte[] source)
-				throws IOException, SAXException, TikaException {
+	@Configuration
+	static class LookUpDataServiceContextConfiguration {
+		@Bean
+		public LookUpDataService lookUpDataService() {
+			return new LookUpDataServiceImpl();
+		}
+	}
+	
+public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest request)
+				throws Exception {
 				
     	    BodyContentHandler htmlHandler = new BodyContentHandler();
     	    ByteArrayInputStream stream = new ByteArrayInputStream(source);
@@ -39,6 +59,7 @@ public  String getCandidateDetailsFromResume(byte[] source)
 			Metadata metadata = new Metadata();
 			parser.parse(stream, htmlHandler, metadata);
 			String parsedString = htmlHandler.toString();
+			//System.out.println(parsedString);
 			ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
 			String name = nameFinderFromParsedTextFile(parsedString);
 			if(StringUtils.isNotEmpty(name) && name.lastIndexOf(" ") > 0){
@@ -49,12 +70,45 @@ public  String getCandidateDetailsFromResume(byte[] source)
 			else{
 				jsonUtil.setName(name);
 			}
-			
-			
 			jsonUtil.setEmail(emailFinderFromParsedTextFile(parsedString));
 			jsonUtil.setPhoneNumbers(phoneNumberFinderFromParsedTextFile(parsedString));
+			
+			HashSet<String> skillsList = skillFinderFromParsedTextFile(parsedString,request);
+			if(skillsList != null && !skillsList.isEmpty()){
+				String skills = String.join(", ", skillsList);
+				jsonUtil.setSkills(skills);
+			}
 		    return toJSON(jsonUtil);
    }
+
+   /**
+	 * Skill finder from parsed text file
+	 * Here we used java regular expression logic for resolving name from text file 
+     * @throws Exception 
+	 */  
+  private  HashSet<String> skillFinderFromParsedTextFile(String parsedString,HttpServletRequest request) throws Exception{
+	  String[] totalLines = parsedString.split(System.getProperty("line.separator"));
+	  HashSet<String> skills = new HashSet<String>();
+	  HashSet<String> duplicateSkills = new HashSet<String>();
+	  HttpSession session = request.getSession();
+		ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(session.getServletContext());
+		LookUpDataService lookUpDataService = (LookUpDataService) ctx.getBean("lookUpDataService");
+	    List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+		for(String sLine : totalLines) 
+		{
+		    for(String searchWord: skillsList)
+		    {
+		    	Matcher skillMatcher = Pattern.compile("\\b"+searchWord+"\\b",Pattern.CASE_INSENSITIVE).matcher(sLine);
+		    	  while(skillMatcher.find()){
+		    		 if(duplicateSkills.add(skillMatcher.group().toUpperCase())){
+		    			  skills.add(skillMatcher.group());
+		    		 }
+		    	  }
+		    }
+		 }
+		return skills;
+     }
+	
     /**
 	 * Name finder from parsed text file
 	 * Here we used java regular expression logic for resolving name from text file 

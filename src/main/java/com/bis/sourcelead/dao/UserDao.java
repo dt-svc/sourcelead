@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 
 public interface UserDao {
@@ -63,8 +64,7 @@ public interface UserDao {
 	//Prasad Salina to get managers list baded on role type and except current user
 	List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception;
 	
-	//Prasad Salina to get all the user ids baded on reportingManager userid
-	List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception;
+	public List<User>  getUserListExceptExistedUsersList(List<Long> userIds,Long orgLocationId)throws Exception;
 
 	User getUserDetailsByUserCode(String userCode);
 
@@ -81,8 +81,14 @@ public interface UserDao {
 	List<User> getAllUsersByOrgLocationCode(Long orgLocationsId) throws Exception;;
 	
 	
+	public List<User> getAllUsersByOrgLocationCodeExcludingEmployees(Long orgLocationsId) throws Exception;
+	
+	
 	List<User> getAllUsersByOrgLocationCodeExceptTeamOwner(Long teamOwnerUserId ,Long orgLocationsId) throws Exception;
 
 	List<User> getUsersByTeamType(Long id, String teamType)throws Exception;
-	
+
+	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId,Long orgLocationsId);
+
+	public List<User>  getUserListExceptExistedTeamMembersList(List<Long> teamMembersId,Long orgLocationId)throws Exception;
 }

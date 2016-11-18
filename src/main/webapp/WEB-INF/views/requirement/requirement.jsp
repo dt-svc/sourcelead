@@ -6,13 +6,11 @@
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
- <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 
 <script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
 
 <script src="resources/js/chosen.jquery.min.js"></script> 
 <script src="resources/js/bootstrap-select.min.js"></script>
@@ -70,12 +68,46 @@ border-radius:3px;
 .modal-footer {
 background-color: #ccc;
 }
+.ratetype p {
+bottom: -14px;
+left:-20px !important;
+}
+.pras.req-title p{
+bottom:-14px;
+}
 </style>
+
+<script>
+$(document).ready(function() {
+	var requirementAssignedIds ='${requirementAssignedIds}';
+	if (requirementAssignedIds != null && requirementAssignedIds !=  '' && requirementAssignedIds !='undefined')
+	{
+		
+		if(requirementAssignedIds != null && requirementAssignedIds != 'undefined' && requirementAssignedIds != ''){
+			var result = "";
+			var requirementAssignedToIds = [];
+			requirementAssignedToIds = requirementAssignedIds.split("&");
+			var count = 1;
+			
+			for (i=0;i < requirementAssignedToIds.length;i++)
+	        {
+	        	 result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+requirementAssignedToIds[i]+"' />";
+	        	 count++;
+	        }
+			result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
+			$("#assignedToSavingDiv").empty();
+			$("#assignedToSavingDiv").append(result); 
+			assignedToValidation();
+		}	
+	} 
+});
+</script>
 
 
 <script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
+			disableMonths();
 			/*  $(".isClient").click(function(){  
 		        $(".clientDetails").toggleClass('hidden', 500);
 		    });  */
@@ -85,7 +117,7 @@ background-color: #ccc;
 		    });
 			
 		 };
-</script>
+</script> 
 
  <script>
 		$(document).ready(function() {
@@ -94,7 +126,7 @@ background-color: #ccc;
 		});
 </script>
 
- <script>
+<script>
 $(document).ready(function () {
    /*  var selectedUserRole = document.getElementById('SelectedUserRole').value; */
     var approverMode = '${approverMode}';
@@ -138,27 +170,6 @@ $(document).ready(function () {
 </script>
     
 
-<script>
-$(document).ready(function() {
-	
-	var requirementAssignedIds ='${requirementAssignedIds}';
-	if(requirementAssignedIds != null && requirementAssignedIds != 'undefined' && requirementAssignedIds != ''){
-		var result = "";
-		var requirementAssignedToIds = [];
-		requirementAssignedToIds = requirementAssignedIds.split("&");
-		var count = 1;
-		
-		for (i=0;i < requirementAssignedToIds.length;i++)
-        {
-        	 result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+requirementAssignedToIds[i]+"' />";
-        	 count++;
-        }
-		result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
-		$("#assignedToSavingDiv").empty();
-		$("#assignedToSavingDiv").append(result); 
-	}	
-});
-</script>
 <!-- Content Area -->
 <section class="content-wraper">
   <section class="content-header clearfix">
@@ -175,20 +186,21 @@ $(document).ready(function() {
         <div class="col-lg-12">
           <h3>Add Requirement Details</h3>
         </div>
-  <div class="col-md-12 clearfix">
-	  <div class="col-md-12">
+	       <div class="col-md-12 clearfix">
+        	  <div class="col-md-12">
 	          <div style="margin:0 auto" class="input-group col-md-6">
 	            <label class="input-group-btn">
 	            	<span class="btn btn-primary">Select Template
 	                </span>
 	            </label>
-                <select class="form-control" id="template"  onChange="setTemplateValues();">
+                <select class="form-control chosen-select" id="template"  onChange="setTemplateValues();">
                    <option value=""  selected>Select template</option>
                     <c:forEach var="title" items="${jobsTemplateList}">
 	                    <option value="${title.id}">${title.jobTitle}</option>
                      </c:forEach>   
                 </select>
 	          </div>
+	          
 	          <div class="text-center clearfix mt text-muted">
 	          	<div class="clearfix text-center mb">
 	          <span class="text-info">
@@ -202,12 +214,13 @@ $(document).ready(function() {
 	 </div>
 </div>
 
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt pras">
-           <div class="form-group">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt pras req-title">
+           <div class="form-group" id="jobTitleDiv">
 	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
 	         <div class="col-md-9">
 	          <div class="input-group">
-	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length2-250"   value="" class="form-control">
+	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length2-250"   value="" class="form-control" onblur="getTemplateVal();">
+	             
 	             <div class="input-group-btn selp-custom-min">
 	             <select class="selectpicker" id="jobType" name="jobType">
 	                 <option  ${requirement.jobType  == 'c2c' ? 'selected' : ''}><a href="#">C2C</a></option>
@@ -220,22 +233,18 @@ $(document).ready(function() {
 	           </div>
 	         </div>
 	       </div>
-          
-          
-      
-          
-          
-          <div class="form-group">
+	       
+          <div class="form-group" id="jobIdDiv">
             <label class="col-md-3">Id</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  value="">
+              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  onblur="validateJobId();"  onmouseout="validateJobId();" value="">
             </div>
           </div>
           
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
             <div class="col-md-9">
-               <input type="text" class="form-control" id="positions" name="positions" value="${requirement.positions}"  field-name="Positions" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
+               <input type="text" class="form-control" id="positions" name="positions" value="${requirement.positions}"  field-name="Positions" data-validation="validate_Space validate_length length1-5 validate_int" data-validation-optional="true"  value="">
             </div>
           </div>
           
@@ -259,19 +268,41 @@ $(document).ready(function() {
               </div>
             </div>
             
-          <div class="form-group">
-            <label class="col-md-3">Experince</label>
+         <div class="form-group" >
+            <label class="col-md-3">Experience</label>
             <div class="col-md-9">
               <div class="row">
-                <div class="col-md-6">
-                 <input type="text" class="form-control" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
-                   
-                </div>
-                <div class="col-md-6">
-                 
-                <input type="text" class="form-control" id="maxExp" name="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-5" data-validation-optional="true"  value="">
-                </div>
+	                <div class="col-md-6">
+	                 <input type="text" class="form-control" placeholder="minExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-2 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                </div>
+	                <div class="col-md-6" >
+	                <input type="text" class="form-control" id="maxExp" name="maxExp" placeholder="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-2 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                </div>
               </div>
+              <div class="row" id="expId">
+                  <input type="hidden" name="expValidation" id="expValidation">
+              </div> 
+        <%--          <div class="row">
+             <div class="col-xs-6 col-md-6">
+             		<select class="form-control" id="minExp" name="minExp"  onchange="disableMonths();">
+             		  <option selected disabled>Year</option>
+             		  <c:forEach begin="0" end="24" varStatus="loop">
+						    <option  ${requirement.minExp == loop.index ? 'selected' : ''} >${loop.index}</option>
+						</c:forEach>
+             		     <option>25+</option>
+             		</select>
+             </div>
+             
+             <div class="col-xs-6 col-md-6">
+             		<select class="form-control" id="maxExp" value = "" name="maxExp">
+             		<option selected disabled>Month</option>
+             		 <c:forEach begin="0" end="11" varStatus="loop">
+						    <option  ${requirement.maxExp == loop.index ? 'selected' : ''}>${loop.index}</option>
+						</c:forEach>
+             		</select>
+             </div>
+            </div> --%>
+              
             </div>
           </div>
           
@@ -285,15 +316,15 @@ $(document).ready(function() {
 	                 <option ${requirement.currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
 	                 <option ${requirement.currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
 	                 <option ${requirement.currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-	                 <option ${requirement.currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+	                 <option ${requirement.currencyCode  == 'GBP' ? 'selected' : ''}><a href="#">GBP</a></option>
 	                 <option ${requirement.currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
 	                 <option ${requirement.currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
                 </select>
                 
                 </div>
-                <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  value="">
+                <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
-                  <select class="selectpicker" id="rateType" name="rateType">
+                  <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Type">
                     <option value="">Rate Per</option>
                     <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
@@ -313,7 +344,7 @@ $(document).ready(function() {
           <div class="form-group">
 				<label class="col-md-3">Country</label>
 				<div class="col-md-9">
-				 <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country"  >
+				 <select class="chosen-select form-control select-bg" name="countryReq" id="countryReq" field-name="Country"  >
                  </select>
 				</div>
 		</div>
@@ -338,7 +369,7 @@ $(document).ready(function() {
          <div class="form-group">
               <label class="col-md-3">Skills</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation="validate_Space" data-validation-optional="true">
+                <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation-optional="true">
                <c:forEach var="skill" items="${skillsList}">
                 <option  value="${skill.name}">${skill.name}</option>
 	                     <c:forEach var="skillExist" items="${requirement.reqSkillsList}">
@@ -355,6 +386,7 @@ $(document).ready(function() {
             </div>
          
           <div class="form-group">
+            <input type="hidden" name="templateId" id="templateId" value="" />
             <label class="col-md-3">Attachment</label>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
             <div class="col-md-9">
@@ -365,7 +397,7 @@ $(document).ready(function() {
                   </span>
                 </label>
                 
-                <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file" name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_Space validatedoc" data-validation-optional="true">
+                <input type="text" class="form-control" readonly id="uploadFile" name="docFile"  value="${requirement.fileName}" type="file"   placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
               <div class="clearfix"></div> <div class="clearfix"></div>
               </div>
             </div>
@@ -390,13 +422,16 @@ $(document).ready(function() {
       </div>
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
-	      <div class="ml">
-            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
-            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
-            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
-            &nbsp;&nbsp;
-            <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
-		  </div>
+	        <c:if test="${(SourceLeadWeb_org.vms == 'Y' && SourceLeadWeb_org.ats == 'Y') || (SourceLeadWeb_org.vms != 'Y')}">
+	        	<div class="ml">
+		            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
+		            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
+		            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
+		            &nbsp;&nbsp;
+		            <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
+			  	</div>
+	        </c:if>
+	      
           <div id="clientDetails" style="display: none;">
             <div class="clearfix">
               <h3>Client Details</h3>
@@ -413,7 +448,7 @@ $(document).ready(function() {
 			                    	<option value="${report.id},${report.responderLocationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option>
 			                    </c:if>  
 			                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-			                  	 	<option value="${report.id},${report.responderLocationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
+			                  	 	<option value="${report.id},${report.locationId.id}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
 			                    </c:if>
 						</c:forEach>
                     </select>
@@ -462,34 +497,32 @@ $(document).ready(function() {
                       <option value=''>-- Select Contact --</option>
                       <c:forEach var="report" items="${clientContactList}">
 			         		<%-- <option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocId.SpocUser.firstName}&nbsp;${report.spocId.SpocUser.lastName}</option> --%>
-			         		<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName}</option> 
+			         		<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option> 
 					     </c:forEach>
                     </select>
                     <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i> 
-                 	<div id="addContact" class="modal fade" role="dialog">
-                    </div>
                  </div>
                   
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-md-3">Bill Rate / Salary</label>
-              <div class="col-md-9">
+              <div class="col-md-9 pras">
 	              <div class="input-group">
 	                <div class="input-group-btn selp-custom-min">
 	                  <select class="selectpicker" id="clientCurrencyCode" name="clientCurrencyCode">
 		                 <option  ${requirement.clientCurrencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
 		                 <option  ${requirement.clientCurrencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
 		                 <option  ${requirement.clientCurrencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-		                 <option  ${requirement.clientCurrencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+		                 <option  ${requirement.clientCurrencyCode  == 'GBP' ? 'selected' : ''}><a href="#">GBP</a></option>
 		                 <option  ${requirement.clientCurrencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
 		                 <option  ${requirement.clientCurrencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
 	                </select>
 	                
 	                </div>
-	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
+	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
-	                 <select class="selectpicker"  id="clientRateType" value="${requirement.clientRateType}" name="clientRateType">
+	                 <select class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Type" value="${requirement.clientRateType}" name="clientRateType">
 	                    
 			                <option value="">Rate Per</option>
 		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
@@ -499,17 +532,25 @@ $(document).ready(function() {
 		                    <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
 		                    <option ${requirement.clientRateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
 		                    <option ${requirement.clientRateType  == 'others' ? 'selected' : ''}>Yearly</option>
-		                    
 	                  </select>
            		</div>
+              </div>
+              </div>
+              <div class="clearfix"></div>
+              <div class="clearfix"></div>
               </div>
               <div class="form-group">
                 <label class="col-md-3">Submission Form<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                   <div class="form-icon">
                     <select class="chosen-select form-control" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
-                      <option value="">-- Select Submission Form --</option>
-                    </select>
+                       <option value="">-- Select Submission Form --</option>
+                      <c:forEach var="report" items="${submissionTempletesList}">
+							 	<c:if test="${report.id == loginOrgLocId}">  
+			                    	<option value="${report.id}" ${report.id  == loginOrgLocId ? 'selected' : ''} >${report.templateName}</option>
+			                    </c:if>  
+						</c:forEach>
+						</select>
                   </div>
                   
                 </div>
@@ -518,499 +559,7 @@ $(document).ready(function() {
           </div>
         </div>
       </div>
-      
-      
-      <%-- <div class="clearfix">
-        <div class="col-lg-12">
-          <h3>Internal Details</h3>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12  myForm">
-         <div class="form-group">
-            <label class="col-md-3">Manager <span class="text-danger">*</span></label>
-            <div class="col-md-9">
-              <select  class="chosen-select form-control select-bg" id="managerUserId" >
-               <option value="php">Select Manager</option>
-	                    <c:forEach var="report" items="${usersList}">
-		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-		                </c:forEach>
-              </select>
-            </div>
-          </div>
-         <div class="form-group">
-                <label class="col-md-3">Approver<span class="text-danger">*</span></label>
-                <div class="col-md-9">
-                  <div class="form-icon">
-                    <select multiple class="chosen-select form-control select-bg">
-                      <option disabled>Select Client</option>
-                      <option>Client-1</option>
-                      <option>Client-2</option>
-                      <option>Client-3</option>
-                    </select>
-                    Add Level
-                    
-                     
-                    </div>
-                  </div>
-                    </div>
-                  <div role="dialog" id="addLevel" class="modal fade">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                          <h4 class="modal-title">Add Level</h4>
-                        </div>
-                        <div class="modal-body clearfix">
-                          <div class="form-horizontal custom-form clearfix">
-                            <div class="col-xs-12 col-md-12 col-lg-12">
-                              <div class="form-group">
-                                <label class="col-lg-3">Level Name</label>
-                                <div class="col-lg-9">
-                                  <input type="text" class="form-control" value="">
-                                </div>
-                              </div>
-                              <div class="form-group">
-                                <label class="col-lg-3">Description </label>
-                                <div class="col-lg-9">
-                                  <textarea class="form-control" rows="2"></textarea>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
-                          <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-          
-          <div class="form-group">
-            <label class="col-md-3">Assign To <span class="text-danger">*</span></label>
-            <div class="col-md-9">
-                <div class="form-icon"> <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-                  <input type="text" value="Assing Role" class="form-control" data-target="#assignTeam" data-toggle="modal">
-                  </span> <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1"></i> </span> </div>
-                <span class="hidden">Select Team</span> 
-                <!-- Modal content Assign To -->
-                <div role="dialog" id="assignTeam" class="modal fade">
-                  <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button data-dismiss="modal" class="close" type="button">×</button>
-                        <h4 class="modal-title">Assign Role</h4>
-                      </div>
-                      <div class="modal-body clearfix">
-                        <div class="form-horizontal row custom-form">
-                        <div class="form-group">
-                          <div class="col-xs-12 col-md-8 col-lg-8">
-                            <div class="input-group">
-                              <input type="search" class="form-control" value="">
-                              <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>
-                          </div>
-                          <div class="col-xs-12 col-md-4 col-lg-4">
-                             <select class="selectpicker">
-                              <option value="All">All</option>
-                              <option value="Admin">Admin</option>
-                              <option value="Account Manager">Account Manager</option>
-                              <option value="Recruiting Manager">Recruiting Manager</option>
-                              <option value="Hiring Manager">Hiring Managerr</option>
-                              <option value="Teams">Teams</option>
-                             </select>
-                        </div>
-                        </div>
-                        <div class="modal-body-custom mt clearfix">
-                          <table cols="0" class="table table-bordered table-striped  clearfix">
-                            <tbody>
-                              <tr>
-                                <th><input type="checkbox"></th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td><span class="tbldata-dotdot">Murali Krishna</span></td>
-                                <td><span class="tbldata-dotdot" title="muraraikumarmahessrinivas@businessintelli.com">muraraikumarmahessrinivas@businessintelli.com</span></td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control clsDatePicker" id="datepicker5">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Senior Recruiter</td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                                <td><div class="input-group"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="Date" value="" class="form-control">
-                                  </div></td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button">Assign</button>
-                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                      </div>
-                    </div>
-                  </div>
-                </div> </div>
-                <!-- Assign To modal popup ends -->
-                <!-- Modal content Demo Popup: Need to Update -->
-                <div role="dialog" id="addTeam" class="modal fade">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button data-dismiss="modal" class="close" type="button">×</button>
-                        <h4 class="modal-title">Demo Popup: Need to Update</h4>
-                      </div>
-                      <div class="modal-body clearfix">
-                        <div class="form-horizontal custom-form clearfix">
-                          <div class="col-xs-12 col-md-12 col-lg-12">
-                            <div class="form-group">
-                            <label class="col-lg-3">Frist Name<span class="text-danger">*</span></label>
-                            <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
-                              </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3">Last Name</label>
-                            <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
-                              </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3">Email <span class="text-danger">*</span></label>
-                            <div class="col-lg-9">
-                              <input type="text" class="form-control" value="">
-                              </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3">Invoice Frequency<span class="text-danger">*</span></label>
-                            <div class="col-lg-9">
-                              <select class="form-control">
-                              	<option>Invoice-1</option>
-                                <option>Invoice-2</option>
-                                <option>Invoice-3</option>
-                              </select>
-                              </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3"></label>
-                            <div class="col-lg-9">
-                              <div class="checkbox">
-                              <label>
-                                <input type="checkbox" value="" checked>
-                                Send Invitation</label>
-               					 </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
-                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- Modal content Demo Popup: Need to Update ends --> 
-              </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-3">Priority<span class="text-danger">*</span></label>
-            <div class="col-md-9">
-              <select class="selectpicker form-control">
-                <option>Select Priority</option>
-                <option>Priority-1</option>
-                <option>Priority-2</option>
-                <option>Priority-3</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group hidden">
-            <label class="col-md-3">Application Form<span class="text-danger">*</span></label>
-            <div class="col-md-9">
-              <div class="form-icon">
-                <select class="chosen-select form-control">
-                  <option>Select Client</option>
-                  <option>Client-1</option>
-                  <option>Client-2</option>
-                  <option>Client-3</option>
-                </select>
-                <i data-target="#addApplicationForm" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new"></i> </div>
-              <div role="dialog" id="addApplicationForm" class="modal fade">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                      <h4 class="modal-title">Application Form</h4>
-                    </div>
-                    <div class="modal-body clearfix">
-                                                <div class="form-horizontal custom-form clearfix">
-                          <div class="row">
-                            <div class="col-xs-12 col-md-12 col-lg-12">
-								<div class="clearfix">
-                    <div class="form-horizontal clearfix custom-fields">
-                      <div class="clearfix mb">
-                        <div class="col-md-8">
-                          <div class="row">
-                            <label class="col-md-3">Title</label>
-                            <div class="col-md-8">
-                              <input type="text" class="form-control input-sm" value="" placeholder="Title">
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-md-4">
-                          <input type="button" class="btn btn-primary btn-sm" value="Add Field">
-                        </div>
-                      </div>
-                      <div class="clearfix mb">
-                        <div class="col-md-8">
-                          <div class="row">
-                            <label class="col-md-3">
-								<input type="text" placeholder="Field Name" class="form-control input-sm">
-                            </label>
-                            <div class="col-md-8">
-                              <select class="form-control">
-                                <option>Option Value-1</option>
-                                <option>Option Value-2</option>
-                                <option>Option Value-3</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                                                    <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
 
-                      </div>
-                      <div class="form-custom">
-                      <div class="form-header clearfix mb col-md-12">
-                      <div class="col-sm-3">
-                       <label>Field</label>
-                      </div>
-                      <div class="col-sm-5">
-                        <label>Type</label>
-                      </div>
-                      <div class="col-sm-4">
-                         <label>Is Mandator</label>
-                      </div>
-                      </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Text Field</label>
-                              <div class="col-md-8">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Text Field">
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox" checked>
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Number Field</label>
-                              <div class="col-md-8">
-                                <input type="text" class="form-control input-sm" value="" placeholder="Number Field">
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Select Field</label>
-                              <div class="col-md-8">
-                                <select class="form-control">
-                                  <option>Select Value-1</option>
-                                  <option>Select Value-2</option>
-                                  <option>Select Value-3</option>
-                                  <option>Select Value-4</option>
-                                </select>
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox" checked>
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Browse File</label>
-                              <div class="col-md-8">
-                                    <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
-                                            <div class="input-group">
-                                            <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                                            <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">
-                                            </span> </label>
-                                            <input type="text" class="form-control" readonly id="uploadFile" placeholder="Files are not selected...">
-                                        </div>
-                                    <!-- upload file html need to add bottom JavaScript otherwise it will not work --> 
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Radio btn</label>
-                              <div class="col-md-8 toggle-button">
-                                <label class="switch">
-                                <input type="checkbox" checked>
-                                <div class="slider round"></div>
-                                </label>
-                                </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox" checked>
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Checkbox</label>
-                              <div class="col-md-8 toggle-button">
-                                <label class="switch">
-                                <input type="checkbox">
-                                <div class="slider round"></div>
-                                </label>
-                                </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="clearfix mb">
-                          <div class="col-md-8">
-                            <div class="row">
-                              <label class="col-md-3">Textarea</label>
-                              <div class="col-md-8">
-                                <textarea rows="1" class="form-control" placeholder="Textarea"></textarea>
-                              </div>
-                            </div>
-                          </div>
-                            <div class="col-md-4 toggle-button">
-                                <label class="switch">
-                                    <input type="checkbox" checked>
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                            </div>
-                          </div> </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button data-dismiss="modal" class="btn btn-primary" type="button">Save</button>
-                      <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> --%>
-      
-      
        <!-- Internal Details html -->
       <div class="clearfix">
         <div class="col-lg-12">
@@ -1075,7 +624,7 @@ $(document).ready(function() {
          <div class="form-group sequential" id="addLvl" style="display:none;">
                 <label class="col-md-3">Approver1<span class="text-danger">*</span></label>
                 <div class="col-md-9">   
-                    <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required" data-validation-optional="true">
+                    <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required" data-validation-optional="true" onchange="getLevel2Approvers();">
                        <option value="">Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
@@ -1095,29 +644,12 @@ $(document).ready(function() {
 	              </div>
               
               </div>
-              
-              <%-- <div class="clearfix lvlTow" id ="sequentialApproverDiv" style="display:none;">
-              <div class="form-group">
-              <div class="col-md-3">Approver 2</div>
-              <div class="col-md-9">
-              		<select   class="chosen-select form-control" name="sequentialApprover2" field-name="Approver 2" data-validation="required">
-                       <option>Select Addpprover</option>
-                       <c:forEach var="report" items="${approverList}">
-		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-		               </c:forEach>
-                    </select>
-              </div></div>
-          </div> --%>
+           
           <div class="form-group">
             <label class="col-md-3">Manager<span class="text-danger">*</span></label>
             <div class="col-md-9">
-             <!--  <select multiple class="chosen-select form-control">
-                <option>Select Manager</option>
-                <option>Manager-1</option>
-                <option>Manager-2</option>
-                <option>Manager-3</option>
-              </select> -->
-              <select  class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager">
+           
+              <select  class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager" id="managerId">
                        <option value="">Select Manager</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}" ${report.id  == requirement.managerUserId.id ? 'selected' : ''}>${report.firstName}&nbsp;${report.lastName}</option>
@@ -1133,9 +665,9 @@ $(document).ready(function() {
             <div class="col-md-9">
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-                  <input type="text" value="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
+                  <input type="text" id="assignedTo" placeholder="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
-                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="getTeamOwners();"></i> </span>
+                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
                   </div>
                 <!-- Modal content Assign To -->
                 <div role="dialog" id="assignTeam"   class="modal fade">
@@ -1146,99 +678,7 @@ $(document).ready(function() {
                         <h4 class="modal-title">Assign To</h4>
                       </div>
                        <div id="userList"></div>
-                        <!-- <div class="modal-body clearfix"> -->
-                       
-                        <!-- <div class="form-horizontal custom-form">
-                        <div class="row">
-                          <div class="col-xs-12 col-md-8 col-lg-8">
-                            <div class="input-group">
-                              <input type="search" class="form-control" value="">
-                              <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>
-                          </div>
-                          <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">
-                             <select class="selectpicker">
-                             <option selected disabled>Select Role</option>
-                              <option value="All">All</option>
-                              <option value="Admin">Admin</option>
-                              <option value="Account Manager">Account Manager</option>
-                              <option value="Recruiting Manager">Recruiting Manager</option>
-                              <option value="Hiring Manager">Hiring Manager</option>
-                              <option value="Teams">Teams</option>
-                             </select>
-                        </div>
-                        </div>
-                        </div> -->
-                        <!-- <div class="modal-body-custom mt clearfix">
-                          <table cols="0" class="table table-bordered table-striped  clearfix">
-                            <tbody>
-                              <tr>
-                              <thead>
-                                <th><input type="checkbox"></th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Active Jobs</th>
-                                </thead>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td><span class="tbldata-dotdot">Murali Krishna</span></td>
-                                <td><span class="tbldata-dotdot" title="muraraikumarmahessrinivas@businessintelli.com">muraraikumarmahessrinivas@businessintelli.com</span></td>
-                                <td>Account Manager</td>
-                                <td>101</td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Account Manager</td>
-                                <td>101</td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Account Manager</td>
-                                <td>101</td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Account Manager</td>
-                                <td>101</td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Account Manager</td>
-                                <td>101</td>
-                              </tr>
-                              <tr>
-                                <td><input type="checkbox" name="team"></td>
-                                <td>Murali Krishna</td>
-                                <td>murali@businessintelli.com</td>
-                                <td>Account Manager</td>
-                                <td>101</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div> -->
-                        <!-- <div class="clearfix">
-                          <ul class="pagination pull-right pagination-sm" style="margin:0;">
-                            <li><a href="#">1</a></li>
-                            <li class="active"><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#">4</a></li>
-                            <li><a href="#">5</a></li>
-                          </ul>
-                          </div> -->
-                     <!--  </div> -->
-                      <!-- <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button">Assign</button>
-                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                      </div> -->
+                      
                     </div>
                   </div>
                 </div>
@@ -1248,7 +688,7 @@ $(document).ready(function() {
           <div class="form-group">
             <label class="col-md-3">Priority<span class="text-danger">*</span></label>
             <div class="col-md-9">
-              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" field-name = "Priority" >
+              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" field-name = "priority">
                 <option value="">Select Priority</option>
                 <option ${requirement.priority  == 'Urgent' ? 'selected' : ''}>Urgent</option>
                 <option ${requirement.priority  == 'High' ? 'selected' : ''}>High</option>
@@ -1260,16 +700,11 @@ $(document).ready(function() {
           <div class="form-group" id="internalSubmissionFrom">
             <label class="col-md-3">Application Form<span class="text-danger">*</span></label>
             <div class="col-md-9">
-                <!-- <select class="chosen-select form-control">
-                  <option>Select Client</option>
-                  <option>Client-1</option>
-                  <option>Client-2</option>
-                  <option>Client-3</option>
-                </select> -->
-               <select class="chosen-select form-control select-bg" name="applicationFrom" id="addClientId"  data-validation="required"  field-name = "Application Form">
+               
+               <select class="chosen-select form-control select-bg" name="applicationFrom" id="applicationFrom"  data-validation="required"  field-name = "Application Form">
                     	<option value="">-- Select Form --</option>
 		                <c:forEach var="report" items="${submissionTempletesList}">
-					               <option value="${report.id}">${report.templateName}</option>
+					                  <option value="${report.id}" ${report.id  == requirement.submissionTemplateId.id ? 'selected' : ''}>${report.templateName}</option>
 						</c:forEach>
                </select>					
           </div>
@@ -1281,14 +716,27 @@ $(document).ready(function() {
       
     </div>
     </div>
-      <input type="hidden" value="${requirement.id}" name ="requirementId"  id ="requirementId">
+    <input type="hidden" value="${requirement.id}" name ="requirementId"  id ="requirementId">
+     <div class="form-footer clearfix">
+    <div class="col-lg-12">   
+      <div class="pull-right">
+        <input type="button" value="Submit for Approval" id="submitForApproval" onclick="storeRequirement('submitForApproval');" class="btn btn-primary" style="display:none;">
+        <input type="button" value="Draft" id="draft" onclick="storeRequirement('draft');" class="btn btn-danger ml">
+        <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >    
+        <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
+      </div>
+    </div>
+  </div>
     </form:form>
-    
-      <!-- Modal content Demo Popup: Need to Update -->
+  <!-- Content Area Ends-->
+  <div id="addContact" class="modal fade" role="dialog">
+  </div>
+                    
+     		 <!-- Modal content Demo Popup: Need to Update -->
                 <div role="dialog" id="addTeam" class="modal fade">
                   <div class="modal-dialog">
                     <form role="form"  id="team_form" name="team_form" method="post" >
-                    <div class="modal-content">
+                    <div class="modal-content" id="assignTeamDiv">
                       <div class="modal-header">
                         <button data-dismiss="modal" class="close" type="button">×</button>
                         <h4 class="modal-title">Add Team</h4>
@@ -1300,17 +748,14 @@ $(document).ready(function() {
                             <label class="col-lg-4">Team Name <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                               <!-- <input type="text" class="form-control" value=""> -->
-                              <input type="text" class="form-control"  placeholder="Team Name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="">
+                              <input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="">
                               </div>
                             </div>
                             <div class="form-group">
                             <label class="col-lg-4">Team Owner <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                              <select class="form-control"  name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">
-			                    	<%-- <option value=''>-- Select Owner Id --</option>
-				                    <c:forEach var="report" items="${all_users_List}">
-						                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-									</c:forEach> --%>
+			                    	
 			                  </select>
                               </div>
                             </div>
@@ -1318,10 +763,7 @@ $(document).ready(function() {
                             <label class="col-lg-4">Team Members <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                              <select multiple class="chosen-select form-control select-bg" name="memberUserId" id="memberUserId" placeholder="Team Member *" data-validation="required validate_Space" field-name="Team Member">
-					                   <%--  <option disabled >-Select Team Members-</option>
-					                    <c:forEach var="report" items="${all_users_List}">
-							                    	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-								       </c:forEach> --%>
+					                  
 		                       </select>
                               </div>
                             </div>
@@ -1329,34 +771,20 @@ $(document).ready(function() {
                         </div>
                       </div>
                       <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-primary" type="button" id="team_form" onclick="storeTeam();flushStoreTeam()" >Save</button>
-                        <button data-dismiss="modal" class="btn btn-default" id="team_form" onclick="flushStoreTeam();" type="button">Cancel</button>
+                        <button class="btn btn-primary" type="button" id="add_team" onclick="storeTeam();" >Save</button>
+                        <button data-dismiss="modal" class="btn btn-default"   type="button">Cancel</button>
                       </div>
                     </div>
                     </form>
                   </div>
                 </div>
                 <!-- Modal content Demo Popup: Need to Update ends --> 
-  <div class="form-footer clearfix">
-    <div class="col-lg-12">   
-      <div class="pull-right">
-        <input type="button" value="Submit for Approval" id="submitForApproval" onclick="storeRequirement('submitForApproval');" class="btn btn-primary" style="display:none;">
-        <input type="button" value="Draft" id="draft" onclick="storeRequirement('draft');" class="btn btn-danger">
-        <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary" >    
-        <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
-      </div>
-    </div>
-  </div>
-  
-  <!-- Content Area Ends-->
   
   </div>
 </section>
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
-		
-		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -1364,7 +792,38 @@ $(document).ready(function() {
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		
-		/* var rate = document.getElementById("rate").value; 
+		
+          if(saveType=='draft'){
+			
+			//For internal details in draft
+			 $('#managerId').removeAttr('data-validation');
+			 $('#managerId').attr("data-validation-optional","true"); 
+			 
+			 
+			 $('#assignedTo').removeAttr('data-validation');
+			 $('#assignedTo').attr("data-validation-optional","true");
+			 
+			 
+			 $('#priority').removeAttr('data-validation');
+			 $('#priority').attr("data-validation-optional","true");
+			
+			 
+			 $('#applicationFrom').removeAttr('data-validation');
+			 $('#applicationFrom').attr("data-validation-optional","true");
+			 
+			 //for client details in draft
+			 
+			 $('#addClientId').removeAttr('data-validation');
+			 $('#addClientId').attr("data-validation-optional","true");
+			 
+			 $('#selectContact').removeAttr('data-validation');
+			 $('#selectContact').attr("data-validation-optional","true");
+			 
+			 $('#clientSubmissionForm').removeAttr('data-validation');
+			 $('#clientSubmissionForm').attr("data-validation-optional","true");
+		}
+		
+		 var rate = document.getElementById("rate").value; 
 		 if(rate != null && rate != ""){
 			 $('#rateType').removeAttr('data-validation-optional');
 			 $('#rateType').attr("data-validation","required"); 
@@ -1372,14 +831,27 @@ $(document).ready(function() {
 			 $('#rateType').removeAttr('data-validation');
 			 $('#ratePer').attr("data-validation-optional","true"); 
 		 }
-		 */
-		  if ($('#requirement_form').validate(false, validationSettings)){  
+		 
+		 var clientRate = document.getElementById("clientRate").value; 
+		 if(clientRate != null && clientRate != ""){
+			 $('#clientRateType').removeAttr('data-validation-optional');
+			 $('#clientRateType').attr("data-validation","required"); 
+		 }else{
+			 $('#clientRateType').removeAttr('data-validation');
+			 $('#ratePer').attr("data-validation-optional","true"); 
+		 }
+		 
+		   if ($('#requirement_form').validate(false, validationSettings)){   
+			
 			var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
+			
+			//It will escape all the special characters
+			var jsonData = encodeURIComponent(con);
 			var form = $('#requirement_form')[0];
       		var formData = new FormData(form); 
-			  //It will escape all the special characters
+			  
 			var sourceleadUrl = '${sourceleadUrl}';
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
      		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
@@ -1392,15 +864,15 @@ $(document).ready(function() {
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType+"&json="+con,
+						url : sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType+"&json="+jsonData,
 						success : function(result) {
 								location.replace(sourceleadUrl+"/requirementList");
 						},
 					});
 			return true;
-		  }else{ 
+		   }else{ 
 				return false;
-		 }  
+		 }   
 	} 
 	
 	$('body').on('blur', '#requirement_form', function() {
@@ -1433,15 +905,15 @@ function storeTeam(){
 		     var jsonData = encodeURIComponent(con);
 			 var sourceleadUrl = '${sourceleadUrl}';
 			
-			 $("#team_form").attr("disabled", "disabled");
+			 $("#add_team").attr("disabled", "disabled");
 			
 			$.ajax({
 					type : "POST",
 					url : sourceleadUrl+"/storeTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
 					success :function(data) { 
-						  /* location.replace(sourceleadUrl+"/team"); */
+						$('#addTeam').modal('hide');
 				      }, 
-		    }); 
+		    });  
 			return true; 
 	   }else{ 
 			return false;
@@ -1487,18 +959,18 @@ function getAllCountries(){
     	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
-        	$('#country').empty();
-        	$('#country').append('<option value="">---select---</option>');
+        	$('#countryReq').empty();
+        	$('#countryReq').append('<option value="">---select---</option>');
             for(var i=0;i<json.length;i++){
             	if(json[i] == '${loginCountryName}'){
-            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            		$('#countryReq').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{
-            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+            		$('#countryReq').append('<option value="'+json[i]+'">'+json[i]+'</option>');
             	}
             	
             }
-            $('#country').trigger("chosen:updated");
+            $('#countryReq').trigger("chosen:updated");
             getStates();
         },
         error: function(e){
@@ -1510,7 +982,7 @@ function getAllCountries(){
 
 <script>
 function getStates(){
-	var countryName = $("#country").val();
+	var countryName = $("#countryReq").val();
 	
 	//to set existing state value(Auto populate)
 	var stateName = $("#state").val();
@@ -1553,7 +1025,7 @@ function getStates(){
 <script>
 function getCities(){
 	
-	var countryName = $("#country").val();
+	var countryName = $("#countryReq").val();
 	var stateName = $("#state").val();
 	
 	//to set existing city value(Auto populate)
@@ -1605,17 +1077,36 @@ function getCities(){
 			  '.chosen-select-width'     : {width:"95%"}
 			}
 			
-		  $("#country").chosen();
+		   $("#countryReq").chosen();
 	       $("#state").chosen();
 	       $("#city").chosen();
 	       
-	       $("#country").on('change', function (e) {
+	       
+	       $("#countryReq").on('change', function (e) {
 	    	   getStates();
 	       });
 	       $("#state").on('change', function (e) {
 	    	   getCities();
 	       });
 		       
+	     //Adding Customized Skills to the list
+           var select, chosen;
+           select = $("#skills");
+           select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+           chosen = select.data('chosen');
+           chosen.search_field.on('keyup', function(e)
+           {
+        	   var newSkill = this.value.replace(",","");
+               if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+               {
+                   var option = $("<option>").val(newSkill).text(newSkill);
+                   select.append(option);
+                   select.find(option).prop('selected', true);
+                   $("#skills").trigger("chosen:updated");
+               }
+           });
+           //Adding Customized Skills to the list
+           
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
@@ -1624,9 +1115,14 @@ function getCities(){
 			$this.next().css({'width': '100%'});
 			})
 			
+			
+			 
+            
+            
 			/* upload file script */
 			document.getElementById("uploadBtn").onchange = function () {
-			document.getElementById("uploadFile").value = this.value;
+			//document.getElementById("uploadFile").value = this.value;
+			$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 			};
 				
 				
@@ -1636,10 +1132,9 @@ function getCities(){
 
 <script>
 function getTemplateVal(){
-	
     if(document.getElementById('isTemplate').checked) {
         $("#isTemplate").val('Y');
-       
+        checkTemplateforDouplicate();
     }else{
         $("#isTemplate").val('N');
     }
@@ -1647,20 +1142,42 @@ function getTemplateVal(){
 
 </script>
 
-
+<!-- <script type="text/javascript">
+ function disableMonths() {
+     $("#minExp").change(function() {
+    	 
+         if ($(this).val() == '25+'){
+             $("#maxExp").attr("disabled", true);
+             $("#maxExp").val("disabled", true);
+         }else
+        	 $("#maxExp").attr("disabled", false); 
+     });
+ }
+ </script> -->
 
 <script>
 function setTemplateValues(){
 	
  var sourceleadUrl ='${sourceleadUrl}';
 	var requirementId = document.getElementById('template').value;
+	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
+		
+	
 	$.ajax({
 	   	type: "POST",
+	   	
 	    url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 	   
 		    success: function(data) {
-		    	if(data != null && data != 'undefined' && data !='' ){
+		    	
+		    	
+		    	if(data != null && data != 'undefined' && data !='' ){ 
 		    		
 		    		var json = JSON.parse(data);
+		    		
+		    		if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
+		    			$("#templateId").val(json.id);
+		    		}
+		    		
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
 			    	$("#jobId").val(json.jobId);
@@ -1674,8 +1191,8 @@ function setTemplateValues(){
 					 var city = '';
 					
 					getAllCountries(); 
-					if(json.country != null && json.country !='' && json.country !='undefined'){
-						$("#country").val(json.country);
+					if(json.countryReq != null && json.countryReq !='' && json.countryReq !='undefined'){
+						$("#countryReq").val(json.countryReq);
 					}
 					 
 					getStates();
@@ -1692,12 +1209,18 @@ function setTemplateValues(){
 					}else{
 						$("#city").val('');
 					}
-					 
+					
+					$('#description').val('');
+					$('#rate').val('');
+					$('#education').val('').trigger('chosen:updated');
+					$('#skills').val('').trigger('chosen:updated');
+					
 					var skills = [];
 		            skills = json.skills.split(",");
 		            $("#skills").val(skills);
 		            $('#skills').trigger("chosen:updated");
 		            
+		           
 		            var educations = [];
 		            educations = json.education.split(",");
 		            $("#education").val(educations);
@@ -1709,7 +1232,10 @@ function setTemplateValues(){
 			    	$("#rate").val(json.rate);
 			    	$("#currencyCode").val(json.currencyCode);
 			    	$("#rateType").val(json.rateType);
-			    	$("#fileName").val(json.fileName);
+			    	
+			    	 existedFile = json.fileName;
+			    	 $("#uploadFile").val(existedFile);
+			    	 $('#uploadFile').trigger("chosen:updated");
 		    	}else{
 		    		
 		    		$("#jobTitle").val('');
@@ -1718,7 +1244,7 @@ function setTemplateValues(){
 			    	$("#positions").val('');
 			    	$("#minExp").val('');
 			    	$("#maxExp").val('');
-					$("#country").val('');
+					$("#countryReq").val('');
 					$("#state").val('');
 					$("#city").val('');
 		            $("#skills").val('');
@@ -1727,15 +1253,22 @@ function setTemplateValues(){
 			    	$("#rate").val('');
 			    	$("#currencyCode").val('');
 			    	$("#rateType").val('');
-			    	$("#fileName").val('');
+			    	existedFile = json.fileName;
+			    	 $("#fileName").val(existedFile);
+			    	 $('#fileName').trigger("chosen:updated");
 		    	}
-		    	
-		    	
-		    	
-		    	
-		    	
 		    }
      });
+	}else{
+		 document.getElementById("requirement_form").reset();
+		 $("#skills").trigger("chosen:updated");
+		 $("#education").trigger("chosen:updated");
+		 $("#state").trigger("chosen:updated");
+		 $("#city").trigger("chosen:updated");
+		 $("#rate").val('');
+		 $("#description").val('');
+		 
+	}
 }
 
 $(function(){
@@ -1746,12 +1279,12 @@ $(function(){
 		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 		  '.chosen-select-width'     : {width:"95%"}
 		}
-    $("#country").chosen();
+    $("#countryReq").chosen();
     $("#state").chosen();
     $("#city").chosen();
     $("#owner").chosen();
     
-    $("#country").on('change', function (e) {
+    $("#countryReq").on('change', function (e) {
  	   getStates();
     });
    
@@ -1910,6 +1443,8 @@ function getUserList(teamType){
            type : "POST",
            url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}&teamType="+teamType,    
             success :function(data) {
+            	
+            	getTeamsList(teamType);
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
@@ -1918,7 +1453,6 @@ function getUserList(teamType){
                			 location.replace(sourceleadUrl+"/errorPage");
                		 }
                		 else{
-               			 getTeamsList(teamType);
 			    	     $("#userList").removeAttr("style");
 	                	    var result = '';
 	                	    result = result+"<input type='hidden' name='assignedTeamId' id='assignedTeamId' value='"+teamType+"'/>";
@@ -1940,7 +1474,7 @@ function getUserList(teamType){
 	                		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
-	                		result = result +'             <th><input type="checkbox"></th>';
+	                		result = result +'             <th><input type="checkbox" id="checkAll" onclick="toggle(this);"></th>';
 	                		result = result +'             <th>Name</th>';
 	                		result = result +'             <th>Email</th>';
 	                		result = result +'             <th>Role</th>';
@@ -1993,13 +1527,38 @@ function getUserList(teamType){
                 	 $("#userList").removeAttr("style");
   	    	         var result ="";
 		    	    
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No UserList Found</p>";
-					 result = result+"			 </div>";
-					
+  	    	       result = result +'<div class="modal-body clearfix">';
+ 	    	        result = result +'<div class="form-horizontal custom-form">';
+	           		result = result +'     <div class="row">';
+	           		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 hidden">';
+	           		result = result +'         <div class="input-group">';
+	           		result = result +'           <input type="search" class="form-control" value="">';
+	           		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
+	           		result = result +'       </div>';
+	           		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
+	           		result = result +'          <select id="rolesDiv" onchange="filterTeamMembers();" class="selectpicker form-control" style="display:block !important">';
+	           		result = result +'          </select>';
+	           		result = result +'     </div>';
+	           		result = result +'     </div>';
+	           		result = result +'     </div>';
+	           		
+	           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
+	        		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
+	        		result = result +'           <thead>';
+	        		result = result +'           <tr>';
+	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;"><input type="checkbox"></th>';
+	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Name</th>';
+	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Email</th>';
+	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Role</th>';
+	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Active Jobs</th>';
+	        		result = result +'           </tr>';
+	        		result = result +'           </thead>';
+	        		result = result +'           </table>';
+	        		result = result +'     </div>';
+	        		result = result +'     </div>';
 					$("#userList").empty();
 				    $("#userList").append(result); 
+				    pagination();  
                 }
           },
             
@@ -2041,6 +1600,11 @@ function getTeamsList(teamType){
 				}else{
 					output = output +'           <option value="HR Manager">HR Manager</option>';
 				} 
+               if(teamType == 'Project Manager'){
+				output = output +'           <option value="Project Manager" selected>Project Manager</option>';
+			  }else{
+				output = output +'           <option value="Project Manager">Project Manager</option>';
+			  } 
 				for (var i = 0; i < json.length; i++) {
 					var opt = json[i];
 					if(teamType == opt.id){
@@ -2067,7 +1631,7 @@ function getTeamsList(teamType){
 function pagination(){
     $("#example").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[2, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -2091,15 +1655,26 @@ function assignMembers() {
 	});
 	result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
 	$("#assignedToSavingDiv").empty();
-	$("#assignedToSavingDiv").append(result); 
+	$("#assignedToSavingDiv").append(result);
+	assignedToValidation();
 }
 </script>
 
+<script type="text/javascript">
+	function assignedToValidation() {
+		var count = $('#assignedToMaxCount').val();
+		if(count != null && count != 'undefined' && count!= ''){
+				 $('#assignedTo').attr("data-validation-optional","true"); 
+		} 
+	}
+</script>	
+
 
 <script type="text/javascript">
-	function flushStoreTeam() {
+	function flushStoreTeam() { 
 		document.getElementById("team_form").reset();
-		$('#memberUserId').val('').trigger('chosen:updated');
+		$('#assignTeamDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("add_team").removeAttribute("disabled");
 	}
 </script>
 
@@ -2182,9 +1757,9 @@ var existingValue = document.getElementById('isClientJob').value;
 		 
 		//to remove the  Internal  Submission Form  as we are selecting the Client 
 		 document.getElementById("internalSubmissionFrom").style.display = 'none';
-	     $('#applicationFrom').removeAttr('data-validation');
-	     
-	     
+		 $('#applicationFrom').attr("data-validation-optional","true"); 
+		
+		 
          $('#addClientId').removeAttr('data-validation-optional');
 	     $('#addClientId').attr("data-validation","required"); 
 	   
@@ -2205,6 +1780,8 @@ var existingValue = document.getElementById('isClientJob').value;
 		 
 		 $('#clientSubmissionForm').removeAttr('data-validation');
 		 $('#clientSubmissionForm').attr("data-validation-optional","true"); 
+		 
+		 $('#applicationFrom').removeAttr("data-validation-optional"); 
 	 }
 }
 
@@ -2217,6 +1794,134 @@ function filterTeamMembers(){
 }
 </script>
 
+
+<script type="text/javascript">
+function getLevel2Approvers(currentApproverId){
+	var currentApproverId = document.getElementById("sequentialApprover1").value;
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getApproverTwoByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,  
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-Select Approver-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	$("#sequentialApprover2").empty();
+			        $("#sequentialApprover2").append(output);
+			        $('#sequentialApprover2').trigger("chosen:updated");
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	 }
+} 
+</script> 
+
+
+<!-- Job Id validation script starts here -->
+
+<script type="text/javascript">
+ function validateJobId() {
+	
+	 var jobId = document.getElementById("jobId").value; 
+	 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(jobId != null && jobId != ""){
+		
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateJobId?${_csrf.parameterName}=${_csrf.token}&jobId="+jobId, 
+		        success: function(data) {
+		        	
+		        	if(data == '"duplicate"'){
+		        		  $('#jobIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#jobId").after("<p class='jquery_form_error_message'>"+jobId+" is Already Existed</span>");
+						  document.getElementById("jobId").setAttribute('record-exist','yes');
+						  document.getElementById("jobId").setAttribute('record-exist-errorMsg',jobId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#jobIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#requirement_form" ).addClass('button').val('Save');
+                         $("#requirement_form").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>     
+ 
+ <script>
+function toggle(source) {
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i] != source)
+            checkboxes[i].checked = source.checked;
+        
+    }
+$('input:checkbox:not(#checkAll)').click(function() {
+    if(!this.checked) {
+        $('#checkAll').removeAttr('checked');
+    }
+});
+}
+</script>
+ 
+ <!-- Job Id validation script ends here -->
+ 
+<script>
+//Function to validate if maximum exp value is more the minimum exp value
+function minMaxExperience(){
+    var maxExp = ($('#maxExp').val());
+    var minExp = ($('#minExp').val());
+    
+    if (parseFloat(maxExp) < parseFloat(minExp)){
+        $('#expId').find('p.jquery_form_error_message').remove(); 
+		$('input#expValidation').attr('class','error signin_fild');
+		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");
+		$('input#expValidation').attr('record-exist','yes');
+		$('input#expValidation').attr('record-exist-errorMsg','Max Experience is greater than Min Experience'); 
+    }  else{
+    	$('#expId').find('p.jquery_form_error_message').remove(); 
+    	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");
+		$('#expId').find('p.jquery_form_error_message').remove();
+    }
+}
+
+</script>
+
+<script type="text/javascript">
+function checkTemplateforDouplicate(){
+var templateName = document.getElementById("jobTitle").value; 
+$('#jobTitleDiv').find('p.jquery_form_error_message').remove();
+var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/validatetemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName, 
+	        success: function(data) {
+	        	if(data == "true"){
+	        		  $('#jobTitleDiv').find('p.jquery_form_error_message').remove();
+					  $("input#jobTitle").after("<p class='jquery_form_error_message'><span>Template Already Exists</span>");
+					  document.getElementById("jobTitle").setAttribute('record-exist','yes');
+					  document.getElementById("jobTitle").setAttribute('record-exist-errorMsg','Template Already Exists'); 
+	        	}
+	        	else{
+	        		 $('input#jobTitle').removeAttr( "record-exist record-exist-errormsg");
+	        		 $('#jobTitleDiv').find('p.jquery_form_error_message').remove(); 
+	        		 $("#requirement_form" ).addClass('button').val('Save');
+                    $("#requirement_form").removeAttr("disabled");
+	        	}
+	        },
+	    });
+}
+</script>
 
 
 <jsp:include page="../masterFooter.jsp" />

@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateSkillsDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateSkills;
@@ -35,6 +36,9 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 	 */
 	@Override
 	public CandidateSkills storeCandidateSkills(CandidateSkills candidateSkills) throws Exception {
+		String newlist = candidateSkills.getName();
+		System.out.println(newlist);
+		
 		
 		return candidateSkillsDao.storeCandidateSkills(candidateSkills);
 	}
@@ -72,6 +76,7 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 	    		  skill = skill.replace("\"", "");
 	    		  candSkill.setName(skill);
 	    		  candSkill.setCandidateId(candidate);
+	    		  candSkill.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
 	    		  candSkill.setOrgLocationID(orgLocations);
 	    		  candidateSkillsList.add(candSkill);
 	    	  }
@@ -110,5 +115,17 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 	@Override
 	public List<CandidateSkills> getSkillByCandidateId(Long candidateId) throws Exception {
 		return candidateSkillsDao.getSkillByCandidateId(candidateId);
+	}
+
+	@Override
+	public CandidateSkills getSkillsByCandidateIdSkillName(String candidateId, String skillName) {
+		
+		return candidateSkillsDao.getSkillsByCandidateIdSkillName(candidateId, skillName);
+	}
+
+	@Override
+	public Boolean validateSkillName(String skillName) {
+		Boolean flag = candidateSkillsDao.validateSkillName(skillName);
+		return flag;
 	}
 }

@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,13 +7,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,6 +34,7 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
+import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
@@ -45,6 +46,7 @@ import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
+import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -53,19 +55,19 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Service
 public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
-
+	
+	private static final Logger logger = LoggerFactory.getLogger(TimesheetEntriesServiceImpl.class);
 	@Autowired
 	TimesheetEntriesDao timesheetEntriesDao;
 	
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
+	
+	@Autowired
+	TimesheetSubmissionsDocumentsService  timesheetSubmissionsDocumentsService;
 	
 	@Autowired
 	SubmissionApproverHierarchyService submissionApproverHierarchyService;
@@ -99,6 +101,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	
 
 	 /**
+	  * 
 	 * @author naresh bolisetty and sarath kumar
 	 * @since  aug 19 2016
 	 * @version 0.0.1
@@ -116,10 +119,16 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	 */
 	
 	@Override
-	public String newTimesheet(User user,String navigation, String startDate) throws Exception {
+	public String newTimesheet(User user,String navigation, String startDate,Long locationsId) throws Exception {
 		 
 		
-		HashMap<String, Date> submissionDateRange =	timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(user.getId());
+		/**
+		  * Get Logged-in Employee startDate and endDate range across Various Projects(which are assigned to respective employee)
+		  * @ Hint: Submission Table Records are already availble
+		  * (We are storing these records with employee assigned date at the time of assignment and when employee/particular approver logged in to system(if record not exist then only))
+	      *
+	    */
+		HashMap<String, Date> submissionDateRange =	timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(user.getId(),locationsId);
 		Date employeeStartDate = submissionDateRange.get("STARTDATE");
 		Date employeeEndDate = submissionDateRange.get("ENDDATE");
 		
@@ -133,6 +142,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		cal.setTime(commonUtil.currentDate());
 		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
 		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN");
+		
 		
 		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
 		Date previousMondayDate = previousMonday.getTime();
@@ -168,6 +178,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
           Date currentEndDate = null;
           Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		   startCal.setLenient(false);
+		   /**
+			 * startDate == null means current week timesheets should be shown
+		   */
 		   if(startDate == null || startDate.equalsIgnoreCase("undefined") || startDate.isEmpty() ){  
 			      Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
 			      if(currentWeekStartDate.equals(employeeStartDate)|| (currentWeekStartDate.before(employeeEndDate) && currentWeekStartDate.after(employeeStartDate))){
@@ -183,11 +196,14 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			    	  startCal.setTime(employeeStartDate);
 			      }
           }
+		   /**
+			 * startDate comes from ui screen when << or >> links clicked
+		   */
 		  else{
                Date sDate  =  Constants.DMY.parse(startDate);
 			   startCal.setTime(sDate);
 		  }
-		 
+		 String weekStartDate = format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime());
 		 startDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime()));
          endDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime()));
          sb1.append("<th>Mon<i>"+startDateBuilder+"</i></th>"); 
@@ -205,23 +221,28 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		sb.append("	<div class='timesheet_head'>");
 		sb.append("   	<ul>");
 		sb.append("       	<li><i class='glyphicon glyphicon-print'></i></li>");
-		sb.append("           <li><i class='glyphicon glyphicon-export'></i><span>Export</span><i class='glyphicon glyphicon-play' id='export-pop'></i>|");
+		sb.append("           <li><i class='glyphicon glyphicon-export'></i><span>Export</span><i class='glyphicon glyphicon-play' id='export-pop' onclick='exportType();'></i>|");
 		sb.append("           	<div class='export_pop'>");
 		sb.append("               	<ul>");
-		sb.append("                   	<li>PDF<i class='fa fa-file-pdf-o'></i></li>");
-		sb.append("                       <li>Excel<i class='fa fa-file-excel-o'></i></li>");
-		sb.append("                       <li>Word<i class='fa fa-file-word-o'></i></li>");
+		sb.append("                   	<li onclick='exportPdf();'>PDF &nbsp;&nbsp;<i class='fa fa-file-pdf-o'></i></li>");
+		sb.append("                       <li onclick='exportExcel(\""+weekStartDate+"\");'>Excel &nbsp;&nbsp;<i class='fa fa-file-excel-o'></i></li>");
 		sb.append("                   </ul>");
 		sb.append("               </div>");
 		sb.append("           </li><li>");
 		
 		
+	    /**
+		 * check whether previous submission records are available or not
+	    */
 		Date leftNavStartDate = timesheetSubmissionsService.getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(user.getId(), currentStartDate);
 		if(leftNavStartDate != null && (leftNavStartDate.after(employeeStartDate) || leftNavStartDate.equals(employeeStartDate))){
 			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\");'></i>");
 		}
 		sb.append("            <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
 		
+		/**
+		 * check whether next submission records are available or not
+	    */
 		Date rightNavStartDate = timesheetSubmissionsService.getRightNavStartDateForEmployeeBasedOnCurrentStartDate(user.getId(), currentStartDate);
 		if(rightNavStartDate != null){
 	    Calendar rightCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);	
@@ -257,7 +278,13 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		for(TimesheetSubmissions ts : timesheetSubmissionsList){
 			isThereAnyApproverApproved = new ArrayList<Boolean>();
 			
+			/**
+			 * For to show submission status of each submission record(Hint:As per employee one submission related to one project)
+		    */
 			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(ts.getId());
+			/**
+			 * Don't show withdraw button if any approver(either level1 or level2) is approved
+		    */
 			SubmissionApproverHierarchy isSah = submissionApproverHierarchyService.isThereAnyApproverChangesStatusForTheSubmission(ts.getId(), "APPROVED");
 			if(isSah != null){
 				isThereAnyApproverApproved.add(true);
@@ -269,6 +296,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			Submission_Status submissionStatus = sah.getSubmissionStatus();
 			
 			
+			/**
+			 * Here getting  dates which are enabled in the current submission
+			 * (Hint:In particular project,the member may assigned in the mid of the week) 
+		    */
 			HashSet<Date> pmhDateList =  projectMembersHistoryService.getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(ts.getProjectMembers().getId(), currentStartDate, currentEndDate);
 			//Date assignDate = ts.getProjectMembers().getProjectAssignedDate();
 			//Date assignEndDate = ts.getProjectMembers().getProjectEndDate();
@@ -363,9 +394,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						            	  }
 						              }
 						              else{
-						            	      sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' >");
-										      for(ProjectTasks pt   : ProjectTasksList){
-										    	       if(pt.getId().equals(timesheetEntries.getProjectTask().getId())){
+						            	      sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
+						            	      sb.append("<option value=''>--select option--</option>");
+						            	      for(ProjectTasks pt   : ProjectTasksList){
+										    	       if(timesheetEntries.getProjectTask() != null && pt.getId().equals(timesheetEntries.getProjectTask().getId())){
 										    	    	   sb.append("<option value='"+pt.getId()+"' selected>"+pt.getTaskName()+"</option>");
 										    	       }
 										    	       else{
@@ -485,7 +517,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 							        	sb.append("<b class='proj_process'>"+submissionStatus+"</b>");
 							        	if(isSah == null ){
 							                String startDateStr = format.format(ts.getStartDate());
-							        		sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+ts.getId()+"\",\""+startDateStr+"\");' >withdraw</b>");
+							        		sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+ts.getId()+"\",\""+startDateStr+"\");' >Modify</b>");
 							        	}
 							        }
 							        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
@@ -515,9 +547,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						            	  sb.append("<p>NO DATA</p>");
 						              }
 						              else{
-
-                                          sb.append("     <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' >");
-									      for(ProjectTasks pt   : ProjectTasksList){
+						            	  
+                                          sb.append("     <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
+                                          sb.append("<option value=''>--select option--</option>");
+                                          for(ProjectTasks pt   : ProjectTasksList){
 									              sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");   
 									      }
 							              sb.append(" </select>"); 
@@ -604,7 +637,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								        	sb.append("<b class='proj_process'>"+submissionStatus+"</b>");
 								        	if(isSah == null ){
 								        		String startDateStr = format.format(ts.getStartDate());
-								        	    sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+ts.getId()+"\",\""+startDateStr+"\");' >withdraw</b>");
+								        	    sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+ts.getId()+"\",\""+startDateStr+"\");' >Modify</b>");
 								        	}
 								        }
 								        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
@@ -657,21 +690,75 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			sb.append("      </tr> "); 
 			sb.append("            </tbody>");
 			sb.append("     </table>");
+			
 			sb.append("<div class='timesheet_bot'>");
 			sb.append(" 	<div class='timesheet_week_comm'>");
 			
 			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty() ){
 			TimesheetSubmissions tsFirst = timesheetSubmissionsList.iterator().next();
-			if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
-				sb.append("<textarea   style='border: none;background: transparent;color: #333;'   name='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+			
+			if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
+					if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
+						sb.append("<div class='commentTime'>");
+						sb.append("<textarea  name='weekComment'  id='weekComment' readonly='readonly' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+						sb.append("</div>");
+					}else{
+						sb.append("<div class='commentTime'>");
+						sb.append("<textarea   name='weekComment' id='weekComment' readonly='readonly' placeholder='comments here...'></textarea>");
+						sb.append("</div>");
+					}
 			}else{
-				sb.append("<textarea   style='border: none;background: transparent;color: #333;'   name='weekComment' placeholder='comments here...'></textarea>");
+					if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
+						sb.append("<div class='commentTime'>");
+						sb.append("<textarea  name='weekComment'  id='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+						sb.append("</div>");
+					}else{
+						sb.append("<div class='commentTime'>");
+						sb.append("<textarea   name='weekComment' id='weekComment' placeholder='comments here...'></textarea>");
+						sb.append("</div>");
+					}
 			}
 			
-			/*sb.append("     	<textarea name='weekComment' placeholder='comments here...'></textarea>");*/
-		
 			
-			if(!isNullOrEmpty(tsFirst.getFileName())){
+			
+				//display multiple attachments
+				StringBuilder documentBuffer = new StringBuilder();	
+				List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(tsFirst.getId());
+				documentBuffer.append("<input type='hidden' name='attcahmentMaxRowNumber'  id='attcahmentMaxRowNumber' value='1' />");
+				documentBuffer.append("<div class='timesheetDocs'>"); 
+					if(timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()){
+						for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
+							if(!isNullOrEmpty(tsd.getFileName())){
+									documentBuffer.append("<strong>");
+									documentBuffer.append(" <a class='downicon' href=\'"+sourceleadUrl+"/downloadDocument?submissionDocumentId="+tsd.getId()+"\'>");
+									documentBuffer.append("<i class='glyphicon glyphicon-save'></i>");
+									documentBuffer.append(" <input type='button' value='"+tsd.getFileName()+"'>");
+									documentBuffer.append("</a>");
+									
+									if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
+									}else{
+										documentBuffer.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\",\""+startDate+"\");' >");
+									}
+									documentBuffer.append("</strong>");
+							} 
+						}
+					} 
+			
+					if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
+					}else{
+		            	documentBuffer.append("<div class='commentFile'>"); 
+						documentBuffer.append("<span>"); 
+						documentBuffer.append("<table class='timesheetAttachment' id='attachmentTable' cellpadding='0' cellspacing='0'>");
+								documentBuffer.append("<tr id='divAttachmentTsRow0'>");
+								documentBuffer.append("<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ");           
+								documentBuffer.append("</tr>");
+						documentBuffer.append("</table>");
+						documentBuffer.append("</span>");
+						documentBuffer.append("</div>");
+					}
+			documentBuffer.append("</div>"); 
+			sb.append(documentBuffer);
+		/*	if(!isNullOrEmpty(tsFirst.getFileName())){
 				sb.append("<strong>");
 				sb.append(" <a class='downicon' href=\'"+sourceleadUrl+"/downloadDocument?submissionId="+tsFirst.getId()+"\'>");
 				sb.append("<i class='glyphicon glyphicon-save'></i>");
@@ -683,30 +770,26 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					 sb.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsFirst.getId()+"\");' >");
 				}
 				sb.append("</strong>");
-			}else{
-				sb.append("<span>");
-				sb.append("<input type='file' name='docFile'><label><i class='glyphicon glyphicon-save'></i>Choose file</label>");
-				sb.append("</span>");
-			}
+			}*/
 			}
 			sb.append("         <div class='clearfix'></div>");
 			sb.append("     </div>");
 			
 			
 			if(combinedApprovalStatus == null || (combinedApprovalStatus != null && (combinedApprovalStatus.contains(Submission_ApprovalStatus.getNameByValue("rejected").getValue()) || combinedApprovalStatus.contains(Submission_ApprovalStatus.getNameByValue("new").getValue())))){
+				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("	<div class='timesheet_button'>");
 				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\",\"user\");' value='Save' class='time_btn time_dra'>");
 				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"user\");' value='Submit' class='time_btn'>");
 				   sb.append("        <input type='button' onClick='clearTimesheet();'  value='Clear' class='time_btn time_cancel'>");
 				   sb.append("");
 				   sb.append("    </div>");
-				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("</div>");   
 			}
 			else{
+				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("	<div class='timesheet_button'>");
 				   sb.append("  </div>");
-				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("</div>");
 			}
 		  
@@ -788,7 +871,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			
 		for(TimesheetSubmissions ts : timesheetSubmissionsList){
 		    	
-			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(ts.getId());
+			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForApprover(ts.getId(),user.getId());
 			Submission_Status submissionStatus = sah.getSubmissionStatus();
 			String submissionStatusStr = submissionStatus.getValue();
 			
@@ -875,10 +958,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              }
 						              else{
 						              
-							              sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' >");
+							              sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id'  class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
 									      
 									      for(ProjectTasks pt   : ProjectTasksList){
-									    	  if(pt.getId().equals(timesheetEntries.getProjectTask().getId())){
+									    	   if(timesheetEntries.getProjectTask() != null && pt.getId().equals(timesheetEntries.getProjectTask().getId())){
 								    	    	   sb.append("<option value='"+pt.getId()+"' selected>"+pt.getTaskName()+"</option>");
 								    	       }
 								    	       else{
@@ -989,7 +1072,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				              sb.append("       <tr id='timesheetRow"+rowCount+"submission"+ts.getId()+"'>");
 				              sb.append("                 <td>");
 				              sb.append("                      <div> ");
-				              sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' >");
+				              sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
 						      
 						      for(ProjectTasks pt   : ProjectTasksList){
 						              sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");   
@@ -1131,24 +1214,22 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			sb.append("            </tbody>");
 			sb.append("     </table>");
 			
-		   /*	sb.append("<div class='timesheet_bot'>");
-		    sb.append("	<div class='timesheet_button'>");
-		    sb.append("        <input type='button' value='Edit' class='time_btn time_cancel'>");
-		    sb.append("    </div>");
-		    sb.append("	<div class='clearfix'></div>");
-		    sb.append("</div>");*/
 			
 			sb.append("<div class='timesheet_bot'>");
 			sb.append(" 	<div class='timesheet_week_comm'>");
 			TimesheetSubmissions tsFirst = timesheetSubmissionsList.iterator().next();
 			if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
-				sb.append("<textarea   style='border: none;background: transparent;color: #333;'   name='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+				sb.append("<div class='commentTime'>");
+				sb.append("<textarea   name='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+				sb.append("</div>");
 			}else{
-				sb.append("<textarea   style='border: none;background: transparent;color: #333;'   name='weekComment' placeholder='comments here...'></textarea>");
+				sb.append("<div class='commentTime'>");
+				sb.append("<textarea   name='weekComment' placeholder='comments here...'></textarea>");
+				sb.append("</div>");
 			}
 			
 			
-			if(!isNullOrEmpty(tsFirst.getFileName())){
+		/*	if(!isNullOrEmpty(tsFirst.getFileName())){
 				sb.append("<strong>");
 				
 				sb.append("<i class='glyphicon glyphicon-save'></i>");
@@ -1165,28 +1246,73 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				sb.append("</strong>");
 			}else{
 				sb.append("<span>");
-				sb.append("<input type='file' name='docFile'><label><i class='glyphicon glyphicon-save'></i>Choose file</label>");
+				sb.append("<input type='file' name='docFile'>");
 				sb.append("</span>");
 			}
+			*/
 			
+			//display multiple attachments
+			StringBuilder documentBuffer = new StringBuilder();	
+			List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(tsFirst.getId());
+			documentBuffer.append("<input type='hidden' name='attcahmentMaxRowNumber'  id='attcahmentMaxRowNumber' value='1' />");
+			documentBuffer.append("<div class='timesheetDocs'>"); 
+				if(timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()){
+					for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
+						if(!isNullOrEmpty(tsd.getFileName())){
+								documentBuffer.append("<strong>");
+								documentBuffer.append(" <a class='downicon' href=\'"+sourceleadUrl+"/downloadDocument?submissionDocumentId="+tsd.getId()+"\'>");
+								documentBuffer.append("<i class='glyphicon glyphicon-save'></i>");
+								documentBuffer.append(" <input type='button' value='"+tsd.getFileName()+"'>");
+								documentBuffer.append("</a>");
+								
+
+								SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+							    String startDate1  =  sdf.format(tsFirst.getStartDate());
+							    String endDate1  =  sdf.format(tsFirst.getEndDate());
+							    if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){ 
+								}else{
+									documentBuffer.append("<input class='dele' type='button'  onClick='deleteSubmissionDocument(\""+tsd.getId()+"\",\""+tsFirst.getProjectMembers().getEmployee().getId()+"\",\""+startDate1+"\",\""+endDate1+"\");'>");
+								}
+							    
+							    documentBuffer.append("</strong>");
+						} 
+					}
+				} 
+		
+				if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){ 
+				}else{
+	            	documentBuffer.append("<div class='commentFile'>"); 
+					documentBuffer.append("<span>"); 
+					documentBuffer.append("<table class='timesheetAttachment' id='attachmentTable' cellpadding='0' cellspacing='0'>");
+							documentBuffer.append("<tr id='divAttachmentTsRow0'>");
+							documentBuffer.append("<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' class='timesheetAttachmentValidation' ><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ");           
+							documentBuffer.append("</tr>");
+					documentBuffer.append("</table>");
+					documentBuffer.append("</span>");
+					documentBuffer.append("</div>");
+				}
+				documentBuffer.append("</div>"); 
+				sb.append(documentBuffer);
+		
 			sb.append("<div class='clearfix'></div>");
 			sb.append("</div>");
 			
 			if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue()))){
+				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("	<div class='timesheet_button'>");
 				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\");' value='Update' class='time_btn'>");
 				   /*sb.append("        <input type='button' value='Clear' class='time_btn time_cancel'>");*/
 				   sb.append("    </div>");
-				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("</div>");
 			}
 			else if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
+				   sb.append("	<div class='clearfix'></div>");   
 				   sb.append("	<div class='timesheet_button'>");
 				   sb.append("  </div>");
-				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("</div>");
 			}
 			else{
+				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("	<div class='timesheet_button'>");
 				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\",\"approver\");' value='Save' class='time_btn time_dra'>");
 				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\");' value='Submit' class='time_btn'>");
@@ -1195,7 +1321,6 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				   sb.append("");
 				   
 				   sb.append("    </div>");
-				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("</div>");
 			}
 		  
@@ -1273,7 +1398,42 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				                if(sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("draft"))  || sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("new")) || sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("rejected")) || (sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("submitted")) && "approver".equalsIgnoreCase(savingType)  ) ){
 				                submissionApproverHierarchyService.updateSubmissionStatus(Long.parseLong(submissionId), status);	
 					    		timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
-								Iterator<String> itrator = request.getFileNames();
+								
+						    	timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
+						    	
+						    	//save  mutliple attachment in timesheet submissison attachment.
+						    	
+						    	String attcahmentMaxRowNumber = jsonObj.getString("attcahmentMaxRowNumber");
+								int attcahmentMaxRowNumberCount = Integer.parseInt(attcahmentMaxRowNumber);
+								int attachmentRowNum = 0;
+								
+						    	for (int a = 0; a < attcahmentMaxRowNumberCount; a++) {
+									   
+									   TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
+									   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
+		                   		       final Map files = multiRequest.getFileMap();
+		                   		       
+		                   		       tsd.setTimesheetSubmissions(timesheetSubmissions);
+		                               MultipartFile  multiFile = (MultipartFile)files.get(a+"docFile");
+		                               if(multiFile != null && !multiFile.isEmpty()){
+			                               tsd.setDocFile(multiFile.getBytes());
+			                               tsd.setFileName(multiFile.getOriginalFilename());
+			                               
+			                               if(multiFile.getContentType()!=null){
+			                            	   tsd.setFileContentType(multiFile.getContentType());
+			                               }
+		                               }
+		                               
+		                               tsd.setStatus(Constants.CANDIDATE_ACTIVE);
+		                               tsd.setCreatedDate(commonUtil.currentDate());
+		                               tsd.setCreatedBy(loginUser.getUserCode());
+		                               tsd.setUpdatedDate(commonUtil.currentDate());
+		                               tsd.setUpdatedBy(loginUser.getUserCode());
+		                               
+									   timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(tsd);
+						    	}
+								
+							   /*Iterator<String> itrator = request.getFileNames();
 								while (itrator.hasNext()) {
 						        MultipartFile multiFile = request.getFile(itrator.next());
 						        if(null != multiFile.getContentType()){
@@ -1285,9 +1445,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						    	      	 e.printStackTrace();
 									    }
 						        }
-								}
-						    	timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
-								    
+								} */
+					    	
 								String maxAdminTimeTypeRowNum = jsonObj.getString("maxRowNumber"+submissionId);
 								int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 								int rowNum = 0;
@@ -1322,8 +1481,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 										ProjectTasks projectTasks = new ProjectTasks();
 
 									   if (jsonObj.has(c+"submission"+submissionId+"task1Id")){
-										projectTasks.setId(Long.parseLong(jsonObj.getString(c+"submission"+submissionId+"task1Id")));
-										timesheetEntries.setProjectTask(projectTasks);
+										   if(!isNullOrEmpty(jsonObj.getString(c+"submission"+submissionId+"task1Id"))){
+												  projectTasks.setId(Long.parseLong(jsonObj.getString(c+"submission"+submissionId+"task1Id")));
+												  timesheetEntries.setProjectTask(projectTasks);
+										   }
 										 }
 										//For Monday Hours
 										if (jsonObj.has(c+"submission"+submissionId+"timeSheetDay1Id")){
@@ -1655,6 +1816,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			 emailMessage.setLastName(projectManager.getLastName());
 			 emailMessage.setToEmail(projectManager.getEmail());
 			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 			 
 			 String pattern = "dd-MM-yyyy";
@@ -1714,14 +1876,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	public static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
+
 	
-	private String toJSON(Object obj){
-	    XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-	        public HierarchicalStreamWriter createWriter(Writer writer) {
-	            return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-	        }
-	    });
-	    return xstream.toXML(obj);
-	}
 
 }

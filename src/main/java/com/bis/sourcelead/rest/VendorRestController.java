@@ -20,10 +20,12 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -44,6 +46,9 @@ public class VendorRestController {
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+	RequirementService requirementService;
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
@@ -76,19 +81,20 @@ public class VendorRestController {
 		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		
 		if(jsonObj.has("owner")){
 			String ownersId = jsonObj.getString("owner");
 			ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]","");
 			String[] owners = ownersId.split(",");
-			for(int i=0 ;i<owners.length;i++ ){
+			/*for(int i=0 ;i<owners.length;i++ ){
 				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
 				OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(jsonObj.getString("email"), Long.parseLong(orgRelationId), ownerUser.getId());
-			     if(orgSpoc == null){
-			    	orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId,responderType);
+			     if(orgSpoc == null){*/
+			    	orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId,responderType,org);
 					SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg","Successfully you have created a client");
-			    }
-			} 
+			    /*}
+			} */
 		}
 		
 			return "vendorsList";
@@ -126,8 +132,11 @@ public class VendorRestController {
 					orgRelation.setState(orgRelation.getResponderLocationId().getState());
 					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
 					orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
-					//orgRelation.setNoOfContatcs(noOfContatcs); 
-					List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
+					//List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
+					List<Requirement> vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(orgRelation.getResponderLocationId().getId(),orgRelation.getId(),user,orgLocations);
+					List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
+					
+					orgRelation.setNoOfReleasedJobs(vendorReleasedJobsList.size());
 					orgRelation.setNoOfContatcs(contactsList.size()); 
 					if(orgRelation.getInitiatorLevel()!=null){
 						orgRelation.setLevel(orgRelation.getInitiatorLevel());
@@ -314,7 +323,7 @@ public class VendorRestController {
 	   
 	   // this method is used to re-send email to Spoc
 	   @RequestMapping(value = "/resendSpocInvitationEmail" , method = RequestMethod.POST)
-		  public @ResponseBody  String resendInvitationEmail(@RequestParam(value="spocUserId", required=false) String spocUserId, HttpServletRequest request,String responderType, Long orgRelationID) throws Exception {
+		  public @ResponseBody  String resendInvitationEmail(@RequestParam(value="spocUserId", required=false) String spocUserId, @RequestParam(value="orgSpocId", required=false) String orgSpocId,HttpServletRequest request,String responderType, Long orgRelationID) throws Exception {
 			    
 			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -325,7 +334,11 @@ public class VendorRestController {
 			    String password = null;
 		 		if(null != user  && null != orgRelations){
 		 		    //to update spoc invitation status
-		 			OrgSpoc spoc = orgSpocService.getSpocUserByUserId(Long.parseLong(spocUserId));
+		 			
+		 			// this is commented for not updating status while spoc user duplicate in orgspoc table
+		 			//OrgSpoc spoc = orgSpocService.getSpocUserByUserId(Long.parseLong(spocUserId));
+		 		
+		 			OrgSpoc spoc = orgSpocService.getOrgSpocById(Long.parseLong(orgSpocId));
 		 			spoc.setInvitationStatus(Constants.MAIL_SENT);
 		 			orgSpocService.addOrgSpoc(spoc);
 		 			

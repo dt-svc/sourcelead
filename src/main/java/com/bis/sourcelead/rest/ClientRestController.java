@@ -136,13 +136,18 @@ public class ClientRestController {
 	 
 	 @RequestMapping(value = "/getOrgDetails",  method = RequestMethod.POST)
 	    public @ResponseBody String getOrgDetails(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
-	    		@RequestParam(value="json", required=false) String json) {
+	    		@RequestParam(value="orgName", required=false) String orgName,
+	    		@RequestParam(value="json", required=false) String json) throws Exception {
 			
 			ArrayList<String> orgsList = new ArrayList<String>();
 			
-			OrgLocations orgLocations = null;
+			Org org = orgService.getOrgByOrgName(orgName);
+			
+			
+			OrgLocations orgLocations = orgLocationService.getOrgLocationsByOrgCode(org.getId().toString());
+			
 			try {
-				orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+				orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
 			} catch (Exception e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
@@ -187,10 +192,12 @@ public class ClientRestController {
 		
 		
 		 @RequestMapping(value = "/validateClientOrVendorEmail",  method = RequestMethod.POST)
-		    public @ResponseBody String validateClientOrVendorEmail(@RequestParam(value="email", required=false) String email) {
+		    public @ResponseBody String validateClientOrVendorEmail(@RequestParam(value="email", required=false) String email) throws Exception {
 			 
-			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			 if(!email.equalsIgnoreCase(user.getEmail())){
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 
+			 UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(email, orgLocation.getId());
+			 if(userRole == null){
 				 return "Valid Email";
 			 }else{
 				 return "Invalid Email";
@@ -286,6 +293,15 @@ public class ClientRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId());
+		if(orgSpocsList != null){
+			for(OrgSpoc orgSpoc : orgSpocsList){
+				String ownerLastName = "";
+				if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getLastName() != null){
+					ownerLastName = orgSpoc.getOwnerUser().getLastName();
+				}
+				orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+ownerLastName);
+			}
+		}
 		return commonUtil.toJSON(orgSpocsList);
 	}
 	
@@ -303,29 +319,73 @@ public class ClientRestController {
 	
 	@RequestMapping(value = "/validateTemplateName", method = RequestMethod.POST)
 	@ResponseBody String validateTemplateName(@RequestParam(value = "clientLocationId", required = false) Long clientLocationId,
-			@RequestParam(value = "templateName", required = false) String templateName) throws Exception {
+			@RequestParam(value = "templateName", required = false) String templateName,
+			@RequestParam(value = "templateId", required = false) String templateId) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
-		SubmissionTemplate submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateName(clientLocationId, orgLocations.getId(), templateName);
-		if(null != submissiontTemplate){
-			return "invalid";
-		}else{
-			return "valid";
+		String result = null;
+		SubmissionTemplate submissiontTemplate = null;
+		
+		if(!isNullOrEmpty(templateId)){
+			submissiontTemplate  = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
+			if(submissiontTemplate.getTemplateName().equalsIgnoreCase(templateName)){
+				result = "valid";
+			}else{
+				submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateName(clientLocationId, orgLocations.getId(), templateName);
+				if(null != submissiontTemplate){
+					result = "invalid";
+				}else{
+					result = "valid";
+				}
+			}
 		}
+		
+		else{
+			submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateName(clientLocationId, orgLocations.getId(), templateName);
+			if(null != submissiontTemplate){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+		return result;
 		
 	}
 	
 
 	@RequestMapping(value = "/validateTemplateNameByOrg", method = RequestMethod.POST)
-	@ResponseBody String validateTemplateNameByOrg(@RequestParam(value = "templateName", required = false) String templateName) throws Exception {
+	@ResponseBody String validateTemplateNameByOrg(@RequestParam(value = "templateName", required = false) String templateName,
+			@RequestParam(value = "templateId", required = false) String templateId) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
-		SubmissionTemplate submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(orgLocations.getId(), templateName);
-		if(null != submissiontTemplate){
-			return "invalid";
-		}else{
-			return "valid";
+		SubmissionTemplate submissiontTemplate = null;
+		String result = null;
+		
+		if(!isNullOrEmpty(templateId)){
+			submissiontTemplate  = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
+			if(submissiontTemplate.getTemplateName().equalsIgnoreCase(templateName)){
+				result = "valid";
+			}else{
+				submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(orgLocations.getId(), templateName);
+				if(null != submissiontTemplate){
+					result = "invalid";
+				}else{
+					result = "valid";
+				}
+			}
 		}
+		
+		else{
+			submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(orgLocations.getId(), templateName);
+			if(null != submissiontTemplate){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+		return result;
 		
 	}
 	
@@ -383,7 +443,7 @@ public class ClientRestController {
 	 @ResponseBody String validateSpocEmailId(@RequestParam(value = "email", required = false) String email, @RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			String result;
-			OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(email, orgRelationId, user.getId()); 
+			OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(email, orgRelationId, user.getId(), Constants.RECORD_ACTIVE); 
 			if (orgSpoc != null) {
 				result = "true";
 			} else {
@@ -471,7 +531,13 @@ public class ClientRestController {
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
 			@RequestParam(value = "responderType", required = false) String responderType) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		return orgService.isClientNameValid(clientName,orgLocation.getId(),responderType);
+		List<Org> org =orgService.getOrgs();
+	    boolean flag = false;
+		
+			flag = orgService.isClientNameValid(clientName,orgLocation.getId(),responderType);
+		
+		
+		return flag;
 	}
 /**
  * Verifies Client Email
@@ -583,7 +649,7 @@ public class ClientRestController {
 	       JSONObject jsonObj = new JSONObject(jsonVal);
 	       User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId);
+	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation);
 
 		return jsonObj.getString("owner");
 	}
@@ -604,7 +670,18 @@ public class ClientRestController {
 	
 	
 	
-	
+	@RequestMapping(value = "/getAllOwners")
+	public @ResponseBody String getAllOwners(@RequestParam(value="email", required=false) String email,@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		String resultJson = null;
+		
+		List<Long> existingOwnerUserIds = orgSpocService.getOwnerUserIdsbySpocEmailAndOrgRelationId(email,orgRelationId);
+		List<User> userList = userService.getUserListExceptExistedUsersList(existingOwnerUserIds,orgLocations.getId());
+		resultJson = commonUtil.toJSON(userList);
+		return resultJson;
+
+	}	
 	
 	
 	
@@ -697,5 +774,6 @@ public class ClientRestController {
 	protected static boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
 	}
+
 
 }

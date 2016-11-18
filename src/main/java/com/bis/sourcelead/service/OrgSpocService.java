@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
@@ -26,7 +27,7 @@ public interface OrgSpocService {
  * @param orgLocations
  * @throws Exception
  */
-	void addVendorContacts(JSONObject jsonObj,User user,OrgLocations orgLocations, String orgRelationId, String clientLocationId,String responderType)throws Exception;
+	void addVendorContacts(JSONObject jsonObj,User user,OrgLocations orgLocations, String orgRelationId, String clientLocationId,String responderType,Org org)throws Exception;
 
 	/**
 	 * @author Prasad Salina 
@@ -50,13 +51,15 @@ public interface OrgSpocService {
 	 * @return
 	 * @throws Exception
 	 */
-	OrgSpoc validateSpacEmailIdByOwnerUserIdAndOrgRelationId(String email, Long orgRelationId, Long userId) throws Exception;
+	OrgSpoc validateSpacEmailIdByOwnerUserIdAndOrgRelationId(String email, Long orgRelationId, Long userId, Integer status) throws Exception;
 
 	OrgSpoc getSpocAndOwnerDetailsById(Long spocId, Long ownerId);
 	
-	OrgSpoc getSpocAndOwnerDetailsByIdAndOwnerId(Long spocId, Long ownerId, Long spocUserId, Long loginUserId, Long orgLocationId);
+	OrgSpoc getSpocAndOwnerDetailsByIdAndOwnerId(Long spocId, Long ownerId, Long spocUserId, Long loginUserId, Long orgLocationId) throws Exception;
 
 	List<Long> getOwnerIdbySpocId(Long spocUserId, Long ownerId);
+	
+	List<Long> getOwnerUserIdsbySpocEmailAndOrgRelationId(String email, Long orgRelationId) throws Exception;
 	
 	
 	/**To get Spoc user
@@ -75,6 +78,8 @@ public interface OrgSpocService {
 	
 	
 	List<OrgSpoc> getAllContactsbyOrgId(Long orgId) throws Exception;
+	
+	List<OrgSpoc> getAllContactsbyOrgRelationIdAndLocationId(Long relationId, Long locationId, String initiator) throws Exception;
 	
 	
 }

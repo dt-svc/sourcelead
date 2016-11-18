@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementOffersDao;
 import com.bis.sourcelead.entity.RequirementOffers;
+import com.bis.sourcelead.entity.RequirementSubmission;
 
 @Repository
 public class RequirementOffersDaoImpl implements RequirementOffersDao{
@@ -47,6 +50,40 @@ public class RequirementOffersDaoImpl implements RequirementOffersDao{
 			{
 			
 			}
+		return requirementOffers;
+		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementOffers getRequirementOfferSubmissionById(Long submissionId) throws Exception {
+	
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementOffers rs left join fetch rs.submissionId  sub left join fetch sub.sourceSubmission    where rs.submissionId = :submissionId";
+		List<RequirementOffers> requirementOffersList =  session.createQuery(query.toString()).setLong("submissionId", submissionId).setCacheable(true).list();
+		
+		RequirementOffers requirementOffers = null;
+		
+		if (requirementOffersList != null && requirementOffersList.size() > 0) {
+			requirementOffers = (RequirementOffers) requirementOffersList.iterator().next();
+		}
+		return requirementOffers;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementOffers getRequirementOfferId(Long offerId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementOffers rs left join fetch rs.submissionId where rs.id = :offerId ";
+		List<RequirementOffers> requirementOffersList =  session.createQuery(query.toString()).setLong("offerId", offerId).setCacheable(true).list();
+		
+		RequirementOffers requirementOffers = null;
+		
+		if (requirementOffersList != null && requirementOffersList.size() > 0) {
+			requirementOffers = (RequirementOffers) requirementOffersList.iterator().next();
+		}
 		return requirementOffers;
 		
 	}

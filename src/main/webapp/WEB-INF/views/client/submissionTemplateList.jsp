@@ -175,7 +175,7 @@ function templatepagination(){
 		            result = result  +'<label>Template Name<span class="text-danger">&nbsp;*</label>';
 			    	result = result  +'	<div class="mt10">';
 			    	if(templateName){
-			    		result = result  +'	<input type="text" class="form-control input-sm" value="'+templateName+'" readonly="readonly" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';	
+			    		result = result  +'	<input type="text" class="form-control input-sm" value="'+templateName+'"  onblur="validateTemplateName('+clientLocationId+')" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';	
 			    	}else{
 			    		result = result  +'	<input type="text" class="form-control input-sm"  onblur="validateTemplateName('+clientLocationId+')" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';
 			    	}
@@ -236,7 +236,7 @@ function templatepagination(){
 		           result = result + '</section>';
 		           
 		           result = result + '<div id="popUp"></div>'; 
-		           
+		           result = result + '<div id="choicepopUp"></div>'; 
 		           
 		           $("#tab-4").empty();  
 		           $("#tab-4-addTemplate").empty();
@@ -277,11 +277,15 @@ function templatepagination(){
 <script type="text/javascript">
 function validateTemplateName(clientLocationId){
 	var templateName = document.getElementById("templateName").value; 
+	var templateId = $("#templateId").val();
+	if(templateId == 'undefined' || templateId == null){
+		templateId = '';
+	}
 	if(templateName){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/validateTemplateName?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&templateName="+templateName, 
+	    	url : sourceleadUrl+"/validateTemplateName?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&templateName="+templateName+"&templateId="+templateId, 
 	        success: function(result) {
 	        	if (result == 'invalid') {
 	        		$("#save_button").attr("disabled", "disabled");
@@ -313,6 +317,8 @@ function validateTemplateName(clientLocationId){
         var jsonData = encodeURIComponent(con);
         var isRemoved = '';
         var isLabelModified = 'N';
+        var submitTemplate = true;
+        var fieldLabel = '';
 
         //Loop through fields and save field data to array
         var fields = [];
@@ -325,10 +331,17 @@ function validateTemplateName(clientLocationId){
             var fieldType = $this.data('type');
 
             //field label
-            var fieldLabel = $this.find('.field-label').val();
+            fieldLabel = $this.find('.field-label').val();
 
             //field required
             var fieldReq = $this.hasClass('required') ? 1 : 0;
+            
+            if(fieldType == 'checkbox' || fieldType == 'radio' ||  fieldType == 'select'){
+            	if($this.find('.choices li').length == 0) {
+            		submitTemplate = false;
+            	}
+            }
+            
 
             //check if this field has choices
             if($this.find('.choices li').length >= 1) {
@@ -398,17 +411,22 @@ function validateTemplateName(clientLocationId){
         //Demo doesn't actually save. Download project files for save
         var con2 = JSON.stringify(fields);
         var jsonStringData = encodeURIComponent(con2);
-        $( "#save_button" ).addClass('button').val('Processing..');
-   	    $.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/saveClientSubmissionTemplate?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
-	        success: function(result) {
-	        	if((result == 'home')){
-	        		clientSubmissionTemplate(clientLocationId);  
-		        } 
-	        },
-	    });
-        return true;
+        if(submitTemplate){
+        	 $( "#save_button" ).addClass('button').val('Processing..');
+        	    $.ajax({
+     	    	type: "POST",
+     	        url: sourceleadUrl+"/saveClientSubmissionTemplate?${_csrf.parameterName}=${_csrf.token}&clientLocationId="+clientLocationId+"&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+     	        success: function(result) {
+     	        	if((result == 'home')){
+     	        		clientSubmissionTemplate(clientLocationId);  
+     		        } 
+     	        },
+     	    });
+             return true;
+        }else{
+        	alertMessage("Provide choice for "+fieldLabel)
+        }
+       
       }
       else{
       	return false;	
@@ -421,6 +439,29 @@ function validateTemplateName(clientLocationId){
   </script>
   
 
+
+<script type="text/javascript">
+function alertMessage(message){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#choicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#choicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
  
  

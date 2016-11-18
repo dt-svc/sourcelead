@@ -60,6 +60,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	private String assignedUserName;
 	
 	@Transient
+	private Long teamOwnerId;
+	
+	@Transient
+	private String applicantCount;
+	
+	@Transient
 	private String assignedUserRole;
 	
 	@Transient
@@ -160,6 +166,22 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 	public void setTeamName(String teamName) {
 		this.teamName = teamName;
+	}
+
+	public Long getTeamOwnerId() {
+		return teamOwnerId;
+	}
+
+	public void setTeamOwnerId(Long teamOwnerId) {
+		this.teamOwnerId = teamOwnerId;
+	}
+
+	public String getApplicantCount() {
+		return applicantCount;
+	}
+
+	public void setApplicantCount(String applicantCount) {
+		this.applicantCount = applicantCount;
 	}
 	
 	

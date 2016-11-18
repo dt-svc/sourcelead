@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -38,11 +39,24 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Column(name = "AMOUNT")
 	private String amount;
 	
+	@Column(name = "Offer_Status")
+	private String offerStatus;
+	
+	
 	@Column(name = "PAYMENT_MODE")
 	private String paymentMode;
 	
 	@Column(name = "POSITION_TYPE")
 	private String positionType;
+	
+	@Column(name = "Notify_To_Vendor")
+	private String notifyToVendor;
+	
+	@Column(name = "Notify_To_Applicant")
+	private String notifyToApplicant;
+	
+	@Column(name = "Rejected_Reason" , columnDefinition = "TEXT default NULL")
+	private String rejectedReason;
 	
 	@Column(name = " DOC_FILE",columnDefinition="mediumblob")
 	@Lob
@@ -68,6 +82,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+    private String dateOfJoiningStr;
+	
+	@Transient
+    private String clientName;
 	
 
 	public Long getId() {
@@ -124,6 +144,30 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 	public void setPositionType(String positionType) {
 		this.positionType = positionType;
+	}
+
+	public String getNotifyToVendor() {
+		return notifyToVendor;
+	}
+
+	public void setNotifyToVendor(String notifyToVendor) {
+		this.notifyToVendor = notifyToVendor;
+	}
+
+	public String getNotifyToApplicant() {
+		return notifyToApplicant;
+	}
+
+	public void setNotifyToApplicant(String notifyToApplicant) {
+		this.notifyToApplicant = notifyToApplicant;
+	}
+
+	public String getRejectedReason() {
+		return rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
 	}
 
 	public byte[] getDocFile() {
@@ -189,5 +233,30 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+
+	public String getDateOfJoiningStr() {
+		return dateOfJoiningStr;
+	}
+
+	public void setDateOfJoiningStr(String dateOfJoiningStr) {
+		this.dateOfJoiningStr = dateOfJoiningStr;
+	}
+
+	public String getOfferStatus() {
+		return offerStatus;
+	}
+
+	public void setOfferStatus(String offerStatus) {
+		this.offerStatus = offerStatus;
+	}
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
+	}
+	
 	
 }

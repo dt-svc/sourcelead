@@ -242,40 +242,40 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		String subQuery2 = "";
 		String subQuery3  ="";
 
-			if (Arrays.asList(level).contains("Level-1")) {
-				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-1' or ";
+			if (Arrays.asList(level).contains("Tier-1")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Tier-1' or ";
 			}
-			if (Arrays.asList(level).contains("Level-1")) {
-				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-1' or ";
-			}
-			
-			if (Arrays.asList(level).contains("Level-2")) {
-				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-2' or ";
+			if (Arrays.asList(level).contains("Tier-1")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Tier-1' or ";
 			}
 			
-			if (Arrays.asList(level).contains("Level-2")) {
-				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-2' or ";
+			if (Arrays.asList(level).contains("Tier-2")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Tier-2' or ";
 			}
 			
-			if (Arrays.asList(level).contains("Level-3")) {
-				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-3' or ";
-			}
-			if (Arrays.asList(level).contains("Level-3")) {
-				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-3' or ";
+			if (Arrays.asList(level).contains("Tier-2")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Tier-2' or ";
 			}
 			
-			if (Arrays.asList(level).contains("Level-4")) {
-				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-4' or ";
+			if (Arrays.asList(level).contains("Tier-3")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Tier-3' or ";
 			}
-			if (Arrays.asList(level).contains("Level-4")) {
-				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-4' or ";
+			if (Arrays.asList(level).contains("Tier-3")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Tier-3' or ";
 			}
 			
-			if (Arrays.asList(level).contains("Level-5")) {
-				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-5' or ";
+			if (Arrays.asList(level).contains("Tier-4")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Tier-4' or ";
 			}
-			if (Arrays.asList(level).contains("Level-5")) {
-				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-5' or ";
+			if (Arrays.asList(level).contains("Tier-4")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Tier-4' or ";
+			}
+			
+			if (Arrays.asList(level).contains("Tier-5")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Tier-5' or ";
+			}
+			if (Arrays.asList(level).contains("Tier-5")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Tier-5' or ";
 			}
 			if(!subQuery2.equalsIgnoreCase("")){
 			subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
@@ -311,48 +311,52 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	public List<OrgRelations> getAllVendorsFilterByOrgLocationId(Long orgLocationId, String status) throws Exception {
 		logger.debug("In OrgRelations getAllVendorsByOrgLocationId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String[] level=null;
+		
+		String[] level = null;
 		if(status != null){
-			level = status.split(",");
+			level = status.split(",");	
 		}
+		
+		
 		
 		String subQuery2 = "";
 		String subQuery3  ="";
+		
 		if(level != null){
-			if (Arrays.asList(level).contains("Level-1")) {
-				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-1' or ";
+			if (Arrays.asList(level).contains("Tier-1")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Tier-1' or ";
 			}
-			if (Arrays.asList(level).contains("Level-1")) {
-				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-1' or ";
-			}
-			
-			if (Arrays.asList(level).contains("Level-2")) {
-				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-2' or ";
+			if (Arrays.asList(level).contains("Tier-1")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Tier-1' or ";
 			}
 			
-			if (Arrays.asList(level).contains("Level-2")) {
-				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-2' or ";
+			if (Arrays.asList(level).contains("Tier-2")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Tier-2' or ";
 			}
 			
-			if (Arrays.asList(level).contains("Level-3")) {
-				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-3' or ";
-			}
-			if (Arrays.asList(level).contains("Level-3")) {
-				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-3' or ";
+			if (Arrays.asList(level).contains("Tier-2")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Tier-2' or ";
 			}
 			
-			if (Arrays.asList(level).contains("Level-4")) {
-				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-4' or ";
+			if (Arrays.asList(level).contains("Tier-3")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Tier-3' or ";
 			}
-			if (Arrays.asList(level).contains("Level-4")) {
-				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-4' or ";
+			if (Arrays.asList(level).contains("Tier-3")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Tier-3' or ";
 			}
 			
-			if (Arrays.asList(level).contains("Level-5")) {
-				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Level-5' or ";
+			if (Arrays.asList(level).contains("Tier-4")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Tier-4' or ";
 			}
-			if (Arrays.asList(level).contains("Level-5")) {
-				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Level-5' or ";
+			if (Arrays.asList(level).contains("Tier-4")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Tier-4' or ";
+			}
+			
+			if (Arrays.asList(level).contains("Tier-5")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Tier-5' or ";
+			}
+			if (Arrays.asList(level).contains("Tier-5")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Tier-5' or ";
 			}
 			if(!subQuery2.equalsIgnoreCase("")){
 			subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
@@ -362,9 +366,12 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 				subQuery3 = " (" + subQuery3.substring(0, subQuery3.length() - 4) + ")";
 			}
 		}
+	
+			
+		
 		
 		List<OrgRelations> vandorsList = null;
-		if(level == null){
+		if(level == null || Arrays.asList(level).contains("")){
 			Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )");
 			vandorsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		}else{
@@ -389,7 +396,10 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		
 		String[] tokens = status.split(",");
 		String[] invitations = invitationStatus.split(",");
-		String[] client = vendorIds.split(",");
+		String[] client = null;
+		if(vendorIds != null){
+			client = vendorIds.split(",");
+		}
 		
 		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUserId,orgLocationId);
 		
@@ -440,7 +450,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		
 		
 		//vendor length based on vendors List
-		if (client[0] != null && client[0].length() > 0) {
+		if (client != null && client[0] != null && client[0].length() > 0) {
 			if(!spocStatus.equalsIgnoreCase("") && !spocInvitationStatus.equalsIgnoreCase("")){
 				spocStatus = spocStatus +" and ";
 			}

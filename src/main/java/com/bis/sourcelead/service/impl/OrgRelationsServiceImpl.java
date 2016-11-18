@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -38,6 +39,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	@Autowired
 	private OrgSpocService orgSpocService;
@@ -120,10 +124,10 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		if(jsonObj.has("level")){
 			//orgRelations.setLevel(jsonObj.getString("level"));
 			orgRelations.setInitiatorLevel(jsonObj.getString("level"));
-			orgRelations.setResponderLevel("Level-5");
+			orgRelations.setResponderLevel("Tier-5");
 		}else{
-			orgRelations.setInitiatorLevel("Level-5");
-			orgRelations.setResponderLevel("Level-5");
+			orgRelations.setInitiatorLevel("Tier-5");
+			orgRelations.setResponderLevel("Tier-5");
 		}
 		orgRelationsList.add(orgRelations);
 		return orgRelationsList;
@@ -185,7 +189,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 
 	@Override
 	public List<OrgSpoc> getAllVendorsContactListByOrgLocationId(Long loginUserId,Long orgLocationId, String relationType) throws Exception {
-		List<Long> userIds = userService.getAllUserIdsByReportingManagerId(loginUserId);
+		List<Long> userIds = userRoleService.getAllUserIdsByReportingManagerId(loginUserId);
 		return orgRelationsDao.getAllVendorsContactListByOrgLocationId(loginUserId,userIds,orgLocationId, relationType);
 	}
 
@@ -251,7 +255,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 
 	@Override
 	public List<OrgSpoc> getAllVendorsContactFilterListByOrgLocationId(Long loginUserId,Long orgLocationId, String relationType,String status,String vendorIds, String invitationStatus) throws Exception {
-		List<Long> userIds = userService.getAllUserIdsByReportingManagerId(loginUserId);
+		List<Long> userIds = userRoleService.getAllUserIdsByReportingManagerId(loginUserId);
 		List<OrgSpoc> vandorsContactsList =  orgRelationsDao.getAllVendorsContactFilterListByOrgLocationId(loginUserId,userIds,orgLocationId, relationType,status,vendorIds,invitationStatus);
 	 
 		if(vandorsContactsList != null && !vandorsContactsList.isEmpty()){

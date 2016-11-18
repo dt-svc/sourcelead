@@ -144,7 +144,7 @@ function vendorContacts(orgRelationID,clientLocationId){
 				                  	}
 				   	        		
 				   	        		if(opt.ownerUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'New'){
-				   	        			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendSpocInvitation('+opt.spocUserId+','+orgRelationID+','+vendorLocationId+');">Send</a></b>';
+				   	        			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendSpocInvitation('+opt.spocUserId+','+orgRelationID+','+vendorLocationId+','+opt.id+');">Send</a></b>';
 				   	        		}
 				   	        		if(opt.spocUserId != "${SourceLeadWeb_userId}" && opt.ownerUserId != "${SourceLeadWeb_userId}" && opt.invitationStatus == 'New'){
 				   	        			result = result +' ---';
@@ -155,7 +155,7 @@ function vendorContacts(orgRelationID,clientLocationId){
 				   	        		}
 				   	        		
 				   	        		if(opt.ownerUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'Sent'){
-				   	        			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendSpocInvitation('+opt.spocUserId+','+orgRelationID+','+vendorLocationId+');">Resend</a></b>';
+				   	        			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendSpocInvitation('+opt.spocUserId+','+orgRelationID+','+vendorLocationId+','+opt.id+');">Resend</a></b>';
 				   	        		}
 				   	        		
 				   	        		if(opt.invitationStatus == 'Accepted'){ 
@@ -271,13 +271,13 @@ $(".project_inn_mask").fadeOut(200);
 
 <!-- This script is for resending the invitation mail -->
 <script type="text/javascript">
-function resendSpocInvitation(spocUserId,orgRelationID,vendorLocationId){
+function resendSpocInvitation(spocUserId,orgRelationID,vendorLocationId,spocId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(spocUserId != null && spocUserId != ""){
 	//	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&responderType=Vendor&orgRelationID="+orgRelationID, 
+			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&orgSpocId="+spocId+"&responderType=Vendor&orgRelationID="+orgRelationID, 
 			        success: function(result) {
 			        	//$("#loading").removeAttr("style"); 
 			        	vendorContactList(orgRelationID,vendorLocationId);
@@ -313,9 +313,9 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'	<div class="form-horizontal clearfix">';
 	result = result  +'                  </div>  ';      
 	
-	result = result  +'	 <div class="clearfix mb10">';
+	result = result  +'	 <div class="clearfix mb10" id="EmailIdDiv">';
 	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	    <input type="text" class="form-control input-sm" name="email" id="EmailId" value="" onKeyUp="validateSpocEmail('+orgRelationID+');" onblur="getSpocUserDetails('+clientLocationId+');" field-name="Email" placeholder="Email Id *" data-validation="required">';
+	result = result  +'	    <input type="text" class="form-control input-sm" name="email" id="EmailId" value=""  onblur=" validateEmail('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" field-name="Email" placeholder="Email Id *" data-validation="required">';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
@@ -456,7 +456,7 @@ $('html').click(function(){
 			$("#addClientContact").addClass('button').val('Processing..');
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId,
+						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId+"&responderType=Vendor",
 						success : function(result) {
 							$("#popUpDivContact").removeClass("edit-details-active");
 							vendorContactList(orgRelationId,vendorLocationId);
@@ -484,7 +484,7 @@ $('html').click(function(){
 </script> 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
  function validateSpocEmail(orgRelationId) {
 	 var EmailId = document.getElementById("EmailId").value; 
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
@@ -512,11 +512,12 @@ $('html').click(function(){
 		    });
 	 }
  }
- </script>
+ </script> -->
  
  
  <script type="text/javascript">
-function getSpocUserDetails(orgLocationId){
+function getSpocUserDetails(orgLocationId,orgRelationID){
+	getOwners(orgRelationID);
 	var email = document.getElementById("EmailId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(email){
@@ -616,5 +617,67 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 		    	vendorContactList(orgRelationId,vendorLocationId);
 		    }
 	   });
+}
+</script>
+
+<script type="text/javascript">
+ function getOwners(orgRelationID) {
+	 var email = document.getElementById("EmailId").value; 
+	 var orgRelationId = orgRelationID;
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(email != null && email != "" && email != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllOwners?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgRelationId="+orgRelationId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		if(i == 0){
+			        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}
+			        		
+					}
+		        	$("#owner").empty();
+			        $("#owner").append(output);
+			        $('#owner').trigger("chosen:updated");
+		        },
+		    });
+	 }
+	
+ }
+</script>
+
+<script type="text/javascript">
+function validateEmail(orgRelationID){
+	 getOwners(orgRelationID);
+	var email = document.getElementById("EmailId").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(email != null){
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/validateClientOrVendorEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+			success : function(data) {
+				var result = data;
+				if(result == 'Invalid Email') {
+					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					$("input#EmailId").after( "<p class='jquery_form_error_message'>" + email + " should not your org users email</span>");
+					document.getElementById("EmailId").setAttribute( 'record-exist', 'yes');
+					document.getElementById("EmailId").setAttribute( 'record-exist-errorMsg', email +"  should not your org users email");
+					
+				}else if(result == 'Valid Email') {
+					$('input#EmailId').removeAttr("class record-exist record-exist-errormsg");
+					$('input#EmailId').attr('class','valid form-control');
+					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					
+				}
+			},
+
+		});
+	}
 }
 </script>

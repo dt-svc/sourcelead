@@ -140,6 +140,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "REQUIREMENT_SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
 	private REQUIREMENT_SUBMISSION_STATUS requirementSubmissionStatus;
+	
+	@Column(name = "REQUIREMENT_SUBMISSION_PREVIOUS_STATUS")
+	@Enumerated(EnumType.STRING)
+	private REQUIREMENT_SUBMISSION_STATUS requirementSubmissionPreviousStatus;
 
 	
 	@Column(name = "SUBMISSION_TEMPLATE_JSON_STRING", columnDefinition = "TEXT default NULL")
@@ -216,6 +220,37 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private Integer highestLevel;
+	
+	@Transient
+	private String noOfApplicants;
+	
+	@Transient
+	private String noOfShortlistedApplicants;
+	
+	@Transient
+	private String noOfSubmittedApplicants;
+	
+	@Transient
+	private String noOfInterviewedApplicants;
+	
+	@Transient
+	private String noOfOfferedApplicants;
+	
+	@Transient
+	private String clientContactName;
+	
+	@Transient
+	private String clientContactEmail;
+	
+	@Transient
+	private String isLoginUserAsTeamMember;
+	
+	@Transient
+	private String isLoginUserAsApprover;
+	
+	@Transient
+	private String isLoginUserAsManager;
+	
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -660,6 +695,94 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setHighestLevel(Integer highestLevel) {
 		this.highestLevel = highestLevel;
+	}
+
+	public String getNoOfApplicants() {
+		return noOfApplicants;
+	}
+
+	public void setNoOfApplicants(String noOfApplicants) {
+		this.noOfApplicants = noOfApplicants;
+	}
+
+	public String getNoOfShortlistedApplicants() {
+		return noOfShortlistedApplicants;
+	}
+
+	public void setNoOfShortlistedApplicants(String noOfShortlistedApplicants) {
+		this.noOfShortlistedApplicants = noOfShortlistedApplicants;
+	}
+
+	public String getNoOfSubmittedApplicants() {
+		return noOfSubmittedApplicants;
+	}
+
+	public void setNoOfSubmittedApplicants(String noOfSubmittedApplicants) {
+		this.noOfSubmittedApplicants = noOfSubmittedApplicants;
+	}
+
+	public String getNoOfInterviewedApplicants() {
+		return noOfInterviewedApplicants;
+	}
+
+	public void setNoOfInterviewedApplicants(String noOfInterviewedApplicants) {
+		this.noOfInterviewedApplicants = noOfInterviewedApplicants;
+	}
+
+	public String getNoOfOfferedApplicants() {
+		return noOfOfferedApplicants;
+	}
+
+	public void setNoOfOfferedApplicants(String noOfOfferedApplicants) {
+		this.noOfOfferedApplicants = noOfOfferedApplicants;
+	}
+
+	public String getClientContactName() {
+		return clientContactName;
+	}
+
+	public void setClientContactName(String clientContactName) {
+		this.clientContactName = clientContactName;
+	}
+
+	public String getClientContactEmail() {
+		return clientContactEmail;
+	}
+
+	public void setClientContactEmail(String clientContactEmail) {
+		this.clientContactEmail = clientContactEmail;
+	}
+
+	public String getIsLoginUserAsTeamMember() {
+		return isLoginUserAsTeamMember;
+	}
+
+	public void setIsLoginUserAsTeamMember(String isLoginUserAsTeamMember) {
+		this.isLoginUserAsTeamMember = isLoginUserAsTeamMember;
+	}
+
+	public String getIsLoginUserAsApprover() {
+		return isLoginUserAsApprover;
+	}
+
+	public void setIsLoginUserAsApprover(String isLoginUserAsApprover) {
+		this.isLoginUserAsApprover = isLoginUserAsApprover;
+	}
+
+	public String getIsLoginUserAsManager() {
+		return isLoginUserAsManager;
+	}
+
+	public void setIsLoginUserAsManager(String isLoginUserAsManager) {
+		this.isLoginUserAsManager = isLoginUserAsManager;
+	}
+
+	public REQUIREMENT_SUBMISSION_STATUS getRequirementSubmissionPreviousStatus() {
+		return requirementSubmissionPreviousStatus;
+	}
+
+	public void setRequirementSubmissionPreviousStatus(REQUIREMENT_SUBMISSION_STATUS requirementSubmissionPreviousStatus) {
+		this.requirementSubmissionPreviousStatus = requirementSubmissionPreviousStatus;
 	}
 
 }

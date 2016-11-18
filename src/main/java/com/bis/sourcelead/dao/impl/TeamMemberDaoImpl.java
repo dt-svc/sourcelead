@@ -64,16 +64,16 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 	   * @throws NullPointer
 	 */
 
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<TeamMembers> getTeamMembersListByTeamID(Long teamId) throws Exception {
+	public List<TeamMembers> getTeamMembersListByTeamID(Long teamId,Long orgLocationID) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from TeamMembers tm  where tm.teamId =:teamId and tm.status = '1'";
-		return session.createQuery(query).setLong("teamId", teamId).setCacheable(true).list();
+		String query = "from TeamMembers tm  left join fetch tm.memberUserId   left join fetch tm.teamId team   left join fetch team.ownerUserId where tm.teamId =:teamId and tm.status = '1' and team.orgLocationsId.id=:orgLocationID";
+		return session.createQuery(query).setLong("teamId", teamId).setLong("orgLocationID", orgLocationID).setCacheable(true).list();
 		
 	}
-
 
 	@Override
 	public TeamMembers getTeamMemberByIdAndLocationId(Long teamMmeberId,Long orgLocationId) throws Exception {
@@ -98,9 +98,9 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 			if (teamMembers != null) {
 				session.saveOrUpdate(teamMembers);
 			}
-			logger.debug("Candidate Stored Successfully");
+			logger.debug("TeamMembers Stored Successfully");
 		} catch (Exception exception) {
-			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"Candidate"));
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"TeamMembers"));
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return teamMembers;
@@ -117,9 +117,14 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 		return (TeamMembers) session.get(TeamMembers.class, teamMemberId);
 		
 	}
-	
-	
-	
-	 
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TeamMembers> getTeamMembersListByLocationId(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from TeamMembers tm    left join fetch tm.memberUserId   left join fetch tm.teamId team   left join fetch team.ownerUserId where team.orgLocationsId.id =:orgLocationId and tm.status = '1'";
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	}
 
 }

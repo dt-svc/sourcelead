@@ -9,15 +9,14 @@
 	rel="stylesheet" type="text/css">
 <link rel="stylesheet"
 	href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="resources/css/chosen.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 
@@ -63,7 +62,7 @@
 		<div class="pull-left">
 			<h2>Create Project</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo;<a href="projectDashboard">ProjectList</a> &raquo;Create Project
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/projectDashboard'/>">ProjectList</a> &raquo;Create Project
 	</section>
 	<div class="content-area clearfix">
 		<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
@@ -91,7 +90,7 @@
 						<div class="form-group">
 							<label class="col-md-3"> Project Description </label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_Space validate_length length10-5000"
+								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-5000"
 									data-validation-optional="true"></textarea>
 								<span class="hidden">Project Description</span>
 							</div>
@@ -196,7 +195,7 @@
 								class="text-danger">*</span></label>
 							<div class="col-md-9">
 								<div class="form-icon-min">
-									<select class="form-control select-bg" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
+									<select class="form-control chosen-select" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
 										<option value="">-- Select Manager --</option>
 										<c:forEach var="option" items="${user_List}">
 											<option value="${option.id}">${option.firstName}
@@ -211,7 +210,7 @@
 						<div class="form-group level-second">
 							<label class="col-md-3" for="Level-II">Level-II</label>
 							<div class="col-md-9">
-								<select class="form-control select-bg" name="level2Manager" id="level2Manager">
+								<select class="form-control chosen-select" name="level2Manager" id="level2Manager">
 									<option value=''>-- Select Manager --</option>
 									<c:forEach var="option" items="${user_List}">
 										<option value="${option.id}">${option.firstName}
@@ -225,12 +224,12 @@
 							<label class="col-md-3">Client</label>
 							<div class="col-md-9">
 								<div class="form-icon">
-									<select class="form-control select-bg" name="selectClient" id="addClientId">
+									<select class="form-control select-bg chosen-select" name="selectClient" id="addClientId">
 										<option value=''>-- Select Client --</option>
 										<c:forEach var="option" items="${add_clientList}">
 											<option value="${option.orgid}">${option.orgName}</option>
 										</c:forEach>
-									</select> <i class="fa fa-plus btn btn-default formic1" data-toggle="modal" onclick="flushProject();" data-target="#addClient"></i>
+									</select> 
 								</div>
 								<span class="hidden">Enter Project Id</span>
 							</div>
@@ -258,7 +257,7 @@
 												<h4 class="modal-title">Assign Employees</h4>
 											</div>
 											<div class="modal-body clearfix">
-												<div class="form-horizontal row custom-form">
+												<div class="form-horizontal row custom-form hidden">
 													<div class="col-xs-12 col-md-12 col-lg-12">
 														<div class="input-group">
 															<input type="search" class="form-control"  placeholder="Name / Email" id="searchByName">
@@ -266,7 +265,7 @@
 														</div>
 													</div>
 												</div>
-												<div class="modal-body-custom mt clearfix"
+												<div class="modal-body-custom mt clearfix over"
 													id="employeesList"></div>
 											</div>
 											<div class="modal-footer">
@@ -353,7 +352,7 @@
 										data-validation="required validate_email" onblur="emailVerification();">
 								</div>
 							</div>
-							<div class="form-group">
+							<!-- <div class="form-group">
 								<label class="col-lg-3">Invoice Frequency<span
 									class="text-danger">*</span></label>
 								<div class="col-lg-9">
@@ -365,7 +364,7 @@
 										<option>Monthly</option>
 									</select>
 								</div>
-							</div>
+							</div> -->
 							<div class="form-group">
 								<label class="col-lg-3"></label>
 								<div class="col-lg-9">
@@ -418,14 +417,14 @@
                        </div>
                        
                        <div class="form-group">
-			              <label class="col-md-3">Level</label>
+			              <label class="col-md-3">Tier</label>
 			              <div class="col-md-9">
 			                  <select class="form-control selectpicker" id="level" name="level">
-			                    <option value="Level-1">Level-1</option>
-			                    <option value="Level-2">Level-2</option>
-			                    <option value="Level-3">Level-3</option>
-			                    <option value="Level-4">Level-4</option>
-			                    <option selected="selected" value="Level-5">Level-5</option>
+			                    <option value="Tier-1">Tier-1</option>
+			                    <option value="Tier-2">Tier-2</option>
+			                    <option value="Tier-3">Tier-3</option>
+			                    <option value="Tier-4">Tier-4</option>
+			                    <option selected="selected" value="Tier-5">Tier-5</option>
 			                  </select>
 			              </div>
                       </div>
@@ -925,9 +924,9 @@ function getOrgDetails()
 						success : function(data) {
 							var json = JSON.parse(data);
 							var output = "";
-	
-							output = output + ' <table cols="0" class="table table-bordered table-striped  clearfix">';
-							output = output + ' <tbody>';
+							output = output+' <div class="wrap_employeeTable">';
+							output = output + ' <table cols="0" id="assignEmployeePagination" class="table table-bordered table-striped  clearfix">';
+							output = output + ' <thead>';
 							output = output + ' <tr>';
 							output = output + ' <th>&nbsp;&nbsp;</th>';
 							output = output + ' <th>Name</th>';
@@ -936,15 +935,17 @@ function getOrgDetails()
 							output = output + ' <th>Start Date</th>';
 							output = output + ' <th>End Date</th>';
 							output = output + ' </tr>';
+							output = output + ' </thead>';
+							output = output + ' <tbody>';
 							for (var i = 0; i < json.length; i++) {
 								var projectStartDate = $('#StartDate').val();
 								// var projectEndDate = $('#EndDate').val();
 								var opt = json[i];
 								var role = '';
-								if (opt.user.userType != null
-										&& opt.user.userType != ''
-										&& opt.user.userType != 'undefined') {
-									role = opt.user.userType;
+								if (opt.userType != null
+										&& opt.userType != ''
+										&& opt.userType != 'undefined') {
+									role = opt.userType;
 								} else {
 									role = 'Employee';
 								}
@@ -983,10 +984,11 @@ function getOrgDetails()
 							}
 							output = output + ' </tbody>';
 							output = output + ' </table>';
-	
+							output = output+' </div>';
 							$("#employeesList").empty();
 							$("#employeesList").append(output);
-							
+
+							assignEmployeespagination();	
 						  //StartDate And EndDate Pickers
 					       if(json.length > 0){
 						    	for (var i = 0; i < json.length; i++) {
@@ -1041,14 +1043,30 @@ function getOrgDetails()
 </script>
 <!-- this script is for Get the TeamMembers functionality Ends -->
 
+
+
+<script>
+function assignEmployeespagination(){  
+    $('#assignEmployeePagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+		
+    } );
+}
+</script>
+
 <!-- this script is for Assign Employee functionality Start -->
 <script>
 	function assignEmployee() {
 		var result = "";
 		var count = 1;
-		$(".myCheckbox")
-				.each(
-						function() {
+		$(".myCheckbox").each(function() {
 							var localId = this.id;
 							if ($(this).is(':checked')) {
 								var startDate = $("#startDate" + localId).val();
@@ -1069,44 +1087,6 @@ function getOrgDetails()
 	}
 </script>
 <!-- this script is for Assign Employee functionality Ends -->
-
-<!-- this script is for Email verfication functionality Start -->
-<script type="text/javascript">
-	function emailVerification() {
-		var EmailId = document.getElementById("EmailId").value;
-		var sourceleadUrl = '${sourceleadUrl}';
-		$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-		if (EmailId != null && EmailId != "") {
-			$
-					.ajax({
-						type : "POST",
-						url : sourceleadUrl
-								+ "/getEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="
-								+ EmailId,
-						success : function(data) {
-							if (data == 'true') {
-								$("input#EmailId").after(
-										"<p class='jquery_form_error_message'>"
-												+ EmailId
-												+ " is Already Existed</span>");
-								document.getElementById("EmailId")
-										.setAttribute('record-exist', 'yes');
-								document
-										.getElementById("EmailId")
-										.setAttribute('record-exist-errorMsg',
-												EmailId + ' is Already Existed');
-							} else {
-								$('input#EmailId').removeAttr(
-										"record-exist record-exist-errormsg");
-								$('#EmailIdDiv').find(
-										'p.jquery_form_error_message').remove();
-							}
-						},
-					});
-		}
-	}
-</script>
-<!-- this script is for Email verfication functionality Ends -->
 
 <!-- this script is for website validation functionality Start -->
 <script type="text/javascript">
@@ -1288,6 +1268,7 @@ function getChildLevel1Approvers(currentApproverId){
 					}
 		        	$("#level2Manager").empty();
 			        $("#level2Manager").append(output);
+			        $('#level2Manager').trigger("chosen:updated");
 		        },
 		        error: function(e){
 		            
@@ -1342,4 +1323,21 @@ function validateClientName(){
 		});
 	} 
 }
+</script>
+<script src="resources/js/chosen.jquery.min.js"></script> 
+<script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				});
 </script>

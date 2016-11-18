@@ -265,19 +265,25 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             	 var datavalidation = '';	
             	 var novalidation = '';
             	 var datavalidation2 = '';
-            	 var validationCheck = '';
+            	 
         		 if(required == 1){
         			 if(label == 'Email Id'){
         				 datavalidation = 'data-validation="required validate_email validate_Space validate_length length2-50"';
-        				 validationCheck = 'onblur="validateCandidateEmail();"';
         				 
-        			 }else{
+        			 }else if(label == 'Phone Number'){
+        				 datavalidation = 'data-validation="required validate_phone validate_Space validate_length length9-20"';
+        			 }
+        			 else{
         				 datavalidation = 'data-validation="required validate_Space validate_length length2-50"';
         			 }
         			 
         			 datavalidation2 = 'data-validation="required"';
         		 }else{
-        			 datavalidation = 'data-validation="validate_Space validate_length length2-50"';
+        			 if(label == 'Alternate Number'){
+        				 datavalidation = 'data-validation="validate_phone validate_Space validate_length length9-20"';
+        			 }else{
+        				 datavalidation = 'data-validation="validate_Space validate_length length2-50"';
+        			 }
         			 novalidation = 'data-validation-optional="true"';
         		 }
         		 
@@ -303,7 +309,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation+' '+validationCheck+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
+                             '<input type="text" '+datavalidation+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
                              '</div>';
 
                      case 'textarea':

@@ -15,10 +15,12 @@
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="candidatesActivities.jsp"></jsp:include>
+<jsp:include page="candidatesCommentsList.jsp"></jsp:include>
 
 <script>
  window.onload = function() {
  	 candidateList();
+ 	 $("#upcandidateStatus").val('');
 };
 </script>
 
@@ -29,7 +31,7 @@
      2.parameter : csrf token .
      3.ajax url implementation in CandidateListRestController.
 --%>
-
+<input type="hidden" id="noCandidates" name="noCandidates"/>
 <script>
   function candidateList(){ 	 
 	  
@@ -47,12 +49,15 @@
       }else{
           $("#canDiv").removeAttr("onClick");
       }
+
+	var upcandidateStatus =   $('input[name=upcandidateStatus]:checked').val();
+	  
 	  
 	  $("#candidateList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 
 	  $.ajax({
            type : "POST",
-            url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus,       
+            url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&updatedDateRange="+upcandidateStatus,       
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
@@ -68,7 +73,7 @@
 	                	 result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result = result +"    <th><input type='checkbox' id='checkbox1'/></th>"; 
+	                     result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>"; 
 	                     result = result +"    <th>Name</th>"; 
 	                     result = result +"    <th>Designation</th>"; 
 	                     result = result +"    <th>Position type</th>"; 
@@ -100,7 +105,11 @@
 				            	}else{
 				            		address = "----";
 				            	}
-				            	
+				            	if(opt.candidateUpdateDateToString != null && opt.candidateUpdateDateToString != 'undefined' && opt.candidateUpdateDateToString != ""){
+				            		candidateUpdateDateToString = opt.candidateUpdateDateToString; 
+				            	}else{
+				            		candidateUpdateDateToString = "---";
+				            	}
 		                     result = result +"<tr>";
 			                 result = result +"  <td><input type='checkbox' id='checkbox12'/></td>";
 			                 result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
@@ -114,23 +123,23 @@
 			                 result = result +"  <td><div ><span>"+opt.email+"</span></div></td>";
 			                 result = result +"  <td><div>"+mobilePhone+"</div></td>";
 			                 result = result +"  <td><div><span title='"+address+"'>"+address+"</span></div></td>";
-			                 result = result +"  <td><div>"+opt.candidateUpdateDateToString+"</div></td>";
+			                 result = result +"  <td><div>"+candidateUpdateDateToString+"</div></td>";
 			                 result = result +"</tr>"; 
 	                     }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
+	                     $("#noCandidates").val('');
 	                     $("#candidateList").append(result);
 	                     cpagination(); 
 			    	} 
                  }else{
                 	 $("#candidateList").removeAttr("style");
   	    	         var result ="";
-		    	    
 					 result = result+"			<div class='blank-pages'>";
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 					 result = result+"			        <p>No Candidates Found</p>";
 					 result = result+"			 </div>";
-					
+					$("#noCandidates").val("nocandidate");
 					$("#candidateList").empty();
 				    $("#candidateList").append(result); 
                  }
@@ -216,16 +225,16 @@ function clientSideBar(candidateId){
 	                	
 	                	 
 	                	 result = result+'<form id="candidate_form" name="candidate_form" method="post" >';
-			             result = result+'  <div class="profile_details clearfix" style="margin-bottom:20px;">';
+			             result = result+'  <div class="profile_details clearfix mb">';
 			             result = result+'               <div class="col-md-6">';
 			             result = result+'                   <div class="media">';
 			             
 			             result = result+'<div class="col-xs-12 col-sm-5 col-md-5">';
 			             result = result+'<div id="candidateImageId">';
-			             result = result+'<div class="well text-center clearfix">';
+			             result = result+'<div class="well well-sm text-center clearfix">';
 						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
 						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
-						 result = result+'  <div class="btn-group uploadfile">';
+						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
 						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
 						 result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
@@ -243,12 +252,11 @@ function clientSideBar(candidateId){
 						 result = result+'  </div>'; */
 						 result = result+'  </div>';
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not support</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
 						 result = result+' </div>';
 						 result = result+' </div>';
 						 result = result+'</form>';
-						  
 						  
 			             /*  result = result+'                     <div class="media-left image-parent">';
 			             result = result+'                     <div class="imageParent">'; */
@@ -276,11 +284,12 @@ function clientSideBar(candidateId){
 			            
 			             result = result+'<ul class="list-inline list-unstyled">';
 			             if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
-			             for (i=0;i < skills.length;i++)
+			              for (i=0;i < skills.length;i++)
 			             {
-			            	 result = result+'<li>'+skills[i]+'</li>';
+			            	  result = result+'<li>'+skills[i]+'</li>';
+			             } 
 			             }
-			             }
+			             
 			             result = result+'</ul>';
 			             
 			             result = result+'                 </div>';
@@ -311,27 +320,65 @@ function clientSideBar(candidateId){
 			                                                  }else{
 			             result = result+'                   <li><i class="fa fa-location-arrow"></i>----</li>';                                  	  
 			                                                  }
-			                                                  if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
-			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.currentRate+'/Per Hour - Current Rate / Salary</li>';
-			                                                  }else{
-			             result = result+'                   <li><i class="fa fa-rupee"></i>----</li>';                                    
-			                                                  }
-			                                                  if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
-			             result = result+'                   <li><i class="fa fa-rupee"></i>'+json.expectedRate+'/Per Hour - Expected Rate / Salary</li>';
-			                                                  }else{
-			             result = result+'                   <li><i class="fa fa-rupee"></i>----</li>';                                  	  
-			                                                  }
+			             result = result+'                   <li><i class="fa fa-rupee"></i><b>Current Rate:</b>  ';
+			             
+		             	 if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
+			             	result = result+'                    '+json.currentRate+'/Per Hour';
+			             }else{
+			             	result = result+'                     ---- ';                                    
+			             }
+		             	 result = result+'				     <b>Expected:</b> ';
+			             if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
+			             	result = result+'                    '+json.expectedRate+'/Per Hour';
+			             }else{
+			             	result = result+'                     ----';                                  	  
+			             }
+			             result = result+'					 </li>'; 
+			             
 			             result = result+'                 </ul>';
+			            /* New comments div creation Nov 8th, 2016 */
+			            
+			            result = result+'<div class="comments-div clearfix" id="latestMessage">';
+			            result = result+'    <div class="commentsimg">';
+			            result = result+'    <i class="fa fa-comments"></i>';
+			            result = result+'        <div class="commentsimg-inner">';
+			            
+			            result = result+'        	<img src="resources/images/userprofile-img.png" alt="User Comment" title="User Comment">';
+			            result = result+'        </div>';
+			            result = result+'    </div>';
+			            result = result+'     <div class="comments-content">';
+			            result = result+'         <div class="pull-left">';
+			            result = result+'         <p class="comment-by"></p>';
+			            result = result+'         <p class="comment-text"></p>';
+			            result = result+'         </div>';
+			            result = result+'         <div class="pull-right cmt-button">';
+			            result = result+'          <span class="comments-button">';
+			            
+			            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+')">';
+			            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
+			            result = result+'            </button>';
+			            result = result+'            <div class="add-comment">';
+			            result = result+'            </div>';
+			            result = result+'          </span>';
+			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">0</span></a>';
+			 			result = result+'		</div>';
+			            result = result+'     </div>';
+			            result = result+'</div>';
+			 		    /* New comments div creation Nov 8th, 2016 */
+			             
+			             
+			             
 			             result = result+'               </div>';
 			             result = result+'			</div>';
 			             result = result+'   <div class="proj_close"></div>';
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
-			             result = result+'     <ul class="project-tabs-menu">';
-			             result = result+'       <li class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
-			             result = result+'       <li><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');" >Resume</a></li>';
-			             result = result+'       <li><a href="#tab-3" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
-			             result = result+'       <li><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
-			             result = result+'       <li><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
+			             result = result+'     <ul class="project-tabs-menu">'; 
+			             result = result+'       <li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
+			             result = result+'       <li id="candidateResumeTab"><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');" >Resume</a></li>';
+			             result = result+'       <li id="candidateEmployersTab"><a href="#tab-3" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
+			             result = result+'       <li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
+			             result = result+'       <li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
+			             result = result+'       <li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
 			             /* result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; */
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
@@ -352,6 +399,8 @@ function clientSideBar(candidateId){
 						 result = result + '</div>';
 						 
 						 result = result + '<div id="tab-6" class="project_tabs_inn">';
+						 result = result + '</div>';
+						 result = result + '<div id="tab-7" class="project_tabs_inn">';
 						 result = result + '</div>';
 			             result = result+'     </div>';
 			             result = result+'   </div>';
@@ -383,6 +432,8 @@ function clientSideBar(candidateId){
          },
            
       }); 
+	  
+	  savedCommentAndCount(candidateId);
 				
 }
 </script>
@@ -548,14 +599,11 @@ function refreshImageBlock(candidateId){
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
 						 result = result+' </div>';
 						 $("#candidateImageId").append(result);
-						 
-			    	} 
-                } 
-         },
-           
+			    	}
+                }
+         	},
       }); 
-				
-}
+   }
 </script>
 
 
@@ -571,7 +619,9 @@ function loadFile(event,candidateId){
 	    var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
 	    document.getElementById("errorImage").style.display="none"; 
 	    
-	    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) != 'jpg'){
+	    var extension = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1).toLowerCase();
+	    
+	    if(extension != 'jpg'){
 	    	output.src = URL.createObjectURL(event.target.files[0]);
 	    	
 	    	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
@@ -653,18 +703,17 @@ function cancel(candidateId){
     <div class="pull-left">
       <h2>Candidate List</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="dashboard">Home </a> &raquo;Candidate List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo;Candidate List</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
       <div class="timesheet_head">
         <ul>
-          <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
+          <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
             <div class="export_pop">
               <ul>
-                <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-                <li>Excel<i class="fa fa-file-excel-o"></i></li>
-                <li>Word<i class="fa fa-file-word-o"></i></li>
+                <li onclick="exportToPdf();">PDF<i class="fa fa-file-pdf-o"></i></li>
+                <li onclick="exportToExcel();">Excel<i class="fa fa-file-excel-o"></i></li>
               </ul>
             </div>
           </li>
@@ -672,8 +721,8 @@ function cancel(candidateId){
            <li><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
                   	<ul>
-	                    <li><input id="candidateAll" type="radio" name="candidateStatus" value ="2" onclick="candidateList();"  ><label for="c5">All</label></li>
-						<li><input id="candidateActive" type="radio" name="candidateStatus" value ="1" checked onclick="candidateList();"><label for="c6">Active</label></li>
+	                    <li><input id="candidateAll" type="radio" name="candidateStatus" checked  value ="2" onclick="candidateList();"  ><label for="c5">All</label></li>
+						<li><input id="candidateActive" type="radio" name="candidateStatus" value ="1"  onclick="candidateList();"><label for="c6">Active</label></li>
 						<li><input id="candidateInActive" name="candidateStatus" type="radio" value ="0"  onclick="candidateList();"><label for="c7">In Active</label></li>
                     </ul>
                   </div>                	
@@ -682,20 +731,21 @@ function cancel(candidateId){
             <li><i class="fa fa-filter"></i><span id="candidateUpdiv"> UpDated Candidates </span><i class="glyphicon glyphicon-play" id="filter1ApprovePop"></i>|
               	<div id="filter1ApprovedPop" class="approved_pop">
                   	<ul>
-	                    <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="DayAgo" checked onclick="candidateList();"  ><label for="c5">1 Day ago</label></li>
-						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3DayAgo"  onclick="candidateList();"><label for="c6">3 Day ago</label></li>
-						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="1WeekAgo"  onclick="candidateList();"><label for="c7">1 Week ago</label></li>
-						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="3WeekAgo"  onclick="candidateList();"><label for="c7">2 Week ago</label></li>
-						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="MonthAgo"  onclick="candidateList();"><label for="c7">Month ago</label></li>
-	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="3Months"  onclick="candidateList();"><label for="c7">3 Months</label></li>
+	                    <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="c5">1 Day ago</label></li>
+						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="c6">3 Day ago</label></li>
+						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7"  onclick="candidateList();"><label for="c7">1 Week ago</label></li>
+						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="21"  onclick="candidateList();"><label for="c7">2 Week ago</label></li>
+						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30"  onclick="candidateList();"><label for="c7">Month ago</label></li>
+	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"  onclick="candidateList();"><label for="c7">3 Months</label></li>
                     </ul>
                   </div>                	
           </li>  
           
           <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
+         
           <div class="clearfix"></div>
         </ul>
-         
+        
         <div class="clearfix"></div>
       </div>
       <div class="candidate_wrap_table">
@@ -741,6 +791,8 @@ $(document).ready(function() {
 
 // Approved Popup
 $(document).ready(function() {
+	
+	
     $("#appro-pop").click(function(){
 		$(".approved_pop").slideToggle(200);
 	});
@@ -750,6 +802,7 @@ $(document).ready(function() {
     $(".approved_pop, #appro-pop").click(function(e) {
         e.stopPropagation();
     });	
+    
 });
 
 // Export Popup
@@ -806,6 +859,8 @@ $(document).ready(function() {
 
 <script>
 $(document).ready(function() {
+	
+	
     $("#filter1ApprovePop").click(function(){
 		$("#filter1ApprovedPop").slideToggle(200);
 	});
@@ -833,6 +888,208 @@ $(document).ready(function() {
 
 </script>
 
+<script>
+function toggle(source) {
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i] != source)
+            checkboxes[i].checked = source.checked;
+        
+    }
+$('input:checkbox:not(#checkAll)').click(function() {
+    if(!this.checked) {
+        $('#checkAll').removeAttr('checked');
+    }
+});
+}
+</script>
 
+<script>
+function exportToPdf(){
+	var isCandidatesAvailable= $("#noCandidates").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	  var candFilterRadio = $('input[name=candidateStatus]');
+	  var candidateStatus = candFilterRadio.filter(':checked').val();
+	  if(candidateStatus == 1){
+        $("#canDiv").text("Active Candidates");
+    }else if(candidateStatus == 0){
+  	  $("#canDiv").text("In Active Candidates");
+    }else if(candidateStatus == 'ALL'){
+  	  $("#canDiv").text("All Candidates");
+    }else{
+        $("#canDiv").removeAttr("onClick");
+    }
+	  if(isCandidatesAvailable == ''){
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&exportType=pdf";	
+	  }
+}
+
+</script>
+
+<script>
+function exportToExcel(){
+	var isCandidatesAvailable= $("#noCandidates").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	  var candFilterRadio = $('input[name=candidateStatus]');
+	  var candidateStatus = candFilterRadio.filter(':checked').val();
+	  if(candidateStatus == 1){
+         $("#canDiv").text("Active Candidates");
+     }else if(candidateStatus == 0){
+   	  $("#canDiv").text("In Active Candidates");
+     }else if(candidateStatus == 'ALL'){
+   	  $("#canDiv").text("All Candidates");
+     }else{
+         $("#canDiv").removeAttr("onClick");
+     }
+	  if(isCandidatesAvailable == ''){
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&exportType=xls";	
+	  }
+}
+</script>
+
+<script>
+function showComment(candidateId){
+	var result = "";
+		result = result+'	        <form role="form" id="candidateComments_form" name="candidateComments_form" method="post">';
+	    result = result+'              <textarea rows="1" class="form-control clearfix mb10" placeholder="Comments here..." id="comment" name="comment" data-validation="required validate_length length2-500" field-name="Comment"></textarea>';
+	    result = result+'              <span class="clearfix pull-right">';
+	    result = result+'              		<input type="button" id="submit_comment" value="Add" class="btn btn-sm btn-success" onClick="addComment('+candidateId+')">';
+	    result = result+'              		<input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="closeComment()">';
+	    result = result+'              </span>';
+		result = result+'	        </form>';
+	$('.add-comment').empty();
+	$('.add-comment').append(result);
+	$('.add-comment').toggle(200);
+}
+function closeComment(){
+	$('.add-comment').toggle(200);
+}
+</script>
+
+
+<%-- 
+     @author : Venkat Kesav
+     this script is for saving Comment
+     1.usage     : onclick
+     2.parameter : candidateId.
+     3.ajax url implementation in CandidateResumeRestController.
+--%>
+<script type="text/javascript">
+	function addComment(candidateId){
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			        borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+		         }; 
+			 if ($('#candidateComments_form').validate(false, validationSettings)){
+				var frm = $('#candidateComments_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, "");
+				var form = $('#candidateComments_form')[0];
+	      		var formData = new FormData(form); 
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#submit_comment").attr("disabled", "disabled");
+         		$("#submit_comment" ).addClass('button').val('Processing..');
+				//It will escape all the special characters
+		        var jsonData = encodeURIComponent(con);
+				$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/saveCandidateComment?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId,
+						success : function(result) {
+							savedCommentAndCount(candidateId);
+							 /* if( result.indexOf('Sign In') >= 0){
+					    		location.replace(sourceleadUrl);
+					    	 }
+		            		 else if (result.indexOf('exception') >= 0) {
+		            			 location.replace(sourceleadUrl+"/errorPage");
+		            		 }
+		            		 else{
+						 		$("#popUpDivResume").removeClass("edit-details-active");
+						 		candidateResumesList(candidateId);
+		            		 } */
+						},
+					});
+					$('.add-comment').toggle(200);
+					return true;
+			 }else{ 
+					return false;
+			 }
+		}
+		$('body').on('blur', '#candidateComments_form', function() {
+		$("#candidateComments_form").showHelpOnFocus();
+		$("#candidateComments_form").validateOnBlur(false, validationSettings);
+		
+	});
+</script>
+
+
+
+
+<script>
+function savedCommentAndCount(candidateId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+         success :function(data) {
+        	 var result = "";
+              if(data != null && data != 'undefined' && data != ""){
+              	 	 var json = JSON.parse(data);
+            		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+            		 else if (data.indexOf('exception') >= 0) {
+            			 location.replace(sourceleadUrl+"/errorPage");
+            		 }
+            		 else{
+            			 var totalComments = 0;
+            			 if(json.length>0){
+            				totalComments = json.length;
+         	            	var report = json[0];
+	 			            
+	 			            result = result+'    <div class="commentsimg">';
+				            result = result+'    <i class="fa fa-comments"></i>';
+				            result = result+'        <div class="commentsimg-inner">';
+				            
+				            result = result+'        	<img src="resources/images/userprofile-img.png" alt="User Comment" title="User Comment">';
+				            result = result+'        </div>';
+				            result = result+'    </div>';
+				            result = result+'     <div class="comments-content">';
+				            result = result+'         <div class="pull-left" id="latestMessage">';
+				            result = result+'         <p class="comment-by">';
+				            result = result+'            By <span class="text-danger">'+report.commentAuthor+'</span>';
+				            result = result+'            <span class="small">('+report.commentTime+')</span></p>';
+				            result = result+'         <p class="comment-text">'+report.comment+'</p>';
+				            result = result+'         </div>';
+				            result = result+'         <div class="pull-right cmt-button">';
+				            result = result+'          <span class="comments-button">';
+				            
+				            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+')">';
+				            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
+				            result = result+'            </button>';
+				            result = result+'            <div class="add-comment">';
+				            result = result+'            </div>';
+				            result = result+'          </span>';
+				            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
+				 			result = result+'		</div>';
+				            result = result+'     </div>';
+	 			           
+	 			           $("#latestMessage").empty();
+	 			           $("#latestMessage").append(result);
+            			 }
+            			 
+            		 }
+              }
+			},
+      });
+}
+</script>
     
 <jsp:include page="../masterFooter.jsp" />

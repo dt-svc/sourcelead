@@ -6,7 +6,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -26,6 +26,7 @@ import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.RegistrationService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -53,6 +54,9 @@ public class RegistrationRestController {
 	 OrgService orgService;
 	 
 	 @Autowired
+     UserRoleService userRoleService;
+	 
+	 @Autowired
 	 CommonUtil commonUtil;
 	 
 	 @RequestMapping(value = "/getOrgsList")
@@ -64,13 +68,26 @@ public class RegistrationRestController {
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		List<Org> orgsList = new ArrayList<>();
 
+		ArrayList<Org> regOrgsList = new ArrayList<Org>();
+
 		try {
 			orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName);
+			for(Org regOrg : orgsList){
+				if(regOrg.getUser() != null){
+					regOrg.setEmail(regOrg.getUser().getEmail());
+					regOrg.setIsMailSent(regOrg.getUser().getIsMailSent());
+					UserRole userRole =userRoleService.getLoginUserPrimaryRole(regOrg.getUser().getId());
+	                if(userRole != null){
+	                    regOrg.setUserState(userRole.getUserState());
+	                }
+					regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
+				}
+				regOrgsList.add(regOrg);
+			}
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-
-		resultJson = commonUtil.toJSON(orgsList);
+		resultJson = commonUtil.toJSON(regOrgsList);
 		return resultJson;
 
 	}
@@ -86,13 +103,14 @@ public class RegistrationRestController {
 				Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 				Registration registration =  gson.fromJson(json1,Registration.class);
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			    String[] registredModules =  modules.split(",");
 			    if("Recruiting".equalsIgnoreCase(registredModules[0])){
 			    	if(null == subModules || "".equalsIgnoreCase(subModules)){
 			    		return "Invalid Sub Modules";
 			    	}
 			    }
-				registrationService.addRegistration(registration,user,modules,subModules);
+				registrationService.addRegistration(registration,user,modules,subModules,orgLocations.getId());
 				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", registration.getCompanyName()+" Org has created sucessfully.");
 			} catch (Exception e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
@@ -191,18 +209,29 @@ public class RegistrationRestController {
 	   
 	   @RequestMapping(value = "/validateCompanyName", method = RequestMethod.GET)
 	   public @ResponseBody String validateCompanyName(
-	   		@RequestParam(value="companyName", required=false) String companyName) {
+	   		@RequestParam(value="companyName", required=false) String companyName) throws Exception {
 			String status = null;
 			if(!isNullOrEmpty(companyName)){
-			    boolean flag;
-				try {
-					flag = orgService.isOrgNameExisted(companyName);
+			    boolean flag = false;
+			    List<Org> org =orgService.getOrgs();
+			    for(Org orgList : org ){
+			    	//String Name = companyName.toUpperCase();
+			    	if(orgList.getOrgName().equalsIgnoreCase(companyName)){
+			    		flag = true;
+			    	}
+			    }
+			    if (flag == true) {
+					status = "Company Duplicated";
+				}
+				/*try {
+					
+					flag = orgService.isOrgNameExisted(status);
 					if (flag == true) {
 						status = "Company Duplicated";
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-				}
+				}*/
 			}
 	       return status;
 	   }

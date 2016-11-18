@@ -1,7 +1,11 @@
 package com.bis.sourcelead.dao;
 
 import java.util.List;
+
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
+
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 
@@ -26,7 +30,18 @@ public interface RequirementSubmissionDao {
 	List<RequirementSubmission> getRequirementPerCandidate(Long candudateId)throws Exception;
 	
 	List<RequirementSubmission> getAllSubmissionListByRequirementIdAndSubmissionStage(Long orgLocationsId, Long requirementId,String submissionStatus) throws Exception;
+
+	Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus, String dateRange);
 	
-	Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus);
+	RequirementSubmission getRequirementSubmissionByIdAndSubmissionStatus(Long submissionId,String submissionStatus)throws Exception;
+
+	RequirementSubmission getSubmissionsBySourceSubmissionId(Long sourceSubmissionId, Long orgLocationsId);
+	
+	Integer getAllSubmissionCountByRequirementIdAndSubmissionStage(Long orgLocationsId, Long requirementId,String submissionStatus);
+	
+	RequirementSubmission getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(Long vendorSubmissionId, Long vendororgLocationsId);
+	
+	public Integer getApplicantCountByrequirementIdandAssignedUsercode(Long requirementId, String userCode) throws Exception;
+ 
 	
 }

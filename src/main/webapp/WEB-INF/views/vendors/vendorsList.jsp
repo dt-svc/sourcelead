@@ -29,7 +29,7 @@
                 </span>            	
             </h2>
           </div>
-          <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Vendors list </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Vendors list </div>
         </section>
         
        
@@ -75,14 +75,14 @@
 	                  </li>
                   
 	                
-						<li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Level</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
+						<li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
 		                	<div id="filter2ApprovedPop" class="approved_pop">
 		                    	<ul>
-									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Level-1"  onclick="getVendorLists();"><label>Level-1</label></li>
-									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Level-2"  onclick="getVendorLists();"><label>Level-2</label></li>
-									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Level-3"  onclick="getVendorLists();"><label>Level-3</label></li>
-		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Level-4"  onclick="getVendorLists();"><label>Level-4</label></li>
-		               				<li><input id="c10"  type="checkbox" name="clinetLevel" value ="Level-5"  onclick="getVendorLists();"><label>Level-5</label></li>
+									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Tier-1"  onclick="getVendorLists();"><label>Tier-1</label></li>
+									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Tier-2"  onclick="getVendorLists();"><label>Tier-2</label></li>
+									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Tier-3"  onclick="getVendorLists();"><label>Tier-3</label></li>
+		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Tier-4"  onclick="getVendorLists();"><label>Tier-4</label></li>
+		               				<li><input id="c10"  type="checkbox" name="clinetLevel"value ="Tier-5"  onclick="getVendorLists();"><label>Tier-5</label></li>
 		                        </ul>
 		                    </div>                	
 		                </li>          
@@ -146,7 +146,7 @@ function getVendorLists(){
    	        	result = result +'<th>Location</th>';
    	        	result = result +'<th>No.of Contacts</th>';
    	        	result = result +'<th>Released jobs</th>';
-   	        	result = result +'<th>Level</th>';
+   	        	result = result +'<th>Tier</th>';
    	        	/* result = result +'<th>Actions</th>'; */
    	        	result = result +'</tr>';
    	        	result = result +'</thead>';
@@ -194,7 +194,7 @@ function getVendorLists(){
    	        		}
 	       		
 	       		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
-	       		result = result +' <td><div>10</div></td>';
+	       		result = result +' <td><div>'+report.noOfReleasedJobs+'</div></td>';
 	       		result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.level+'">'+report.level+'</span>';
 	       		/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
    	        		result = result +'</tr>';
@@ -305,7 +305,7 @@ function getVendorContactLists(){
    	        		
    	        		result = result +'<tr>';
    	        		result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
-   	        		result = result +'<td><div><span>'+report.spocEmail+'</span></div></td>';
+   	        		result = result +'<td><div><span title='+report.spocEmail+'>'+report.spocEmail+'</span></div></td>';
    	        		if(report.spocMobilePhone != null && report.spocMobilePhone  != '' && report.spocMobilePhone  != 'undefined'){
    	        			result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
    	        		}else{
@@ -334,7 +334,7 @@ function getVendorContactLists(){
                   	}
    	        		
    	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-   	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.orgRelationId+');">Send</a></b></div></td>';
+   	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Send</a></b></div></td>';
    	        		}
    	        		
    	        		if(report.spocUserId != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
@@ -346,7 +346,7 @@ function getVendorContactLists(){
    	        		}
    	        		
    	        		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
-   	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.orgRelationId+');">Resend</a></b></div></td>';
+   	        			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Resend</a></b></div></td>';
    	        		}
    	        		
    	        		if(report.invitationStatus == 'Accepted'){ 
@@ -380,20 +380,19 @@ function getVendorContactLists(){
 
 <!-- This script is for resending the invitation mail -->
 <script type="text/javascript">
-function resendVendorSpocInvitation(spocUserId,orgRelationId){
+function resendVendorSpocInvitation(spocUserId,orgSpocId,orgRelationId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	
 	if(spocUserId != null && spocUserId != ""){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&responderType=Vendor&orgRelationID="+orgRelationId, 
+			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&orgSpocId="+orgSpocId+"&responderType=Vendor&orgRelationID="+orgRelationId, 
 			        success: function(result) {
 			        	$("#loading").removeAttr("style"); 
 			        	getVendorContactLists();
 			        },
 			    });
-		 }
+		 } 
 	}
   
 </script>
@@ -628,7 +627,7 @@ function pagination1(){
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
-		result = result	+ '<li class="current"><a href="#tab-1" onClick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+');">Details</a></li>';
+		result = result	+ '<li class="current"><a href="#tab-1" id="spocDetailsId" onClick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+');">Details</a></li>';
 		result = result + '<li><a href="#tab-2" onClick="vendorSpocDocuments('+orgRelationId+','+spocLocationId+',\''+spocName+'\','+userId+');">Documents</a></li>'; 
 		/* result = result + '<li><a href="#tab-3">Activity</a></li>';  */
 		result = result + '<div class="clearfix"></div>'
@@ -774,7 +773,7 @@ function pagination1(){
 							result = result + '</div>'; */
 							
 							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>Level:</strong>';
+							result = result + '<strong>Tier:</strong>';
 							if(json.level != null && json.level !='' && json.level !='undefined'){
 							result = result + '<span>'+json.level+'</span><div class="clearfix"></div>';
 							}else{

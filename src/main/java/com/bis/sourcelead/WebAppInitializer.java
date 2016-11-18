@@ -4,8 +4,8 @@ import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 /**
  * This class is used to configure the web application without web.xml
  * 
@@ -19,7 +19,8 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
 		super.onStartup(servletContext);
-		servletContext.addListener(new SourceleadSessionListener());
+		//Session Initialization
+    	servletContext.addListener(new SourceleadSessionListener());
 	}
 	
 	@Override

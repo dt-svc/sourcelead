@@ -44,16 +44,10 @@
       <div class="pull-left">
         <h2>Account Settings</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard'/>">Home</a> &raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
     </section>
     <div class="content-area clearfix">
-      <section class="action-btns clearfix">
-        <ul class="pull-right list-unstyled list-inline">
-          <li><a href="#" class="faclose"><i aria-hidden="true" class="fa fa-close"></i></a></li>
-          <li><a href="#" class="collpase-div"><i aria-hidden="true" class="fa fa-angle-down"></i></a></li>
-        </ul>
-      </section>
-      <div class="clearfix form-area form-horizontal toggle-div remove-div">
+      <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
         <div id="loading"></div> 
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -120,7 +114,7 @@
 						  <div class="form-group">
 							<label class="col-md-4">Job Title</label>
 							<div class="col-md-8">
-							  <input type="text" name="jobTitle" field-name="Job Title" value="${SourceLeadWeb_user.jobTitle}" class="form-control" data-validation-optional="true" data-validation="validate_length length2-100" />
+							  <input type="text" name="jobTitle" field-name="Job Title" readonly="readonly" value="${SourceLeadWeb_userType}" class="form-control" data-validation-optional="true" data-validation="validate_length length2-100" />
 							</div>
 						  </div>
 						  <div class="form-group">
@@ -292,7 +286,9 @@
     var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
     document.getElementById("errorImage").style.display="none"; 
     
-    if(uploadedImage.substring(uploadedImage.lastIndexOf(".")+1) != 'jpg'){
+    var extension = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1).toLowerCase();
+    
+    if(extension != 'jpg'){
     	output.src = URL.createObjectURL(event.target.files[0]);
     	
     	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);

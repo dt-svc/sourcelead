@@ -9,7 +9,11 @@
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
  
  
- 
+ <style type="text/css">
+ table#assignEmployeePagination tr th {
+ width:auto !important;
+ }
+ </style>
  
       <!-- Modal content Assign Team-->
            <div role="dialog" id="assignTeam" class="modal fade">
@@ -20,26 +24,31 @@
                    <h4 class="modal-title">Assign Employees</h4>
                  </div>
                  <div class="modal-body clearfix">
-                   <div class="form-horizontal row custom-form">
-                     <div class="col-xs-12 col-md-12 col-lg-12">
+                   <div class="form-horizontal row custom-form hidden">
+                     <div class="col-xs-12 col-md-12 col-lg-12 ">
                        <div class="input-group">
                          <input type="search" class="form-control" placeholder="Name / Email" id="searchByName" >
                          <span class="input-group-addon bt-primary" onclick="getTeamMembers();"><i class="fa fa-search"></i></span> </div>
                      </div>
                    </div>
-                   <div class="modal-body-custom mt clearfix" id="employeesList">
+                   <div class="modal-body-custom mt clearfix over" id="employeesList">
                    </div>
-                   <div class="col-md-9">
+                   <div class="col-md-12">
+                   
+                   <div class="col-md-6">
 					<div class="checkbox">
 						<label> <input type="checkbox" id="membermailCheckbox" value="Y"
 							name="isMailToTeamMembers"> Mail to Team Members
 						</label>
 					</div>
-				</div>
-                 </div>
-                 <div class="modal-footer">
-                   <button data-dismiss="modal" class="btn btn-primary" type="button" onclick="assignEmployee();">Assign</button>
+					</div>
+					
+                 <div class=" col-md-6 modal-footer">
+                   <button data-dismiss="modal" class="btn btn-primary" type="button" id="assignId" onclick="assignEmployee();">Assign</button>
                    <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                 </div>					
+					
+				</div>
                  </div>
                </div>
              </div>
@@ -58,7 +67,7 @@
                     <div class="form-horizontal custom-form clearfix">
                       <div class="col-xs-12 col-md-12 col-lg-12">
                         <div class="form-group">
-                        <label class="col-lg-3">Frist Name<span class="text-danger">*</span></label>
+                        <label class="col-lg-3">First Name<span class="text-danger">*</span></label>
                         <div class="col-lg-9">
                           <input type="text" class="form-control" value="" name="firstName" id="firstName" field-name="Frist Name" data-validation="required">
                           </div>
@@ -75,7 +84,7 @@
                           <input type="text" class="form-control" value="" name="email" id="EmailId" field-name="Email" data-validation="required validate_email" onblur="emailVerification();">
                           </div>
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                         <label class="col-lg-3">Invoice Frequency<span class="text-danger">*</span></label>
                         <div class="col-lg-9">
                           <select class="form-control" name="invoiceFrequency" id="invoiceFrequency" field-name="Invoice Frequency" data-validation="required">
@@ -86,7 +95,7 @@
                       <option>Monthly</option>
                     </select>
                           </div>
-                        </div>
+                        </div> -->
                         <div class="form-group">
                         <label class="col-lg-3"></label>
                         <div class="col-lg-9">
@@ -342,7 +351,11 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 	  }
 	}
 	else{
-		$("#reasonForProjectDiv").empty().append("<font class='jquery_form_error_message'>Reason is required</font>") ;
+		if(reason){
+			$("#reasonForProjectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+		}else{
+			$("#reasonForProjectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
 	}
 }
 </script>
@@ -365,8 +378,9 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
         success: function(data) {
         	var json = JSON.parse(data);
         	var output = "";
-        	output = output+' <table cols="0" class="table table-bordered table-striped  clearfix">';
-            output = output+' <tbody>';
+        	output = output+' <div class="wrap_employeeTable">';
+        	output = output+' <table cols="0" id="assignEmployeePagination" class="table table-bordered table-striped  clearfix">';
+            output = output+' <thead>';
             output = output+' <tr>';
             output = output+' <th>&nbsp;&nbsp;</th>';
             output = output+' <th>Name</th>';
@@ -375,13 +389,15 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
             output = output+' <th>Start Date</th>';
             output = output+' <th>End Date</th>';
             output = output+' </tr>';
+            output = output+' </thead>';
+            output = output+' <tbody>';
         	for (var i=0; i<json.length; i++)
 			{
      	       // var projectEndDate = $('#EndDate').val();
 	        		var opt = json[i];
 	        		var role = '';
-	        		if(opt.user.userType != null && opt.user.userType != '' && opt.user.userType != 'undefined'){
-	        			role = opt.user.userType; 
+	        		if(opt.userType != null && opt.userType != '' && opt.userType != 'undefined'){
+	        			role = opt.userType; 
 	        		}else{
 	        			role = 'Employee';
 	        		}
@@ -400,8 +416,11 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 			}
         	output = output+' </tbody>';
 	        output = output+' </table>';
+	        output = output+' </div>';
         	$("#employeesList").empty();
 	        $("#employeesList").append(output);
+	        
+	        assignEmployeespagination();
 	        
 	        //StartDate And EndDate Pickers
 		       if(json.length > 0){
@@ -474,6 +493,23 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 	$('#employeeEmail').val('');
 </script>
 
+<script>
+function assignEmployeespagination(){  
+    $('#assignEmployeePagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+		
+    } );
+}
+</script>
+
+
 <!-- this script is for Assign Employee functionality at Projects screen -->
 <script>
 function assignEmployee(){
@@ -487,6 +523,7 @@ function assignEmployee(){
 	    	mailtoMembers = "YES";
 	    }
 	    var sourceleadUrl ='${sourceleadUrl}';
+	    
 	    $(".myCheckbox").each(function(){
 	        var employeeId =this.id;
 	        if($(this).is(':checked')){
@@ -500,7 +537,7 @@ function assignEmployee(){
 		            }
 				})
 	        }
-	    });
+    	});
 }
 </script>
 

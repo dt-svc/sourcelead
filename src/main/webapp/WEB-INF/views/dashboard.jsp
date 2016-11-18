@@ -1,3 +1,6 @@
+
+
+<%-- 
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -189,41 +192,82 @@ function timeSheetSubmissionStatusCount(){
   $('#selector').delay(2000).fadeOut('slow');
 </script> 
 
-<jsp:include page="masterFooter.jsp" />
+<jsp:include page="masterFooter.jsp" /> --%>
 
 
-
-
-
-
+<style>
+.dashboard-widget {
+min-height: 400px !important;
+}
+.dashboard-widget.dashboard-widget-icons{
+min-height: 225px !important;
+}
+.dashboard-widget .blank-pages{
+padding: 0;
+min-height: 100px;
+}
+.side-bar .side-nav ul li span {
+display: inline-block !important;
+float: none !important;
+}
+.custom-datatble table{
+ margin-top: 20px !important;
+ }
+ .custom-datatble .dataTables_filter{
+   top: -35px !important;
+    padding: 0 !important;
+ }
+ .dashboard-datepkr{
+       position:relative;
+}
+/* .dashboard-datepkr input[type="text"]{
+       width:115px;
+       border:1px solid #ccc;
+       margin-right:5px;
+}
+.dashboard-datepkr .fa{
+   position: absolute;
+   right: 10px;
+   top: 4px;
+} */
+</style>
 
  
-<%-- <jsp:include page="masterHeader.jsp" />
+
+ <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+
 
 <section class="content-wraper">
 	    <section class="content-header clearfix">
 	      <div class="pull-left">
 	        <h2>Dashboard</h2>
 	      </div>
-	      <div class="pull-right brud-crum">Home &raquo; Dashboard</div>
+	     <!--  <div class="pull-right brud-crum">Dashboard</div> -->
 	    </section>
+	    
+	    <div class="clearfix row mb">
+	    <c:forEach var="report" items="${SourceLeadWeb_tabsList}">  
+			<c:if test = "${report.tabName == 'Timesheets'}">      
+			   <jsp:include page="dashboardTimesheets.jsp"></jsp:include>  
+			</c:if>
+		 </c:forEach>
+		 <jsp:include page="dashboardRequirement.jsp"></jsp:include> 
+	      	 <%-- <jsp:include page="dashboardTasks.jsp"></jsp:include> --%>
+	    </div>
     
     	<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include>
 	    <div class="clearfix row mb"> 
 	   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
 	    	 <jsp:include page="dashboardInterviews.jsp"></jsp:include>
 	    </div>
+	    
 	    <div class="clearfix row mb"> 
-	      	 <jsp:include page="dashboardTasks.jsp"></jsp:include>
-	      	 <jsp:include page="dashboardTimesheets.jsp"></jsp:include>
-	    </div>
-	    <div class="clearfix row mb"> 
-	   	  <jsp:include page="dashboardTimesheetsApprovals.jsp"></jsp:include>
-	      <jsp:include page="dashboardRequirement.jsp"></jsp:include>
+	   	 <%--  <jsp:include page="dashboardTimesheetsApprovals.jsp"></jsp:include> --%>
 	    </div>
 </section>
 <jsp:include page="masterFooter.jsp" />
- --%>
+

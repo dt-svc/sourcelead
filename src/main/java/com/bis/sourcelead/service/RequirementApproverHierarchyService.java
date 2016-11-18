@@ -17,4 +17,7 @@ public interface RequirementApproverHierarchyService {
 	
 	public List<RequirementApproverHierarchy> getRequirementApproverHierarchyListByRequirementId(Long requirementId) throws Exception;
 
+	Boolean deleteTheRequirementApproverByRequirementIdAndApproverId(RequirementApproverHierarchy requirementApproverHierarchy) throws Exception;
+	
+	public RequirementApproverHierarchy getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(Long requirementId) throws Exception;
 }

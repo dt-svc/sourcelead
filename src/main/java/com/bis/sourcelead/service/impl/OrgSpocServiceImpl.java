@@ -15,9 +15,12 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 /**
@@ -35,6 +38,9 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	@Autowired
 	private OrgRelationsService orgRelationsService;
@@ -59,7 +65,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	 * Add Vendor contact
 	 */
 	@Override
-	public void addVendorContacts(JSONObject jsonObj, User user, OrgLocations orgLocations, String orgRelationId, String clientLocationId,String responderType) throws Exception {
+	public void addVendorContacts(JSONObject jsonObj, User user, OrgLocations orgLocations, String orgRelationId, String clientLocationId,String responderType,Org loginOrg) throws Exception {
 		
 		
 		OrgRelations orgRelation = null;
@@ -74,14 +80,20 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 			respondingOrgLocation = orgLocationService.getOrgLocations(Long.parseLong(realtionId[1]));
 		}
 		
-		User spocUser = userService.storeUser(jsonObj,user,respondingOrgLocation,"CREATEUSER",responderType,new Org());
+		User spocUser = userService.storeUser(jsonObj,user,respondingOrgLocation,"CREATEUSER",responderType,loginOrg);
 		
 		if(jsonObj.has("owner")){
 			String ownersId = jsonObj.getString("owner");
 			ownersId = ownersId.replaceAll("\\[", "").replaceAll("\\]","");
 			String[] owners = ownersId.split(",");
 			for(int i=0 ;i<owners.length;i++ ){
-				OrgSpoc orgSpoc = new OrgSpoc();
+				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
+				OrgSpoc orgSpoc = orgSpocDao.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(jsonObj.getString("email"), Long.parseLong(orgRelationId), ownerUser.getId(),Constants.RECORD_INACTIVE);
+			     if(orgSpoc == null){
+			    	 orgSpoc = new OrgSpoc();
+			    	 orgSpoc.setCreatedDate(CommonUtil.currentDate());
+					 orgSpoc.setCreatedBy(user.getUserCode());
+			     }
 				orgSpoc.setOrgRelations(orgRelation);
 				orgSpoc.setSpocUser(spocUser);
 				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
@@ -98,7 +110,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				}*/
 				
 				orgSpoc.setInitiatorLocationId(orgLocations);
-				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
+				//User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
 				orgSpoc.setOwnerUser(ownerUser);
 			
 				if(jsonObj.has("isMailSent")){
@@ -113,8 +125,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 					orgSpoc.setSpocStatus(Constants.ACTIVE);
 				}
 				
-				orgSpoc.setCreatedDate(CommonUtil.currentDate());
-				orgSpoc.setCreatedBy(user.getUserCode());
+				
 				orgSpoc.setUpdatedDate(CommonUtil.currentDate());
 				orgSpoc.setUpdatedBy(user.getUserCode());
 				orgSpocDao.addOrgSpoc(orgSpoc);
@@ -124,7 +135,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	}
 	@Override
 	public List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId, Long userId,Long orgLocationId) throws Exception {
-		List<Long> userIds = userService.getAllUserIdsByReportingManagerId(userId);
+		List<Long> userIds = userRoleService.getAllUserIdsByReportingManagerId(userId);
 		List<OrgSpoc> orgSpocsList  = orgSpocDao.getAllSpocsByOrgRelationId(orgRelationId, userId, userIds,orgLocationId);
 		
 		if(orgSpocsList != null && !orgSpocsList.isEmpty()){
@@ -200,7 +211,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	}
 	
 	@Override
-	public OrgSpoc getSpocAndOwnerDetailsByIdAndOwnerId(Long spocId, Long ownerId, Long spocUserId, Long loginUserId, Long orgLocationId) {
+	public OrgSpoc getSpocAndOwnerDetailsByIdAndOwnerId(Long spocId, Long ownerId, Long loginUserId, Long spocUserId, Long orgLocationId) throws Exception {
 		 OrgSpoc orgSpoc =  orgSpocDao.getSpocAndOwnerDetailsById(spocId,ownerId);
 		 if(orgSpoc != null){
 		       if(loginUserId==ownerId ){
@@ -217,7 +228,12 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 			     orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
 			     //prasad salina
 			     orgSpoc.setTempSpocId(orgSpoc.getOwnerUser().getId());
-			     orgSpoc.setUserState(orgSpoc.getOwnerUser().getUserState().toString());
+			     //orgSpoc.setUserState(orgSpoc.getOwnerUser().getUserState().toString());
+			     
+			     //here the owner must be active or inactive but not not logged in
+			     orgSpoc.setUserState((Status.ACTIVE).toString());
+			     
+			     
 		      }
 		     else {
 		    	 if(orgSpoc.getInitiatorLocationId().getId() == orgLocationId ){
@@ -231,7 +247,12 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 					//prasad salina
 				     orgSpoc.setTempSpocId(orgSpoc.getSpocUser().getId());
-					 orgSpoc.setUserState(orgSpoc.getSpocUser().getUserState().toString());
+					
+				    // orgSpoc.setUserState(orgSpoc.getSpocUser().getUserState().toString());
+					 UserRole  userorle = userRoleService.getUserRoleByUserIdAndLocationId(orgSpoc.getSpocUser().getId(), orgSpoc.getResponderLocationId().getId());
+					 if(userorle != null){
+						 orgSpoc.setUserState(userorle.getUserState().toString());
+					 }
 					 
 				 }
 				if(orgSpoc.getResponderLocationId().getId() == orgLocationId){
@@ -243,7 +264,13 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				     orgSpoc.setSpocLastName(orgSpoc.getOwnerUser().getLastName());
 					 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
-					 orgSpoc.setUserState(orgSpoc.getOwnerUser().getUserState().toString());
+					 
+					 //orgSpoc.setUserState(orgSpoc.getOwnerUser().getUserState().toString());
+					 UserRole  userorle = userRoleService.getUserRoleByUserIdAndLocationId(orgSpoc.getOwnerUser().getId(), orgSpoc.getInitiatorLocationId().getId());
+					 if(userorle != null){
+						 orgSpoc.setUserState(userorle.getUserState().toString());
+					 }
+					 
 					//prasad salina
 				     orgSpoc.setTempSpocId(orgSpoc.getOwnerUser().getId());
 				}
@@ -252,7 +279,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		 return orgSpoc;
 	}
 	
-	private OrgSpoc getOrgSpocDetails(OrgSpoc orgSpoc) {
+	private OrgSpoc getOrgSpocDetails(OrgSpoc orgSpoc) throws Exception {
 		 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
    	     orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());  
 	     orgSpoc.setSpocStatus(orgSpoc.getSpocStatus());
@@ -263,20 +290,30 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	     orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 	     //prasad salina
 	     orgSpoc.setTempSpocId(orgSpoc.getSpocUser().getId());
-	     orgSpoc.setUserState(orgSpoc.getSpocUser().getUserState().toString());
+	     
+	     //orgSpoc.setUserState(orgSpoc.getSpocUser().getUserState().toString());
+	     UserRole  userorle = userRoleService.getUserRoleByUserIdAndLocationId(orgSpoc.getSpocUser().getId(), orgSpoc.getResponderLocationId().getId());
+		 if(userorle != null){
+			 orgSpoc.setUserState(userorle.getUserState().toString());
+		 }
 		return orgSpoc;
 	}
 	
 	@Override
-	public OrgSpoc validateSpacEmailIdByOwnerUserIdAndOrgRelationId(String email, Long orgRelationId, Long userId) throws Exception {
+	public OrgSpoc validateSpacEmailIdByOwnerUserIdAndOrgRelationId(String email, Long orgRelationId, Long userId,Integer status) throws Exception {
 		logger.debug("In OrgSpocService class...");
-		return orgSpocDao.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(email, orgRelationId, userId);
+		return orgSpocDao.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(email, orgRelationId, userId, status);
 	}
 
 	@Override
 	public List<Long> getOwnerIdbySpocId(Long spocUserId,Long ownerId) {
 		return orgSpocDao.getOwnerIdbySpocId(spocUserId,ownerId);	
 		}
+	
+	@Override
+	public List<Long> getOwnerUserIdsbySpocEmailAndOrgRelationId(String email, Long orgRelationId) throws Exception{
+		return orgSpocDao.getOwnerUserIdsbySpocEmailAndOrgRelationId(email,orgRelationId);	
+	 }
 	
 	@Override
 	public OrgSpoc getSpocUserByUserId(Long spocUserId) throws Exception {
@@ -321,6 +358,27 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		}
 		return  contactsList;
 	}
+
+	
+	@Override
+	public List<OrgSpoc> getAllContactsbyOrgRelationIdAndLocationId(Long relationId, Long locationId, String initiator) throws Exception {
+		
+		List<OrgSpoc>  contactsList = orgSpocDao.getAllContactsbyOrgRelationIdAndLocationId(relationId, locationId, initiator);
+		
+		if(contactsList!=null){
+			for(OrgSpoc orgspoc :contactsList){
+				
+				orgspoc.setSpocName(orgspoc.getSpocUser().getFirstName() +""+orgspoc.getSpocUser().getLastName());
+				orgspoc.setSpocEmail(orgspoc.getSpocUser().getEmail());
+				orgspoc.setSpocMobilePhone(orgspoc.getSpocUser().getMobilePhone());
+				orgspoc.setOrgName(orgspoc.getResponderLocationId().getOrg().getOrgName());
+				orgspoc.setStatus(orgspoc.getStatus());
+				
+			}
+		}
+		return  contactsList;
+	}
+
 
 	
 }

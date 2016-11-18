@@ -27,11 +27,13 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.UserProfile;
 import com.bis.sourcelead.service.impl.UserServiceImpl;
@@ -45,7 +47,7 @@ import com.bis.sourcelead.service.impl.UserServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = WebAppConfig.class, loader = AnnotationConfigWebContextLoader.class)
+@ContextConfiguration(classes = {WebAppConfig.class, SecurityConfig.class}, loader = AnnotationConfigWebContextLoader.class)
 public class UserServiceTest {
 
 	@Configuration
@@ -60,6 +62,9 @@ public class UserServiceTest {
 
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	@Autowired
 	OrgSpocService orgSpocService;
@@ -92,8 +97,6 @@ public class UserServiceTest {
 		user.setUpdatedDate(new Date());
 		user.setUserCode("132425");
 		user.setUserName("shiva");
-		user.setUserState(Status.ACTIVE);
-		user.setUserType("employee");
 		user.setWorkPhone("1233467890");
 		assertEquals(user, userService.addUser(user));
 		//logger.info("add user details success fully inserted "+ user.getEmail());
@@ -152,14 +155,13 @@ public class UserServiceTest {
 		user.setUpdatedDate(new Date());
 		user.setUserCode("132425");
 		user.setUserName("anusha");
-		user.setUserState(Status.ACTIVE);
-		user.setUserType("admin");
 		user.setWorkPhone("334678903");
 		
 		User loginUser =new User();
 		//loginUser.setId(12l);
 		String password="bis12334";
-		userService.sendEmail(user,loginUser,password);
+
+		userService.sendEmail(user,loginUser,password,1l);
 	}
 
 	@Test
@@ -219,8 +221,6 @@ public class UserServiceTest {
 		user.setUpdatedDate(new Date());
 		user.setUserCode("132425");
 		user.setUserName("anusha");
-		user.setUserState(Status.ACTIVE);
-		user.setUserType("admin");
 		user.setWorkPhone("334678903");
 		
 		UserProfile userProfile = new UserProfile();
@@ -373,7 +373,7 @@ public class UserServiceTest {
 	
 	@Test
 	public void getAllUserIdsByReportingManagerId() throws Exception{
-		List<Long> list = userService.getAllUserIdsByReportingManagerId(3l);
+		List<Long> list = userRoleService.getAllUserIdsByReportingManagerId(3l);
 		assertFalse(list.isEmpty());
 	}
 }

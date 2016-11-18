@@ -750,7 +750,7 @@ jQueryFormUtils.validateDomain = function(val) {
 
     if (!hasTopDomain) {
         return false;
-    } else if (dot < 2 || dot > 57) {
+    } else if (dot < 2 || dot > 100) {
         return false;
     } else {
         var firstChar = domain.substring(0, 1);
@@ -983,9 +983,15 @@ jQueryFormUtils.validatespace = function(val) {
 jQueryFormUtils.validatefile_image = function(val) {
     return val.match(/(.*)(jpg|gif|png)$/) !== null;
 };
+
 jQueryFormUtils.validatefile_doc = function(val) {
     return val.match(/(.*)(docx|doc|pdf|txt)$/) !== null;
 };
+
+jQueryFormUtils.validatefile_docimgpdf = function(val) {
+    return val.match(/(.*)(docx|doc|pdf|txt|jpg|gif|png)$/) !== null;
+};
+
 jQueryFormUtils.validatefile_resume = function(val) {
     return val.match(/(.*)(docx|doc|pdf|rtf)$/) !== null;
 };
@@ -1134,6 +1140,13 @@ jQueryFormUtils.validateName = function(val) {
         else if (validationRules.indexOf('validateimage') > -1 && !jQueryFormUtils.validatefile_image(value, validationRules)) {
             return validationErrorMsg || language.badImage;
         }
+        
+     // simple File image check,doc,pdf,.txt
+        else if (validationRules.indexOf('validate_docimgpdf') > -1 && !jQueryFormUtils.validatefile_docimgpdf(value, validationRules)) {
+        	return validationErrorMsg || language.badFileFormat;
+        }
+        
+        
 		 // simple File Doc check
         else if (validationRules.indexOf('validatedoc') > -1 && !jQueryFormUtils.validatefile_doc(value, validationRules)) {
             return validationErrorMsg || language.badDoc;
@@ -1327,6 +1340,7 @@ jQueryFormUtils.LANG =  {
 	badAlphaNumber:'Allows Only Alphanumeric and must start with an Alphabet',
 	badImage:'Invalid Image Format Use .jpeg,jpg,gif,png formats only',
 	badDoc:'Invalid Document Type Use .doc,pdf,txt,docx formats only',
+	badFileFormat:'Invalid Image Format Use .doc,pdf,txt,docx,jpeg,jpg,gif,png formats only',
 	badResume:'Invalid Resume Type Use .doc,.docx,.pdf,.rtf formats only',
 	badPdf:'Invalid Document Type Use .PDF formats only',
 	badImportFile:'Invalid File Type. Use xls,xlsx and csv formats only',

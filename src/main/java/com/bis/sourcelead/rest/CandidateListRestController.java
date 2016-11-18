@@ -1,10 +1,16 @@
 package com.bis.sourcelead.rest;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -16,8 +22,11 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,6 +48,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.AutoCompleteController;
 
 
 /**
@@ -51,11 +61,12 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 	
 @RestController
 public class CandidateListRestController {
-	
+	private static final Logger logger = LoggerFactory.getLogger(CandidateListRestController.class);
 	
 	 @Value("${sourceleadUrl}")
 	 private String sourceleadUrl;
 		
+	 
 	 @Autowired
 	 private OrgService orgService;
 	 
@@ -122,17 +133,22 @@ public class CandidateListRestController {
 			Org loginOrgCode = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			 
 			Candidate can = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),loginOrgLocation.getId());
-			
+			logger.info("=================================="+can.getCountry());
 			String skillsList = "";
-			Set<CandidateSkills> candidateSkills = can.getCandidateSkills();
+			//Set<CandidateSkills> candidateSkills = can.getCandidateSkills();
+			List<CandidateSkills> candidateSkills = candidateSkillsService.getCandidateSkillsByCandidateId(candidateId);
+			
 			int i = 0;
 			for(CandidateSkills skilss: candidateSkills){
 				if(i <= 5){
+				
+					
 					skillsList = skillsList+skilss.getName();
 					if(i != candidateSkills.size()-1){
 						skillsList = skillsList+",";
 					}
 				}
+				
 				i++;
 			}
 			
@@ -183,9 +199,11 @@ public class CandidateListRestController {
 	  public String getCandidatesSkillsBycandidateID(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 	
 			String resultJson;
+			
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			List<CandidateSkills>  candidateSkillsList =  candidateSkillsService.getCandidateSkillsByCandidateId(candidateId);
-			resultJson = commonUtil.toJSON(candidateSkillsList);
+			Set<CandidateSkills> candidateSkillsSet = new HashSet<>(candidateSkillsList);
+			resultJson = commonUtil.toJSON(candidateSkillsSet);
 			return resultJson;
 			
 	   }
@@ -209,16 +227,23 @@ public class CandidateListRestController {
 			String resultJson;
 			
 			String[] skills = skillName.split(",");
+			
+   
+			//skills = new HashSet<String>(Arrays.asList(skills)).toArray(new String[0]);
+			
+			
 			for(String skill   : skills){
 				
-				CandidateSkills cs = new CandidateSkills();
-				Candidate candidate = new Candidate();
-				candidate.setId(Long.parseLong(candidateId));
-				cs.setCandidateId(candidate);
-				cs.setOrgLocationID(loginOrgLocation);
-				cs.setName(skill);
-				candidateSkillsService.storeCandidateSkills(cs);
-				
+				CandidateSkills candidateSkills2 = candidateSkillsService.getSkillsByCandidateIdSkillName(candidateId, skill);
+			    if(candidateSkills2 == null ){
+						CandidateSkills cs = new CandidateSkills();
+						Candidate  candidate =  candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
+						cs.setCandidateId(candidate);
+						cs.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
+						cs.setOrgLocationID(loginOrgLocation);
+						cs.setName(skill);
+						candidateSkillsService.storeCandidateSkills(cs);
+				 }
 			}
 			return "success";
 			
@@ -347,10 +372,12 @@ public class CandidateListRestController {
 
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    
 			MultipartFile multiFile = null;
 			Candidate candidate ;
 			String jsonc = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(jsonc);
+
 			 candidate = candidateService.storeCandidate(jsonObj,loginOrgLocation,user,multiFile);
 			
 			return "success";
@@ -441,7 +468,39 @@ public class CandidateListRestController {
 	 			return "success";
 	 			
 	 	 }
-	 		 
-	 	   
-		
+	 		 /**
+	 		  * @author Rajashekar
+	 		  * get candidate data to export excel and pdf
+	 		  * @param candidateStatus
+	 		  * @param updatedDateRange
+	 		  * @param request
+	 		  * @throws Exception
+	 		  */
+	 	 @RequestMapping(value = "/getCandidatesExportList")
+		 public void getCandidatesExportList(@RequestParam(value="candidateStatus", required=false) Integer  candidateStatus,
+				                             @RequestParam(value="updatedDateRange", required=false) String  updatedDateRange,
+				                             @RequestParam(value="exportType", required=false) String  exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+
+	 		 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange);
+			File file = null;
+			if(!"pdf".equalsIgnoreCase(exportType)){
+			file = candidateService.getCandidateExcelFile(candidatesList,org.getOrgName());
+			}else{
+			file = candidateService.getCandidatePdf(candidatesList,org.getOrgName());
+			}
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();	
+		 }
 	}

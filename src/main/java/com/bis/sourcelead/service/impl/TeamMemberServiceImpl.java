@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -53,9 +52,9 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 	
 	 
 	@Override
-	public List<TeamMembers> getTeamMembersListByTeamID(Long teamId) throws Exception {
+	public List<TeamMembers> getTeamMembersListByTeamID(Long teamId,Long orgLocationId) throws Exception {
 		
-		return teamMemberDao.getTeamMembersListByTeamID(teamId);
+		return teamMemberDao.getTeamMembersListByTeamID(teamId,orgLocationId);
 		
 	}
 
@@ -75,19 +74,29 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 	}
 
 	@Override
-	public TeamMembers saveTeamMembersByJsonData(JSONObject jSONObject,Long teamId) throws Exception {
-		
-		TeamMembers teamMembers = new TeamMembers();
+	public void saveTeamMembersByJsonData(JSONObject jSONObject,Long teamId) throws Exception {
 		
 		
 		String  userList = null;
-  	  try{
-  		   JSONArray jsonArray = jSONObject.getJSONArray("memberUserId");
-  		 userList = jsonArray.toString();
-  	  }
-  	  catch(JSONException e){
-  		userList= jSONObject.getString("memberUserId");
-  	  }
+		if(jSONObject.has("teamMemberUserId")){
+				try{
+		  		  JSONArray jsonArray = jSONObject.getJSONArray("teamMemberUserId");
+		  		  userList = jsonArray.toString();
+		  	     }
+		  	     catch(JSONException e){
+		  		     userList= jSONObject.getString("teamMemberUserId");
+		  	     }
+		}
+		if(jSONObject.has("memberUserId")){
+			 try{
+		  		  JSONArray jsonArray = jSONObject.getJSONArray("memberUserId");
+		  		  userList = jsonArray.toString();
+		  	     }
+		  	     catch(JSONException e){
+		  		     userList= jSONObject.getString("memberUserId");
+		  	     }
+		}
+		
 		userList = userList.replaceAll("\\[", "").replaceAll("\\]","");
 		userList = userList.replaceAll("\"", "");
 		String[] usersIds = userList.split(",");
@@ -96,6 +105,10 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 		
 		for(int i=0; i < usersIds.length  ;i++){
 			User user = new User();
+			
+			TeamMembers teamMembers = new TeamMembers();
+			
+			
 			user.setId(Long.parseLong(usersIds[i]));
 			teamMembers.setMemberUserId(user);
 			
@@ -106,23 +119,9 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 			teamMembers.setStatus(Constants.MEMBER_ACTIVE);
 			teamMembers.setCreatedDate(commonUtil.currentDate());
 			teamMembers.setUpdatedDate(commonUtil.currentDate());
-	     teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
+	        teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
 		}
-		
-		
-		// For saving  the Team  Lead as a Team member
-		
-		Team team = teamService.getTeamByTeamId(teamId);
-		User user = new User();
-		user.setId(team.getOwnerUserId().getId());
-		teamMembers.setMemberUserId(user);
-		teamMembers.setTeamId(team);
-		teamMembers.setStatus(Constants.MEMBER_ACTIVE);
-		teamMembers.setCreatedDate(commonUtil.currentDate());
-		teamMembers.setUpdatedDate(commonUtil.currentDate());
-		teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
-	    
-		return teamMembers;
+	   
 	
 }
 
@@ -134,5 +133,21 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 		return teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
 		
 	}
+
+	@Override
+	public List<TeamMembers> getTeamMembersListByLocationId(Long orgLocationId) throws Exception {
+		
+		
+		List<TeamMembers> teamMembersList = teamMemberDao.getTeamMembersListByLocationId(orgLocationId);
+		for(TeamMembers teamMembers :teamMembersList){
+			
+			teamMembers.setTeamName(teamMembers.getTeamId().getName());
+			teamMembers.setOwnerName(teamMembers.getTeamId().getOwnerUserId().getFirstName() +""+teamMembers.getTeamId().getOwnerUserId().getLastName() );
+			teamMembers.setMemberName(teamMembers.getMemberUserId().getFirstName()+""+teamMembers.getMemberUserId().getLastName());
+			teamMembers.setEmail(teamMembers.getEmail());
+		}
+		return teamMembersList;
+	}
+	 
 }
 

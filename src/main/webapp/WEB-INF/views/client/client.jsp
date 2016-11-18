@@ -47,7 +47,7 @@ window.onload = function () {
 		<div class="pull-left">
 			<h2>Create Client</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="dashboard">Home</a>&raquo;<a href="clientDashboard"> Client List</a>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a>
 			&raquo; Client</div>
 	</section>
 	
@@ -69,7 +69,7 @@ window.onload = function () {
 			<div class="form-group " id="companyWebsiteDiv">
 				<label class="col-md-3">Website</label>
 				<div class="col-md-9">
-				<input type="text" class="form-control" id="webSite" name="webSite" value="" field-name="Client Website" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
+				<input type="text" class="form-control" id="webSite" name="webSite" value="" field-name="Client Website"  onblur="validateWebsite();" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
 				</div>
 			</div>
 						
@@ -121,14 +121,14 @@ window.onload = function () {
 				
          
             <div class="form-group">
-              <label class="col-md-3">Level</label>
+              <label class="col-md-3">Tier</label>
               <div class="col-md-9">
                   <select class="form-control selectpicker" id="level" name="level">
-                    <option value="Level-1">Level-1</option>
-                    <option value="Level-2">Level-2</option>
-                    <option value="Level-3">Level-3</option>
-                    <option value="Level-4">Level-4</option>
-                    <option selected="selected" value="Level-5">Level-5</option>
+                    <option value="Tier-1">Tier-1</option>
+                    <option value="Tier-2">Tier-2</option>
+                    <option value="Tier-3">Tier-3</option>
+                    <option value="Tier-4">Tier-4</option>
+                    <option selected="selected" value="Tier-5">Tier-5</option>
                   </select>
               </div>
             </div>
@@ -324,12 +324,12 @@ function getOrgName(){
 function getOrgDetails()
 {
 	var orgName = document.getElementById("orgName").value;
-	var orgLocationId = document.getElementById("orgLocationId").value;
+ 	var orgLocationId = document.getElementById("orgLocationId").value; 
 	var sourceleadUrl = '${sourceleadUrl}';
-	if(orgName && orgLocationId){
+	if(orgName){
    	 $.ajax({
    	    	type: "POST",
-   	    	url : sourceleadUrl+"/getOrgDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+   	    	url : sourceleadUrl+"/getOrgDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&orgName="+orgName,
    	        contentType: "application/json; charset=utf-8",
    	        dataType: "json",
    	        success: function(data) {
@@ -448,9 +448,9 @@ function validateEmail(){
 				var result = data;
 				if(result == 'Invalid Email') {
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-					$("input#email").after( "<p class='jquery_form_error_message'>" + email + " should not your login email</span>");
+					$("input#email").after( "<p class='jquery_form_error_message'>" + email + " should not your org users email</span>");
 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
-					document.getElementById("email").setAttribute( 'record-exist-errorMsg', email +"  should not your login email");
+					document.getElementById("email").setAttribute( 'record-exist-errorMsg', email +"  should not your org users email");
 					
 				}else if(result == 'Valid Email') {
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");
@@ -561,6 +561,8 @@ function validateClientName(){
 				var result = data;
 				if (result == true) {
 					//duplicate client
+					$("#save_client").removeAttr("disabled");
+			        $("#save_client").attr("disabled", "disabled");
 					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as client</span>");
 					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
 					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as client");
@@ -569,6 +571,7 @@ function validateClientName(){
 				}else {
 					//New WebSite class="form-control"
 					//$("#save_client").removeAttr("disabled");
+					$("#save_client").removeAttr("disabled");
 					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
 					$('input#orgName').attr('class','valid form-control');
 					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
@@ -636,6 +639,7 @@ function validateClientName(){
 					var result = data;
 					if (result == "Website Duplicated" || result == "Invalid Website") {
 						//existed website
+						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 						$("input#webSite").after("<p class='jquery_form_error_message'>"+ website+ " is "+result+"</span>");
 						document.getElementById("webSite").setAttribute('record-exist', 'yes');
 						document.getElementById("webSite").setAttribute('record-exist-errorMsg',website + ' is '+result);

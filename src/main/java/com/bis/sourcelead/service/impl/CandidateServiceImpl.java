@@ -1,8 +1,23 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +34,14 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.PdfUtil;
 
 /**
  * 
@@ -56,6 +73,8 @@ public class CandidateServiceImpl implements CandidateService {
 	@Autowired
 	CandidateResumesService candidateResumesService;
 	
+	@Autowired
+	PdfUtil pdfUtil;
 	/**
 	 * @author prasad k
 	 * @since  aug 26 2016
@@ -85,7 +104,6 @@ public class CandidateServiceImpl implements CandidateService {
 		
         
         Candidate candidate = null;
-		
 		if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
 			candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("candidateId")));
 		}else{
@@ -170,12 +188,16 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
 		candidate.setCandidateResumes(candidateResumesList);
-		if(multiFile.getOriginalFilename()!=null){
-			candidate.setFileName(multiFile.getOriginalFilename());
+		if(multiFile != null){
+			if(multiFile.getOriginalFilename()!=null){
+				candidate.setFileName(multiFile.getOriginalFilename());
+			}
 		}
+		
 		candidate.setUpdatedBy(user.getUserCode());
 		candidate.setUpdatedDate(commonUtil.currentDate());
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+		
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		return savedCandidate;
 	}
@@ -287,5 +309,133 @@ public class CandidateServiceImpl implements CandidateService {
 	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId) throws Exception {
 		return candidateDao.getAllCandidatesByLocation(orgLocationId);
 	}
-	
+/**
+ * @author Rajashekar
+ * Write candidate data to xls format
+ */
+	@Override
+	public File getCandidateExcelFile(List<Candidate> candidatesList,String orgName) throws Exception {
+		
+		Workbook createExcelworkbook =  new XSSFWorkbook();
+		CellStyle style = getCellStyle(createExcelworkbook);
+        
+		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		Sheet createExcelsheet = createExcelworkbook.createSheet(orgName+"_candidate_"+dateFormat.format(new Date()));
+		Row writeRow = null;
+		createExcelsheet = setExcelHeaders(createExcelsheet,style);
+		 int column=0;
+	        for(Candidate candidate : candidatesList){
+	       	 writeRow = createExcelsheet.createRow(column+1);
+	       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,candidate);
+	       	 column++;
+	        }
+	        
+	        File file = new File(orgName+"_candidates_"+dateFormat.format(new Date())+".xls");
+			 FileOutputStream fos = new FileOutputStream(file);
+			 try {
+				 createExcelworkbook.write(fos);
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}	 	
+		return file;
+	}
+
+/**
+ * @author Rajashekar
+ * @param createExcelworkbook
+ * @return Style
+ */
+private CellStyle getCellStyle(Workbook createExcelworkbook) {
+	CellStyle style = createExcelworkbook.createCellStyle();
+    style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+    style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+    Font font = createExcelworkbook.createFont();
+   font.setColor(IndexedColors.BLACK.getIndex());
+   style.setFont(font);
+   return style;
+}
+/**
+ * @author Rajashekar
+ * It resturns sheet with Headers
+ * @param createExcelsheet
+ * @param style
+ * @return Sheet
+ */
+private Sheet setExcelHeaders(Sheet createExcelsheet, CellStyle style) {
+	String headers [] = Constants.CANDIDATE_EXCEL_HEADERS;
+	Row excelHeader = createExcelsheet.createRow(0);
+	 for (int i=0; i<headers.length;i++){
+	         Cell cell = excelHeader.createCell(i);
+	         cell.setCellValue(headers[i]);
+	         cell.setCellStyle(style);
+	     }
+	return createExcelsheet;
+}
+	/**
+	 * @author Rajashekar
+	 * writes candidate data to excel
+	 * @param createExcelsheet
+	 * @param writeRow
+	 * @param candidate
+	 * @return
+	 */
+private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate candidate) {
+	if(candidate.getFirstName() !=null && !"".equalsIgnoreCase(candidate.getFirstName())){
+		 writeRow.createCell(0).setCellValue(candidate.getFirstName());
+	}
+	if(candidate.getLastName() !=null && !"".equalsIgnoreCase(candidate.getLastName())){
+		writeRow.createCell(1).setCellValue(candidate.getLastName());
+	}
+	if(candidate.getEmail() !=null && !"".equalsIgnoreCase(candidate.getEmail())){
+		writeRow.createCell(2).setCellValue(candidate.getEmail());
+	}
+	if(candidate.getMobilePhone() !=null && !"".equalsIgnoreCase(candidate.getMobilePhone())){
+		writeRow.createCell(3).setCellValue(candidate.getMobilePhone());
+	}
+	if(candidate.getCity() !=null && !"".equalsIgnoreCase(candidate.getCity())){
+		writeRow.createCell(4).setCellValue(candidate.getCity());
+	}
+	if(candidate.getDesignation() !=null && !"".equalsIgnoreCase(candidate.getDesignation())){
+		writeRow.createCell(5).setCellValue(candidate.getDesignation());
+	}
+	if(candidate.getCandidateEducation() !=null && candidate.getCandidateEducation().size() >0 ){
+		Set<CandidateEducation> candidateEducation = candidate.getCandidateEducation();
+		StringBuilder educations = new StringBuilder();
+		for(CandidateEducation candidateEdu : candidateEducation){
+			educations.append(candidateEdu.getName()+",");
+		}
+		String educationList = educations.toString();
+		writeRow.createCell(6).setCellValue(educationList.substring(0, educations.length()-1));
+	}
+	if(candidate.getExperienceYears() !=null && !"".equalsIgnoreCase(candidate.getExperienceYears()) && candidate.getExperienceMonths() !=null && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
+		writeRow.createCell(7).setCellValue(candidate.getExperienceYears()+"."+candidate.getExperienceMonths()+"years");
+	}else{
+		if(candidate.getExperienceYears() !=null && !"".equalsIgnoreCase(candidate.getExperienceYears())){
+			writeRow.createCell(7).setCellValue(candidate.getExperienceYears()+"years");
+		}else{
+			if(candidate.getExperienceMonths() !=null && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
+				writeRow.createCell(7).setCellValue(candidate.getExperienceMonths()+"Months");
+			}
+		}
+	}
+	if(candidate.getCandidateSkills() !=null && candidate.getCandidateSkills().size() >0){
+		StringBuilder skills = new StringBuilder();
+		Set<CandidateSkills> candidateSkillsList = candidate.getCandidateSkills();
+	    for(CandidateSkills candidateSkills : candidateSkillsList){
+	    	skills.append(candidateSkills.getName()+",");
+	    }
+	    writeRow.createCell(8).setCellValue(skills.toString().substring(0, skills.length()-1));
+	}if(candidate.getExpectedRate() !=null && !"".equalsIgnoreCase(candidate.getExpectedRate()) && candidate.getRateType() !=null && !"".equalsIgnoreCase(candidate.getRateType())){
+		 writeRow.createCell(9).setCellValue(candidate.getExpectedRate()+"/"+candidate.getRateType());
+	}else{
+		writeRow.createCell(9).setCellValue(candidate.getExpectedRate());
+	}
+	return createExcelsheet;
+}
+
+	@Override
+	public File getCandidatePdf(List<Candidate> candidatesList, String orgName) throws Exception {
+		return pdfUtil.createCandidatePdfTable(candidatesList,orgName);
+	}
 }

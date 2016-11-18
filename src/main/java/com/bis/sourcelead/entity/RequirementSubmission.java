@@ -50,6 +50,10 @@ public class RequirementSubmission {
 	@JoinColumn(name = "ORG_LOCATION_ID")
    	private OrgLocations orgLocations;
 	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "VENDOR_LOCATION_ID")
+   	private OrgLocations vendorLocationId;
+	
 	@Column(name = "SUBMISSION_TEMPLATE_JSON_STRING", columnDefinition = "TEXT default NULL")
     private String submissionTemplateJsonString;
 	
@@ -97,14 +101,34 @@ public class RequirementSubmission {
    	private String createdDateStr;
     
     @Transient
-   	private String candidateId;
+	private String skillsList;
     
+    @Transient
+   	private String candidateId;
     
     @Transient
    	private String resumeName;
     
-   
+    @Transient
+   	private String requirementName;
     
+    @Transient
+   	private Long resumeId;
+    
+    @Transient
+   	private ApplicantSubmissionStatus requirementStage;
+    
+	@Transient
+   	private String score;
+
+	public OrgLocations getVendorLocationId() {
+		return vendorLocationId;
+	}
+
+	public void setVendorLocationId(OrgLocations vendorLocationId) {
+		this.vendorLocationId = vendorLocationId;
+	}
+
 	public String getUserName() {
 		return userName;
 	}
@@ -258,6 +282,14 @@ public class RequirementSubmission {
 		this.createdDate = createdDate;
 	}
 
+	public String getSkillsList() {
+		return skillsList;
+	}
+
+	public void setSkillsList(String skillsList) {
+		this.skillsList = skillsList;
+	}
+
 	public String getCreatedBy() {
 		return createdBy;
 	}
@@ -291,5 +323,36 @@ public class RequirementSubmission {
 		this.candidateId = candidateId;
 	}
 
-	
+	public String getRequirementName() {
+		return requirementName;
+	}
+
+	public void setRequirementName(String requirementName) {
+		this.requirementName = requirementName;
+	}
+
+	public ApplicantSubmissionStatus getRequirementStage() {
+		return requirementStage;
+	}
+
+	public void setRequirementStage(ApplicantSubmissionStatus requirementStage) {
+		this.requirementStage = requirementStage;
+	}
+
+	public String getScore() {
+		return score;
+	}
+
+	public void setScore(String score) {
+		this.score = score;
+	}
+
+	public Long getResumeId() {
+		return resumeId;
+	}
+
+	public void setResumeId(Long resumeId) {
+		this.resumeId = resumeId;
+	}
+
 }

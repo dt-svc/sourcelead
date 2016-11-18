@@ -109,6 +109,12 @@ public class OrgServiceImpl implements OrgService {
 		
 		return orgDao.isSpocExistedTheOwner(clientName, orgLocationId, responderType);
 	}
+
+	@Override
+	public Org getOrgByOrgName(String orgName) {
+		return orgDao.getOrgByOrgName(orgName);
+		
+	}
 	
 	
 }

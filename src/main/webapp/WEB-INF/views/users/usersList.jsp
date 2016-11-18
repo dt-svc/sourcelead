@@ -38,7 +38,7 @@ window.onload = function () {
         <h2>Users List</h2>
       </div>
       
-    <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Users List </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Users List </div>
     </section>
       <section class="clearfix section-action-btns">
         <ul class="pull-right list-unstyled list-inline">
@@ -71,6 +71,16 @@ window.onload = function () {
 		
 		 
 		  <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Create</a></li>
+		  
+		   <li>
+		    <a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
+			    <div class="export_pop">
+				   <ul>
+				   <li onclick="exportToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>
+				   <li onclick="exportUserData();">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>
+				   </ul>
+				</div>
+		   </li>
 		  <li><a href="<c:url value='/uploadForm'/>"><i class="fa fa-upload"></i>&nbsp;Bulk Imports</a></li>
         </ul>
       </section>
@@ -87,8 +97,36 @@ window.onload = function () {
 
       <jsp:include page="../masterFooter.jsp" />
       <div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
-      
-      
+  
+ <!--  Rajashkar
+  SCript is used to export user data as xls format -->    
+<script>
+function exportUserData(){
+	var exportType = "xls";
+	var sourceleadUrl = '${sourceleadUrl}';
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+    var userRole = document.getElementById("userRole").value;
+	var searchByName = document.getElementById("searchByName").value;
+	var userState = document.getElementById("userState").value;
+	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=xls";
+
+}
+</script>   
+ <!--  Rajashkar
+  SCript is used to export user data as pdf format --> 
+<script>
+function exportToPdf(){
+	var exportType = "pdf";
+	var sourceleadUrl = '${sourceleadUrl}';
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+    var userRole = document.getElementById("userRole").value;
+	var searchByName = document.getElementById("searchByName").value;
+	var userState = document.getElementById("userState").value;
+	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=pdf";
+
+	
+}
+</script>
       
 <script type="text/javascript">
 	function getUsersList(){
@@ -144,14 +182,14 @@ window.onload = function () {
 	       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
 	       	    	result = result +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp; "+userRole.userRoleName+" </label></p>";
 	       	        
-	       	    	if(userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'N' && userRole.user.userState != 'INACTIVE'){
+	       	    	if(userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'N' && userRole.userState != 'INACTIVE'){
 	       	    	  result = result +"<p><label id='user"+userRole.user.id+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;&nbsp;Invite</a></label></p>";
 	 			    }else if((userRole.user.isMailSent != null && userRole.user.isMailSent != "" && userRole.user.isMailSent == 'Y') &&
-	 			    		(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'NOT_LOGGEDIN') ){
+	 			    		(userRole.userState != null && userRole.userState != "" && userRole.userState == 'NOT_LOGGEDIN') ){
 	 			    	 result = result +"<p><label id='user"+userRole.user.id+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.user.id+");'>&nbsp;&nbsp;Resend</a></label></p>";
-	 			    }else if(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'ACTIVE'){
+	 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'ACTIVE'){
 	 			    	result = result +"<p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p>";
-	 			    }else if(userRole.user.userState != null && userRole.user.userState != "" && userRole.user.userState == 'INACTIVE'){
+	 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'INACTIVE'){
 	 			    	result = result +"<p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p>";
 	 			    } 
 	       	    	
@@ -237,6 +275,17 @@ function getUserSummary(userId){
 
 <script>
   $('#selector').delay(2000).fadeOut('slow');
+  $(document).ready(function() {
+	   $("#export-pop").click(function(){
+	               $(".export_pop").slideToggle(200);
+	       });
+	   $("html").click(function() {
+	       $(".export_pop").slideUp(200);
+	   });
+	   $(".export_pop, #export-pop").click(function(e) {
+	       e.stopPropagation();
+	   });        
+	});  
 </script> 
 
     

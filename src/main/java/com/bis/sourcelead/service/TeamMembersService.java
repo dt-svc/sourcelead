@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 
 /**
@@ -13,14 +12,17 @@ import com.bis.sourcelead.entity.TeamMembers;
  */
 public interface TeamMembersService {
  
-	public List<TeamMembers>  getTeamMembersListByTeamID(Long teamId) throws Exception;
+	public List<TeamMembers>  getTeamMembersListByTeamID(Long teamId, Long orgLocationId) throws Exception;
 	
 	public TeamMembers getTeamMemberByIdAndLocationId(Long teamMmeberId,Long orgLocationId) throws Exception;
 	
 	public TeamMembers saveOrUpdateTeamMembers(TeamMembers teamMembers) throws Exception;
 	
-	public TeamMembers saveTeamMembersByJsonData(JSONObject jSONObject,Long teamId) throws Exception;
+	public void saveTeamMembersByJsonData(JSONObject jSONObject,Long teamId) throws Exception;
 	
 	public TeamMembers deleteTeamMemberById(Long teamId) throws Exception;
+	
+	public List<TeamMembers>  getTeamMembersListByLocationId(Long orgLocationId) throws Exception;
+	
 	
 }

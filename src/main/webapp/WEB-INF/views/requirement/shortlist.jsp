@@ -14,7 +14,6 @@ function candidateShortList(requirementId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var result = "";
 	var status = "SUBMISSION";
-	
 	result = result + '<div class="add_inter_head"> <span>Shortlist</span><a href="javascript:void(0)" onclick="shortlist('+requirementId+');" class="sub-btn1">Shortlist</a>';
 	result = result + ' <div class="clearfix"></div>';
 	result = result + ' </div>';
@@ -108,6 +107,9 @@ function candidateShortList(requirementId){
 			           result = result + '       </tr>';
 			           
 			           result = result + '       </tbody>';
+			           
+			           result = result + '</div><div id="popUp">';
+			           result = result + '</div><div id="loading">';
 		    			
 		    			$("#shortlistDiv").empty();
 		    			$("#shortlistDiv").append(result);
@@ -187,16 +189,43 @@ function shortlist(requirementId){
 	});
 	 
 	  if(selectedsubmissionslists.length > 0){
+		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		 $.ajax({ 
 		    	type: "POST",
 		    	url: sourceleadUrl+"/candidateShortList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionsList="+selectedsubmissionslists,
 		        success: function(result) {
-		        	if((result == 'success')){
-		        		location.replace(sourceleadUrl+"/requirementSummary?requirementId="+requirementId); 
-			        } 
+		        	$(".shortlist-wrap").removeClass("shortlist-wrap_active");
+	        		$(".side_mask").fadeOut(200);
+	        		$("body").css('overflow-y', 'auto');
+	        		requirementPipeline(requirementId); 
 		        },
 		 }); 
+	 }else{
+		 alertMessage("<b>Select Candidate for Shortlist</b>");
 	 } 
 	
+}
+</script>
+
+<script type="text/javascript">
+function alertMessage(message){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>

@@ -53,7 +53,7 @@ $(function(){
 	        		
 	        		result = result + '<tr>';
 	                result = result + '<td><div><span class="mid-span">'+opt.templateName+'</span></a></div></td>';
-	                result = result + '<td><div class="tbldata-dotdot"><span class="mid-span">'+opt.description+'</span></div></td>';
+	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.description+'"><span class="mid-span">'+opt.description+'</span></div></td>';
 	                result = result + '<td><div>';
 	                result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;';
 	                result = result + '|&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\',\''+opt.description+'\')">Edit</a>';
@@ -141,7 +141,7 @@ function templatepagination(){
 		            result = result  +'<label>Template Name<span class="text-danger">&nbsp;*</label>';
 			    	result = result  +'	<div class="mt10">';
 			    	if(templateName){
-			    		result = result  +'	<input type="text" class="form-control input-sm" value="'+templateName+'" readonly="readonly" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';	
+			    		result = result  +'	<input type="text" class="form-control input-sm" value="'+templateName+'" onblur="validateTemplateName()" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';	
 			    	}else{
 			    		result = result  +'	<input type="text" class="form-control input-sm"  onblur="validateTemplateName()" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">';
 			    	}
@@ -173,12 +173,12 @@ function templatepagination(){
 			        result = result + '<button class="btn btn-success dropdown-toggle btn-block" type="button" data-toggle="dropdown" id="addFiled-dropdown">Add Field &nbsp;&nbsp;';
 			        result = result + '<span class="caret"></span></button>';
 			        result = result + '<ul id="add-field" class="dropdown-menu pull-right">';
-			        result = result + '<li><a id="add-text" data-type="text" href="javascript:void(0)">Text Box</a></li>';
-			        result = result + '<li><a id="add-textarea" data-type="textarea" href="javascript:void(0)">Text Area</a></li>';
-			        result = result + '<li><a id="add-select" data-type="select" href="javascript:void(0)">Select Box</a></li>';
-			        result = result + '<li><a id="add-radio" data-type="radio" href="javascript:void(0)">Radio Button</a></li>';
-			        result = result + ' <li><a id="add-checkbox" data-type="checkbox" href="javascript:void(0)">Check Box</a></li>';
-			        result = result + '<li><a id="calendar" data-type="calendar" href="javascript:void(0)">Calendar</a></li>';
+			        result = result + '<li><a id="add-text" data-type="text" onclick="scrollToBottom();" href="javascript:void(0)">Text Box</a></li>';
+			        result = result + '<li><a id="add-textarea" data-type="textarea" onclick="scrollToBottom();"  href="javascript:void(0)">Text Area</a></li>';
+			        result = result + '<li><a id="add-select" data-type="select" onclick="scrollToBottom();"  href="javascript:void(0)">Select Box</a></li>';
+			        result = result + '<li><a id="add-radio" data-type="radio" onclick="scrollToBottom();"  href="javascript:void(0)">Radio Button</a></li>';
+			        result = result + ' <li><a id="add-checkbox" data-type="checkbox" onclick="scrollToBottom();"  href="javascript:void(0)">Check Box</a></li>';
+			        result = result + '<li><a id="calendar" data-type="calendar" onclick="scrollToBottom();"  href="javascript:void(0)">Calendar</a></li>';
 			        /* result = result + '<li><a id="add-autocomplete" data-type="autocomplete" href="javascript:void(0)">Auto Complete</a></li>'; */
 		            result = result + '</ul>';
 			        result = result + '</div>';
@@ -201,7 +201,8 @@ function templatepagination(){
 		      
 		           result = result + '</section>';
 		           
-		           result = result + '<div id="popUp"></div>'; 
+		           result = result + '<div id="popUp"></div>';
+		           result = result + '<div id="choicepopUp"></div>';
 		           
 		            $("#templateList").empty(); 
 		           $("#templateList").append(result); 
@@ -209,6 +210,32 @@ function templatepagination(){
 		  
 	}
 </script>	
+
+
+
+<script type="text/javascript">
+function alertMessage(message){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#choicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#choicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
 
 <script type="text/javascript">
    	$('body').on('submit', '#sjfb', function(e){
@@ -222,6 +249,8 @@ function templatepagination(){
         var isLabelModified = 'N';
         //Loop through fields and save field data to array
         var fields = [];
+        var submitTemplate = true;
+        var fieldLabel = '';
 
         $('.field').each(function() {
 
@@ -231,10 +260,18 @@ function templatepagination(){
             var fieldType = $this.data('type');
 
             //field label
-            var fieldLabel = $this.find('.field-label').val();
+            fieldLabel = $this.find('.field-label').val();
 
             //field required
             var fieldReq = $this.hasClass('required') ? 1 : 0;
+            
+            
+            if(fieldType == 'checkbox' || fieldType == 'radio' ||  fieldType == 'select'){
+            	if($this.find('.choices li').length == 0) {
+            		submitTemplate = false;
+            	}
+            }
+            
 
             //check if this field has choices
             if($this.find('.choices li').length >= 1) {
@@ -292,17 +329,23 @@ function templatepagination(){
         //Demo doesn't actually save. Download project files for save
         var con2 = JSON.stringify(fields);
         var jsonStringData = encodeURIComponent(con2);
-        $( "#save_button" ).addClass('button').val('Processing..');
-   	    $.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/saveOrgSubmissionTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
-	        success: function(result) {
-	        	if((result == 'home')){
-	        		location.replace(sourceleadUrl+"/orgSubmissionTemplate"); 
-		        } 
-	        },
-	    });
-        return true;
+        
+        if(submitTemplate){
+        	$( "#save_button" ).addClass('button').val('Processing..');
+        	  $.ajax({
+      	    	type: "POST",
+      	        url: sourceleadUrl+"/saveOrgSubmissionTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+      	        success: function(result) {
+      	        	if((result == 'home')){
+      	        		location.replace(sourceleadUrl+"/orgSubmissionTemplate"); 
+      		        } 
+      	        },
+      	    });  
+              return true;
+        }else{
+        	alertMessage("Provide choice for "+fieldLabel)
+        }
+    	  
       }
       else{
       	return false;	
@@ -318,11 +361,15 @@ function templatepagination(){
 <script type="text/javascript">
 function validateTemplateName(){
 	var templateName = document.getElementById("templateName").value; 
+	var templateId = $("#templateId").val();
+	if(templateId == 'undefined' || templateId == null){
+		templateId = '';
+	}
 	if(templateName){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/validateTemplateNameByOrg?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName, 
+	    	url : sourceleadUrl+"/validateTemplateNameByOrg?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName+"&templateId="+templateId, 
 	        success: function(result) {
 	        	if (result == 'invalid') {
 	        		$("#save_button").attr("disabled", "disabled");
@@ -381,7 +428,7 @@ function validateTemplateName(){
     <div class="pull-left">
       <h2>Submission Templates</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="orgSubmissionTemplate">Submission Template</a></div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgSubmissionTemplate'/>">Submission Template</a></div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -423,11 +470,35 @@ function cancelTemplate(){
 }
 </script>
 
+<script>
+function scrollToBottom(){
+	var documentHeight = document.documentElement.offsetHeight;
+	var viewportHeight = window.innerHeight;
+	window.scrollTo(0,documentHeight-viewportHeight);
+}
+</script>
+
 
 </body>
 
 
 <jsp:include page="masterFooter.jsp" />
+<div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
 </html>
 
+
+<script>
+// Back To Top 
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 200) {
+            $('.backtotop').fadeIn('slow');
+        } else {
+            $('.backtotop').fadeOut('slow');
+        }
+    });
+    $('.backtotop').click(function() {
+        $("html, body").animate({scrollTop: 0}, 500);
+        return false;
+    });
+</script>
 

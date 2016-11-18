@@ -90,9 +90,9 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 
 	@Override
 	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyForEmployeeIdAndStartDate(Long empId,
-			Long approverUserId, Date startDate) {
+			Long approverUserId,Long submissionId) {
 		// TODO Auto-generated method stub
-		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(empId, approverUserId, startDate);
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeIdAndStartDate(empId, approverUserId, submissionId);
 	}
 
 	@Override
@@ -194,10 +194,9 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
  					  list = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  status);
  				}else if("NEW".equalsIgnoreCase(status)){
  					
- 					   List<SubmissionApproverHierarchy> newlist = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  "NEW");
+ 					  // List<SubmissionApproverHierarchy> newlist = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  "NEW");
 					   List<SubmissionApproverHierarchy> draft = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  "DRAFT");
-					
-					   list.addAll(newlist);
+					//.addAll(newlist);
 					   list.addAll(draft);
  				}
  				
@@ -211,10 +210,10 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
  					list = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId,  status);
  				}
  				else if("NEW".equalsIgnoreCase(status)){
- 				        List<SubmissionApproverHierarchy> newlist   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId,  "NEW");
+ 				        //List<SubmissionApproverHierarchy> newlist   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId,  "NEW");
 					    List<SubmissionApproverHierarchy> draft  = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId,   "DRAFT");
 					   
-					    list.addAll(newlist);
+					 //   list.addAll(newlist);
 					    list.addAll(draft);
  			  }
  				
@@ -228,10 +227,10 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
  					list = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  status);
  				}else if("NEW".equalsIgnoreCase(status)){
  					
- 				    List<SubmissionApproverHierarchy> newlist = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  "NEW");
+ 				    //List<SubmissionApproverHierarchy> newlist = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  "NEW");
  				    List<SubmissionApproverHierarchy> draft  =  submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  "DRAFT");
  				   
- 				    list.addAll(newlist);
+ 				   // list.addAll(newlist);
 				    list.addAll(draft);
  				}
  			}

@@ -35,7 +35,6 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages = "com.bis.sourcelead")
 @PropertySource("${propertyLocation:app.properties}")
 public class DatabaseConfig {
 
@@ -78,8 +77,7 @@ public class DatabaseConfig {
 		hibernateProperties.setProperty("hibernate.formate_sql", "false");
 		hibernateProperties.setProperty("hibernate.user_sql_comments", "false");
 		hibernateProperties.setProperty("hibernate.transaction.factory_class",
-				"org.hibernate.transaction.JDBCTransactionFactory");
-		hibernateProperties.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.NoCacheProvider");
+				"org.hibernate.transaction.JDBCTransactionFactory");		
 		hibernateProperties.setProperty("hibernate.connection.provider_class",
 				"org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider");
 		hibernateProperties.setProperty("hibernate.enable_lazy_load_no_trans", "true");
@@ -94,21 +92,15 @@ public class DatabaseConfig {
 		hibernateProperties.setProperty("hibernate.c3p0.maxStatementsPerConnection", "0");
 		hibernateProperties.setProperty("hibernate.c3p0.maxAdministrativeTaskTime", "500");
 		hibernateProperties.setProperty("hibernate.c3p0.c3p0.numHelperThreads", "8");
-
-		// TODO: No caching was configured as of now. But we can configure the
-		// cache later.
-
+		hibernateProperties.setProperty("hibernate.jdbc.batch_size", "1000");
+				
+		hibernateProperties.setProperty("hibernate.cache.provider_class", "net.sf.ehcache.hibernate.SingletonEhCacheProvider");
+		hibernateProperties.setProperty("hibernate.cache.use_query_cache", "true"); 
+		hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "true");
+		hibernateProperties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
+		hibernateProperties.setProperty("net.sf.ehcache.configurationResourceName", "hibernateCache.xml");
 		
-		 hibernateProperties.setProperty("hibernate.cache.use_query_cache",
-		 "true"); hibernateProperties.setProperty(
-		 "hibernate.cache.use_second_level_cache", "true");
-		 hibernateProperties.setProperty("hibernate.jdbc.batch_size", "1000");
-		 hibernateProperties.setProperty(
-		 "hibernate.cache.region.factory_class",
-		 "org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
-		 hibernateProperties.setProperty(
-		 "net.sf.ehcache.configurationResourceName", "hibernateCache.xml");
-		  sfb.addProperties(hibernateProperties);
+		sfb.addProperties(hibernateProperties);
 
 		return sfb.buildSessionFactory();
 	}
