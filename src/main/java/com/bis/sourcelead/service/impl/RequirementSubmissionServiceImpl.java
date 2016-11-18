@@ -451,13 +451,20 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 RequirementSubmission submission = requirementSubmissionDao.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
     		 RequirementSubmission clientSubmission = new RequirementSubmission();
     		 
-    		 if(requirement.getParentRequirement() != null){
+    		 if(requirement.getParentRequirement() != null && requirement.getIsClientJob() != null &&  requirement.getIsClientJob().equalsIgnoreCase("Y")){
     			 clientSubmission.setRequirement(requirement.getParentRequirement());
     			 clientSubmission.setOrgLocations(requirement.getParentRequirement().getOrgLocationId());
-        	 }else{
-        		 clientSubmission.setRequirement(requirement);
-        		 clientSubmission.setOrgLocations(loginOrgLocation);
         	 }
+    		 else if(requirement.getParentRequirement() == null && requirement.getIsClientJob() != null &&  requirement.getIsClientJob().equalsIgnoreCase("Y")){
+    			 clientSubmission.setRequirement(requirement);
+    			 if("sladmin".equalsIgnoreCase(user.getUserCode())){
+                     clientSubmission.setOrgLocations(requirement.getClientId().getResponderLocationId());
+                 }else{
+                     clientSubmission.setOrgLocations(requirement.getClientId().getLocationId());    
+                 }
+    			 
+        	 }
+    		 
     		 clientSubmission.setCandidate(submission.getCandidate());
     		 clientSubmission.setCandidateResumes(submission.getCandidateResumes());
     		 clientSubmission.setSourceSubmission(submission);

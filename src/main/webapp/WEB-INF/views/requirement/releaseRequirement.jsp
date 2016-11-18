@@ -56,7 +56,7 @@
                        </ul>
                     </div>
                   </li>
-                  <%-- <li id="vendorSelected" style="display:none"><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play" id="export-popp"></i>
+                  <li id="vendorSelected" style="display:none"><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play" id="export-popp"></i>
                     <div class="export_pop">
                       <ul>
                       	  <c:forEach var="report" items="${vendor_list}">  
@@ -64,7 +64,7 @@
 						  </c:forEach>
                       </ul>
                     </div>
-                  </li> --%>
+                  </li>
                   <div class="clearfix"></div>
                 </ul>
                 <div class="clearfix"></div>
