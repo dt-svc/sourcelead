@@ -144,7 +144,7 @@ z-index: 9999999999 !important;
 	con = con.replace(/[{}]/g, ""); 
 	var jsonData = encodeURIComponent(con);
 	var sourceleadUrl ='${sourceleadUrl}'; 
-	var orgId = '${orgId}'
+	var orgId = '${orgId}';
 	
 	 var modulesList = [];
 	 $("input[name='modulesList[]']:checked").each( function (i) {
@@ -165,7 +165,7 @@ z-index: 9999999999 !important;
 		    dataType : 'json',
 			  url: sourceleadUrl+"/updateOrgModules?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&orgId="+orgId+"&json="+jsonData,
 		  	success: function(result) {
-		    	if((result == 'success')){
+		    	if(result == 'success'){
 		    		location.replace(sourceleadUrl+"/orgSummary?orgId="+orgId); 
 		    	}
 		    	
