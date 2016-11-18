@@ -1150,8 +1150,12 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("RequirementRate","--"); 
 			 }
-		 if(requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp())){
-			 globalVarsMap.put("Experience", requirement.getMaxExp());
+		 if((requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp()))){
+			 globalVarsMap.put("Experience", requirement.getMinExp()+"-"+requirement.getMaxExp());
+			 }else if(requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())){
+				 globalVarsMap.put("Experience", requirement.getMinExp());
+			 }else if(requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp())){
+				 globalVarsMap.put("Experience",requirement.getMaxExp());
 			 }else{
 				 globalVarsMap.put("Experience","--"); 
 			 }
@@ -1238,8 +1242,12 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("RequirementRate","--"); 
 			 }
-		 if( requirement.getMaxExp()!= null && !"".equalsIgnoreCase( requirement.getMaxExp())){
-			 globalVarsMap.put("Experience", requirement.getMaxExp());
+		 if((requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp()))){
+			 globalVarsMap.put("Experience", requirement.getMinExp()+"-"+requirement.getMaxExp());
+			 }else if(requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())){
+				 globalVarsMap.put("Experience", requirement.getMinExp());
+			 }else if(requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp())){
+				 globalVarsMap.put("Experience",requirement.getMaxExp());
 			 }else{
 				 globalVarsMap.put("Experience","--"); 
 			 }
@@ -1417,11 +1425,15 @@ public class RequirementServiceImpl implements RequirementService {
 			 } else {
 				 globalVarsMap.put("contactname", "--");
 			}
-		 if (requirement.getMaxExp()!= null && !"".equalsIgnoreCase(requirement.getMaxExp())) {
-			 globalVarsMap.put("Experience", requirement.getMaxExp());
-			 } else {
-				 globalVarsMap.put("Experience", "--");
-			}
+		 if((requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp()))){
+			 globalVarsMap.put("Experience", requirement.getMinExp()+"-"+requirement.getMaxExp());
+			 }else if(requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())){
+				 globalVarsMap.put("Experience", requirement.getMinExp());
+			 }else if(requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp())){
+				 globalVarsMap.put("Experience",requirement.getMaxExp());
+			 }else{
+				 globalVarsMap.put("Experience","--"); 
+			 }
 		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 		
 		 if (loginUser.getFirstName()+" "+loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()+" "+loginUser.getLastName())) {
