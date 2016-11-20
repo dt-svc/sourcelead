@@ -33,6 +33,8 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
@@ -48,6 +50,8 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -105,6 +109,13 @@ public class ClientServiceImpl implements ClientService{
 	
 	@Autowired
 	RoleHierarchyService roleHierarchyService;
+	
+	@Autowired
+	SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	private SourceleadRolesService sourceleadRolesService;
+	
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -174,7 +185,7 @@ public class ClientServiceImpl implements ClientService{
 				org.setOrgLocationsList(orgLocationsList);
 				orgService.addOrganization(org);
 				saveOrgRoleHierarchy(clientOrgLocations,user);
-				saveOrgBasedRoles(clientOrgLocations,user);
+				saveOrgBasedRoles(org,clientOrgLocations,user);
 			}else{
 				orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
 				clientOrgLocations.setOrgRelationsList(orgRelationsList);
@@ -331,10 +342,10 @@ public class ClientServiceImpl implements ClientService{
 			
 		}
 		
-		public void saveOrgBasedRoles(OrgLocations orgLocations,User user) throws Exception{
-			List<Roles> rolesList = rolesService.getSourceleadRoles(1L);
+		public void saveOrgBasedRoles(Org org,OrgLocations orgLocations,User user) throws Exception{
+			List<SourceleadRoles> rolesList = sourceleadRolesService.getSourceleadRoles();
 			if(null != rolesList){
-				for(Roles roles : rolesList){
+				for(SourceleadRoles roles : rolesList){
 					Roles orgRoles = new Roles();
 					orgRoles.setRoleName(roles.getRoleName());
 					orgRoles.setDisplayName(roles.getDisplayName());
@@ -342,8 +353,33 @@ public class ClientServiceImpl implements ClientService{
 					orgRoles.setOrg(orgLocations.getOrg());
 					RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyByHierarchyLevelAndOrgLocationId(roles.getRoleHierarchy().getHierarchyLevel(), orgLocations.getId());
 					orgRoles.setRoleHierarchy(roleHierarchy);
-					orgRoles.setStatus(roles.getStatus());
-					orgRoles.setActionId(roles.getActionId());
+					orgRoles.setStatus(roles.getStatus().toString());
+					
+					StringBuilder strbul  = new StringBuilder();
+					
+					List<Long> roleActonsList = new ArrayList<Long>();
+					if(null != roles.getActionId()){
+						for (String s : roles.getActionId().split(",")){
+							 roleActonsList.add(Long.parseLong(s));
+						 }
+					}
+					
+					List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActions(org);
+					for(SourceleadActions actions : sourceLeadActionsList){
+						if(roleActonsList.contains(actions.getId())){
+							 strbul.append(actions.getId()).append(",");
+						}
+					}
+					
+					String actionId = strbul.toString();
+					
+					if(!isNullOrEmpty(actionId)){
+						actionId = actionId.substring(0, actionId.length()-1);
+						orgRoles.setActionId(actionId);
+					}else{
+						orgRoles.setActionId(null);
+					}
+					
 					orgRoles.setCreatedBy(user.getUserCode());
 					orgRoles.setCreatedDate(new Date());
 					rolesService.storeRoles(orgRoles);

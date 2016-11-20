@@ -32,4 +32,19 @@ public class SourceleadActionsServiceImpl implements SourceleadActionsService {
 		return sourceleadActionsDao.getAllSourceleadActions(org);
 	}
 
+	@Override
+	public List<Long> getAllSourceleadActionsIds(Org org) throws Exception {
+		return sourceleadActionsDao.getAllSourceleadActionsIds(org);
+	}
+
+	@Override
+	public List<Long> getSourceLeadActionsByModuleIdAndTabId(Long moduleId, Long tabId) throws Exception {
+		return sourceleadActionsDao.getSourceLeadActionsByModuleIdAndTabId(moduleId, tabId);
+	}
+	
+	@Override
+	public List<Long> getSourceLeadTimeSheetActionsByModuleIdAndTabId(Long moduleId, Long myTimeSheetTabId,Long timeSheetApprovalTabId) throws Exception {
+		return sourceleadActionsDao.getSourceLeadTimeSheetActionsByModuleIdAndTabId(moduleId, myTimeSheetTabId, timeSheetApprovalTabId);
+	}
+
 }

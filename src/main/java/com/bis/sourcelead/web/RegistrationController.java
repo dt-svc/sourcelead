@@ -2,6 +2,7 @@ package com.bis.sourcelead.web;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
@@ -30,6 +32,8 @@ import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -65,6 +69,13 @@ public class RegistrationController {
 	 
 	 @Autowired
 	 CommonUtil commonUtil;
+	 
+	 @Autowired
+	 SourceleadActionsService sourceleadActionsService;
+	 
+	 @Autowired
+	 RolesService rolesService;
+	 
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/enrolledOrgsList")
@@ -136,6 +147,8 @@ public class RegistrationController {
 		    	orgLocations = orgLocationService.getOrgLocations(respondingPartyOrgLocationId);
 		    	org = orgLocations.getOrg();
 		    	String modules = org.getModulesId();
+		    	Long tabId = null;
+		    	Long moduleId = null;
 		    	if(null != org){
 			    	org.setOrgType("Company");
 			    	
@@ -146,15 +159,23 @@ public class RegistrationController {
 					 
 			    	if("VMS".equalsIgnoreCase(respondingOrgType)){
 			    		flag = moduleIds.contains(Constants.MODULE_ATS);
+			    		tabId = (long) Constants.TAB_CLIENT;
+			    		moduleId = (long) Constants.MODULE_ATS;
 			    		if(flag == false){
 			    			modules = modules+","+Constants.MODULE_ATS;
+			    			saveUserRoleActions(moduleId,tabId,orgLocations);
 			    		}
 			    	}else{
 			    		flag = moduleIds.contains(Constants.MODULE_VMS);
+			    		tabId = (long) Constants.TAB_VENDOR;
+			    		moduleId = (long) Constants.MODULE_VMS;
 			    		if(flag == false){
 			    			modules = modules+","+Constants.MODULE_VMS;
+			    			saveUserRoleActions(moduleId,tabId,orgLocations);
 			    		}
 			    	}
+			    	
+					
 			    	org.setModulesId(modules);
 			    	org.setStatus(Status.ACTIVE);
 					orgService.updateOrg(org);
@@ -236,7 +257,32 @@ public class RegistrationController {
 
 		}
 		
-	 
+	
+	 public void saveUserRoleActions(Long moduleId,Long tabId,OrgLocations orgLocations) throws Exception{
+		 
+			List<Long> actionsList = sourceleadActionsService.getSourceLeadActionsByModuleIdAndTabId(moduleId, tabId);
+			
+	    	StringBuilder strbul  = new StringBuilder();
+		     Iterator<Long> iter = actionsList.iterator();
+		     while(iter.hasNext())
+		     {
+		         strbul.append(iter.next());
+		        if(iter.hasNext()){
+		         strbul.append(",");
+		        }
+		     }
+		     strbul.toString();
+			
+			Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
+			String adminids = adminrole.getActionId()+","+strbul;
+			adminrole.setActionId(adminids);
+			rolesService.storeRoles(adminrole);
+			
+			Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, orgLocations.getId());
+			String managerids = managerrole.getActionId()+","+strbul;
+			managerrole.setActionId(managerids);
+			rolesService.storeRoles(managerrole);
+	 }
 	 
 	 /**	 
 	  * checks if string is null or empty

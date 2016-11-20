@@ -100,4 +100,48 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 	    return actionsList;
 	}
 
+	@Override
+	@Transactional
+	public List<Long> getAllSourceleadActionsIds(Org org) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		 List<Long> modulesList = new ArrayList<Long>();
+			for (String s : org.getModulesId().split(",")){
+				modulesList.add(Long.parseLong(s));
+			 }
+        		
+	    String query = "select sa.id from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId))";
+	    List<Long> actionIds = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).setCacheable(true).list();
+     
+	    return actionIds;
+	}
+
+	@Override
+	@Transactional
+	public List<Long> getSourceLeadActionsByModuleIdAndTabId(Long moduleId, Long tabId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		 
+	    String query = "select sa.id from SourceleadActions sa where sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id = :moduleId) and sa.tabs.id = :tabId";
+	    List<Long> actionIds = session.createQuery(query.toString()).setLong("tabId", tabId).setLong("moduleId", moduleId).setCacheable(true).list();
+     
+	    return actionIds;
+	}
+
+	@Override
+	@Transactional
+	public List<Long> getSourceLeadTimeSheetActionsByModuleIdAndTabId(Long moduleId, Long myTimeSheetTabId,
+			Long timeSheetApprovalTabId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		 
+	    String query = "select sa.id from SourceleadActions sa where sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id = :moduleId) and (sa.tabs.id = :myTimeSheetTabId or sa.tabs.id = :timeSheetApprovalTabId)";
+	    List<Long> actionIds = session.createQuery(query.toString()).setLong("myTimeSheetTabId", myTimeSheetTabId).setLong("timeSheetApprovalTabId", timeSheetApprovalTabId).setLong("moduleId", moduleId).setCacheable(true).list();
+     
+	    return actionIds;
+	}
+
 }

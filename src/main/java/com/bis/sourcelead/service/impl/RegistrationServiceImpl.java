@@ -27,6 +27,8 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -48,6 +50,8 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -122,6 +126,13 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	private RoleHierarchyService roleHierarchyService;
 	
+	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	private SourceleadRolesService sourceleadRolesService;
+	
+	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 	}
@@ -176,7 +187,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		saveOrgRoleHierarchy(orgLocations,user);
 		
-		saveOrgBasedRoles(orgLocations,user);
+		saveOrgBasedRoles(org,orgLocations,user);
 		
 		//For saving the User Role (At registration user will have Admin Role)
 		UserRole userRole = getUserRoleDetails(user,orgLocations);
@@ -378,10 +389,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 	}
 	
-	public void saveOrgBasedRoles(OrgLocations orgLocations,User user) throws Exception{
-		List<Roles> rolesList = rolesService.getSourceleadRoles(1L);
+	public void saveOrgBasedRoles(Org org,OrgLocations orgLocations,User user) throws Exception{
+		List<SourceleadRoles> rolesList = sourceleadRolesService.getSourceleadRoles();
 		if(null != rolesList){
-			for(Roles roles : rolesList){
+			for(SourceleadRoles roles : rolesList){
 				Roles orgRoles = new Roles();
 				orgRoles.setRoleName(roles.getRoleName());
 				orgRoles.setDisplayName(roles.getDisplayName());
@@ -389,8 +400,33 @@ public class RegistrationServiceImpl implements RegistrationService{
 				RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyByHierarchyLevelAndOrgLocationId(roles.getRoleHierarchy().getHierarchyLevel(), orgLocations.getId());
 				orgRoles.setRoleHierarchy(roleHierarchy);
 				orgRoles.setOrg(orgLocations.getOrg());
-				orgRoles.setActionId(roles.getActionId());
-				orgRoles.setStatus(roles.getStatus());
+				
+				StringBuilder strbul  = new StringBuilder();
+				
+				List<Long> roleActonsList = new ArrayList<Long>();
+				if(null != roles.getActionId()){
+					for (String s : roles.getActionId().split(",")){
+						 roleActonsList.add(Long.parseLong(s));
+					 }
+				}
+				
+				List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActions(org);
+				for(SourceleadActions actions : sourceLeadActionsList){
+					if(roleActonsList.contains(actions.getId())){
+						 strbul.append(actions.getId()).append(",");
+					}
+				}
+				
+				String actionId = strbul.toString();
+				
+				if(!isNullOrEmpty(actionId)){
+					actionId = actionId.substring(0, actionId.length()-1);
+					orgRoles.setActionId(actionId);
+				}else{
+					orgRoles.setActionId(null);
+				}
+				
+				orgRoles.setStatus(roles.getStatus().toString());
 				orgRoles.setCreatedBy(user.getUserCode());
 				orgRoles.setCreatedDate(new Date());
 				rolesService.storeRoles(orgRoles);

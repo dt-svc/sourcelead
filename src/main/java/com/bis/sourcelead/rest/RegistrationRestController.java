@@ -1,14 +1,13 @@
 package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +21,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.SourceleadAuthenticationProvider;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.Registration;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.RegistrationService;
+import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -65,6 +67,15 @@ public class RegistrationRestController {
 	 
 	 @Autowired
 	 UserRoleService userRoleService;
+	 
+	 @Autowired
+	 SourceleadActionsService sourceleadActionsService;
+	 
+	 @Autowired
+	 RolesService rolesService;
+	 
+	 @Autowired
+	 OrgLocationService orgLocationService;
 	 
 	 @RequestMapping(value = "/getOrgsList")
 		public @ResponseBody String getUsersList(HttpServletRequest request,
@@ -139,29 +150,125 @@ public class RegistrationRestController {
 			    @RequestParam(value="actionIds", required=false) String actionIds,
 			    HttpServletRequest request) throws Exception {
 		
-		   Org org = orgService.findOrgByID(orgId);
+		     OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(orgId);
+		     Org org = orgLocations.getOrg();
 			 String orgModules = "";
+			 StringBuilder strbul = null; 
+
 			 
 			 if(!isNullOrEmpty(submodulesList)){
 					String[] registeredSubModules =  submodulesList.split(",");
 					for(int i=0; i<registeredSubModules.length; i++){
 							orgModules = orgModules+registeredSubModules[i]+",";
+							
+							 Long moduleId = null;
+							 Long tabId = null;
+							 
+							if(registeredSubModules[i].equals("3")){
+								moduleId = (long) Constants.MODULE_VMS;
+								tabId = (long) Constants.TAB_VENDOR;
+							}
+							else if(registeredSubModules[i].equals("2")){
+								moduleId = (long) Constants.MODULE_ATS;
+								tabId = (long) Constants.TAB_CLIENT;
+							}
+								List<Long> actionsList = sourceleadActionsService.getSourceLeadActionsByModuleIdAndTabId(moduleId, tabId);
+								
+								 strbul  = new StringBuilder();
+							     Iterator<Long> iter = actionsList.iterator();
+							     while(iter.hasNext())
+							     {
+							         strbul.append(iter.next());
+							        if(iter.hasNext()){
+							         strbul.append(",");
+							        }
+							     }
+							     strbul.toString();
+								
+								Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
+								String adminids = adminrole.getActionId()+","+strbul;
+								adminrole.setActionId(adminids);
+								rolesService.storeRoles(adminrole);
+								
+								Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, orgLocations.getId());
+								String managerids = managerrole.getActionId()+","+strbul;
+								managerrole.setActionId(managerids);
+								rolesService.storeRoles(managerrole);
+							
 					}
 				}
 				
 				if(!isNullOrEmpty(modulesList)){
+					List<Long> actionsList = null;
+					String employeeIds = null;
 					String[] registeredModules =  modulesList.split(",");
 					for(int i=0; i<registeredModules.length; i++){
 						if(Long.parseLong(registeredModules[i]) != 1L){
 							orgModules = orgModules+registeredModules[i]+",";
+						}
+						
+						
+						if(registeredModules[i].equals("4")){
+							
+							Long moduleId = (long) Constants.MODULE_TIMESHEET;
+							Long myTimeSheetTabId = (long) Constants.TAB_MY_TIMESHEET;
+							Long timeSheetApprovalTabId = (long) Constants.TAB_TIMESHEET_APPROVAL;
+							
+							actionsList = sourceleadActionsService.getSourceLeadTimeSheetActionsByModuleIdAndTabId(moduleId, myTimeSheetTabId, timeSheetApprovalTabId);
+							
+							 strbul  = new StringBuilder();
+						     Iterator<Long> iter = actionsList.iterator();
+						     while(iter.hasNext())
+						     {
+						         strbul.append(iter.next());
+						        if(iter.hasNext()){
+						         strbul.append(",");
+						        }
+						     }
+						     strbul.toString();
+						     
+						        Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
+								String adminids = adminrole.getActionId()+","+strbul;
+								adminrole.setActionId(adminids);
+								rolesService.storeRoles(adminrole);
+								
+								Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, orgLocations.getId());
+								String managerids = managerrole.getActionId()+","+strbul;
+								managerrole.setActionId(managerids);
+								rolesService.storeRoles(managerrole);
+								
+								
+								actionsList = sourceleadActionsService.getSourceLeadActionsByModuleIdAndTabId(moduleId, myTimeSheetTabId);
+								
+								 strbul  = new StringBuilder();
+							     Iterator<Long> iter1 = actionsList.iterator();
+							     while(iter1.hasNext())
+							     {
+							         strbul.append(iter1.next());
+							        if(iter1.hasNext()){
+							         strbul.append(",");
+							        }
+							     }
+							     strbul.toString();
+							     
+						        Roles employeeRole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_USER, orgLocations.getId());
+								if(!isNullOrEmpty(employeeRole.getActionId())){
+									employeeIds = employeeRole.getActionId()+","+strbul;
+								}else{
+									employeeIds = strbul.toString();
+								}
+								employeeRole.setActionId(employeeIds);
+								rolesService.storeRoles(employeeRole);
+							
 						}
 					}
 				}
 				
 				
 				orgModules = orgModules.substring(0, orgModules.length()-1);
+				orgModules = org.getModulesId()+","+orgModules;
 				org.setModulesId(orgModules);
-				orgService.addOrganization(org);
+			    orgService.addOrganization(org);
 		   
 		return "success";
 	   }

@@ -89,8 +89,14 @@ z-index: 9999999999 !important;
 							           		   <ul class="list-unstyled pull-left tree-checkbox">
 							                    	 <c:forEach var="submodules" items="${registeredSubModulesList}">
 							                    	  <label>
-							                    		 <input type="checkbox" class="allsubmodules" id="submodules" value="${submodules.id}"  ${submodules.isModuleConfigured  == 'Y' ? 'checked' : ''} ${submodules.isModuleConfigured  == 'Y' ? 'disabled' : 'true'} name="submodulesList[]" >
+							                    	    <c:if test="${submodules.isModuleConfigured  == 'Y'}">
+							                    		  <input type="checkbox" class="allsubmodules" id="submodules"  ${submodules.isModuleConfigured  == 'Y' ? 'checked' : ''} ${submodules.isModuleConfigured  == 'Y' ? 'disabled' : 'true'}  >
 							                              ${submodules.moduleName}
+							                             </c:if>
+							                             <c:if test="${submodules.isModuleConfigured  != 'Y'}">
+							                    		  <input type="checkbox" class="allsubmodules" id="submodules" value="${submodules.id}"  ${submodules.isModuleConfigured  == 'Y' ? 'checked' : ''} ${submodules.isModuleConfigured  == 'Y' ? 'disabled' : 'true'} name="submodulesList[]" >
+							                              ${submodules.moduleName}
+							                             </c:if>
 							                         </label><br/>
 							                    	 </c:forEach>
 							                    </ul> 
@@ -98,7 +104,10 @@ z-index: 9999999999 !important;
 								          </li>
 								          <li>
 								           <label class="mr pull-left">      
-											    <c:if test="${module.id != '1'}">
+											    <c:if test="${module.id != '1' && submodules.isModuleConfigured  == 'Y'}">
+									           		 <input type="checkbox" id="isRecruiting" ${module.isModuleConfigured  == 'Y' ? 'checked' : ''} ${module.isModuleConfigured  == 'Y' ? 'disabled' : 'true'}  >&nbsp;${module.moduleName}
+								                </c:if>  
+								                <c:if test="${module.id != '1' && submodules.isModuleConfigured  != 'Y'}">
 									           		 <input type="checkbox" id="isRecruiting" value="${module.id}"  ${module.isModuleConfigured  == 'Y' ? 'checked' : ''} ${module.isModuleConfigured  == 'Y' ? 'disabled' : 'true'} name="modulesList[]" >&nbsp;${module.moduleName}
 								                </c:if>  
 								             </label>
@@ -158,7 +167,7 @@ z-index: 9999999999 !important;
 			});
 			 
 		 
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			$.ajax({ 
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&orgId="+orgId,
@@ -167,7 +176,7 @@ z-index: 9999999999 !important;
 		        		location.replace(sourceleadUrl+"/enrolledOrgSummary?orgId="+orgId);
 			        } 
 		        },
-		 }); 
+		 });  
 		 
 	}
 
