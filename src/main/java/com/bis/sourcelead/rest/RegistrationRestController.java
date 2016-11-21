@@ -186,14 +186,35 @@ public class RegistrationRestController {
 							     strbul.toString();
 								
 								Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
-								String adminids = adminrole.getActionId()+","+strbul;
-								adminrole.setActionId(adminids);
-								rolesService.storeRoles(adminrole);
+								
+						        List<Long> adminRoleActonList = new ArrayList<Long>();
+								 for (String s : adminrole.getActionId().split(",")){
+									 adminRoleActonList.add(Long.parseLong(s));
+								 }
+									 
+								adminRoleActonList.retainAll(actionsList);
+								
+								if(adminRoleActonList.size() == 0){
+									String adminids = adminrole.getActionId()+","+strbul;
+									adminrole.setActionId(adminids);
+									rolesService.storeRoles(adminrole);
+								}
+								
 								
 								Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, orgLocations.getId());
-								String managerids = managerrole.getActionId()+","+strbul;
-								managerrole.setActionId(managerids);
-								rolesService.storeRoles(managerrole);
+								
+								List<Long> managerRoleActonList = new ArrayList<Long>();
+								 for (String s : managerrole.getActionId().split(",")){
+									 managerRoleActonList.add(Long.parseLong(s));
+								 }
+								 
+								 managerRoleActonList.retainAll(actionsList);
+								
+								 if(managerRoleActonList.size() == 0){
+									 String managerids = managerrole.getActionId()+","+strbul;
+										managerrole.setActionId(managerids);
+										rolesService.storeRoles(managerrole);
+								 }
 							
 					}
 				}
@@ -239,15 +260,42 @@ public class RegistrationRestController {
 						        	strbul2.append(",");
 						        }
 						     }
-						     
 						        strbul2.toString();
+						        
 						        Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
-								String adminids = adminrole.getActionId()+","+strbul+","+strbul2;
+						        String adminids = null;
+						        List<Long> adminRoleActonList = new ArrayList<Long>();
+								 for (String s : adminrole.getActionId().split(",")){
+									 adminRoleActonList.add(Long.parseLong(s));
+								 }
+								 
+								 adminRoleActonList.retainAll(clientActionsList);
+								
+								 if(adminRoleActonList.size() == 0){
+									 adminids = adminrole.getActionId()+","+strbul+","+strbul2;
+								 }else{
+									 adminids = adminrole.getActionId()+","+strbul;
+								 }
+						        
 								adminrole.setActionId(adminids);
 								rolesService.storeRoles(adminrole);
 								
 								Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, orgLocations.getId());
-								String managerids = managerrole.getActionId()+","+strbul+","+strbul2;
+								String managerids = null;
+								
+								List<Long> managerRoleActonList = new ArrayList<Long>();
+								 for (String s : managerrole.getActionId().split(",")){
+									 managerRoleActonList.add(Long.parseLong(s));
+								 }
+								 
+								 managerRoleActonList.retainAll(clientActionsList);
+								
+								 if(managerRoleActonList.size() == 0){
+									 managerids = managerrole.getActionId()+","+strbul+","+strbul2;
+								 }else{
+									 managerids = managerrole.getActionId()+","+strbul;
+								 }
+								
 								managerrole.setActionId(managerids);
 								rolesService.storeRoles(managerrole);
 								
