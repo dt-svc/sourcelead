@@ -172,8 +172,17 @@ public class RegistrationRestController {
 								moduleId = (long) Constants.MODULE_ATS;
 								tabId = (long) Constants.TAB_CLIENT;
 							}
-								List<Long> actionsList = sourceleadActionsService.getSourceLeadActionsByModuleIdAndTabId(moduleId, tabId);
+								List<Long> actionsList = sourceleadActionsService.getSourceLeadActionsByModuleId(moduleId);
 								
+								Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
+								 List<Long> adminRoleActonList = new ArrayList<Long>();
+								 for (String s : adminrole.getActionId().split(",")){
+									 adminRoleActonList.add(Long.parseLong(s));
+								 }
+								 
+								 adminRoleActonList.retainAll(actionsList);
+								 actionsList.removeAll(adminRoleActonList);
+								 
 								 strbul  = new StringBuilder();
 							     Iterator<Long> iter = actionsList.iterator();
 							     while(iter.hasNext())
@@ -185,36 +194,15 @@ public class RegistrationRestController {
 							     }
 							     strbul.toString();
 								
-								Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
-								
-						        List<Long> adminRoleActonList = new ArrayList<Long>();
-								 for (String s : adminrole.getActionId().split(",")){
-									 adminRoleActonList.add(Long.parseLong(s));
-								 }
-									 
-								adminRoleActonList.retainAll(actionsList);
-								
-								if(adminRoleActonList.size() == 0){
-									String adminids = adminrole.getActionId()+","+strbul;
-									adminrole.setActionId(adminids);
-									rolesService.storeRoles(adminrole);
-								}
-								
+								String adminids = adminrole.getActionId()+","+strbul;
+								adminrole.setActionId(adminids);
+								rolesService.storeRoles(adminrole);
 								
 								Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, orgLocations.getId());
 								
-								List<Long> managerRoleActonList = new ArrayList<Long>();
-								 for (String s : managerrole.getActionId().split(",")){
-									 managerRoleActonList.add(Long.parseLong(s));
-								 }
-								 
-								 managerRoleActonList.retainAll(actionsList);
-								
-								 if(managerRoleActonList.size() == 0){
-									 String managerids = managerrole.getActionId()+","+strbul;
-										managerrole.setActionId(managerids);
-										rolesService.storeRoles(managerrole);
-								 }
+								String managerids = managerrole.getActionId()+","+strbul;
+								managerrole.setActionId(managerids);
+								rolesService.storeRoles(managerrole);
 							
 					}
 				}

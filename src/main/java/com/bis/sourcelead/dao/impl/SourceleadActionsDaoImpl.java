@@ -153,4 +153,17 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
  
     return actionIds;}
 
+	@Override
+	@Transactional
+	public List<Long> getSourceLeadActionsByModuleId(Long moduleId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		 
+	    String query = "select sa.id from SourceleadActions sa where sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id = :moduleId) ";
+	    List<Long> actionIds = session.createQuery(query.toString()).setLong("moduleId", moduleId).setCacheable(true).list();
+     
+	    return actionIds;
+	}
+
 }

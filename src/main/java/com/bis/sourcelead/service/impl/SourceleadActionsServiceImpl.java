@@ -52,4 +52,9 @@ public class SourceleadActionsServiceImpl implements SourceleadActionsService {
 		return sourceleadActionsDao.getSourceLeadActionsByTabId(tabId);
 	}
 
+	@Override
+	public List<Long> getSourceLeadActionsByModuleId(Long moduleId) throws Exception {
+		return sourceleadActionsDao.getSourceLeadActionsByModuleId(moduleId);
+	}
+
 }

@@ -20,4 +20,6 @@ public interface SourceleadActionsDao {
 	List<Long> getSourceLeadTimeSheetActionsByModuleIdAndTabId(Long moduleId, Long myTimeSheetTabId,Long timeSheetApprovalTabId) throws Exception;
 	
 	List<Long> getSourceLeadActionsByTabId(Long tabId) throws Exception;
+	
+	List<Long> getSourceLeadActionsByModuleId(Long moduleId) throws Exception;
 }
