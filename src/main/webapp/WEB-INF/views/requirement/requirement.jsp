@@ -964,6 +964,8 @@ function storeTeam(){
 
 <script type="text/javascript">
 function getAllCountries(){
+	
+ setTimeout(function(){ 
 	var countryName ;
 	
 	 if ($('#existingCountry').length)
@@ -1003,6 +1005,7 @@ function getAllCountries(){
         error: function(e){
         }
     });
+ }, 100);
 } 
 </script>
 
@@ -1010,7 +1013,7 @@ function getAllCountries(){
 <script>
 function getStates(){
 	var countryName = $("#countryReq").val();
-	
+
 	//to set existing state value(Auto populate)
 	var stateName = $("#state").val();
 	if(stateName == null || stateName == 'undefined' || stateName == ''){
@@ -1189,7 +1192,6 @@ function getTemplateVal(){
 
 <script>
 function setTemplateValues(){
-	
  var sourceleadUrl ='${sourceleadUrl}';
 	var requirementId = document.getElementById('template').value;
 	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
@@ -1222,25 +1224,29 @@ function setTemplateValues(){
 					 var state = '';
 					 var city = '';
 					
-					getAllCountries(); 
-					if(json.countryReq != null && json.countryReq !='' && json.countryReq !='undefined'){
-						$("#countryReq").val(json.countryReq);
-					}
-					 
-					getStates();
-					if(json.state != null && json.state !='' && json.state !='undefined'){
-						$("#state").val(json.state);
-					}else{
-						$("#state").val('');
-					}
 					
-					getCities();
-					/* $('#city').trigger("chosen:updated"); */
-					if(json.city != null && json.city !='' && json.city !='undefined'){
-						$("#city").val(json.city);
-					}else{
-						$("#city").val('');
-					}
+						if(json.country != null && json.country !='' && json.country !='undefined'){
+							$("#existingCountry").val(json.country);
+							$("#countryReq").val(json.country);
+						}else{
+							$("#existingCountry").val('');
+						}
+						
+						if(json.state != null && json.state !='' && json.state !='undefined'){
+							 $("#existingState").val(json.state);
+							 $("#state").val(json.state);
+							
+						}else{
+							$("#existingState").val('');
+						}
+						if(json.city != null && json.city !='' && json.city !='undefined'){
+							 $("#existingCity").val(json.city);
+							 $("#city").val(json.city);
+						} else{
+							$("#existingCity").val('');
+						}
+						
+					getAllCountries(); 		
 					
 					$('#description').val('');
 					$('#rate').val('');
@@ -1276,9 +1282,15 @@ function setTemplateValues(){
 			    	$("#positions").val('');
 			    	$("#minExp").val('');
 			    	$("#maxExp").val('');
+			    	
 					$("#countryReq").val('');
 					$("#state").val('');
 					$("#city").val('');
+					
+					$("#existingCountry").val('');
+					$("#existingState").val('');
+					$("#existingCity").val('');
+					
 		            $("#skills").val('');
 		            $("#education").val('');
 			    	$("#description").val('');
@@ -1295,8 +1307,12 @@ function setTemplateValues(){
 		 document.getElementById("requirement_form").reset();
 		 $("#skills").trigger("chosen:updated");
 		 $("#education").trigger("chosen:updated");
-		 $("#state").trigger("chosen:updated");
-		 $("#city").trigger("chosen:updated");
+		 $("#existingCountry").val('');
+		 $("#existingState").val('');
+		 $("#existingCity").val('');
+		/*  $("#state").trigger("chosen:updated");
+		 $("#city").trigger("chosen:updated"); */
+		 getAllCountries(); 		
 		 $("#rate").val('');
 		 $("#description").val('');
 		 
@@ -1991,7 +2007,7 @@ function changeCurrency(requirement){
 			  }else {
 				  $("#currencyCode").val("INR");
 				  $("#currencyCode").change();
-			  }
+		}
 }
 </script>
 
