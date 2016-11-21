@@ -104,22 +104,25 @@ function addOffer(requirementId){
 				if(data =="true"){
 					result= result + '	          <div class="row pad2">';
 					result= result + '	          <div class="form-group">';
-					result= result + '<div class="col-md-2">';
+					result= result + '<label class="col-md-3"></label>';
+					result= result + '<div class="col-md-5">';
 					result= result + '<div class="checkbox checkBox">';
 					result= result + ' <label>';
 					result= result + '<input type="checkbox" value="" onclick="NotifyToVendor();" id="notifyToVendor" name="notifyToVendor">Notify To Vendor</label>';
 				    result= result + '</div>';
 				    result= result + '</div>';
+				    result= result + '</div>';
 				}   
 				
-				result= result + '<div class="col-md-2">';
+			    result= result + '<div class="form-group">';
+				result= result + '<label class="col-md-3"></label>';
+				result= result + '<div class="col-md-5">';
 				result= result + '<div class="checkbox checkBox">';
 				result= result + ' <label>';
 				result= result + '<input type="checkbox" value=""  onclick="NotifyToApplicant();" id="notifyToApplicant" name="notifyToApplicant">Notify To Applicant</label>';
 			    result= result + '</div>';
 			    result= result + '</div>';
 			    result= result + '</div>';
-			    
 				result= result + '	              <div class="clearfix"></div>';
 			    
 				result= result + '	            <div class="col-md-12 pad1">';
@@ -127,7 +130,6 @@ function addOffer(requirementId){
 				result= result + '	              <button type="submit" class="btn btn-sm btn-danger" onclick="cancelAddOffer();" >Cancel</button>';
 				result= result + '	            </div>';
 				result= result + '	          </div>';
-				result= result + '</div>';
 				
 				result = result + '</form>';
 				//result = result + '<div id="loading"></div>';
@@ -188,10 +190,8 @@ function loadRemiderDiv(){
      </div>
    	 <div class="positionRelative float">
            <select class="form-control" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode">
-             <option>Hourly</option>
-             <option>Weekly</option>
-             <option>Yearly</option>
-             <option>Monthly</option>
+           <option>Yearly</option>
+           <option>Monthly</option>
            </select>
      </div>
 </div> 
