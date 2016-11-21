@@ -93,10 +93,13 @@ public class RequirementController {
 			if(requirement.getEducation() != null){
 					String[] educationList = requirement.getEducation().split(",");
 					requirement.setReqEducationList(educationList);
+					requirement.setReqEducationListString(requirement.getEducation());
 			}
+			
 			if(requirement.getSkills() != null){		
 					String[] skillsList = requirement.getSkills().split(",");
 					requirement.setReqSkillsList(skillsList);
+					requirement.setReqSkillsListString(requirement.getSkills());
 			}
 			String requirementAssignedIds = "";
 			if(requirement.getRequirementAssignTo() != null){

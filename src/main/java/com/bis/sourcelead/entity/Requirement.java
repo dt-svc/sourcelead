@@ -210,10 +210,16 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String[] reqEducationList;
 	
 	@Transient
+	private String reqEducationListString;
+	
+	@Transient
 	private String manager;
 	
 	@Transient
 	private String[] reqSkillsList;
+	
+	@Transient
+	private String reqSkillsListString;
 	
 	@Transient
 	private ArrayList<String> approverNames;
@@ -649,12 +655,28 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.reqEducationList = reqEducationList;
 	}
 
+	public String getReqEducationListString() {
+		return reqEducationListString;
+	}
+
+	public void setReqEducationListString(String reqEducationListString) {
+		this.reqEducationListString = reqEducationListString;
+	}
+
 	public String[] getReqSkillsList() {
 		return reqSkillsList;
 	}
 
 	public void setReqSkillsList(String[] reqSkillsList) {
 		this.reqSkillsList = reqSkillsList;
+	}
+
+	public String getReqSkillsListString() {
+		return reqSkillsListString;
+	}
+
+	public void setReqSkillsListString(String reqSkillsListString) {
+		this.reqSkillsListString = reqSkillsListString;
 	}
 
 	public String getSubmissionTemplateJsonString() {

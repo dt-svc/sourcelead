@@ -2,6 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
@@ -257,16 +258,12 @@ $(document).ready(function () {
               <div class="col-md-9">
                 <select multiple  class="chosen-select form-control" name="education" id="education" data-validation="validate_Space" data-validation-optional="true">
                 <c:forEach var="edu" items="${educationsList}">
-                		<option  value="${edu.name}">${edu.name}</option>
-	                      <c:forEach var="existEdu" items="${requirement.reqEducationList}">
-	                     			 <c:if test="${edu.name == existEdu}">  
-			                    			<option selected value="${edu.name}">${edu.name}</option>
-						             </c:if> 
-						             <c:if test="${edu.name != existEdu}"> 
-						           			 <option  value="${edu.name}">${edu.name}</option>
-						             </c:if>
-	                     </c:forEach> 
-			             
+                		  <c:if test="${fn:contains(requirement.reqEducationListString, edu.name)}">
+                		  	 <option  selected value="${edu.name}">${edu.name}</option>
+                		  </c:if>
+                		  <c:if test="${!fn:contains(requirement.reqEducationListString, edu.name)}">
+                		  	 <option  value="${edu.name}">${edu.name}</option>
+                		  </c:if>
                 </c:forEach>
                 </select>
               </div>
@@ -378,15 +375,12 @@ $(document).ready(function () {
               <div class="col-md-9">
                 <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation-optional="true">
                <c:forEach var="skill" items="${skillsList}">
-                <option  value="${skill.name}">${skill.name}</option>
-	                     <c:forEach var="skillExist" items="${requirement.reqSkillsList}">
-	                     			 <c:if test="${skill.name == skillExist}">  
-			                    	<option selected value="${skill.name}">${skill.name}</option>
-						             </c:if> 
-						             <c:if test="${skill.name != skillExist}"> 
-						                       <option  value="${skill.name}">${skill.name}</option>
-						             </c:if>
-	                     </c:forEach>
+             				 <c:if test="${fn:contains(requirement.reqSkillsListString, skill.name)}">
+	                		  	 <option  selected value="${skill.name}">${skill.name}</option>
+	                		 </c:if>
+	                		 <c:if test="${!fn:contains(requirement.reqSkillsListString, skill.name)}">
+	                		  	 <option  value="${skill.name}">${skill.name}</option>
+	                		 </c:if>
                 </c:forEach>
                 </select>
               </div>
@@ -728,7 +722,9 @@ $(document).ready(function () {
     <div class="col-lg-12">   
       <div class="pull-right">
         <input type="button" value="Submit for Approval" id="submitForApproval" onclick="storeRequirement('submitForApproval');" class="btn btn-primary" style="display:none;">
-        <input type="button" value="Draft" id="draft" onclick="storeRequirement('draft');" class="btn btn-danger ml">
+        <c:if test="${empty requirement.requirementSubmissionStatus || requirement.requirementSubmissionStatus == 'DRAFT' || requirement.requirementSubmissionStatus == 'REJECTED'}">
+        	<input type="button" value="Draft" id="draft" onclick="storeRequirement('draft');" class="btn btn-danger ml">
+        </c:if>
         <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >    
         <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
       </div>
@@ -1971,7 +1967,7 @@ var sourceleadUrl ='${sourceleadUrl}';
 }
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function removeEditButton() {
 	var reqId = document.getElementById("requirementId").value;
 	if(reqId != null && reqId != 0){
@@ -1980,7 +1976,7 @@ function removeEditButton() {
 		    return false;
 	}
 }
-</script>
+</script> -->
 
 <script>
 function changeCurrency(requirement){
