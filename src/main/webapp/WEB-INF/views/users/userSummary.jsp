@@ -2,6 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link rel="icon" type="resources/image/png"
 	href="resources/images/fav.png" />
 <link
@@ -140,19 +141,27 @@ $(document).ready(function(){
 				result = result + '  <div class="project_details">';
 				if(json.userState != null && json.userState != "" && json.userState != 'INACTIVE'){
 				    result = result + ' <div class="useredit">';
-						result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+						
+				    '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_USER\')">'
+				        result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+				    '</sec:authorize>';
+				      
+				    '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_USER\')">'
 						result = result + ' <a id="remove-user" href="javascript:removeUser();"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
 							result = result + ' <div id="remove_user_id" class="remove_user_pop" >';
 									result = result +'<textarea placeholder="Comments here" id="reason" name="reason"/></textarea>';
 									result = result + ' <div id="reasonDiv"/>';
 									result = result + ' <b><input id="save_reason" value="Submit" onClick="terminateUser('+userId+');" type="button"/><input class="u_can_color" onclick="cancelUser();" value="Cancel" type="button"></b>';
 						     result = result + ' </div>';
+				    '</sec:authorize>';	     
 				     result = result + ' </div>';
 				}
 				
 				else{
-                    result = result + '<i class="glyphicon glyphicon-user"></i><a id="edit-user" href="javascript:reActiveUser('+userId+');">&nbsp;Re-Active</a>';
-                }
+					'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_USER\')">'
+                         result = result + '<i class="glyphicon glyphicon-user"></i><a id="edit-user" href="javascript:reActiveUser('+userId+');">&nbsp;Re-Active</a>';
+                    '</sec:authorize>';	 
+				}
 				
 				result = result + '	 <div class="user_details_cta_img">';
 				result = result + '		       <div class="user_change_img">';
