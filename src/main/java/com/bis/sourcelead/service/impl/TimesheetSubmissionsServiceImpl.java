@@ -584,7 +584,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
 	     	   }
 	           else{
-	        	   sb.append("&nbsp;&nbsp;&nbsp;&nbsp;");
+	        	   sb.append("       	<i class='glyphicon glyphicon-none'></i>");
 	           }
 	     	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
 	     	   Date rightNavStartDate = getRightNavStartDateForApproverBasedOnCurrentStartDate(user.getId(), ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
@@ -598,7 +598,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		     	    }
 	           }
 	           else{
-	        	   sb.append("&nbsp;&nbsp;&nbsp;&nbsp;");
+	        	   sb.append("       	<i class='glyphicon glyphicon-none'></i>");
 	           }
 	     	   sb.append("    </div>");
 	     	   sb.append("    </td>");

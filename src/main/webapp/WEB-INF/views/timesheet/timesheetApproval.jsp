@@ -10,6 +10,10 @@
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 
 <style type="text/css">
+.glyphicon-none:before {
+    content: "\2122";
+    color: transparent !important;
+}
 .timesheet-content {
 background: #fff;
 min-height: 100px;
