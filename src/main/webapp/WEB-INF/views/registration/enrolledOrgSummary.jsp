@@ -104,10 +104,10 @@ z-index: 9999999999 !important;
 								          </li>
 								          <li>
 								           <label class="mr pull-left">      
-											    <c:if test="${module.id != '1' && submodules.isModuleConfigured  == 'Y'}">
+											    <c:if test="${module.id != '1' && module.isModuleConfigured  == 'Y'}">
 									           		 <input type="checkbox" id="isRecruiting" ${module.isModuleConfigured  == 'Y' ? 'checked' : ''} ${module.isModuleConfigured  == 'Y' ? 'disabled' : 'true'}  >&nbsp;${module.moduleName}
 								                </c:if>  
-								                <c:if test="${module.id != '1' && submodules.isModuleConfigured  != 'Y'}">
+								                <c:if test="${module.id != '1' && module.isModuleConfigured  != 'Y'}">
 									           		 <input type="checkbox" id="isRecruiting" value="${module.id}"  ${module.isModuleConfigured  == 'Y' ? 'checked' : ''} ${module.isModuleConfigured  == 'Y' ? 'disabled' : 'true'} name="modulesList[]" >&nbsp;${module.moduleName}
 								                </c:if>  
 								             </label>

@@ -154,7 +154,7 @@ public class RegistrationRestController {
 		     Org org = orgLocations.getOrg();
 			 String orgModules = "";
 			 StringBuilder strbul = null; 
-
+			 StringBuilder strbul2 = null; 
 			 
 			 if(!isNullOrEmpty(submodulesList)){
 					String[] registeredSubModules =  submodulesList.split(",");
@@ -213,6 +213,7 @@ public class RegistrationRestController {
 							Long moduleId = (long) Constants.MODULE_TIMESHEET;
 							Long myTimeSheetTabId = (long) Constants.TAB_MY_TIMESHEET;
 							Long timeSheetApprovalTabId = (long) Constants.TAB_TIMESHEET_APPROVAL;
+							Long tabId = (long) Constants.TAB_CLIENT;
 							
 							actionsList = sourceleadActionsService.getSourceLeadTimeSheetActionsByModuleIdAndTabId(moduleId, myTimeSheetTabId, timeSheetApprovalTabId);
 							
@@ -225,15 +226,28 @@ public class RegistrationRestController {
 						         strbul.append(",");
 						        }
 						     }
+						     
 						     strbul.toString();
 						     
+						     strbul2 = new StringBuilder();
+						     List<Long> clientActionsList = sourceleadActionsService.getSourceLeadActionsByTabId(tabId);
+						     Iterator<Long> iter2 = clientActionsList.iterator();
+						     while(iter2.hasNext())
+						     {
+						    	 strbul2.append(iter2.next());
+						        if(iter2.hasNext()){
+						        	strbul2.append(",");
+						        }
+						     }
+						     
+						        strbul2.toString();
 						        Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
-								String adminids = adminrole.getActionId()+","+strbul;
+								String adminids = adminrole.getActionId()+","+strbul+","+strbul2;
 								adminrole.setActionId(adminids);
 								rolesService.storeRoles(adminrole);
 								
 								Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, orgLocations.getId());
-								String managerids = managerrole.getActionId()+","+strbul;
+								String managerids = managerrole.getActionId()+","+strbul+","+strbul2;
 								managerrole.setActionId(managerids);
 								rolesService.storeRoles(managerrole);
 								

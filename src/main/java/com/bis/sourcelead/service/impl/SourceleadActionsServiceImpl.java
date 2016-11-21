@@ -47,4 +47,9 @@ public class SourceleadActionsServiceImpl implements SourceleadActionsService {
 		return sourceleadActionsDao.getSourceLeadTimeSheetActionsByModuleIdAndTabId(moduleId, myTimeSheetTabId, timeSheetApprovalTabId);
 	}
 
+	@Override
+	public List<Long> getSourceLeadActionsByTabId(Long tabId) throws Exception {
+		return sourceleadActionsDao.getSourceLeadActionsByTabId(tabId);
+	}
+
 }
