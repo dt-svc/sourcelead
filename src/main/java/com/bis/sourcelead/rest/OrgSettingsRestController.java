@@ -234,6 +234,7 @@ public class OrgSettingsRestController {
 	 		roles.setOrg(org);
 	 		roles.setOrgLocations(orgLocations);
 	 		roles.setStatus("1");
+	 		roles.setDefaultRole(0);
 	 		RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyById(Long.parseLong(jsonObj.getString("level")));
 	 		roles.setRoleHierarchy(roleHierarchy);
 	 		roles.setCreatedBy(user.getUserCode());

@@ -354,7 +354,7 @@ public class ClientServiceImpl implements ClientService{
 					RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyByHierarchyLevelAndOrgLocationId(roles.getRoleHierarchy().getHierarchyLevel(), orgLocations.getId());
 					orgRoles.setRoleHierarchy(roleHierarchy);
 					orgRoles.setStatus(roles.getStatus().toString());
-					
+					orgRoles.setDefaultRole(1);
 					StringBuilder strbul  = new StringBuilder();
 					
 					List<Long> roleActonsList = new ArrayList<Long>();

@@ -50,6 +50,9 @@ public class Roles {
 	@JoinColumn(name = "HIERARCHY_ID")
 	private RoleHierarchy roleHierarchy;
 	
+	@Column(name = "DEFAULT_ROLE")
+	private Integer defaultRole;
+	
 	@Column(name = "STATUS")
 	private String status;
 	
@@ -197,6 +200,14 @@ public class Roles {
 
 	public void setActionsCount(Integer actionsCount) {
 		this.actionsCount = actionsCount;
+	}
+
+	public Integer getDefaultRole() {
+		return defaultRole;
+	}
+
+	public void setDefaultRole(Integer defaultRole) {
+		this.defaultRole = defaultRole;
 	}
 
 

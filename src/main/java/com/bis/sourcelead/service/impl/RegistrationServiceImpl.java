@@ -400,7 +400,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 				RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyByHierarchyLevelAndOrgLocationId(roles.getRoleHierarchy().getHierarchyLevel(), orgLocations.getId());
 				orgRoles.setRoleHierarchy(roleHierarchy);
 				orgRoles.setOrg(orgLocations.getOrg());
-				
+				orgRoles.setDefaultRole(1);
 				StringBuilder strbul  = new StringBuilder();
 				
 				List<Long> roleActonsList = new ArrayList<Long>();
