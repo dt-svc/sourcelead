@@ -1,11 +1,11 @@
  <!-- Inteviews -->
       <div class="col-md-6">
-        <div class="clients_wrap_table dashboard-widget">
+        <div class="dashboard-widget">
           <h4 class="clearfix">Interviews
         <b class="dashboard-datepkr"><input type="text" class="input-sm" id="datepicker-int" readonly="readonly"><i class="fa fa-calendar"></i></b>  
           </h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-          <div class="clearfix require_wrap_table dashboard-data">
+          <div class="clearfix require_wrap_table dashboard-data clients_wrap_table">
             <ul class="nav nav-tabs">
               <li class="active" id="todayTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); interviews('today')">Today</a></li>
               <li id="upcomingTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); interviews('upcoming')">Upcoming</a></li>

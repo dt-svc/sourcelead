@@ -19,11 +19,15 @@
   display: inline-block;
   float: none;
 }
-.project_wrap_table span{
+/* .project_wrap_table span{
 display: inline;
-}
+} */
  </style>
-
+<style type="text/css">
+.project_wrap {
+overflow-x: auto;
+}
+</style>
 <body>
       <!-- Content Area -->
        <section class="content-wraper">
@@ -334,7 +338,7 @@ function filter(){
    		    		}
    		    		result = result +'<tr>';
    		    		result = result +'<td data-title="Id"><div><span>'+projectSequeneNumber+'</span></div></td>';
-   		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span>'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span class="tbldata-dotdot-vsm">'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
    		    		result = result +'<td data-title="Manager">';
    		    		result = result +'<div><span>';
    		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined'){
