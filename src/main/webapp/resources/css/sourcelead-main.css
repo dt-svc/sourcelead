@@ -3003,12 +3003,11 @@ input:checked + .slider:before {
 	height:34px;
 	line-height:34px;
 }
+
 div.heightScroll {
-/*	height:300px;*/
-	min-height:30px;
-    max-height:300px;
-    overflow-y:auto;
-    border-bottom:1px solid #ccc;
+	height:300px;
+	overflow-y:scroll;
+	border-bottom:1px solid #ccc;
 }
 .divskill table {
 	border-collapse: collapse;

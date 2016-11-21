@@ -79,6 +79,9 @@ INSERT INTO `sourcelead`.`SOURCELEAD_ROLES` (`ID`, `ROLE_NAME`, `DISPLAY_NAME`, 
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','ROLES','DEFAULT_ROLE','INT NULL AFTER `HIERARCHY_ID`');
 
-
+UPDATE `sourcelead`.`ROLES` SET `DEFAULT_ROLE`='1' WHERE `ID`='1';
+UPDATE `sourcelead`.`ROLES` SET `DEFAULT_ROLE`='1' WHERE `ID`='2';
+UPDATE `sourcelead`.`ROLES` SET `DEFAULT_ROLE`='1' WHERE `ID`='3';
+UPDATE `sourcelead`.`ROLES` SET `DEFAULT_ROLE`='1' WHERE `ID`='4';
 
 
