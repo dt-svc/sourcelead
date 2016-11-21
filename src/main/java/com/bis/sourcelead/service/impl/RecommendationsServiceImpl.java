@@ -18,8 +18,6 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
-import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
-import com.bis.sourcelead.rest.RequirementRestController;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.RecommendationsService;
@@ -181,10 +179,12 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			String candidateScore = String.valueOf(roundOff);
 			candidate.setCandidateScore(candidateScore);
 			candidate.setNoOfReq(reqList.size());
-			if(candidateResume.getTitle() !=null && !"".equalsIgnoreCase(candidateResume.getTitle())){
-				candidate.setCandidateResume(candidateResume.getTitle());
-			}else{
-				candidate.setCandidateResume(candidateResume.getFileName());
+			if(candidateResume != null){
+					if(candidateResume.getTitle() !=null && !"".equalsIgnoreCase(candidateResume.getTitle())){
+						candidate.setCandidateResume(candidateResume.getTitle());
+					}else{
+						candidate.setCandidateResume(candidateResume.getFileName());
+					}
 			}
 			if(reqList.size() >0){
 				
