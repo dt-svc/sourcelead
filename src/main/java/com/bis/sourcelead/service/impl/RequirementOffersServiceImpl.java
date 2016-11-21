@@ -839,4 +839,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		return null;
 	}
 
+
+
+
 }

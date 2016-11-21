@@ -29,8 +29,6 @@ public interface RequirementOffersService {
 	void offerAcceptEmailScenario(User loginUser,OrgLocations loginOrgLocations,Requirement requirement,RequirementOffers requirementOffers,RequirementSubmission requirementSubmission) throws Exception;
 	
 
-	void offerRejectEmailScenario(User loginUser,Requirement requirement,RequirementOffers requirementOffers,RequirementSubmission requirementSubmission) throws Exception;
-
 	void notifyToApplicantOfRequirementOfferMade(Long submissionId,Long OfferId, User loginUser,OrgLocations orgLocations ) throws Exception;
 	
 	String acceptOrRejectOffer(Long submissionId,Long OfferId, User loginUser,String offerStatus,String reason, OrgLocations orgLocations ) throws Exception;
