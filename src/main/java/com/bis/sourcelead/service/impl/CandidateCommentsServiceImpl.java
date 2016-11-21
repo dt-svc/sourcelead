@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -123,14 +124,14 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 			}else if(diffDays == 0 && diffHours == 0){
 				candidateComments.setCommentTime(diffMinutes + " minutes ago");
 			}else if(diffDays == 0){
-				candidateComments.setCommentTime(diffHours + " hours ago");
+				candidateComments.setCommentTime(diffHours + " hours "+diffMinutes+ " minutes ago");
 			}else if(diffDays < 7){
-				candidateComments.setCommentTime(diffDays + " days ago");
+				candidateComments.setCommentTime(diffDays + " days "+diffHours+ " hours ago");
 			}else{
-				candidateComments.setCommentTime(candidateComments.getUpdatedDate().toString());
+				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
+				String commonDateFormat = standardFormat.format(candidateComments.getUpdatedDate());
+				candidateComments.setCommentTime(commonDateFormat.toString());
 			}
-				
-			
 			//candidateComments.setCommentTime(candidateComments.getUpdatedDate().toString());
 		}
 		
