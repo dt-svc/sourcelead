@@ -183,7 +183,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					            if(jsonObj.has("notifyToVendor")  && !jsonObj.getString("notifyToVendor").isEmpty()){
 									List<Requirement> vendorRequirement = requirementService.getRequirementListById(requirementSubmission.getRequirement().getId());
 									Requirement clientRequirement= requirementService.getRequirementByRequirementId(requirementSubmission.getRequirement().getId());
-									offerMailToVendors(loginUser,clientRequirement,vendorRequirement);
+									offerMailToVendors(loginUser,orgLocations,clientRequirement,vendorRequirement);
 					            }
 					            
 					            // This is to  notify  the Applicant
@@ -221,7 +221,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	}
 	
 	@Override
-    public void offerMailToVendors(User loginUser,Requirement clientrequirement,List<Requirement> vendorRequirement) throws Exception {
+    public void offerMailToVendors(User loginUser,OrgLocations loginOrgLocations,Requirement clientrequirement,List<Requirement> vendorRequirement) throws Exception {
 		for(Requirement req :vendorRequirement){
 		
             EmailMessage emailMessage = new EmailMessage();
@@ -287,7 +287,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             
             try {
     			
-                emailScenerioUtil.sendEmail(emailMessage, emailRecipientList, new ArrayList<EmailAttachment>());
+                emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
         		}catch (MessagingException e) {
         			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
         		} catch (UnsupportedEncodingException e) {
@@ -406,7 +406,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 
     		try {
     			
-            emailScenerioUtil.sendEmail(emailMessage, emailRecipientList, new ArrayList<EmailAttachment>());
+            emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
     		}catch (MessagingException e) {
     			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
     		} catch (UnsupportedEncodingException e) {
@@ -422,7 +422,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	
 	
 	@Override
-	public void offerAcceptEmailScenario(User loginUser,Requirement requirement,RequirementOffers requirementOffers,RequirementSubmission requirementSubmission)
+	public void offerAcceptEmailScenario(User loginUser,OrgLocations orgLocations,Requirement requirement,RequirementOffers requirementOffers,RequirementSubmission requirementSubmission)
 			throws Exception {
 
 		EmailMessage emailMessage = new EmailMessage();
@@ -498,11 +498,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, emailRecipientList, new ArrayList<EmailAttachment>());
+		emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
 	}
 	
 	@Override
-	public void offerRejectEmailScenario(User loginUser,Requirement requirement,RequirementOffers requirementOffers,RequirementSubmission requirementSubmission)
+	public void offerRejectEmailScenario(User loginUser,OrgLocations loginOrgLocations,Requirement requirement,RequirementOffers requirementOffers,RequirementSubmission requirementSubmission)
 			throws Exception {
 
 		EmailMessage emailMessage = new EmailMessage();
@@ -578,7 +578,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, emailRecipientList, new ArrayList<EmailAttachment>());
+		emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(),emailRecipientList, new ArrayList<EmailAttachment>());
 	}
 
 

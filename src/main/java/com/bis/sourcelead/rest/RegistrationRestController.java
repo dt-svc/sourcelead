@@ -128,22 +128,25 @@ public class RegistrationRestController {
 		Registration registration = gson.fromJson(json1, Registration.class);
 		User user = userService.findByUserName(registration.getEmail());
 		if (null != user) {
-			try {
-				PasswordResets passwordResets = passwordResetsSevice.getPasswordResetsByUserId(user.getId());
-				if (null == passwordResets) {
-					String verificationCode = registrationService.addPasswordResets(user);
-					registrationService.sendResetPasswordEmail(user, verificationCode);
-				} else {
-					passwordResets.setVerificationCode(SourceLeadRandomCodeHelper.generateRandomVerificationCode());
-					passwordResets = passwordResetsSevice.savePasswordResets(passwordResets);
-					// email to user
-					registrationService.sendResetPasswordEmail(user, passwordResets.getVerificationCode());
+			UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+			if (null != userRole) {
+				try {
+					PasswordResets passwordResets = passwordResetsSevice.getPasswordResetsByUserId(user.getId());
+					if (null == passwordResets) {
+						String verificationCode = registrationService.addPasswordResets(user);
+						registrationService.sendResetPasswordEmail(user,userRole.getOrgLocations().getId(), verificationCode);
+					} else {
+						passwordResets.setVerificationCode(SourceLeadRandomCodeHelper.generateRandomVerificationCode());
+						passwordResets = passwordResetsSevice.savePasswordResets(passwordResets);
+						// email to user
+						registrationService.sendResetPasswordEmail(user,userRole.getOrgLocations().getId(), passwordResets.getVerificationCode());
+					}
+	
+					SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordMsg",
+							"Verification Code sent to your mail.");
+				} catch (Exception e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
 				}
-
-				SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordMsg",
-						"Verification Code sent to your mail.");
-			} catch (Exception e) {
-				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
 			return "valid";
 		} else {
@@ -170,7 +173,12 @@ public class RegistrationRestController {
 				
 				//email to user
 				User user = userService.findByUserName(passwordResets.getEmail());
-				registrationService.sendUpdatePasswordEmail(user);
+				if(null != user){
+					UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+					if (null != userRole) {
+						registrationService.sendUpdatePasswordEmail(user,userRole.getOrgLocations().getId());
+					}
+				}
 				 SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordSucessfulMsg", "Your password has reset sucessfully.");
 				
 			} catch (Exception e) {

@@ -319,6 +319,17 @@ function addDocument(vendorLocationId,orgRelationId) {
 	    document.getElementById("uploadBtn").onchange = function () {
 	    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();;
 	    };
+	    
+	    /* upload file script for size validation 2MB*/
+	    var selectedFile = document.getElementById("uploadBtn");
+	    selectedFile.addEventListener("change", function() {
+	      var docSize = this.files[0].size;
+	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  document.getElementById("uploadFile").value = '';
+	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+	      }
+	    });
 	  
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){ 

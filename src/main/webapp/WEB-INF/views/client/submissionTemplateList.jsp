@@ -319,6 +319,7 @@ function validateTemplateName(clientLocationId){
         var isLabelModified = 'N';
         var submitTemplate = true;
         var fieldLabel = '';
+        var myArray = new Array();
 
         //Loop through fields and save field data to array
         var fields = [];
@@ -339,10 +340,11 @@ function validateTemplateName(clientLocationId){
             if(fieldType == 'checkbox' || fieldType == 'radio' ||  fieldType == 'select'){
             	if($this.find('.choices li').length == 0) {
             		submitTemplate = false;
+            		alertMessage("Provide choice for "+fieldLabel)
             	}
             }
             
-
+            myArray.push(fieldLabel);
             //check if this field has choices
             if($this.find('.choices li').length >= 1) {
 
@@ -400,6 +402,22 @@ function validateTemplateName(clientLocationId){
 
         });
 
+        
+        for (var i = 0; i < myArray.length; i++) 
+        {
+            for (var j = 0; j < myArray.length; j++) 
+            {
+                if (i != j) 
+                {
+                    if (myArray[i].toLowerCase() == myArray[j].toLowerCase()) 
+                    {
+                    	submitTemplate = false;
+                    	alertMessage(myArray[i]+" label duplicated")
+                    }
+                }
+            }
+        }
+        
         var frontEndFormHTML = '';
         var clientLocationId = document.getElementById("clientLocationId").value;
         var templateId = document.getElementById("templateId").value;

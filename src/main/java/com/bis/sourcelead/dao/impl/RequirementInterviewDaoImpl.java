@@ -168,7 +168,7 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime) {
 		Session session = this.sessionFactory.getCurrentSession();
-		 String query ="from RequirementInterview ri where ri.status = 1 and ri.startTime > :date and ri.startTime < :triggerTime";
+		 String query ="from RequirementInterview ri left join fetch ri.submissionId submission left join fetch  submission.orgLocations where ri.status = 1 and ri.startTime > :date and ri.startTime < :triggerTime";
 		List<RequirementInterview> requirementInterviewList = session.createQuery(query).setString("date",currentTime).setString("triggerTime",triggerTime).setCacheable(true).list();
 		return requirementInterviewList;
 	}

@@ -15,7 +15,11 @@
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
-
+<style type="text/css">
+.vendor_wrap {
+overflow-x: auto;
+}
+</style>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
     <!-- Content Area -->
       <section class="content-wraper">

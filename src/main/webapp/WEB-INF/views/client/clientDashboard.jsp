@@ -17,7 +17,13 @@
 <!-- end files for autocomplete with tagit -->
 
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<style type="text/css">
+.clients_wrap {
+overflow-x: auto;
+}
+</style>
 <body>
+
  <div id="loading"></div>
 	<!-- Content Area -->
 	<section class="content-wraper">
@@ -103,8 +109,7 @@
 				<div class="clients_wrap_table " id ="vendorListFilter">
 			
 		     	<table id="clientList" class="display" cellspacing="0" width="100%"> </table>
-		     	<table id="vendorContactList" class="display" cellspacing="0" width="100%"> </table> 
-				
+		     	 <table id="vendorContactList" class="display" cellspacing="0" width="100%"> </table> 
 				</div>
 				
 			</div>
@@ -507,7 +512,7 @@ function resendClientSpocInvitation(spocUserId,orgSpocId,orgRelationId){
 </script>
 
 <script>
-function pagination1(){  
+function pagination1(){ 
     $('#vendorContactList').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
@@ -517,8 +522,7 @@ function pagination1(){
     	"oLanguage": {
      		"sSearch": ""
      	}
-		
-    } );
+    })
 }
 </script>
 

@@ -10,6 +10,10 @@
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 
 <style type="text/css">
+.glyphicon-none:before {
+    content: "\2122";
+    color: transparent !important;
+}
 .timesheet-content {
 background: #fff;
 min-height: 100px;
@@ -683,8 +687,7 @@ function maskme(){
 
 <!-- this script is for save timesheets -->	 
 <script type="text/javascript">
-function saveMyTimesheet(status,savingType){  
-	
+function saveMyTimesheet(status,savingType,startDate,empUserId,projectMemberId,empId){ 
 	 checkHours();
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -706,8 +709,9 @@ function saveMyTimesheet(status,savingType){
        		
        		   var form = $('#timesheet_form')[0];
        		   var formData = new FormData(form); 
-       		   
        		   var submissionIds = $("#submissionId").val();
+       	  	   $("#dynamic").empty();
+       		   $("#dynamic").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
         	   $.ajax({
 	      	          type : "POST",
 	          	      data: formData,
@@ -718,10 +722,12 @@ function saveMyTimesheet(status,savingType){
 	          	      dataType : 'json',
         	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
         		      success :function(result) {
-        		    	  $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+        		    	     $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
         		    		 $(".side_mask").fadeOut(200); 
         	        		 $("body").css('overflow-y', 'scrool');
-        		    	  approvalList();
+        	        		 $("#dynamic").removeAttr('style');
+        	        		 dynamicTimesheet("left",startDate,empUserId,projectMemberId,empId);
+        		    	  //approvalList();
         		      }
         	      	  
         	    }); 
@@ -755,22 +761,31 @@ function saveMyTimesheet(status,savingType){
 
 <!-- this script is for save Reject Submission and approve submission reason -->
 <script>
-function saveRejectSubmission(local,employeeId,startDate,endDate){
+function saveRejectSubmission(local,employeeId,userId,startDate,endDate){
 	
 		 var msg = $("#reject"+local+"message").val(); 
 	     var sourceleadUrl ='${sourceleadUrl}';
-	     
+	     var rowHtmlContent =  $("#row"+userId).html();
+		 $("#row"+userId).empty();
+		 $("#row"+userId).html("<td colspan='5'  id='loading"+userId+"'></td>");
+	     $("#loading"+userId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); 
+	    /*  
 	     $("#timesheetApprList").empty(); 
-	     $("#timesheetApprList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');  
+	     $("#timesheetApprList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');   */
          $(".mask_time").fadeOut(200);
          $("#reject"+local+"panel").slideUp(200);
          $.ajax({
          type: "POST",
          url: sourceleadUrl+"/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+msg+"&approvalStatus=REJECTED",       
          success: function(data) {    
-        	    approvalList();
-         }
-         });
+        	   // approvalList();
+        	  $("#row"+userId).empty();
+	    	  $("#row"+userId).html(rowHtmlContent);
+	    	  $("#status"+userId).html("REJECTED");
+	    	  $("#action"+userId).empty();
+	    	  $("#action"+userId).append(" <div><h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+local+"' onclick='rejectedMessage(\"rejectedMessage"+local+"\");'><div class='app_error_mes' id='rejectedMessage"+local+"'>"+msg+"</div></i></div>");
+           }
+         }); 
 	     
 }
 
@@ -779,30 +794,36 @@ function cancelRejectSubmission(local){
 		 $("#reject"+local+"panel").slideUp(200);
 }
 
-function rejecteSubmission(local,employeeId,startDate,endDate){  
+function rejecteSubmission(local,employeeId,userId,startDate,endDate){  
         
         var result = "";
         result = result +'<div class="time_appr_rejct_pop" id="reject'+local+'panel" >';
 		result = result +'<textarea placeholder="Enter comment here" id="reject'+local+'message" ></textarea>';
-		result = result +'<a href="#" onClick="saveRejectSubmission(\''+local+'\',\''+employeeId+'\',\''+startDate+'\',\''+endDate+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+local+'\');">Cancel</a>';
+		result = result +'<a href="#" onClick="saveRejectSubmission(\''+local+'\',\''+employeeId+'\',\''+userId+'\',\''+startDate+'\',\''+endDate+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+local+'\');">Cancel</a>';
 		result = result +'</div>';
 		 
 		$("#rejectedPopup").append(result);
 	    $(".mask_time").fadeIn(200); 
 		$("#reject"+local+"panel").slideToggle(200);
 }
-function approveSubmission(employeeId,startDate,endDate){
-		$("#timesheetApprList").empty();
-	    $("#timesheetApprList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); 
-        var rejectedReason;
+function approveSubmission(userId,employeeId,startDate,endDate){
+		//$("#timesheetApprList").empty();
+		var rowHtmlContent =  $("#row"+userId).html();
+		$("#row"+userId).empty();
+		$("#row"+userId).html("<td colspan='5'  id='loading"+userId+"'></td>");
+	    $("#loading"+userId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); 
+	    var rejectedReason;
         var sourceleadUrl ='${sourceleadUrl}';
-	    $.ajax({
+	     $.ajax({
 	    type: "POST",
 	    url: sourceleadUrl+"/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
-	    success: function(data) {
-	    	  approvalList();
-	    }
-	    });
+		    success: function(data) {
+		    	 $("#row"+userId).empty();
+		    	 $("#row"+userId).html(rowHtmlContent);
+		    	 $("#status"+userId).html("APPROVED");
+		    	 $("#action"+userId).html("<div><h3>Approved</h3></div>");
+		    }
+	    });  
 }
 </script>
  

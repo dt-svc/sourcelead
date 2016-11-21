@@ -105,7 +105,6 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	@Override
 	public void updateApprovalStatusForApprover(Long empId, Long approverUserId, Date startDate, String status,
 			String rejectedReason) {
-		// TODO Auto-generated method stub
 		submissionApproverHierarchyDao.updateApprovalStatusForApprover(empId, approverUserId, startDate, status, rejectedReason);
 	}
 
