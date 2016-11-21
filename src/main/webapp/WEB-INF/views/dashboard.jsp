@@ -250,20 +250,26 @@ float: none !important;
 	    </section>
 	    
 	    <div class="clearfix row mb">
-	    <c:forEach var="report" items="${SourceLeadWeb_tabsList}">  
-			<c:if test = "${report.tabName == 'Timesheets'}">      
+			<c:if test = "${SourceLeadWeb_timesheet == 'Y'}">      
 			   <jsp:include page="dashboardTimesheets.jsp"></jsp:include>  
 			</c:if>
-		 </c:forEach>
-		 <jsp:include page="dashboardRequirement.jsp"></jsp:include> 
+			<c:if test = "${SourceLeadWeb_userType != 'Employee'}">
+				<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
+					<jsp:include page="dashboardRequirement.jsp"></jsp:include> 
+				</c:if>
+			</c:if>
+		 
 	      	 <%-- <jsp:include page="dashboardTasks.jsp"></jsp:include> --%>
 	    </div>
-    
-    	<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include>
-	    <div class="clearfix row mb"> 
-	   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
-	    	 <jsp:include page="dashboardInterviews.jsp"></jsp:include>
-	    </div>
+    	<c:if test = "${SourceLeadWeb_userType != 'Employee'}">
+	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
+					<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> 
+			    <div class="clearfix row mb"> 
+			   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
+			    	 <jsp:include page="dashboardInterviews.jsp"></jsp:include>
+			    </div>
+		    </c:if>
+	    </c:if>
 	    
 	    <div class="clearfix row mb"> 
 	   	 <%--  <jsp:include page="dashboardTimesheetsApprovals.jsp"></jsp:include> --%>

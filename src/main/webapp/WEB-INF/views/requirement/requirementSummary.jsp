@@ -413,7 +413,7 @@ function sideBar(requirementId){
 				        result = result+'<ul class="list-unstyled can-perdt">';
 				        if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined' && json.minExp != null && json.minExp != '' && json.minExp != 'undefined')
 				        	{
-				       	result = result+'<li><i class="fa fa-black-tie"></i><span>Experience: '+json.minExp+'Years'+json.maxExp+' Months</span></li>';
+				       	result = result+'<li><i class="fa fa-black-tie"></i><span>Experience: '+json.minExp+'-'+json.maxExp+'</span></li>';
 				        	}
 					   
 				        else{
@@ -633,7 +633,7 @@ function requirementDetails(requirementId){
                					 result = result +'<button  class="btn btn-success mr" type="button" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
                		             result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
    				           	 }else if(json.requirementApproverHierarchyStatus == 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
-      						              result = result +'<button  id="requirementStatus" class="btn btn-success pull-right mr" type="button">OPEN</button>';
+      						              result = result +'<strong  id="requirementStatus" class="pull-right mr btn btn-success disabled">OPEN</strong>';
     				         }else if( json.requirementSubmissionStatus  !='DRAFT'  && json.requirementApproverHierarchyStatus == 'REJECTED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
 					              result = result +'<button  id="requirementStatus" class="btn btn-danger pull-right mr" type="button">REJECTED</button>';
 		                     }
