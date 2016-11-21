@@ -28,9 +28,7 @@ public interface RequirementInterviewService {
 
 	List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long id, Long requirementId) throws Exception;
 
-
-	void sendEmailToVendors(Candidate candidate,OrgLocations loginOrgLocations, RequirementSubmission requirementSubmission, User loginUser,Org loginOrg,RequirementInterview requirementInterview) throws Exception;
-
+	void sendEmailToVendors(Candidate candidate, RequirementSubmission requirementSubmission, User loginUser,Org loginOrg,RequirementInterview requirementInterview,OrgLocations orgLocations) throws Exception;
 
 	void sendEmailToApplicants(Candidate candidate,OrgLocations loginOrgLocations, RequirementSubmission requirementSubmission, User loginUser,
 			Org loginOrg, RequirementInterview requirementInterview) throws Exception;
