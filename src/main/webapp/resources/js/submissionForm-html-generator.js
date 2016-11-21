@@ -277,6 +277,13 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
         				 datavalidation = 'data-validation="required validate_Space validate_length length2-50"';
         			 }
         			 
+        			 if(label == 'Current CTC' || label == 'Expected CTC'){
+            			 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
+            		 }
+            		 if(label == 'Designation' || label == 'Education'){
+            			 datavalidation = 'data-validation="required validate_Space validate_Alphabet length2-50"';
+            		 }
+        			 
         			 datavalidation2 = 'data-validation="required"';
         		 }else{
         			 if(label == 'Alternate Number'){
@@ -284,8 +291,17 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
         			 }else{
         				 datavalidation = 'data-validation="validate_Space validate_length length2-50"';
         			 }
+        			 
+        			 if(label == 'Current CTC' || label == 'Expected CTC'){
+        				 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
+            		 }
+            		 if(label == 'Designation' || label == 'Education'){
+            			 datavalidation = 'data-validation="validate_Space validate_Alphabet length2-50"';
+            		 }
         			 novalidation = 'data-validation-optional="true"';
         		 }
+        		 
+        		
         		 
             	 if(label == 'location'){
             		 var reqSymbol = ''

@@ -42,7 +42,7 @@ public interface TimesheetSubmissionsDao {
     
     public Collection<TimesheetSubmissions> getApprovalTimesheetSubmissions(Long userId,Long locationsId) throws Exception ;
     
-    public Collection<TimesheetSubmissions> getTimesheetSubmissionsByAproverId(Long projectMemberId,Long userId,Date startDate) throws Exception ;
+    public List<TimesheetSubmissions> getTimesheetSubmissionsByAproverId(Long empId,Long userId,Date startDate) throws Exception ;
 
     public TimesheetSubmissions getTimesheetSubmissionsByMemberIdAndStartDate(Long memberId,Date startDate)throws Exception;
      
@@ -64,6 +64,6 @@ public interface TimesheetSubmissionsDao {
 
 	public List<TimesheetSubmissions>  getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,String status,Long orgLocationId) throws Exception ;
  
-	public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId) throws Exception;
+	public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId,Long locationsId) throws Exception;
 
 }

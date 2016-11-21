@@ -313,7 +313,7 @@
         <div class="form-group">
           <label class="col-md-3">Summary</label>
           <div class="col-md-9">
-            <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true"></textarea>
+            <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
           </div>
         </div>
         
@@ -366,6 +366,17 @@
 </script> 
 <script type="text/javascript">
 	function storeCandidate() {
+		
+		var expectedRate = document.getElementById("expectedRate").value; 
+		 if(expectedRate != null && expectedRate != ""){
+			
+			 $('#rateType').removeAttr('data-validation-optional');
+			 $('#rateType').attr("data-validation","required"); 
+		 }else{
+		 $('#rateType').removeAttr('data-validation');
+		 $('#rateType').attr("data-validation-optional","true"); 
+		 }
+		 
 		
 		var validationSettings = {
 				errorMessagePosition : 'element',
@@ -576,10 +587,12 @@ function getCities(){
 		    	var newSkill = this.value.replace(",","");
 		        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 		        {
+		        	var par = this.parent;
 		            var option = $("<option>").val(newSkill).text(newSkill);
 		            select.append(option);
 		            select.find(option).prop('selected', true);
-		            select.trigger("chosen:updated");
+	        		$("#candidateSkills").trigger("chosen:updated");
+	        		
 		        }
 		    });
 		    //Adding Customized Skills to the list
@@ -714,7 +727,8 @@ function getCities(){
 
 /* upload file script */
 document.getElementById("uploadBtn").onchange = function () {
-   document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+  // document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
 };
  
 </script>

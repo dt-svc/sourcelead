@@ -194,7 +194,7 @@ function getVendorLists(){
    	        		}
 	       		
 	       		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
-	       		result = result +' <td><div>10</div></td>';
+	       		result = result +' <td><div>'+report.noOfReleasedJobs+'</div></td>';
 	       		result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.level+'">'+report.level+'</span>';
 	       		/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
    	        		result = result +'</tr>';

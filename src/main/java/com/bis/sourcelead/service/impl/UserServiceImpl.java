@@ -487,7 +487,7 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,locationId,emailRecipientList,new ArrayList<EmailAttachment>());
 		
 	}
 
@@ -759,7 +759,7 @@ public class UserServiceImpl implements UserService {
 		 
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,respondingPartyOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 		 noificationEmailScenario.setBody(notificationbody);
 		 noificationEmailScenario.setUUID(UUID);
@@ -788,6 +788,12 @@ public class UserServiceImpl implements UserService {
 	public List<User> getUserListExceptExistedTeamMembersList(List<Long> teamMembersId, Long orgLocationId)
 			throws Exception {
 		return userDao.getUserListExceptExistedTeamMembersList(teamMembersId, orgLocationId);
+	}
+
+	@Override
+	public List<User> getAllUsersByOrgLocationCodeExcludingEmployees(Long orgLocationsId) throws Exception {
+		
+		return userDao.getAllUsersByOrgLocationCodeExcludingEmployees(orgLocationsId);
 	}
 	
 	

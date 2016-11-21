@@ -757,7 +757,7 @@ public class ClientServiceImpl implements ClientService{
 			 
 			 
 			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 			 
 			 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.EDIT_CLIENTCONTACT,Constants.ENTITY_TYPE_NOTIFICATION); 
 			 String actionLink = "";

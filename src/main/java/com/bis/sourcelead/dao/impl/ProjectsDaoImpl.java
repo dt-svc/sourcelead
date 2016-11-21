@@ -495,7 +495,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
  * Reading all the Employees those who are not submitted the Time sheets
  * @return List<User>
  */
-		@Override
+	/*	@Override
 		@Transactional(rollbackFor = { Exception.class })
 		public HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception {
 			
@@ -523,7 +523,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 				userSet = new HashSet<>(userList);
 			}
 			return userSet;
-		}
+		}*/
 
 
 /**
@@ -541,7 +541,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 /**
  * Reads all the users those who are not submitted time sheets even sent notification
  */
-@Override
+/*@Override
 @Transactional(rollbackFor = { Exception.class })
 public HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
 	
@@ -573,7 +573,7 @@ public HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invo
 			userSet = new HashSet<>(userList);
 		}
 		return userSet;
-}
+}*/
 
 @Override
 @Transactional(rollbackFor = { Exception.class })
@@ -592,7 +592,7 @@ public void saveAllProjects(List<Projects> projectsList) throws Exception {
 	}
 }
 
-@Override
+/*@Override
 @Transactional(rollbackFor = { Exception.class })
 public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
       Session session = this.sessionFactory.getCurrentSession(); 
@@ -610,7 +610,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		}
 		return userSet;
 
-}
+}*/
 
           }
 

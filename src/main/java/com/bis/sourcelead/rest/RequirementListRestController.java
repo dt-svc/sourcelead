@@ -224,9 +224,11 @@ public class RequirementListRestController {
 				Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
 				
 				// to get the RequirementApproverHierarchy to set the Status
-				RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(Long.parseLong(requirementId), user.getId());
+				    Boolean isLoginUserAsApprover = false;
+					RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(Long.parseLong(requirementId), user.getId());
 					if(requirementApproverHierarchy!=null){
 						requirement.setRequirementApproverHierarchyStatus(requirementApproverHierarchy.getRequirementApproverStatus().toString());
+						isLoginUserAsApprover = true;
 					}
 					if(requirement.getSpocId() !=null){
 						if(requirement.getClientId() !=null ){
@@ -263,6 +265,14 @@ public class RequirementListRestController {
 					
 					Boolean isLoginUserAsTeamMember =   requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
 					requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
+					
+					requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
+					
+					Boolean isLoginUserAsManager =   requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
+					requirement.setIsLoginUserAsManager(isLoginUserAsManager.toString());
+					
+					
+					
 					resultJson = commonUtil.toJSON(requirement);
 				 
 			}
@@ -304,6 +314,11 @@ public class RequirementListRestController {
 					       if(assing.getTeamId() != null ){
 					    	   ra.setTeamName(assing.getTeamId().getName());
 					       }
+					       
+					       if(assing.getAssignUserId()  != null){
+					    	   Integer applicantCount =   requirementSubmissionService.getApplicantCountByrequirementIdandAssignedUsercode(Long.parseLong(requirementId), assing.getAssignUserId().getUserCode());
+						       ra.setApplicantCount(applicantCount.toString());
+					       }
 					       requirementAssignToList.add(ra);
 				      }
 			       }
@@ -343,6 +358,7 @@ public class RequirementListRestController {
 								requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 								requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 								requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+								requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
 								if(requirementSubmission.getCreatedDate() != null){
 									requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 								}
@@ -369,14 +385,20 @@ public class RequirementListRestController {
 		 
 		 @RequestMapping(value = "/saveChangedStatus" , method = RequestMethod.POST)
 		 @ResponseBody  String saveChangedStatus(@RequestParam(value="requirementId", required=false) Long  requirementId,
-				 @RequestParam(value="status", required=false) String  status) throws Exception {
+				 @RequestParam(value="status", required=false) String  status,HttpServletRequest request) throws Exception {
 			
 			 
+			 
+			 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
 			 Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+			 REQUIREMENT_SUBMISSION_STATUS previousStatus = requirement.getRequirementSubmissionStatus();
 			 
 			 REQUIREMENT_SUBMISSION_STATUS changedStatus = Enum.valueOf(REQUIREMENT_SUBMISSION_STATUS.class, status);
-			 
 			 requirement.setRequirementSubmissionStatus(changedStatus);
+			 requirement.setRequirementSubmissionPreviousStatus(previousStatus);
+			 requirement.setUpdatedBy(loginUser.getUserCode());
+			 requirement.setUpdatedDate(commonUtil.currentDate());
 			 requirementService.addRequirement(requirement); 
 			return "success";
 		 }

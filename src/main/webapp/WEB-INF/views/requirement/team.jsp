@@ -561,7 +561,7 @@ function projectMemberList(teamId){
 		                    	 }
 		                    	 result = result+ '<td><div><span>'+opt.teamMemberRequirementAssignedCount+'</span></div></td>';
 		                    	 result = result+ '<td><div><span>'+opt.teamMemberRequirementAssignedOpenCount+'</span></div></td>';
-		                    	 result = result+ '<td><div><i class="glyphicon glyphicon-trash" onclick="removeProjectMemberAlertMessage('+opt.id+');"></i></div></td>';
+		                    	 result = result+ '<td><div><i class="glyphicon glyphicon-trash" onclick="removeProjectMemberAlertMessage('+opt.id+','+teamId+');"></i></div></td>';
 		                    	 result = result+ '</tr>';
 		                     }
 		                     result = result +" </tbody>";
@@ -594,13 +594,13 @@ function projectMemberList(teamId){
      1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
 --%>
 <script type="text/javascript">
-function removeProjectMemberAlertMessage(teamId){
+function removeProjectMemberAlertMessage(teamMemberId,teamId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='#'><input id='confirm-id' type='button' value='Ok' onclick='deleteTeamMember("+teamId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +"		<b href='#'><input id='confirm-id' type='button' value='Ok' onclick='deleteTeamMember("+teamMemberId+","+teamId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
 	result = result +"	</div>";
 	$("#removeCandidateAlert").append(result);
 	$("#remove_user_pop").slideDown(200); 
@@ -629,7 +629,7 @@ function cancelAlert(){
 --%>
 
 <script>
-function deleteTeamMember(teamMemberId){
+function deleteTeamMember(teamMemberId,teamId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var reason = document.getElementById("rejectReason").value;
 	  $.ajax({
@@ -644,7 +644,7 @@ function deleteTeamMember(teamMemberId){
             			 location.replace(sourceleadUrl+"/errorPage");
             		 }
             		 else{
-            			 projectMemberList(teamMemberId);
+            			 projectMemberList(teamId);
             			 $("#removeCandidateAlert").empty();
             			 $(".project_inn_mask").fadeOut(200);
             		 }

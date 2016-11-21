@@ -309,7 +309,7 @@ public class TimesheetSubmissionsServiceTest {
 	
 	@Test 
 	public void getWeekFrequencyTest() throws Exception{
-	      HashSet<TimesheetSubmissions> tms = timesheetSubmissionsService.getWeekFrequency(32l);
+	      HashSet<TimesheetSubmissions> tms = timesheetSubmissionsService.getWeekFrequency(32l,1l);
 		assertNotNull(tms);
 	}
 	

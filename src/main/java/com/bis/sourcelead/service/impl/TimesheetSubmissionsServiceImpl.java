@@ -973,9 +973,9 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		 * @throws NullPointer
 		 */
 		@Override
-		public Collection<TimesheetSubmissions> getTimesheetSubmissionsByAproverId(Long projectMemberId, Long userId,Date startDate)
+		public List<TimesheetSubmissions> getTimesheetSubmissionsByAproverId(Long empId, Long userId,Date startDate)
 				throws Exception {
-			Collection<TimesheetSubmissions> list = timesheetSubmissionsDao.getTimesheetSubmissionsByAproverId(projectMemberId,userId,startDate);
+			List<TimesheetSubmissions> list = timesheetSubmissionsDao.getTimesheetSubmissionsByAproverId(empId,userId,startDate);
 			return list;
 		}
 		
@@ -1076,8 +1076,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
  * 
  */
 		@Override
-		public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId) throws Exception {
-			return timesheetSubmissionsDao.getWeekFrequency(userId);
+		public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId,Long locationsId) throws Exception {
+			return timesheetSubmissionsDao.getWeekFrequency(userId,locationsId);
 		}
 
 

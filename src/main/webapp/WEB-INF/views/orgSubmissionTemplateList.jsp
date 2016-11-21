@@ -251,7 +251,7 @@ function cancel(){
         var fields = [];
         var submitTemplate = true;
         var fieldLabel = '';
-
+        var myArray = new Array();
         $('.field').each(function() {
 
             var $this = $(this);
@@ -269,8 +269,13 @@ function cancel(){
             if(fieldType == 'checkbox' || fieldType == 'radio' ||  fieldType == 'select'){
             	if($this.find('.choices li').length == 0) {
             		submitTemplate = false;
+            		alertMessage("Provide choice for "+fieldLabel)
             	}
             }
+            
+           
+            myArray.push(fieldLabel);
+            
             
 
             //check if this field has choices
@@ -299,6 +304,7 @@ function cancel(){
             }
             
             
+            
             if(fieldLabel == 'First Name'  || fieldLabel == 'Phone Number'  
         		|| fieldLabel == 'Email Id' || fieldLabel == 'DOB' || fieldLabel == 'Current / Last Company' || fieldLabel == 'Designation' 
         		|| fieldLabel == 'Education' || fieldLabel == 'Work Experience' || fieldLabel == 'Current CTC' || fieldLabel == 'Expected CTC' 
@@ -319,6 +325,23 @@ function cancel(){
             });
 
         });
+        
+        for (var i = 0; i < myArray.length; i++) 
+        {
+            for (var j = 0; j < myArray.length; j++) 
+            {
+                if (i != j) 
+                {
+                    if (myArray[i].toLowerCase() == myArray[j].toLowerCase()) 
+                    {
+                    	submitTemplate = false;
+                    	alertMessage(myArray[i]+" label duplicated")
+                    }
+                }
+            }
+        }
+        
+        
         var frontEndFormHTML = '';
         var templateId = document.getElementById("templateId").value;
         if(templateId == 'undefined'){
