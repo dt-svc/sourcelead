@@ -583,6 +583,9 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	           if(leftNavStartDate != null && (leftNavStartDate.after(employeeStartDate) || employeeStartDate.equals(leftNavStartDate))){
 		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
 	     	   }
+	           else{
+	        	   sb.append("       	<i class='glyphicon glyphicon-none'></i>");
+	           }
 	     	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
 	     	   Date rightNavStartDate = getRightNavStartDateForApproverBasedOnCurrentStartDate(user.getId(), ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
 	           if(rightNavStartDate != null){
@@ -593,6 +596,9 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 				    if(rightNavEndDate.getTime().before(employeeEndDate) || employeeEndDate.equals(rightNavEndDate.getTime())){
 		     			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+format.format(rightNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
 		     	    }
+	           }
+	           else{
+	        	   sb.append("       	<i class='glyphicon glyphicon-none'></i>");
 	           }
 	     	   sb.append("    </div>");
 	     	   sb.append("    </td>");

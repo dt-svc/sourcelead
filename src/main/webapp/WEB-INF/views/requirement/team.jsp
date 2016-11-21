@@ -294,14 +294,23 @@ function getEditTeamOwners(teamOwnerUserId,teamOwnerName,teamId){
 </script>
 
 <script>
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+     };
+</script>
+
+<script>
 function storeEditedTeam(){
 	
-	   var validationSettings = {
+	  /*  var validationSettings = {
 	        errorMessagePosition : 'element',
 	       borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
-         };
+         }; */
 	   if ($('#edit_team_form').validate(false, validationSettings)){ 
 			var frm = $('#edit_team_form').serializeFormJSON();
 			var con = JSON.stringify(frm);

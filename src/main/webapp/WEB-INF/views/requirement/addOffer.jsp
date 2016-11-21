@@ -105,7 +105,7 @@ function addOffer(requirementId){
 					result= result + '	          <div class="row pad2">';
 					result= result + '	          <div class="form-group">';
 					result= result + '<label class="col-md-3"></label>';
-					result= result + '<div class="col-md-9">';
+					result= result + '<div class="col-md-5">';
 					result= result + '<div class="checkbox checkBox">';
 					result= result + ' <label>';
 					result= result + '<input type="checkbox" value="" onclick="NotifyToVendor();" id="notifyToVendor" name="notifyToVendor">Notify To Vendor</label>';
@@ -116,7 +116,7 @@ function addOffer(requirementId){
 				
 			    result= result + '<div class="form-group">';
 				result= result + '<label class="col-md-3"></label>';
-				result= result + '<div class="col-md-9">';
+				result= result + '<div class="col-md-5">';
 				result= result + '<div class="checkbox checkBox">';
 				result= result + ' <label>';
 				result= result + '<input type="checkbox" value=""  onclick="NotifyToApplicant();" id="notifyToApplicant" name="notifyToApplicant">Notify To Applicant</label>';
