@@ -683,8 +683,7 @@ function maskme(){
 
 <!-- this script is for save timesheets -->	 
 <script type="text/javascript">
-function saveMyTimesheet(status,savingType){  
-	
+function saveMyTimesheet(status,savingType,startDate,empUserId,projectMemberId,empId){ 
 	 checkHours();
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -706,8 +705,9 @@ function saveMyTimesheet(status,savingType){
        		
        		   var form = $('#timesheet_form')[0];
        		   var formData = new FormData(form); 
-       		   
        		   var submissionIds = $("#submissionId").val();
+       	  	   $("#dynamic").empty();
+       		   $("#dynamic").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
         	   $.ajax({
 	      	          type : "POST",
 	          	      data: formData,
@@ -718,10 +718,12 @@ function saveMyTimesheet(status,savingType){
 	          	      dataType : 'json',
         	      	  url: sourceleadUrl+"/saveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
         		      success :function(result) {
-        		    	  $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+        		    	     $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
         		    		 $(".side_mask").fadeOut(200); 
         	        		 $("body").css('overflow-y', 'scrool');
-        		    	  approvalList();
+        	        		 $("#dynamic").removeAttr('style');
+        	        		 dynamicTimesheet("left",startDate,empUserId,projectMemberId,empId);
+        		    	  //approvalList();
         		      }
         	      	  
         	    }); 
@@ -776,11 +778,8 @@ function saveRejectSubmission(local,employeeId,userId,startDate,endDate){
         	  $("#row"+userId).empty();
 	    	  $("#row"+userId).html(rowHtmlContent);
 	    	  $("#status"+userId).html("REJECTED");
-	    	  $("#action"+userId).html(" <div><h3 class='reje_color'>Rejected</h3>");
-    	      $("#action"+userId).append(" <i class='glyphicon glyphicon-comment' id='"+local+"' onclick='rejectedMessage(\"rejectedMessage"+local+"\");'>");
-    	      $("#action"+userId).append(" <div class='app_error_mes' id='rejectedMessage"+local+"'>"+msg+"</div>");
-    	      $("#action"+userId).append(" </i>");
-    	      $("#action"+userId).append(" </div>");
+	    	  $("#action"+userId).empty();
+	    	  $("#action"+userId).append(" <div><h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+local+"' onclick='rejectedMessage(\"rejectedMessage"+local+"\");'><div class='app_error_mes' id='rejectedMessage"+local+"'>"+msg+"</div></i></div>");
            }
          }); 
 	     
