@@ -2,6 +2,9 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -13,10 +16,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.util.CalendarUtil;
 
 @Repository
 public class UserRoleDaoImpl implements UserRoleDao {
@@ -39,6 +44,60 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public HashSet<UserRole> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		cal.setLenient(false);
+		cal.setTime(new Date());
+		
+		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+		
+		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
+		Date previousDate = previousMonday.getTime();
+		java.sql.Date  previousDayDate = new java.sql.Date(previousDate.getTime());
+		
+		Date currentWeekMondayDate = CalendarUtil.getCurrentWeekDay("MON");
+		java.sql.Date  currentMondayDate = new java.sql.Date(currentWeekMondayDate.getTime());
+		List<UserRole> userList = null;
+		if(invoiceFrequency !=null && !"".equalsIgnoreCase(invoiceFrequency)){
+			String query = "from UserRole userRole left join fetch userRole.user user left join fetch userRole.orgLocations orglocation where user.id IN (select emp.user from Employees emp where emp.InvoiceFrequency = :invoiceFrequency and emp.id IN(select pm.employee from ProjectMembers pm where pm.projects.orgLocationsId.id = orglocation.id and pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where  (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
+			userList = session.createQuery(query).setDate("startDate", previousDayDate).setDate("endDate", currentMondayDate).setString("invoiceFrequency", invoiceFrequency).setCacheable(true).list(); 
+		}else{
+			String query = "from UserRole userRole left join fetch userRole.user user left join fetch userRole.orgLocations orglocation where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.projects.orgLocationsId.id = orglocation.id and pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
+			userList = session.createQuery(query).setDate("startDate", previousDayDate).setDate("endDate", currentMondayDate).setCacheable(true).list(); 
+		}
+		
+		logger.debug("The Total Employees which are not submitted the Time sheets within a week are : ***********************"+userList.size());
+		 HashSet<UserRole> userSet  = null;
+		 if(userList != null && !userList.isEmpty()){
+				userSet = new HashSet<>(userList);
+			}
+			return userSet;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
+	      Session session = this.sessionFactory.getCurrentSession(); 
+	      Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL); 
+	      cal.setLenient(false); 
+	      cal.setTime(new Date()); 
+	      Date previousDate = CalendarUtil.getCurrentWeekDay("MON"); 
+	      java.sql.Date previousDayDate = new java.sql.Date(previousDate.getTime()); 
+	      String query = "from User user left join fetch userRole.user user left join fetch userRole.orgLocations orglocation where user.id IN (select emp.user from Employees emp where emp.InvoiceFrequency = 'Weekly' and emp.id IN(select pm.employee from ProjectMembers pm where pm.projects.orgLocationsId.id = orglocation.id and pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where ts.startDate = :startDate and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))"; 
+	      List<UserRole> userList = session.createQuery(query.toString()).setDate("startDate", previousDayDate).setCacheable(true).list(); 
+	      logger.debug("The Total Employees which are not submitted the Time sheets within a week are : "+userList.size());
+	      HashSet<UserRole> userSet  = null;
+			if(userList != null && !userList.isEmpty()){
+				userSet = new HashSet<>(userList);
+			}
+			return userSet;
+
 	}
 
 	@Override
@@ -66,7 +125,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<UserRole> userRole = new ArrayList<UserRole>();
 		logger.debug("getPrimaryRole By UserId start");
 		userRole = session
-				.createQuery("from UserRole userRole where userRole.user.id=:userId and userRole.isPrimary = '1' ")
+				.createQuery("from UserRole userRole left join fetch userRole.orgLocations where userRole.user.id=:userId and userRole.isPrimary = '1' ")
 				.setLong("userId", userId).setCacheable(true).list();
 		logger.debug("getPrimaryRole By UserId start");
 		if (userRole.size() > 0) {

@@ -796,7 +796,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, loginOrgLocation, notificationScenario);
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 	
 }
 	
@@ -874,7 +874,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocations, notificationScenario);
 
@@ -953,7 +953,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser,intiatorUser, orgLocations, notificationScenario);
 
@@ -1194,7 +1194,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario);
 
@@ -1281,7 +1281,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 		String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser,assUser, orgLocations, notificationScenario);
 
@@ -1364,7 +1364,7 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, emailRecipientList, new ArrayList<EmailAttachment>());
+		emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
 		String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, initiatorUser, loginOrgLocation, notificationScenario);
 	}
@@ -1465,7 +1465,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario);
 

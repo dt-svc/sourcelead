@@ -1076,8 +1076,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
  * 
  */
 		@Override
-		public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId) throws Exception {
-			return timesheetSubmissionsDao.getWeekFrequency(userId);
+		public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId,Long locationsId) throws Exception {
+			return timesheetSubmissionsDao.getWeekFrequency(userId,locationsId);
 		}
 
 
