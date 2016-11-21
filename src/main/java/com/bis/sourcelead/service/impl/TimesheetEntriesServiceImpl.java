@@ -830,6 +830,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         Date sDate  =  Constants.DMY.parse(startDate);
+        Long employeeUserId = null;
+        Long projectMemberId = null;
 		Collection<TimesheetSubmissions>  timesheetSubmissionsList = timesheetSubmissionsService.getTimesheetSubmissionsByAproverId(employeeId, user.getId(),sDate);
 		
 		StringBuilder sb = new StringBuilder();	  
@@ -870,7 +872,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
         String approvalStatus = null;
 			
 		for(TimesheetSubmissions ts : timesheetSubmissionsList){
-		    	
+			
+			employeeUserId = ts.getProjectMembers().getEmployee().getUser().getId();
+			projectMemberId =ts.getProjectMembers().getId();
 			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForApprover(ts.getId(),user.getId());
 			Submission_Status submissionStatus = sah.getSubmissionStatus();
 			String submissionStatusStr = submissionStatus.getValue();
@@ -1296,11 +1300,11 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		
 			sb.append("<div class='clearfix'></div>");
 			sb.append("</div>");
-			
+			 
 			if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue()))){
 				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("	<div class='timesheet_button'>");
-				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\");' value='Update' class='time_btn'>");
+				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\",\""+format.format(CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())+"\","+employeeUserId+","+projectMemberId+","+employeeId+");' value='Update' class='time_btn'>");
 				   /*sb.append("        <input type='button' value='Clear' class='time_btn time_cancel'>");*/
 				   sb.append("    </div>");
 				   sb.append("</div>");
@@ -1314,8 +1318,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			else{
 				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("	<div class='timesheet_button'>");
-				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\",\"approver\");' value='Save' class='time_btn time_dra'>");
-				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\");' value='Submit' class='time_btn'>");
+				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\",\"approver\",\""+format.format(CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())+"\","+employeeUserId+","+projectMemberId+","+employeeId+");' value='Save' class='time_btn time_dra'>");
+				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\",\""+format.format(CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())+"\","+employeeUserId+","+projectMemberId+","+employeeId+");' value='Submit' class='time_btn'>");
 				   sb.append("        <input type='button' onClick='clearTimesheet();' value='Clear' class='time_btn time_cancel'>");
 				   
 				   sb.append("");

@@ -1,8 +1,13 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.Minutes;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -14,6 +19,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateCommentsDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateComments;
+import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCommentsService;
@@ -107,10 +113,30 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 				candidateComments.setCommentAuthorUserId(user.getId());
 			}
 			
-			candidateComments.setCommentTime(candidateComments.getUpdatedDate().toString());
+			long diff = commonUtil.currentDate().getTime() - candidateComments.getUpdatedDate().getTime();
+			long diffSeconds = diff / 1000 % 60;
+			long diffMinutes = diff / (60 * 1000) % 60;
+			long diffHours = diff / (60 * 60 * 1000) % 24;
+			long diffDays = diff / (24 * 60 * 60 * 1000);
+			
+			if(diffDays == 0 && diffHours == 0 && diffMinutes == 0){
+				candidateComments.setCommentTime(diffSeconds + " seconds ago");
+			}else if(diffDays == 0 && diffHours == 0){
+				candidateComments.setCommentTime(diffMinutes + " minutes ago");
+			}else if(diffDays == 0){
+				candidateComments.setCommentTime(diffHours + " hours "+diffMinutes+ " minutes ago");
+			}else if(diffDays < 7){
+				candidateComments.setCommentTime(diffDays + " days "+diffHours+ " hours ago");
+			}else{
+				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
+				String commonDateFormat = standardFormat.format(candidateComments.getUpdatedDate());
+				candidateComments.setCommentTime(commonDateFormat.toString());
+			}
+			//candidateComments.setCommentTime(candidateComments.getUpdatedDate().toString());
 		}
 		
 		return candidateCommentsList;
 	}
+	
 	
 }

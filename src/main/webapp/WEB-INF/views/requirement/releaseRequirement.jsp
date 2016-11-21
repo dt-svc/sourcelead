@@ -175,8 +175,9 @@
       <div class="form-footer clearfix row mt">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" class="btn btn-primary ml" onclick="releaseTo();" value="Release">
-            <input type="button" class="btn btn-default ml" value="Cancel" onClick="javascript:location.href = '<c:url value='requirementList'/>'">
+            <span class="jquery_form_error_message" style="display:none;">Vendor/Contact selection is mandatory</span>
+            <input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
+            <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:location.href = '<c:url value='requirementList'/>'">
           </div>
         </div>
       </div>
@@ -192,7 +193,6 @@ $(document).ready(function(){
 </script>
 <script>
 function releaseTo(){
-		
 	    var contactsIds = new Array();
 	    $('input:checkbox[name=contactscheckbox]:checked').each(function() 
 	    {
@@ -205,15 +205,23 @@ function releaseTo(){
 	    	vendorIds.push($(this).attr('id'));
 	    });
 	    
-	    var sourceleadUrl ='${sourceleadUrl}';
-	    var requirementId = '${param.requirementId}';
-		$.ajax({
-	           type : "POST",
-	           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
-	            success :function(data) {
-						location.replace(sourceleadUrl+"/requirementList");
-	            },
-	    }); 
+	    if(contactsIds.length > 0 || vendorIds.length > 0){
+	    	$('span.jquery_form_error_message').hide();
+	    	$("#releaseBtn").prop('disabled', true);
+	    	$("#releaseCancelBtn").prop('disabled', true);
+			$("#releaseBtn").prop('value', 'Processing');
+		    var sourceleadUrl ='${sourceleadUrl}';
+		    var requirementId = '${param.requirementId}';
+			$.ajax({
+		           type : "POST",
+		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
+		            success :function(data) {
+							location.replace(sourceleadUrl+"/requirementList");
+		            },
+		    }); 
+	    }else{
+	    	$('span.jquery_form_error_message').show();
+	    }
 }
 
 function releaseToOneContact(contactscheckboxId){
@@ -523,12 +531,14 @@ $(document).ready(function(){
     	if(sel.value=="releaseByVendors"){
 			document.getElementById("vendor").style.display="block";
 			document.getElementById("vendorContacts").style.display="none";
-			getVendorLists()
+			getVendorLists();
+			$('span.jquery_form_error_message').hide();
         }
 		 if(sel.value=="releaseByContact"){
 			document.getElementById("vendorContacts").style.display="block";
 			document.getElementById("vendor").style.display="none";
 			getContactsLists();
+			$('span.jquery_form_error_message').hide();
         }
     }
 </script>

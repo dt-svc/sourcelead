@@ -92,6 +92,7 @@ function requirementList(){
 	var orgATS = '${SourceLeadWeb_org.ats}';
 	var orgVMS = '${SourceLeadWeb_org.vms}';
 	
+	
 	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
@@ -160,7 +161,7 @@ function requirementList(){
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
 		                     }
-result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");' id='changeStatusId"+opt.id+"'>";
+                           result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");' id='changeStatusId"+opt.id+"'>";
 		                     
 		                        if(opt.requirementSubmissionStatus == "DRAFT"){
 									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
@@ -246,6 +247,7 @@ result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange
 	                     pagination(); 
 			    	} 
                  }else{
+                	 $("#requirementList").empty();
                 	 $("#requirementList").removeAttr("style");
   	    	         var result ="";
 		    	    
@@ -253,8 +255,8 @@ result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 					 result = result+"			        <p>No Requirement Found</p>";
 					 result = result+"			 </div>";
-					noRequirements();
-					$("#noReq").val("noreq");
+					/*  noRequirements();
+					$("#noReq").val("noreq"); */
 					$("#requirementList").empty();
 				    $("#requirementList").append(result); 
                 }
@@ -1036,12 +1038,12 @@ function requirementPipeline(requirementId){
 		<li><i class="glyphicon glyphicon-export"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
 		            <div id="filter2ApprovedPop" class="approved_pop">
 		              <ul>
-                		    <li><input id="c6" type="checkbox" name="requirementStatus" value ="New"  onclick="requirementList();"><label for="c6">New</label></li>
+                		    <li><input id="c6" type="checkbox" name="requirementStatus" value ="NEW"  onclick="requirementList();"><label for="c6">New</label></li>
 							<li><input id="c7" name="requirementStatus" type="checkbox" value ="Draft"  onclick="requirementList();"><label for="c7">Draft</label></li>
-							<li><input id="c8" type="checkbox"  name="requirementStatus"  type="checkbox" value ="submitted"  onclick="requirementList();"><label for="c8">Waiting for approval</label></li>
+							<li><input id="c8" type="checkbox"  name="requirementStatus"  type="checkbox" value ="submitted"  onclick="requirementList();"><label for="c8">Submitted</label></li>
                				<li><input id="c9" type="checkbox"  name="requirementStatus"  type="checkbox" value ="open"  onclick="requirementList();"><label for="c8">Open</label></li>
                				<li><input id="c10" type="checkbox"  name="requirementStatus"  type="checkbox" value ="onhold"  onclick="requirementList();"><label for="c8">On Hold</label></li>
-               				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="Cancelled"  onclick="requirementList();"><label for="c8">Cancelled</label></li>
+               				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="CANCEL"  onclick="requirementList();"><label for="c8">cancel</label></li>
 		              </ul>
 		            </div>
           </li>
