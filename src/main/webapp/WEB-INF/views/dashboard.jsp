@@ -232,7 +232,11 @@ float: none !important;
 } */
 </style>
 
- 
+ <style type="text/css">
+.clients_wrap_table {
+overflow-x: auto;
+}
+</style>
 
  <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
