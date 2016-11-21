@@ -338,7 +338,7 @@ function clientSideBar(candidateId){
 			             result = result+'                 </ul>';
 			            /* New comments div creation Nov 8th, 2016 */
 			            
-			            result = result+'<div class="comments-div clearfix">';
+			            result = result+'<div class="comments-div clearfix" id="latestMessage">';
 			            result = result+'    <div class="commentsimg">';
 			            result = result+'    <i class="fa fa-comments"></i>';
 			            result = result+'        <div class="commentsimg-inner">';
@@ -348,12 +348,8 @@ function clientSideBar(candidateId){
 			            result = result+'    </div>';
 			            result = result+'     <div class="comments-content">';
 			            result = result+'         <div class="pull-left">';
-			            result = result+'         <p class="comment-by">';
-			            result = result+'            By <span class="text-danger">Manikanth AnanthKumar Satyanarayana</span>';
-			            result = result+'            <span class="small">(10/10/2016 at 12:10pm)</span></p>';
-			            result = result+'         <p class="comment-text">It is a long established fact that a reader will be distracted';
-			            result = result+'            by the readable content of a page when looking atIt is a long established fact that a reader will be distracted';
-			            result = result+'            by the readable content of a page when looking at</p>';
+			            result = result+'         <p class="comment-by"></p>';
+			            result = result+'         <p class="comment-text"></p>';
 			            result = result+'         </div>';
 			            result = result+'         <div class="pull-right cmt-button">';
 			            result = result+'          <span class="comments-button">';
@@ -364,7 +360,7 @@ function clientSideBar(candidateId){
 			            result = result+'            <div class="add-comment">';
 			            result = result+'            </div>';
 			            result = result+'          </span>';
-			            result = result+'          <a href="javascript:void(0)" class="comments-view">View more <span class="label label-warning">4</span></a>';
+			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">0</span></a>';
 			 			result = result+'		</div>';
 			            result = result+'     </div>';
 			            result = result+'</div>';
@@ -376,13 +372,13 @@ function clientSideBar(candidateId){
 			             result = result+'			</div>';
 			             result = result+'   <div class="proj_close"></div>';
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
-			             result = result+'     <ul class="project-tabs-menu">';
-			             result = result+'       <li class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
-			             result = result+'       <li><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');" >Resume</a></li>';
-			             result = result+'       <li><a href="#tab-3" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
-			             result = result+'       <li><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
-			             result = result+'       <li><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
-			             result = result+'       <li><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
+			             result = result+'     <ul class="project-tabs-menu">'; 
+			             result = result+'       <li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
+			             result = result+'       <li id="candidateResumeTab"><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');" >Resume</a></li>';
+			             result = result+'       <li id="candidateEmployersTab"><a href="#tab-3" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
+			             result = result+'       <li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
+			             result = result+'       <li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
+			             result = result+'       <li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
 			             /* result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; */
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
@@ -436,6 +432,8 @@ function clientSideBar(candidateId){
          },
            
       }); 
+	  
+	  savedCommentAndCount(candidateId);
 				
 }
 </script>
@@ -953,7 +951,7 @@ function exportToExcel(){
 function showComment(candidateId){
 	var result = "";
 		result = result+'	        <form role="form" id="candidateComments_form" name="candidateComments_form" method="post">';
-	    result = result+'              <textarea rows="1" class="form-control clearfix mb10" placeholder="Comments" id="comment" name="comment" data-validation="required validate_Space validate_Description validate_length length2-500" field-name="Comment"></textarea>';
+	    result = result+'              <textarea rows="1" class="form-control clearfix mb10" placeholder="Comments here..." id="comment" name="comment" data-validation="required validate_length length2-500" field-name="Comment"></textarea>';
 	    result = result+'              <span class="clearfix pull-right">';
 	    result = result+'              		<input type="button" id="submit_comment" value="Add" class="btn btn-sm btn-success" onClick="addComment('+candidateId+')">';
 	    result = result+'              		<input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="closeComment()">';
@@ -1005,6 +1003,7 @@ function closeComment(){
 		        	    dataType : 'json',
 						url : sourceleadUrl+"/saveCandidateComment?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId,
 						success : function(result) {
+							savedCommentAndCount(candidateId);
 							 /* if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
 					    	 }
@@ -1021,12 +1020,76 @@ function closeComment(){
 					return true;
 			 }else{ 
 					return false;
-			 } 
+			 }
 		}
 		$('body').on('blur', '#candidateComments_form', function() {
 		$("#candidateComments_form").showHelpOnFocus();
 		$("#candidateComments_form").validateOnBlur(false, validationSettings);
+		
 	});
+</script>
+
+
+
+
+<script>
+function savedCommentAndCount(candidateId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+         success :function(data) {
+        	 var result = "";
+              if(data != null && data != 'undefined' && data != ""){
+              	 	 var json = JSON.parse(data);
+            		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+            		 else if (data.indexOf('exception') >= 0) {
+            			 location.replace(sourceleadUrl+"/errorPage");
+            		 }
+            		 else{
+            			 var totalComments = 0;
+            			 if(json.length>0){
+            				totalComments = json.length;
+         	            	var report = json[0];
+	 			            
+	 			            result = result+'    <div class="commentsimg">';
+				            result = result+'    <i class="fa fa-comments"></i>';
+				            result = result+'        <div class="commentsimg-inner">';
+				            
+				            result = result+'        	<img src="resources/images/userprofile-img.png" alt="User Comment" title="User Comment">';
+				            result = result+'        </div>';
+				            result = result+'    </div>';
+				            result = result+'     <div class="comments-content">';
+				            result = result+'         <div class="pull-left" id="latestMessage">';
+				            result = result+'         <p class="comment-by">';
+				            result = result+'            By <span class="text-danger">'+report.commentAuthor+'</span>';
+				            result = result+'            <span class="small">('+report.commentTime+')</span></p>';
+				            result = result+'         <p class="comment-text">'+report.comment+'</p>';
+				            result = result+'         </div>';
+				            result = result+'         <div class="pull-right cmt-button">';
+				            result = result+'          <span class="comments-button">';
+				            
+				            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+')">';
+				            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
+				            result = result+'            </button>';
+				            result = result+'            <div class="add-comment">';
+				            result = result+'            </div>';
+				            result = result+'          </span>';
+				            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
+				 			result = result+'		</div>';
+				            result = result+'     </div>';
+	 			           
+	 			           $("#latestMessage").empty();
+	 			           $("#latestMessage").append(result);
+            			 }
+            			 
+            		 }
+              }
+			},
+      });
+}
 </script>
     
 <jsp:include page="../masterFooter.jsp" />

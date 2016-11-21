@@ -77,6 +77,32 @@ bottom:-14px;
 }
 </style>
 
+<script>
+$(document).ready(function() {
+	var requirementAssignedIds ='${requirementAssignedIds}';
+	if (requirementAssignedIds != null && requirementAssignedIds !=  '' && requirementAssignedIds !='undefined')
+	{
+		
+		if(requirementAssignedIds != null && requirementAssignedIds != 'undefined' && requirementAssignedIds != ''){
+			var result = "";
+			var requirementAssignedToIds = [];
+			requirementAssignedToIds = requirementAssignedIds.split("&");
+			var count = 1;
+			
+			for (i=0;i < requirementAssignedToIds.length;i++)
+	        {
+	        	 result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+requirementAssignedToIds[i]+"' />";
+	        	 count++;
+	        }
+			result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
+			$("#assignedToSavingDiv").empty();
+			$("#assignedToSavingDiv").append(result); 
+			assignedToValidation();
+		}	
+	} 
+});
+</script>
+
 
 <script type="text/javascript">
 		window.onload = function () {
@@ -91,7 +117,7 @@ bottom:-14px;
 		    });
 			
 		 };
-</script>
+</script> 
 
  <script>
 		$(document).ready(function() {
@@ -100,7 +126,7 @@ bottom:-14px;
 		});
 </script>
 
- <script>
+<script>
 $(document).ready(function () {
    /*  var selectedUserRole = document.getElementById('SelectedUserRole').value; */
     var approverMode = '${approverMode}';
@@ -144,30 +170,6 @@ $(document).ready(function () {
 </script>
     
 
-<script>
-$(document).ready(function() {
-	if ($('#requirementAssignedIds').length)
-	{
-		var requirementAssignedIds ='${requirementAssignedIds}';
-		if(requirementAssignedIds != null && requirementAssignedIds != 'undefined' && requirementAssignedIds != ''){
-			var result = "";
-			var requirementAssignedToIds = [];
-			requirementAssignedToIds = requirementAssignedIds.split("&");
-			var count = 1;
-			
-			for (i=0;i < requirementAssignedToIds.length;i++)
-	        {
-	        	 result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+requirementAssignedToIds[i]+"' />";
-	        	 count++;
-	        }
-			result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
-			$("#assignedToSavingDiv").empty();
-			$("#assignedToSavingDiv").append(result); 
-			assignedToValidation();
-		}	
-	} 
-});
-</script>
 <!-- Content Area -->
 <section class="content-wraper">
   <section class="content-header clearfix">
@@ -184,8 +186,8 @@ $(document).ready(function() {
         <div class="col-lg-12">
           <h3>Add Requirement Details</h3>
         </div>
-  <div class="col-md-12 clearfix">
-	  <div class="col-md-12">
+	       <div class="col-md-12 clearfix">
+        	  <div class="col-md-12">
 	          <div style="margin:0 auto" class="input-group col-md-6">
 	            <label class="input-group-btn">
 	            	<span class="btn btn-primary">Select Template
@@ -198,6 +200,7 @@ $(document).ready(function() {
                      </c:forEach>   
                 </select>
 	          </div>
+	          
 	          <div class="text-center clearfix mt text-muted">
 	          	<div class="clearfix text-center mb">
 	          <span class="text-info">
@@ -216,7 +219,8 @@ $(document).ready(function() {
 	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
 	         <div class="col-md-9">
 	          <div class="input-group">
-	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length2-250"   value="" class="form-control" onblur="validateJobtitle();" onmouseout="validateJobtitle();">
+	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length2-250"   value="" class="form-control" onblur="getTemplateVal();">
+	             
 	             <div class="input-group-btn selp-custom-min">
 	             <select class="selectpicker" id="jobType" name="jobType">
 	                 <option  ${requirement.jobType  == 'c2c' ? 'selected' : ''}><a href="#">C2C</a></option>
@@ -267,18 +271,18 @@ $(document).ready(function() {
          <div class="form-group" >
             <label class="col-md-3">Experience</label>
             <div class="col-md-9">
-              <%-- <div class="row">
+              <div class="row">
 	                <div class="col-md-6">
-	                 <input type="text" class="form-control" placeholder="minExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-5 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                 <input type="text" class="form-control" placeholder="minExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-2 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
 	                </div>
 	                <div class="col-md-6" >
-	                <input type="text" class="form-control" id="maxExp" name="maxExp" placeholder="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-5 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                <input type="text" class="form-control" id="maxExp" name="maxExp" placeholder="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-2 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
 	                </div>
               </div>
               <div class="row" id="expId">
                   <input type="hidden" name="expValidation" id="expValidation">
-              </div> --%>
-                 <div class="row">
+              </div> 
+        <%--          <div class="row">
              <div class="col-xs-6 col-md-6">
              		<select class="form-control" id="minExp" name="minExp"  onchange="disableMonths();">
              		  <option selected disabled>Year</option>
@@ -297,7 +301,7 @@ $(document).ready(function() {
 						</c:forEach>
              		</select>
              </div>
-            </div>
+            </div> --%>
               
             </div>
           </div>
@@ -318,7 +322,7 @@ $(document).ready(function() {
                 </select>
                 
                 </div>
-                <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true"  value="">
+                <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Type">
                     <option value="">Rate Per</option>
@@ -365,7 +369,7 @@ $(document).ready(function() {
          <div class="form-group">
               <label class="col-md-3">Skills</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation="validate_Space" data-validation-optional="true">
+                <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation-optional="true">
                <c:forEach var="skill" items="${skillsList}">
                 <option  value="${skill.name}">${skill.name}</option>
 	                     <c:forEach var="skillExist" items="${requirement.reqSkillsList}">
@@ -497,8 +501,6 @@ $(document).ready(function() {
 					     </c:forEach>
                     </select>
                     <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i> 
-                 	<div id="addContact" class="modal fade" role="dialog">
-                    </div>
                  </div>
                   
                 </div>
@@ -518,7 +520,7 @@ $(document).ready(function() {
 	                </select>
 	                
 	                </div>
-	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true">
+	                <input type="text" class="form-control" id="clientRate" name="clientRate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
 	                 <select class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Type" value="${requirement.clientRateType}" name="clientRateType">
 	                    
@@ -547,7 +549,8 @@ $(document).ready(function() {
 							 	<c:if test="${report.id == loginOrgLocId}">  
 			                    	<option value="${report.id}" ${report.id  == loginOrgLocId ? 'selected' : ''} >${report.templateName}</option>
 			                    </c:if>  
-						</c:forEach>                    </select>
+						</c:forEach>
+						</select>
                   </div>
                   
                 </div>
@@ -701,7 +704,7 @@ $(document).ready(function() {
                <select class="chosen-select form-control select-bg" name="applicationFrom" id="applicationFrom"  data-validation="required"  field-name = "Application Form">
                     	<option value="">-- Select Form --</option>
 		                <c:forEach var="report" items="${submissionTempletesList}">
-					               <option value="${report.id}">${report.templateName}</option>
+					                  <option value="${report.id}" ${report.id  == requirement.submissionTemplateId.id ? 'selected' : ''}>${report.templateName}</option>
 						</c:forEach>
                </select>					
           </div>
@@ -1074,9 +1077,10 @@ function getCities(){
 			  '.chosen-select-width'     : {width:"95%"}
 			}
 			
-		  $("#countryReq").chosen();
+		   $("#countryReq").chosen();
 	       $("#state").chosen();
 	       $("#city").chosen();
+	       
 	       
 	       $("#countryReq").on('change', function (e) {
 	    	   getStates();
@@ -1085,6 +1089,24 @@ function getCities(){
 	    	   getCities();
 	       });
 		       
+	     //Adding Customized Skills to the list
+           var select, chosen;
+           select = $("#skills");
+           select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+           chosen = select.data('chosen');
+           chosen.search_field.on('keyup', function(e)
+           {
+        	   var newSkill = this.value.replace(",","");
+               if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+               {
+                   var option = $("<option>").val(newSkill).text(newSkill);
+                   select.append(option);
+                   select.find(option).prop('selected', true);
+                   $("#skills").trigger("chosen:updated");
+               }
+           });
+           //Adding Customized Skills to the list
+           
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
@@ -1093,6 +1115,10 @@ function getCities(){
 			$this.next().css({'width': '100%'});
 			})
 			
+			
+			 
+            
+            
 			/* upload file script */
 			document.getElementById("uploadBtn").onchange = function () {
 			//document.getElementById("uploadFile").value = this.value;
@@ -1106,10 +1132,9 @@ function getCities(){
 
 <script>
 function getTemplateVal(){
-	
     if(document.getElementById('isTemplate').checked) {
         $("#isTemplate").val('Y');
-       
+        checkTemplateforDouplicate();
     }else{
         $("#isTemplate").val('N');
     }
@@ -1117,7 +1142,7 @@ function getTemplateVal(){
 
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
  function disableMonths() {
      $("#minExp").change(function() {
     	 
@@ -1128,7 +1153,7 @@ function getTemplateVal(){
         	 $("#maxExp").attr("disabled", false); 
      });
  }
- </script>
+ </script> -->
 
 <script>
 function setTemplateValues(){
@@ -1869,22 +1894,23 @@ function minMaxExperience(){
 		$('#expId').find('p.jquery_form_error_message').remove();
     }
 }
+
 </script>
 
 <script type="text/javascript">
-function validateJobtitle(){
-var jobName = document.getElementById("jobTitle").value; 
+function checkTemplateforDouplicate(){
+var templateName = document.getElementById("jobTitle").value; 
 $('#jobTitleDiv').find('p.jquery_form_error_message').remove();
 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/validatejobName?${_csrf.parameterName}=${_csrf.token}&jobName="+jobName, 
+	        url: sourceleadUrl+"/validatetemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName, 
 	        success: function(data) {
 	        	if(data == "true"){
 	        		  $('#jobTitleDiv').find('p.jquery_form_error_message').remove();
-					  $("input#jobTitle").after("<p class='jquery_form_error_message'>"+jobName+" is Already Existed</span>");
+					  $("input#jobTitle").after("<p class='jquery_form_error_message'><span>Template Already Exists</span>");
 					  document.getElementById("jobTitle").setAttribute('record-exist','yes');
-					  document.getElementById("jobTitle").setAttribute('record-exist-errorMsg',jobName+' is Already Existed'); 
+					  document.getElementById("jobTitle").setAttribute('record-exist-errorMsg','Template Already Exists'); 
 	        	}
 	        	else{
 	        		 $('input#jobTitle').removeAttr( "record-exist record-exist-errormsg");
@@ -1896,5 +1922,6 @@ var sourceleadUrl ='${sourceleadUrl}';
 	    });
 }
 </script>
+
 
 <jsp:include page="../masterFooter.jsp" />

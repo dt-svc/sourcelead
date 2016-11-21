@@ -162,26 +162,32 @@ public class RequirementRestController {
 		if(status.equalsIgnoreCase("APPROVED")){ 
 		    if(maxLevel!=null){
 		    	 if(maxLevel.equals(requirementApproverHierarchy.getLevel())){
-		    		     requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.APPROVED);
+		    		     requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
 		    		     requirement.setUpdatedBy(loginUser.getUserCode());
 				    	 requirement.setUpdatedDate(commonUtil.currentDate());
 				    	 requirementService.addRequirement(requirement);
 				      List<RequirementApproverHierarchy> list1  =  requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
 		    		    for(RequirementApproverHierarchy rah :list1){
-			    		      rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+			    		      rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.OPEN);
 			    		      rah.setUpdatedBy(loginUser.getUserCode());
 							  rah.setUpdatedDate(commonUtil.currentDate());
 			    		      requirementApproverHierarchyService.addRequirementApproverHierarchy(rah);
 		            	} 
 		    		    User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
-		    			requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement); 
+		    			requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement,orgLocation); 
 				 }else{
-					    requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+					    requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.OPEN);
 					    requirementApproverHierarchy.setUpdatedBy(loginUser.getUserCode());
 					    requirementApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
 					    requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
-						User approverUser = userService.getUserById(requirementApproverHierarchy.getApproverUserId().getId());
-						requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null);
+					    
+					    //This For Mailing to approver two 
+					    RequirementApproverHierarchy level2approver  =  requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(requirementId);
+						if(level2approver !=null ){
+							     User approverUser = userService.getUserById(level2approver.getApproverUserId().getId());
+								 requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null,orgLocation);
+						}
+					   
 		          }
             }
 		}
@@ -207,7 +213,7 @@ public class RequirementRestController {
 					    // Email for Reject requirement  from approver level Two to Initiator.
 
 		    		    User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
-		    			requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason); 
+		    			requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation); 
 				   }else{
 					    requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 					    requirementApproverHierarchy.setUpdatedBy(loginUser.getUserCode());
@@ -217,9 +223,9 @@ public class RequirementRestController {
 					    
 					    // Email for Reject requirement  from approver level One to Initiator.
 					    User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
-		    			requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason); 
+		    			requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation); 
 						//User approverUser = userService.getUserById(requirementApproverHierarchy.getApproverUserId().getId());
-						//requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null);
+						//requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null,orgLocation);
 				   }
 		    }
 		}
@@ -401,10 +407,11 @@ public class RequirementRestController {
 	 * @throws Exception
 	 */
 	 @RequestMapping(value = "/validateJobId",  method = RequestMethod.POST)
-	    public @ResponseBody String validateJobId(@RequestParam(value="jobId", required=false) Long jobId) throws Exception {
+	    public @ResponseBody String validateJobId(@RequestParam(value="jobId", required=false) Long jobId,HttpServletRequest request) throws Exception {
 		    	String result;
 				String resultJson;
-				Integer jobIdCount = requirementService.validateJobId(jobId);
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Integer jobIdCount = requirementService.validateJobId(jobId,orgLocation.getId());
 				if(jobIdCount>0){
 					result = "duplicate";
 				}
@@ -423,10 +430,10 @@ public class RequirementRestController {
         });
         return xstream.toXML(obj);
     }
-	 @RequestMapping(value = "/validatejobName",  method = RequestMethod.POST)
-	    public @ResponseBody String validatejobName(@RequestParam(value="jobName", required=false) String jobName,HttpServletRequest request) throws Exception {
+	 @RequestMapping(value = "/validatetemplateName",  method = RequestMethod.POST)
+	    public @ResponseBody String validatejobName(@RequestParam(value="templateName", required=false) String templateName,HttpServletRequest request) throws Exception {
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				Boolean validatejobName = requirementService.validateRequirementTitle(jobName,orgLocation.getId());
+				Boolean validatejobName = requirementService.validateRequirementTitle(templateName,orgLocation.getId());
 				return validatejobName.toString();
 		    }
 }

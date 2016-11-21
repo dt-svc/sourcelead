@@ -1,11 +1,16 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.MessagingException;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -170,7 +175,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					            if(jsonObj.has("notifyToVendor")  && !jsonObj.getString("notifyToVendor").isEmpty()){
 									List<Requirement> vendorRequirement = requirementService.getRequirementListById(requirementSubmission.getRequirement().getId());
 									Requirement clientRequirement= requirementService.getRequirementByRequirementId(requirementSubmission.getRequirement().getId());
-									offerMailToVendors(loginUser,clientRequirement,vendorRequirement);
+									offerMailToVendors(loginUser,orgLocations,clientRequirement,vendorRequirement);
 					            }
 					            
 					            // This is to  notify  the Applicant
@@ -208,7 +213,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	}
 	
 	@Override
-    public void offerMailToVendors(User loginUser,Requirement clientrequirement,List<Requirement> vendorRequirement) throws Exception {
+    public void offerMailToVendors(User loginUser,OrgLocations loginOrgLocations,Requirement clientrequirement,List<Requirement> vendorRequirement) throws Exception {
 		for(Requirement req :vendorRequirement){
 		
             EmailMessage emailMessage = new EmailMessage();
@@ -271,7 +276,17 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setMessageBody(emailTemplate);
 
             // calling the sendEmail method of emailScenerioUtil
-            emailScenerioUtil.sendEmail(emailMessage, emailRecipientList, new ArrayList<EmailAttachment>());
+            
+            try {
+    			
+                emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
+        		}catch (MessagingException e) {
+        			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
+        		} catch (UnsupportedEncodingException e) {
+        			logger.error(ExceptionUtils.getFullStackTrace(e));
+        		}
+            
+            
 		}
 }
 	
@@ -333,8 +348,19 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
         
         globalVarsMap.put("rejectLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOffer?offerStatus=Rejected&submissionId="+applicant.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
 
-        if(requirementOffers.getDocFile() !=null){
-            globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"downloadOfferAttachment?offerId="+requirementOffers.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment"+"<br/>"+requirementOffers.getFileName()+"</div></a>");
+        
+//        File logFile = new File(sLogFilename);
+//        if(logFile.length() == 0)
+//            System.out.println("NO ERRORS!");
+//        else
+//            System.out.println("SOME ERRORS!");
+        
+        
+        if( !requirementOffers.getFileName().isEmpty() ){
+            globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"downloadOfferAttachment?offerId="+requirementOffers.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment"+"<br/></div></a>");
+
+        }else{
+            globalVarsMap.put(" ","<a href='"+sourceleadUrl+"/"+"downloadOfferAttachment?offerId="+requirementOffers.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment"+"<br/></div></a>");
 
         }
 
@@ -351,20 +377,36 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             // getting the current EmailScenario by EmailScenario unique name and
             // entity type
             EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL, Constants.ENTITY_TYPE_EMAIL);
+            EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+
 
             // covert subject,body and signature
             String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
             String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
             String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
             String url = "";
+            
+            String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(), globalVarsMap);
+            notificationScenario.setSubject(notificationbody);
+
 
             // construct HTML template using required data
-            String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-                            signature, url, new Org());
+            String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, new Org());
             emailMessage.setSubject(subject);
             emailMessage.setMessageBody(emailTemplate);
 
-            emailScenerioUtil.sendEmail(emailMessage, emailRecipientList, new ArrayList<EmailAttachment>());
+
+    		try {
+    			
+            emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
+    		}catch (MessagingException e) {
+    			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
+    		} catch (UnsupportedEncodingException e) {
+    			logger.error(ExceptionUtils.getFullStackTrace(e));
+    		}
+            String actionLink="";
+            User applicantuser = applicant.getOrgLocations().getOrg().getUser();
+			emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, notificationScenario);
             
             
     }
@@ -372,7 +414,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	
 	
 	@Override
-	public void offerAcceptEmailScenario(User loginUser,Requirement requirement,RequirementOffers requirementOffers,RequirementSubmission requirementSubmission)
+	public void offerAcceptEmailScenario(User loginUser,OrgLocations orgLocations,Requirement requirement,RequirementOffers requirementOffers,RequirementSubmission requirementSubmission)
 			throws Exception {
 
 		EmailMessage emailMessage = new EmailMessage();
@@ -448,11 +490,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, emailRecipientList, new ArrayList<EmailAttachment>());
+		emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
 	}
 	
 	@Override
-	public void offerRejectEmailScenario(User loginUser,Requirement requirement,RequirementOffers requirementOffers,RequirementSubmission requirementSubmission)
+	public void offerRejectEmailScenario(User loginUser,OrgLocations loginOrgLocations,Requirement requirement,RequirementOffers requirementOffers,RequirementSubmission requirementSubmission)
 			throws Exception {
 
 		EmailMessage emailMessage = new EmailMessage();
@@ -528,7 +570,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, emailRecipientList, new ArrayList<EmailAttachment>());
+		emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(),emailRecipientList, new ArrayList<EmailAttachment>());
 	}
 
 

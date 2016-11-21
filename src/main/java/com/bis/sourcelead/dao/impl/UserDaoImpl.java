@@ -449,7 +449,7 @@ public class UserDaoImpl implements UserDao {
 		
 		
 		 Session session = this.sessionFactory.getCurrentSession();
-		 String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where  userRole.orgLocations=:orgLocationsId) and user.userState != 'INACTIVE' and user.id <> :currentApproverId ";
+		 String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where  userRole.orgLocations=:orgLocationsId and  userRole.userState != 'INACTIVE'  and userRole.userType != 'Employee')  and   user.id <> :currentApproverId ";
 
 		 List<User> userRoleList = session.createQuery(query.toString()).setLong( "currentApproverId", currentApproverId).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
 		 return userRoleList;
@@ -474,6 +474,16 @@ public class UserDaoImpl implements UserDao {
 		 List<User> userRoleList = session.createQuery(query.toString()).setParameterList("teamMembersId", teamMembersId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		 return userRoleList;
 		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<User> getAllUsersByOrgLocationCodeExcludingEmployees(Long orgLocationsId) throws Exception {
+
+		 Session session = this.sessionFactory.getCurrentSession();
+	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationsId and  userRole.userState != 'INACTIVE'  and userRole.userType != 'Employee')  ";
+	     List<User> userRoleList = session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+	     return userRoleList;
 	}
 	
 	

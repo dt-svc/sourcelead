@@ -113,6 +113,9 @@ public class RequirementSubmission {
    	private String requirementName;
     
     @Transient
+   	private Long resumeId;
+    
+    @Transient
    	private ApplicantSubmissionStatus requirementStage;
     
 	@Transient
@@ -344,5 +347,12 @@ public class RequirementSubmission {
 		this.score = score;
 	}
 
-	
+	public Long getResumeId() {
+		return resumeId;
+	}
+
+	public void setResumeId(Long resumeId) {
+		this.resumeId = resumeId;
+	}
+
 }

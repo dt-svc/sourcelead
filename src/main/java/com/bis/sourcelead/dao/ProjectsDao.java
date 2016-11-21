@@ -55,14 +55,14 @@ public interface ProjectsDao {
 
 	public Integer getUserAssignedProjectsCount(Long userId,Long orgLocationId);
 	
-	public HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
+	//public HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
 	
 	public void saveAllProjects(List<Projects> projectsList) throws Exception;
 	
 	public List<SubmissionApproverHierarchy>  getApproveUserForTimeSheets(Long userId) throws Exception;
 	
-	public HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
+	//public HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 
-	public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek();
+	//public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek();
 
 }

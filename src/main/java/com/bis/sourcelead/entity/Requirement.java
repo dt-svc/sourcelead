@@ -140,6 +140,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "REQUIREMENT_SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
 	private REQUIREMENT_SUBMISSION_STATUS requirementSubmissionStatus;
+	
+	@Column(name = "REQUIREMENT_SUBMISSION_PREVIOUS_STATUS")
+	@Enumerated(EnumType.STRING)
+	private REQUIREMENT_SUBMISSION_STATUS requirementSubmissionPreviousStatus;
 
 	
 	@Column(name = "SUBMISSION_TEMPLATE_JSON_STRING", columnDefinition = "TEXT default NULL")
@@ -240,6 +244,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private String isLoginUserAsTeamMember;
+	
+	@Transient
+	private String isLoginUserAsApprover;
+	
+	@Transient
+	private String isLoginUserAsManager;
 	
 
 	public String getRequirementCreatedDateToString() {
@@ -749,6 +759,30 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setIsLoginUserAsTeamMember(String isLoginUserAsTeamMember) {
 		this.isLoginUserAsTeamMember = isLoginUserAsTeamMember;
+	}
+
+	public String getIsLoginUserAsApprover() {
+		return isLoginUserAsApprover;
+	}
+
+	public void setIsLoginUserAsApprover(String isLoginUserAsApprover) {
+		this.isLoginUserAsApprover = isLoginUserAsApprover;
+	}
+
+	public String getIsLoginUserAsManager() {
+		return isLoginUserAsManager;
+	}
+
+	public void setIsLoginUserAsManager(String isLoginUserAsManager) {
+		this.isLoginUserAsManager = isLoginUserAsManager;
+	}
+
+	public REQUIREMENT_SUBMISSION_STATUS getRequirementSubmissionPreviousStatus() {
+		return requirementSubmissionPreviousStatus;
+	}
+
+	public void setRequirementSubmissionPreviousStatus(REQUIREMENT_SUBMISSION_STATUS requirementSubmissionPreviousStatus) {
+		this.requirementSubmissionPreviousStatus = requirementSubmissionPreviousStatus;
 	}
 
 }
