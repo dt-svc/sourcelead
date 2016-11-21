@@ -190,12 +190,12 @@ public class RequirementInterviewRestController {
 		 RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
 		 
 		 RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewId);
-		 
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		 OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 requirementInterviewService.sendEmailToVendors(requirementSubmission.getCandidate(),orgLoc, requirementSubmission, loginUser,org, requirementInterview);
-		 
+
+		 requirementInterviewService.sendEmailToVendors(requirementSubmission.getCandidate(), requirementSubmission, loginUser,org, requirementInterview,orgLocations);
+	 
 		 requirementInterview.setNotificationToSpoc("Y");
 		 requirementInterviewService.saveRequirementInterview(requirementInterview);
 		 

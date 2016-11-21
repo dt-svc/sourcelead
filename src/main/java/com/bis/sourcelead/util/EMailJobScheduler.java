@@ -179,8 +179,9 @@ public class EMailJobScheduler {
 								requirementInterviewService.sendEmailToApplicants(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId().getOrgLocations(),requirementInterview.getSubmissionId(), user, org, requirementInterview);
 					}
 					if(requirementInterview.getNotificationToSpoc().equalsIgnoreCase("Y")){
-						requirementInterviewService.sendEmailToVendors(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId().getOrgLocations(),requirementInterview.getSubmissionId(), user,org, requirementInterview);
-					}
+
+						requirementInterviewService.sendEmailToVendors(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId(), user,org, requirementInterview,requirementInterview.getSubmissionId().getOrgLocations());
+
 					
 					if(requirementInterview.getNotificationToOthers().equalsIgnoreCase("Y")){
 						String[] othersEmails = requirementInterview.getNotificationToOthersEmails().split(",");
@@ -194,6 +195,7 @@ public class EMailJobScheduler {
 						
 
 				}
+		}
     }
 	
 	/**
