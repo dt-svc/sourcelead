@@ -44,7 +44,7 @@
 					</div>
 					
                  <div class=" col-md-6 modal-footer">
-                   <button data-dismiss="modal" class="btn btn-primary" type="button" id="assignId" onclick="assignEmployee();">Assign</button>
+                   <button  class="btn btn-primary" type="button" id="assignId" onclick="assignEmployee();">Assign</button>
                    <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
                  </div>					
 					
@@ -513,6 +513,7 @@ function assignEmployeespagination(){
 <!-- this script is for Assign Employee functionality at Projects screen -->
 <script>
 function assignEmployee(){
+	    $('#assignEmployeePagination').DataTable().search('').draw();
 	 	var projectId = $("#projectId").val();
 	 	var projectStartDateStr =  $("#projectStartDateStr").val();
 	 	var projectEndDateStr =  $("#projectEndDateStr").val(); 
@@ -522,8 +523,8 @@ function assignEmployee(){
 	    if(document.getElementById('membermailCheckbox').checked) {
 	    	mailtoMembers = "YES";
 	    }
-	    var sourceleadUrl ='${sourceleadUrl}';
-	    
+	    var sourceleadUrl ='${sourceleadUrl}'; 
+	    $('#assignTeam').modal('hide');
 	    $(".myCheckbox").each(function(){
 	        var employeeId =this.id;
 	        if($(this).is(':checked')){
@@ -537,7 +538,7 @@ function assignEmployee(){
 		            }
 				})
 	        }
-    	});
+    	}); 
 }
 </script>
 

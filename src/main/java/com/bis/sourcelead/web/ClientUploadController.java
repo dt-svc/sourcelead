@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -57,6 +58,7 @@ public class ClientUploadController {
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_CLIENT_CONTACT_BULK_IMPORTS')")
 	@RequestMapping(value = "/downloadClientTemplate", method = RequestMethod.GET)
 	public void downloadClientTemplate(HttpServletResponse response,@RequestParam(value = "name", required = false) String name) throws IOException, URISyntaxException{
 		logger.debug("download template is for : "+ name);
