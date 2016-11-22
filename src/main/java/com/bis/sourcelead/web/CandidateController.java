@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -45,6 +46,8 @@ public class CandidateController {
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
+	
+	 @PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE' or 'ROLE_VIEW_CANDIDATE' or 'ROLE_EDIT_CANDIDATE')")
 	 @RequestMapping(value = "/candidate")
 		public ModelAndView candidate(HttpServletRequest request) throws Exception {
 		 	logger.debug("Display the candiade page");
@@ -65,6 +68,7 @@ public class CandidateController {
 			
 			return model;
 	    }
+	
 	
 	@RequestMapping(value = "/candidatesList")
 	public ModelAndView usersList(@RequestParam(value="candidateStatus", required=false) String  candidateStatus,HttpServletRequest request) throws Exception {
