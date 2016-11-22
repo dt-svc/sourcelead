@@ -47,7 +47,7 @@ public class CandidateController {
 	 * @throws Exception
 	 */
 	
-	 @PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE' or 'ROLE_VIEW_CANDIDATE' or 'ROLE_EDIT_CANDIDATE')")
+	 @PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE')")
 	 @RequestMapping(value = "/candidate")
 		public ModelAndView candidate(HttpServletRequest request) throws Exception {
 		 	logger.debug("Display the candiade page");
