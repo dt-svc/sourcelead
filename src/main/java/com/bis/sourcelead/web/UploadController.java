@@ -25,7 +25,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UploadedFile;
 import com.bis.sourcelead.entity.User;
@@ -65,11 +67,12 @@ public class UploadController {
 			return "upload/uploadForm";
 		}
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");	
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 		try {
-			String isFileCreated = uploadFileService.uploadFile(uploadedFile.getFile(), orgLocations,user,uploadedFile.getEmail());
+			String isFileCreated = uploadFileService.uploadFile(uploadedFile.getFile(), orgLocations,user,uploadedFile.getEmail(),org,roleHierarchyId);
 			if ("FailureUsersForCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
 				model.addAttribute("errorMessage", "Please download Error file here");
                  model.addAttribute("fileName", "xlsx");
@@ -124,11 +127,17 @@ public class UploadController {
  * @throws Exception 
  */
 	@RequestMapping(value = "/downloadCreateUserTemplate", method = RequestMethod.GET)
-	public void downloadCreateUserTemplate(HttpServletResponse response) throws IOException, URISyntaxException{
+	public void downloadCreateUserTemplate(HttpServletRequest request,HttpServletResponse response) throws IOException, URISyntaxException{
 		
-			String fn = "/templates/Create users.xls";
-			URL url = getClass().getResource(fn);
-			File file = new File(url.toURI());
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");	
+		
+		File file = uploadFileService.getUserTemplate(org,orgLocations.getId(),roleHierarchyId);
+		
+//		    String fn = "/templates/Create users.xls";
+//			URL url = getClass().getResource(fn);
+//			File file = new File(url.toURI());
 
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
