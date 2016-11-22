@@ -59,6 +59,7 @@ public class OrgDocumentsRestController {
 	@Autowired
 	private UserService userService;
 	
+	@PreAuthorize("hasAnyRole('ROLE_EDIT_CLIENT_DOCUMENT','ROLE_CREATE_CLIENT_DOCUMENT','ROLE_CREATE_CLIENT_CONTACT_DOCUMENT','ROLE_EDIT_CLIENT_CONTACT_DOCUMENT')")
 	@RequestMapping(value = "/saveDocuments", method = RequestMethod.POST)
 	@ResponseBody String saveDocuments(@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
@@ -222,6 +223,7 @@ public class OrgDocumentsRestController {
 	 * @return
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_DELETE_CLIENT_CONTACT_DOCUMENT')")
 	@RequestMapping(value = "/terminateOrgDocumnet", method = RequestMethod.POST)
 	public @ResponseBody String terminateOrgDocumnet(@RequestParam(value="docId", required=false) String docId ,
 			                                         @RequestParam(value = "terminateReason", required = false) String terminateReason,
