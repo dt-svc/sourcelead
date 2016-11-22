@@ -4,6 +4,8 @@
  <link href="resources/css/jquery-ui.css" rel="stylesheet">
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
@@ -115,6 +117,9 @@
 							
 							result = result +'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_PROJECT_TASKS\')">'; 
 							result = result+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'taskName\');"  id="taskName'+ opt.Id+ '" value="'+ opt.taskName+ '"  class="project_inline_field"></div></td>';
+							result = result +'</sec:authorize>';
+							
+							result = result +'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_PROJECT_TASKS\')">';
 							result = result	+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'description\');" id="description'+ opt.Id+ '" value="'+ opt.description+ '" class="project_inline_field"></div></td>';
 							result = result +'</sec:authorize>';
 							

@@ -4,7 +4,7 @@
  <link href="resources/css/jquery-ui.css" rel="stylesheet">
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 
@@ -12,7 +12,8 @@
 <script>
 	function projectDetails(projectId) {
 		var sourceleadUrl = '${sourceleadUrl}';
-		alert("raju");
+	
+
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+ projectId,
@@ -48,7 +49,7 @@
 							clientName = "--";
 						}
 						
-						alert("raju213");
+					
 						
 						var result = "";
 						result = result	+ ' <div class="project_tabs_inn_table">';
@@ -56,7 +57,7 @@
 						result = result + '<div class="useredit useredit_a">';
 						
 						result = result +'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_PROJECT\')">'; 
-						result = result	+ '<a id="edit-user" href="javascript:editProjectDetails('+ projectId+ ')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+						result = result	+ '<a id="edit-user" href="javascript:editProjectDetails('+ projectId+ ')"><i class="glyphicon glyphicon-pencil"></i>DavidEdit</a>';
 	   		    		result = result +'</sec:authorize>';
 						
 	   		    		result = result + '</div>';
@@ -150,7 +151,6 @@
 						$("#tab-1").empty();
 						$("#tab-2").empty();
 						$("#tab-3").empty();
-						alert("yes"+result);
 						$("#tab-3").append(result);
 
 					}
