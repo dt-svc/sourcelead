@@ -104,7 +104,9 @@ overflow-x: auto;
                          <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
 							<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Client</a></li>
 						</sec:authorize>
+						 <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS')"> 
 						 <li><a href="<c:url value='/uploadClientForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
+						 </sec:authorize>
 						<div class="clearfix"></div>
 					</ul>
 					<div class="clearfix"></div>

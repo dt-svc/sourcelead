@@ -183,6 +183,7 @@ public class ClientController {
 		    }
 		
 //		 /uploadClientForm
+	 @PreAuthorize("hasAnyRole('ROLE_CLIENT_BULK_IMPORTS')")
 		 @RequestMapping(value = "/uploadClientForm")
 			public ModelAndView uploadClientForm(HttpServletRequest request) {
 			 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
