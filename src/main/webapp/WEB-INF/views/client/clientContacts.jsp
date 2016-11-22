@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
@@ -27,7 +28,9 @@ function clientContacts(orgRelationID,clientLocationId){
 	result = result  +'<div class="timesheet_head">';
 	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
 	    result = result + '<ul>';
+	    '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_CLIENT_CONTACT\')">';
 		result = result  +'    	<a href="javascript:void(0)" onClick="addContact('+orgRelationID+','+clientLocationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Contact</a>                                                            ';
+		'</sec:authorize>';
 		result = result  +'     <div id="popUpDivContact" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result = result  +'  <div class="clearfix"></div> ';
@@ -163,6 +166,7 @@ function clientContacts(orgRelationID,clientLocationId){
 	             		}
    		    		result = result +'</div></td>';
 	                
+   		    		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
 	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
 	                result = result + '	    <td><div>';
 	                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateClientSpoc('+json[i].id+'\,\''+orgRelationID+'\',\''+clientLocationId+'\')";></i>';
@@ -171,6 +175,7 @@ function clientContacts(orgRelationID,clientLocationId){
                      else{
                           result = result + '<td><div><font color="red">Terminated</font></div></td>';
                      }
+	                '</sec:authorize>';
 	                result = result + '	 </tr>';
 				} 
 	        		
