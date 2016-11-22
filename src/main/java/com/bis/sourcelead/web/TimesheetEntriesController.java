@@ -3,7 +3,6 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -25,7 +24,6 @@ import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.impl.TimeSheetExcelView;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
  
 
@@ -54,7 +52,7 @@ public class TimesheetEntriesController {
 	 * @return
 	 */
 	@RequestMapping(value = "/timesheet")
-	@PreAuthorize("hasRole('ROLE_CREATE_MY_TIMESHEETS')")
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_MY_TIMESHEETS','ROLE_VIEW_MY_TIMESHEETS','ROLE_EDIT_MY_TIMESHEETS','ROLE_WITHDRAW_MY_TIMESHEETS')")
 	public ModelAndView timesheet(HttpServletRequest request) {
 			ModelAndView model = new ModelAndView();
 			
