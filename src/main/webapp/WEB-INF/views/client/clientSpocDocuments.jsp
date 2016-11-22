@@ -116,6 +116,9 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT_DOCUMENT\')">'; 
 	                    		 result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteDocument(\''+clientLocationId+'\',\''+orgRelationId+'\',\''+spocName+'\',\''+userId+'\',\''+opt.id+'\');"></i>';
 	                    		 '</sec:authorize>';
+	                    		 '<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_CLIENT_CONTACT_DOCUMENT\',\'ROLE_DELETE_CLIENT_CONTACT_DOCUMENT\')">';
+                    			 result = result+'--';
+                    		 '</sec:authorize>';
 	                    	 }
 	                    	 result = result+'	            </div></td>';
 	                    	 result  = result + '</tr>';

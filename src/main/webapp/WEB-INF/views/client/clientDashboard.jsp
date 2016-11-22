@@ -496,6 +496,10 @@ function getVendorContactLists(){
    	        		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
    	        		'</sec:authorize>';
    	        		
+   	        		'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
+   	        		result = result + '<td><div>--</div></td>';
+   	        		'</sec:authorize>';
+   	        		
    	        		result = result +'</tr>';
    				}
    	        	result = result +'</tbody>';
