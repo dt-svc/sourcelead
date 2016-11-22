@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -137,6 +138,7 @@ public class UserRestController {
 	 * @return
 	 * @throws Exception
 	 */
+	 @PreAuthorize("hasRole('ROLE_CREATE_USER')")
 	 @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
 	 public  String createUser(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		 	
@@ -588,6 +590,7 @@ public class UserRestController {
 		 * @return
 		 * @throws Exception
 		 */
+		@PreAuthorize("hasRole('ROLE_DELETE_USER')")
 		@RequestMapping(value = "/reActiveUser", method = RequestMethod.POST)
         public String reActiveUser(@RequestParam(value = "userId", required = false) String userID, HttpServletRequest request) throws Exception {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
