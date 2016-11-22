@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -67,7 +68,7 @@ public class OrgSettingsController {
  			return model;
  	}
 	
-	
+	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
 	@RequestMapping(value = "/orgRolesList")
  	public ModelAndView orgRolesList(HttpServletRequest request) {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -86,7 +87,7 @@ public class OrgSettingsController {
  	}
 	
 	
-	
+	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
 	@RequestMapping(value = "/enrollRoleActions")
 	public ModelAndView enrollRoleActions(HttpServletRequest request,
 			@RequestParam(value = "roleId", required = false) Long roleId) throws Exception {

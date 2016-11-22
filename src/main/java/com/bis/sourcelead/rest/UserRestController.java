@@ -138,7 +138,7 @@ public class UserRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	 @PreAuthorize("hasRole('ROLE_VIEW_USER')")
+	 @PreAuthorize("hasRole('ROLE_CREATE_USER')")
 	 @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
 	 public  String createUser(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		 	
