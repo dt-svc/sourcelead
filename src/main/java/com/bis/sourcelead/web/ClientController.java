@@ -95,7 +95,6 @@ public class ClientController {
 	  * @return ModelAndView
 	  * @throws Exception
 	  */
-	 @PreAuthorize("hasRole('ROLE_CREATE_CLIENT')")
 	 @RequestMapping(value = "/clientDashboard")
 		public ModelAndView clientDashboard(HttpServletRequest request) throws Exception {
 		 
@@ -183,7 +182,7 @@ public class ClientController {
 		    }
 		
 //		 /uploadClientForm
-	 @PreAuthorize("hasAnyRole('ROLE_CLIENT_BULK_IMPORTS')")
+	 @PreAuthorize("hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')")
 		 @RequestMapping(value = "/uploadClientForm")
 			public ModelAndView uploadClientForm(HttpServletRequest request) {
 			 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
