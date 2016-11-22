@@ -144,8 +144,15 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
         	result = result + '    	<div class="project_tabs_inn_head">';
     		if(projectStatus != 'Completed' &&  projectStatus != '' &&  projectStatus != 'undefined' ){
     		result = result	+ '<span class="pad-sea">';
+    		
+    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_PROJECT_EMPLOYEES\')">';
     		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
+    		result = result +'</sec:authorize>';
+    		
+    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_PROJECT_EMPLOYEES\')">';
     		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
+    		result = result +'</sec:authorize>';
+    		
     		result = result	+ '</span>';
         	}
     		result = result + '		</div>';
@@ -196,7 +203,9 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
 	                if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != "INACTIVE"){
 	                	result = result + '	<td><div>';
 	                	if(status != 'COMPLETED'){
+	                		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PROJECT_EMPLOYEES\')">'; 
 	                		result = result + '<i class="glyphicon glyphicon-trash" onClick="deleteProject('+opt.id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i>';
+	                		result = result +'</sec:authorize>';
 	                	}
 	                	result = result +'</div></td>';
                      }
