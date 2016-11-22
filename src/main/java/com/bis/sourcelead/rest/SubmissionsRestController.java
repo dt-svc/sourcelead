@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -125,6 +126,7 @@ public class SubmissionsRestController {
     }
     
     
+    @PreAuthorize("hasRole('ROLE_ADD_APPLICANT')")
     @RequestMapping(value = "/saveAddApplicant" , method = RequestMethod.POST)
 	   public String saveAddApplicant(@RequestParam(value="jsonData", required=false) String json,
 			   @RequestParam(value="con", required=false) String con,MultipartHttpServletRequest request,
@@ -196,6 +198,7 @@ public class SubmissionsRestController {
 	   }
     
     
+    @PreAuthorize("hasAnyRole('ROLE_SHORTLIST','ROLE_SUBMIT_TO_CLIENT')")
     @RequestMapping(value = "/getSubmissionCandidates" , method = RequestMethod.POST)
 	   public String getSubmissionCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
 			   @RequestParam(value="status", required=false) String status,HttpServletRequest request) throws Exception {
@@ -274,7 +277,7 @@ public class SubmissionsRestController {
  	return "success";
  }
     
-
+    @PreAuthorize("hasRole('ROLE_VIEW_APPLICANT')")
 	@RequestMapping(value = "/getSubmissionDetails" , method = RequestMethod.POST)
 	   public String getSubmissionDetails(@RequestParam(value="submissionId", required=false) Long submissionId,HttpServletRequest request) throws Exception {
     	 
