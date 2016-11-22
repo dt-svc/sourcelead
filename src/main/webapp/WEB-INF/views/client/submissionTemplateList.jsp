@@ -112,6 +112,10 @@ function clientSubmissionTemplate(clientLocationId){
 	                '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_SUBMISSION_TEMPLATE\')">';
 	                result = result + '|&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+clientLocationId+','+opt.id+',\''+opt.templateName+'\',\''+opt.description+'\')">Edit</a>';
 	                '</sec:authorize>';
+	                
+	                '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_SUBMISSION_TEMPLATE\',\'ROLE_EDIT_SUBMISSION_TEMPLATE\')">';
+	               	 result = result + '--';
+	                '</sec:authorize>';
 	                result = result +'</div></td>';
 	                result = result + '	 </tr>';
 				} 
