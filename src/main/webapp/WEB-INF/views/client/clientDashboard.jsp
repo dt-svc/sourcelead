@@ -435,7 +435,7 @@ function getVendorContactLists(){
    	        		'</sec:authorize>';
    	        		
    	        		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
-   	        			result = result +'<td><div class="proj_show"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        			result = result +'<td><div class="proj_show"><span>'+report.spocName+'</span></i></div></td>';
    	        		'</sec:authorize>';
    	        		
    	        		result = result +'<td><div><span>'+report.spocEmail+'</span></div></td>';
