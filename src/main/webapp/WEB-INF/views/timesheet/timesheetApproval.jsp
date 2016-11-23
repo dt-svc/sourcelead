@@ -768,7 +768,7 @@ function saveRejectSubmission(local,employeeId,userId,startDate,endDate){
 	     var rowHtmlContent =  $("#row"+userId).html();
 		 $("#row"+userId).empty();
 		 $("#row"+userId).html("<td colspan='5'  id='loading"+userId+"'></td>");
-	     $("#loading"+userId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); 
+	     $("#loading"+userId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
 	    /*  
 	     $("#timesheetApprList").empty(); 
 	     $("#timesheetApprList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');   */
@@ -811,7 +811,7 @@ function approveSubmission(userId,employeeId,startDate,endDate){
 		var rowHtmlContent =  $("#row"+userId).html();
 		$("#row"+userId).empty();
 		$("#row"+userId).html("<td colspan='5'  id='loading"+userId+"'></td>");
-	    $("#loading"+userId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); 
+	    $("#loading"+userId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; '); 
 	    var rejectedReason;
         var sourceleadUrl ='${sourceleadUrl}';
 	     $.ajax({
@@ -823,7 +823,7 @@ function approveSubmission(userId,employeeId,startDate,endDate){
 		    	 $("#status"+userId).html("APPROVED");
 		    	 $("#action"+userId).html("<div><h3>Approved</h3></div>");
 		    }
-	    });  
+	    });   
 }
 </script>
  
