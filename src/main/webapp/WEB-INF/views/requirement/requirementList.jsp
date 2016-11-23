@@ -5,6 +5,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+ <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="resources/js/formvalidator.js"></script>
 
 
@@ -189,13 +190,20 @@ function requirementList(){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
 	                    	 if(opt.jobId != '' && opt.jobId != null){
-		                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"-"+opt.jobId+"'>"+opt.jobTitle+"-"+opt.jobId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\')">'; 
+		                     	result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"-"+opt.jobId+"'>"+opt.jobTitle+"-"+opt.jobId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+		                     '</sec:authorize>';
+		                     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\')">'; 
+		                     	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"-"+opt.jobId+"'>"+opt.jobTitle+"-"+opt.jobId+"</span></div></td>";
+		                     '</sec:authorize>';
+	                    	 }else{
+	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\')">'; 
+			                     	result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"-"+opt.jobId+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+			                     '</sec:authorize>';
+			                     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\')">'; 
+			                     	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"-"+opt.jobId+"'>"+opt.jobTitle+"</span></div></td>";
+			                     '</sec:authorize>';
 	                    	 }
-	                    	 else
-	                    		 {
-			                     result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"-"+opt.jobId+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-
-	                    		 }
 		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
 		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
 		                     }else{
@@ -226,25 +234,40 @@ function requirementList(){
 		                     
 		                        if(opt.requirementSubmissionStatus == "DRAFT"){
 									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-									result = result +"<option value='ONHOLD'>ONHOLD</option>";
-									result = result +"<option value='CANCEL'>CANCEL</option>";
+									'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
+										result = result +"<option value='ONHOLD'>ONHOLD</option>";
+									'</sec:authorize>';
+									'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+										result = result +"<option value='CANCEL'>CANCEL</option>";
+									'</sec:authorize>';
 								}
 								else if(opt.requirementSubmissionStatus == "CANCEL"){
 									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 
 								}else if(opt.requirementSubmissionStatus == "OPEN"){
 									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-									result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
-									result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
-									result = result +"<option value='ONHOLD'>ONHOLD</option>";
-									result = result +"<option value='CANCEL'>CANCEL</option>";
+									'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
+										result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
+									'</sec:authorize>';
+									'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
+										result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
+									'</sec:authorize>';
+									'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
+										result = result +"<option value='ONHOLD'>ONHOLD</option>";
+									'</sec:authorize>';
+									'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+										result = result +"<option value='CANCEL'>CANCEL</option>";
+									'</sec:authorize>';
 								}
 								else if(opt.requirementSubmissionStatus == "NEW"){
 									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 									result = result +"<option value='OPEN'>OPEN</option>";
-									result = result +"<option value='ONHOLD'>ONHOLD</option>";
-									result = result +"<option value='CANCEL'>CANCEL</option>";
-									
+									'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
+										result = result +"<option value='ONHOLD'>ONHOLD</option>";
+									'</sec:authorize>';
+									'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+										result = result +"<option value='CANCEL'>CANCEL</option>";
+									'</sec:authorize>';
 								}else if(opt.requirementSubmissionStatus == "APPROVED"){
 									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 									
@@ -256,27 +279,41 @@ function requirementList(){
 								
 								else if(opt.requirementSubmissionStatus == "SUBMITTED"){
 									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-									result = result +"<option value='ONHOLD'>ONHOLD</option>";
-									result = result +"<option value='CANCEL'>CANCEL</option>";
+									'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
+										result = result +"<option value='ONHOLD'>ONHOLD</option>";
+									'</sec:authorize>';
+									'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+										result = result +"<option value='CANCEL'>CANCEL</option>";
+									'</sec:authorize>';
 									
 								}else if(opt.requirementSubmissionStatus == "ONHOLD"){
 									
 									if(opt.requirementSubmissionPreviousStatus == "OPEN" || opt.requirementSubmissionPreviousStatus == null || opt.requirementSubmissionPreviousStatus == '' || opt.requirementSubmissionPreviousStatus == 'undefined' ){
-												result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-												result = result +"<option value='OPEN'>OPEN</option>";
-												result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
-												result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
-												result = result +"<option value='CANCEL'>CANCEL</option>";
+										result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+										result = result +"<option value='OPEN'>OPEN</option>";
+										'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
+											result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
+										'</sec:authorize>';
+										'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
+											result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
+										'</sec:authorize>';
+										'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+											result = result +"<option value='CANCEL'>CANCEL</option>";
+										'</sec:authorize>';
 									}
 									if(opt.requirementSubmissionPreviousStatus == "DRAFT"){
 										result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 										result = result +"<option value='DRAFT'>DRAFT</option>";
-										result = result +"<option value='CANCEL'>CANCEL</option>";
+										'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+											result = result +"<option value='CANCEL'>CANCEL</option>";
+										'</sec:authorize>';
 									}
 									if(opt.requirementSubmissionPreviousStatus == "SUBMITTED"){
 										result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 										result = result +"<option value='SUBMITTED'>SUBMITTED</option>";
-										result = result +"<option value='CANCEL'>CANCEL</option>";
+										'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+											result = result +"<option value='CANCEL'>CANCEL</option>";
+										'</sec:authorize>';
 									}
 									 
 								}else if(opt.requirementSubmissionStatus == "UNFILLEDCLOSED"){
@@ -293,8 +330,12 @@ function requirementList(){
 		                     
 		                     
 		                     if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
-			                     result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
-
+		                    	 '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+		                    	 	result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
+		                    	 '</sec:authorize>';
+		                    	 '<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+		                    	 	result = result +"<td><div><i class='fa fa-bullhorn'></i></div></td>";
+		                    	 '</sec:authorize>';
 		                     }else{
 			                     result = result +"<td><div>--</div></td>";
 		                     }
@@ -1108,8 +1149,12 @@ function requirementPipeline(requirementId){
 		              </ul>
 		            </div>
           </li>
-          <li> <a href="<c:url value='/requirement'/>"><i class="fa fa-plus"></i>Add Requirement</a></li>
-          <li> <a href="<c:url value='/team'/>"><i class="fa fa-plus"></i>Team</a></li>
+          <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
+          	<li> <a href="<c:url value='/requirement'/>"><i class="fa fa-plus"></i>Add Requirement</a></li>
+          </sec:authorize>
+          <sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
+          	<li> <a href="<c:url value='/team'/>"><i class="fa fa-plus"></i>Team</a></li>
+          </sec:authorize>
            <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop" onClick="mypop();"></i>
             <div class="export_pop">
               <ul>
