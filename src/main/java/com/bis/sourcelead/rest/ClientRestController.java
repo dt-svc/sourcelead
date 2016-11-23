@@ -1,11 +1,17 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
@@ -14,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,6 +37,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.ClientService;
+import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -98,6 +106,9 @@ public class ClientRestController {
 	
 	@Autowired
 	private RolesService rolesService;
+	
+	@Autowired
+	private ClientVendorExport clientVendorExport;
 	
 	
 	/**
@@ -787,6 +798,70 @@ public class ClientRestController {
 	    
 	   }
 	
+	/**
+	 * @author Rajashekar
+	 * Export client data to excel and pdf
+	 * @param status
+	 * @param exportType
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	 @RequestMapping(value = "/exportClientDetails")
+	   @ResponseBody void exportClientDetails(@RequestParam(value="values", required=false) String status,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		    List<OrgRelations> clientsList = orgRelationsService.getAllClientsFilterByOrgLocationId(orgLocations.getId(),status,loginUser.getId());
+		    File file = clientVendorExport.getClientExportFile(clientsList,exportType,org.getOrgName());
+		    String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();	
+		    
+		}
+	 
+	 
+	 /**
+	  * @author Rajashekar
+	  * export client contacts data to excel and pdf
+	  * @param status
+	  * @param clientIds
+	  * @param invitationStatus
+	  * @param request
+	  * @return
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/exportClientContactDetails")
+		public void exportClientContactDetails(@RequestParam(value="status", required=false) String status,@RequestParam(value="clientIds", required=false) String clientIds,@RequestParam(value="invitationStatus", required=false) String invitationStatus,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
+		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		    List<OrgSpoc> vandorsContactList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(loginUser.getId(),orgLocations.getId(), "Vendor",status,clientIds,invitationStatus);
+		    File file = clientVendorExport.getContactsExportFile(vandorsContactList,exportType,org.getOrgName());
+		    String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();	
+	 }
 	
 	/**
 	 * check given string empty or null
