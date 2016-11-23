@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -186,7 +187,7 @@ public class OrgSettingsRestController {
 	   }
    
    
-   
+   @PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
    @RequestMapping(value = "/saveRoleActions" , method = RequestMethod.POST)
    public String saveRoleActions(@RequestParam(value="roleId", required=false) Long roleId,
 		   @RequestParam(value="actionIds", required=false) String actionIds,HttpServletRequest request) throws Exception {

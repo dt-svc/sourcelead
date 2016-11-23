@@ -156,7 +156,7 @@ public class TeamRestController {
  			 teamMembers.setTeamName(teamMembers.getTeamId().getName());
 			 teamMembers.setOwnerName(teamMembers.getTeamId().getOwnerUserId().getFirstName() +""+teamMembers.getTeamId().getOwnerUserId().getLastName() );
 			 teamMembers.setMemberName(teamMembers.getMemberUserId().getFirstName()+""+teamMembers.getMemberUserId().getLastName());
-			 teamMembers.setEmail(teamMembers.getTeamId().getOwnerUserId().getEmail());
+			 teamMembers.setEmail(teamMembers.getMemberUserId().getEmail());
 			 UserRole userRole = userRoleService.getUserRoleByUserId(teamMembers.getMemberUserId().getId());
 			 teamMembers.setUserType(userRole.getUserType());
 			 

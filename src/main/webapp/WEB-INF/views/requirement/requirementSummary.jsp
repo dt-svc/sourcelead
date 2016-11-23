@@ -423,51 +423,51 @@ function sideBar(requirementId){
 				        
 				        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '')
 				    	   {
-				        result = result+'                  <li><i class="fa fa-rupee"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+				        result = result+' <li><i class="fa fa-rupee"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
 				    	   }
 				       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '' ){
-					   result = result+'                  <li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
    
 				       }
 				       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '' ){
-					   result = result+'                  <li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
 				       }
 				       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
-					   result = result+'                  <li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
    
 				       }
 				       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
-					   result = result+'                  <li><i class="fa fa-eur"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+					   result = result+'<li><i class="fa fa-eur"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
    
 				       }
 				       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
-					   result = result+'                  <li><i class="fa fa-gbp"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+					   result = result+'<li><i class="fa fa-gbp"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
   
 				       }
 				       else{
-					   result = result+'                  <li><i class="fa fa-money"></i><span> --- </span></li>';
+					   result = result+'<li><i class="fa fa-money"></i><span> --- </span></li>';
   
 				       }
 				       
 				        if(json.state !='' && json.state != 'undefined' && json.city !='' && json.city != 'undefined')
 				        	{
-				        result = result+'                  <li><i class="fa fa-map-marker"></i><span>'+json.country+', '+json.state+', '+json.city+'</span></li>';
+				        result = result+'<li><i class="fa fa-map-marker"></i><span title="'+json.country+', '+json.state+', '+json.city+'">'+json.country+', '+json.state+', '+json.city+'</span></li>';
 				        	}
 				        else if(json.state !='' && json.state != 'undefined')
 				        	{
-					    result = result+'                  <li><i class="fa fa-map-marker"></i><span>'+json.country+', '+json.state+'</span></li>';
+					    result = result+'<li><i class="fa fa-map-marker"></i><span title="'+json.country+', '+json.state+'">'+json.country+', '+json.state+'</span></li>';
 
 				        	}
 				        else{
-					     result = result+' <li><i class="fa fa-map-marker"></i><span>'+json.country+'</span></li>';
+					     result = result+' <li><i class="fa fa-map-marker"></i><span title="'+json.country+'">'+json.country+'</span></li>';
 
 				        }
-				        result = result+'                </ul>';
-				        result = result+'              </div>';
-				        result = result+'              <div class="col-md-6">';
-				        result = result+'                <ul class="list-unstyled can-perdt">';
+				        result = result+'</ul>';
+				        result = result+'</div>';
+				        result = result+'<div class="col-md-6">';
+				        result = result+'<ul class="list-unstyled can-perdt">';
 				        if(json.manager != null && json.manager != '' && json.manager != 'undefined'){
-				        result = result+'<li> <i class="fa fa-user"></i><span id="canName">'+json.manager+'</span></li>';
+				        result = result+'<li> <i class="fa fa-user" ></i><span id="canName">'+json.manager+'</span></li>';
 				        }
 				        else{
 				        	 result = result+'<li> <i class="fa fa-user"></i><span id="canName"> --- </span></li>';	

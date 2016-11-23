@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page trimDirectiveWhitespaces="true" %>
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="resources/js/formvalidator.js"></script>
@@ -34,10 +34,11 @@ margin:10px 220px 0;
     <div class="content-area clearfix">
     <div id="loading"></div> 
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
-        <div class="row minHeight">
+        <div class="row minHyewtriuwe rwrghek	fghjqwehjgfwej tkjreight">
           <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 		  <!-- Download File button -->
 		  <div class="clearfix mb row">
+		  <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS')">
 			<div class="col-xs-12 col-md-6">
 			 <a href="<c:url value='/downloadClientTemplate?name=client'/>">
 			 <button class="btn btn-success btn-block" type="button">
@@ -45,6 +46,8 @@ margin:10px 220px 0;
 			</button>
 			</a>
 			</div>
+			</sec:authorize>
+			<sec:authorize access="hasAnyRole('ROLE_CLIENT_CONTACT_BULK_IMPORTS')">
 			<div class="col-xs-12 col-md-6">
 			 <a href="<c:url value='/downloadClientTemplate?name=Contact'/>">
 			 <button class="btn btn-warning btn-block" type="button">
@@ -52,6 +55,7 @@ margin:10px 220px 0;
 			</button>
 			</a>
 			</div>
+			</sec:authorize>
 			</div>
 			<!-- Attach File button -->
 			

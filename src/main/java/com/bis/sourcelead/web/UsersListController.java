@@ -42,6 +42,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -81,6 +82,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		model.setViewName("users/usersList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		
+		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -91,7 +94,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		request.getSession().setAttribute("sessionData",sessionData);
 		
 		try {
-			rolesList = rolesService.getMoudleRoles(org.getId(), loginUserRoleId);
+			rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 		} catch (Exception e) {
 			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 		}
