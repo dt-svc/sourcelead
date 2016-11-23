@@ -2,8 +2,10 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
 
@@ -70,7 +72,12 @@ window.onload = function () {
 		  </li> 
 		
 		 
-		  <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Create</a></li>
+		  
+		   <sec:authorize access="hasAnyRole('ROLE_CREATE_USER')"> 
+	           <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Create</a></li>
+	       </sec:authorize>
+		  
+		  
 		  
 		   <li>
 		    <a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
@@ -81,7 +88,9 @@ window.onload = function () {
 				   </ul>
 				</div>
 		   </li>
-		  <li><a href="<c:url value='/uploadForm'/>"><i class="fa fa-upload"></i>&nbsp;Bulk Imports</a></li>
+		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
+	                      <li><a href="<c:url value='/uploadForm'/>"><i class="fa fa-upload"></i>&nbsp;Bulk Imports</a></li>
+	         </sec:authorize>
         </ul>
       </section>
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
@@ -177,7 +186,15 @@ function exportToPdf(){
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
 	       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
-	       	    	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.user.id+"'/>''> "+userRole.user.firstName+" "+userRole.user.lastName+" </a> </h4>";
+	       	    	
+	       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\')">'
+	       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.user.id+"'/>''> "+userRole.user.firstName+" "+userRole.user.lastName+" </a> </h4>";
+	       	    	'</sec:authorize>';
+	       	    	
+	       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\')">'
+       	         	   result = result +"<h4><a href='#'> "+userRole.user.firstName+" "+userRole.user.lastName+" </a> </h4>";
+       	    	    '</sec:authorize>';
+	       	    	
 	       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+userRole.user.email+" </lable></p>";
 	       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
 	       	    	result = result +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp; "+userRole.userRoleName+" </label></p>";

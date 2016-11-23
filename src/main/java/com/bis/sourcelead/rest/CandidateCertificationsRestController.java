@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,6 +51,7 @@ public class CandidateCertificationsRestController {
 	 * 
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_CERTIFICATION')")
 	 @RequestMapping(value = "/storeCandidateCertifications", method = RequestMethod.POST)
      public @ResponseBody String storeCandidateCertifications(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
 
@@ -75,6 +77,7 @@ public class CandidateCertificationsRestController {
 	   * 
 	   * @throws Exception
 	   */
+	//@PreAuthorize("hasAnyRole('ROLE_VIEW_CANDIDATE_CERTIFICATION')")
 	 @RequestMapping(value = "/getCandidateCertificationListByCandidateIdAndOrgLocationID") 
 	 public String getCandidateCertificationListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
 
@@ -98,6 +101,7 @@ public class CandidateCertificationsRestController {
 	   * 
 	   * @throws Exception
 	   */
+	 @PreAuthorize("hasAnyRole('ROLE_DELETE_CANDIDATE_CERTIFICATION')")
 	   @RequestMapping(value = "/removeCandidateCertificateBycandidateIdandcandidateCertificateId")
 	   public String removeCandidateCertificateBycandidateIdandcandidateCertificateId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateCertificationId", required = false) Long candidateCertificationId,HttpServletRequest request) throws Exception {
 
@@ -120,7 +124,7 @@ public class CandidateCertificationsRestController {
 		   * 
 		   * @throws Exception
 		   */
-	   
+	   @PreAuthorize("hasAnyRole('ROLE_EDIT_CANDIDATE_CERTIFICATION')")
 	   @RequestMapping(value = "/getCandidateCertificateBycandidateIdandCertificateId")
 		public String getCandidateCertificateBycandidateIdandCertificateId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateCertificationId", required = false) Long candidateCertificationId,HttpServletRequest request) throws Exception {
 
