@@ -120,7 +120,7 @@
 			                	 }else{
 			                		 result = result +"  <td><div>----</div></td>"; 
 			                	 }
-			                 result = result +"  <td><div ><span>"+opt.email+"</span></div></td>";
+			                 result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 			                 result = result +"  <td><div>"+mobilePhone+"</div></td>";
 			                 result = result +"  <td><div><span title='"+address+"'>"+address+"</span></div></td>";
 			                 result = result +"  <td><div>"+candidateUpdateDateToString+"</div></td>";
