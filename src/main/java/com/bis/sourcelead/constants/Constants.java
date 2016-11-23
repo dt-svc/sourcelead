@@ -156,6 +156,9 @@ public class Constants {
 	public static  String TimeSheet = "TimeSheet";
 	public static  String TimeSheetApproval = "TimeSheetApproval";
 	public static  String OrgSettings = "OrgSettings";
+	public static  String BackOffice = "BackOffice";
+	public static  String Finance = "Finance";
+	public static  String AssetManagement = "AssetManagement";
 	
 	public static  String Requirement = "Requirement";
 	public static  String Vendors = "Vendors";

@@ -88,6 +88,34 @@
 	                 </sec:authorize>
 	                 </c:if>
 	                 
+	                 
+	                 <c:if test="${userTabs.tabName == 'Finance' }">
+				           <li class="${sessionData.nav == 'Finance' || sessionData.nav == 'AssetManagement' ? 'side-nav-active' : ''}">
+							  <a href="#" class="tree-view-new" title="Back Office">
+								<span><i class="fa fa-bank"></i></span>
+							  Back Office <i class="fa fa-fw fa-caret-down"></i>
+							  </a>
+							  
+							  <a href="#" class="tree-view" title="Back Office">
+								<span><i class="fa fa-bank"></i></span>
+							  Back Office <i class="fa fa-fw fa-caret-down"></i>
+							  </a>
+							  
+							  <c:if test="${sessionData.nav == 'Finance' || sessionData.nav == 'AssetManagement'}">
+							  <ul class="collapses" style="display: block">
+							  	<li class="${sessionData.nav == 'Finance' ? 'treview-active' : ''}"><a href="<c:url value='/finance'/>" title="Finance">Finance</a></li>
+									<li class="${sessionData.nav == 'AssetManagement' ? 'treview-active' : ''}"><a href="<c:url value='/assetManagement'/>" title="Asset Management">Asset Management</a></li>
+							  </ul>
+							  </c:if>
+							  <c:if test="${sessionData.nav != 'Finance' || sessionData.nav != 'AssetManagement'}">
+							  <ul class="collapses" style="display: none">
+							  	<li class="${sessionData.nav == 'BackOffice' ? 'treview-active' : ''}"><a href="<c:url value='/finance'/>" title="My TimeSheets">Finance</a></li>
+									<li class="${sessionData.nav == 'AssetManagement' ? 'treview-active' : ''}"><a href="<c:url value='/assetManagement'/>" title="Asset Management">Asset Management</a></li>
+							  </ul>
+							  </c:if>
+						  </li>
+	                 </c:if>
+	                 
 	               
 	                 
           </c:forEach>

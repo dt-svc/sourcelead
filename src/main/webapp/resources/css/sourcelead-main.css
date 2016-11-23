@@ -1,4 +1,4 @@
-@charset "utf-8";
+﻿@charset "utf-8";
 /* CSS Document */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
 * {
@@ -569,7 +569,7 @@ ul.timesheet-menu li a {
 }
 ul.timesheet-menu li a::before {
 	color: #f0ad4e;
-	content: "ïˆ­";
+	content: "";
 	font-family: fontawesome;
 	padding-right: 5px;
 }
@@ -2048,6 +2048,13 @@ div.pages-404.width {
 .tblminwidth-100 {
 	min-width: 100px !important;
 }
+.tbldata-dotdot-100 {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 100px;
+	display: block;
+}
 .tbldata-dotdot {
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -3003,11 +3010,12 @@ input:checked + .slider:before {
 	height:34px;
 	line-height:34px;
 }
-
 div.heightScroll {
-	height:300px;
-	overflow-y:scroll;
-	border-bottom:1px solid #ccc;
+/*	height:300px;*/
+	min-height:30px;
+    max-height:300px;
+    overflow-y:auto;
+    border-bottom:1px solid #ccc;
 }
 .divskill table {
 	border-collapse: collapse;
@@ -3760,7 +3768,7 @@ ul.addTasUl li .fa{
     top: 4px;
 }
 .dashboard-datepkr input[type="text"]{
-       width:90px;
+       width:110px;
        border:1px solid #ccc;
        margin-right:5px;
 }
@@ -4085,6 +4093,281 @@ ul.pipeline li{
 }
 .headersummary ul{
 	padding: 2px 245px 2px 0px !important;
+}
+/* Create level styels */
+.create-level ul li {
+	font-size: 15px;
+	font-weight: 600;
+}
+.create-level ul li ul {
+	margin-left: 30px;
+
+}
+.create-level ul li ul li{
+	list-style-type: none;
+}
+li.sellevel:before {
+    content: '\f067';
+	font-family: FontAwesome;
+	font-weight: normal;
+	font-size: 12px;
+}
+
+li.sellevel:before {
+    content: "\f068";
+}
+.create-level{
+	padding:10px 15px;
+	background: #fff;
+	margin-top: 15px;
+	background-color: #f5f5f5;
+    border-radius: 3px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}
+/* Create level styels Ends */
+.require_wrap_table.table-wrap .proj_show{
+	color:#368ee0;
+}
+.require_wrap_table.table-wrap .proj_show i {
+float: none;padding-left: 10px;position: relative;top: -3px;
+}
+.require_wrap_table.table-wrap tr td:first-child{
+	text-align: left;
+	padding-left: 10px;
+	width: auto;
+}
+.require_wrap_table.table-wrap tr td span{
+	max-width: 250px;
+}
+/* For select custom styles */
+.select-field select {
+    font-size:14px; padding:0px 26px 0px 10px; border:none; color:#333; border-radius:3px; appearance:none;
+    -webkit-appearance:none; -moz-appearance:none; -ms-appearance:none; -o-appearance:none; font-weight:500; cursor:pointer; box-sizing:border-box;
+    background-image:url("../images/arrow-d-g.png"); background-repeat:no-repeat; background-position:92% center; background-size:10px; border: 1px solid #ccc !important;
+    }
+.select-field select option {
+    background-color:#FFF; color:#333; font-size:13px; height:20px;
+    }
+.select-field select::-ms-expand {
+    display: none;
+}
+/* For select custom styles */
+.accountdiv {
+top: 35px;
+right: 250px;
+}
+.addfields a {
+	color: #333;
+    float: left;
+    margin: 15px 20px 10px;
+	position: relative;
+	font-weight: bold;
+}
+.table_head {
+	min-height: 40px;
+}
+
+.table_head .remove_search {
+ position: relative;
+}
+.account-tab .nav-tabs > li > a {
+ padding: 5px 10px;
+}
+.dynamic-view label{
+	font-weight: bold;
+}
+.transaction-div{
+	right: 50px;
+    top: 25px;
+    width: 350px;
+}
+.table-wrap tfoot{
+border-top: 1px solid #ccc;
+	font-weight: bold;
+}
+.table-wrap tfoot tr td{
+	font-weight: 600 !important;
+}
+.inst-search{
+/*
+margin-top: 10px;
+margin-left: 5px;
+margin-bottom: 10px;
+*/
+}
+.inst-search [class*="col-md-"] {
+padding:0 5px;	
+}
+inst-search .col-md-9{
+	padding: 0 5px;
+}
+.inst-search label{
+	font-weight: bold;
+    position: relative;
+    top: 5px;
+}
+.instsearch{
+	background: #fff;
+	padding: 10px 10px;
+	
+}
+.require_wrap_details_cta.require_education{
+       width:100%;
+}
+.require_wrap_details_cta.require_education span{
+       width:100%;
+       margin-top: 5px;
+}
+.assetaddpop {
+right: 20px;
+    top: 25px;
+    width: 650px;
+	}
+.assetaddpop-ul ul{
+	float:left !important;
+	padding:0 !important;
+	width: 98.5%;
+}
+.assetaddpop-ul ul li{
+	margin-bottom: 5px !important;
+    margin-left: 5px !important;
+    padding: 5px !important;
+	float: noe;
+	clear: both;
+	width: 100%;
+}
+.assetaddpop-ul ul li label{
+	font-weight: 900;
+	color: #333;
+}
+.assetaddpop-ul ul li input[type="radio"] {
+	margin-right: 10px;
+    position: relative;
+    top: 2px;
+}
+.asstmake {
+	display: none;
+}
+.edit-category .chosen-container-single .chosen-single{
+	width: 100%;
+}
+.category{
+	width:300px;
+	right: 40px;
+}
+.inst-search .fa-search {
+    font-size: 14px !important;
+    color: #fff !important;
+    padding: 0 !important;
+	position: relative;
+	top: 0 !important;
+    display: inline-block;
+}
+.date-search .btn {
+	position: relative;
+	left: -10px;
+}
+.summar{
+	position: relative;
+}
+.summar .edit{
+position: absolute;
+right: 10px;
+top: -10px;
+background: #f0ad4e;
+padding: 2px 5px;
+border-radius: 3px;
+cursor: pointer;
+}
+.summar .edit:hover{
+background: #fdba5b;	
+}
+.chosen-table .fa-trash, .chosen-table .fa-pencil {
+	cursor: pointer;
+}
+.chosen-table .chosen-select {
+	position: absolute;
+	z-index: 999999;
+}
+.chosen-a ul.chosen-results{
+	clear: right;
+	width: 100%;
+}
+.chosen-a .chosen-results li{
+	float: none;
+	clear: both;
+	width: 100%;
+}
+.editdiv-summary select {
+  width: 100% !important;
+  background-position: 96% !important;
+}
+.editdiv-summary {
+	background: #fff;
+	border: 1px solid #909090;
+	border-radius: 5px;
+	padding:10px 5px;
+	position: absolute !important;
+	z-index:9999;
+	text-align: left;
+	margin-top:8px;
+	box-shadow: 0 8px 6px -8px #505050;
+	display:none;
+	bottom: 0;
+	right: 8%;
+}
+.accountlist-head ul{
+	float: right;
+	margin:0;
+	margin-top: 10px;
+}
+.accountlist-head ul li{
+	list-style-type: none;
+	float: left;
+	padding: 10px 0;
+	position: relative;
+}
+.accountlist-head ul li a{
+	border-right: 1px solid #ccc;
+	color: #333;
+	padding: 0 10px;
+}
+.accountlist-head ul li a:hover{
+	color: #909090;
+}
+.accountlist-head ul li .remove_search{
+	top: 0;right: 0;margin: 0 10px;
+}
+.timesheet_head.transaction-hd .glyphicon-play {
+    -ms-transform: rotate(90deg); -webkit-transform: rotate(90deg); transform: rotate(90deg); font-size:10px; color:#666;
+    position:absolute; top:10px; right:15px; cursor:pointer;
+    }
+.advanced-search{
+	background: #ccc;
+	padding: 10px;
+	box-sizing: border-box;
+	display: none;
+	transition:0.3s all ease-in-out; -webkit-transition:0.3s all ease-in-out; -moz-transition:0.3s all ease-in-out;
+}
+.advanced-search .chose-select{
+	height: 20px;
+}
+.transaction-hd{
+	border: 1px solid #ccc;
+	background: #fff;
+	padding: 0 10px;
+	display: block;
+	min-height: 30px;
+	line-height: 30px;
+	border-radius: 5px;
+}
+.transaction-hd .fa-filter{
+	padding-left: 10px !important;
+}
+.transaction-hd ul li input[type="checkbox"]
+{
+	position: relative;
+	top: 3px;
 }
 /* media 320px */
 @media (max-width: 320px) {
