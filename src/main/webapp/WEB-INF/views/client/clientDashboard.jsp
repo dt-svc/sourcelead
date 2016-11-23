@@ -11,6 +11,7 @@
 <script src="resources/js/chosen.jquery.min.js"></script>
 <script src="resources/js/bootstrap-select.min.js"></script>
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -97,10 +98,15 @@ overflow-x: auto;
 		                        </ul>
 		                    </div>                	
 		                </li>
-                
+                		<sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
                         <li><a href="<c:url value='/addClientContact'/>"><i class="fa fa-plus"></i>Contact</a></li>
-						<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Client</a></li>
+                        </sec:authorize>
+                         <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
+							<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Client</a></li>
+						</sec:authorize>
+						 <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
 						 <li><a href="<c:url value='/uploadClientForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
+						 </sec:authorize>
 						<div class="clearfix"></div>
 					</ul>
 					<div class="clearfix"></div>
@@ -196,8 +202,20 @@ function getClientDetails(){
    	        		result = result +'<tr>';
    	        		
    	        			result = result +'<td>';
-   	        			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.vendorlocationId+'\',\''+report.orgName+'\',\''+report.id+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+   	        		    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+   	        			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.vendorlocationId+'\',\''+report.orgName+'\',\''+report.id+'\');">';
+						result = result +'<span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+   	        			
    	        			result = result +'</div>';
+   	        			'</sec:authorize>';
+   	        			
+   	        			'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+   	        			result = result +'<div class="proj_show" ';
+						result = result +'<span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span>';
+   	        			result = result +'</div>';
+   	        			'</sec:authorize>';
+   	        			
+   	        				
    	        			result = result +'</td>';
 						
    	        	
@@ -280,15 +298,23 @@ function pagination(){
 		result = result + '<ul class="project-tabs-menu">';
 		
 		//for client details tab
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
 		result = result + '<li class="current"><a href="#tab-1" onClick="clientDetails('+clientLocationId+','+orgRelationId+');">Details</a></li>';
+		'</sec:authorize>';
 		
 		//for client contatcs tab
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
 		result = result + '<li><a href="#tab-2" onclick="clientContacts('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
+		'</sec:authorize>';
 		
 		//for client documents tab
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_DOCUMENT\')">';
 		result = result+'  <li><a href="#tab-3" onclick="clientDocuments('+orgRelationId+','+clientLocationId+');">Documents</a></li>';		
-				
+		'</sec:authorize>';	
+		
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_SUBMISSION_TEMPLATE\')">';
 		result = result + '<li><a href="#tab-4" onclick="clientSubmissionTemplate('+clientLocationId+');">Submission Templates</a></li>';	
+		'</sec:authorize>';
 		
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
@@ -404,7 +430,14 @@ function getVendorContactLists(){
    	        		
    	        		
    	        		result = result +'<tr>';
-   	        		result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\','+report.tempOwnerId+');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
+   	        			result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\','+report.tempOwnerId+');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        		'</sec:authorize>';
+   	        		
+   	        		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
+   	        			result = result +'<td><div class="proj_show"><span>'+report.spocName+'</span></i></div></td>';
+   	        		'</sec:authorize>';
+   	        		
    	        		result = result +'<td><div><span>'+report.spocEmail+'</span></div></td>';
    	        		if(report.spocMobilePhone != null && report.spocMobilePhone  != '' && report.spocMobilePhone  != 'undefined'){
    	        			result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
@@ -458,8 +491,14 @@ function getVendorContactLists(){
    	        		
    	        		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
    	        		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
-   	        		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
    	        		
+   	        		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
+   	        		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
+   	        		'</sec:authorize>';
+   	        		
+   	        		'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
+   	        		result = result + '<td><div>--</div></td>';
+   	        		'</sec:authorize>';
    	        		
    	        		result = result +'</tr>';
    				}
@@ -549,11 +588,17 @@ function updateSpocStatus(spocId){
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
+		
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
 		result = result
 				+ '<li class="current"><a href="#tab-1"  id="spocDetailsId" onClick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+');">Details</a></li>';
+		'</sec:authorize>';
+		
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT_DOCUMENT\')">';
 		result = result
 				+ '<li><a href="#tab-2" onClick="clientSpocDocuments('+orgRelationId+','+spocLocationId+',\''+spocName+'\','+userId+');">Documents</a></li>';
-		/* result = result + '<li><a href="#tab-3">Activity</a></li>';  */
+		'</sec:authorize>';
+				/* result = result + '<li><a href="#tab-3">Activity</a></li>';  */
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
@@ -589,12 +634,14 @@ function listChange(sel){
 		 document.getElementById("clientList").style.display="block";
 		 document.getElementById("clientList").style.display="table";
 		 document.getElementById("vendorContactList").style.display="none";
-		 document.getElementById("vendorContactList_wrapper").style.display="none";
+// 		 document.getElementById("vendorContactList_wrapper").style.display="none";
 		document.getElementById("contactLevel").style.display="block";
 		document.getElementById("clientsList").style.display="none";
 		 document.getElementById("clientSatatus").style.display="none";
 		 document.getElementById("clientInvitation").style.display="none";
-		 
+		 document.getElementById("vendorContactList_paginate").style.display="none";
+		 document.getElementById("vendorContactList_info").style.display="none";
+		 document.getElementById("vendorContactList_filter").style.display="none";
 		 
 		 getClientDetails();
 	 }
@@ -603,7 +650,7 @@ function listChange(sel){
 		 document.getElementById("vendorContactList").style.display="table";
 		 document.getElementById("clientList").style.display="none";
 		 document.getElementById("clientList_wrapper").style.display="none";
-		 document.getElementById("vendorContactList_wrapper").style.display="block";
+// 		 document.getElementById("vendorContactList_wrapper").style.display="block";
 		 document.getElementById("contactLevel").style.display="none";
 		 document.getElementById("clientsList").style.display="block";
 		 document.getElementById("clientSatatus").style.display="block";
