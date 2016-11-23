@@ -74,6 +74,7 @@ public class ClientController {
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT')")
 	 @RequestMapping(value = "/client")
 		public ModelAndView client(HttpServletRequest request) throws Exception {
 		 	logger.debug("Display the client page");
@@ -94,7 +95,6 @@ public class ClientController {
 	  * @return ModelAndView
 	  * @throws Exception
 	  */
-	 @PreAuthorize("hasRole('ROLE_CREATE_CLIENT')")
 	 @RequestMapping(value = "/clientDashboard")
 		public ModelAndView clientDashboard(HttpServletRequest request) throws Exception {
 		 
@@ -151,6 +151,7 @@ public class ClientController {
 		 * @return ModelAndView
 		 * @throws Exception
 		 */
+	 @PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')")
 		 @RequestMapping(value = "/addClientContact")
 		 public ModelAndView addClientContact(HttpServletRequest request) throws Exception {
 			 ModelAndView model = new ModelAndView();
@@ -181,6 +182,7 @@ public class ClientController {
 		    }
 		
 //		 /uploadClientForm
+	 @PreAuthorize("hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')")
 		 @RequestMapping(value = "/uploadClientForm")
 			public ModelAndView uploadClientForm(HttpServletRequest request) {
 			 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");

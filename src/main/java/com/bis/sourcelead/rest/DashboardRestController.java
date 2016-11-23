@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -85,6 +86,7 @@ public class DashboardRestController {
 	 * @author: Sammeta David
 	 */
 	
+	@PreAuthorize("hasRole('ROLE_VIEW_TIMESHEETS_APPROVAL','ROLE_VIEW_MY_TIMESHEETS')")
 	@RequestMapping(value = "/getTimeSheetSubmissionStatus")
 	public String getTimeSheetSubmissionStatus(HttpServletRequest request) throws Exception {
 
@@ -147,6 +149,7 @@ public class DashboardRestController {
 	   * @throws NullPointer
 	   */
 	 
+	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
 	 @RequestMapping(value = "/getAssignedRequirementListByOrgLocationIDAndUserId")
 	 public String getAssignedRequirementListByOrgLocationIDAndUserId(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
 
@@ -284,6 +287,7 @@ public class DashboardRestController {
 		 * @author: Venkat Kesav
 		 * This  controller method is  to get Interviews list 
 		 */
+		@PreAuthorize("hasRole('ROLE_VIEW_INTERVIEW')")
 		@RequestMapping(value = "/getInterviews")
 		public String getInterviews(String dateRange, HttpServletRequest request) throws Exception {
 			
