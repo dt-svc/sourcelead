@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -72,6 +73,12 @@ public class BoAmexTrans {
 	
 	@Transient
 	private Float balanceAmount;
+	
+	@Transient
+	private String transDateStr;
+	
+	@Transient
+	List<Object> finalcialInstituesList;
 	
 	@Transient
 	private String identity;
@@ -196,6 +203,22 @@ public class BoAmexTrans {
 
 	public void setBalanceAmount(Float balanceAmount) {
 		this.balanceAmount = balanceAmount;
+	}
+
+	public String getTransDateStr() {
+		return transDateStr;
+	}
+
+	public void setTransDateStr(String transDateStr) {
+		this.transDateStr = transDateStr;
+	}
+	
+	public List<Object> getFinalcialInstituesList() {
+		return finalcialInstituesList;
+	}
+
+	public void setFinalcialInstituesList(List<Object> finalcialInstituesList) {
+		this.finalcialInstituesList = finalcialInstituesList;
 	}
 
 	public String getIdentity() {
