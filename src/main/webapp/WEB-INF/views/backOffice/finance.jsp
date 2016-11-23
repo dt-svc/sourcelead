@@ -3,13 +3,13 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
- <link href="resources/css/bootstrap-select.min.css" rel="stylesheet">
- <link href="resources/css/jquery-ui.css" rel="stylesheet">
- <script src="resources/js/bootstrap-select.min.js"></script>
-<script src="resources/js/formvalidator.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<%@ page trimDirectiveWhitespaces="true" %>
 
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<script src="resources/js/formvalidator.js"></script>
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 
  <script type="text/javascript">
@@ -38,7 +38,7 @@
           <div class="col-md-12 clearfix">
             <ul>
               <li> <a href="javascript:void(0)" onClick="advancedsearch()"> <i class="glyphicon glyphicon-search"></i>&nbsp;&nbsp;Advanced Search </a> </li>
-              <li> <a href="javascript:void(0)"> <i class="fa fa-upload"></i>&nbsp;&nbsp;Import</a> </li>
+              <li> <a href="<c:url value='/transactionsImports'/>"> <i class="fa fa-upload"></i>&nbsp;&nbsp;Import</a> </li>
               <li> <a href="paymenttype.html"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Payment Type</a> </li>
             </ul>
           </div>

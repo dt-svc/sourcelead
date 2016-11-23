@@ -29,10 +29,7 @@ import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellRangeAddressList;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.DataValidation;
-import org.apache.poi.ss.usermodel.DataValidationConstraint;
-import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -44,7 +41,7 @@ import org.apache.poi.xssf.usermodel.XSSFDataValidationConstraint;
 import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.hibernate.SessionFactory;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +50,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.UploadFileDao;
+import com.bis.sourcelead.entity.AmexUploadFile;
+import com.bis.sourcelead.entity.BOTransactions;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
@@ -64,7 +62,6 @@ import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UploadFileService;
-import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -90,6 +87,11 @@ public class UploadFileServiceImpl implements UploadFileService {
 	
 	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
+	
+	
+	protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
 	
 	@Override
 	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations, User user,String isMailChecked) throws Exception {
@@ -786,6 +788,17 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		return createExcelsheet;
 	}
 	
+	
+	
+private Sheet setAmexExcelHeader(Sheet createExcelsheet) {
+		
+		Row excelHeader = createExcelsheet.createRow(0);
+		excelHeader.createCell(0).setCellValue("Date");
+		excelHeader.createCell(1).setCellValue("Description");
+		excelHeader.createCell(2).setCellValue("Amount");
+		return createExcelsheet;
+	}
+	
 	/**
 	 * write csv data to excel fromat
 	 * @param userImport
@@ -996,5 +1009,291 @@ private String getCellValueAsString(Cell cell, String fileName) {
 	   XSSFDataValidation validation=(XSSFDataValidation)dvHelper.createValidation(dvConstraint,addressList);
 	   validation.setShowErrorBox(true);
 	   return validation;
+	}
+
+	@Override
+	public String uploadAmexFile(MultipartFile multipartFile,User user, AmexUploadFile amexUploadFile) throws Exception {
+
+		String isFileCreated;
+		String fileName = multipartFile.getOriginalFilename();
+
+		/*if (!fileName.toLowerCase().endsWith("csv")) {
+			isFileCreated = parseAmexXlsxandXlsData(multipartFile,user,amexUploadFile);
+		} else {
+			isFileCreated = parseAmexCSVData(multipartFile,user,amexUploadFile);
+		}*/
+		
+		isFileCreated = parseAmexCSVData(multipartFile,user,amexUploadFile);
+		return isFileCreated;
+	}
+	
+	
+	
+	
+	
+	private String parseAmexXlsxandXlsData(MultipartFile multipartFile, User user, AmexUploadFile amexUploadFile) throws Exception {
+
+		String isFileCreated = "failure";
+		String fileName = multipartFile.getOriginalFilename();
+		Workbook createExcelworkbook = null ;
+
+		if (fileName.endsWith("xlsx")) {
+			createExcelworkbook = new XSSFWorkbook();
+		} else if (fileName.endsWith("xls")) {
+			createExcelworkbook = (Workbook) new HSSFWorkbook();
+		}
+
+		Sheet createExcelsheet = createExcelworkbook.createSheet("createuser");
+		createExcelsheet = setExcelHeader(createExcelsheet);
+	
+		try {
+			File file = new File(multipartFile.getOriginalFilename());
+			multipartFile.transferTo(file);
+			FileInputStream fis = new FileInputStream(file);
+			Workbook workbook;
+			logger.debug("FIle Extension is: " + multipartFile.getOriginalFilename());
+				boolean isValidated = false;
+				boolean isUserFound = false;
+				workbook = WorkbookFactory.create(fis);
+			int numberOfSheets = workbook.getNumberOfSheets();
+			for (int i = 0; i < numberOfSheets; i++) {
+				Sheet sheet = workbook.getSheetAt(i);
+				int count = 0;
+				Iterator<Row> rowIterator = sheet.iterator();
+				while (rowIterator.hasNext()) {
+					BOTransactions botrans = new BOTransactions();
+					Row row = rowIterator.next();
+				/*	if (row.getRowNum() > 0) {
+						isValidated = validateExeclData(row,userImport,fileName);
+					}*/
+					/*if (isValidated) {*/
+						if (row.getRowNum() > 0) { // Excluding column names
+							logger.info("Reading Row :" + row.getRowNum() + " records");
+							
+							DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+							Date tansDate = df.parse(getCellValueAsString(row.getCell(0),fileName));
+							System.out.println(tansDate);
+						
+							
+							/*if (row.getCell(0) != null) {
+								String empId = getCellValueAsString(row.getCell(0),fileName);
+								userImport.setEmployeeId(empId);
+							} else {
+								userImport.setEmployeeId("");
+							}
+							userImport.setFirstName(row.getCell(1).toString());
+							if (row.getCell(2) == null || "".equalsIgnoreCase(row.getCell(2).toString())) {
+								userImport.setLastName("");
+							} else {
+								userImport.setLastName(row.getCell(2).toString());
+							}
+							userImport.setEmailId(row.getCell(3).toString());
+
+							if (row.getCell(4) != null) {
+								String mobileNumber = getCellValueAsString(row.getCell(4),fileName);
+								userImport.setMobileNumber(mobileNumber);
+							} else {
+								userImport.setMobileNumber("");
+							}
+							if (row.getCell(5) != null) {
+								String rate = getCellValueAsString(row.getCell(5),fileName);
+								userImport.setRate(rate);
+							} else {
+								userImport.setRate("");
+							}
+							if (row.getCell(6) == null || "".equalsIgnoreCase(row.getCell(6).toString())) {
+								userImport.setRatePer("");
+							} else {
+								
+								userImport.setRatePer(row.getCell(6).toString());
+							}
+							
+							if (row.getCell(7) == null || "".equalsIgnoreCase(row.getCell(7).toString())) {
+								userImport.setDateOfJoin(null);
+							} else {
+								Date hireDate = getCellDate(row.getCell(7),fileName);
+								userImport.setDateOfJoin(hireDate);
+							}
+							userImport.setRole(row.getCell(8).toString());
+							if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
+								userImport.setInvoiceFrequency("");
+							} else {
+								userImport.setInvoiceFrequency(row.getCell(9).toString());
+							}
+							if (row.getCell(10) != null) {
+								String dayHours = getCellValueAsString(row.getCell(10),fileName);
+								userImport.setDayHours(dayHours);
+							} else {
+								userImport.setDayHours("");
+							}*/
+							/*  isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport.getEmployeeId(),userImport,orgLocations);
+							 if(isUserFound){
+								 if (row.getRowNum() > 0) {
+										count++;
+										 createXlsSheet(row, createExcelsheet, count,userImport,fileName);
+									}
+							 }else{
+								 if(isMailChecked != null){
+									 userImport.setIsMailChecked(Status.Y);
+								 }else{
+									 userImport.setIsMailChecked(Status.N);
+								 }
+								 saveBulkUser(userImport,orgLocations,user,isMailChecked);
+							 }*/
+						}
+					/*} else {
+						if (row.getRowNum() > 0) {
+							count++;
+							createXlsSheet(row, createExcelsheet, count,userImport,fileName);
+						}
+					}*/
+				}
+				if (!isValidated || isUserFound) {
+					FileOutputStream fos = null;
+					if(!fileName.endsWith("xlsx")){
+						fos = new FileOutputStream("FailureUsersForCheck.xls");
+					}else{
+						 fos = new FileOutputStream("FailureUsersForCheck.xlsx");
+					}
+					
+					createExcelworkbook.write(fos);
+					fos.close();
+				}
+				if(count > 0){
+					if(!fileName.endsWith("xlsx")){
+					isFileCreated = "FailureUsersForCheck.xls";
+					}else{
+						isFileCreated = "FailureUsersForCheck.xlsx";
+					}
+				}else{
+					isFileCreated = "failed";
+				}
+			}
+			fis.close();
+		} catch (IOException e) {
+			 logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+		}
+		return isFileCreated;
+	}
+	
+	
+	
+	
+	private String parseAmexCSVData(MultipartFile multipartFile, User user, AmexUploadFile amexUploadFile) {
+
+		String isFileCreated = null;
+		boolean isValidated = false;
+		Workbook createExcelworkbook =  new XSSFWorkbook();
+		Sheet createExcelsheet = createExcelworkbook.createSheet("failuredTransactions");
+		createExcelsheet = setAmexExcelHeader(createExcelsheet);
+		
+		CSVParser csvFileParser = null;
+		CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(Constants.AMEX_FILE_HEADER_MAPPING);
+		try {
+			InputStream inputStream = multipartFile.getInputStream();
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+			csvFileParser = new CSVParser(bufferedReader, csvFileFormat);
+			List csvRecords = csvFileParser.getRecords();
+			for (int i = 1; i < csvRecords.size(); i++) {
+				CSVRecord record = (CSVRecord) csvRecords.get(i);
+				BOTransactions botrans = new BOTransactions();
+				isValidated = validateAmexCsvData(record,botrans);
+				if(isValidated){
+					String transactionDate = record.get(0);
+					String[] date = transactionDate.split(" ");
+					Date csvDate  = null;
+					try{
+						SimpleDateFormat sdf1 = new SimpleDateFormat("MM/dd/yyyy");
+						sdf1.setLenient(false);
+						csvDate = sdf1.parse(date[0].trim());
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+					
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					Date startDate = sdf.parse(amexUploadFile.getStartDate());
+					Date endDate = sdf.parse(amexUploadFile.getEndDate());
+					
+					if((csvDate.equals(startDate) || csvDate.after(startDate)) && (csvDate.equals(endDate) || csvDate.before(endDate))){
+						System.out.println(record.get(2));
+					}
+							
+				}else{
+					createAmexXlsxSheetFromCsv(botrans, createExcelsheet, i,record);
+				}
+			}
+			if(!isValidated){
+				FileOutputStream fos = new FileOutputStream("FailureTransactionsCheck.xlsx");
+				createExcelworkbook.write(fos);
+				fos.close();
+				isFileCreated = "FailureTransactionsCheck.xlsx";
+			}else{
+				isFileCreated = "failed";
+			}
+			
+		} catch (Exception e) {
+			 logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+		}
+		return isFileCreated;
+
+	}
+	
+	
+	
+	private boolean validateAmexCsvData(CSVRecord record, BOTransactions botrans) {
+
+		boolean isValidated;
+			if (isNullOrEmpty(record.get(0)) && isNullOrEmpty(record.get(1)) && isNullOrEmpty(record.get(2))) {
+				botrans.setReason("Required field mandatory");
+				return false;
+			}
+			
+			if (!isNullOrEmpty(record.get(0))) {
+				String[] date = record.get(0).split(" ");
+				isValidated = isThisDateValid(date[0].trim(), "dd/MM/yyyy");
+				if(isValidated == false){
+					botrans.setReason("Invalid Date");
+					return isValidated;
+				}
+			}
+			
+			
+		return true;
+	}
+	
+	
+	
+private void createAmexXlsxSheetFromCsv(BOTransactions botrans, Sheet createExcelsheet, int rowIndex, CSVRecord record) {
+		
+		Row writeRow = createExcelsheet.createRow(rowIndex);
+		
+		if (record.get(0) != null && !"".equalsIgnoreCase(record.get(0))) {
+			Cell cell0 = writeRow.createCell(0);
+			cell0.setCellValue(record.get(0));
+		} else {
+			Cell cell0 = writeRow.createCell(0);
+			cell0.setCellValue("");
+		}
+		
+		if (record.get(1) != null && !"".equalsIgnoreCase(record.get(1))) {
+			Cell cell1 = writeRow.createCell(1);
+			cell1.setCellValue(record.get(1));
+		} else {
+			Cell cell1 = writeRow.createCell(1);
+			cell1.setCellValue("");
+		}
+		
+		if (record.get(2) != null && !"".equalsIgnoreCase(record.get(2))) {
+			Cell cell2 = writeRow.createCell(2);
+			cell2.setCellValue(record.get(2));
+		} else {
+			Cell cell2 = writeRow.createCell(2);
+			cell2.setCellValue("");
+		}
+		
+		if (botrans.getReason() !=null) {
+			writeRow.createCell(3).setCellValue(botrans.getReason());
+		} 
+	
 	}
 }
