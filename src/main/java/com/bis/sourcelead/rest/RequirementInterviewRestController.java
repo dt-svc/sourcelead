@@ -114,7 +114,7 @@ public class RequirementInterviewRestController {
 
   }
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_INTERVIEW')")
 	@RequestMapping(value = "/getAllInternalInterviews" , method = RequestMethod.POST)
 	 public @ResponseBody  String getAllInternalInterviews(@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
 		
