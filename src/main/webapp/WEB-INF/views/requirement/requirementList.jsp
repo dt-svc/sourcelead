@@ -35,6 +35,66 @@ $(document).ready(function() {
 </script>
 
 
+
+<script type="text/javascript">
+function requirementListIndividualStatusCounts(){
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getRequirementListCountBasedOnStatus",
+		        success: function(data) {
+		        	
+		        	var json = JSON.parse(data);
+		        	
+		        	var  newRequirementCount = json.newRequirementCount;
+		        	var  draftRequirementCount =json.draftRequirementCount;
+		        	var  submittedRequirementCount =json.submittedRequirementCount;
+		        	var  openRequirementCount = json.openRequirementCount; 
+		        	var  onHoldRequirementCount =json.onHoldRequirementCount;
+		        	var  cancelRequirementCount = json.cancelRequirementCount;
+		        	
+		        	
+		        	if(newRequirementCount>0){
+	                      $("#newRequirementCount").text(("("+newRequirementCount+")"));
+	                  }else{
+	                      $("#newRequirementCount").html("(0)");
+	                  }
+		        	if(draftRequirementCount>0){
+	                      $("#draftRequirementCount").text("("+draftRequirementCount+")");
+	                  }else{
+	                      $("#draftRequirementCount").html("(0)");
+	                  }
+		        	if(submittedRequirementCount>0){
+	                      $("#submittedRequirementCount").text("("+submittedRequirementCount+")");
+	                  }else{
+	                      $("#submittedRequirementCount").html("(0)");
+	                  }
+		        	if(openRequirementCount>0){
+	                      $("#openRequirementCount").text("("+openRequirementCount+")");
+	                  }else{
+	                      $("#openRequirementCount").html("(0)");
+	                  }
+		        	if(onHoldRequirementCount>0){
+	                      $("#onHoldRequirementCount").text("("+onHoldRequirementCount+")");
+	                  }else{
+	                      $("#onHoldRequirementCount").html("(0)");
+	                  }
+		        	if(cancelRequirementCount>0){
+	                      $("#cancelRequirementCount").text("("+cancelRequirementCount+")");
+	                  }else{
+	                      $("#cancelRequirementCount").html("(0)");
+	                  }
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+} 
+</script>
+
+
+
 <style>
 .tbldata-dotdot span{
 max-width:220px;
@@ -64,6 +124,7 @@ padding: 1px 280px 2px 0;
 <script>
  window.onload = function() { 
  	 requirementList();
+ 	 requirementListIndividualStatusCounts();
 };
 </script>
 
@@ -1038,12 +1099,12 @@ function requirementPipeline(requirementId){
 		<li><i class="glyphicon glyphicon-export"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
 		            <div id="filter2ApprovedPop" class="approved_pop">
 		              <ul>
-                		    <li><input id="c6" type="checkbox" name="requirementStatus" value ="NEW"  onclick="requirementList();"><label for="c6">New</label></li>
-							<li><input id="c7" name="requirementStatus" type="checkbox" value ="Draft"  onclick="requirementList();"><label for="c7">Draft</label></li>
-							<li><input id="c8" type="checkbox"  name="requirementStatus"  type="checkbox" value ="submitted"  onclick="requirementList();"><label for="c8">Submitted</label></li>
-               				<li><input id="c9" type="checkbox"  name="requirementStatus"  type="checkbox" value ="open"  onclick="requirementList();"><label for="c8">Open</label></li>
-               				<li><input id="c10" type="checkbox"  name="requirementStatus"  type="checkbox" value ="onhold"  onclick="requirementList();"><label for="c8">On Hold</label></li>
-               				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="CANCEL"  onclick="requirementList();"><label for="c8">cancel</label></li>
+                		    <li><input id="c6" type="checkbox" name="requirementStatus" value ="NEW"  onclick="requirementList();"><label for="c6">New<span id="newRequirementCount"></span></label></li>
+							<li><input id="c7" name="requirementStatus" type="checkbox" value ="Draft"  onclick="requirementList();"><label for="c7">Draft<span id="draftRequirementCount"></span></label></li>
+							<li><input id="c8" type="checkbox"  name="requirementStatus"  type="checkbox" value ="submitted"  onclick="requirementList();"><label for="c8">Submitted <span id="submittedRequirementCount"></span></label></li>
+               				<li><input id="c9" type="checkbox"  name="requirementStatus"  type="checkbox" value ="open"  onclick="requirementList();"><label for="c8">Open <span id="openRequirementCount"></span></label></li>
+               				<li><input id="c10" type="checkbox"  name="requirementStatus"  type="checkbox" value ="onhold"  onclick="requirementList();"><label for="c8">On Hold <span id="onHoldRequirementCount"></span></label></li>
+               				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="CANCEL"  onclick="requirementList();"><label for="c8">cancel <span id="cancelRequirementCount"></span></label></li>
 		              </ul>
 		            </div>
           </li>
@@ -1258,6 +1319,7 @@ function changeStatus(requirementId){
           success :function(data) { 
         	  $("#changeStatusId" +requirementId).val('');
         	  location.replace(sourceleadUrl+"/requirementList");
+        	  requirementListIndividualStatusCounts();
           }
 }); 
 }
@@ -1311,6 +1373,13 @@ function exportToPdf(){
 		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=pdf";
 }
 </script>
+
+
+
+
+
+
+
 
 <script>
 function exportToExcel(){
