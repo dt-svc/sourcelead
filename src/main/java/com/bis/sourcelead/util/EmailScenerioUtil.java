@@ -73,8 +73,8 @@ public class EmailScenerioUtil {
 		return emailTemplate ;
 	} 
 	
-	public void sendEmail(EmailMessage emailMessage, ArrayList<EmailRecipient> emailRecipientList,List<EmailAttachment> attachmentList) throws Exception{
-			emailMessageService.sendEmail(emailMessage,emailRecipientList,attachmentList);
+	public void sendEmail(EmailMessage emailMessage,Long locationsId, ArrayList<EmailRecipient> emailRecipientList,List<EmailAttachment> attachmentList) throws Exception{
+			emailMessageService.sendEmail(emailMessage,locationsId,emailRecipientList,attachmentList);
 		}
 	
 	

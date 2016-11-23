@@ -559,40 +559,42 @@ public class RequirementServiceImpl implements RequirementService {
 			HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
 			if (jsonObj.has("assignedToMaxCount")){
 				String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
-				String assignedTeamId = jsonObj.getString("assignedTeamId");
-				Long teamId = 0L;
-				Team team = null;
-			if (!"undefined".equalsIgnoreCase(assignedTeamId) && !"All".equalsIgnoreCase(assignedTeamId)
-					&& !"Account Manager".equalsIgnoreCase(assignedTeamId)
-					&& !"HR Manager".equalsIgnoreCase(assignedTeamId) && !"Recruiter".equalsIgnoreCase(assignedTeamId)
-					&& !"Admin".equalsIgnoreCase(assignedTeamId)) {
-				    teamId = Long.parseLong(assignedTeamId);
-				     team = teamService.getTeamByTeamId(teamId);
-				}
-//			    User roleUser = team.getOwnerUserId();
-				if(StringUtils.isNotEmpty(assignedToMaxCount)){
-				int MaxCount = Integer.parseInt(assignedToMaxCount);
-					for (int c = 1; c < MaxCount; c++) {
-						RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
-						
-//						User assUser = new User();
-//						assUser.setId(Long.parseLong(jsonObj.getString("assignUserId"+c)));
-						User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
-						requirementAssignTo.setAssignUserId(assUser);
-						
-						requirementAssignTo.setRequirementId(requirement);
-						
-						
-						requirementAssignTo.setTeamId(team);
-						
-						
-						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
-						requirementAssignTo.setRoleId(userRole.getRoles());
-						requirementAssignToList.add(requirementAssignTo);
-						AssignToTeamMembersEmail(user, assUser, requirement,location,orgLocations);
-
-					}
-				}
+						Long teamId = 0L;
+						Team team = null;
+						if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId"))){
+							String assignedTeamId = jsonObj.getString("assignedTeamId");
+						    if (jsonObj.has("assignedTeamId") && !"undefined".equalsIgnoreCase(assignedTeamId) && !"All".equalsIgnoreCase(assignedTeamId)
+								&& !"Account Manager".equalsIgnoreCase(assignedTeamId)
+								&& !"HR Manager".equalsIgnoreCase(assignedTeamId) && !"Recruiter".equalsIgnoreCase(assignedTeamId)
+								&& !"Admin".equalsIgnoreCase(assignedTeamId)) {
+							    teamId = Long.parseLong(assignedTeamId);
+							    team = teamService.getTeamByTeamId(teamId);
+							}
+						}   
+					    // User roleUser = team.getOwnerUserId();
+						if(StringUtils.isNotEmpty(assignedToMaxCount)){
+						int MaxCount = Integer.parseInt(assignedToMaxCount);
+							for (int c = 1; c < MaxCount; c++) {
+								RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
+								
+		//						User assUser = new User();
+		//						assUser.setId(Long.parseLong(jsonObj.getString("assignUserId"+c)));
+								User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
+								requirementAssignTo.setAssignUserId(assUser);
+								
+								requirementAssignTo.setRequirementId(requirement);
+								
+								
+								requirementAssignTo.setTeamId(team);
+								
+								
+								UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
+								requirementAssignTo.setRoleId(userRole.getRoles());
+								requirementAssignToList.add(requirementAssignTo);
+								AssignToTeamMembersEmail(user, assUser, requirement,location,orgLocations);
+		
+							}
+						}
 			}
 			requirement.setRequirementAssignTo(requirementAssignToList);
 			
@@ -796,7 +798,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, loginOrgLocation, notificationScenario);
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 	
 }
 	
@@ -874,7 +876,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocations, notificationScenario);
 
@@ -953,7 +955,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser,intiatorUser, orgLocations, notificationScenario);
 
@@ -1148,8 +1150,12 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("RequirementRate","--"); 
 			 }
-		 if(requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp())){
-			 globalVarsMap.put("Experience", requirement.getMaxExp());
+		 if((requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp()))){
+			 globalVarsMap.put("Experience", requirement.getMinExp()+"-"+requirement.getMaxExp());
+			 }else if(requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())){
+				 globalVarsMap.put("Experience", requirement.getMinExp());
+			 }else if(requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp())){
+				 globalVarsMap.put("Experience",requirement.getMaxExp());
 			 }else{
 				 globalVarsMap.put("Experience","--"); 
 			 }
@@ -1194,7 +1200,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario);
 
@@ -1236,8 +1242,12 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("RequirementRate","--"); 
 			 }
-		 if( requirement.getMaxExp()!= null && !"".equalsIgnoreCase( requirement.getMaxExp())){
-			 globalVarsMap.put("Experience", requirement.getMaxExp());
+		 if((requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp()))){
+			 globalVarsMap.put("Experience", requirement.getMinExp()+"-"+requirement.getMaxExp());
+			 }else if(requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())){
+				 globalVarsMap.put("Experience", requirement.getMinExp());
+			 }else if(requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp())){
+				 globalVarsMap.put("Experience",requirement.getMaxExp());
 			 }else{
 				 globalVarsMap.put("Experience","--"); 
 			 }
@@ -1281,7 +1291,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 		String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser,assUser, orgLocations, notificationScenario);
 
@@ -1364,7 +1374,7 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, emailRecipientList, new ArrayList<EmailAttachment>());
+		emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
 		String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, initiatorUser, loginOrgLocation, notificationScenario);
 	}
@@ -1415,11 +1425,15 @@ public class RequirementServiceImpl implements RequirementService {
 			 } else {
 				 globalVarsMap.put("contactname", "--");
 			}
-		 if (requirement.getMaxExp()!= null && !"".equalsIgnoreCase(requirement.getMaxExp())) {
-			 globalVarsMap.put("Experience", requirement.getMaxExp());
-			 } else {
-				 globalVarsMap.put("Experience", "--");
-			}
+		 if((requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp()))){
+			 globalVarsMap.put("Experience", requirement.getMinExp()+"-"+requirement.getMaxExp());
+			 }else if(requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())){
+				 globalVarsMap.put("Experience", requirement.getMinExp());
+			 }else if(requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp())){
+				 globalVarsMap.put("Experience",requirement.getMaxExp());
+			 }else{
+				 globalVarsMap.put("Experience","--"); 
+			 }
 		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 		
 		 if (loginUser.getFirstName()+" "+loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()+" "+loginUser.getLastName())) {
@@ -1465,7 +1479,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario);
 

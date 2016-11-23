@@ -14,6 +14,6 @@ import com.bis.sourcelead.entity.EmailRecipient;
  */
 public interface EmailMessageService {
 	
-	String sendEmail(EmailMessage emailMessage, ArrayList<EmailRecipient> emailRecipientList, List<EmailAttachment> attachmentList) throws Exception;
+	String sendEmail(EmailMessage emailMessage,Long locationsId, ArrayList<EmailRecipient> emailRecipientList, List<EmailAttachment> attachmentList) throws Exception;
 
 }

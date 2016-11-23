@@ -583,6 +583,9 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	           if(leftNavStartDate != null && (leftNavStartDate.after(employeeStartDate) || employeeStartDate.equals(leftNavStartDate))){
 		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
 	     	   }
+	           else{
+	        	   sb.append("       	<i class='glyphicon glyphicon-none'></i>");
+	           }
 	     	   sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+startDateBuilder+" To "+endDateBuilder+"</span>");
 	     	   Date rightNavStartDate = getRightNavStartDateForApproverBasedOnCurrentStartDate(user.getId(), ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
 	           if(rightNavStartDate != null){
@@ -594,6 +597,9 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		     			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+format.format(rightNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
 		     	    }
 	           }
+	           else{
+	        	   sb.append("       	<i class='glyphicon glyphicon-none'></i>");
+	           }
 	     	   sb.append("    </div>");
 	     	   sb.append("    </td>");
 	     	   
@@ -603,27 +609,19 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	         sb.append("    </div>");
 	         sb.append("    </td>");
 	         
-	         sb.append("  <td><div>"+ts.getCombinedStatus()+"</div></td>");
+	         sb.append("  <td><div id='status"+ts.getUserId()+"'>"+ts.getCombinedStatus()+"</div></td>");
 	         
-	         sb.append("    <td><div> " );
+	         sb.append("    <td><div id='action"+ts.getUserId()+"'> " );
 	             if( (ts.getCombinedStatus() !=null && ts.getCombinedStatus().equalsIgnoreCase("NEW")) || ( ts.getCombinedStatus() != null && ts.getCombinedStatus().equalsIgnoreCase("SUBMITTED FOR APPROVAL")) ){
-	                 sb.append("<div><i class='fa fa-check' alt='Approve'  onclick='approveSubmission(\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmission(\""+ts.getId()+"\",\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'></i></div>");
+	                 sb.append("<div><i class='fa fa-check' alt='Approve'  onclick='approveSubmission(\""+ts.getUserId()+"\",\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmission(\""+ts.getId()+"\",\""+ts.getEmployeeId()+"\",\""+ts.getUserId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'></i></div>");
 	                 sb.append("<div id='rejectedPopup'></div>");
 	             }
 	             if(ts.getCombinedStatus() !=null && ts.getCombinedStatus().equalsIgnoreCase("REJECTED")){
-	               /*  sb.append(" <div><h3 class='reje_color'>Rejected</h3>");
-	               sb.append(" <i class='glyphicon glyphicon-comment' onclick='rejectedMessage(\'rejectedMessage"+ts.getId()+"\');'>");
-	               sb.append(" <strong id='rejectedMessage"+ts.getId()+"'><p>"+ts.getRejectedReason()+"</p></strong>");
-	               sb.append(" </i>");
-	               sb.append(" </div>");
-	               */
 	               sb.append(" <div><h3 class='reje_color'>Rejected</h3>");
 	               sb.append(" <i class='glyphicon glyphicon-comment' id='"+ts.getId()+"' onclick='rejectedMessage(\"rejectedMessage"+ts.getId()+"\");'>");
 	               sb.append(" <div class='app_error_mes' id='rejectedMessage"+ts.getId()+"'>"+ts.getRejectedReason()+"</div>");
 	               sb.append(" </i>");
 	               sb.append(" </div>");
-	                
-	                
 	            }
 	            if(ts.getCombinedStatus() !=null && ts.getCombinedStatus().equalsIgnoreCase("APPROVED")){
 	          	  sb.append(" <div><h3>Approved</h3></div>");
@@ -1076,8 +1074,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
  * 
  */
 		@Override
-		public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId) throws Exception {
-			return timesheetSubmissionsDao.getWeekFrequency(userId);
+		public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId,Long locationsId) throws Exception {
+			return timesheetSubmissionsDao.getWeekFrequency(userId,locationsId);
 		}
 
 

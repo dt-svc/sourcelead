@@ -445,14 +445,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 		return projectsDao.getUserAssignedProjectsCount(userId, orgLocationId);
 	}
 
-	@Override
+	/*@Override
 	public HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception {
 		
 		return projectsDao.getAllUserTimeSheetSubmissionStatus();
-	}
+	}*/
 
 	@Override
-	public void userEmailNotificationForTimeSheetSubmission(User user,HashSet<TimesheetSubmissions> timesheetSubmissions) throws Exception {
+	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,HashSet<TimesheetSubmissions> timesheetSubmissions) throws Exception {
 		
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
@@ -501,7 +501,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,locationsId,emailRecipientList,new ArrayList<EmailAttachment>());
 		 sendWeeklyBaseNotiFication(user);
 		
 		//projectsDao.userEmailNotificationForTimeShhetSubmission(user);
@@ -536,11 +536,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 			emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario);		
 	}
 
-	@Override
+	/*@Override
 	public HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
 		
 		return projectsDao.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency);
-	}
+	}*/
 
 	@Override
 	public void saveAllProjects(List<Projects> projectsList) throws Exception {
@@ -1248,7 +1248,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 emailMessage.setMessageBody(emailTemplate);
 				 
 				 //calling the sendEmail method of emailScenerioUtil
-				 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+				 if(null != projects.getOrgLocationsId())
+				 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 				 
 				 
 				//calling the sendNotification method of emailScenerioUtil
@@ -1313,7 +1314,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 emailMessage.setMessageBody(emailTemplate);
 					 
 					 //calling the sendEmail method of emailScenerioUtil
-					 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+					 if(null != projects.getOrgLocationsId())
+					 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 					 
 					 
 					//calling the sendNotification method of emailScenerioUtil
@@ -1404,9 +1406,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 				return teamMembersList;
 				}
 
-			@Override
+			/*@Override
 			public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() throws Exception {
 				return projectsDao.getAllUserTimeSheetSubmissionStatusCurrentWeek();
 			}
-			  
+			  */
 }

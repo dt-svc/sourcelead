@@ -703,7 +703,7 @@ function getOfferDetails(submissionId){
                     	 result = result + '<div class="content clearfix">';
                     	 result = result + '<div class="interview-type">';
 
-                            var accept = "ACCEPT";
+                         var accept = "ACCEPT";
                     	 var reject = "REJECT";
                     	 var mybe = "MYBE";
                     	 
@@ -804,6 +804,16 @@ function getOfferDetails(submissionId){
                         	 result = result + '</div>';
                     	 }
                     	 
+                    	 
+                    		 
+                    		 result = result + '<div class="row clearfix">';
+                        	 result = result + '<label class="col-md-5">';
+                        	 result = result + '<strong>Notify To Applicant</strong>';
+                        	 result = result + '</label>';
+                    		 result = result +'<button  class="btn btn-success mr" type="button"  id="'+json.id+'notification" onClick ="notifyToApplicant(\''+ json.submissionId.id+ '\',\''+ json.id+ '\');"  >Notify To Candidate</button>';
+                    		 result = result + '<span id="'+json.id+'notified"></span>';
+                    		 result = result + '</div>';
+                        	 
                     	
                          result = result + '</div>';
                          result = result + '</div>';
@@ -921,4 +931,31 @@ function acceptingOffer(offerStatus,submissionId){
 }
 
 </script>
+
+
+
+<script>
+function notifyToApplicant(submissionId,offerId){
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({  
+        type : "POST",
+        url: sourceleadUrl+"/notifyToApplicantOfRequirementOfferMade?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerId="+offerId,        
+        success :function(data) {
+       	 
+       	  var json = JSON.parse(data);
+       	      jQuery("#"+(offerId)+"notification").css("display","none");
+      		  $("#"+(offerId)+"notified").html("<font color='green'>NOTIFIED</font>");
+              getOfferDetails(submissionId);
+      },
+        
+   });  
+	 
+
+
+}
+
+</script>
+
+
 

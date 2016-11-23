@@ -65,6 +65,7 @@
 		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/projectDashboard'/>">ProjectList</a> &raquo;Create Project
 	</section>
 	<div class="content-area clearfix">
+	  <div id="loading"></div>
 		<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
 			<form:form id="project_form" name="project_form" method="post">
 				<div class="row">
@@ -176,7 +177,7 @@
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkbox">
-									<label> <input type="checkbox" value="Y" name="isMailToProjectManager"> 
+									<label> <input type="checkbox" value="Y" checked="checked" name="isMailToProjectManager"> 
 									Mail to Project Manager
 									</label>
 								</div>
@@ -295,7 +296,7 @@
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkbox">
-									<label> <input type="checkbox" value="Y"
+									<label> <input type="checkbox" value="Y" checked="checked"
 										name="isMailToTeamMembers"> Mail to Team Members
 									</label>
 								</div>
@@ -824,6 +825,8 @@ function getOrgDetails()
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_project").attr("disabled", "disabled");
 			$("#save_project").addClass('button').val('Processing..');
+     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+
 
 			$.ajax({
 						type : "POST",

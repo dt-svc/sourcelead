@@ -167,12 +167,14 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					           
 					           
 					           if(jsonObj.has("notificationToApplicant") && !jsonObj.getString("notificationToApplicant").isEmpty()&& jsonObj.getString("notificationToApplicant").equalsIgnoreCase("Y")){
-					        	   sendEmailToApplicants(candidate,requirementSubmission, user, loginOrg, requirementInterview);
+					        	   sendEmailToApplicants(candidate,orgLocations,requirementSubmission, user, loginOrg, requirementInterview);
 					           }
 					           
 
 					           if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty()&& jsonObj.getString("notificationToSpoc").equalsIgnoreCase("Y") && requirementSubmission.getVendorLocationId() != null){
-					        	   sendEmailToVendors(candidate,requirementSubmission, user,loginOrg, requirementInterview);
+
+					        	   sendEmailToVendors(candidate,requirementSubmission, user,loginOrg, requirementInterview,orgLocations);
+
 					           }
 
 	           
@@ -303,7 +305,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 
 		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.INTERVIEWER_INVITATION,Constants.ENTITY_TYPE_NOTIFICATION); 
 		 String actionLink = "";
@@ -317,7 +319,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	}
 	
 	@Override
-	public void sendEmailToApplicants(Candidate candidate, RequirementSubmission requirementSubmission, User loginUser, Org loginOrg, RequirementInterview requirementInterview) throws Exception {
+	public void sendEmailToApplicants(Candidate candidate,OrgLocations loginOrgLocations,RequirementSubmission requirementSubmission, User loginUser, Org loginOrg, RequirementInterview requirementInterview) throws Exception {
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(candidate.getFirstName());
 		 emailMessage.setLastName(candidate.getLastName());
@@ -392,7 +394,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 		 
 	}
 
@@ -465,11 +467,12 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	
 	//vendors mail sending the private method
 	@Override
-	public void sendEmailToVendors(Candidate candidate, RequirementSubmission requirementSubmission, User loginUser,Org loginOrg,RequirementInterview requirementInterview)	throws Exception {
+	public void sendEmailToVendors(Candidate candidate, RequirementSubmission requirementSubmission, User loginUser,Org loginOrg,RequirementInterview requirementInterview,OrgLocations loginOrgLocations)	throws Exception {
 		 EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(candidate.getFirstName());
-		 emailMessage.setLastName(candidate.getLastName());
-		 emailMessage.setToEmail(candidate.getEmail());
+		 User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+		 emailMessage.setFirstName(user.getFirstName());
+		 emailMessage.setLastName(user.getLastName());
+		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
@@ -539,7 +542,16 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 
+		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_INTERVIEW,Constants.ENTITY_TYPE_NOTIFICATION); 
+		 String actionLink = "";
+		 
+		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
+		 noificationEmailScenario.setBody(notificationbody);
+		 
+		 emailScenerioUtil.sendNotification(actionLink, loginUser, user, requirementSubmission.getVendorLocationId(), noificationEmailScenario);
+		 
 		 
 	}
 

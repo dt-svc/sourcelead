@@ -2,6 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
@@ -107,7 +108,9 @@ $(document).ready(function() {
 <script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
+			removeEditButton();
 			disableMonths();
+			
 			/*  $(".isClient").click(function(){  
 		        $(".clientDetails").toggleClass('hidden', 500);
 		    });  */
@@ -135,9 +138,8 @@ $(document).ready(function () {
     var sequentialApprover2 = '${sequentialApprover2}';
 	if(approverMode != null && approverMode != '' && approverMode != 'undefined'){
 			/*  $("#apprverReq").prop('checked', true); */
-			$('#apprverReq').click();
-			
 		    if(approverMode == 'Sequential'){
+		    		$('#apprverReq').click();
 		    	    approvalType('Sequential');     
 		    	    var str_array = sequentialApprover1.split(',');
 		    	    for (var i = 0; i < str_array.length; i++) {
@@ -154,7 +156,7 @@ $(document).ready(function () {
 		    	    
 		    } 
 			if(approverMode == 'Parallel'){
-				
+				$('#apprverReq').click();
 				approvalType('Parallel');
 				var str_array = parallelApproverIds.split(',');
 			    for (var i = 0; i < str_array.length; i++) {
@@ -163,6 +165,9 @@ $(document).ready(function () {
 			    $("#parallelApprover").val(str_array).trigger("chosen:updated");
 		    	
 		    } 
+			if(approverMode == 'noApprovers'){
+				 $("#apprverReq").prop('checked', false); 
+			}
 	}
     
     
@@ -253,16 +258,12 @@ $(document).ready(function () {
               <div class="col-md-9">
                 <select multiple  class="chosen-select form-control" name="education" id="education" data-validation="validate_Space" data-validation-optional="true">
                 <c:forEach var="edu" items="${educationsList}">
-                		<option  value="${edu.name}">${edu.name}</option>
-	                      <c:forEach var="existEdu" items="${requirement.reqEducationList}">
-	                     			 <c:if test="${edu.name == existEdu}">  
-			                    			<option selected value="${edu.name}">${edu.name}</option>
-						             </c:if> 
-						             <c:if test="${edu.name != existEdu}"> 
-						           			 <option  value="${edu.name}">${edu.name}</option>
-						             </c:if>
-	                     </c:forEach> 
-			             
+                		  <c:if test="${fn:contains(requirement.reqEducationListString, edu.name)}">
+                		  	 <option  selected value="${edu.name}">${edu.name}</option>
+                		  </c:if>
+                		  <c:if test="${!fn:contains(requirement.reqEducationListString, edu.name)}">
+                		  	 <option  value="${edu.name}">${edu.name}</option>
+                		  </c:if>
                 </c:forEach>
                 </select>
               </div>
@@ -344,17 +345,19 @@ $(document).ready(function () {
           <div class="form-group">
 				<label class="col-md-3">Country</label>
 				<div class="col-md-9">
-				 <select class="chosen-select form-control select-bg" name="countryReq" id="countryReq" field-name="Country"  >
+				 <select class="chosen-select form-control select-bg" name="countryReq" id="countryReq" field-name="Country" onchange="changeCurrency();" >
                  </select>
+                   <input type="hidden" id="existingCountry" value="${requirement.country}" >
 				</div>
 		</div>
-			
+			    
           
           <div class="form-group">
 				<label class="col-md-3">State</label>
 				<div class="col-md-9">
 				<select  class="chosen-select form-control select-bg" name="state" id="state" field-name="State"  >
                  </select>
+                 <input type="hidden" id="existingState" value="${requirement.state}" >
 				</div>
 		 </div>
 		 
@@ -363,6 +366,7 @@ $(document).ready(function () {
 			<div class="col-md-9">
 			     <select  class="chosen-select form-control select-bg" name="city" id="city" field-name="City"  >
                  </select>
+                 <input type="hidden" id="existingCity" value="${requirement.city}" >
 			</div>
 		</div>
 		
@@ -371,15 +375,12 @@ $(document).ready(function () {
               <div class="col-md-9">
                 <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation-optional="true">
                <c:forEach var="skill" items="${skillsList}">
-                <option  value="${skill.name}">${skill.name}</option>
-	                     <c:forEach var="skillExist" items="${requirement.reqSkillsList}">
-	                     			 <c:if test="${skill.name == skillExist}">  
-			                    	<option selected value="${skill.name}">${skill.name}</option>
-						             </c:if> 
-						             <c:if test="${skill.name != skillExist}"> 
-						                       <option  value="${skill.name}">${skill.name}</option>
-						             </c:if>
-	                     </c:forEach>
+             				 <c:if test="${fn:contains(requirement.reqSkillsListString, skill.name)}">
+	                		  	 <option  selected value="${skill.name}">${skill.name}</option>
+	                		 </c:if>
+	                		 <c:if test="${!fn:contains(requirement.reqSkillsListString, skill.name)}">
+	                		  	 <option  value="${skill.name}">${skill.name}</option>
+	                		 </c:if>
                 </c:forEach>
                 </select>
               </div>
@@ -545,10 +546,10 @@ $(document).ready(function () {
                   <div class="form-icon">
                     <select class="chosen-select form-control" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
                        <option value="">-- Select Submission Form --</option>
-                      <c:forEach var="report" items="${submissionTempletesList}">
-							 	<c:if test="${report.id == loginOrgLocId}">  
-			                    	<option value="${report.id}" ${report.id  == loginOrgLocId ? 'selected' : ''} >${report.templateName}</option>
-			                    </c:if>  
+                       <c:forEach var="report" items="${clientSubmissionTempletesList}">
+							 <%-- 	<c:if test="${report.id == loginOrgLocId}">   --%>
+			                    	<option value="${report.id}" ${report.id  == requirement.clientSubmissionTemplateId.id  ? 'selected' : ''} >${report.templateName}</option>
+			                 <%--    </c:if>   --%>
 						</c:forEach>
 						</select>
                   </div>
@@ -665,7 +666,7 @@ $(document).ready(function () {
             <div class="col-md-9">
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-                  <input type="text" id="assignedTo" placeholder="Assing Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
+                  <input type="text" id="assignedTo" placeholder="Assign Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
                   <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
                   </div>
@@ -721,7 +722,9 @@ $(document).ready(function () {
     <div class="col-lg-12">   
       <div class="pull-right">
         <input type="button" value="Submit for Approval" id="submitForApproval" onclick="storeRequirement('submitForApproval');" class="btn btn-primary" style="display:none;">
-        <input type="button" value="Draft" id="draft" onclick="storeRequirement('draft');" class="btn btn-danger ml">
+        <c:if test="${empty requirement.requirementSubmissionStatus || requirement.requirementSubmissionStatus == 'DRAFT' || requirement.requirementSubmissionStatus == 'REJECTED'}">
+        	<input type="button" value="Draft" id="draft" onclick="storeRequirement('draft');" class="btn btn-danger ml">
+        </c:if>
         <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >    
         <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
       </div>
@@ -785,6 +788,11 @@ $(document).ready(function () {
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
+		
+		$('#addClient').empty();
+		$('#addContact').empty();
+		$('#addTeam').empty();
+		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -952,7 +960,20 @@ function storeTeam(){
 
 <script type="text/javascript">
 function getAllCountries(){
-	var countryName = $("#existingCountry").val();
+	
+ setTimeout(function(){ 
+	var countryName ;
+	
+	 if ($('#existingCountry').length)
+	 {
+		 countryName = document.getElementById("existingCountry").value; 
+	 }
+	 else
+	 {
+		 countryName = '';
+	 }
+	 
+	 
 	$.ajax({
     	type: "POST",
     	dataType: "json",
@@ -960,9 +981,13 @@ function getAllCountries(){
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#countryReq').empty();
-        	$('#countryReq').append('<option value="">---select---</option>');
-            for(var i=0;i<json.length;i++){
-            	if(json[i] == '${loginCountryName}'){
+        	$('#countryReq').append('<option value="">---select Country---</option>');
+        	for(var i=0;i<json.length;i++){
+            	if(json[i] == countryName ){
+            		$('#countryReq').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            	}
+            	else if((countryName ==null ||  countryName =='' || countryName =='undefined') && (json[i] == '${loginCountryName}')){
+            		
             		$('#countryReq').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{
@@ -976,6 +1001,7 @@ function getAllCountries(){
         error: function(e){
         }
     });
+ }, 100);
 } 
 </script>
 
@@ -983,9 +1009,12 @@ function getAllCountries(){
 <script>
 function getStates(){
 	var countryName = $("#countryReq").val();
-	
+
 	//to set existing state value(Auto populate)
 	var stateName = $("#state").val();
+	if(stateName == null || stateName == 'undefined' || stateName == ''){
+		stateName = document.getElementById("existingState").value;
+	}
 	//end state Auto populate
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
@@ -995,7 +1024,7 @@ function getStates(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select---</option>');
+	        	$('#state').append('<option value="">---select State---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == stateName){
 	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -1012,10 +1041,10 @@ function getStates(){
 	    });
 	}else{
 		$('#state').empty();
-    	$('#state').append('<option value="">---select---</option>');
+    	$('#state').append('<option value="">---select State---</option>');
     	$('#state').trigger("chosen:updated");
     	$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').append('<option value="">---select State---</option>');
         $('#city').trigger("chosen:updated");
 	}
 }
@@ -1030,6 +1059,9 @@ function getCities(){
 	
 	//to set existing city value(Auto populate)
 	var cityName = $("#city").val();
+	if(cityName == null || cityName == 'undefined' || cityName == ''){
+		cityName = document.getElementById("existingCity").value;
+	}
 	//end city Auto populate
 	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
@@ -1040,7 +1072,7 @@ function getCities(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select---</option>');
+	        	$('#city').append('<option value="">---select City---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == cityName){
 	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -1056,7 +1088,7 @@ function getCities(){
 	    });
 	}else{
 		$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').append('<option value="">---select City---</option>');
     	$('#city').trigger("chosen:updated");
 	}
 }
@@ -1065,7 +1097,6 @@ function getCities(){
 
 
 <!-- Country,State,City Script Ends Here -->
-
 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
@@ -1157,7 +1188,6 @@ function getTemplateVal(){
 
 <script>
 function setTemplateValues(){
-	
  var sourceleadUrl ='${sourceleadUrl}';
 	var requirementId = document.getElementById('template').value;
 	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
@@ -1190,25 +1220,29 @@ function setTemplateValues(){
 					 var state = '';
 					 var city = '';
 					
-					getAllCountries(); 
-					if(json.countryReq != null && json.countryReq !='' && json.countryReq !='undefined'){
-						$("#countryReq").val(json.countryReq);
-					}
-					 
-					getStates();
-					if(json.state != null && json.state !='' && json.state !='undefined'){
-						$("#state").val(json.state);
-					}else{
-						$("#state").val('');
-					}
 					
-					getCities();
-					/* $('#city').trigger("chosen:updated"); */
-					if(json.city != null && json.city !='' && json.city !='undefined'){
-						$("#city").val(json.city);
-					}else{
-						$("#city").val('');
-					}
+						if(json.country != null && json.country !='' && json.country !='undefined'){
+							$("#existingCountry").val(json.country);
+							$("#countryReq").val(json.country);
+						}else{
+							$("#existingCountry").val('');
+						}
+						
+						if(json.state != null && json.state !='' && json.state !='undefined'){
+							 $("#existingState").val(json.state);
+							 $("#state").val(json.state);
+							
+						}else{
+							$("#existingState").val('');
+						}
+						if(json.city != null && json.city !='' && json.city !='undefined'){
+							 $("#existingCity").val(json.city);
+							 $("#city").val(json.city);
+						} else{
+							$("#existingCity").val('');
+						}
+						
+					getAllCountries(); 		
 					
 					$('#description').val('');
 					$('#rate').val('');
@@ -1244,9 +1278,15 @@ function setTemplateValues(){
 			    	$("#positions").val('');
 			    	$("#minExp").val('');
 			    	$("#maxExp").val('');
+			    	
 					$("#countryReq").val('');
 					$("#state").val('');
 					$("#city").val('');
+					
+					$("#existingCountry").val('');
+					$("#existingState").val('');
+					$("#existingCity").val('');
+					
 		            $("#skills").val('');
 		            $("#education").val('');
 			    	$("#description").val('');
@@ -1263,8 +1303,12 @@ function setTemplateValues(){
 		 document.getElementById("requirement_form").reset();
 		 $("#skills").trigger("chosen:updated");
 		 $("#education").trigger("chosen:updated");
-		 $("#state").trigger("chosen:updated");
-		 $("#city").trigger("chosen:updated");
+		 $("#existingCountry").val('');
+		 $("#existingState").val('');
+		 $("#existingCity").val('');
+		/*  $("#state").trigger("chosen:updated");
+		 $("#city").trigger("chosen:updated"); */
+		 getAllCountries(); 		
 		 $("#rate").val('');
 		 $("#description").val('');
 		 
@@ -1920,6 +1964,46 @@ var sourceleadUrl ='${sourceleadUrl}';
 	        	}
 	        },
 	    });
+}
+</script>
+
+<!-- <script type="text/javascript">
+function removeEditButton() {
+	var reqId = document.getElementById("requirementId").value;
+	if(reqId != null && reqId != 0){
+		 var draftId = document.getElementById("draft");
+		 draftId.parentNode.removeChild(draftId);
+		    return false;
+	}
+}
+</script> -->
+
+<script>
+function changeCurrency(requirement){
+	var cntrynme = document.getElementById("countryReq").value;
+
+	 if (cntrynme == "United States") {
+			    $("#currencyCode").val("USD");
+			    $("#currencyCode").change();
+			  }else if(cntrynme == "India"){
+				  $("#currencyCode").val("INR");
+				    $("#currencyCode").change();
+			  }else if(cntrynme == "Australia"){
+				  $("#currencyCode").val("AUD");
+				    $("#currencyCode").change();
+			  }else if(cntrynme == "United Kingdom"){
+				  $("#currencyCode").val("GBP");
+				    $("#currencyCode").change();
+			  }else if(cntrynme == "Singapore"){
+				  $("#currencyCode").val("SGD");
+				    $("#currencyCode").change();
+			  }else if(cntrynme == "Germany"){
+				  $("#currencyCode").val("EUR");
+				    $("#currencyCode").change();
+			  }else {
+				  $("#currencyCode").val("INR");
+				  $("#currencyCode").change();
+		}
 }
 </script>
 

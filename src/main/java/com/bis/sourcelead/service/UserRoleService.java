@@ -3,6 +3,7 @@ package com.bis.sourcelead.service;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Sheet;
@@ -77,5 +78,14 @@ public interface UserRoleService {
 			String userState, String orgName) throws Exception;
 
 	 UserRole getUserRoleByUserId(Long userId)throws Exception;
+
+	/**
+	 * @author : Naresh Bolisetty
+	 * @purpose : Email JobScheduler(For to intimate unfilled timesheets)
+	 * 
+	 */
+	 public HashSet<UserRole> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
+	 
+	 public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek();
 	
 }
