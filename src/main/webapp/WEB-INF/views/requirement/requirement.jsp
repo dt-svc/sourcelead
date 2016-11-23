@@ -1168,6 +1168,8 @@ function getTemplateVal(){
         checkTemplateforDouplicate();
     }else{
         $("#isTemplate").val('N');
+        $('#jobTitleDiv').find('p.jquery_form_error_message').remove();
+
     }
 }
 
