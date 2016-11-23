@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,16 @@ public class BoJmpcTransDaoImpl implements BoJmpcTransDao {
 	@Transactional
 	public List<BoJmpcTrans> getBoJmpcTrans() throws Exception {
 		
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from BoJmpcTrans bjct where bjct.status = '1' "; 
+		List<BoJmpcTrans> boJmpcTransList = session.createQuery(query.toString()).setCacheable(true).list();
+		return boJmpcTransList;
+	}
+
+
+	@Override
+	@Transactional
+	public List<BoJmpcTrans> getBoJmpcTransByFilters(JSONObject jsonObj) throws Exception {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "from BoJmpcTrans bjct where bjct.status = '1' "; 
 		List<BoJmpcTrans> boJmpcTransList = session.createQuery(query.toString()).setCacheable(true).list();

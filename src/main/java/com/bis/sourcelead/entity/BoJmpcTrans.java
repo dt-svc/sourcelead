@@ -82,6 +82,9 @@ public class BoJmpcTrans {
 	private Float balanceAmount;
 	
 	@Transient
+	private String transDateStr;
+	
+	@Transient
 	private String identity;
 	
 	
@@ -229,6 +232,14 @@ public class BoJmpcTrans {
 
 	public void setBalanceAmount(Float balanceAmount) {
 		this.balanceAmount = balanceAmount;
+	}
+	
+	public String getTransDateStr() {
+		return transDateStr;
+	}
+
+	public void setTransDateStr(String transDateStr) {
+		this.transDateStr = transDateStr;
 	}
 
 	public String getIdentity() {
