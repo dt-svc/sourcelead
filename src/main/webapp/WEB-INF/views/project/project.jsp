@@ -1067,6 +1067,7 @@ function assignEmployeespagination(){
 <!-- this script is for Assign Employee functionality Start -->
 <script>
 	function assignEmployee() {
+		$('#assignEmployeePagination').DataTable().search('').draw();
 		var result = "";
 		var count = 1;
 		$(".myCheckbox").each(function() {
