@@ -1382,6 +1382,16 @@ public class RequirementServiceImpl implements RequirementService {
 		String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, initiatorUser, loginOrgLocation, notificationScenario);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	@Override
 	public void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc,OrgLocations loginOrgLocation,String releasetype,StringBuilder location) throws Exception {
@@ -1420,7 +1430,7 @@ public class RequirementServiceImpl implements RequirementService {
 				 globalVarsMap.put("RequirementRate", "--");
 			}
 		 if (requirement.getClientId() != null) {
-			 globalVarsMap.put("clientname", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+			 globalVarsMap.put("clientname", requirement.getClientId().getLocationId().getOrg().getOrgName());
 			 } else {
 				 globalVarsMap.put("clientname", "--");
 			}
