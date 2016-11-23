@@ -270,9 +270,12 @@ textarea {
 	font-size: 12px;
 }
 .header-widget .msg div.msg-content p {
-	margin-bottom: 2px;
+	margin-bottom: 3px;
 	font-size: 13px;
 	line-height: 16px;
+	white-space:nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 .header-widget .msg div.msg-time {
 	float: left;
@@ -631,6 +634,7 @@ s
 	max-height: 35px;
 	text-align: center;
 	width: auto;
+	border: 1px solid #ccc;
 }
 .side-bar .user-panel .image img {
 	display: block;
@@ -4369,6 +4373,67 @@ background: #fdba5b;
 	position: relative;
 	top: 3px;
 }
+.remove_search.templeasearch{
+	position: relative;
+	float: right;
+	margin: 10px 15px;
+	top: 0;
+}
+.importtransacton{
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	padding: 15px;
+	box-sizing: border-box;
+	margin: 15px 0;
+}
+/* import file styles */
+.import-zone {
+	background:#cfd8dc;
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	padding: 1em;
+	position: relative;
+	transition: all ease-in-out 0.5;
+	border-radius: 5px;
+	margin-bottom: 15px;
+	margin-top: 15px;
+	min-height: 200px;
+}
+.inputfile-2 + label {
+    color: #d3394c;
+	font-size: 18px;
+	font-weight: 900;
+}
+.inputfile + label {
+    max-width: 1-0%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 0.625rem 1.25rem;
+}
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+.dropzone-area{
+margin: 5% auto;
+display: block;
+width: 60%;
+background: #eceff1;
+border:2px solid #b0bec5;
+padding-top: 5px;
+border-radius: 5px;
+}
+.errInfo.erro-file{ min-height: 250px;}
+import-tranhd  [class*="col-md-"]{
+	padding: 0 10px;
+}
+/* import fiels ends */
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {
