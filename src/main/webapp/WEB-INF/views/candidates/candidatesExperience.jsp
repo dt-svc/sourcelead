@@ -13,9 +13,11 @@
 		var result = "";
 		result = result	+ '    <div class="project_tabs_inn_head addUser-org">  ';
 		if(window.candidateStatusGlobal == '0'){
-		result = result	+ '   	<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a>                                                            ';
+		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\')">'; 	
+		result = result	+ '<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a>';
+		'</sec:authorize>';
 		}else{
-			result = result	+ '   	<span class="pad-sea"><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a> </span> ';	
+			result = result	+ '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a> </span> ';	
 		}
 		result = result	+ '     <div id="popUpDivEmp" class="edit-details col-md-4"> ';
 		result = result + '     </div>  ';

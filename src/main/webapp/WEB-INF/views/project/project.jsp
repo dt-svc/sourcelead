@@ -19,6 +19,8 @@
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 
 <style>
 .clsDatePicker {
@@ -563,8 +565,12 @@ function getOrgDetails()
 		id="REPLACEROWIDtaskDescriptionValue">TASKDESCRIPTIONVALUE</span>
 </div>
 <div id="divTaskTd3" style="display: none; float: left;">
-	<span><a title="Edit" href="javascript:void(0)" onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
-	<span><a title="Remove" href="javascript:void(0)" onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
+    <sec:authorize access="hasAnyRole('ROLE_EDIT_PROJECT_TASKS')">
+	    <span><a title="Edit" href="javascript:void(0)" onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
+	 </sec:authorize>
+	 <sec:authorize access="hasAnyRole('ROLE_DELETE_PROJECT_TASKS')"> 
+	    <span><a title="Remove" href="javascript:void(0)" onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
+    </sec:authorize>
 </div>
 <!-- =============================== AddTask Divs  ============================ -->
 <!-- Add Task Script start -->
