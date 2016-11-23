@@ -673,6 +673,14 @@ function getCustomerInterviewsList(submissionId,requirementId){
 </script>
 
 
+<%-- 
+     @author : Sammeta David Raju.
+     this script is for get get Offer Details .
+     1.usage     : getSubmissionDetailsSideBar line Number 220.
+     2.parameter : csrf token ,submissionId.
+     3.ajax url implementation in RequirementOfferRestController.
+--%>
+
 <script>
 function getOfferDetails(submissionId){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -805,15 +813,41 @@ function getOfferDetails(submissionId){
                     	 }
                     	 
                     	 
+                    		 if(json.notifyToApplicant == null || json.notifyToApplicant == '' || json.notifyToApplicant == 'undefined'){
+                    		 
+                    		 var applicant = "Applicant";
                     		 
                     		 result = result + '<div class="row clearfix">';
                         	 result = result + '<label class="col-md-5">';
-                        	 result = result + '<strong>Notify To Applicant</strong>';
+                        	 result = result + '<strong title="'+json.id+'">Notify To Applicant</strong>';
                         	 result = result + '</label>';
-                    		 result = result +'<button  class="btn btn-success mr" type="button"  id="'+json.id+'notification" onClick ="notifyToApplicant(\''+ json.submissionId.id+ '\',\''+ json.id+ '\');"  >Notify To Candidate</button>';
+                    		 result = result +'<button  class="btn btn-success mr" type="button"   id="'+json.id+'notification" onClick ="sendnotification(\''+ json.submissionId.id+ '\',\''+ json.id+ '\',\''+applicant+ '\');"  >Notify To Candidate</button>';
                     		 result = result + '<span id="'+json.id+'notified"></span>';
                     		 result = result + '</div>';
-                        	 
+                    	 }else{
+                    		 result = result +'<button  class="btn btn-success mr" type="button" >Notified To Candidate</button>';
+
+                    	 }
+                    	 
+                         if(json.requirementReleasedOrNot == "true"){
+                        	 if(json.notifyToVendor == null || json.notifyToVendor == '' || json.notifyToVendor == 'undefined'){
+                        		 
+                        		 result = result + '<div class="row clearfix">';
+                            	 result = result + '<label class="col-md-5">';
+                            	 result = result + '<strong title="'+json.id+'">Notify To Vendor</strong>';
+                            	 result = result + '</label>';
+                            	 var vendor = "Vendor";
+                        		 result = result +'<button  class="btn btn-success mr" type="button"   id="'+json.id+'notification" onClick ="sendnotification(\''+ json.submissionId.id+ '\',\''+ json.id+ '\',\''+vendor+ '\');"  >Notify To Vednor</button>';
+                        		 result = result + '<span id="'+json.id+'notified"></span>';
+                        		 result = result + '</div>';
+                        		 
+                        	 }else{
+                        		 
+                        		 result = result +'<button  class="btn btn-success mr" type="button" >Notified To Vendor</button>';
+
+                        	 }
+                         }
+                         
                     	
                          result = result + '</div>';
                          result = result + '</div>';
@@ -873,6 +907,16 @@ function cancelAlert(){
 
 
 
+
+<%-- 
+     @author : Sammeta David Raju.
+     this script is for get  accepting Offer .
+     1.usage     : getOfferDetails line Number 723.
+     2.parameter :submissionId,offerStatus.
+     3.ajax url implementation in RequirementOfferRestController.
+--%>
+
+
 <script type="text/javascript">
 function rejectOffer(offerStatus,submissionId){
 	
@@ -890,6 +934,13 @@ function rejectOffer(offerStatus,submissionId){
 </script>
 
 
+<%-- 
+     @author : Sammeta David Raju.
+     this script is for get  accepting Offer .
+     1.usage     : getOfferDetails line Number 722.
+     2.parameter : csrf token ,submissionId,offerStatus.
+     3.ajax url implementation in RequirementOfferRestController.
+--%>
 
 
 <script>
@@ -933,14 +984,22 @@ function acceptingOffer(offerStatus,submissionId){
 </script>
 
 
+<%-- 
+     @author : Sammeta David Raju.
+     this script is for get send notification to applicant  or vendor.
+     1.usage     : getOfferDetails line Number 677.
+     2.parameter : csrf token ,submissionId,offerId,notificationtype.
+     3.ajax url implementation in RequirementOfferRestController.
+--%>
+
 
 <script>
-function notifyToApplicant(submissionId,offerId){
+function sendnotification(submissionId,offerId,notificationtype){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({  
         type : "POST",
-        url: sourceleadUrl+"/notifyToApplicantOfRequirementOfferMade?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerId="+offerId,        
+        url: sourceleadUrl+"/sendNotificationAboutRequirementOfferMade?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerId="+offerId+"&notificationtype="+notificationtype,        
         success :function(data) {
        	 
        	  var json = JSON.parse(data);

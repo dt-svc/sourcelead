@@ -597,16 +597,30 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	}
 
 
+
 	@Override
-	public void notifyToApplicantOfRequirementOfferMade(Long submissionId, Long offerId, User loginUser,OrgLocations orgLocations) throws Exception {
+	public void sendNotificationAboutRequirementOfferMade(Long submissionId, Long offerId, User loginUser,OrgLocations orgLocations,String notificationtype) throws Exception {
 		
 		    RequirementSubmission requirementSubmission  = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 				  if(requirementSubmission != null){
 					  
 					     RequirementOffers  requirementOffers  =  requirementOffersDao.getRequirementOfferId(offerId);
+					     requirementOffers.setNotifyToApplicant("Y");
+					     requirementOffersDao.storeRequirementOffers(requirementOffers);
 					     Candidate candidate  =  candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
-							     if( requirementOffers != null){
-							          addOfferMailScenario(loginUser, requirementSubmission, orgLocations, requirementOffers, candidate);
+							     if(requirementOffers != null){
+							    	     // this is used to notify the vedor about the offer
+								    	 if("Vendor".equalsIgnoreCase(notificationtype)){
+								    		 
+								    		    List<Requirement> vendorRequirement = requirementService.getRequirementListById(requirementSubmission.getRequirement().getId());
+												Requirement clientRequirement= requirementService.getRequirementByRequirementId(requirementSubmission.getRequirement().getId());
+												offerMailToVendors(loginUser,orgLocations,clientRequirement,vendorRequirement);
+								    	 }
+							    	    // this is used to notify the Applicant about the offer
+										if("Applicant".equalsIgnoreCase(notificationtype)){
+											
+									          addOfferMailScenario(loginUser, requirementSubmission, orgLocations, requirementOffers, candidate);
+										 }
 							     }
 				         
 				  }
