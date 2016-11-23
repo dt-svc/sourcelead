@@ -23,6 +23,14 @@
  	 $("#upcandidateStatus").val('');
 };
 </script>
+<style type="text/css">
+.candidate_wrap_table table tr td:first-child {
+    padding: 0;
+    text-align: center;
+    width: 200px;
+    padding-right: 5px;
+}
+</style>
 
 <%-- 
      @author : sarath kumar.
@@ -73,7 +81,7 @@
 	                	 result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>"; 
+	                   /*   result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";  */
 	                     result = result +"    <th>Name</th>"; 
 	                     result = result +"    <th>Designation</th>"; 
 	                     result = result +"    <th>Position type</th>"; 
@@ -111,8 +119,8 @@
 				            		candidateUpdateDateToString = "---";
 				            	}
 		                     result = result +"<tr>";
-			                 result = result +"  <td><input type='checkbox' id='checkbox12'/></td>";
-			                 result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+			               /*   result = result +"  <td><input type='checkbox' id='checkbox12'/></td>"; */
+			                 result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span title='"+opt.firstName+" "+opt.lastName+"'>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
 			                 result = result +"  <td><div><span>"+designation+"</span></div></td>";
 			                 if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
 			                	 {
