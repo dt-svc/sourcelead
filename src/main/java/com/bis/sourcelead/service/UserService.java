@@ -80,7 +80,7 @@ public interface UserService  {
 	List<User> getManagersByUserRolesAndOrgLocationId(Long roleId , Long orgLocationsId) throws Exception;
 			
 	//Prasad Salina to get managers list baded on role type and except current user
-	List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception;
+	List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,Long roleId , Long orgLocationsId) throws Exception;
 	
 	public List<User>  getUserListExceptExistedUsersList(List<Long> userIds,Long orgLocationId)throws Exception;
 

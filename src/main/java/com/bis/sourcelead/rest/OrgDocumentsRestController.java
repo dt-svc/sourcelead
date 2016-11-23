@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,6 +59,7 @@ public class OrgDocumentsRestController {
 	@Autowired
 	private UserService userService;
 	
+	@PreAuthorize("hasAnyRole('ROLE_EDIT_CLIENT_DOCUMENT','ROLE_CREATE_CLIENT_DOCUMENT','ROLE_CREATE_CLIENT_CONTACT_DOCUMENT','ROLE_EDIT_CLIENT_CONTACT_DOCUMENT')")
 	@RequestMapping(value = "/saveDocuments", method = RequestMethod.POST)
 	@ResponseBody String saveDocuments(@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
@@ -87,7 +89,7 @@ public class OrgDocumentsRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	
+	@PreAuthorize("hasRole('ROLE_VIEW_VENDOR_DOCUMENT')")
 	@RequestMapping(value = "/getclientDocumentsListByResponderLocationId")
 	public String getclientDocumentsListByResponderLocationId(@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 			                                                 @RequestParam(value = "sourceType", required = false) String sourceType,
@@ -201,6 +203,7 @@ public class OrgDocumentsRestController {
 	 * @return
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasRole('ROLE_VIEW_VENDOR_CONTACT_DOCUMENT')")
 	@RequestMapping(value = "/getclientDocumentsListByResponderLocationIdAndSpocUserId")
 	public String getclientDocumentsListByResponderLocationIdAndSpocUserId(@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 			@RequestParam(value = "userId", required = false) String spocUserId,HttpServletRequest request) throws Exception {
@@ -220,6 +223,7 @@ public class OrgDocumentsRestController {
 	 * @return
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_DELETE_CLIENT_CONTACT_DOCUMENT')")
 	@RequestMapping(value = "/terminateOrgDocumnet", method = RequestMethod.POST)
 	public @ResponseBody String terminateOrgDocumnet(@RequestParam(value="docId", required=false) String docId ,
 			                                         @RequestParam(value = "terminateReason", required = false) String terminateReason,
