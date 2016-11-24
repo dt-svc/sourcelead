@@ -122,6 +122,7 @@ $(document).ready(function(){
 	     var con = JSON.stringify(frm);
 	     con = con.replace(/[{}]/g, "");
 	     var jsonData = encodeURIComponent(con);
+	     var totalBalanceType = '';
 		
 		  $.ajax({
 			   	type: "POST",
@@ -148,6 +149,13 @@ $(document).ready(function(){
 		   	     	    creditAmount = creditAmount + report.creditAmount;
 		   	     	    balanceAmount = balanceAmount + report.balanceAmount;
 		   	     	    
+		   	     	    var paymentType = '';
+		   	     	    
+		   	     	    if(report.balanceAmount < 0){
+		   	     	       paymentType = 'Dr'
+		   	     	    }else{
+		   	     	       paymentType = 'Cr'
+		   	     	    }
 		   	     	    
 		   	     	    
 			   	     	result = result+'<tr>';
@@ -156,16 +164,22 @@ $(document).ready(function(){
 					   	result = result +'</a></td>';
 					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+report.debitAmount+'</div></td>';
 					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+report.creditAmount+'</div></td>';
-					   	result = result +'<td><div class="tblminwidth-150">'+report.balanceAmount+'</div></td>';
+					   	result = result +'<td><div class="tblminwidth-150">'+report.balanceAmount+' '+paymentType+'</div></td>';
 			   	        result = result +'</tr>';
 	   				}
+		   	     	
+		   	     	if(balanceAmount < 0){
+		   	     	  totalBalanceType = '<b class="text-danger">Dr<b>'
+		   	     	}else{
+		   	     	  totalBalanceType = '<b class="text-success">Cr</b>'
+		   	     	}
 		   	     	
 		   	        result = result +'<tfoot>';
 	   	        	result = result +' <tr>';
 	   	        	result = result +' <td colspan="1">Total</td>';
 	   	        	result = result +' <td>'+debitAmount+' <b class="text-danger">Dr</b></td>';
 	   	        	result = result +' <td>'+creditAmount+' <b class="text-success">Cr</b></td>';
-	   	        	result = result +'<td>'+balanceAmount+'</td>';
+	   	        	result = result +'<td>'+balanceAmount+' '+totalBalanceType+'</td>';
 	   	        	result = result +'</tr>';
 	   	        	result = result +'</tfoot>';
 	   	        	
