@@ -130,7 +130,16 @@
 			                	 }
 			                 result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 			                 result = result +"  <td><div>"+mobilePhone+"</div></td>";
-			                 result = result +"  <td><div><span title='"+address+"'>"+address+"</span></div></td>";
+			                 if(opt.state !='' && opt.state != 'undefined' && opt.city !='' && opt.city != 'undefined'){
+	                             result = result +"  <td><div><span title='"+opt.country+", "+opt.state+", "+opt.city+"'>"+opt.country+", "+opt.state+", "+opt.city+"</span></div></td>";
+	                              } else if(opt.state !='' && opt.state != 'undefined')
+	                            {
+	                             result = result +"  <td><div><span title='"+opt.country+", "+opt.state+"'>"+opt.country+", "+opt.state+"</span></div></td>";
+	                            }
+	                            else{
+	                            result = result +"  <td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
+	                            }
+
 			                 result = result +"  <td><div>"+candidateUpdateDateToString+"</div></td>";
 			                 result = result +"</tr>"; 
 	                     }
