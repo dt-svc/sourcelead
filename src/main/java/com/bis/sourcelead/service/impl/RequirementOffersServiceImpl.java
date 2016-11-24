@@ -172,19 +172,23 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					           requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
 					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					           
-								RequirementSubmission sourcesubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(requirementSubmission.getId(), orgLocations.getId());
-                                if(sourcesubmission !=null ){
-                                	sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
-                                	requirementSubmissionService.storeRequirementSubmission(sourcesubmission);
-                                }
-					            
-                                
-                                // This is to  notify  the Vendor
-					            if(jsonObj.has("notifyToVendor")  && !jsonObj.getString("notifyToVendor").isEmpty()){
-									List<Requirement> vendorRequirement = requirementService.getRequirementListById(requirementSubmission.getRequirement().getId());
-									Requirement clientRequirement= requirementService.getRequirementByRequirementId(requirementSubmission.getRequirement().getId());
-									offerMailToVendors(loginUser,orgLocations,clientRequirement,vendorRequirement);
-					            }
+					           if(requirementSubmission.getSourceSubmission() !=null){
+					        	   RequirementSubmission sourcesubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
+					        	   if(sourcesubmission !=null ){
+	                                	sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
+	                                	requirementSubmissionService.storeRequirementSubmission(sourcesubmission);
+	                                }
+					        	   
+					        	   // This is to  notify  the Vendor
+						            if(jsonObj.has("notifyToVendor")  && !jsonObj.getString("notifyToVendor").isEmpty()){
+										Requirement vendorRequirement= requirementService.getRequirementByRequirementId(sourcesubmission.getRequirement().getId());
+										offerMailToVendors(loginUser,orgLocations,vendorRequirement);
+						            }
+					        	   
+					        	   
+					           }
+								
+					       
 					            
 					            // This is to  notify  the Applicant
 					            if(jsonObj.has("notifyToApplicant")  && !jsonObj.getString("notifyToApplicant").isEmpty()){
@@ -221,13 +225,13 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	}
 	
 	@Override
-    public void offerMailToVendors(User loginUser,OrgLocations loginOrgLocations,Requirement clientrequirement,List<Requirement> vendorRequirement) throws Exception {
-		for(Requirement req :vendorRequirement){
+    public void offerMailToVendors(User loginUser,OrgLocations loginOrgLocations,Requirement clientrequirement) throws Exception {
+		
 		
             EmailMessage emailMessage = new EmailMessage();
             emailMessage.setFirstName(loginUser.getFirstName());
             emailMessage.setLastName(loginUser.getLastName());
-            emailMessage.setToEmail(req.getSpocId().getSpocUser().getEmail());
+            emailMessage.setToEmail(clientrequirement.getSpocId().getSpocUser().getEmail());
             emailMessage.setFromEmail("peopleaxisindia@gmail.com");
             emailMessage.setCreatedBy(loginUser.getUserCode());
             emailMessage.setFromName(loginUser.getFirstName() + " " + loginUser.getLastName());
@@ -235,19 +239,19 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             // setting the class filed values
             Map<String, String> globalVarsMap = new HashMap<String, String>();
             
-            if (req.getOrgLocationId().getOrg().getOrgName() != null && !"".equalsIgnoreCase(req.getOrgLocationId().getOrg().getOrgName())) {
-                    globalVarsMap.put("OrgnanizationName",req.getOrgLocationId().getOrg().getOrgName());
+            if (clientrequirement.getOrgLocationId().getOrg().getOrgName() != null && !"".equalsIgnoreCase(clientrequirement.getOrgLocationId().getOrg().getOrgName())) {
+                    globalVarsMap.put("OrgnanizationName",clientrequirement.getOrgLocationId().getOrg().getOrgName());
             } else {
                     globalVarsMap.put("OrgnanizationName", "--");
             }
             
-            if (req.getSpocId().getSpocUser().getFirstName() != null && !"".equalsIgnoreCase(req.getSpocId().getSpocUser().getFirstName())) {
-                globalVarsMap.put("vendorContact",req.getSpocId().getSpocUser().getFirstName());
+            if (clientrequirement.getSpocId().getSpocUser().getFirstName() != null && !"".equalsIgnoreCase(clientrequirement.getSpocId().getSpocUser().getFirstName())) {
+                globalVarsMap.put("vendorContact",clientrequirement.getSpocId().getSpocUser().getFirstName());
             } else {
                 globalVarsMap.put("vendorContact", "--");
             }
-            if (req.getJobTitle()!= null && !"".equalsIgnoreCase(req.getJobTitle()))  {
-                    globalVarsMap.put("requirementName", req.getJobTitle());
+            if (clientrequirement.getJobTitle()!= null && !"".equalsIgnoreCase(clientrequirement.getJobTitle()))  {
+                    globalVarsMap.put("requirementName", clientrequirement.getJobTitle());
             } else {
                     globalVarsMap.put("requirementName", "--");
             }
@@ -301,8 +305,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     			
                 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
                 String actionLink="";
-               OrgLocations vendorLocation = req.getOrgLocationId();
-				emailScenerioUtil.sendNotification(actionLink, loginUser, req.getSpocId().getSpocUser(), vendorLocation, notificationScenario);
+               OrgLocations vendorLocation = clientrequirement.getOrgLocationId();
+				emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getSpocUser(), vendorLocation, notificationScenario);
         		}catch (MessagingException e) {
         			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
         		} catch (UnsupportedEncodingException e) {
@@ -310,7 +314,6 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
         		}
             
             
-		}
 }
 	
 	@Override
@@ -612,9 +615,14 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 							    	     // this is used to notify the vedor about the offer
 								    	 if("Vendor".equalsIgnoreCase(notificationtype)){
 								    		 
-								    		    List<Requirement> vendorRequirement = requirementService.getRequirementListById(requirementSubmission.getRequirement().getId());
-												Requirement clientRequirement= requirementService.getRequirementByRequirementId(requirementSubmission.getRequirement().getId());
-												offerMailToVendors(loginUser,orgLocations,clientRequirement,vendorRequirement);
+								        	   RequirementSubmission sourcesubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
+								        	   if(sourcesubmission != null){
+								        		   
+								        		   List<Requirement> clientRequirement = requirementService.getRequirementListById(requirementSubmission.getRequirement().getId());
+													Requirement vendorRequirement= requirementService.getRequirementByRequirementId(sourcesubmission.getRequirement().getId());
+													offerMailToVendors(loginUser,orgLocations,vendorRequirement);
+								        	   }
+								    		    
 								    	 }
 							    	    // this is used to notify the Applicant about the offer
 										if("Applicant".equalsIgnoreCase(notificationtype)){

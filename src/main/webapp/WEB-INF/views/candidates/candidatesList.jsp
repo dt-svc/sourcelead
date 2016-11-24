@@ -52,7 +52,7 @@
           $("#canDiv").text("Active Candidates");
       }else if(candidateStatus == 0){
     	  $("#canDiv").text("In Active Candidates");
-      }else if(candidateStatus == 'ALL'){
+      }else if(candidateStatus == 2){
     	  $("#canDiv").text("All Candidates");
       }else{
           $("#canDiv").removeAttr("onClick");
@@ -130,7 +130,16 @@
 			                	 }
 			                 result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 			                 result = result +"  <td><div>"+mobilePhone+"</div></td>";
-			                 result = result +"  <td><div><span title='"+address+"'>"+address+"</span></div></td>";
+			                 if(opt.state !='' && opt.state != 'undefined' && opt.city !='' && opt.city != 'undefined'){
+	                             result = result +"  <td><div><span title='"+opt.country+", "+opt.state+", "+opt.city+"'>"+opt.country+", "+opt.state+", "+opt.city+"</span></div></td>";
+	                              } else if(opt.state !='' && opt.state != 'undefined')
+	                            {
+	                             result = result +"  <td><div><span title='"+opt.country+", "+opt.state+"'>"+opt.country+", "+opt.state+"</span></div></td>";
+	                            }
+	                            else{
+	                            result = result +"  <td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
+	                            }
+
 			                 result = result +"  <td><div>"+candidateUpdateDateToString+"</div></td>";
 			                 result = result +"</tr>"; 
 	                     }
