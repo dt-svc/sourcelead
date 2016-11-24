@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,11 +55,16 @@ public class BackOfficeRestController {
 	
 	@RequestMapping(value = "/getAccountsList")
 	@ResponseBody
-	public String getAccountsList(HttpServletRequest request) throws Exception {
+	public String getAccountsList(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		
 		String resultJson = null;
 		
-		List<BoAmexTrans> boAmexTransList = boAmexTransService.getBoAmexTrans();
+		json = "{"+json+"}";
+		JSONObject jsonObj = new JSONObject(json);
+		
+		
+		
+		List<BoAmexTrans> boAmexTransList = boAmexTransService.getBoAmexTransByFilters(jsonObj);
 		Float boamexCreditAmount = 0f; 
 		Float boamexDebitAmount = 0f;
 		Float boamexBalanceAmount = 0f;
@@ -84,7 +90,7 @@ public class BackOfficeRestController {
 		Float commericaDebitAmount = 0f;
 		Float commericabalanceAmount = 0f;
 		BoComericaTrans boComericaTrans = new BoComericaTrans(); 		
-		List<BoComericaTrans> BboComericaTransList = bBoComericaTransService.getBoComericaTrans();
+		List<BoComericaTrans> BboComericaTransList = bBoComericaTransService.getBoComericaTransByFilters(jsonObj);
 		
 		for(BoComericaTrans comericaTrans : BboComericaTransList){
 			if( !isNullOrEmpty(comericaTrans.getTransType()) && comericaTrans.getTransType().equalsIgnoreCase("CREDIT")){
@@ -107,7 +113,7 @@ public class BackOfficeRestController {
 		Float jmpcDebitAmount = 0f;
 		Float jmpcBalanceAmount = 0f;
 		BoJmpcTrans boJmpcTrans = new BoJmpcTrans();
-		List<BoJmpcTrans> boJmpcTransList = boJmpcTransService.getBoJmpcTrans();
+		List<BoJmpcTrans> boJmpcTransList = boJmpcTransService.getBoJmpcTransByFilters(jsonObj);
 		
 		for(BoJmpcTrans jmpcTrans : boJmpcTransList){
 			if( !isNullOrEmpty(jmpcTrans.getTransType()) && jmpcTrans.getTransType().equalsIgnoreCase("CREDIT")){

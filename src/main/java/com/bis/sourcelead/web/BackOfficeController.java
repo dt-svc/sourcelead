@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,11 +34,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.AmexUploadFile;
+import com.bis.sourcelead.entity.BoPaymentTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UploadedFile;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AmexFileUploadService;
 import com.bis.sourcelead.service.BoComericaTransService;
+import com.bis.sourcelead.service.BoPaymentTypesService;
 import com.bis.sourcelead.service.BoUploadedFilesService;
 import com.bis.sourcelead.service.ChaseUploadFileService;
 import com.bis.sourcelead.service.ComericaFileUploadService;
@@ -69,13 +72,18 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	@Autowired
 	ChaseUploadFileService chaseUploadFileService;
 	
+	@Autowired
+	BoPaymentTypesService boPaymentTypesService;
 	
 	@RequestMapping(value = "/finance")
-	public ModelAndView finance(HttpServletRequest request) {
+	public ModelAndView finance(HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
 		model.setViewName("backOffice/finance");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		List<BoPaymentTypes> paymentTypesList =  boPaymentTypesService.getAllBoPaymentTypes();
+		model.addObject("paymentTypesList", paymentTypesList);
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
