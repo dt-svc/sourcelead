@@ -932,7 +932,7 @@ function exportToPdf(){
         $("#canDiv").removeAttr("onClick");
     }
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&exportType=pdf";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf";	
 	  }
 }
 
@@ -954,7 +954,7 @@ function exportToExcel(){
          $("#canDiv").removeAttr("onClick");
      }
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&exportType=xls";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls";	
 	  }
 }
 </script>
