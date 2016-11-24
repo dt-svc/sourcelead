@@ -22,7 +22,7 @@ public interface RequirementOffersService {
 	
 	RequirementOffers saveOfferStatus(RequirementOffers requirementOffers)throws Exception;
 
-	void offerMailToVendors(User loginUser,OrgLocations loginOrgLocations, Requirement clientrequirement, List<Requirement> vendorRequirement)	throws Exception;
+	void offerMailToVendors(User loginUser,OrgLocations loginOrgLocations, Requirement vendorRequirement)	throws Exception;
 
 	void addOfferMailScenario(User loginUser, RequirementSubmission applicant, OrgLocations orgLocations,RequirementOffers requirementOffers, Candidate candidate) throws Exception;
 	

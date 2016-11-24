@@ -52,7 +52,7 @@
           $("#canDiv").text("Active Candidates");
       }else if(candidateStatus == 0){
     	  $("#canDiv").text("In Active Candidates");
-      }else if(candidateStatus == 'ALL'){
+      }else if(candidateStatus == 2){
     	  $("#canDiv").text("All Candidates");
       }else{
           $("#canDiv").removeAttr("onClick");

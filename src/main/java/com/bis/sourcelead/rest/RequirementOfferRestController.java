@@ -195,21 +195,28 @@ public class RequirementOfferRestController {
 		
 		requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		String loginUserType =  (String) SourceLeadSessionManager.getSessionAttribute(request, "userType");
+		
 		requirementOffers =  requirementOffersService.offerDetails(submissionId, loginUser, orgLocations, loginUserType);
-		
-		
-		Boolean  flag = requirementService.checkRequirementIsReleasedOrNot(requirementSubmission.getRequirement().getId(), orgLocations.getId());
-		if(flag){
-			requirementOffers.setRequirementReleasedOrNot(flag);
+		if(requirementOffers != null){
+			
+			Boolean  flag = requirementService.checkRequirementIsReleasedOrNot(requirementSubmission.getRequirement().getId(), orgLocations.getId());
+			if(flag){
+				requirementOffers.setRequirementReleasedOrNot(flag);
+			}else{
+				requirementOffers.setRequirementReleasedOrNot(false);
+			}
+			if(requirementOffers !=null){
+				resultJson = commonUtil.toJSON(requirementOffers);
+				return resultJson;
+			}else{
+				return null;
+			}
 		}else{
-			requirementOffers.setRequirementReleasedOrNot(false);
-		}
-		if(requirementOffers !=null){
-			resultJson = commonUtil.toJSON(requirementOffers);
-			return resultJson;
-		}else{
+			
 			return null;
 		}
+		
+		
 	}
 	
 	
