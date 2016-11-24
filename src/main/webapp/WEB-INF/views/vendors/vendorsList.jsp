@@ -2,7 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
@@ -90,7 +90,11 @@ overflow-x: auto;
 		                        </ul>
 		                    </div>                	
 		                </li>          
-				<li><a href="<c:url value='/addVendorContact'/>"><i class="fa fa-plus"></i>Contact</a></li>	
+		          <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')">
+				       <li><a href="<c:url value='/addVendorContact'/>"><i class="fa fa-plus"></i>Contact</a></li>
+					</sec:authorize>
+					
+				<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
                        <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Vendor</a></li>	
                        <li><a href="<c:url value='/uploadVendorForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>	
                        	 <li id="vendorImports" style="display:none">
@@ -111,8 +115,11 @@ overflow-x: auto;
 				       </ul>
 				    </div>
 		            </li> 
-                       
-                       
+                   
+                </sec:authorize>
+                <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS')">
+                       <li><a href="<c:url value='/uploadVendorForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
+                 </sec:authorize>      	
             </ul>
             <div class="clearfix"></div>
         </div>
@@ -191,12 +198,21 @@ function getVendorLists(){
    	        		}
    	        		
    	        		result = result +'<tr>';
-   	        			
+   	        		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\")">';
    	        			result = result +'<td>';
    	        			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.vendorlocationId+'\',\''+report.id+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
    	        			result = result +'</div>';
    	        			result = result +'</td>';
+   	        		'</sec:authorize>';
    	        		
+   	        		'<sec:authorize access="!hasAnyRole(\"ROLE_VIEW_VENDOR\")">';
+	        			result = result +'<td>';
+	        			result = result +'<div class="proj_show" ><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}">'+report.orgName+'</span>';
+	        			result = result +'</div>';
+	        			result = result +'</td>';
+	        		'</sec:authorize>';
+	        		
+	        		
    	        		if( report.webSite != null && report.webSite != '' && report.webSite != 'undefined'){
    	        			result = result +'<td>';
    	        			result = result +'<div>';
@@ -328,7 +344,18 @@ function getVendorContactLists(){
 					} 
    	        		
    	        		result = result +'<tr>';
-   	        		result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        		
+   	        		
+   	        		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\")">';
+   	        				result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        		'</sec:authorize>';
+   	        		
+   	        		'<sec:authorize access="!hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\")">';
+   	        				result = result +'<td><div class="proj_show" ><span>'+report.spocName+'</span></div></td>';
+	        		'</sec:authorize>';
+   	        		
+   	        		
+   	        		
    	        		result = result +'<td><div><span title='+report.spocEmail+'>'+report.spocEmail+'</span></div></td>';
    	        		if(report.spocMobilePhone != null && report.spocMobilePhone  != '' && report.spocMobilePhone  != 'undefined'){
    	        			result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
@@ -383,7 +410,13 @@ function getVendorContactLists(){
    	        		
    	        		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
    	        		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
+   	        		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
    	        	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
+   	        	 '</sec:authorize>';
+   	        	 
+   	        	'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
+	        	    result = result + '<td><div>---</div></td>';
+	        	 '</sec:authorize>';
    	        		
    	        		
    	        		result = result +'</tr>';
@@ -651,8 +684,13 @@ function pagination1(){
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
-		result = result	+ '<li class="current"><a href="#tab-1" id="spocDetailsId" onClick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+');">Details</a></li>';
-		result = result + '<li><a href="#tab-2" onClick="vendorSpocDocuments('+orgRelationId+','+spocLocationId+',\''+spocName+'\','+userId+');">Documents</a></li>'; 
+		
+		  '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\")">';
+		   			result = result	+ '<li class="current"><a href="#tab-1" id="spocDetailsId" onClick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+');">Details</a></li>';
+		   '</sec:authorize>';
+		 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT_DOCUMENT\")">';
+		  result = result + '<li><a href="#tab-2" onClick="vendorSpocDocuments('+orgRelationId+','+spocLocationId+',\''+spocName+'\','+userId+');">Documents</a></li>';
+		'</sec:authorize>';
 		/* result = result + '<li><a href="#tab-3">Activity</a></li>';  */
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
@@ -688,11 +726,15 @@ function pagination1(){
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
-		result = result
-				+ '<li class="current"><a href="#tab-1" onClick="vendorDetailsbyLocationId('
-				+ vendorLocationId + ','+ orgRelationId + ');">Details</a></li>';
+		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\")">';
+		result = result + '<li class="current"><a href="#tab-1" onClick="vendorDetailsbyLocationId(' + vendorLocationId + ','+ orgRelationId + ');">Details</a></li>';
+		'</sec:authorize>';
+		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\")">';
 		result = result + '<li><a href="#tab-2" onclick="vendorContacts('+ orgRelationId + ','+vendorLocationId+');">Contacts</a></li>'; 
+		'</sec:authorize>';
+		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_DOCUMENT\")">';
 		result = result + '<li><a href="#tab-3" onclick="vendorDocuments('+orgRelationId+','+vendorLocationId+');">Documents</a></li>'; 
+		'</sec:authorize>';
 		/* result = result + '<li><a href="#tab-4">Activity</a></li>';  */
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
@@ -742,8 +784,10 @@ function pagination1(){
 						result = result+ '<div class="project_tabs_inn_table">';
 						result = result + '<div class="project_details">';
 							result = result + ' <div class="useredit useredit_a">';
+							'<sec:authorize access="hasAnyRole(\"ROLE_EDIT_VENDOR\")">';
 								result = result + '<a id="edit-client" href="javascript:editVendorDetails('+vendorLocationId+','+orgRelationId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
-							result = result + ' </div>'; 
+							'</sec:authorize>';
+								result = result + ' </div>'; 
 							result = result + '<div class="project_details_cta">';
 								result = result + '<strong>Name:</strong>';
 								if(json.orgName !=null && json.orgName !='' && json.orgName !='undefined'){

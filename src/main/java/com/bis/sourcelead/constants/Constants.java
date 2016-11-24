@@ -144,6 +144,10 @@ public class Constants {
 	public static int MODULE_VMS = 3;
 	public static int MODULE_TIMESHEET = 4;
 	
+	public static String MODULE_ATS_STR = "2";
+	public static String MODULE_VMS_STR = "3";
+	public static String MODULE_TIMESHEET_STR = "4";
+	
 	public static int TAB_VENDOR = 9;
 	public static int TAB_CLIENT = 7;
 	public static int TAB_MY_TIMESHEET = 5;
