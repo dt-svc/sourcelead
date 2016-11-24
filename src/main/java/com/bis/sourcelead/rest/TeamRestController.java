@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -155,7 +156,7 @@ public class TeamRestController {
  			 teamMembers.setTeamName(teamMembers.getTeamId().getName());
 			 teamMembers.setOwnerName(teamMembers.getTeamId().getOwnerUserId().getFirstName() +""+teamMembers.getTeamId().getOwnerUserId().getLastName() );
 			 teamMembers.setMemberName(teamMembers.getMemberUserId().getFirstName()+""+teamMembers.getMemberUserId().getLastName());
-			 teamMembers.setEmail(teamMembers.getTeamId().getOwnerUserId().getEmail());
+			 teamMembers.setEmail(teamMembers.getMemberUserId().getEmail());
 			 UserRole userRole = userRoleService.getUserRoleByUserId(teamMembers.getMemberUserId().getId());
 			 teamMembers.setUserType(userRole.getUserType());
 			 
@@ -260,7 +261,7 @@ public class TeamRestController {
 		 * 
 		 * @throws NullPointer
 		*/
-	   
+	   @PreAuthorize("hasRole('ROLE_ADD_TEAM')")
 	   @RequestMapping(value = "/storeTeam", method = RequestMethod.POST)
 		public @ResponseBody String storeTeam(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -278,6 +279,7 @@ public class TeamRestController {
 		  * @return
 		  * @throws Exception
 		  */
+	   	 @PreAuthorize("hasRole('ROLE_DELETE_TEAM')")
 		 @RequestMapping(value = "/deleteTeamById", method = RequestMethod.POST,headers="Accept=application/json")
 		 public String deleteTeamById(@RequestParam( value = "teamId", required = false) Long teamId) throws Exception { 
 			 Team team = teamService.deleteTeamById(teamId);
