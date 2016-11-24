@@ -236,7 +236,7 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Assign Team</label>
+							<label class="col-md-3">Assign Team &nbsp;<i class=" text-info fa fa-info-circle" title="Before Assinging Team Project Start Date is Mandatory"></i></label>
 
 							<div id="assignTeamSavingDiv" style="display: none;"></div>
 							<input type="hidden" name="team" value="" />
@@ -244,7 +244,7 @@
 							<div class="col-md-9">
 								<div class="form-icon">
 									<span class="icon-inside"> <i class="fa fa-search-plus"></i>
-										<input type="text" value="Select Team" id ="assignTeamModal"class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers();flushEmployee();" readonly="readonly">
+										<input type="text" value="" placeholder="Start Date is mandatory" id ="assignTeamModal"class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers();flushEmployee();" readonly="readonly">
 									</span> <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushEmployee();"></i>
 									</span>
 								</div>
@@ -1067,6 +1067,7 @@ function assignEmployeespagination(){
 <!-- this script is for Assign Employee functionality Start -->
 <script>
 	function assignEmployee() {
+		$('#assignEmployeePagination').DataTable().search('').draw();
 		var result = "";
 		var count = 1;
 		$(".myCheckbox").each(function() {

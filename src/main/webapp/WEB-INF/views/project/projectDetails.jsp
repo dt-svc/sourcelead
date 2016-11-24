@@ -430,12 +430,9 @@
 			//It will escape all the special characters
 			var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
-			$
-					.ajax({
+			$.ajax({
 						type : "POST",
-						url : sourceleadUrl
-								+ "/updateProjectByProjectId?${_csrf.parameterName}=${_csrf.token}&json="
-								+ jsonData + "&ProjectId=" + projectId,
+						url : sourceleadUrl + "/updateProjectByProjectId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&ProjectId=" + projectId,
 						success : function(data) {
 							projectDetails(projectId);
 						}

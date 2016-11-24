@@ -513,6 +513,7 @@ function assignEmployeespagination(){
 <!-- this script is for Assign Employee functionality at Projects screen -->
 <script>
 function assignEmployee(){
+	    $('#assignEmployeePagination').DataTable().search('').draw();
 	 	var projectId = $("#projectId").val();
 	 	var projectStartDateStr =  $("#projectStartDateStr").val();
 	 	var projectEndDateStr =  $("#projectEndDateStr").val(); 
