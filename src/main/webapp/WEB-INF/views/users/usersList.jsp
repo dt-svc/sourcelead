@@ -5,6 +5,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
 
@@ -87,7 +88,9 @@ window.onload = function () {
 				   </ul>
 				</div>
 		   </li>
-		  <li><a href="<c:url value='/uploadForm'/>"><i class="fa fa-upload"></i>&nbsp;Bulk Imports</a></li>
+		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
+	                      <li><a href="<c:url value='/uploadForm'/>"><i class="fa fa-upload"></i>&nbsp;Bulk Imports</a></li>
+	         </sec:authorize>
         </ul>
       </section>
       <div class="clearfix form-area form-horizontal toggle-div remove-div">

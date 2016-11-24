@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -37,6 +38,7 @@ public class TeamController {
 	@Autowired
 	RequirementAssignToService requirementAssignToService;
 	
+	@PreAuthorize("hasRole('ROLE_ADD_TEAM')")
 	@RequestMapping(value = "/team")
 	public ModelAndView newRequirement(HttpServletRequest request) throws Exception {
 		

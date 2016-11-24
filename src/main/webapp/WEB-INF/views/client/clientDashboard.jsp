@@ -104,7 +104,9 @@ overflow-x: auto;
                          <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
 							<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Client</a></li>
 						</sec:authorize>
+						 <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
 						 <li><a href="<c:url value='/uploadClientForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
+						 </sec:authorize>
 						<div class="clearfix"></div>
 					</ul>
 					<div class="clearfix"></div>
@@ -433,7 +435,7 @@ function getVendorContactLists(){
    	        		'</sec:authorize>';
    	        		
    	        		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
-   	        			result = result +'<td><div class="proj_show"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        			result = result +'<td><div class="proj_show"><span>'+report.spocName+'</span></i></div></td>';
    	        		'</sec:authorize>';
    	        		
    	        		result = result +'<td><div><span>'+report.spocEmail+'</span></div></td>';
@@ -492,6 +494,10 @@ function getVendorContactLists(){
    	        		
    	        		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
    	        		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
+   	        		'</sec:authorize>';
+   	        		
+   	        		'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
+   	        		result = result + '<td><div>--</div></td>';
    	        		'</sec:authorize>';
    	        		
    	        		result = result +'</tr>';

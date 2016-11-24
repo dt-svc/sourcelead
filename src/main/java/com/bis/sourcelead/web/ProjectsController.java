@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -54,6 +55,7 @@ public class ProjectsController {
 	  * @throws Exception
 	  */
 	 
+	 @PreAuthorize("hasRole('ROLE_CREATE_PROJECT')")
 	 @RequestMapping(value = "/project")
 		public ModelAndView projects(HttpServletRequest request) throws Exception {
 		     String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");

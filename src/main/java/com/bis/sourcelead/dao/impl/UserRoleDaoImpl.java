@@ -432,7 +432,8 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			return null;
 		}
 	}
-		
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
 	public UserRole getUserRoleByUserId(Long userId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from UserRole userRole where userRole.user.id=:userId";

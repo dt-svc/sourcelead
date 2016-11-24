@@ -38,6 +38,7 @@ import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
@@ -545,4 +546,79 @@ public class RequirementListRestController {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				} 
      }
+		
+		
+		
+		
+		 /**
+		* @author Sammeta David Raju
+		* 
+		* This method is used get RequirementListCount Based On Status
+		* 
+		* @param requirementId
+		* @param request
+		* 
+		* @return resultJson
+		* 
+		* @throws Exception
+		*/
+		@RequestMapping(value = "/getRequirementListCountBasedOnStatus", method = RequestMethod.GET)
+		@ResponseBody
+		public String getRequirementByListCountBasedOnStatus(HttpServletRequest request) throws Exception {
+
+			String resultJson;
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+
+			
+			
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			
+			TimeSheetSubmissionCount  timeSheetSubmissionCount = new TimeSheetSubmissionCount();
+			
+			Integer newCount = 0;
+			Integer draftCount = 0;
+			Integer submittedCount = 0;
+			Integer openCount = 0;
+			Integer onholdCount = 0;
+			Integer cancelCount = 0;
+			
+			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocations.getId(),null,null,user.getId());
+	        	
+	        		  for(Requirement req :requirementList){
+	        			  if("NEW".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+	        				   newCount ++;
+	        			  }
+	        			  if("Draft".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+	        				  draftCount ++;
+	       			      }
+	        			  if("submitted".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+	        				  submittedCount ++;
+	       			      }
+	        			  if("open".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+	        				  openCount ++;
+	       			      }
+	        			  if("onhold".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+	        				  onholdCount ++;
+	       				     
+	       			      }
+	        			  if("CANCEL".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+	        				    cancelCount ++;
+	          				   
+	        			  }
+	        			  
+	        		  }
+	        		  
+	        		  timeSheetSubmissionCount.setNewRequirementCount(newCount);
+	        		  timeSheetSubmissionCount.setDraftRequirementCount(draftCount);
+   				      timeSheetSubmissionCount.setSubmittedRequirementCount(submittedCount);
+   				      timeSheetSubmissionCount.setOpenRequirementCount(openCount);
+   				      timeSheetSubmissionCount.setOnHoldRequirementCount(onholdCount);
+   				      timeSheetSubmissionCount.setCancelRequirementCount(cancelCount);
+
+			
+			resultJson = commonUtil.toJSON(timeSheetSubmissionCount);
+			return resultJson;
+		}
 }

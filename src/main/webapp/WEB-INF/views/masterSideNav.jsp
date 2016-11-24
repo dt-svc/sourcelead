@@ -50,11 +50,13 @@
 	                 </c:if>
 	                 
 	                 <c:if test="${userTabs.tabName == 'Projects'}">
-	                 <li class="${sessionData.nav == 'Projects' ? 'side-nav-active' : ''}"><a href="<c:url value='/projectDashboard'/>" title="Projects"><span><i class="fa fa-bar-chart"></i></span>Projects</a></li>
+	                 <sec:authorize access="hasAnyRole('ROLE_VIEW_PROJECT','ROLE_CREATE_PROJECT')"> 
+	                	  <li class="${sessionData.nav == 'Projects' ? 'side-nav-active' : ''}"><a href="<c:url value='/projectDashboard'/>" title="Projects"><span><i class="fa fa-bar-chart"></i></span>Projects</a></li>
+	                 </sec:authorize>
 	                 </c:if>
 	                 
 	                 <c:if test="${userTabs.tabName == 'Timesheet Approval' }">
-	                 <sec:authorize access="hasAnyRole('ROLE_VIEW_TIMESHEETS_APPROVAL','ROLE_VIEW_MY_TIMESHEETS')"> 
+	                 <sec:authorize access="hasAnyRole('ROLE_CREATE_TIMESHEETS_APPROVAL','ROLE_VIEW_TIMESHEETS_APPROVAL','ROLE_EDIT_TIMESHEETS_APPROVAL','ROLE_CREATE_MY_TIMESHEETS','ROLE_EDIT_MY_TIMESHEETS','ROLE_VIEW_MY_TIMESHEETS','ROLE_WITHDRAW_MY_TIMESHEETS')"> 
 				           <li class="${sessionData.nav == 'TimeSheet' || sessionData.nav == 'TimeSheetApproval' ? 'side-nav-active' : ''}">
 							  <a href="#" class="tree-view-new" title="TimeSheets">
 								<span><i class="fa fa-clock-o"></i></span>
@@ -83,7 +85,7 @@
 	                 </c:if>
 	                 
 	                 <c:if test="${userTabs.tabName == 'My Timesheets'}">
-	                 <sec:authorize access="hasAnyRole('ROLE_VIEW_MY_TIMESHEETS') && !hasAnyRole('ROLE_VIEW_TIMESHEETS_APPROVAL')">
+	                 <sec:authorize access="( hasAnyRole('ROLE_CREATE_MY_TIMESHEETS') || hasAnyRole('ROLE_VIEW_MY_TIMESHEETS') || hasAnyRole('ROLE_EDIT_MY_TIMESHEETS') || hasAnyRole('ROLE_WITHDRAW_MY_TIMESHEETS') ) && !hasAnyRole('ROLE_VIEW_TIMESHEETS_APPROVAL')">
 	                       <li class="${sessionData.nav == 'TimeSheet' ? 'side-nav-active' : ''}"><a href="<c:url value='/timesheet'/>"><span><i class="fa fa-clock-o"></i></span>TimeSheet</a></li>
 	                 </sec:authorize>
 	                 </c:if>
