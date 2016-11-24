@@ -346,7 +346,7 @@ overflow: visible;
 		var totalDebitAmount = 0;
 		var totalCreditAmount = 0;
 		var totalBalanceAmount = 0;
-		
+		 
 		 var frm = $('#financialSummary_from').serializeFormJSON();
 	     var con = JSON.stringify(frm);
 	     con = con.replace(/[{}]/g, "");
