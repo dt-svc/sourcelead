@@ -552,9 +552,12 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		       endDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime()));
 		         
 		         ts = getAllApprovalEmployeeTimesheetSubmissionsByEmployeeUserId(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId(),projectMemberUserId,employeeId);
-		         if(!StringUtils.isNotEmpty(ts.getCombinedStatus())){
-		        	 break l1;
+		         if(ts != null){
+		        	 if(!StringUtils.isNotEmpty(ts.getCombinedStatus())){
+			        	 break l1;
+			         }
 		         }
+		         
 		        
 		         currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
 		         currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
