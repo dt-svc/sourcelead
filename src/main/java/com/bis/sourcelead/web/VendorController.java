@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -113,6 +114,8 @@ public class VendorController {
  * @return ModelAndView
  * @throws Exception
  */
+	
+	 @PreAuthorize("hasRole('ROLE_CREATE_VENDOR')")
 	@RequestMapping(value = "/addVendor")
 	public ModelAndView addVendor(HttpServletRequest request)  {
 		
@@ -145,6 +148,7 @@ public class VendorController {
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
+	 
 	@RequestMapping(value = "/addVendorContact")
 	public ModelAndView addVendorContac(HttpServletRequest request){
 		ModelAndView model = new ModelAndView();
@@ -170,7 +174,8 @@ public class VendorController {
 		}
 		return model;
 	}
-	
+
+	@PreAuthorize("hasRole('ROLE_VENDOR_BULK_IMPORTS')")
 	 @RequestMapping(value = "/uploadVendorForm")
 		public ModelAndView uploadVendorForm(HttpServletRequest request) {
 		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");

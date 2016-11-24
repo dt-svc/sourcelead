@@ -176,6 +176,15 @@ function clientContacts(orgRelationID,clientLocationId){
                           result = result + '<td><div><font color="red">Terminated</font></div></td>';
                      }
 	                '</sec:authorize>';
+	                
+	                
+	                '<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
+	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
+	                						result = result + '	    <td><div>';
+	                                        result = result + '--';
+	                	                    result = result +'</div></td>';
+                     }
+	                '</sec:authorize>';
 	                result = result + '	 </tr>';
 				} 
 	        		

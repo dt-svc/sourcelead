@@ -89,7 +89,7 @@ public class OrgDocumentsRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	
+	@PreAuthorize("hasRole('ROLE_VIEW_VENDOR_DOCUMENT')")
 	@RequestMapping(value = "/getclientDocumentsListByResponderLocationId")
 	public String getclientDocumentsListByResponderLocationId(@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 			                                                 @RequestParam(value = "sourceType", required = false) String sourceType,
@@ -203,6 +203,7 @@ public class OrgDocumentsRestController {
 	 * @return
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasRole('ROLE_VIEW_VENDOR_CONTACT_DOCUMENT')")
 	@RequestMapping(value = "/getclientDocumentsListByResponderLocationIdAndSpocUserId")
 	public String getclientDocumentsListByResponderLocationIdAndSpocUserId(@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 			@RequestParam(value = "userId", required = false) String spocUserId,HttpServletRequest request) throws Exception {
