@@ -206,13 +206,13 @@ public class ClientServiceImpl implements ClientService{
 				if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
 					clientOrgLocations.setState(jsonObj.getString("state"));
 				}else if(jsonObj.has("orgState") && !isNullOrEmpty(jsonObj.getString("orgState"))){
-					clientOrgLocations.setCountry(jsonObj.getString("orgState"));
+					clientOrgLocations.setState(jsonObj.getString("orgState"));
 				}
 				
 				if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
 					clientOrgLocations.setCity(jsonObj.getString("city"));
 				}else if(jsonObj.has("orgCity") && !isNullOrEmpty(jsonObj.getString("orgCity"))){
-					clientOrgLocations.setCountry(jsonObj.getString("orgCity"));
+					clientOrgLocations.setCity(jsonObj.getString("orgCity"));
 				}
 				
 			}
