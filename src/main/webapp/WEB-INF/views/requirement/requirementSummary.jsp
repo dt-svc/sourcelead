@@ -4,6 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+ <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
  
  <style type="text/css">
@@ -116,9 +117,9 @@ $(document).ready(function() {
       </div>   
       
       <!-- Addede by Rajashekar -->
-      <div id="tab-3" class="project_wrap_table project_tabs project_tabs_inn">
+      <!-- <div id="tab-3" class="project_wrap_table project_tabs project_tabs_inn">
           <div id="recommendationsList"></div>
-       </div>            
+       </div>  -->           
             
           </div>
     
@@ -531,6 +532,8 @@ function sideBar(requirementId){
 						    result = result+'</div>';
 						    result = result+' <div id="tab-2" class="project_tabs_inn">';
 						    result = result+'</div>';
+						    result = result+'<div id="tab-3" class="project_tabs_inn">';
+						    result = result+'</div> ';
 					    result = result+'</div>';
 					    result = result+'</div>';
 					    
@@ -623,7 +626,9 @@ function requirementDetails(requirementId){
 				             */
 				             
 				            if( (json.requirementSubmissionStatus =='NEW'  || json.requirementSubmissionStatus =='DRAFT' || json.requirementSubmissionStatus =='SUBMITTED'  || json.requirementSubmissionStatus  == "APPROVED"  || json.requirementSubmissionStatus =='REJECTED'  ||  json.requirementSubmissionStatus  == "OPEN" ||  json.requirementSubmissionStatus  == "ONHOLD" ) && ( json.isLoginUserAsTeamMember == "false" || ( json.isLoginUserAsTeamMember == "true" && json.isLoginUserAsApprover  == "true") || ( json.isLoginUserAsTeamMember == "true" && json.isLoginUserAsManager  == "true") ) ){ 
-				            	 result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
+				            	'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_REQUIREMENT\')">'; 
+				            		result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
+				            	'</sec:authorize>';
 				            }
 				            
 				            var APPROVED = "APPROVED";     
@@ -639,7 +644,6 @@ function requirementDetails(requirementId){
 		                     }
 				             
 				             
-				             result = result +'     </div>';
 				             result = result +'     </div>';
 				             
 				            result = result +'     <div class="clearfix row">';
@@ -845,7 +849,8 @@ function requirementDetails(requirementId){
 				            result = result +'   </div>';
 				            result = result +' </div>';
 							$("#tab-1").empty();
-							$("#tab-2").empty(); 
+							$("#tab-2").empty();
+							$("#tab-3").empty();
 							$("#tab-1").append(result); 
 							
 							assignedMemberList(requirementId);
@@ -1083,11 +1088,21 @@ function requirementPipeline(requirementId){
 				            result = result +' <li><a href="javascript:void(0)" class="action"> Action <i onclick="getActions();" class="fa fa-caret-down"></i></a>';
 				            result = result +'<div class="action-pop">';
 				            result = result +'	<span>';
-				            result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
-				            result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
-				            result = result + submitToClient
-				            result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
-				            result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
+				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
+				            	result = result + submitToClient
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
+				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
+				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            '</sec:authorize>';
 				            result = result +'    </span>';
 				            result = result +' </div>';	
 				            result = result +' </li>';
@@ -1119,7 +1134,12 @@ function requirementPipeline(requirementId){
 			   	        		
 			   	        		var report = json[i];
 						           result = result + '       <tr>';
-						           result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           '</sec:authorize>';
+						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
+						           '</sec:authorize>';
 						           
 						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.candidateEmail+'</span></div></td>';
@@ -1192,6 +1212,7 @@ function requirementPipeline(requirementId){
 				            
 				            
 							$("#tab-1").empty();
+							$("#tab-3").empty();
 							$("#tab-2").empty(); 
 							$("#tab-2").append(result);  
 							documentpagination();
@@ -1419,9 +1440,20 @@ function requirementRecommendations(requirementId){
     	    result = result +'</tbody>';
 		    result = result +' </table>';
 		    result = result +'</div>';
-		    $("#recommendationsList").empty();
-			$("#recommendationsList").append(result); 
+		    $("#tab-1").empty();
+			$("#tab-2").empty(); 
+		    $("#tab-3").empty();
+			$("#tab-3").append(result); 
 			recommendationpagination();
+			$("#tab-3").show();
+			$(".project-tabs-menu a").click(function(event) {
+			     event.preventDefault();
+			     $(this).parent().addClass("current");
+			     $(this).parent().siblings().removeClass("current");
+			     var tab = $(this).attr("href");
+			     $(".project_tabs_inn").not(tab).css("display", "none");
+			     $(tab).fadeIn();
+			 });
            },
              
         }); 
