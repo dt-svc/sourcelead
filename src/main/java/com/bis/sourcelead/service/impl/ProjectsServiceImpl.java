@@ -727,7 +727,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    				if(projects != null && projects.getId() != null){
 			    					ProjectMembers pm = projectMembersService.getProjectMemberByUserIdAndProjectId(terminatedUserId, projects.getId());
 				    				if(pm.getId() != null){
-				    					ProjectMembersHistory projectMembersHistory = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(pm.getId());
+				    					ProjectMembersHistory projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
 				    					projectMembersHistory.setProjectTerminationDate(currentDate);
 				    					projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
 					    				commonUtil.terminateProjectMemberByProjectMemberId(pm.getId(), Primary.Yes);
