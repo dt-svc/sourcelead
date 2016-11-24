@@ -257,6 +257,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             } else {
                     globalVarsMap.put("loginUser", "--");
             }
+            if (loginOrgLocations.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocations.getOrg().getOrgName())) {
+                globalVarsMap.put("clientOrgnanizationName", loginOrgLocations.getOrg().getOrgName());
+            } else {
+                globalVarsMap.put("clientOrgnanizationName", "--");
+            }
+            
             
             globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 
@@ -270,12 +276,18 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             // getting the current EmailScenario by EmailScenario unique name and
             // entity type
             EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_MAIL_TO_VENDORS, Constants.ENTITY_TYPE_EMAIL);
+            EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_MAIL_TO_VENDORS, Constants.ENTITY_TYPE_NOTIFICATION);
+
 
             // covert subject,body and signature
             String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
             String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
             String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
             String url = "";
+            
+            String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+            notificationScenario.setBody(notificationbody);
+
 
             // construct HTML template using required data
             String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
@@ -288,6 +300,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             try {
     			
                 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
+                String actionLink="";
+               OrgLocations vendorLocation = req.getOrgLocationId();
+				emailScenerioUtil.sendNotification(actionLink, loginUser, req.getSpocId().getSpocUser(), vendorLocation, notificationScenario);
         		}catch (MessagingException e) {
         			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
         		} catch (UnsupportedEncodingException e) {
@@ -582,16 +597,30 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	}
 
 
+
 	@Override
-	public void notifyToApplicantOfRequirementOfferMade(Long submissionId, Long offerId, User loginUser,OrgLocations orgLocations) throws Exception {
+	public void sendNotificationAboutRequirementOfferMade(Long submissionId, Long offerId, User loginUser,OrgLocations orgLocations,String notificationtype) throws Exception {
 		
 		    RequirementSubmission requirementSubmission  = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 				  if(requirementSubmission != null){
 					  
 					     RequirementOffers  requirementOffers  =  requirementOffersDao.getRequirementOfferId(offerId);
+					     requirementOffers.setNotifyToApplicant("Y");
+					     requirementOffersDao.storeRequirementOffers(requirementOffers);
 					     Candidate candidate  =  candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
-							     if( requirementOffers != null){
-							          addOfferMailScenario(loginUser, requirementSubmission, orgLocations, requirementOffers, candidate);
+							     if(requirementOffers != null){
+							    	     // this is used to notify the vedor about the offer
+								    	 if("Vendor".equalsIgnoreCase(notificationtype)){
+								    		 
+								    		    List<Requirement> vendorRequirement = requirementService.getRequirementListById(requirementSubmission.getRequirement().getId());
+												Requirement clientRequirement= requirementService.getRequirementByRequirementId(requirementSubmission.getRequirement().getId());
+												offerMailToVendors(loginUser,orgLocations,clientRequirement,vendorRequirement);
+								    	 }
+							    	    // this is used to notify the Applicant about the offer
+										if("Applicant".equalsIgnoreCase(notificationtype)){
+											
+									          addOfferMailScenario(loginUser, requirementSubmission, orgLocations, requirementOffers, candidate);
+										 }
 							     }
 				         
 				  }
