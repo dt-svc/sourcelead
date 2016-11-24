@@ -565,13 +565,37 @@ function editFun(){
 	alert('hi');
 }
 </script>
- <script>
-	// jquery ui date picker with month and year dropdowns
+
+
+<script type="text/javascript">
   $( function() {
-    $( "#dpfromdate, #dptodate, #transaction-date" ).datepicker({
-      changeMonth: true,
-      changeYear: true
-    });
+	  
+	  $( "#transaction-date" ).datepicker({
+	      changeMonth: true,
+	      changeYear: true
+	  });  
+	  
+      $('#dpfromdate').datepicker({
+    	 changeMonth: true,
+         changeYear: true,
+	      dateFormat: 'mm/dd/yy',
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	            $("#dptodate").datepicker("option", "minDate", dt);
+	        }
+	  });
+	  
+	  $('#dptodate').datepicker({
+		  changeMonth: true,
+	      changeYear: true,
+	      dateFormat: 'mm/dd/yy',
+	        onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() - 1);
+	            $("#dpfromdate").datepicker("option", "maxDate", dt);
+	        }
+	  }); 
   });
 </script>
   <div class="theme-color"> <span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>

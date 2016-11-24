@@ -1,5 +1,8 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -15,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.BoAmexTransDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.BoAmexTrans;
+import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
 public class BoAmexTransDaoImpl implements BoAmexTransDao {
@@ -22,6 +27,9 @@ public class BoAmexTransDaoImpl implements BoAmexTransDao {
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Autowired
 	private UserRoleDao userRoleDao;
@@ -54,9 +62,24 @@ public class BoAmexTransDaoImpl implements BoAmexTransDao {
 	@Transactional
 	public List<BoAmexTrans> getBoAmexTransByFilters(JSONObject jsonObj) throws Exception {
 		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "from BoAmexTrans bt where bt.status = '1' "; 
-		List<BoAmexTrans> boAmexTransList = session.createQuery(query.toString()).setCacheable(true).list();
-		return boAmexTransList;
-	}
-
+		String whereString = commonUtil.getBackOfficeSummaryFilters(jsonObj);
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		Date fromTransDate = null;
+		Date toTransDate = null;
+		if(jsonObj.has("fromTransDate") && jsonObj.getString("fromTransDate") != null && !"".equals(jsonObj.getString("fromTransDate")) 
+				&& jsonObj.has("toTransDate") && "".equals(jsonObj.getString("toTransDate"))){
+			    fromTransDate = sdf.parse(jsonObj.getString("fromTransDate"));
+			return session.createQuery("from BoAmexTrans bt where bt.status = '1' "+whereString+" ").setDate("fromTransDate", fromTransDate).setCacheable(true).list();
+		}else if(jsonObj.has("toTransDate") && jsonObj.getString("toTransDate") != null && !"".equals(jsonObj.getString("toTransDate")) 
+					&& jsonObj.has("fromTransDate") && "".equals(jsonObj.getString("fromTransDate"))){
+			toTransDate = sdf.parse(jsonObj.getString("toTransDate"));
+			return session.createQuery("from BoAmexTrans bt where bt.status = '1' "+whereString+" ").setDate("toTransDate", toTransDate).setCacheable(true).list();
+		}else if(jsonObj.has("toTransDate") && jsonObj.getString("toTransDate") != null && !"".equals(jsonObj.getString("toTransDate")) && 
+				jsonObj.has("fromTransDate") && jsonObj.getString("fromTransDate") != null && !"".equals(jsonObj.getString("fromTransDate"))){
+			fromTransDate = sdf.parse(jsonObj.getString("fromTransDate"));
+			toTransDate = sdf.parse(jsonObj.getString("toTransDate"));
+			return session.createQuery("from BoAmexTrans bt where bt.status = '1' "+whereString+" ").setDate("fromTransDate", fromTransDate).setDate("toTransDate", toTransDate).setCacheable(true).list();
+		}
+		return session.createQuery("from BoAmexTrans bt where bt.status = '1' "+whereString+" ").setCacheable(true).list();
+   }
 }
