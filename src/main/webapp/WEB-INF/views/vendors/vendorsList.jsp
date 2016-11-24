@@ -96,6 +96,26 @@ overflow-x: auto;
 					
 				<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
                        <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Vendor</a></li>	
+                       <li><a href="<c:url value='/uploadVendorForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>	
+                       	 <li id="vendorImports" style="display:none">
+		                     <a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportVendor</a>
+			                    <div class="export_pop">
+				                <ul>
+				                <li onclick="exportVendorToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>
+				                <li onclick="exportVendorToExcel();">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>
+				       </ul>
+				    </div>
+		            </li> 
+		            <li id="VendorContactImports">
+		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportContact</a>
+			                    <div class="export_pop">
+				                <ul>
+				                <li onclick="exportVendorContactToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>
+				                <li onclick="exportVendorContactToExcel();">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>
+				       </ul>
+				    </div>
+		            </li> 
+                   
                 </sec:authorize>
                 <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS')">
                        <li><a href="<c:url value='/uploadVendorForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
@@ -878,6 +898,9 @@ function listChange(sel){
 		 document.getElementById("vendorSatatus").style.display="none";
 		 document.getElementById("vendorInvitation").style.display="none";
 		 
+		 document.getElementById("vendorImports").style.display="block";
+		 document.getElementById("VendorContactImports").style.display="none";
+		 
 		 getVendorLists();
 	 }
 	 if(sel.value=="listbyContact"){
@@ -890,7 +913,8 @@ function listChange(sel){
 		 document.getElementById("vendorsList").style.display="block";
 		 document.getElementById("vendorSatatus").style.display="block";
 		 document.getElementById("vendorInvitation").style.display="block";
-		 
+		 document.getElementById("vendorImports").style.display="none";
+		 document.getElementById("VendorContactImports").style.display="block";
 		 getVendorContactLists();
 	 }
 	 
@@ -1068,5 +1092,94 @@ function rejectInvitation(spocId){
 	   });
 }
 </script>
-<!-- Scripts for invitations  -->	
+<!-- Scripts for invitations  -->
 
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+  $(document).ready(function() {
+	   $("#export-popcon").click(function(){
+	               $(".export_pop").slideToggle(200);
+	       });
+	   $("html").click(function() {
+	       $(".export_pop").slideUp(200);
+	   });
+	   $(".export_pop, #export-popcon").click(function(e) {
+	       e.stopPropagation();
+	   });        
+	});  
+</script> 	
+
+
+<script>
+function exportVendorToPdf(){
+	var values = [];
+	$('input:checkbox[name=clinetLevel]:checked').each(function() 
+    {
+			values.push($(this).val());
+    });
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.location.href = sourceleadUrl+"/exportVendorDetails?${_csrf.parameterName}=${_csrf.token}&values="+values+"&exportType=pdf";
+}
+</script>
+
+<script>
+function exportVendorToExcel(){
+	var values = [];
+	$('input:checkbox[name=clinetLevel]:checked').each(function() 
+    {
+			values.push($(this).val());
+    });
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.location.href = sourceleadUrl+"/exportVendorDetails?${_csrf.parameterName}=${_csrf.token}&values="+values+"&exportType=xls";
+}
+</script>
+
+<script>
+function exportVendorContactToPdf(){
+	var vendorId = [];
+	$('input:checkbox[name=vendorNameById]:checked').each(function() 
+    {
+		vendorId.push($(this).val());
+    });
+	var vendorStatus = [];
+	$('input:checkbox[name=vendorStatus]:checked').each(function() 
+    {
+		vendorStatus.push($(this).val());
+    });
+	
+	var invitationStatus = [];
+	$('input:checkbox[name=vendorInvitationStatus]:checked').each(function() 
+    {
+		invitationStatus.push($(this).val());
+    });
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	window.location.href = sourceleadUrl+"/exportVendorContactLists?${_csrf.parameterName}=${_csrf.token}&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus+"&exportType=pdf";
+}
+</script>
+
+<script>
+function exportVendorContactToExcel(){
+	var vendorId = [];
+	$('input:checkbox[name=vendorNameById]:checked').each(function() 
+    {
+		vendorId.push($(this).val());
+    });
+	var vendorStatus = [];
+	$('input:checkbox[name=vendorStatus]:checked').each(function() 
+    {
+		vendorStatus.push($(this).val());
+    });
+	
+	var invitationStatus = [];
+	$('input:checkbox[name=vendorInvitationStatus]:checked').each(function() 
+    {
+		invitationStatus.push($(this).val());
+    });
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	window.location.href = sourceleadUrl+"/exportVendorContactLists?${_csrf.parameterName}=${_csrf.token}&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus+"&exportType=xls";
+}
+</script>

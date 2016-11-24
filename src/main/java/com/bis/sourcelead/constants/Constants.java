@@ -16,9 +16,9 @@ public class Constants {
 			"Phone Number", "Rate", "Rate Per", "Date of Join (dd/mm/yyyy)", "Role", "Invoice Frequency", "Day Hours" };
 
 	public static final String EMPLOYEE_ID = "Employee ID";
-	public static final String FIRST_NAME = "First Name";
+	public static final String FIRST_NAME = "First Name*";
 	public static final String LAST_NAME = "Last Name";
-	public static final String EMAIL_ID = "Email id";
+	public static final String EMAIL_ID = "Email id*";
 	public static final String PHONE_NUMBER = "Phone Number";
 	public static final String RATE = "Rate";
 	public static final String RATEPER = "Rate Per";
@@ -239,12 +239,28 @@ public class Constants {
 	
 	
 	public static String[] ROLE_DROPDOWN = {"Admin","Project Manager","HR Manager","Recruiter"};
+	
 	public static String[] STATUS_DROPDOWN = {"Active","In-Active","New","Negotiation","Contracted"};
-	public static String[] LEVEL_DROPDOWN = {"Level-1","Level-2","Level-3","Level-4","Level-5"};
+	
+	public static String[] LEVEL_DROPDOWN = {"Tier-1","Tier-2","Tier-3","Tier-4","Tier-5"};
+	
 	public static String[] USER_EXCEL_HEADERS = { "Employee Id", "First Name", "Last Name", "Email-id", "Phone Number",
 			"Date Of Join", "Rate", "Location", "Role", "Manager", "status" };
 	public static String[] CANDIDATE_EXCEL_HEADERS = {"Firstname","Last name","Email id","Phone Number","Location","Designation","Education","Experience","Skills","Rate"};
-    public static String[] REQUIREMENT_EXCEL_HEADERS = {"Requirement id","Requirement Title","Experience","Rate","Location","Skills","Manager","Priority","Application Form Name","Client Name","Client Contact Name","Client Contact Email"};
+   
+	public static String[] REQUIREMENT_EXCEL_HEADERS = {"Requirement id","Requirement Title","Experience","Rate","Location","Skills","Manager","Priority","Application Form Name","Client Name","Client Contact Name","Client Contact Email"};
     
     public static String[] TIMESHEET_EXCEL_HEADERS = {"Projects","Tasks","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Status"};
+   
+    public static String[] CLIENT_EXCEL_HEADERS = {"Client Name","Website","Location","Tiers","Number of Contacts"};
+    
+    public static String[] CLIENT_CONTACTS_EXCEL_HEADERS = {"Client Name","Name","Emailid","Phone Number","Owner","Role","Status"};
+    
+    public static String[] VENDOR_EXCEL_HEADERS = {"VendorName","Website","Location","Level","Number of Contacts"};
+    
+    public static String[] VENDOR_CONTACTS_EXCEL_HEADERS = {"Vendor Name","Name","Emailid","Phone Number","Owner","Role","Status"};
+    
+    public static String VENDOR = "Vendor";
+    
+    public static String CLIENT = "Client";
 }
