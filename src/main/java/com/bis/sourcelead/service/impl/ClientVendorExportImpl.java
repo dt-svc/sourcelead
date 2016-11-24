@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -72,7 +73,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 				wb.write(fos);
 				fos.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 			}
 		}else{
 			file = pdfUtil.getClientVendorPdfFile(clientsList,orgName,clientHeaders,vendorType);
@@ -139,7 +140,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 				wb.write(fos);
 				fos.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 			}
 		}else{
 			file = pdfUtil.getClientVendorContactsPdfFile(vandorsContactList,orgName,vendorType,headers);
@@ -209,7 +210,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 				wb.write(fos);
 				fos.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 			}
 		}else{
 			file = pdfUtil.getClientVendorPdfFile(vandorsList,orgName,vendorHeaders,vendorType);
@@ -249,7 +250,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 				wb.write(fos);
 				fos.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 			}
 		}else{
 			file = pdfUtil.getClientVendorContactsPdfFile(vandorsContactList,orgName,vendorType,headers);
