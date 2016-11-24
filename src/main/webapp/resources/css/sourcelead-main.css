@@ -16,7 +16,7 @@ body {
 	background-color: #e1e6fa;
 	font-size: 14px;
 	color: #333;
-	font-family: 'Roboto', sans-serif !important;
+	font-family: 'Roboto', sans-serif  !important;
 	min-height: 100%;
 }
 img {
@@ -4329,13 +4329,16 @@ background: #fdba5b;
 .accountlist-head ul li{
 	list-style-type: none;
 	float: left;
-	padding: 10px 0;
+	margin: 10px 0;
+	padding: 0 10px;
+	border-right: 1px solid #ccc;
 	position: relative;
 }
 .accountlist-head ul li a{
-	border-right: 1px solid #ccc;
 	color: #333;
-	padding: 0 10px;
+}
+.accountlist-head ul li:last-child{
+	border-right: none;
 }
 .accountlist-head ul li a:hover{
 	color: #909090;
