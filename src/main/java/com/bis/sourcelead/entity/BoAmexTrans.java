@@ -81,9 +81,23 @@ public class BoAmexTrans {
 	List<Object> finalcialInstituesList;
 	
 	@Transient
+	private Long paymentId;
+	
+	@Transient
 	private String identity;
 	
+	@Transient
+	private List<BoPaymentTypes> boPaymentTypesList;
 	
+	
+
+	public List<BoPaymentTypes> getBoPaymentTypesList() {
+		return boPaymentTypesList;
+	}
+
+	public void setBoPaymentTypesList(List<BoPaymentTypes> boPaymentTypesList) {
+		this.boPaymentTypesList = boPaymentTypesList;
+	}
 
 	public Long getId() {
 		return id;
@@ -219,6 +233,14 @@ public class BoAmexTrans {
 
 	public void setFinalcialInstituesList(List<Object> finalcialInstituesList) {
 		this.finalcialInstituesList = finalcialInstituesList;
+	}
+
+	public Long getPaymentId() {
+		return paymentId;
+	}
+
+	public void setPaymentId(Long paymentId) {
+		this.paymentId = paymentId;
 	}
 
 	public String getIdentity() {

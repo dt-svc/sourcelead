@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -46,6 +47,19 @@ public class BoJmpcTransDaoImpl implements BoJmpcTransDao {
 	
 
 	private static final Logger logger = LoggerFactory.getLogger(BoJmpcTransDaoImpl.class);
+	
+	@Override
+	@Transactional
+	public BoJmpcTrans getBoJmpcTransById(Long Id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<BoJmpcTrans> boJmpcTrans = new ArrayList<BoJmpcTrans>();
+		boJmpcTrans = session.createQuery("from BoJmpcTrans where id=:id" ).setCacheable(true).setLong( "id", Id ).setCacheable(true).list();
+		if (boJmpcTrans.size() > 0) {
+			return boJmpcTrans.get(0);
+		} else {
+			return null;
+		}
+   	}
 
 
 	@Override

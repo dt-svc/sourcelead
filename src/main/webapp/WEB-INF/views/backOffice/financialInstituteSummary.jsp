@@ -94,15 +94,15 @@ overflow: visible;
                 <label>Account Number</label>
                 <input type="text" class="form-control input-sm" value="998844889978" readonly>
               </div> -->
-              <div class="col-md-2">
+              <div class="col-md-3">
                 <label>Credits Total (USD)</label>
                 <input type="text" class="form-control input-sm" id="totalCreditAmount" readonly>
               </div>
-              <div class="col-md-2">
+              <div class="col-md-3">
                 <label>Debits Total (USD)</label>
                 <input type="text" class="form-control input-sm" id="totalDebitAmount" readonly>
               </div>
-              <div class="col-md-2">
+              <div class="col-md-3">
                 <label>Balance (USD)</label>
                 <input type="text" class="form-control input-sm" id="totalBalanceAmount" readonly>
               </div>
@@ -371,20 +371,23 @@ overflow: visible;
 	   	        	result = result +'</tr>';
 	   	        	result = result +'	</thead>';
 	   	        	result = result +'<tbody>';
-	   	        	
-		   	     	for (var i=0; i<json.length; i++)
+		   	     	for (var i=0; i<json.finalcialInstituesList.length; i++)
 	   				{  
-		   	     	    var report = json[i];
+		   	     	    var report = json.finalcialInstituesList[i];
 			   	     	var debitAmount = 0;
 			   			var creditAmount = 0;
 			   			var balanceAmount = 0;
-			   			
+			   			var transDesc = "---"
 			   	     	if(report.debitAmount != null && report.debitAmount != '' && report.debitAmount != 'undefined'){
 			   	     	   debitAmount = report.debitAmount;
 	   	        		}
 			   	     	
 			   	        if(report.creditAmount != null && report.creditAmount != '' && report.creditAmount != 'undefined'){
 			   	        	creditAmount = report.creditAmount;
+	   	        		}
+			   	        
+			   	        if(report.transDesc != null && report.transDesc != '' && report.transDesc != 'undefined'){
+			   	        	transDesc = report.transDesc;
 	   	        		}
 			   	        
 			   	        totalDebitAmount = totalDebitAmount + debitAmount;
@@ -394,26 +397,22 @@ overflow: visible;
 			   	     	result = result+'<tr>';
 			   	        result = result +'<td><div class="tblminwidth-75">'+(i+1)+'</div></td>';
 			   	        result = result +'<td><div class="tblminwidth-75">'+report.transDateStr+'</div></td>';
-					   	result = result +'<td><div class="tbldata-dotdot-me">'+report.transDesc+'</div></td>';
+					   	result = result +'<td><div class="tbldata-dotdot-me">'+transDesc+'</div></td>';
 					   	result = result +'<td><div class="tbldata-dotdot-100">'+debitAmount+'</div></td>';
 					   	result = result +'<td><div class="tbldata-dotdot-100">'+creditAmount+'</div></td>';
 					   	result = result +'<td>';
 					   	result = result +'<div class="tblminwidth-150">';
-					   	result = result +'<select class="form-control chosen-select"">';
-					    result = result +'<option selected>-Select Type-</option>';
-					   	result = result  +'	<c:forEach var="payType" items="${boPaymentTypesList}">';
-						result = result  +'	   <option value="${payType.id}" ${payType.id  == report.paymentTypeId.id ? "selected" : ''}>${payType.paymentType}</option>';
-						result = result  +'	</c:forEach>';  
-						
-						/* for (var j = 0; j < json.boPaymentTypesList.length; j++) {
-							   var payType = json.boPaymentTypesList[j];
-							   var selected = '';
-							   if(report.paymentTypeId.id != null && report.paymentTypeId.id != "" && report.paymentTypeId.id != 'undefined' && report.paymentTypeId.id == payType.id){
-		    		 	    		 selected = 'selected';
-		    		 	       }
-		    		 	    	result = result+"<option value='"+payType.id+"' "+selected+">"+payType.paymentType+"</option>"; 
-						} */
-					   	result = result +'</select>';
+						   	result = result +'<select class="form-control chosen-select" id="payId'+report.id+'" onchange="updatePaymentType(\''+report.id+'\')">';
+						   	result = result +'<option value="">-Select Payment Type-</option>';
+						   	for (var j = 0; j < json.boPaymentTypesList.length; j++) {
+								   var payType = json.boPaymentTypesList[j];
+								   var selected = '';
+								   if(report.paymentId != null && report.paymentId != "" && report.paymentId != 'undefined' && report.paymentId == payType.id){
+			    		 	    		 selected = 'selected';
+			    		 	       }
+			    		 	    	result = result+"<option value='"+payType.id+"' "+selected+">"+payType.paymentType+"</option>"; 
+							 }   
+						   	result = result +'</select>';
 					   	result = result +'</div>';
 					   	result = result +'</td>';
 					   	/* result = result +'<td><span class="text-danger"><i class="fa fa-trash"></i></span>&nbsp;&nbsp;<span><i class="fa fa-pencil" onClick="editFun()" title="Edit"></i></span></td>'; */
@@ -436,9 +435,8 @@ overflow: visible;
 	   	    	    		$("#financialInstitutionsName").val('Chase Bank');  
 	   	    	    	}
 	   	    	    }
-	   	    	    pagination();
 	   	    	    
-	   	    	 var config = {
+	   	    	   var config = {
 	   				  '.chosen-select'           : {},
 	   				  '.chosen-select-deselect'  : {allow_single_deselect:true},
 	   				  '.chosen-select-no-single' : {disable_search_threshold:10},
@@ -448,11 +446,12 @@ overflow: visible;
 	   				for (var selector in config) {
 	   				  $(selector).chosen(config[selector]);
 	   				}
+	   	    	 
 	   				$('.chosen-select').each(function() {
 	   					var $this = $(this);
 	   					$this.next().css({'width': '100%'});
-	   					})
-	   		    	
+	   				})
+	   				pagination();
 	   		    }
 		  });
 	}
@@ -462,6 +461,7 @@ overflow: visible;
 function pagination(){ 
     $('#financialTransactionsList').DataTable( { 
     	"scrollCollapse": false,
+    	"chosen-select": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -469,7 +469,11 @@ function pagination(){
     	"oLanguage": {
      		"sSearch": ""
      	}
+    
+    
     })
+    
+    
 }
 </script>
   
@@ -598,6 +602,24 @@ function editFun(){
 	  }); 
   });
 </script>
+
+
+<script type="text/javascript">
+ function updatePaymentType(id) {
+	 var financialInstitute ='${financialInstitute}';
+	 var paymentType = $('#payId'+id).val();
+	 var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/updatePaymentType?${_csrf.parameterName}=${_csrf.token}&id="+id+"&paymentType="+paymentType+"&financialInstitute="+financialInstitute,	    	   
+		    success: function(data) {
+		    	getFinancialTransactionsList();
+		    }
+	   });
+	
+ }
+ </script>
+ 
   <div class="theme-color"> <span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
     <ul class="list-unstyled">
       <li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>

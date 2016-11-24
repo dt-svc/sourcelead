@@ -8,6 +8,8 @@ import com.bis.sourcelead.entity.BoComericaTrans;
 
 public interface BoComericaTransService {
 	
+	BoComericaTrans getBoComericaTransById(Long Id) throws Exception;
+	
 	public List<BoComericaTrans> getBoComericaTransByFilters(JSONObject jsonObj) throws Exception;
 
 	public List<BoComericaTrans> getBoComericaTrans() throws Exception;

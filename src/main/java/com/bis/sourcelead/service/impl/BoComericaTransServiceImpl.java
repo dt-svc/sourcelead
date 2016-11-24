@@ -17,6 +17,11 @@ public class BoComericaTransServiceImpl implements BoComericaTransService{
 	BoComericaTransDao boComericaTransDao;
 	
 	@Override
+	public BoComericaTrans getBoComericaTransById(Long Id) throws Exception {
+		return boComericaTransDao.getBoComericaTransById(Id);
+	}
+	
+	@Override
 	public List<BoComericaTrans> getBoComericaTransByFilters(JSONObject jsonObj) throws Exception {
 		return boComericaTransDao.getBoComericaTransByFilters(jsonObj);
 	}

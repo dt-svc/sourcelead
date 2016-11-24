@@ -78,6 +78,9 @@ public class BoComericaTrans {
 	private String transDateStr;
 	
 	@Transient
+	private Long paymentId;
+	
+	@Transient
 	private String identity;
 	
 	
@@ -217,6 +220,14 @@ public class BoComericaTrans {
 
 	public void setTransDateStr(String transDateStr) {
 		this.transDateStr = transDateStr;
+	}
+
+	public Long getPaymentId() {
+		return paymentId;
+	}
+
+	public void setPaymentId(Long paymentId) {
+		this.paymentId = paymentId;
 	}
 
 	public String getIdentity() {

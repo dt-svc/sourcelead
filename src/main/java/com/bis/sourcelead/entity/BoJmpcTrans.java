@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -85,10 +86,25 @@ public class BoJmpcTrans {
 	private String transDateStr;
 	
 	@Transient
+	private Long paymentId;
+	
+	@Transient
 	private String identity;
 	
+	@Transient
+	private List<BoPaymentTypes> boPaymentTypesList;
 	
 	
+	
+	
+
+	public List<BoPaymentTypes> getBoPaymentTypesList() {
+		return boPaymentTypesList;
+	}
+
+	public void setBoPaymentTypesList(List<BoPaymentTypes> boPaymentTypesList) {
+		this.boPaymentTypesList = boPaymentTypesList;
+	}
 
 	public Long getId() {
 		return id;
@@ -240,6 +256,14 @@ public class BoJmpcTrans {
 
 	public void setTransDateStr(String transDateStr) {
 		this.transDateStr = transDateStr;
+	}
+
+	public Long getPaymentId() {
+		return paymentId;
+	}
+
+	public void setPaymentId(Long paymentId) {
+		this.paymentId = paymentId;
 	}
 
 	public String getIdentity() {

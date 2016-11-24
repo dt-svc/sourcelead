@@ -17,6 +17,11 @@ public class BoJmpcTransServiceImpl implements BoJmpcTransService{
 	BoJmpcTransDao boJmpcTransDao;
 	
 	@Override
+	public BoJmpcTrans getBoJmpcTransById(Long Id) throws Exception {
+		return boJmpcTransDao.getBoJmpcTransById(Id);
+	}
+	
+	@Override
 	public List<BoJmpcTrans> getBoJmpcTransByFilters(JSONObject jsonObj) throws Exception {
 		return boJmpcTransDao.getBoJmpcTransByFilters(jsonObj);
 	}
