@@ -235,8 +235,10 @@ public class RolesDaoImpl implements RolesDao{
 	    List<Roles> rolesList = session.createQuery(query1.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		 for(Roles roles : rolesList){
 			 List<Long> roleActonList = new ArrayList<Long>();
-			 for (String s : roles.getActionId().split(",")){
-				 roleActonList.add(Long.parseLong(s));
+			 if(null != roles.getActionId()){
+				 for (String s : roles.getActionId().split(",")){
+					 roleActonList.add(Long.parseLong(s));
+				 }
 			 }
 			 roleActonList.retainAll(actionsList);
 			 if(roleActonList.size() > 0){
