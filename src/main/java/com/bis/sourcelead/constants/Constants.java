@@ -255,4 +255,8 @@ public class Constants {
     public static String[] VENDOR_EXCEL_HEADERS = {"VendorName","Website","Location","Level","Number of Contacts"};
     
     public static String[] VENDOR_CONTACTS_EXCEL_HEADERS = {"Vendor Name","Name","Emailid","Phone Number","Owner","Role","Status"};
+    
+    public static String VENDOR = "Vendor";
+    
+    public static String CLIENT = "Client";
 }

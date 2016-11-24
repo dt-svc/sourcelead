@@ -1068,7 +1068,13 @@ function rejectInvitation(spocId){
 
 <script>
 function exportVendorToPdf(){
-	alert("exportVendorToPdf");
+	var values = [];
+	$('input:checkbox[name=clinetLevel]:checked').each(function() 
+    {
+			values.push($(this).val());
+    });
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.location.href = sourceleadUrl+"/exportVendorDetails?${_csrf.parameterName}=${_csrf.token}&values="+values+"&exportType=pdf";
 }
 </script>
 
@@ -1086,7 +1092,26 @@ function exportVendorToExcel(){
 
 <script>
 function exportVendorContactToPdf(){
-	alert("exportVendorContactToPdf");	
+	var vendorId = [];
+	$('input:checkbox[name=vendorNameById]:checked').each(function() 
+    {
+		vendorId.push($(this).val());
+    });
+	var vendorStatus = [];
+	$('input:checkbox[name=vendorStatus]:checked').each(function() 
+    {
+		vendorStatus.push($(this).val());
+    });
+	
+	var invitationStatus = [];
+	$('input:checkbox[name=vendorInvitationStatus]:checked').each(function() 
+    {
+		invitationStatus.push($(this).val());
+    });
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	window.location.href = sourceleadUrl+"/exportVendorContactLists?${_csrf.parameterName}=${_csrf.token}&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus+"&exportType=pdf";
 }
 </script>
 

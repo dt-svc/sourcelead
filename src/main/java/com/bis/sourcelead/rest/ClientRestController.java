@@ -848,7 +848,7 @@ public class ClientRestController {
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
 		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		    List<OrgSpoc> vandorsContactList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(loginUser.getId(),orgLocations.getId(), "Vendor",status,clientIds,invitationStatus);
-		    File file = clientVendorExport.getContactsExportFile(vandorsContactList,exportType,org.getOrgName());
+		    File file = clientVendorExport.getClientContactsExportFile(vandorsContactList,exportType,org.getOrgName());
 		    String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
 				mimeType = "application/octet-stream";
