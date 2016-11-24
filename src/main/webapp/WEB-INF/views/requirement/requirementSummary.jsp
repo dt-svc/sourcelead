@@ -117,9 +117,9 @@ $(document).ready(function() {
       </div>   
       
       <!-- Addede by Rajashekar -->
-      <div id="tab-3" class="project_wrap_table project_tabs project_tabs_inn">
+      <!-- <div id="tab-3" class="project_wrap_table project_tabs project_tabs_inn">
           <div id="recommendationsList"></div>
-       </div>            
+       </div>  -->           
             
           </div>
     
@@ -532,6 +532,8 @@ function sideBar(requirementId){
 						    result = result+'</div>';
 						    result = result+' <div id="tab-2" class="project_tabs_inn">';
 						    result = result+'</div>';
+						    result = result+'<div id="tab-3" class="project_tabs_inn">';
+						    result = result+'</div> ';
 					    result = result+'</div>';
 					    result = result+'</div>';
 					    
@@ -847,7 +849,8 @@ function requirementDetails(requirementId){
 				            result = result +'   </div>';
 				            result = result +' </div>';
 							$("#tab-1").empty();
-							$("#tab-2").empty(); 
+							$("#tab-2").empty();
+							$("#tab-3").empty();
 							$("#tab-1").append(result); 
 							
 							assignedMemberList(requirementId);
@@ -1209,6 +1212,7 @@ function requirementPipeline(requirementId){
 				            
 				            
 							$("#tab-1").empty();
+							$("#tab-3").empty();
 							$("#tab-2").empty(); 
 							$("#tab-2").append(result);  
 							documentpagination();
@@ -1436,9 +1440,20 @@ function requirementRecommendations(requirementId){
     	    result = result +'</tbody>';
 		    result = result +' </table>';
 		    result = result +'</div>';
-		    $("#recommendationsList").empty();
-			$("#recommendationsList").append(result); 
+		    $("#tab-1").empty();
+			$("#tab-2").empty(); 
+		    $("#tab-3").empty();
+			$("#tab-3").append(result); 
 			recommendationpagination();
+			$("#tab-3").show();
+			$(".project-tabs-menu a").click(function(event) {
+			     event.preventDefault();
+			     $(this).parent().addClass("current");
+			     $(this).parent().siblings().removeClass("current");
+			     var tab = $(this).attr("href");
+			     $(".project_tabs_inn").not(tab).css("display", "none");
+			     $(tab).fadeIn();
+			 });
            },
              
         }); 
