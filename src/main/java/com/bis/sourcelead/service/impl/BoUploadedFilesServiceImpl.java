@@ -42,6 +42,7 @@ public class BoUploadedFilesServiceImpl implements BoUploadedFilesService{
     	  try {
     		  boUploadedFiles.setFileContentType(multiFile.getContentType());
     		  boUploadedFiles.setDocFile(multiFile.getBytes());
+    		  boUploadedFiles.setFileName(multiFile.getOriginalFilename());
     	   
 	       }catch (Exception e) {
     	      	 e.printStackTrace();

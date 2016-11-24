@@ -12,6 +12,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "BO_UPLOADED_FILES", catalog = "sourcelead")
@@ -38,6 +39,10 @@ public class BoUploadedFiles {
 		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
+	
+	@Column(name = "FILE_NAME")
+	@Type(type="text")
+	private String fileName;
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -142,6 +147,14 @@ public class BoUploadedFiles {
 
 	public void setToDate(Date toDate) {
 		this.toDate = toDate;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 	
 
