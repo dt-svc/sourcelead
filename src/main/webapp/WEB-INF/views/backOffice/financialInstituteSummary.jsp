@@ -94,15 +94,15 @@ overflow: visible;
                 <label>Account Number</label>
                 <input type="text" class="form-control input-sm" value="998844889978" readonly>
               </div> -->
-              <div class="col-md-2">
+              <div class="col-md-3">
                 <label>Credits Total (USD)</label>
                 <input type="text" class="form-control input-sm" id="totalCreditAmount" readonly>
               </div>
-              <div class="col-md-2">
+              <div class="col-md-3">
                 <label>Debits Total (USD)</label>
                 <input type="text" class="form-control input-sm" id="totalDebitAmount" readonly>
               </div>
-              <div class="col-md-2">
+              <div class="col-md-3">
                 <label>Balance (USD)</label>
                 <input type="text" class="form-control input-sm" id="totalBalanceAmount" readonly>
               </div>
