@@ -26,5 +26,10 @@ public class BoComericaTransServiceImpl implements BoComericaTransService{
 		return boComericaTransDao.getBoComericaTrans();
 	}
 
+	@Override
+	public BoComericaTrans saveBoComericaTrans(BoComericaTrans boComericaTrans) throws Exception {
+		return boComericaTransDao.saveBoComericaTrans(boComericaTrans);
+	}
+
 	
 }

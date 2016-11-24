@@ -1,7 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.BoAmexTransDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.BoAmexTrans;
-import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -82,4 +82,22 @@ public class BoAmexTransDaoImpl implements BoAmexTransDao {
 		}
 		return session.createQuery("from BoAmexTrans bt where bt.status = '1' "+whereString+" ").setCacheable(true).list();
    }
+	
+	@Override
+	@Transactional
+	public BoAmexTrans saveBoAmexTrans(BoAmexTrans boAmexTrans) throws Exception {
+		logger.debug("Saving Amex Transactions");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (boAmexTrans != null) {
+				session.saveOrUpdate(boAmexTrans);
+			}
+			logger.debug("Saving Amex Transactions");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"Transactions"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return boAmexTrans;
+	}
+	
 }

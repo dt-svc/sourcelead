@@ -1,8 +1,15 @@
 package com.bis.sourcelead.web;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
@@ -12,8 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,6 +36,10 @@ import com.bis.sourcelead.entity.AmexUploadFile;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UploadedFile;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.AmexFileUploadService;
+import com.bis.sourcelead.service.BoComericaTransService;
+import com.bis.sourcelead.service.BoUploadedFilesService;
+import com.bis.sourcelead.service.ComericaFileUploadService;
 import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -44,7 +57,13 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	FileValidator fileValidator;
 
 	@Autowired
-	UploadFileService uploadFileService;
+	AmexFileUploadService amexFileUploadService;
+	
+	@Autowired
+	BoUploadedFilesService boUploadedFilesService;
+	
+	@Autowired
+	ComericaFileUploadService comericaFileUploadService;
 	
 	
 	
@@ -94,6 +113,7 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	public String saveImports(@ModelAttribute("amexUploadFile") AmexUploadFile amexUploadFile, BindingResult result,
 			Model model, HttpServletRequest request) {
 		
+		String isFileCreated = null;
 		
 		if(amexUploadFile.getFile() != null){
 			fileValidator.validateTransFile(amexUploadFile, result);
@@ -109,7 +129,13 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 		
 		
 		try {
-			String isFileCreated = uploadFileService.uploadAmexFile(amexUploadFile.getFile(),user,amexUploadFile);
+			if(amexUploadFile.getFinancialInstituteName().equalsIgnoreCase("American Exchange Credit Card")){
+				isFileCreated = amexFileUploadService.uploadAmexFile(amexUploadFile.getFile(),user,amexUploadFile);
+			}
+			else if(amexUploadFile.getFinancialInstituteName().equalsIgnoreCase("Comerica Bank")){
+				isFileCreated = comericaFileUploadService.uploadComericaFile(amexUploadFile.getFile(), user, amexUploadFile);
+			}
+			
 			if ("FailureTransactionsCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
 				model.addAttribute("errorMessage", "Please download Error file here");
                 model.addAttribute("fileName", "xlsx");
@@ -122,9 +148,25 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 		} catch (Exception e) {
 			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));	
 		}
+		
+		try {
+			boUploadedFilesService.addBoUploadedFiles(user, amexUploadFile, amexUploadFile.getFile());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Finance);
+		
 		model.addAttribute("msg", "successfully uploaded");
 		model.addAttribute("fileName", "");
-		return "redirect:/backOffice/finance";
+		model.addAttribute("sourceleadUrl", sourceleadUrl);
+		
+		return "backOffice/finance";
 	}
 	
 	
@@ -146,6 +188,31 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 		
 		return model;
 		
+	}
+	
+	
+	@RequestMapping(value = "/downloadFailedTransactions/{fileName}", method = RequestMethod.GET)
+	public void downloadFailedTransactions(@PathVariable String fileName,HttpServletResponse response) throws IOException {
+		
+			File file;
+			if("xlsx".equalsIgnoreCase(fileName)){
+				file = new File("FailureTransactionsCheck.xlsx");
+			}else{
+				 file = new File("FailureTransactionsCheck.xls");
+			}
+			
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();	
 	}
 
 }

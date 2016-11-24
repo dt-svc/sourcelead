@@ -14,6 +14,12 @@ public class BOTransactions {
 	
 	private String reason;
 	
+	private String no;
+	
+	private String credit;
+	
+	private String debit;
+	
 	
 
 	public Date getTransDate() {
@@ -54,5 +60,29 @@ public class BOTransactions {
 
 	public void setReason(String reason) {
 		this.reason = reason;
+	}
+
+	public String getNo() {
+		return no;
+	}
+
+	public void setNo(String no) {
+		this.no = no;
+	}
+
+	public String getCredit() {
+		return credit;
+	}
+
+	public void setCredit(String credit) {
+		this.credit = credit;
+	}
+
+	public String getDebit() {
+		return debit;
+	}
+
+	public void setDebit(String debit) {
+		this.debit = debit;
 	}
 }

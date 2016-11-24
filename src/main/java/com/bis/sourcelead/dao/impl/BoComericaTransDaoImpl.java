@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.BoComericaTransDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.BoComericaTrans;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -80,6 +82,26 @@ public class BoComericaTransDaoImpl implements BoComericaTransDao{
 			return session.createQuery("from BoComericaTrans bt where bt.status = '1' "+whereString+" ").setDate("fromTransDate", fromTransDate).setDate("toTransDate", toTransDate).setCacheable(true).list();
 		}
 		return session.createQuery("from BoComericaTrans bt where bt.status = '1' "+whereString+" ").setCacheable(true).list();
+	}
+	
+	
+	
+	
+	@Override
+	@Transactional
+	public BoComericaTrans saveBoComericaTrans(BoComericaTrans boComericaTrans) throws Exception {
+		logger.debug("Saving Comerica Transactions");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (boComericaTrans != null) {
+				session.saveOrUpdate(boComericaTrans);
+			}
+			logger.debug("Saving Amex Transactions");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"Transactions"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return boComericaTrans;
 	}
 
 }

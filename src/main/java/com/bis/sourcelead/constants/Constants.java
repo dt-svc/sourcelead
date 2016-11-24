@@ -16,6 +16,8 @@ public class Constants {
 			"Phone Number", "Rate", "Rate Per", "Date of Join (dd/mm/yyyy)", "Role", "Invoice Frequency", "Day Hours" };
 	
 	public static final String[] AMEX_FILE_HEADER_MAPPING = { "Date", "Description", "Amount" };
+	
+	public static final String[] COMERICA_FILE_HEADER_MAPPING = { "Date", "No.", "Description", "Debit", "Credit" };
 
 	public static final String EMPLOYEE_ID = "Employee ID";
 	public static final String FIRST_NAME = "First Name";

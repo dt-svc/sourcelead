@@ -46,11 +46,11 @@ line-height: 30px;
 						  <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 						  <div class="row">
 						  <div class="col-md-5">
-							  <select class="chosen-select" name="financialInstituteName" field-name="Transaction Type" data-validation="required">
+							  <select class="chosen-select" id="financialInstituteName" name="financialInstituteName" field-name="Transaction Type" data-validation="required">
 							  	<option value="">-- Select Transaction type --</option>
-							  	<option value="amex">American Exchange Credit Card</option>
-							  	<option value="comerica">Comerica Bank</option>
-							  	<option value="chase">Chase Bank</option>
+							  	<option value="American Exchange Credit Card">American Exchange Credit Card</option>
+							  	<option value="Comerica Bank">Comerica Bank</option>
+							  	<option value="Chase Bank">Chase Bank</option>
 							  </select>
 						  </div>
 						  <div class="col-md-6">
@@ -75,7 +75,7 @@ line-height: 30px;
 			<div class="dropzone import-zone mt">
 			  <div class="clearfix">
 			  <div class="btn-group pull-right">
-			  <button class="btn btn-sm btn-primary" id="upload_button" type="submit" onclick = "check();uploadSave();checkFile()" ">
+			  <button class="btn btn-sm btn-primary" id="upload_button" type="submit" onclick = "check();uploadSave();checkFile();">
 				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
 			  </button>
 			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:location.href = '<c:url value='/usersList'/>'">
@@ -112,11 +112,11 @@ line-height: 30px;
 		 </div>
 		  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 		  <div class="errInfo erro-file clearfix">
+		   <p class="text-danger"><strong>Download Failed Transactions</strong></p>
 		  <div id="errorFileDiv"  style="display: none;">
-		  <p class="text-danger"><strong>Error File Dowload</strong></p>
 		      <c:if test="${!empty errorMessage}">
 				   <div class="file-upload"> 
-				  <a href="<c:url value='/download/${fileName}'/>" onclick="errorMsgAppend();"> 
+				  <a href="<c:url value='/downloadFailedTransactions/${fileName}'/>" onclick="errorMsgAppend();"> 
 					<label class="btn btn-block">
 					<i class="fa fa-download" aria-hidden="true"></i> <br>
 		               ${errorMessage}
@@ -221,7 +221,6 @@ function uploadSave() {
                	   document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
                	   document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"Invalid file Format. Only " + allowedExtensions.join(', ') + " are allowed.");
                     return false;
-                  return false;
                 }
                 	
                 
@@ -236,6 +235,35 @@ function uploadSave() {
 	   
     }
 </script> 
+
+<script>
+function checkDates(){
+	
+	var fromDate = document.getElementById("startDate").value
+	var toDate = document.getElementById("endDate").value
+	var financialInstituteName = document.getElementById("financialInstituteName").value
+	var sourceleadUrl = '${sourceleadUrl}';
+	
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/validateTransDates?${_csrf.parameterName}=${_csrf.token}&fromDate="+fromDate+"&toDate="+toDate+"&financialInstituteName="+financialInstituteName, 	   
+		    success: function(data) {
+		    	
+		    	if(data == 'Invalid'){
+		    		$("input#uploadBtn").after("<p class='jquery_form_error_message'>");
+	               	   document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
+	               	   document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"Duplicate Transaction Dates.");
+		               	$("#upload_form").click(function() {
+		        			if ($(this).validate(false, validationSettings)) {
+		        			}
+		        		});
+	                   return false;
+		    	}
+		    }
+	 });
+	
+}
+</script>
 
 <script>
 function errorMsgAppend(){

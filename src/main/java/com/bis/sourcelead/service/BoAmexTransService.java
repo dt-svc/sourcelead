@@ -11,5 +11,7 @@ public interface BoAmexTransService {
 	public List<BoAmexTrans> getBoAmexTransByFilters(JSONObject jsonObj) throws Exception;
 	
 	public List<BoAmexTrans> getBoAmexTrans() throws Exception;
+	
+	public BoAmexTrans saveBoAmexTrans(BoAmexTrans boAmexTrans) throws Exception;
 
 }

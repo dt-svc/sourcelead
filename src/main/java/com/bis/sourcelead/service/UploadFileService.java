@@ -11,6 +11,5 @@ public interface UploadFileService {
 
 	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations, User user, String isMailChecked) throws Exception;
 	
-	public String uploadAmexFile(MultipartFile multipartFile, User user, AmexUploadFile amexUploadFile) throws Exception;
 
 }

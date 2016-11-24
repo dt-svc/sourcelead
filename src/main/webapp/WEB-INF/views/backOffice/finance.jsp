@@ -12,13 +12,19 @@
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 
- <script type="text/javascript">
+ <!-- <script type="text/javascript">
    window.onload = function () {
 	   getAccountsList();
 	/* getamexTransAmount();
 	getComericaTransAmount();
 	getChaseTransAmount(); */
  };
+</script>  -->
+
+<script>
+$(document).ready(function(){
+	getAccountsList();
+});
 </script> 
 
  
@@ -261,6 +267,7 @@
 		var debitAmount = 0;
 		var creditAmount = 0;
 		var balanceAmount = 0;
+		
 		
 		  $.ajax({
 			   	type: "POST",

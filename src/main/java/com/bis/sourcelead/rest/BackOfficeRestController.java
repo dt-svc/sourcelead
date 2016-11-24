@@ -1,43 +1,32 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.entity.BoAmexTrans;
 import com.bis.sourcelead.entity.BoComericaTrans;
 import com.bis.sourcelead.entity.BoJmpcTrans;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.UploadedFile;
-import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.BoUploadedFiles;
 import com.bis.sourcelead.service.BoAmexTransService;
 import com.bis.sourcelead.service.BoComericaTransService;
 import com.bis.sourcelead.service.BoJmpcTransService;
-import com.bis.sourcelead.service.UploadFileService;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.validation.FileValidator;
-import com.bis.sourcelead.web.UploadController;
+import com.bis.sourcelead.service.BoUploadedFilesService;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -59,6 +48,9 @@ public class BackOfficeRestController {
 	
 	@Autowired
 	BoJmpcTransService boJmpcTransService;
+	
+	@Autowired
+	BoUploadedFilesService boUploadedFilesService;
 	
 	@RequestMapping(value = "/getAccountsList")
 	@ResponseBody
@@ -244,6 +236,42 @@ public class BackOfficeRestController {
 		
 		resultJson = toJSON(boJmpcTrans);
 		return resultJson;
+	}
+	
+	
+	@RequestMapping(value = "/validateTransDates",method = RequestMethod.POST)
+	@ResponseBody
+	public String validateTransDates(HttpServletRequest request,
+			@RequestParam(value="fromDate", required=false) String fromDate,
+			@RequestParam(value="toDate", required=false) String toDate,
+			@RequestParam(value="financialInstituteName", required=false) String financialInstituteName) throws Exception {
+		
+		String status = null;
+		
+		List<BoUploadedFiles> filesList = boUploadedFilesService.getBoUploadedFilesByFinancialInstitueName(financialInstituteName);
+		if(filesList != null){
+			for(BoUploadedFiles boUploadedFiles : filesList){
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				Date transFromDate = sdf.parse(fromDate);
+				Date transToDate = sdf.parse(toDate);
+				
+				if(transFromDate.equals(boUploadedFiles.getFromDate()) && 
+						transFromDate.before(boUploadedFiles.getToDate()) && 
+						transToDate.equals(boUploadedFiles.getToDate()) &&
+						transToDate.before(boUploadedFiles.getToDate())){
+					
+					status = "Invalid";
+					
+				}else{
+					
+					status = "valid";
+				}
+				
+			}
+		}
+		
+		return status;
 	}
 	
 	

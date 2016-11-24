@@ -26,6 +26,12 @@ public class BoUploadedFiles {
 	@Column(name = "BANK_NAME")
 	private String bankName;
 	
+	@Column(name = "FROM_DATE")
+	private Date fromDate;
+	
+	@Column(name = "TO_DATE")
+	private Date toDate;
+	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	@Lob
 	private  byte[] docFile;
@@ -120,6 +126,22 @@ public class BoUploadedFiles {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public Date getFromDate() {
+		return fromDate;
+	}
+
+	public void setFromDate(Date fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public Date getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(Date toDate) {
+		this.toDate = toDate;
 	}
 	
 

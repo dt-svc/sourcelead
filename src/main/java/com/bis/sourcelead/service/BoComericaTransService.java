@@ -11,4 +11,6 @@ public interface BoComericaTransService {
 	public List<BoComericaTrans> getBoComericaTransByFilters(JSONObject jsonObj) throws Exception;
 
 	public List<BoComericaTrans> getBoComericaTrans() throws Exception;
+	
+	public BoComericaTrans saveBoComericaTrans(BoComericaTrans boComericaTrans) throws Exception;
 }

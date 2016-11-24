@@ -26,4 +26,9 @@ public class BoAmexTransServiceImpl implements BoAmexTransService {
 		return boAmexTransDao.getBoAmexTrans();
 	}
 
+	@Override
+	public BoAmexTrans saveBoAmexTrans(BoAmexTrans boAmexTrans) throws Exception {
+		return boAmexTransDao.saveBoAmexTrans(boAmexTrans);
+	}
+
 }
