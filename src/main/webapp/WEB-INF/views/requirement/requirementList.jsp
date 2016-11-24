@@ -97,9 +97,9 @@ function requirementListIndividualStatusCounts(){
 
 
 <style>
-.tbldata-dotdot span{
+/*.tbldata-dotdot span{
 max-width:220px;
-} 
+} */
  .clsDatePicker {
    z-index: 100000 !important;
 }
