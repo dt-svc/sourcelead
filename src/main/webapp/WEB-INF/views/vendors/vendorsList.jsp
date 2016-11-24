@@ -96,7 +96,10 @@ overflow-x: auto;
 					
 				<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
                        <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Vendor</a></li>	
-                       <li><a href="<c:url value='/uploadVendorForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>	
+                       </sec:authorize>
+                        <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS')">
+                       <li><a href="<c:url value='/uploadVendorForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
+                 </sec:authorize> 
                        	 <li id="vendorImports" style="display:none">
 		                     <a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportVendor</a>
 			                    <div class="export_pop">
@@ -115,11 +118,6 @@ overflow-x: auto;
 				       </ul>
 				    </div>
 		            </li> 
-                   
-                </sec:authorize>
-                <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS')">
-                       <li><a href="<c:url value='/uploadVendorForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
-                 </sec:authorize>      	
             </ul>
             <div class="clearfix"></div>
         </div>

@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -177,9 +176,9 @@ public class PdfUtil {
 	        document.add(table);
 	        logger.info("Pdf table created !!");
 	    } catch (DocumentException e) {
-	        e.printStackTrace();
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 	    } catch (FileNotFoundException e) {
-	        e.printStackTrace();
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 	    } finally {
 	        document.close();
 	    }
@@ -235,9 +234,9 @@ public class PdfUtil {
 	        document.add(table);
 	        logger.info("Pdf table created !!");
 	    } catch (DocumentException e) {
-	        e.printStackTrace();
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 	    } catch (FileNotFoundException e) {
-	        e.printStackTrace();
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 	    } finally {
 	        document.close();
 	    }
@@ -368,9 +367,9 @@ public class PdfUtil {
 	        document.add(table);
 	        logger.info("Pdf table created !!");
 	    } catch (DocumentException e) {
-	        e.printStackTrace();
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 	    } catch (FileNotFoundException e) {
-	        e.printStackTrace();
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 	    } finally {
 	        document.close();
 	    }
@@ -483,7 +482,7 @@ public class PdfUtil {
 	        document.add(table);
 	        logger.info("Pdf table created !!");
 	}catch (FileNotFoundException e) {
-        e.printStackTrace();
+		logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
     } finally {
         document.close();
     }
@@ -578,7 +577,7 @@ public class PdfUtil {
 	        document.add(table);
 	        logger.info("Pdf table created !!");
 	}catch (FileNotFoundException e) {
-        e.printStackTrace();
+		logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
     } finally {
         document.close();
     }
