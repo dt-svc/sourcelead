@@ -257,15 +257,15 @@ float: none !important;
 			</c:if>
 	      </sec:authorize>
 			 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-			<c:if test = "${SourceLeadWeb_userType != 'Employee'}">
+			<%-- <c:if test = "${SourceLeadWeb_userType != 'Employee'}"> --%>
 				<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 					<jsp:include page="dashboardRequirement.jsp"></jsp:include> 
 				</c:if>
-			</c:if>
+			<%-- </c:if> --%>
 		     </sec:authorize>
 	      	 <%-- <jsp:include page="dashboardTasks.jsp"></jsp:include> --%>
 	    </div>
-    	<c:if test = "${SourceLeadWeb_userType != 'Employee'}">
+    	<%-- <c:if test = "${SourceLeadWeb_userType != 'Employee'}"> --%>
 	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 					<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> 
@@ -279,7 +279,7 @@ float: none !important;
 			    	 </sec:authorize>
 			    </div>
 		    </c:if>
-	    </c:if>
+	    <%-- </c:if> --%>
 	    
 	    <div class="clearfix row mb"> 
 	   	 <%--  <jsp:include page="dashboardTimesheetsApprovals.jsp"></jsp:include> --%>
