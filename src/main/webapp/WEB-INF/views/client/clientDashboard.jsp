@@ -100,8 +100,13 @@ overflow-x: auto;
 		                </li>
                 		<sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
                         <li><a href="<c:url value='/addClientContact'/>"><i class="fa fa-plus"></i>Contact</a></li>
-						<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Client</a></li>
-						 <li ><a href="<c:url value='/uploadClientForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
+                        </sec:authorize>
+                        <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
+							<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Client</a></li>
+						</sec:authorize>
+						 <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
+						 <li><a href="<c:url value='/uploadClientForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
+						 </sec:authorize>
 						 <li id="clientImports" style="display:none">
 		                     <a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportClient</a>
 			                    <div class="export_pop">
@@ -120,13 +125,7 @@ overflow-x: auto;
 				       </ul>
 				    </div>
 		            </li> 
-                        </sec:authorize>
-                         <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-							<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Client</a></li>
-						</sec:authorize>
-						 <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
-						 <li><a href="<c:url value='/uploadClientForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
-						 </sec:authorize>
+                         
 						<div class="clearfix"></div>
 					</ul>
 					<div class="clearfix"></div>
