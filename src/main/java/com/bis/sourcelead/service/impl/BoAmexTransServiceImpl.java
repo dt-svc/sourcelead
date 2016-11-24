@@ -17,6 +17,11 @@ public class BoAmexTransServiceImpl implements BoAmexTransService {
 	BoAmexTransDao boAmexTransDao;
 	
 	@Override
+	public BoAmexTrans getBoAmexTransById(Long Id) throws Exception {
+		return boAmexTransDao.getBoAmexTransById(Id);
+	}
+	
+	@Override
 	public List<BoAmexTrans> getBoAmexTransByFilters(JSONObject jsonObj) throws Exception {
 		return boAmexTransDao.getBoAmexTransByFilters(jsonObj);
 	}

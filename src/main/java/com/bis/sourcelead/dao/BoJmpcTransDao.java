@@ -8,6 +8,8 @@ import com.bis.sourcelead.entity.BoJmpcTrans;
 
 public interface BoJmpcTransDao {
 	
+	BoJmpcTrans getBoJmpcTransById(Long Id) throws Exception;
+	
 	public List<BoJmpcTrans> getBoJmpcTransByFilters(JSONObject jsonObj) throws Exception;
 
 	public List<BoJmpcTrans> getBoJmpcTrans() throws Exception;

@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.BoComericaTransDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.BoAmexTrans;
 import com.bis.sourcelead.entity.BoComericaTrans;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -48,6 +50,19 @@ public class BoComericaTransDaoImpl implements BoComericaTransDao{
 	
 
 	private static final Logger logger = LoggerFactory.getLogger(BoComericaTransDaoImpl.class);
+	
+	@Override
+	@Transactional
+	public BoComericaTrans getBoComericaTransById(Long Id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<BoComericaTrans> boComericaTrans = new ArrayList<BoComericaTrans>();
+		boComericaTrans = session.createQuery("from BoComericaTrans where id=:id" ).setCacheable(true).setLong( "id", Id ).setCacheable(true).list();
+		if (boComericaTrans.size() > 0) {
+			return boComericaTrans.get(0);
+		} else {
+			return null;
+		}
+   	}
 
 	@Override
 	@Transactional

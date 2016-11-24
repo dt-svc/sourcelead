@@ -10,11 +10,13 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.BackOfficeDTO;
 import com.bis.sourcelead.entity.BoAmexTrans;
 import com.bis.sourcelead.entity.BoComericaTrans;
 import com.bis.sourcelead.entity.BoJmpcTrans;
@@ -41,6 +43,9 @@ public class BackOfficeSummaryRestController {
 	BoComericaTransService bBoComericaTransService;
 	
 	@Autowired
+	BoPaymentTypesService boPaymentTypesService;
+	
+	@Autowired
 	BoJmpcTransService boJmpcTransService;
 	
 	
@@ -51,7 +56,9 @@ public class BackOfficeSummaryRestController {
 		json = "{"+json+"}";
 		JSONObject jsonObj = new JSONObject(json);
 		String resultJson = null;
+		BackOfficeDTO backOfficeDTO = new BackOfficeDTO();
 		List<Object> finalcialInstituesList = new ArrayList<Object>();
+		List<BoPaymentTypes> boPaymentTypesList = boPaymentTypesService.getAllBoPaymentTypes();
 		
 		if(null != financialInstitute && "amex".equals(financialInstitute)){
 			List<BoAmexTrans> boAmexTransList = boAmexTransService.getBoAmexTransByFilters(jsonObj);
@@ -65,8 +72,13 @@ public class BackOfficeSummaryRestController {
 					if( !isNullOrEmpty(amexTrans.getTransType()) && amexTrans.getTransType().equalsIgnoreCase("DEBIT")){
 						amexTrans.setDebitAmount(amexTrans.getAmount());
 					}
+					if(amexTrans.getPaymentTypeId() != null){
+						amexTrans.setPaymentId(amexTrans.getPaymentTypeId().getId());
+					}
 				}
+				
 			}
+			
 			finalcialInstituesList.addAll(boAmexTransList);
 		}else if(null != financialInstitute && "comerica".equals(financialInstitute)){
 			List<BoComericaTrans> boComericaTransList = bBoComericaTransService.getBoComericaTransByFilters(jsonObj);
@@ -79,6 +91,10 @@ public class BackOfficeSummaryRestController {
 					
 					if( !isNullOrEmpty(boComericaTrans.getTransType()) && boComericaTrans.getTransType().equalsIgnoreCase("DEBIT")){
 						boComericaTrans.setDebitAmount(boComericaTrans.getAmount());
+					}
+					
+					if(boComericaTrans.getPaymentTypeId() != null){
+						boComericaTrans.setPaymentId(boComericaTrans.getPaymentTypeId().getId());
 					}
 				}
 			}
@@ -95,15 +111,52 @@ public class BackOfficeSummaryRestController {
 					if( !isNullOrEmpty(boJmpcTrans.getTransType()) && boJmpcTrans.getTransType().equalsIgnoreCase("DEBIT")){
 						boJmpcTrans.setDebitAmount(boJmpcTrans.getAmount());
 					}
+					
+					if(boJmpcTrans.getPaymentTypeId() != null){
+						boJmpcTrans.setPaymentId(boJmpcTrans.getPaymentTypeId().getId());
+					}
 				}
 			}
+			
+			
 			finalcialInstituesList.addAll(boJmpcTransList);
 		}
-		
-		resultJson = toJSON(finalcialInstituesList);
+		backOfficeDTO.setBoPaymentTypesList(boPaymentTypesList);
+		backOfficeDTO.setFinalcialInstituesList(finalcialInstituesList);
+		resultJson = toJSON(backOfficeDTO);
 		return resultJson;
 	}
 	
+	
+	 @RequestMapping(value = "/updatePaymentType", method = RequestMethod.POST)
+	 @ResponseBody String updatePaymentType(@RequestParam(value = "id", required = false) Long id,@RequestParam(value="paymentType", required=false) String paymentType, @RequestParam(value="financialInstitute", required=false) String financialInstitute) throws Exception{
+		if(null != financialInstitute && "amex".equals(financialInstitute)){
+			 BoAmexTrans boAmexTrans = boAmexTransService.getBoAmexTransById(id);
+				if(boAmexTrans != null && paymentType != null && !"".equalsIgnoreCase(paymentType)){
+					BoPaymentTypes boPaymentTypes = new BoPaymentTypes();
+					boPaymentTypes.setId(Long.parseLong(paymentType));
+					boAmexTrans.setPaymentTypeId(boPaymentTypes);
+					boAmexTransService.saveBoAmexTrans(boAmexTrans);
+				}
+		 }else if(null != financialInstitute && "comerica".equals(financialInstitute)){
+			 BoComericaTrans boComericaTrans = bBoComericaTransService.getBoComericaTransById(id);
+				if(boComericaTrans != null && paymentType != null && !"".equalsIgnoreCase(paymentType)){
+					BoPaymentTypes boPaymentTypes = new BoPaymentTypes();
+					boPaymentTypes.setId(Long.parseLong(paymentType));
+					boComericaTrans.setPaymentTypeId(boPaymentTypes);
+					bBoComericaTransService.saveBoComericaTrans(boComericaTrans);
+				}
+		 }else if(null != financialInstitute && "jmpc".equals(financialInstitute)){
+			 BoJmpcTrans boJmpcTrans = boJmpcTransService.getBoJmpcTransById(id);
+				if(boJmpcTrans != null && paymentType != null && !"".equalsIgnoreCase(paymentType)){
+					BoPaymentTypes boPaymentTypes = new BoPaymentTypes();
+					boPaymentTypes.setId(Long.parseLong(paymentType));
+					boJmpcTrans.setPaymentTypeId(boPaymentTypes);
+					boJmpcTransService.saveBoJmpcTrans(boJmpcTrans);
+				}
+		  }
+		   return "success";
+		}
 	
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
