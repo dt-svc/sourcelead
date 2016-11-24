@@ -26,4 +26,9 @@ public class BoJmpcTransServiceImpl implements BoJmpcTransService{
 		return boJmpcTransDao.getBoJmpcTrans();
 	}
 
+	@Override
+	public BoJmpcTrans saveBoJmpcTrans(BoJmpcTrans boJmpcTrans) throws Exception {
+		return boJmpcTransDao.saveBoJmpcTrans(boJmpcTrans);
+	}
+
 }

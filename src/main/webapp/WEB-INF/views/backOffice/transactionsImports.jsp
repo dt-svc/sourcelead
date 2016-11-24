@@ -87,7 +87,7 @@ line-height: 30px;
 		<div class="col-md-12" id="clientNameDiv">
 			<label class="bg-default">
 			<i aria-hidden="true" class="fa fa-paperclip"></i> <br/>
-                <input type="file" name="file" field-name="File Upload" style="display: none;" id="uploadBtn" data-validation="required validate_importFile">
+                <input type="file" name="file" field-name="File Upload" style="display: none;" id="uploadBtn" data-validation="required">
             </label>
         	</div>
         	
@@ -212,14 +212,14 @@ function uploadSave() {
      $('#clientNameDiv').find('p.jquery_form_error_message').remove();
      var res_field = document.upload_form.elements["uploadFile"].value;   
      var extension = res_field.substr(res_field.lastIndexOf('.') + 1).toLowerCase();
-     var allowedExtensions = ['xls', 'xlsx', 'csv'];
+     var allowedExtensions = ['csv'];
      if (res_field.length > 0)
         {
              if (allowedExtensions.indexOf(extension) === -1) 
                 {
                    $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
                	   document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
-               	   document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"Invalid file Format. Only " + allowedExtensions.join(', ') + " are allowed.");
+               	   document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"Invalid file Format. Only " + allowedExtensions.join(', ') + " is allowed.");
                     return false;
                 }
                 	

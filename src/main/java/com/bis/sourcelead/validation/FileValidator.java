@@ -70,7 +70,7 @@ public class FileValidator implements Validator {
 				}
 		        double fileSize = convFile.length();
 		        double kilobytes = (fileSize / 1024);
-		if (!file.getFile().getOriginalFilename().endsWith("xlsx") && !file.getFile().getOriginalFilename().endsWith("xls") && !file.getFile().getOriginalFilename().endsWith("csv")) {
+		if (!file.getFile().getOriginalFilename().toLowerCase().endsWith("xlsx") && !file.getFile().getOriginalFilename().toLowerCase().endsWith("xls") && !file.getFile().getOriginalFilename().toLowerCase().endsWith("csv")) {
 			errors.rejectValue("file", "uploadForm.salectFile", "accept only xlsx and xls and csv !...;");
 		}
         /*if (kilobytes > 500.0) {

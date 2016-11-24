@@ -4211,8 +4211,9 @@ inst-search .col-md-9{
     top: 5px;
 }
 .instsearch{
-	background: #fff;
+	background: #ccc;
 	padding: 10px 10px;
+	
 	
 }
 .require_wrap_details_cta.require_education{
@@ -4433,10 +4434,24 @@ border-radius: 5px;
 import-tranhd  [class*="col-md-"]{
 	padding: 0 10px;
 }
-.calendar-img {
-    background-image:url("../images/calendar.png") !important; background-repeat:no-repeat; background-position:96% center; background-size:18px;
-    background-repeat: no-repeat;
-    } 
+.timesheet_head.summary_head ul{
+	padding: 0;
+	float: left;
+}
+.timesheet_head.summary_head ul li{
+	margin-top: 0;
+	margin-bottom: 0;
+	float: left;
+}
+.timesheet_head.summary_head ul li:last-child{
+	border-right: 0;
+}
+.summary_head div.approved_pop{
+	left: 0;
+}
+.require_wrap_table.chosen-table{
+overflow: visible;
+}
 /* import fiels ends */
 /* media 320px */
 @media (max-width: 320px) {

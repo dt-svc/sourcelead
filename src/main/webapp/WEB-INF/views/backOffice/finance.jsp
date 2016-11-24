@@ -294,6 +294,8 @@ $(document).ready(function(){
 		   	     	    creditAmount = creditAmount + report.creditAmount;
 		   	     	    balanceAmount = balanceAmount + report.balanceAmount;
 		   	     	    
+		   	     	    
+		   	     	    
 			   	     	result = result+'<tr>';
 			   	        result = result +'<td><a href="<c:url value="/financialInstituteSummary?financialInstitute='+report.identity+'"/>" class="tbldata-dotdot-big">';
 					   	result = result +'<div class="proj_show"> <span class="tbldata-dotdot-me">'+report.financialInstituteName+'</span> <i class="fa fa-binoculars"></i> </div>';
@@ -309,7 +311,7 @@ $(document).ready(function(){
 	   	        	result = result +' <td colspan="1">Total</td>';
 	   	        	result = result +' <td>'+debitAmount+' <b class="text-danger">Dr</b></td>';
 	   	        	result = result +' <td>'+creditAmount+' <b class="text-success">Cr</b></td>';
-	   	        	result = result +'<td>'+balanceAmount+' Cr</td>';
+	   	        	result = result +'<td>'+balanceAmount+'</td>';
 	   	        	result = result +'</tr>';
 	   	        	result = result +'</tfoot>';
 	   	        	

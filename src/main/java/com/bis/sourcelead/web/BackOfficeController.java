@@ -39,6 +39,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AmexFileUploadService;
 import com.bis.sourcelead.service.BoComericaTransService;
 import com.bis.sourcelead.service.BoUploadedFilesService;
+import com.bis.sourcelead.service.ChaseUploadFileService;
 import com.bis.sourcelead.service.ComericaFileUploadService;
 import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -65,6 +66,8 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	@Autowired
 	ComericaFileUploadService comericaFileUploadService;
 	
+	@Autowired
+	ChaseUploadFileService chaseUploadFileService;
 	
 	
 	@RequestMapping(value = "/finance")
@@ -128,12 +131,21 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Finance);
+		
 		try {
 			if(amexUploadFile.getFinancialInstituteName().equalsIgnoreCase("American Exchange Credit Card")){
 				isFileCreated = amexFileUploadService.uploadAmexFile(amexUploadFile.getFile(),user,amexUploadFile);
 			}
 			else if(amexUploadFile.getFinancialInstituteName().equalsIgnoreCase("Comerica Bank")){
 				isFileCreated = comericaFileUploadService.uploadComericaFile(amexUploadFile.getFile(), user, amexUploadFile);
+			}else{
+				isFileCreated = chaseUploadFileService.uploadChaseFile(amexUploadFile.getFile(), user, amexUploadFile);
 			}
 			
 			if ("FailureTransactionsCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
@@ -155,12 +167,6 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 			e.printStackTrace();
 		}
 		
-		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(sessionData == null)
-		{
-			sessionData = new SessionMaintainanceData();
-		}
-		sessionData.setNav(Constants.Finance);
 		
 		model.addAttribute("msg", "successfully uploaded");
 		model.addAttribute("fileName", "");

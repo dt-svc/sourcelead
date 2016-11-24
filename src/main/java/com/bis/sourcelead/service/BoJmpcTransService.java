@@ -11,4 +11,6 @@ public interface BoJmpcTransService {
 	public List<BoJmpcTrans> getBoJmpcTransByFilters(JSONObject jsonObj) throws Exception;
 
 	public List<BoJmpcTrans> getBoJmpcTrans() throws Exception;
+	
+	public BoJmpcTrans saveBoJmpcTrans(BoJmpcTrans boJmpcTrans) throws Exception;
 }
