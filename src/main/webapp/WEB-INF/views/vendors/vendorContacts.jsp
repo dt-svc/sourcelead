@@ -355,7 +355,7 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'	 <div class="clearfix mb10">';
 	result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
 	result = result  +'	 <div class="col-md-12">';
-	result = result  +'	   <select multiple class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
+	result = result  +'	   <select multiple data-placeholder="select owner" class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
 	result = result  +'	       <c:forEach var="user" items="${userList}">';
 	result = result  +'	           <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? "selected" : ''} >${user.firstName} ${user.lastName}</option>';
 	result = result  +'	       </c:forEach>';

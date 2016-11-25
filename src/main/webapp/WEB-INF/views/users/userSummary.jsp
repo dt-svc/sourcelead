@@ -882,7 +882,7 @@ function editUserDetails(userId){
 						result = result + ' <div class="user_summary_edit_cta">';
 						result = result + ' <label>Manager</label>';
 						result = result + '  <select id="reportingManager" name="reportingManager" >'+
-			 	     	"<option value=''>-Select-</option>";    
+			 	     	"<option value=''>-Select Manager-</option>";    
 			 	     	 for (var i=0; i<json.allReportingManagers.length; i++)
 	    					{
 	    		 	    	   manager = json.allReportingManagers[i];
