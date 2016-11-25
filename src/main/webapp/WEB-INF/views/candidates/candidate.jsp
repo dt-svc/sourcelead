@@ -290,7 +290,7 @@
          <div class="form-group">
               <label class="col-md-3">Education</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="candidateEducation" id="candidateEducation" data-validation="validate_Space" data-validation-optional="true">
+                <select multiple data-placeholder="select Education" class="chosen-select form-control" name="candidateEducation" id="candidateEducation" data-validation="validate_Space" data-validation-optional="true">
                 <c:forEach var="edu" items="${educationsList}">
 	                     <option value="${edu.name}">${edu.name}</option>
                 </c:forEach>
@@ -302,7 +302,7 @@
         <div class="form-group">
               <label class="col-md-3">Skills</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">
+                <select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">
                 <c:forEach var="skill" items="${skillsList}">
 	                     <option value="${skill.name}">${skill.name}</option>
                 </c:forEach>
@@ -551,7 +551,7 @@ function getCities(){
 	    });
 	}else{
 		$('#city').empty();
-    	$('#city').append('<option value="">---select City---</option>');
+    	$('#city').append('<option value="">---select city---</option>');
     	$('#city').trigger("chosen:updated");
 	}
 }
