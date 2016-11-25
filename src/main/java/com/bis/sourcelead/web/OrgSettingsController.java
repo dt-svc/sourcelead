@@ -124,7 +124,8 @@ public class OrgSettingsController {
 			}
 			
 			 model.addObject("roleId",roleId);
-			 model.addObject("roleName",roles.getDisplayName());
+			 model.addObject("roleDisplayName",roles.getDisplayName());
+			 model.addObject("roleName",roles.getRoleName());
 			 model.setViewName("enrollRoleActions");
 			 
 			 String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "actionRolesMsg");
