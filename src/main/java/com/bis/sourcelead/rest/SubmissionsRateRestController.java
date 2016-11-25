@@ -2,14 +2,9 @@ package com.bis.sourcelead.rest;
 
 import java.io.Writer;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.service.CandidateService;
@@ -26,7 +21,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-public class SubmissionsRateController {
+public class SubmissionsRateRestController {
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -54,15 +49,7 @@ public class SubmissionsRateController {
     private String sourceleadUrl;
 	
     
-	@RequestMapping(value = "/acceptOrRejectOrRateNegotiateApplicantRates")
-	@ResponseBody  String acceptOrRejectOrRateNegotiateApplicantRates(@RequestParam(value="rateStatus", required=false) String rateStatus,
-			@RequestParam(value = "candidateId", required = false) String candidateId,
-			 HttpServletRequest request) throws Exception {
-		 
-		 
-		    return "success";
-	 }	
-	
+	 
     private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
             public HierarchicalStreamWriter createWriter(Writer writer) {
