@@ -266,12 +266,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 if(jsonObj.getString("needApplicantPermit").equals("Y")){
 				 requirementSubmission.setNeedApplicantPermit("Y");
 				 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
-			 }else{
-				 requirementSubmission.setNeedApplicantPermit("N");
-				 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
-			 }
-			 
-		 } 
+			 } 
+		 }else{
+			 requirementSubmission.setNeedApplicantPermit("N");
+			 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+		 }
 		
 		 requirementSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
 		 requirementSubmission.setCreatedBy(user.getUserCode());
