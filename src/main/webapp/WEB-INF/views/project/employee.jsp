@@ -36,7 +36,7 @@
                    </div>
                    <div class="modal-body-custom mt clearfix over" id="employeesList">
                    </div>
-                   <div class="col-md-12">
+                   <div class="col-md-12">exportType
                    
                    <div class="col-md-6">
 					<div class="checkbox">
@@ -127,8 +127,7 @@
  
  <!-- this script is for Emplyee Listfunctionality at Projects screen -->
 <script>
-function projectEmployee(projectId,startDateStr,endDateStr,status){
-	
+function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 	
 	$("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	
@@ -144,19 +143,33 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
         	var result = "";
         	result = result + '<input type="hidden" name="projectId" id="projectId" value="'+projectId+'" >';
         	result = result + '<input type="hidden" name="startDateStr" id="startDateStr" value="'+startDateStr+'" >';
-        	result = result + '    	<div class="project_tabs_inn_head">';
+        	result = result + '    	<div class="project_tabs_inn_head timesheet_head">';
     		if(projectStatus != 'Completed' &&  projectStatus != '' &&  projectStatus != 'undefined' ){
-    		result = result	+ '<span class="pad-sea">';
-    		
+    		result = result	+ '<ul>';
+
+    		result = result +'<li>';
     		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_PROJECT_EMPLOYEES\')">';
-    		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
+    		result = result + '<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
     		result = result +'</sec:authorize>';
-    		
+    		result = result +'</li>';
+
+    		result = result +'<li>';
     		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_PROJECT_EMPLOYEES\')">';
-    		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
+    		result = result + '<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
     		result = result +'</sec:authorize>';
+    		result = result +'</li>';
+
+    		result = result +'<li>';
+    		result = result +' <a id="export-pop" onClick="exportFun()"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+    		result = result +'<div class="export_pop">';
+    		result = result +'<ul>';
+    		result = result +'<li onclick="exportToPdf(\''+projectId+'\',\''+projectName+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+    		result = result +'<li onclick="exportToExcel(\''+projectId+'\',\''+projectName+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+    		result = result +'</ul>';
+    		result = result +'</div>';
+    		result = result +'</li> ';
+    		result = result +'</ul>';
     		
-    		result = result	+ '</span>';
         	}
     		result = result + '		</div>';
     		result = result + '        <div class="project_tabs_inn_table">';
@@ -594,4 +607,27 @@ function flushEmployee(){
 		$("#employee_form").showHelpOnFocus();;
 		$("#employee_form").validateOnBlur(false, validationSettings);  
 	});
+</script>
+
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+  function exportFun(){
+	  $("#export-pop").next("div.export_pop").toggle();
+  }
+</script> 
+
+<!--  -->
+
+<script>
+function exportToPdf(projectId,projectName){
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&projectName="+projectName+"&exportType=pdf";
+}
+</script>
+
+<script>
+function exportToExcel(projectId,projectName){
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&projectName="+projectName+"&exportType=xls";
+}
 </script>

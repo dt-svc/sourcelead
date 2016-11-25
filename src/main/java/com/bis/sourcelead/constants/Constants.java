@@ -263,4 +263,6 @@ public class Constants {
     public static String VENDOR = "Vendor";
     
     public static String CLIENT = "Client";
+    
+    public static String[] PROJECT_ASSIGNED_EMPLOYEES = {"Employee","Email id","Project Start Date","Project End Date","Approved Hours","Rejected Hours","Wiating for Approval","Saved Hours"};	
 }

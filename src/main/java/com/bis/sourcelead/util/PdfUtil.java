@@ -21,9 +21,12 @@ import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.UserRole;
 import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -618,4 +621,110 @@ public class PdfUtil {
 		}
 		return contactsArray;
 	}
-}
+	public File getProjectEmployeesExportPdf(java.util.List<ProjectMembers> employeeList, String projectName,
+			Projects project, String projectManager) throws DocumentException {
+		String[] headers = Constants.PROJECT_ASSIGNED_EMPLOYEES;
+	    Document document = new Document(PageSize.LETTER.rotate());
+	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+	    File file = new File(projectName+"_"+dateFormat.format(new Date())+".pdf");
+	    try {
+	    	// Get an instance of PdfWriter and create a Table.pdf file as an output.
+	        PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+	        Font blue = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLUE);
+	        Chunk blueText = new Chunk("Project Name : " +projectName, blue);
+            Paragraph para = new Paragraph();
+            para.add(blueText);
+            document.add(para);
+	        
+	        List orderedList = new List(List.ORDERED);
+	        
+	        orderedList.add(new ListItem("Project Name :"+projectName));
+	        orderedList.add(new ListItem("Manager :"+projectManager));
+	        if(project.getStartDate()!=null && project.getEndDate() !=null){
+	        	orderedList.add(new ListItem("Date :"+project.getStartDate()+" to "+project.getEndDate()));
+			 }else{
+				 orderedList.add(new ListItem("Date :"+project.getStartDate()));
+			 }
+	        document.add(orderedList);
+	        // Create an instance of PdfPTable. After that we transform the header and
+	        int[] columnWidths = new int[]{3, 5, 3,5, 2,3,3,5};
+            PdfPTable table = getPdfTable(headers,columnWidths); 
+            java.util.List<String[]> assignedEmpList = new ArrayList<>();
+            for(ProjectMembers projectMembers : employeeList){
+            	assignedEmpList.add(prepareEmployeeArray(projectMembers,headers));
+	        }
+	        
+	        for (String[] canArray: assignedEmpList) {
+                for (int i = 0; i < canArray.length; i++) {
+                    String datum = canArray[i];
+                    PdfPCell cell = new PdfPCell();
+                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+                    table.addCell(cell);
+                }
+	        }
+	        table.completeRow();
+	        
+	        document.addTitle("Project Employee Table");
+	        table.setSpacingBefore(15f);
+	        document.add(table);
+	        logger.info("Pdf table created !!");
+	  
+	    } catch (FileNotFoundException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } finally {
+	        document.close();
+	    }
+	        
+		return file;
+	}
+	
+	    
+
+	private String[] prepareEmployeeArray(ProjectMembers projectMember, String[] headers) {
+		
+		String empArray[] = new String[headers.length];
+			if (projectMember.getEmpName() != null && !"".equalsIgnoreCase(projectMember.getEmpName())) {
+				empArray[0] = projectMember.getEmpName();
+			}else{
+				empArray[0] = "--";
+			}
+			if (projectMember.getEmployee().getUser().getEmail() != null && !"".equalsIgnoreCase(projectMember.getEmployee().getUser().getEmail())) {
+				empArray[1] = projectMember.getEmployee().getUser().getEmail();
+			}else{
+				empArray[1] = "--";
+			}
+			if (projectMember.getProjectAssignedDateStr() != null && !"".equalsIgnoreCase(projectMember.getProjectAssignedDateStr())) {
+				empArray[2] = projectMember.getProjectAssignedDateStr();
+			}else{
+				empArray[2] = "--";
+			}
+			if (projectMember.getProjectEndDateStr() != null && !"".equalsIgnoreCase(projectMember.getProjectEndDateStr())) {
+				empArray[3] = projectMember.getProjectEndDateStr();
+			}else{
+				empArray[3] = "--";
+			}
+			if (projectMember.getApprovedHrs() != null && !"".equalsIgnoreCase(projectMember.getApprovedHrs())) {
+				empArray[4] = projectMember.getApprovedHrs();
+			}else{
+				empArray[4] = "--";
+			}
+			if (projectMember.getRejectedHrs() != null && !"".equalsIgnoreCase(projectMember.getRejectedHrs())) {
+				empArray[5] = projectMember.getRejectedHrs();
+			}else{
+				empArray[5] = "--";
+			}
+			if (projectMember.getSubmittedHrs() != null && !"".equalsIgnoreCase(projectMember.getSubmittedHrs())) {
+				empArray[6] = projectMember.getSubmittedHrs();
+			}else{
+				empArray[6] = "--";
+			}
+			if (projectMember.getDraftHrs() != null && !"".equalsIgnoreCase(projectMember.getDraftHrs())) {
+				empArray[7] = projectMember.getDraftHrs();
+			}else{
+				empArray[7] = "--";
+			}
+		return empArray;
+	}
+	
+	}
