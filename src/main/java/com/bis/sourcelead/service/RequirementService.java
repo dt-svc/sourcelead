@@ -13,6 +13,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 
@@ -65,7 +66,7 @@ public interface RequirementService {
 	
 	Integer validateJobId(Long id, Long orgLocation) throws Exception;
 
-	public File getExportRequirementFile(List<Requirement> requirementList, String orgName, String exportType)throws Exception;
+	public File getExportRequirementFile(List<Requirement> requirementList, String orgName, String exportType, TimeSheetSubmissionCount requirementSubCount)throws Exception;
 
 	public Boolean validateRequirementTitle(String jobName, Long orgLocationId) throws Exception;
 	
