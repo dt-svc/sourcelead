@@ -596,7 +596,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    if(projectApproverHierarchies.size()==1){
 	    	
 	    	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
-		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2){
+		    	if(approverHierarchy.getLevel() != null){
 		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
 		    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
 		    	}
@@ -1008,6 +1008,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	       	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
 	          		pm.setUserId(pm.getEmployee().getUser().getId().toString());
 	          	 }
+		      if(pm.getTerminateReason() != null){
+		    	  pm.setTerminateReason(pm.getTerminateReason());
+		      }
 	       	 
 	       	 if(pm.getEmployee()!=null){
 	
@@ -1040,7 +1043,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 
 		 
 		 myPM.setProjectMembersList(projectMembersArrList);
-		 myPM.setStatus(project.getProjectStatus().getValue());
+		 if(project.getProjectStatus() != null){
+			 myPM.setStatus(project.getProjectStatus().getValue());	 
+		 }
+		 
 		 
 		 return myPM;
 	}
