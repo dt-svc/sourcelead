@@ -64,6 +64,11 @@ public class RequirementSubmission {
 	@Enumerated(EnumType.STRING)
 	private ApplicantSubmissionStatus submissionStatus;
 	
+	
+	@Column(name = "NEED_APPLICANT_PERMIT")
+    private String needApplicantPermit;
+	
+	
 	@Column(name = "STATUS")
     private Integer status;
 	
@@ -264,6 +269,14 @@ public class RequirementSubmission {
 
 	public void setSubmissionStatus(ApplicantSubmissionStatus submissionStatus) {
 		this.submissionStatus = submissionStatus;
+	}
+
+	public String getNeedApplicantPermit() {
+		return needApplicantPermit;
+	}
+
+	public void setNeedApplicantPermit(String needApplicantPermit) {
+		this.needApplicantPermit = needApplicantPermit;
 	}
 
 	public Integer getStatus() {

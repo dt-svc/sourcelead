@@ -18,7 +18,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -262,7 +261,18 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 requirementSubmission.setOrgLocations(orgLocations);
 		 requirementSubmission.setSubmissionTemplateJsonStringValue(jsonStringvalues);
-		 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+		 
+		 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit"))){
+			 if(jsonObj.getString("needApplicantPermit").equals("Y")){
+				 requirementSubmission.setNeedApplicantPermit("Y");
+				 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
+			 }else{
+				 requirementSubmission.setNeedApplicantPermit("N");
+				 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			 }
+			 
+		 } 
+		
 		 requirementSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
 		 requirementSubmission.setCreatedBy(user.getUserCode());
 		 requirementSubmission.setCreatedDate(new Date());
