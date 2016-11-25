@@ -23,6 +23,7 @@
  	 $("#upcandidateStatus").val('');
 };
 </script>
+
 <style type="text/css">
 .candidate_wrap_table table tr td:first-child {
     padding: 0;
@@ -31,6 +32,8 @@
     padding-right: 5px;
 }
 </style>
+
+
 
 <%-- 
      @author : sarath kumar.
