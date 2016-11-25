@@ -4,6 +4,7 @@
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 
 <script src="resources/js/formvalidator.js"></script>
@@ -112,7 +113,15 @@
 				            	}
 		                     result = result +"<tr>";
 			                 result = result +"  <td><input type='checkbox' id='checkbox12'/></td>";
-			                 result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+			                
+			                 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\')">'; 
+			                   result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+			                 '</sec:authorize>';
+			                 
+			                 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\')">'; 
+			                  result = result +"  <td><div class='proj_show' onclick='#'><span>"+opt.firstName+" "+opt.lastName+"</span></div></td>";
+			                 '</sec:authorize>';
+			                 
 			                 result = result +"  <td><div><span>"+designation+"</span></div></td>";
 			                 if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
 			                	 {
@@ -741,7 +750,10 @@ function cancel(candidateId){
                   </div>                	
           </li>  
           
-          <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
+          
+           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
+              <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
+           </sec:authorize>
          
           <div class="clearfix"></div>
         </ul>
@@ -920,7 +932,7 @@ function exportToPdf(){
         $("#canDiv").removeAttr("onClick");
     }
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&exportType=pdf";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf";	
 	  }
 }
 
@@ -942,7 +954,7 @@ function exportToExcel(){
          $("#canDiv").removeAttr("onClick");
      }
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&exportType=xls";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls";	
 	  }
 }
 </script>

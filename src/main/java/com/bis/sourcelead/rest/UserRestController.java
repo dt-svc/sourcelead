@@ -438,6 +438,7 @@ public class UserRestController {
 			 * @param reason
 			 * @return
 			 */
+			 @PreAuthorize("hasAnyRole('ROLE_DELETE_PROJECT_EMPLOYEES')")
 			@RequestMapping(value = "/saveReason", method = RequestMethod.POST)
 			@ResponseBody String saveReason(
 					@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,

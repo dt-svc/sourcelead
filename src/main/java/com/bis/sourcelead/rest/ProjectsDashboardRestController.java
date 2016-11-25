@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -160,7 +161,7 @@ public class ProjectsDashboardRestController {
 	  * @return String
 	  * @throws Exception
 	  */
-	 
+	 @PreAuthorize("hasAnyRole('ROLE_EDIT_PROJECT')")
 	 @RequestMapping(value = "/updateProjectByProjectId", method = RequestMethod.POST)
 	 public String updateProjectByProjectId(@RequestParam(value="json", required=false) String json,@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
 
@@ -173,16 +174,17 @@ public class ProjectsDashboardRestController {
 	 }
 	 
 
-/**
- * update project task by task id	 
- * @author David Sammeta
- * @param taskId
- * @param fieldName
- * @param fieldValue
- * @return String
- * @throws Exception
- */
+	/**
+	 * update project task by task id	 
+	 * @author David Sammeta
+	 * @param taskId
+	 * @param fieldName
+	 * @param fieldValue
+	 * @return String
+	 * @throws Exception
+	 */
 	 
+	 @PreAuthorize("hasAnyRole('ROLE_EDIT_PROJECT_TASKS')")
 	 @RequestMapping(value = "/updateProjectTaskById", method = RequestMethod.POST)
 	 public String updateProjectTaskById(@RequestParam(value="taskId", required=false) String taskId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue) throws Exception{ 
 		    
@@ -204,6 +206,7 @@ public class ProjectsDashboardRestController {
 	  * @return JSON
 	  * @throws Exception
 	  */
+	 @PreAuthorize("hasAnyRole('ROLE_CREATE_PROJECT_TASKS')")
 	 @RequestMapping(value = "/saveProjectTasks" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveProjectTasks(@RequestParam(value="json", required=false) String json,
 			 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
@@ -237,6 +240,7 @@ public class ProjectsDashboardRestController {
 	 * @return JSON
 	 * @throws Exception
 	 */
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_EMPLOYEES')")
 	 @RequestMapping(value = "/getProjectEmployeeListById", method = RequestMethod.POST)
 	 public @ResponseBody String  getProjectEmployeeListById(@RequestParam(value="projectId", required=false) Long projectId) throws Exception{ 
 		 String resultJson;
@@ -253,6 +257,7 @@ public class ProjectsDashboardRestController {
 	  * @return JSON
 	  * @throws Exception
 	  */
+	 @PreAuthorize("hasRole('ROLE_CREATE_PROJECT_EMPLOYEES')")
 	 @RequestMapping(value = "/addEmployeeForProjectDashboard",  method = RequestMethod.POST)
 		public @ResponseBody  String addEmployeeForProjectDashboard(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		   String  json1 = "{"+json+"}";
@@ -299,6 +304,8 @@ public class ProjectsDashboardRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
+	
+	 @PreAuthorize("hasRole('ROLE_CREATE_PROJECT_EMPLOYEES')")
 	 @RequestMapping(value = "/storeAssignEmployee",  method = RequestMethod.POST)
 		 public @ResponseBody  String storeAssignEmployee(
 				@RequestParam(value="ProjectId", required=false) Long projectId,

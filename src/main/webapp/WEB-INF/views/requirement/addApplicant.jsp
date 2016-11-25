@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="resources/css/style.css" />
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link rel="stylesheet" href="resources/css/jquery-ui.css" type="text/css" >
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
 
