@@ -62,11 +62,15 @@ function interviews(dateRange){
 	            				
 	            				for (var i=0; i<json.length; i++){
 	            		       		var report = json[i];
+	            		       		var clientName = "---";
+	            		       		if(report.clientName != null && report.clientName != "" && report.clientName != 'undefined'){
+	            		       			clientName = report.clientName;
+	            		       		}
 	            						resultToday = resultToday+'	  <tr>';
 	            						resultToday = resultToday+'	   <td><div><span>'+report.candidateName+'</span></div></td>';
 	            						resultToday = resultToday+'	   <td><div class="tbldata-dotdot-vsm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementId='+report.requirementId+'">'+report.requirementTitle+'</a></div></td>';
-	            						resultToday = resultToday+'	   <td><div><span>'+report.interviewStartDateTimeStr+'</span></div></td>';
-	            						resultToday = resultToday+'	   <td><div><span>'+report.clientName+'</span></div></td>';
+	            						resultToday = resultToday+'	   <td><div class="tblminwidth-150">'+report.interviewStartDateTimeStr+'</div></td>';
+	            						resultToday = resultToday+'	   <td><div><span>'+clientName+'</span></div></td>';
 	            						resultToday = resultToday+'	 </tr>';
 	            					}
 	            					resultToday = resultToday+'	 </tbody>';

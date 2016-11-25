@@ -332,7 +332,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		/**
 		 * this block is for submissions for project member
 		*/
-		if (jsonObj.has("employeeMaxCount")){
+		/*if (jsonObj.has("employeeMaxCount")){
 		String employeeMaxCount = jsonObj.getString("employeeMaxCount");
 		if(StringUtils.isNotEmpty(employeeMaxCount)){
 		int empMaxCount = Integer.parseInt(employeeMaxCount);
@@ -340,7 +340,18 @@ public class ProjectsServiceImpl implements ProjectsService{
 			Employees emp = employeesService.getEmployee(jsonObj.getString("employeeId"+c));
 			commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
 			}
-		}
+		 }
+		}*/
+		
+		
+		/**
+		 * this block is for submissions for project member
+		*/
+		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(updatedProjects.getId());
+		if (projectMembersList != null && !projectMembersList.isEmpty()){
+			for (ProjectMembers pm : projectMembersList) {
+		  	  commonUtil.storeTimesheetSubmissionRecords(pm.getEmployee().getUser());
+			}
 		}
 		
 		/*

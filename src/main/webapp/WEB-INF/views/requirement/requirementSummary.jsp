@@ -450,15 +450,15 @@ function sideBar(requirementId){
 				       
 				        if(json.state !='' && json.state != 'undefined' && json.city !='' && json.city != 'undefined')
 				        	{
-				        result = result+'                  <li><i class="fa fa-map-marker"></i><span>'+json.country+', '+json.state+', '+json.city+'</span></li>';
+				        result = result+'<li><i class="fa fa-map-marker"></i><span title="'+json.country+', '+json.state+', '+json.city+'">'+json.country+', '+json.state+', '+json.city+'</span></li>';
 				        	}
 				        else if(json.state !='' && json.state != 'undefined')
 				        	{
-					    result = result+'                  <li><i class="fa fa-map-marker"></i><span>'+json.country+', '+json.state+'</span></li>';
+					    result = result+' <li><i class="fa fa-map-marker"></i><span title="'+json.country+', '+json.state+'">'+json.country+', '+json.state+'</span></li>';
 
 				        	}
 				        else{
-					     result = result+' <li><i class="fa fa-map-marker"></i><span>'+json.country+'</span></li>';
+					     result = result+' <li><i class="fa fa-map-marker"></i><span title="'+json.country+'">'+json.country+'</span></li>';
 
 				        }
 				        result = result+'                </ul>';
@@ -519,10 +519,10 @@ function sideBar(requirementId){
 					    result = result+'    <ul class="project-tabs-menu">';
 					    result = result+'      <li class="current"><a href="#tab-1" onclick="requirementDetails('+requirementId+');">Details</a></li>';
 					   
-					    if(json.requirementSubmissionStatus != 'SUBMITTED'){
-					    	result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+');">Pipeline</a></li>';
-					    	 result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
-					    }
+					    if(json.requirementSubmissionStatus != 'SUBMITTED' && json.requirementSubmissionStatus != 'CANCEL' && json.requirementSubmissionStatus != 'DRAFT' && json.requirementSubmissionStatus != 'ONHOLD' && json.requirementSubmissionStatus != 'FILLEDCLOSED'){
+                            result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+');">Pipeline</a></li>';
+                             result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
+                        }
 					   
 					    result = result+'      <div class="clearfix"></div>';
 					    result = result+'    </ul>';

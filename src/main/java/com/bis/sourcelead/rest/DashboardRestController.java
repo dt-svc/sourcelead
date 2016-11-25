@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -335,7 +337,12 @@ public class DashboardRestController {
 				
 				requirementInterview.setRequirementId(requirementInterview.getSubmissionId().getRequirement().getId().toString());
 				
-				requirementInterview.setInterviewStartDateTimeStr(requirementInterview.getStartTime().toString());
+				//requirementInterview.setInterviewStartDateTimeStr(requirementInterview.getStartTime().toString());
+				
+				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
+				String commonDateFormat = standardFormat.format(requirementInterview.getStartTime());
+				requirementInterview.setInterviewStartDateTimeStr(commonDateFormat.toString());
+				
 				
 				if(requirementInterview.getSubmissionId().getRequirement().getClientId() != null){
 					
