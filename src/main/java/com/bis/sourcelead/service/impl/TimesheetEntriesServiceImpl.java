@@ -403,7 +403,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              }
 						              else{
 						            	      sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
-						            	      sb.append("<option value=''>--select option--</option>");
+						            	      sb.append("<option value=''>--select task--</option>");
 						            	      for(ProjectTasks pt   : ProjectTasksList){
 										    	       if(timesheetEntries.getProjectTask() != null && pt.getId().equals(timesheetEntries.getProjectTask().getId())){
 										    	    	   sb.append("<option value='"+pt.getId()+"' selected>"+pt.getTaskName()+"</option>");
@@ -557,7 +557,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              else{
 						            	  
                                           sb.append("     <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
-                                          sb.append("<option value=''>--select option--</option>");
+                                          sb.append("<option value=''>--select task--</option>");
                                           for(ProjectTasks pt   : ProjectTasksList){
 									              sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");   
 									      }
