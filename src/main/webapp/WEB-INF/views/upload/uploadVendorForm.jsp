@@ -2,6 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page trimDirectiveWhitespaces="true" %>
 
 <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
@@ -38,13 +39,16 @@ margin:10px 220px 0;
           <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 		  <!-- Download File button -->
 		  <div class="clearfix mb row">
-			<div class="col-xs-12 col-md-6">
+			<sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS')">
+			<div class="col-xs-12 col-md-6">			
 			 <a href="<c:url value='/downloadVendorTemplate?name=Vendor'/>">
 			 <button class="btn btn-success btn-block" type="button">
 					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Vendor Template
 			</button>
 			</a>
 			</div>
+			</sec:authorize>
+			<sec:authorize access="hasAnyRole('ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
 			<div class="col-xs-12 col-md-6">
 			 <a href="<c:url value='/downloadVendorTemplate?name=Contact'/>">
 			 <button class="btn btn-warning btn-block" type="button">
@@ -52,6 +56,7 @@ margin:10px 220px 0;
 			</button>
 			</a>
 			</div>
+			</sec:authorize>
 			</div>
 			<!-- Attach File button -->
 			

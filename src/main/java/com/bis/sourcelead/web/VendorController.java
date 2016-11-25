@@ -175,7 +175,7 @@ public class VendorController {
 		return model;
 	}
 
-	@PreAuthorize("hasRole('ROLE_VENDOR_BULK_IMPORTS')")
+	@PreAuthorize("hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')")
 	 @RequestMapping(value = "/uploadVendorForm")
 		public ModelAndView uploadVendorForm(HttpServletRequest request) {
 		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
