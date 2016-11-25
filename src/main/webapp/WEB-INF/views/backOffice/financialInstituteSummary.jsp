@@ -362,7 +362,7 @@ overflow: visible;
 			   	     	result = result+'<tr>';
 			   	        result = result +'<td><div class="tblminwidth-75">'+(i+1)+'</div></td>';
 			   	        result = result +'<td><div class="tblminwidth-75">'+report.transDateStr+'</div></td>';
-					   	result = result +'<td><div class="tbldata-dotdot-me">'+transDesc+'</div></td>';
+					   	result = result +'<td><div class="tbldata-dotdot-me" title="'+transDesc+'">'+transDesc+'</div></td>';
 					   	result = result +'<td><div class="tbldata-dotdot-100">'+debitAmount+'</div></td>';
 					   	result = result +'<td><div class="tbldata-dotdot-100">'+creditAmount+'</div></td>';
 					   	result = result +'<td>';
@@ -389,9 +389,17 @@ overflow: visible;
 	   	    	    $("#financialTransactionsList").empty();  
 	   	    	    $("#financialTransactionsList").append(result)
 	   	    	    
-	   	    	    $("#totalDebitAmount").val(totalDebitAmount+" Cr");  
+	   	    	     var paymentType = '';
+	   	     	    
+	   	     	    if(totalBalanceAmount < 0){
+	   	     	       paymentType = 'Dr'
+	   	     	    }else{
+	   	     	       paymentType = 'Cr'
+	   	     	    }
+	   	    	    
+	   	    	    $("#totalDebitAmount").val(totalDebitAmount+" Dr");  
 	   	    	    $("#totalCreditAmount").val(totalCreditAmount+" Cr");  
-	   	    	    $("#totalBalanceAmount").val(totalBalanceAmount+" Cr");  
+	   	    	    $("#totalBalanceAmount").val(totalBalanceAmount+" " +paymentType);  
 	   	    	    if(financialInstitute != null && financialInstitute !="" && financialInstitute !="undefined"){
 	   	    	    	if(financialInstitute == 'amex'){
 	   	    	    		$("#financialInstitutionsName").val('American Exchange Credit Card');  
@@ -465,7 +473,7 @@ function getTransactionImports(){
 	   	     	    var report = json[i];
 		   	     	result = result+'<tr>';
 		   	        result = result +'<td><div class="tbldata-dotdot-vsm">'+(i+1)+'</div></td>';
-		   	 	    result = result +'<td><div class="tbldata-dotdot-big pull-left">'+report.fileName+'</div><span class="pull-left ml10" title="Download File"><a href=\"'+sourceleadUrl+'/downloadTransactionFile?fileId='+report.id+'\"><i class="fa fa-download"></i></a></span></td>';
+		   	 	    result = result +'<td><div class="tbldata-dotdot-big pull-left" title="'+report.fileName+'">'+report.fileName+'</div><span class="pull-left ml10" title="Download File"><a href=\"'+sourceleadUrl+'/downloadTransactionFile?fileId='+report.id+'\"><i class="fa fa-download"></i></a></span></td>';
 		   	        result = result +'<td><div class="tblminwidth-75">'+report.fromDateStr+'</div></td>';
 				   	result = result +'<td><div class="tbldata-dotdot-me">'+report.toDateStr+'</div></td>';
 		   	        result = result +'</tr>';
