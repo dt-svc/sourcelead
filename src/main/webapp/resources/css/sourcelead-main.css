@@ -16,7 +16,7 @@ body {
 	background-color: #e1e6fa;
 	font-size: 14px;
 	color: #333;
-	font-family: 'Roboto', sans-serif;
+	font-family: 'Roboto', sans-serif  !important;
 	min-height: 100%;
 }
 img {
@@ -572,7 +572,7 @@ ul.timesheet-menu li a {
 }
 ul.timesheet-menu li a::before {
 	color: #f0ad4e;
-	content: "ïˆ­";
+	content: "";
 	font-family: fontawesome;
 	padding-right: 5px;
 }
@@ -3014,11 +3014,12 @@ input:checked + .slider:before {
 	height:34px;
 	line-height:34px;
 }
-
 div.heightScroll {
-	height:300px;
-	overflow-y:scroll;
-	border-bottom:1px solid #ccc;
+/*	height:300px;*/
+	min-height:30px;
+    max-height:300px;
+    overflow-y:auto;
+    border-bottom:1px solid #ccc;
 }
 .divskill table {
 	border-collapse: collapse;
@@ -4210,8 +4211,9 @@ inst-search .col-md-9{
     top: 5px;
 }
 .instsearch{
-	background: #fff;
+	background: #ccc;
 	padding: 10px 10px;
+	
 	
 }
 .require_wrap_details_cta.require_education{
@@ -4327,13 +4329,16 @@ background: #fdba5b;
 .accountlist-head ul li{
 	list-style-type: none;
 	float: left;
-	padding: 10px 0;
+	margin: 10px 0;
+	padding: 0 10px;
+	border-right: 1px solid #ccc;
 	position: relative;
 }
 .accountlist-head ul li a{
-	border-right: 1px solid #ccc;
 	color: #333;
-	padding: 0 10px;
+}
+.accountlist-head ul li:last-child{
+	border-right: 1px solid #fff;
 }
 .accountlist-head ul li a:hover{
 	color: #909090;
@@ -4431,6 +4436,27 @@ border-radius: 5px;
 .errInfo.erro-file{ min-height: 250px;}
 import-tranhd  [class*="col-md-"]{
 	padding: 0 10px;
+}
+.timesheet_head.summary_head ul{
+	padding: 0;
+	float: left;
+}
+.timesheet_head.summary_head ul li{
+	margin-top: 0;
+	margin-bottom: 0;
+	float: left;
+}
+.timesheet_head.summary_head ul li:last-child{
+	border-right: 0;
+}
+.summary_head div.approved_pop{
+	left: 0;
+}
+.require_wrap_table.chosen-table{
+  overflow: visible;
+}
+.require_wrap_table.table-ttab {
+  overflow-y: visible;
 }
 /* import fiels ends */
 /* media 320px */
