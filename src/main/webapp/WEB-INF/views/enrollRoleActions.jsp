@@ -17,9 +17,9 @@
 <script type="text/javascript">
 window.onload = function () {
 	
-	var roleName = '${roleName}';
-	$("#role").val(roleName);
-	$("#role").append(roleName);
+	var roleDisplayName = '${roleDisplayName}';
+	$("#role").val(roleDisplayName);
+	$("#role").append(roleDisplayName);
  };
 </script>
 
