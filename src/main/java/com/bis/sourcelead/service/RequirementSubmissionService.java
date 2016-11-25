@@ -45,6 +45,10 @@ public interface RequirementSubmissionService {
 
 	RequirementSubmission getRequirementSubmissionByIdAndSubmissionStatus(Long submissionId,String submissionStatus)throws Exception;
 	
+	
+	RequirementSubmission getVendorSubmissionByClientSubmissionIdAndCLientLocationId(Long sourceSubmissionId, Long vendorLocationID);
+	
+	
 	RequirementSubmission getSubmissionsBySourceSubmissionId(Long sourceSubmissionId, Long orgLocationsId);
 	
 	RequirementSubmission getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(Long sourceSubmissionId, Long vendorLocationID);

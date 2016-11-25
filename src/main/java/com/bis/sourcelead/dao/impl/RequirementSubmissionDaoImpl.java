@@ -337,6 +337,23 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			}
 			return count;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementSubmission getVendorSubmissionByClientSubmissionIdAndCLientLocationId(Long clientSubmissionId,
+			Long clientOrgLocationId) {
+		
+
+		Session session = this.sessionFactory.getCurrentSession();
+		
+	     String query = "from RequirementSubmission rs where rs.id = :clientSubmissionId and rs.orgLocations.id =:clientOrgLocationId ";
+	     List<RequirementSubmission> vendorsubmissionList = session.createQuery(query).setLong( "clientSubmissionId", clientSubmissionId).setLong( "clientOrgLocationId", clientOrgLocationId).setCacheable(true).list();
+	   
+	     if(vendorsubmissionList != null && vendorsubmissionList.size() >0){
+				return vendorsubmissionList.get(0);
+			}
+	  return null;
+	}
 	
 	
 	/*

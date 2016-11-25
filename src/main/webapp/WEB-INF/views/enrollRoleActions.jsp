@@ -17,15 +17,20 @@
 <script type="text/javascript">
 window.onload = function () {
 	
-	var roleName = '${roleName}';
-	$("#role").val(roleName);
-	$("#role").append(roleName);
+	var roleDisplayName = '${roleDisplayName}';
+	$("#role").val(roleDisplayName);
+	$("#role").append(roleDisplayName);
  };
 </script>
 
 <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
+    <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
       <div class="pull-left">
         <h2>Role Actions</h2>
       </div>
@@ -151,6 +156,22 @@ function cancel(){
 	}
 
 </script>
+
+
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+  $(document).ready(function() {
+	   $("#export-pop").click(function(){
+	               $(".export_pop").slideToggle(200);
+	       });
+	   $("html").click(function() {
+	       $(".export_pop").slideUp(200);
+	   });
+	   $(".export_pop, #export-pop").click(function(e) {
+	       e.stopPropagation();
+	   });        
+	});  
+</script> 
     
     
 </body>

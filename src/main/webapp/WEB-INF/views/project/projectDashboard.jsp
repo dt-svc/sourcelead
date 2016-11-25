@@ -6,6 +6,8 @@
 <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
@@ -19,11 +21,15 @@
   display: inline-block;
   float: none;
 }
-.project_wrap_table span{
+/* .project_wrap_table span{
 display: inline;
-}
+} */
  </style>
-
+<style type="text/css">
+.project_wrap {
+overflow-x: auto;
+}
+</style>
 <body>
       <!-- Content Area -->
        <section class="content-wraper">
@@ -66,7 +72,11 @@ display: inline;
                         </ul>
                     </div>                	
                 </li>
-				<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Create Project</a></li>		
+                
+                 <sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')"> 
+	                   	<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Create Project</a></li>		
+	             </sec:authorize>
+	                     
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
@@ -209,9 +219,19 @@ $(document).ready(function() {
 	  	    result = result + '<input type="hidden" name="projectId" id="projectId" value="'+projectId+'" >';
 	  	    result = result + '<div class="project_side_wrap_inn_tabs">';
 		  	result = result + '<ul class="project-tabs-menu">';
-		  	result = result + '<li class="current"><a href="#tab-1" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\');" >Employees</a></li>';
+		  	
+		  	result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_EMPLOYEES\')">'; 
+		  	result = result + '<li class="current"><a href="#tab-1" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',,\''+projectName+'\');" >Employees</a></li>';
+		  	result = result +'</sec:authorize>';
+		  	
+		  	result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\')">'; 
 		  	result = result + '<li><a href="#tab-2" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
+		  	result = result +'</sec:authorize>';
+		  	
+		  	result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\')">'; 
 		  	result = result + ' <li><a href="#tab-3" onClick="projectDetails('+projectId+');" >Details</a></li>';
+			result = result +'</sec:authorize>';
+			
 		  	result = result + ' <div class="clearfix"></div>';
 		  	result = result + ' </ul>';
 		  	 
@@ -235,7 +255,7 @@ $(document).ready(function() {
 		    $(".side_mask").fadeIn(200);
 			$("body").css('overflow-y', 'hidden');
 			
-		    projectEmployee(projectId,startDateStr,endDateStr,status);
+		    projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
  }
  </script> 
  
@@ -334,7 +354,14 @@ function filter(){
    		    		}
    		    		result = result +'<tr>';
    		    		result = result +'<td data-title="Id"><div><span>'+projectSequeneNumber+'</span></div></td>';
-   		    		result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span>'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
+
+   		    		
+   		    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\')">'; 
+   		    		  result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span>'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   		    		result = result +'</sec:authorize>';
+
+   		    		/*result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span class="tbldata-dotdot-vsm">'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';*/
+
    		    		result = result +'<td data-title="Manager">';
    		    		result = result +'<div><span>';
    		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined'){

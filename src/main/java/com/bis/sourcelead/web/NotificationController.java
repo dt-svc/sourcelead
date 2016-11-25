@@ -13,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.service.NotificationsService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
@@ -32,7 +34,8 @@ public class NotificationController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
-	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	/*
 	 * To change the notification mode as read
@@ -68,11 +71,34 @@ public class NotificationController {
 		return model;
 
 	}
+	
+	@RequestMapping(value = "/getNotificationtLists")
+	public @ResponseBody String getNotificationtLists(HttpServletRequest request) throws Exception {
+
+	    String resultJson;
+	    Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"userId");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		String locationCode =  (String) SourceLeadSessionManager.getSessionAttribute(request,"locationCode");
+		List<Notifications> notificationsList = notificationsService.getAllNotificationsListByUserId(userId,orgLocations.getOrg().getOrgCode(), locationCode);
+		if(notificationsList!=null){
+			calculateDays(notificationsList);
+			for(Notifications nl : notificationsList){
+				nl.setNotificationFirstName(nl.getNotificationFrom().getFirstName());
+				nl.setNotificationLastName(nl.getNotificationFrom().getLastName());
+				nl.setNotificationFormId(nl.getNotificationFrom().getId().toString());
+			}
+		}
+		resultJson = commonUtil.toJSON(notificationsList);
+		return resultJson;
+	}
+	
+	
 	/**
 	 * calculating the days between the project created date and current date 
 	 * @param notificationList
 	 * @throws ParseException
 	 */
+	
 	public void calculateDays(List<Notifications> notificationList) throws ParseException {
 		for (Notifications notifications : notificationList) {
 			// differentiating date and time

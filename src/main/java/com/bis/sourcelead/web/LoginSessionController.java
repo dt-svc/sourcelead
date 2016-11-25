@@ -107,8 +107,24 @@ public class LoginSessionController {
 			tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
 		}
 		
-		
 		SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
+		
+		
+		String[] modules = org.getModulesId().split(",");
+		for(int i = 0 ; i< modules.length ; i++){
+			if(modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)){
+				SourceLeadSessionManager.setSessionAttribute(request, "ats", "Y");
+			}
+			
+			if(modules[i].equalsIgnoreCase(Constants.MODULE_VMS_STR)){
+				SourceLeadSessionManager.setSessionAttribute(request, "vms", "Y");
+			}
+			
+			if(modules[i].equalsIgnoreCase(Constants.MODULE_TIMESHEET_STR)){
+				SourceLeadSessionManager.setSessionAttribute(request, "timesheet", "Y");
+			}
+		}
+		
 		
 		setLoginSession(request, authentication,user,userRole);
 		
@@ -143,6 +159,21 @@ public class LoginSessionController {
 			List<Tabs> tabsList = null;
 			if(org.getOrgType().equalsIgnoreCase("Company")){
 				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+			}
+			
+			String[] modules = org.getModulesId().split(",");
+			for(int i = 0 ; i< modules.length ; i++){
+				if(modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)){
+					SourceLeadSessionManager.setSessionAttribute(request, "ats", "Y");
+				}
+				
+				if(modules[i].equalsIgnoreCase(Constants.MODULE_VMS_STR)){
+					SourceLeadSessionManager.setSessionAttribute(request, "vms", "Y");
+				}
+				
+				if(modules[i].equalsIgnoreCase(Constants.MODULE_TIMESHEET_STR)){
+					SourceLeadSessionManager.setSessionAttribute(request, "timesheet", "Y");
+				}
 			}
 			
 			String userName = (String) authentication.getPrincipal();
@@ -302,10 +333,6 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "orgCode", org.getOrgCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "orgName", org.getOrgName());
 		SourceLeadSessionManager.setSessionAttribute(request, "website", org.getWebSite());
-		SourceLeadSessionManager.setSessionAttribute(request, "vms", org.getVms());
-		SourceLeadSessionManager.setSessionAttribute(request, "ats", org.getAts());
-		SourceLeadSessionManager.setSessionAttribute(request, "timesheet", org.getTimeSheet());
-		
 	}
 	
 	

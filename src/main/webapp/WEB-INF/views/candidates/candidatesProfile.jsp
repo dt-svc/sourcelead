@@ -4,7 +4,7 @@
 <script src="resources/js/bootstrap-select.min.js"></script>
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 
@@ -554,10 +554,11 @@ function candidateProfile(candidateId){
 							
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
 							if(json.status == 0){
+								'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CANDIDATE\')">'; 
 								result = result + '<div class="project_tabs_inn_head"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> ';
+								'</sec:authorize>';
 							}else{
-								result = result + '<div class="project_tabs_inn_head "> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
-
+								   result = result + '<div class="project_tabs_inn_head "> <sec:authorize access="hasAnyRole(\'ROLE_EDIT_CANDIDATE\')">  <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a></sec:authorize> <sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE\')"><a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> </sec:authorize>';
 							}
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details candidate_wrap_details">';	 
@@ -585,8 +586,15 @@ function candidateProfile(candidateId){
 							result = result +'		          <div class="select-skills">                                                                                                         ';
 							result = result +'		            <div class="divskill col-md-12">                                                                                                  ';
 							result = result +'		              <!-- Add skills div -->                                                                                                         ';
-							result = result +'		              <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
+							
+							if(window.candidateStatusGlobal == '0'){
+								result = result +'		              <div class="addSkills"> <a href="#" class="btn btn-primary" title="Add Skills"> <i class="fa fa-code"></i>Add Skills</a>         ';
+								result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>                                                       ';
+
+							}else{
+								result = result +'		              <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
 							result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div" onClick="removeSkillPopUp('+candidateId+');"></i>                                                       ';
+							}
 							result = result +'		                  <div class="form-horizontal clearfix">                                                                                      ';
 							result = result +'		                    <div class="clearfix div-padding">                                                                                        ';
 							result = result +'		                      <div class="col-md-10">                                                                                                 ';
@@ -904,8 +912,18 @@ function candidateSkillsList(candidateId){
 	                    	 var opt = json[i];   
 	                    	    result = result + '          <tr>';
 		                		result = result + '            <td><p class="form-control-static">'+opt.name+'</p></td>';
+		                		
+		                		if(window.candidateStatusGlobal == '0'){
+		                			result = result + '            <td><select id="scale" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);" >';
+		                			if(opt.scale == 'undefined'|| opt.scale==null || opt.scale== 0){
+			                			 result = result + '                <option selected=""disabled="">select</option>'; 
+				                	 }else{
+		                			result = result + '                <option selected="" value="'+opt.scale+'" disabled="">'+opt.scale+'</option>';
+				                	 }
+		                		}else{
+		                		
 		                		result = result + '            <td><select id="scale" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);" >';
-		                		result = result + '                <option selected="" disabled="">Select</option>';
+		                		result = result + '                <option selected="" value="'+opt.scale+'" disabled="">Select</option>';
 		                		
 		                		if(opt.scale == "Beginner"){
 		                			result = result + '<option selected>Beginner</option>';
@@ -932,7 +950,17 @@ function candidateSkillsList(candidateId){
 		                		}else{
 		                			result = result + '  <option>Master</option>';
 		                		}
+		                		}
 		                		result = result + '              </select></td>';
+		                		
+		                		 if(window.candidateStatusGlobal == '0'){ 
+		                			 result = result + '            <td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
+				                	 if(opt.totalExperience == 'undefined'|| opt.totalExperience==null || opt.totalExperience== 0){
+			                			 result = result + '                <option selected=""disabled="">select</option>'; 
+				                	 }else{
+		                			 result = result + '                <option selected="" value="'+opt.totalExperience+'" disabled="">'+opt.totalExperience+'</option>'; 
+		                		 }
+				                }else{
 		                		result = result + '            <td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
 		                		result = result + '                <option selected="" disabled="">Select</option>';
 		                		if(opt.totalExperience == "0"){
@@ -970,8 +998,14 @@ function candidateSkillsList(candidateId){
 		                		}else{
 		                			result = result + '<option>6</option>';
 		                		}
+		                		}
 		                		result = result + '              </select></td>';
+		                		
+		                		 if(window.candidateStatusGlobal == '0'){ 
+				                result = result + '            <td><div class="text-center"><a href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
+		                		 }else{
 		                		result = result + '            <td><div class="text-center"><a onclick="removeSkillById('+candidateId+', '+opt.id+');" href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
+		                		 }
 		                		result = result + '          </tr>';
 	                      } 
 	                     result = result +" </tbody>";
@@ -1106,7 +1140,7 @@ function removeSkillById(candidateId, skillId){
 								$("#employeeSubmissionDetailsList").empty();
 								var result = "";
 								result = result +'        <div class="clearfix design-view">';
-								result = result +'          <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Experience</h2>';
+								result = result +'          <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Employers</h2>';
 								result = result +'          <div class="row">';
 								result = result +'            <div class="col-md-12">';
 								result = result +'              <ul class="list-unstyled personal-info">';

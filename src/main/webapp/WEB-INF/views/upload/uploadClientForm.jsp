@@ -34,7 +34,7 @@ margin:10px 220px 0;
     <div class="content-area clearfix">
     <div id="loading"></div> 
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
-        <div class="row minHeight">
+        <div class="row minHyewtriuwe rwrghek	fghjqwehjgfwej tkjreight">
           <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 		  <!-- Download File button -->
 		  <div class="clearfix mb row">

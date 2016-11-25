@@ -161,6 +161,10 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT_DOCUMENT\')">'; 
 	                    		 	result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteClientDocument('+clientLocationId+','+orgRelationId+','+opt.id+');"></i>';
 	                    		 '</sec:authorize>';
+	                    		 
+	                    		 '<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_CLIENT_CONTACT_DOCUMENT\',\'ROLE_DELETE_CLIENT_CONTACT_DOCUMENT\')">';
+	                    			 result = result+'--';
+	                    		 '</sec:authorize>';
 	                    	 }
 	                    	 result = result+'	            </div></td>';
 	                    	 
@@ -246,7 +250,7 @@ function addDocument(clientLocationId,orgRelationId) {
 	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'	                            <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'	                            </span> </label>';
-	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="File not selected..." field-name="Document" data-validation="required validate_Space validatedoc">';
+	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Document" data-validation="required validate_Space validatedoc">';
 	result = result+'	                        </div>';
 	result = result+'	                    </div>  ';  
 	result = result+'	                  </div>   ';  
