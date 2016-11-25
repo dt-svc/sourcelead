@@ -363,8 +363,8 @@
 			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl	+ "/updateProjectByProjectId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&ProjectId=" + projectId,
-								success : function(data) {
+						url : sourceleadUrl + "/updateProjectByProjectId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&ProjectId=" + projectId,
+						success : function(data) {
 							projectDetails(projectId);
 						}
 					});
