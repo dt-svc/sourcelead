@@ -43,5 +43,5 @@ public interface RequirementSubmissionDao {
 	
 	public Integer getApplicantCountByrequirementIdandAssignedUsercode(Long requirementId, String userCode) throws Exception;
  
-	
+	RequirementSubmission getVendorSubmissionByClientSubmissionIdAndCLientLocationId(Long clientSubmissionId,Long clientOrgLocationId);
 }

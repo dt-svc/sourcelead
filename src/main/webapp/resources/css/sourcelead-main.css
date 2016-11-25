@@ -4338,7 +4338,7 @@ background: #fdba5b;
 	color: #333;
 }
 .accountlist-head ul li:last-child{
-	border-right: none;
+	border-right: 1px solid #fff;
 }
 .accountlist-head ul li a:hover{
 	color: #909090;
@@ -4453,7 +4453,10 @@ import-tranhd  [class*="col-md-"]{
 	left: 0;
 }
 .require_wrap_table.chosen-table{
-overflow: visible;
+  overflow: visible;
+}
+.require_wrap_table.table-ttab {
+  overflow-y: visible;
 }
 /* import fiels ends */
 /* media 320px */

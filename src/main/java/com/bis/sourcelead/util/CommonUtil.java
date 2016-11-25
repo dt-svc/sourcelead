@@ -13,9 +13,20 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+
 import org.hibernate.Session;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+56
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -547,7 +558,7 @@ public class CommonUtil {
 	        });
 	        return xstream.toXML(obj);
 	    }
-
+		
 	public String getBackOfficeSummaryFilters(JSONObject jsonObj) throws Exception {
 		String subquery1 = "";
 		String subquery2 = "";
@@ -607,5 +618,39 @@ public class CommonUtil {
 		return  subquery1+subquery2+subquery3;
 		
 	}
+
+		/**
+		 * @author Rajashekar create headers for file
+		 * @param createExcelsheet
+		 * @param style
+		 * @param headers
+		 * @return sheet
+		 */
+		public Sheet setExcelHeaders(Sheet createExcelsheet, CellStyle style, String[] headers) {
+			Row excelHeader = createExcelsheet.createRow(0);
+			for (int i = 0; i < headers.length; i++) {
+				Cell cell = excelHeader.createCell(i);
+				cell.setCellValue(headers[i]);
+				cell.setCellStyle(style);
+			}
+			return createExcelsheet;
+		}
+
+		/**
+		 * @author Rajashekar writes font style to headers
+		 * @param wb
+		 * @return CellStyle
+		 */
+		public CellStyle getCellStyle(Workbook wb) {
+			CellStyle style = wb.createCellStyle();
+			style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+			style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			Font font = wb.createFont();
+			font.setColor(HSSFColor.BLUE.index);
+			style.setFont(font);
+			return style;
+		}
+		
+
 		
 }

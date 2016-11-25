@@ -27,6 +27,24 @@ public class TimeSheetSubmissionCount {
 	private  String  approvalTimesheetsSubmissionsHoursCount;
 	
 	private  String  rejectedTimesheetsSubmissionsHoursCount;
+	
+	private Integer newRequirementCount;
+	
+	private Integer	draftRequirementCount;
+	
+	private Integer submittedRequirementCount;
+	
+	private Integer openRequirementCount;
+	
+	private Integer onHoldRequirementCount;
+	
+	private Integer cancelRequirementCount;
+	
+	
+	
+	
+	
+	
 	 
 
 	public Float getSavedTimesheetSubmissionCount() {
@@ -128,6 +146,53 @@ public class TimeSheetSubmissionCount {
 		this.rejectedTimesheetsSubmissionsHoursCount = rejectedTimesheetsSubmissionsHoursCount;
 	}
 
+	public Integer getNewRequirementCount() {
+		return newRequirementCount;
+	}
+
+	public void setNewRequirementCount(Integer newRequirementCount) {
+		this.newRequirementCount = newRequirementCount;
+	}
+
+	public Integer getDraftRequirementCount() {
+		return draftRequirementCount;
+	}
+
+	public void setDraftRequirementCount(Integer draftRequirementCount) {
+		this.draftRequirementCount = draftRequirementCount;
+	}
+
+	public Integer getSubmittedRequirementCount() {
+		return submittedRequirementCount;
+	}
+
+	public void setSubmittedRequirementCount(Integer submittedRequirementCount) {
+		this.submittedRequirementCount = submittedRequirementCount;
+	}
+
+	public Integer getOpenRequirementCount() {
+		return openRequirementCount;
+	}
+
+	public void setOpenRequirementCount(Integer openRequirementCount) {
+		this.openRequirementCount = openRequirementCount;
+	}
+
+	public Integer getOnHoldRequirementCount() {
+		return onHoldRequirementCount;
+	}
+
+	public void setOnHoldRequirementCount(Integer onHoldRequirementCount) {
+		this.onHoldRequirementCount = onHoldRequirementCount;
+	}
+
+	public Integer getCancelRequirementCount() {
+		return cancelRequirementCount;
+	}
+
+	public void setCancelRequirementCount(Integer cancelRequirementCount) {
+		this.cancelRequirementCount = cancelRequirementCount;
+	}
 	
 	
 }

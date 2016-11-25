@@ -125,6 +125,7 @@ public class RequirementServiceImpl implements RequirementService {
 	private UserRoleService userRoleService;
 	
 	
+	
 	 @Autowired
 	 private  RequirementSubmissionService requirementSubmissionService;
 	 
@@ -1343,6 +1344,11 @@ public class RequirementServiceImpl implements RequirementService {
 		} else {
 			globalVarsMap.put("jobInitiatorName", "--");
 		}
+		if (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle()) ) {
+			globalVarsMap.put("requirementName", requirement.getJobTitle());
+		} else {
+			globalVarsMap.put("requirementName", "--");
+		}
 
 		// setting the Recipient information
 		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
@@ -1368,8 +1374,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 
 		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-				signature, url, new Org());
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, new Org());
 		emailMessage.setSubject(subject);
 		emailMessage.setMessageBody(emailTemplate);
 
@@ -1378,6 +1383,16 @@ public class RequirementServiceImpl implements RequirementService {
 		String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, initiatorUser, loginOrgLocation, notificationScenario);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	@Override
 	public void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc,OrgLocations loginOrgLocation,String releasetype,StringBuilder location) throws Exception {
@@ -1416,7 +1431,7 @@ public class RequirementServiceImpl implements RequirementService {
 				 globalVarsMap.put("RequirementRate", "--");
 			}
 		 if (requirement.getClientId() != null) {
-			 globalVarsMap.put("clientname", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+			 globalVarsMap.put("clientname", requirement.getClientId().getLocationId().getOrg().getOrgName());
 			 } else {
 				 globalVarsMap.put("clientname", "--");
 			}
@@ -1597,12 +1612,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook) {
 		
-		CellStyle style = createExcelworkbook.createCellStyle();
-		style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
-		Font font = createExcelworkbook.createFont();
-		font.setColor(IndexedColors.BLACK.getIndex());
-		style.setFont(font);
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 
 		writeRow = createExcelsheet.createRow(1);
 		createExcelsheet.setColumnWidth(0, 10000);
@@ -1675,22 +1685,12 @@ public class RequirementServiceImpl implements RequirementService {
 		Cell cell12 = writeRow.createCell(1);
 		cell12.setCellValue("4");
 		cell12.setCellStyle(style);
-		createExcelsheet = setExcelHeader(createExcelsheet, style);
-
-		return createExcelsheet;
-	}
-
-	private Sheet setExcelHeader(Sheet createExcelsheet, CellStyle style) {
 		String headers [] = Constants.REQUIREMENT_EXCEL_HEADERS;
-		Row excelHeader = createExcelsheet.createRow(8);
-		 for (int i=0; i<headers.length;i++){
-		         Cell cell = excelHeader.createCell(i);
-		         cell.setCellValue(headers[i]);
-		         cell.setCellStyle(style);
-		     }
-		return createExcelsheet;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers);
 
+		return createExcelsheet;
 	}
+
 	@Override
 	public Boolean checkRequirementIsReleasedOrNot(Long requirementId,Long orgLocationId) throws Exception {
 		   

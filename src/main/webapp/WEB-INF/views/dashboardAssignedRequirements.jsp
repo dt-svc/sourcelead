@@ -77,7 +77,7 @@ function requirementList(){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
 		                     result = result +"<td><div>"+opt.id+"</div></td>";
-		                     result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobTitle+"</a></div></td>";
+		                     result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobTitle+"</a></div></td>";
 		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
 		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
 		                     }else{

@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -29,7 +30,10 @@ import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellRangeAddressList;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.DataValidation;
+import org.apache.poi.ss.usermodel.DataValidationConstraint;
+import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -41,7 +45,7 @@ import org.apache.poi.xssf.usermodel.XSSFDataValidationConstraint;
 import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.json.JSONObject;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,10 +54,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.AmexUploadFile;
-import com.bis.sourcelead.entity.BOTransactions;
+import com.bis.sourcelead.dao.UploadFileDao;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -62,8 +67,10 @@ import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UploadFileService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
  * 
@@ -88,19 +95,14 @@ public class UploadFileServiceImpl implements UploadFileService {
 	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	
-	
-	protected boolean isNullOrEmpty(String str) {
-		return (str == null || "".equals(str.trim()));
-	}
-	
 	@Override
-	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations, User user,String isMailChecked) throws Exception {
+	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations, User user,String isMailChecked, Org org, Long roleHierarchyId) throws Exception {
 
 		String isFileCreated;
 		String fileName = multipartFile.getOriginalFilename();
 
 		if (!fileName.toLowerCase().endsWith("csv")) {
-			isFileCreated = parseXlsxandXlsData(multipartFile, orgLocations,user,isMailChecked);
+			isFileCreated = parseXlsxandXlsData(multipartFile, orgLocations,user,isMailChecked,org,roleHierarchyId);
 		} else {
 			isFileCreated = parseCSVData(multipartFile,orgLocations,user,isMailChecked);
 		}
@@ -237,10 +239,12 @@ public class UploadFileServiceImpl implements UploadFileService {
 	 * @param orgLocations
 	 * @param user 
 	 * @param isMailChecked 
+	 * @param roleHierarchyId 
+	 * @param org 
 	 * @return List<UsersImport>
 	 * @throws FileNotFoundException
 	 */
-	private String parseXlsxandXlsData(MultipartFile multipartFile, OrgLocations orgLocations, User user, String isMailChecked) throws Exception {
+	private String parseXlsxandXlsData(MultipartFile multipartFile, OrgLocations orgLocations, User user, String isMailChecked, Org org, Long roleHierarchyId) throws Exception {
 
 		String isFileCreated = "failure";
 		String fileName = multipartFile.getOriginalFilename();
@@ -333,7 +337,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 							 if(isUserFound){
 								 if (row.getRowNum() > 0) {
 										count++;
-										 createXlsSheet(row, createExcelsheet, count,userImport,fileName);
+										 createXlsSheet(row, createExcelsheet, count,userImport,fileName,org,roleHierarchyId,orgLocations);
 									}
 							 }else{
 								 if(isMailChecked != null){
@@ -347,7 +351,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 					} else {
 						if (row.getRowNum() > 0) {
 							count++;
-							createXlsSheet(row, createExcelsheet, count,userImport,fileName);
+							createXlsSheet(row, createExcelsheet, count,userImport,fileName,org,roleHierarchyId,orgLocations);
 						}
 					}
 				}
@@ -489,10 +493,13 @@ private String getCellValueAsString(Cell cell, String fileName) {
  * @param rowIndex
  * @param userImport 
  * @param fileName 
+ * @param orgLocations 
+ * @param roleHierarchyId 
+ * @param org 
  * @throws IOException
  */
-	private void createXlsSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport, String fileName) throws IOException {
-
+	private void createXlsSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport, String fileName, Org org, Long roleHierarchyId, OrgLocations orgLocations) throws IOException {
+		String[] rolesList = getRolesList(org,orgLocations.getId(),roleHierarchyId);
 		Row writeRow = createExcelsheet.createRow(rowIndex);
 		if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 			
@@ -561,16 +568,16 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		}
 		if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
 			if(!fileName.endsWith("xlsx")){
-				createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8,fileName));
+				createExcelsheet.addValidationData(getDropDownListForCell(rolesList,8,fileName));
 			}else{
-				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.ROLE_LIST,8,createExcelsheet));
+				createExcelsheet.addValidationData(getXssfDropDownlist(rolesList,8,createExcelsheet));
 			}
 	        writeRow.createCell(8).setCellValue(row.getCell(8).toString());
 		} else {
 			if(!fileName.endsWith("xlsx")){
-				createExcelsheet.addValidationData(getDropDownListForCell(Constants.ROLE_LIST,8,fileName));
+				createExcelsheet.addValidationData(getDropDownListForCell(rolesList,8,fileName));
 			}else{
-				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.ROLE_LIST,8,createExcelsheet));
+				createExcelsheet.addValidationData(getXssfDropDownlist(rolesList,8,createExcelsheet));
 			}
 			writeRow.createCell(8).setCellValue("");
 		}
@@ -788,7 +795,27 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		return createExcelsheet;
 	}
 	
-	
+	/**
+	 * Prepares Headers for xls template
+	 * @param createExcelsheet
+	 * @return
+	 */
+	private Sheet setTemplateHeaders(Sheet sheet) {
+		
+		Row excelHeader = sheet.createRow(0);
+		excelHeader.createCell(0).setCellValue(Constants.EMPLOYEE_ID);
+		excelHeader.createCell(1).setCellValue(Constants.FIRST_NAME);
+		excelHeader.createCell(2).setCellValue(Constants.LAST_NAME);
+		excelHeader.createCell(3).setCellValue(Constants.EMAIL_ID);
+		excelHeader.createCell(4).setCellValue(Constants.PHONE_NUMBER);
+		excelHeader.createCell(5).setCellValue(Constants.RATE);
+		excelHeader.createCell(6).setCellValue(Constants.RATEPER);
+		excelHeader.createCell(7).setCellValue(Constants.DATEOFJOIN);
+		excelHeader.createCell(8).setCellValue(Constants.ROLE);
+		excelHeader.createCell(9).setCellValue(Constants.INVOICE_FREQUENCY);
+		excelHeader.createCell(10).setCellValue(Constants.DAY_HOURS);
+		return sheet;
+	}
 	
 	/**
 	 * write csv data to excel fromat
@@ -1001,6 +1028,41 @@ private String getCellValueAsString(Cell cell, String fileName) {
 	   validation.setShowErrorBox(true);
 	   return validation;
 	}
-	
 
+	@Override
+	public File getUserTemplate(Org org, Long orgLocationId, Long roleHierarchyId) throws FileNotFoundException {
+		Workbook wb = (Workbook) new HSSFWorkbook();
+		Sheet sheet = wb.createSheet("createuser");
+		sheet = setTemplateHeaders(sheet);
+		sheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6,"xls"));
+		String[] rolesList = getRolesList(org,orgLocationId,roleHierarchyId);
+	    sheet.addValidationData(getDropDownListForCell(rolesList,8,"xls"));
+		sheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9,"xls"));
+		File file = new File("createuser.xls");
+		FileOutputStream fos = new FileOutputStream(file);
+		try {
+			wb.write(fos);
+			fos.close();
+		} catch (IOException e) {
+			logger.error("template download failed due to "+e.getMessage());
+		}
+		return file;
+	}
+/**
+ * @author Rajashekar
+ * Reading roles from ROLE table and converted into an Array
+ * @param org
+ * @param orgLocationId
+ * @param roleHierarchyId
+ * @return String[]
+ */
+	private String[] getRolesList(Org org, Long orgLocationId, Long roleHierarchyId) {
+		List<String> list = new ArrayList<>();
+		List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocationId,roleHierarchyId);
+		for(Roles roles :rolesList){
+			list.add(roles.getDisplayName());
+		}
+		String [] roleList = list.toArray(new String[list.size()]);
+		 return roleList;
+	}
 }

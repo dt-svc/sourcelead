@@ -1,11 +1,11 @@
  <!-- Inteviews -->
       <div class="col-md-6">
-        <div class="clients_wrap_table dashboard-widget">
+        <div class="dashboard-widget">
           <h4 class="clearfix">Interviews
         <b class="dashboard-datepkr"><input type="text" class="input-sm" id="datepicker-int" readonly="readonly"><i class="fa fa-calendar"></i></b>  
           </h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-          <div class="clearfix require_wrap_table dashboard-data">
+          <div class="clearfix require_wrap_table dashboard-data clients_wrap_table">
             <ul class="nav nav-tabs">
               <li class="active" id="todayTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); interviews('today')">Today</a></li>
               <li id="upcomingTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); interviews('upcoming')">Upcoming</a></li>
@@ -62,11 +62,15 @@ function interviews(dateRange){
 	            				
 	            				for (var i=0; i<json.length; i++){
 	            		       		var report = json[i];
+	            		       		var clientName = "---";
+	            		       		if(report.clientName != null && report.clientName != "" && report.clientName != 'undefined'){
+	            		       			clientName = report.clientName;
+	            		       		}
 	            						resultToday = resultToday+'	  <tr>';
 	            						resultToday = resultToday+'	   <td><div><span>'+report.candidateName+'</span></div></td>';
 	            						resultToday = resultToday+'	   <td><div class="tbldata-dotdot-vsm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementId='+report.requirementId+'">'+report.requirementTitle+'</a></div></td>';
-	            						resultToday = resultToday+'	   <td><div><span>'+report.interviewStartDateTimeStr+'</span></div></td>';
-	            						resultToday = resultToday+'	   <td><div><span>'+report.clientName+'</span></div></td>';
+	            						resultToday = resultToday+'	   <td><div class="tblminwidth-150">'+report.interviewStartDateTimeStr+'</div></td>';
+	            						resultToday = resultToday+'	   <td><div><span>'+clientName+'</span></div></td>';
 	            						resultToday = resultToday+'	 </tr>';
 	            					}
 	            					resultToday = resultToday+'	 </tbody>';
