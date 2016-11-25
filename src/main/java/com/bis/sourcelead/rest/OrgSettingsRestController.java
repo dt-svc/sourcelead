@@ -196,6 +196,7 @@ public class OrgSettingsRestController {
 	   if(null != roles){
 		   roles.setActionId(actionIds);
 		   rolesService.storeRoles(roles);
+		   SourceLeadSessionManager.setSessionAttribute(request, "actionRolesMsg", "Action Roles Modified Successfully");
 	   }
 	   
 	return "success";
