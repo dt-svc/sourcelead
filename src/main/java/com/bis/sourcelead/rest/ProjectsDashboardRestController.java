@@ -1,9 +1,16 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -11,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +34,7 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -106,6 +115,9 @@ public class ProjectsDashboardRestController {
 	
 	 @Autowired
 	 EmailScenerioUtil emailScenerioUtil;
+	 
+	 @Autowired
+	 ClientVendorExport clientVendorExport;
 	 
 			
 		/**
@@ -321,12 +333,34 @@ public class ProjectsDashboardRestController {
 			 
 				return storeAssignEmployee;
 		}
-	 
-	/**
-	 * Checks String empty or null
-	 * @param string
-	 * @return boolean
-	 */
-
+	 /**
+	  * @author Rajashekar
+	  * 
+	  * Writes Projects Assgined employee data to excel and pdf based on exportType
+	  * @param projectId
+	  * @return
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/exportProjectEmployeeList")
+	 public void  exportProjectEmployeeList(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="projectName", required=false) String projectName,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		 ProjectMembers employeeList = projectsService.getProjectEmployeeListByProjectId(projectId);
+		 List<ProjectMembers> list = employeeList.getProjectMembersList();
+		 Projects project = projectsService.getProjectById(projectId);
+		 
+		 File file = clientVendorExport.getexportProjectEmployeeFile(list,projectName,exportType,project); 
+		 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();	
+		
+	  }
 	
 }
