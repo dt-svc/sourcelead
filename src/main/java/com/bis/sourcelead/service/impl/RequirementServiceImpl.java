@@ -1344,6 +1344,11 @@ public class RequirementServiceImpl implements RequirementService {
 		} else {
 			globalVarsMap.put("jobInitiatorName", "--");
 		}
+		if (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle()) ) {
+			globalVarsMap.put("requirementName", requirement.getJobTitle());
+		} else {
+			globalVarsMap.put("requirementName", "--");
+		}
 
 		// setting the Recipient information
 		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
@@ -1369,8 +1374,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 
 		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-				signature, url, new Org());
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, new Org());
 		emailMessage.setSubject(subject);
 		emailMessage.setMessageBody(emailTemplate);
 
@@ -1379,6 +1383,16 @@ public class RequirementServiceImpl implements RequirementService {
 		String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, initiatorUser, loginOrgLocation, notificationScenario);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	@Override
 	public void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc,OrgLocations loginOrgLocation,String releasetype,StringBuilder location) throws Exception {
@@ -1417,7 +1431,7 @@ public class RequirementServiceImpl implements RequirementService {
 				 globalVarsMap.put("RequirementRate", "--");
 			}
 		 if (requirement.getClientId() != null) {
-			 globalVarsMap.put("clientname", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+			 globalVarsMap.put("clientname", requirement.getClientId().getLocationId().getOrg().getOrgName());
 			 } else {
 				 globalVarsMap.put("clientname", "--");
 			}

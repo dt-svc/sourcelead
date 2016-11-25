@@ -41,6 +41,8 @@ public interface ProjectMembersService {
 
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId);
 	
+	public ProjectMembers getProjectMemberByUserIdAndProjectId(Long userId,Long projectId) throws Exception;
+	
 	public Integer  getAllProjectMembersCountByProjectId(Long id) throws Exception;
 	
 	public Integer updateProjectMemberDeletedReason(Long projectMemberId, String reason);

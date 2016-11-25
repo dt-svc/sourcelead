@@ -210,7 +210,7 @@ function uploadSave() {
      $('#clientNameDiv').find('p.jquery_form_error_message').remove();
      var res_field = document.upload_form.elements["uploadFile"].value;   
      var extension = res_field.substr(res_field.lastIndexOf('.') + 1).toLowerCase();
-     var allowedExtensions = ['xls', 'xlsx', 'csv'];
+     var allowedExtensions = ['xls', 'xlsx'];
      if (res_field.length > 0)
         {
              if (allowedExtensions.indexOf(extension) === -1) 

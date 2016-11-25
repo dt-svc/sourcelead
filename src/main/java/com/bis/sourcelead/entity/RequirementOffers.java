@@ -89,7 +89,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Transient
     private String clientName;
 	
-
+	@Transient
+    private Boolean requirementReleasedOrNot;
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -256,6 +259,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 	public void setClientName(String clientName) {
 		this.clientName = clientName;
+	}
+
+	public Boolean getRequirementReleasedOrNot() {
+		return requirementReleasedOrNot;
+	}
+
+	public void setRequirementReleasedOrNot(Boolean requirementReleasedOrNot) {
+		this.requirementReleasedOrNot = requirementReleasedOrNot;
 	}
 	
 	
