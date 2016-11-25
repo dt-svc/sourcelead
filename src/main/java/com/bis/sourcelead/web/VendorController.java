@@ -148,7 +148,7 @@ public class VendorController {
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	 
+	@PreAuthorize("hasRole('ROLE_CREATE_VENDOR_CONTACT')")
 	@RequestMapping(value = "/addVendorContact")
 	public ModelAndView addVendorContac(HttpServletRequest request){
 		ModelAndView model = new ModelAndView();
