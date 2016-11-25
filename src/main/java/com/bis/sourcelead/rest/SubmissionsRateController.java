@@ -56,11 +56,11 @@ public class SubmissionsRateController {
     
 	@RequestMapping(value = "/acceptOrRejectOrRateNegotiateApplicantRates")
 	@ResponseBody  String acceptOrRejectOrRateNegotiateApplicantRates(@RequestParam(value="rateStatus", required=false) String rateStatus,
-			@RequestParam(value = "applicantId", required = false) String applicantId,
+			@RequestParam(value = "candidateId", required = false) String candidateId,
 			 HttpServletRequest request) throws Exception {
 		 
 		 
-		   return "success";
+		    return "success";
 	 }	
 	
     private String toJSON(Object obj){
