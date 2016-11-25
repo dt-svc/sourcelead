@@ -557,10 +557,11 @@ public class CommonUtil {
 		 * @param createExcelsheet
 		 * @param style
 		 * @param headers
+		 * @param rowCount 
 		 * @return sheet
 		 */
-		public Sheet setExcelHeaders(Sheet createExcelsheet, CellStyle style, String[] headers) {
-			Row excelHeader = createExcelsheet.createRow(0);
+		public Sheet setExcelHeaders(Sheet createExcelsheet, CellStyle style, String[] headers, int rowCount) {
+			Row excelHeader = createExcelsheet.createRow(rowCount);
 			for (int i = 0; i < headers.length; i++) {
 				Cell cell = excelHeader.createCell(i);
 				cell.setCellValue(headers[i]);

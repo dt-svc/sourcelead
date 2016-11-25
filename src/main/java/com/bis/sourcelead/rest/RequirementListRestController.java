@@ -425,7 +425,10 @@ public class RequirementListRestController {
 			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			File file =null;
+			
+			TimeSheetSubmissionCount requirementSubCount = getRequirementCount(org,userRole,user);
 			for(Requirement requirement : requirementList){
 				if(requirement.getClientId() != null){
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
@@ -487,9 +490,9 @@ public class RequirementListRestController {
 					}
 					
 				}
-				 file = requirementService.getExportRequirementFile(requirementList1,org.getOrgName(),exportType);
+				 file = requirementService.getExportRequirementFile(requirementList1,org.getOrgName(),exportType,requirementSubCount);
 			}else{
-				 file = requirementService.getExportRequirementFile(requirementList,org.getOrgName(),exportType);
+				 file = requirementService.getExportRequirementFile(requirementList,org.getOrgName(),exportType,requirementSubCount);
 			}
 			 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 				if (mimeType == null) {
@@ -506,8 +509,62 @@ public class RequirementListRestController {
 			
 		 }
 		 
-		 
-		 /**
+		/**
+		 * @author Rajashekar
+		 * Returns requirements count 
+		 * @param loginOrgLocations
+		 * @param userRole
+		 * @param user
+		 * @return TimeSheetSubmissionCount pojo
+		 * @throws Exception
+		 */
+		 private TimeSheetSubmissionCount getRequirementCount(Org loginOrgLocations, String userRole, User user) throws Exception {
+			 TimeSheetSubmissionCount  timeSheetSubmissionCount = new TimeSheetSubmissionCount();
+				
+				Integer newCount = 0;
+				Integer draftCount = 0;
+				Integer submittedCount = 0;
+				Integer openCount = 0;
+				Integer onholdCount = 0;
+				Integer cancelCount = 0;
+				
+				List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocations.getId(),null,null,user.getId());
+		        	
+		        		  for(Requirement req :requirementList){
+		        			  if("NEW".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+		        				   newCount ++;
+		        			  }
+		        			  if("Draft".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+		        				  draftCount ++;
+		       			      }
+		        			  if("submitted".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+		        				  submittedCount ++;
+		       			      }
+		        			  if("open".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+		        				  openCount ++;
+		       			      }
+		        			  if("onhold".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+		        				  onholdCount ++;
+		       				     
+		       			      }
+		        			  if("CANCEL".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+		        				    cancelCount ++;
+		          				   
+		        			  }
+		        			  
+		        		  }
+		        		  
+		        		  timeSheetSubmissionCount.setNewRequirementCount(newCount);
+		        		  timeSheetSubmissionCount.setDraftRequirementCount(draftCount);
+	   				      timeSheetSubmissionCount.setSubmittedRequirementCount(submittedCount);
+	   				      timeSheetSubmissionCount.setOpenRequirementCount(openCount);
+	   				      timeSheetSubmissionCount.setOnHoldRequirementCount(onholdCount);
+	   				      timeSheetSubmissionCount.setCancelRequirementCount(cancelCount);
+						return timeSheetSubmissionCount;
+		}
+
+
+		/**
 		* @author sarath kumar
 		* 
 		* This method is used to download attachment of requirement

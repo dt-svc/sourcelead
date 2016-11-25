@@ -68,7 +68,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 			Sheet sheet = wb.createSheet(orgName + "_Clients_" + dateFormat.format(new Date()));
 			Row writeRow = null;
-			sheet = commonUtil.setExcelHeaders(sheet, style, clientHeaders);
+			sheet = commonUtil.setExcelHeaders(sheet, style, clientHeaders,0);
 			int row = 0;
 			for (OrgRelations orgRelations : clientsList) {
 				writeRow = sheet.createRow(row + 1);
@@ -135,7 +135,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 			Sheet sheet = wb.createSheet(orgName + "_Clients Contacts_" + dateFormat.format(new Date()));
 			Row writeRow = null;
-			sheet = commonUtil.setExcelHeaders(sheet, style, headers);
+			sheet = commonUtil.setExcelHeaders(sheet, style, headers,0);
 			int row = 0;
 			for (OrgSpoc OrgSpoc : vandorsContactList) {
 				writeRow = sheet.createRow(row + 1);
@@ -206,7 +206,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 			Sheet sheet = wb.createSheet(orgName + "_Vendor_" + dateFormat.format(new Date()));
 			Row writeRow = null;
-			sheet = commonUtil.setExcelHeaders(sheet, style, vendorHeaders);
+			sheet = commonUtil.setExcelHeaders(sheet, style, vendorHeaders,0);
 			int row = 0;
 			for (OrgRelations orgRelations : vandorsList) {
 				writeRow = sheet.createRow(row + 1);
@@ -246,7 +246,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 			Sheet sheet = wb.createSheet(orgName + "_Vendor Contacts_" + dateFormat.format(new Date()));
 			Row writeRow = null;
-			sheet = commonUtil.setExcelHeaders(sheet, style, headers);
+			sheet = commonUtil.setExcelHeaders(sheet, style, headers,0);
 			int row = 0;
 			for (OrgSpoc OrgSpoc : vandorsContactList) {
 				writeRow = sheet.createRow(row + 1);
@@ -288,7 +288,8 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 			Sheet sheet = wb.createSheet(projectName +"_"+ dateFormat.format(new Date()));
 			Row writeRow = null;
 			setExcelTitle(sheet,projectName,project,wb,writeRow,projectManager);
-			sheet = setExcelHeaders(sheet, style, headers);
+			int rowCount = 7;
+			sheet = commonUtil.setExcelHeaders(sheet, style, headers,rowCount);
 			int row = 7;
 			for (ProjectMembers projectMembers : employeeList) {
 				writeRow = sheet.createRow(row + 1);
@@ -310,15 +311,15 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		return file;
 	}
 
-	private Sheet setExcelHeaders(Sheet sheet, CellStyle style, String[] headers) {
-		Row excelHeader = sheet.createRow(7);
-		for (int i = 0; i < headers.length; i++) {
-			Cell cell = excelHeader.createCell(i);
-			cell.setCellValue(headers[i]);
-			cell.setCellStyle(style);
-		}
-		return sheet;
-	}
+//	private Sheet setExcelHeaders(Sheet sheet, CellStyle style, String[] headers) {
+//		Row excelHeader = sheet.createRow(7);
+//		for (int i = 0; i < headers.length; i++) {
+//			Cell cell = excelHeader.createCell(i);
+//			cell.setCellValue(headers[i]);
+//			cell.setCellStyle(style);
+//		}
+//		return sheet;
+//	}
 
 	private void setExcelTitle(Sheet sheet, String projectName, Projects project, Workbook wb, Row writeRow, String projectManager) {
 		
