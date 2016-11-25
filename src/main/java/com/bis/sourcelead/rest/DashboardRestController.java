@@ -88,7 +88,7 @@ public class DashboardRestController {
 	 * @author: Sammeta David
 	 */
 	
-	@PreAuthorize("hasRole('ROLE_VIEW_TIMESHEETS_APPROVAL','ROLE_VIEW_MY_TIMESHEETS')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_TIMESHEETS_APPROVAL','ROLE_VIEW_MY_TIMESHEETS')")
 	@RequestMapping(value = "/getTimeSheetSubmissionStatus")
 	public String getTimeSheetSubmissionStatus(HttpServletRequest request) throws Exception {
 
