@@ -125,6 +125,7 @@ public class RequirementServiceImpl implements RequirementService {
 	private UserRoleService userRoleService;
 	
 	
+	
 	 @Autowired
 	 private  RequirementSubmissionService requirementSubmissionService;
 	 
@@ -1597,12 +1598,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook) {
 		
-		CellStyle style = createExcelworkbook.createCellStyle();
-		style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
-		Font font = createExcelworkbook.createFont();
-		font.setColor(IndexedColors.BLACK.getIndex());
-		style.setFont(font);
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 
 		writeRow = createExcelsheet.createRow(1);
 		createExcelsheet.setColumnWidth(0, 10000);
@@ -1675,22 +1671,12 @@ public class RequirementServiceImpl implements RequirementService {
 		Cell cell12 = writeRow.createCell(1);
 		cell12.setCellValue("4");
 		cell12.setCellStyle(style);
-		createExcelsheet = setExcelHeader(createExcelsheet, style);
-
-		return createExcelsheet;
-	}
-
-	private Sheet setExcelHeader(Sheet createExcelsheet, CellStyle style) {
 		String headers [] = Constants.REQUIREMENT_EXCEL_HEADERS;
-		Row excelHeader = createExcelsheet.createRow(8);
-		 for (int i=0; i<headers.length;i++){
-		         Cell cell = excelHeader.createCell(i);
-		         cell.setCellValue(headers[i]);
-		         cell.setCellStyle(style);
-		     }
-		return createExcelsheet;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers);
 
+		return createExcelsheet;
 	}
+
 	@Override
 	public Boolean checkRequirementIsReleasedOrNot(Long requirementId,Long orgLocationId) throws Exception {
 		   

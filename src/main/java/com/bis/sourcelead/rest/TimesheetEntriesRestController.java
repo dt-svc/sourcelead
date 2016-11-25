@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,7 +70,8 @@ public class TimesheetEntriesRestController {
 	 * @return JSON
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/newTimesheet", method = RequestMethod.POST )    
+	@RequestMapping(value = "/newTimesheet", method = RequestMethod.POST )   
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_MY_TIMESHEETS','ROLE_VIEW_MY_TIMESHEETS','ROLE_EDIT_MY_TIMESHEETS','ROLE_WITHDRAW_MY_TIMESHEETS')")
 	public @ResponseBody String newTimesheet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

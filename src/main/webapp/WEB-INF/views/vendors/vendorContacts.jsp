@@ -371,7 +371,7 @@ function addContact(orgRelationID,clientLocationId) {
     result = result  +'	 </div>';
 	
 	
-	result = result  +'	 <div class="clearfix mb10" id="roleDiv" style="display: block;">';
+	/* result = result  +'	 <div class="clearfix mb10" id="roleDiv" style="display: block;">';
 	result = result  +'	 <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>';
 	result = result  +'	 <div class="col-md-12">';
 	result = result  +'	       <select class="form-control" id="role" name="roleType" field-name="Role" data-validation="required">';
@@ -382,7 +382,7 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'	 					<option value="8">Recruiter</option>';
 	result = result  +'	        </select>';
 	result = result  +'	 </div>';
-	result = result  +'	 </div>';
+	result = result  +'	 </div>'; */
 	
 	result = result  +'<div class="clearfix mb10" id="userRoleDiv" style="display: none;">';
 	result = result  +'<label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>';
@@ -562,16 +562,16 @@ function getSpocUserDetails(orgLocationId,orgRelationID){
 	        		 }
 	       
 	        		 if(json[3] != null && json[3] != ''){
-	        			$("#role").removeAttr("data-validation");
+	        			/* $("#role").removeAttr("data-validation");
 	        			$("#role" ).val('');
-        			    document.getElementById("roleDiv").style.display="none";
+        			    document.getElementById("roleDiv").style.display="none"; */
    	        			document.getElementById("userRoleDiv").style.display="";
    	        			$("#userRole").val(json[3]);
    	        			$("#userRoleText").val(json[4]);
 	        		 }else{
-	        			 $("#role").attr("data-validation", "required");
+// 	        			 $("#role").attr("data-validation", "required");
 	        			 $("#userRole" ).val('');
-	        			 document.getElementById("roleDiv").style.display="";
+// 	        			 document.getElementById("roleDiv").style.display="";
 	        			 document.getElementById("userRoleDiv").style.display="none";
 	        		 }
 			      	 
