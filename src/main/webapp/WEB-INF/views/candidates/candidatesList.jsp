@@ -87,7 +87,7 @@
 	                     result = result +"    <th>Position type</th>"; 
 	                     result = result +"    <th>Email</th>"; 
 	                     result = result +"    <th>Mobile</th>"; 
-	                     result = result +"    <th>Address</th>"; 
+	                     result = result +"    <th>Location</th>"; 
 	                     result = result +"    <th>Last Update</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
