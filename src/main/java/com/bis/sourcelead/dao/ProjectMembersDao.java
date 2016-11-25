@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.enums.Primary;
-import com.bis.sourcelead.service.ProjectMembersService;
 
 public interface ProjectMembersDao {
 
