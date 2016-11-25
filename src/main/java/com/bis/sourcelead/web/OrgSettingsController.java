@@ -126,6 +126,13 @@ public class OrgSettingsController {
 			 model.addObject("roleId",roleId);
 			 model.addObject("roleName",roles.getDisplayName());
 			 model.setViewName("enrollRoleActions");
+			 
+			 String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "actionRolesMsg");
+				if(!isNullOrEmpty(msg)){
+					model.addObject("msg", msg);
+					SourceLeadSessionManager.removeSessionAttribute(request, "actionRolesMsg");
+				}
+				
 			}
 			else{
 				model.setViewName("registration/persmissionDenied");
@@ -133,6 +140,10 @@ public class OrgSettingsController {
 		
 		return model;
 
+	}
+	
+	protected boolean isNullOrEmpty(String str) {
+		return str == null || "".equals(str.trim());
 	}
 	
 	
