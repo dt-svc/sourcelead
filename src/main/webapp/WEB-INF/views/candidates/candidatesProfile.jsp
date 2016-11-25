@@ -954,7 +954,6 @@ function candidateSkillsList(candidateId){
 		                		
 		                		 if(window.candidateStatusGlobal == '0'){ 
 		                			 result = result + '            <td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
-				                	 alert(opt.totalExperience);
 				                	 if(opt.totalExperience == 'undefined'|| opt.totalExperience==null || opt.totalExperience== 0){
 			                			 result = result + '                <option selected=""disabled="">select</option>'; 
 				                	 }else{
