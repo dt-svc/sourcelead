@@ -82,7 +82,12 @@ public class BackOfficeRestController {
 		boamexTrans.setFinancialInstituteName("American Exchange Credit Card");
 		boamexTrans.setDebitAmount(boamexDebitAmount);
 		boamexTrans.setCreditAmount(boamexCreditAmount);
-		boamexBalanceAmount = boamexCreditAmount - boamexDebitAmount;
+		if(boamexDebitAmount < 0){
+			boamexBalanceAmount = boamexCreditAmount + (boamexDebitAmount);
+		}else{
+			boamexBalanceAmount = boamexCreditAmount - boamexDebitAmount;
+		}
+		
 		boamexTrans.setBalanceAmount(boamexBalanceAmount);
 		boamexTrans.setIdentity("amex");
 		
@@ -105,7 +110,12 @@ public class BackOfficeRestController {
 		boComericaTrans.setFinancialInstituteName("Comerica Bank");
 		boComericaTrans.setDebitAmount(commericaDebitAmount);
 		boComericaTrans.setCreditAmount(commericaCreditAmount);
-		commericabalanceAmount = commericaCreditAmount - commericaDebitAmount;
+		if(commericaDebitAmount < 0){
+			commericabalanceAmount = commericaCreditAmount + (commericaDebitAmount);
+		}else{
+			commericabalanceAmount = commericaCreditAmount - commericaDebitAmount;
+		}
+		
 		boComericaTrans.setBalanceAmount(commericabalanceAmount);
 		boComericaTrans.setIdentity("comerica");
 		
@@ -128,7 +138,12 @@ public class BackOfficeRestController {
 		boJmpcTrans.setFinancialInstituteName("Chase Bank");
 		boJmpcTrans.setDebitAmount(jmpcDebitAmount);
 		boJmpcTrans.setCreditAmount(jmpcCreditAmount);
-		jmpcBalanceAmount = jmpcCreditAmount - jmpcDebitAmount;
+		if(jmpcDebitAmount < 0){
+			jmpcBalanceAmount = jmpcCreditAmount + (jmpcDebitAmount);
+		}else{
+			jmpcBalanceAmount = jmpcCreditAmount - jmpcDebitAmount;
+		}
+		
 		boJmpcTrans.setBalanceAmount(jmpcBalanceAmount);
 		boJmpcTrans.setIdentity("jmpc");
 		

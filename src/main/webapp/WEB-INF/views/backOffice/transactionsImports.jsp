@@ -47,7 +47,7 @@ line-height: 30px;
 						  <div class="row">
 						  <div class="col-md-5">
 							  <select class="chosen-select" id="financialInstituteName" name="financialInstituteName" field-name="Transaction Type" data-validation="required">
-							  	<option value="">-- Select Transaction type --</option>
+							  	<option value="">-- Select Financial Institute --</option>
 							  	<option value="American Exchange Credit Card">American Exchange Credit Card</option>
 							  	<option value="Comerica Bank">Comerica Bank</option>
 							  	<option value="Chase Bank">Chase Bank</option>
@@ -78,7 +78,7 @@ line-height: 30px;
 			  <button class="btn btn-sm btn-primary" id="upload_button" type="submit" onclick = "check();uploadSave();checkFile();">
 				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
 			  </button>
-			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:location.href = '<c:url value='/usersList'/>'">
+			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:location.href = '<c:url value='/finance'/>'">
 				<i aria-hidden="true" class="fa fa-times"></i>&nbsp;&nbsp;&nbsp;Cancel
 			  </button>
 			  </div>
