@@ -585,8 +585,15 @@ function candidateProfile(candidateId){
 							result = result +'		          <div class="select-skills">                                                                                                         ';
 							result = result +'		            <div class="divskill col-md-12">                                                                                                  ';
 							result = result +'		              <!-- Add skills div -->                                                                                                         ';
-							result = result +'		              <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
+							
+							if(window.candidateStatusGlobal == '0'){
+								result = result +'		              <div class="addSkills"> <a href="#" class="btn btn-primary" title="Add Skills"> <i class="fa fa-code"></i>Add Skills</a>         ';
+								result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>                                                       ';
+
+							}else{
+								result = result +'		              <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
 							result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div" onClick="removeSkillPopUp('+candidateId+');"></i>                                                       ';
+							}
 							result = result +'		                  <div class="form-horizontal clearfix">                                                                                      ';
 							result = result +'		                    <div class="clearfix div-padding">                                                                                        ';
 							result = result +'		                      <div class="col-md-10">                                                                                                 ';
@@ -904,8 +911,18 @@ function candidateSkillsList(candidateId){
 	                    	 var opt = json[i];   
 	                    	    result = result + '          <tr>';
 		                		result = result + '            <td><p class="form-control-static">'+opt.name+'</p></td>';
+		                		
+		                		if(window.candidateStatusGlobal == '0'){
+		                			result = result + '            <td><select id="scale" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);" >';
+		                			if(opt.scale == 'undefined'|| opt.scale==null || opt.scale== 0){
+			                			 result = result + '                <option selected=""disabled="">select</option>'; 
+				                	 }else{
+		                			result = result + '                <option selected="" value="'+opt.scale+'" disabled="">'+opt.scale+'</option>';
+				                	 }
+		                		}else{
+		                		
 		                		result = result + '            <td><select id="scale" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);" >';
-		                		result = result + '                <option selected="" disabled="">Select</option>';
+		                		result = result + '                <option selected="" value="'+opt.scale+'" disabled="">Select</option>';
 		                		
 		                		if(opt.scale == "Beginner"){
 		                			result = result + '<option selected>Beginner</option>';
@@ -932,7 +949,18 @@ function candidateSkillsList(candidateId){
 		                		}else{
 		                			result = result + '  <option>Master</option>';
 		                		}
+		                		}
 		                		result = result + '              </select></td>';
+		                		
+		                		 if(window.candidateStatusGlobal == '0'){ 
+		                			 result = result + '            <td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
+				                	 alert(opt.totalExperience);
+				                	 if(opt.totalExperience == 'undefined'|| opt.totalExperience==null || opt.totalExperience== 0){
+			                			 result = result + '                <option selected=""disabled="">select</option>'; 
+				                	 }else{
+		                			 result = result + '                <option selected="" value="'+opt.totalExperience+'" disabled="">'+opt.totalExperience+'</option>'; 
+		                		 }
+				                }else{
 		                		result = result + '            <td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
 		                		result = result + '                <option selected="" disabled="">Select</option>';
 		                		if(opt.totalExperience == "0"){
@@ -970,8 +998,14 @@ function candidateSkillsList(candidateId){
 		                		}else{
 		                			result = result + '<option>6</option>';
 		                		}
+		                		}
 		                		result = result + '              </select></td>';
+		                		
+		                		 if(window.candidateStatusGlobal == '0'){ 
+				                result = result + '            <td><div class="text-center"><a href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
+		                		 }else{
 		                		result = result + '            <td><div class="text-center"><a onclick="removeSkillById('+candidateId+', '+opt.id+');" href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
+		                		 }
 		                		result = result + '          </tr>';
 	                      } 
 	                     result = result +" </tbody>";
