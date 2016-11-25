@@ -46,7 +46,7 @@ line-height: 30px;
 						  <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 						  <div class="row">
 						  <div class="col-md-5">
-							  <select class="chosen-select" id="financialInstituteName" name="financialInstituteName" field-name="Transaction Type" data-validation="required">
+							  <select class="chosen-select" id="financialInstituteName" name="financialInstituteName" field-name="Financial Institute" data-validation="required">
 							  	<option value="">-- Select Financial Institute --</option>
 							  	<option value="American Exchange Credit Card">American Exchange Credit Card</option>
 							  	<option value="Comerica Bank">Comerica Bank</option>
