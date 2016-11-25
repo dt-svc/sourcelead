@@ -8,6 +8,7 @@ public interface BoUploadedFilesDao {
 
 	public BoUploadedFiles saveBoUploadedFiles(BoUploadedFiles boUploadedFiles) throws Exception;
 	
+	public BoUploadedFiles getBoUploadedFileById(Long id) throws Exception;
 	
 	List<BoUploadedFiles> getBoUploadedFilesByFinancialInstitueName(String bankName) throws Exception;
 }

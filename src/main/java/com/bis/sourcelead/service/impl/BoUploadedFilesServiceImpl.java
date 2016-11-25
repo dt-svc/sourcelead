@@ -62,4 +62,9 @@ public class BoUploadedFilesServiceImpl implements BoUploadedFilesService{
 		return boUploadedFilesDao.getBoUploadedFilesByFinancialInstitueName(bankName);
 	}
 
+	@Override
+	public BoUploadedFiles getBoUploadedFileById(Long id) throws Exception {
+		return boUploadedFilesDao.getBoUploadedFileById(id);
+	}
+
 }

@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.BoUploadedFilesDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.BoUploadedFiles;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -67,6 +66,19 @@ public class BoUploadedFilesDaoImpl implements BoUploadedFilesDao {
 
 	    List<BoUploadedFiles> boUploadedFilesList = session.createQuery(query.toString()).setString( "bankName", bankName).setCacheable(true).list();
         return boUploadedFilesList;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public BoUploadedFiles getBoUploadedFileById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from BoUploadedFiles bouploadfile where bouploadfile.id = :id" ;
+		List<BoUploadedFiles> boUploadedFilesList =session.createQuery(query).setLong("id", id).setCacheable(true).list(); 
+		BoUploadedFiles boUploadedFiles = null;
+		if(boUploadedFilesList != null && !boUploadedFilesList.isEmpty()){
+			boUploadedFiles = boUploadedFilesList.iterator().next();
+		}
+		return boUploadedFiles;
 	}
 
 }

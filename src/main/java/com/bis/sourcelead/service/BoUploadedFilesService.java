@@ -15,4 +15,6 @@ public interface BoUploadedFilesService {
 	public void addBoUploadedFiles(User user,AmexUploadFile amexUploadFile,MultipartFile file) throws Exception;
 	
 	List<BoUploadedFiles> getBoUploadedFilesByFinancialInstitueName(String bankName) throws Exception;
+	
+	public BoUploadedFiles getBoUploadedFileById(Long id) throws Exception;
 }

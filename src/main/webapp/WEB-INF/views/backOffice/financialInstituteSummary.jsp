@@ -114,7 +114,7 @@ overflow: visible;
             <div class="accountsettings-tab account-tab">
               <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#transaction">Transaction</a></li>
-                <li><a data-toggle="tab" href="#transactiontype">Transaction Imports</a></li>
+                <li><a data-toggle="tab" href="#transactiontype" onclick="getTransactionImports();">Transaction Imports</a></li>
               </ul>
               <div class="tab-content panel-body">
                 <div id="transaction" class="tab-pane fade in active">
@@ -188,9 +188,6 @@ overflow: visible;
                           <div class="clearfix"></div>
                         </ul>
                         <div class="clearfix"></div>
-                        <!-- <div class="remove_search">
-                          <input type="text" placeholder="search" />
-                        </div> -->
                       </div>
                       
                       <div class="require_wrap_table table-wrap chosen-table">
@@ -249,7 +246,6 @@ overflow: visible;
                            </td>-->
                       </div>
                     </div>
-                    <!-- Project --> 
                   </div>
                 </div>
                 
@@ -259,54 +255,18 @@ overflow: visible;
                 <div id="transactiontype" class="tab-pane fade">
                 	 <div class="timesheet_out">
                     <div class="vendor_wrap">
-                      <div class="timesheet_head">
+                      <div class="timesheet_head" style="height:45px;">
                         <div class="clearfix"></div>
-                        <div class="remove_search templeasearch">
-                          <input type="text" placeholder="search" />
-                        </div>
+                         </div>
+                        <div class="require_wrap_table table-wrap table-ttab">
+                           <table id="transactionImportsList" class="display" cellspacing="0" width="100%"> </table>
                       </div>
-                      <div class="require_wrap_table table-wrap">
-                        <table>
-                          <thead>
-                            <tr>
-                              <th>S.No</th>
-								<th>File</th>
-                              <th>By</th>
-                              <th>Date</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-								<td><div class="tbldata-dotdot-vsm">0012558899</div></td>
-                              <td>
-                              <div class="tbldata-dotdot-big pull-left">addrequirement-transaction-exmple.html</div>
-								  <span class="pull-left ml10" title="Download File"><a href="javscript:void(0)"><i class="fa fa-download"></i></a></span>
-                              </td>
-                              <td><div class="tbldata-dotdot-big">Karanjohnsmith Abhiram</div></td>
-							 <td><div class="tbldata-dotdot-vsm">23/05/2016</div></td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <nav>
-                        <ul id="paging" class="pagination">
-                          <li><a href="#">Previous</a></li>
-                          <li><a href="#">2</a></li>
-                          <li><a href="#">3</a></li>
-                          <li><a href="#">4</a></li>
-                          <li><a href="#">5</a></li>
-                          <li class="disabled"><a href="#">6</a></li>
-                          <li data-page="last"><a href="#">Next</a></li>
-                        </ul>
-                        <div class="clearfix"></div>
-                      </nav>
+                     
                     </div>
-                    <!-- Project --> 
                   </div>
-                	
-                	
                 </div>
               <!-- Transaction type tab ends -->
+              
               </div>
             </div>
             <!-- Tab for Acount Transaction area ends --> 
@@ -393,7 +353,11 @@ overflow: visible;
 			   	        
 			   	        totalDebitAmount = totalDebitAmount + debitAmount;
 		   	     	    totalCreditAmount = totalCreditAmount + creditAmount;
-		   	     	    totalBalanceAmount = totalCreditAmount - totalDebitAmount;
+			   	     	if(totalDebitAmount < 0){
+			   	     	   totalBalanceAmount = totalCreditAmount + (totalDebitAmount);
+			   	     	}else{
+			   	     	   totalBalanceAmount = totalCreditAmount - totalDebitAmount;
+			   	     	}
 			   	        
 			   	     	result = result+'<tr>';
 			   	        result = result +'<td><div class="tblminwidth-75">'+(i+1)+'</div></td>';
@@ -471,14 +435,66 @@ function pagination(){
     	"oLanguage": {
      		"sSearch": ""
      	}
-    
-    
     })
-    
-    
 }
 </script>
+
   
+<script>
+function getTransactionImports(){
+		var sourceleadUrl ='${sourceleadUrl}';
+		var financialInstitute ='${financialInstitute}';
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getTransactionImportsList?${_csrf.parameterName}=${_csrf.token}&financialInstitute="+financialInstitute, 	   
+   		    success: function(data) {
+   		    	
+   		    	var json = JSON.parse(data);
+   	        	var result = "";
+   	        	result = result +'<thead>';
+   	        	result = result +'<tr>';
+   	        	result = result +'<th>Id</th>';
+   	        	result = result +'<th>File Name</th>';
+   	        	result = result +'<th>From Date</th>';
+   	        	result = result +'<th>To Date</th>';
+   	        	result = result +'</tr>';
+   	        	result = result +'	</thead>';
+   	        	result = result +'<tbody>';
+	   	     	for (var i=0; i<json.length; i++)
+   				{  
+	   	     	    var report = json[i];
+		   	     	result = result+'<tr>';
+		   	        result = result +'<td><div class="tbldata-dotdot-vsm">'+(i+1)+'</div></td>';
+		   	 	    result = result +'<td><div class="tbldata-dotdot-big pull-left">'+report.fileName+'</div><span class="pull-left ml10" title="Download File"><a href=\"'+sourceleadUrl+'/downloadTransactionFile?fileId='+report.id+'\"><i class="fa fa-download"></i></a></span></td>';
+		   	        result = result +'<td><div class="tblminwidth-75">'+report.fromDateStr+'</div></td>';
+				   	result = result +'<td><div class="tbldata-dotdot-me">'+report.toDateStr+'</div></td>';
+		   	        result = result +'</tr>';
+   				}
+   	        	result = result +'</tbody>';
+   	        	//$("#loading").removeAttr("style"); 
+   	    	    $("#transactionImportsList").empty();  
+   	    	    $("#transactionImportsList").append(result)
+   				pagination1();
+   		    }
+	  });
+}
+</script> 
+
+<script>
+function pagination1(){ 
+    $('#transactionImportsList').DataTable( { 
+    	"scrollCollapse": false,
+    	"chosen-select": true,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    })
+}
+</script>
  <jsp:include page="../masterFooter.jsp" />
   <script>
 
