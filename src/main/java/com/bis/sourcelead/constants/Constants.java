@@ -107,6 +107,7 @@ public class Constants {
 	public static String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
 	public static String  PROJECT_MEMBER_HISTORY_CLOSED= "CLOSED";
 	public static String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
+	
 	public static String REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION = "Approval Mechanism Sequential";
 	public static String APPROVED_EMAIL_NOTIFICATION = "Approved Requirement";
 	public static String REJECTED_EMAIL_NOTIFICATION ="Rejected Mail About The Requirement";
@@ -121,6 +122,16 @@ public class Constants {
 	
 	public static String OFFERACCEPT_EMAIL = "VendorAcceptedOffer";
 	
+	public static String APPLICANT_RECEIVE_MAILABOUT_REQUIREMENT_EMAIL = "ApplicantReceiveMailAboutRequirement";
+	
+	public static String APPLICANT_RECEIVE_MAILABOUT_REQUIREMENT_NOTIFICATION = "ApplicantReceiveMailAboutRequirement";
+	public static String APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_EMAIL = "ApplicantAcceptRequirement";
+	public static String APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_NOTIFICATION = "ApplicantAcceptRequirement";
+	public static String APPLICANT_REJECT_MAILABOUT_REQUIREMENT_EMAIL = "ApplicantRejectanceRequirement";
+	public static String APPLICANT_REJECT_MAILABOUT_REQUIREMENT_NOTIFICATION = "ApplicantRejectanceRequirement";
+
+
+
 
 
 	public static String YES = "Y";

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RequirementService;
@@ -56,21 +58,22 @@ public class SubmissionsRateController {
  
 	@RequestMapping(value = "/acceptOrRejectOrRateNegotiateApplicantRates")
 	public ModelAndView acceptOrRejectOrRateNegotiateApplicantRates(@RequestParam(value="rateStatus", required=false) String rateStatus,
-			@RequestParam(value = "candidateId", required = false) String candidateId,
+			@RequestParam(value = "submissionId", required = false) Long submissionId,
 			 HttpServletRequest request) throws Exception {
 		
-		ModelAndView model = new ModelAndView();
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		
-		model.addObject("sourceleadUrl", sourceleadUrl);
+		ModelAndView model = new ModelAndView();
 		model.addObject("rateStatus",rateStatus);
 		model.setViewName("requirement/submissionRate");
 		
 		if("accept".equalsIgnoreCase(rateStatus)){
 			//write accept logic ....like send mail and put status as submission
-			
+			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 		}
 		if("reject".equalsIgnoreCase(rateStatus)){
 			//write accept logic ....like send mail and put status as submission
+			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 			
 		}
 		if("negotiate".equalsIgnoreCase(rateStatus)){

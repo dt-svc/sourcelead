@@ -94,7 +94,7 @@ function getAddApplicant(requirementId){
 </script>
 
 <script>
-function needApplicantPermitFunction(){ alert("hai");
+function needApplicantPermitFunction(){ 
     if(document.getElementById('needApplicantPermit').checked) {
         $("#needApplicantPermit").val('Y');
     }else{
