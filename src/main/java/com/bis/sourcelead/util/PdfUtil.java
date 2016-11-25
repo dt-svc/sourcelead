@@ -683,7 +683,7 @@ public class PdfUtil {
 
 	private String[] prepareEmployeeArray(ProjectMembers projectMember, String[] headers) {
 		
-		String empArray[] = new String[headers.length];
+		   String empArray[] = new String[headers.length];
 			if (projectMember.getEmpName() != null && !"".equalsIgnoreCase(projectMember.getEmpName())) {
 				empArray[0] = projectMember.getEmpName();
 			}else{
