@@ -160,6 +160,9 @@ public class CommonUtil {
 	public void terminateProjectMemberByProjectMemberId(Long projectMemberId,Primary isManuallyTerminated){
 		try {
 			ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMemberId);
+			 if(pmh == null){
+				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMemberId);
+			 }
 			pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
 			pmh = projectMembersHistoryService.updateProjectMembersHistory(pmh);
 			
