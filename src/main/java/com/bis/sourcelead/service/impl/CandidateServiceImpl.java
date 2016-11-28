@@ -323,7 +323,7 @@ public class CandidateServiceImpl implements CandidateService {
 		Sheet createExcelsheet = createExcelworkbook.createSheet(orgName+"_candidate_"+dateFormat.format(new Date()));
 		Row writeRow = null;
 		String headers [] = Constants.CANDIDATE_EXCEL_HEADERS;
-		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers);
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
 		 int column=0;
 	        for(Candidate candidate : candidatesList){
 	       	 writeRow = createExcelsheet.createRow(column+1);

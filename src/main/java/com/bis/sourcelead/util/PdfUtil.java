@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.UserRole;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -319,7 +320,7 @@ public class PdfUtil {
 		return candidateArray;
 		
 	}
-	public File getRequirementPdf(java.util.List<Requirement> requirementList, String orgName) {
+	public File getRequirementPdf(java.util.List<Requirement> requirementList, String orgName, TimeSheetSubmissionCount requirementSubCount) {
 
 
 		String[] headers = Constants.REQUIREMENT_EXCEL_HEADERS;
@@ -333,11 +334,19 @@ public class PdfUtil {
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
 	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
 	        boldFont.setColor(myColor1);
-            Paragraph para = new Paragraph(orgName+ " Candidates.",boldFont);
+            Paragraph para = new Paragraph(orgName+" Requirements.",boldFont);
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header and
-	        PdfPTable table = new PdfPTable(headers.length);
+            List orderedList = new List(List.ORDERED);
+	        orderedList.add(new ListItem("Draft :"+requirementSubCount.getDraftRequirementCount()));
+	        orderedList.add(new ListItem("Open :"+requirementSubCount.getOpenRequirementCount()));
+	        orderedList.add(new ListItem("New :"+requirementSubCount.getNewRequirementCount()));
+	        orderedList.add(new ListItem("Submitted :"+requirementSubCount.getSubmittedRequirementCount()));
+	        orderedList.add(new ListItem("On Hold :"+requirementSubCount.getOnHoldRequirementCount()));
+	        orderedList.add(new ListItem("Closed :"+requirementSubCount.getCancelRequirementCount()));
+	        document.add(orderedList);
+            PdfPTable table = new PdfPTable(headers.length);
 	        table.setWidthPercentage(100);
             table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5,3,3});
 	        for (int i = 0; i < headers.length; i++) {
