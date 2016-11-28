@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -19,6 +20,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.SubmissionRateStatus;
 
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION")
@@ -64,10 +66,25 @@ public class RequirementSubmission {
 	@Enumerated(EnumType.STRING)
 	private ApplicantSubmissionStatus submissionStatus;
 	
-	
 	@Column(name = "NEED_APPLICANT_PERMIT")
     private String needApplicantPermit;
 	
+	@Column(name = "SUBMISSION_RATE_STATUS")
+	@Enumerated(EnumType.STRING)
+	private SubmissionRateStatus submissionRateStatus;
+	
+	@Column(name = "SUBMISSION_RATE_COMMENT", columnDefinition = "TEXT default NULL")
+	private String submissionRateComment;
+	
+	@Column(name = " SUBMISSION_RATE_DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] submissionRateDocFile;
+	
+	@Column(name = "SUBMISSION_RATE_FILE_CONTENT_TYPE")
+	private String submissionRateFileContentType;
+	
+	@Column(name = "SUBMISSION_RATE_FILE_NAME", columnDefinition = "TEXT default NULL")
+	private String submissionRateFileName;
 	
 	@Column(name = "STATUS")
     private Integer status;
@@ -277,6 +294,46 @@ public class RequirementSubmission {
 
 	public void setNeedApplicantPermit(String needApplicantPermit) {
 		this.needApplicantPermit = needApplicantPermit;
+	}
+
+	public SubmissionRateStatus getSubmissionRateStatus() {
+		return submissionRateStatus;
+	}
+
+	public void setSubmissionRateStatus(SubmissionRateStatus submissionRateStatus) {
+		this.submissionRateStatus = submissionRateStatus;
+	}
+
+	public String getSubmissionRateComment() {
+		return submissionRateComment;
+	}
+
+	public void setSubmissionRateComment(String submissionRateComment) {
+		this.submissionRateComment = submissionRateComment;
+	}
+
+	public byte[] getSubmissionRateDocFile() {
+		return submissionRateDocFile;
+	}
+
+	public void setSubmissionRateDocFile(byte[] submissionRateDocFile) {
+		this.submissionRateDocFile = submissionRateDocFile;
+	}
+
+	public String getSubmissionRateFileContentType() {
+		return submissionRateFileContentType;
+	}
+
+	public void setSubmissionRateFileContentType(String submissionRateFileContentType) {
+		this.submissionRateFileContentType = submissionRateFileContentType;
+	}
+
+	public String getSubmissionRateFileName() {
+		return submissionRateFileName;
+	}
+
+	public void setSubmissionRateFileName(String submissionRateFileName) {
+		this.submissionRateFileName = submissionRateFileName;
 	}
 
 	public Integer getStatus() {

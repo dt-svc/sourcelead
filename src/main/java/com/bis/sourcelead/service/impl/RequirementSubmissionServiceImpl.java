@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -53,10 +54,12 @@ import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionXls;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionXlsService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -107,6 +110,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Autowired
 	CandidateService candidateService;
@@ -1146,5 +1152,30 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, initiatorUser,toUser, orgLocations, notificationScenario);
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+	}
+	
+	@Override
+	public RequirementSubmission acceptRejectCandidate(JSONObject jsonObj, User user,
+			RequirementSubmission requirementSubmission, String decision, MultipartFile multiFile) throws Exception {
+		if(requirementSubmission != null){
+			if(jsonObj.has("comment")){
+				requirementSubmission.setSubmissionRateComment(jsonObj.getString("comment"));
+			}
+			if(StringUtils.equalsIgnoreCase(decision, "accept")){
+				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
+			}else if(StringUtils.equalsIgnoreCase(decision, "reject")){
+				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
+			}
+			requirementSubmission.setUpdatedBy(user.getUserCode());
+			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+			if(multiFile != null){
+				requirementSubmission.setSubmissionRateDocFile(multiFile.getBytes());
+				requirementSubmission.setSubmissionRateFileContentType(multiFile.getOriginalFilename());
+				requirementSubmission.setSubmissionRateFileName(multiFile.getContentType());
+			 }
+		}
+		requirementSubmissionDao.storeRequirementSubmission(requirementSubmission);
+		
+		return requirementSubmission;
 	}
 }

@@ -142,6 +142,27 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + '<li><i class="fa fa-rupee"></i>'+currentRate+' / '+currentRateCurrency+' - Current Rate / Salary</li>';
 		       result = result + '<li><i class="fa fa-rupee"></i>'+expectedRate+' / '+rateType+' - Expected Rate / Salary</li>';
 		       result = result + '</ul>';
+		       
+		       
+		       
+		       
+		       
+		    result = result + '<div class="acceptreject-actions">';
+			result = result + '<ul class="list-unstyled list-inline">';
+			result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept" onClick="acceptFun('+submissionId+');"></i>';
+			result = result + '		<div class="acceptreject-pop" id="accpet">';
+			result = result + '		</div>';
+			result = result + '	</li>';
+			
+			result = result + '	<li><i class="fa fa-close labeldanger" title="Reject" onClick="rejectFun('+submissionId+');"></i>';
+			result = result + '		<div class="acceptreject-pop" id="reject">';
+			result = result + '		</div>';
+			result = result + '	</li>';
+			
+			result = result + '</ul>';
+			result = result + '</div>';
+		       
+		       
 		       result = result + '</div>';
 		       result = result + '</div>';
        		
@@ -209,6 +230,139 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	     			 
 	     			 //Internal Offer List
 	     			  result  = result + '   <div id="offerDetails" ></div>';
+	     			  
+	     			 result  = result + '   <div >dfkljghdklghkldsjhgkhdskljfhgkjdshkljghlskdfhgkjdhsklgh skldhfg</div>';
+	     			 
+	     			 
+	     			 
+	     			/* <!-- Rate table --> */
+	     			result  = result + '<div class="row">';
+	     			result  = result + '<div class="col-md-12">';
+	     			result  = result + '<h2 class="tablehead">Rate</h2>';
+	     			result  = result + '<div class="accountsettings-tab account-tab scroll-table mt10">';
+	     			result  = result + '<ul class="nav nav-tabs">';
+	     			result  = result + '<li class="active"><a data-toggle="tab" href="#applicant">Applicant</a></li>';
+	     			result  = result + '<li><a data-toggle="tab" href="#client">Client</a></li>';
+	     			result  = result + '</ul>';
+	     			result  = result + '<div class="tab-content panel-body">';
+	     			result  = result + '<div id="applicant" class="tab-pane fade in active">';
+	     			result  = result + '<section class="tbl-scroll require_wrap_table tbl-rate mb">';
+	     			result  = result + '<button type="button" class="btn btn-primary btn-custom pull-right  mb10"><i class="fa fa-plus"></i> &nbsp;Add</button>';
+	     			result  = result + '<table class="table-responsive table-bordered clearfix">';
+	     			result  = result + '<thead>';
+	     			result  = result + '<tr>';
+	     			result  = result + '<th>By</th>';
+	     			result  = result + '<th>Rate</th>';
+	     			result  = result + '<th>Comment</th>';
+	     			result  = result + '<th>Date</th>';
+	     			result  = result + '<th>Action</th>';
+	     			result  = result + '</tr>';
+	     			result  = result + '</thead>';
+	     			result  = result + '<tbody>';
+	     			result  = result + '<tr>';
+	     			result  = result + '<td><div class="tbldata-dotdot-sm">Sarathkumar Jain</div></td>';
+	     			result  = result + '<td><div class="tblminwidth-75">200$</div></td>';
+	     			result  = result + '<td><div class="tbldata-dotdot">Loremipsum Loremipsum Loremipsum</div></td>';
+	     			result  = result + '<td><div class="tblminwidth-75">25/05/2016</div></td>';
+	     			result  = result + '<td><a href="javascript:void(0)" class="text-primary" title="Accept"><i class="fa fa-plus"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject"><i class="fa fa-times"></i></a></td>';
+	     			result  = result + '</tr>';
+	     			result  = result + '<tr>';
+	     			result  = result + '<td><div class="tbldata-dotdot-sm">Sarathkumar Jain</div></td>';
+	     			result  = result + '<td><div class="tblminwidth-75">200$</div></td>';
+	     			result  = result + '<td><div class="tbldata-dotdot">Loremipsum Loremipsum Loremipsum</div></td>';
+	     			result  = result + '<td><div class="tblminwidth-75">25/05/2016</div></td>';
+	     			result  = result + '<td><a href="javascript:void(0)" class="text-primary" title="Accept"><i class="fa fa-plus"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject"><i class="fa fa-times"></i></a></td>';
+	     			result  = result + '</tr>';
+	     			result  = result + '</tbody>';
+	     			result  = result + '</table>';
+	     			result  = result + '</section>';
+	     			result  = result + '<div class="clearfix row">';
+	     			result  = result + '<div class="form-group col-md-5">';
+	     			result  = result + '<input type="text" class="form-control input-sm" placeholder="Rate">';
+	     			result  = result + '<div class="clearfix mt10 pull-right">';
+	     			result  = result + '<input type="button" value="Add" class="btn btn-primary btn-sm mr">';
+	     			result  = result + '<input type="button" value="Cancel" class="btn btn-default btn-sm">';
+	     			result  = result + '</div>';
+	     			result  = result + '</div>';
+	     			result  = result + '<div class="form-group col-md-7">';
+	     			result  = result + '<textarea rows="2" class="form-control" placeholder="Comment"></textarea>';
+	     			result  = result + '</div>';
+	     			result  = result + '<div class="form-group col-md-12 hidden">';
+	     			result  = result + '<div class="pull-right">';
+	     			result  = result + '<input type="button" value="Add" class="btn btn-primary btn-sm mr">';
+	     			result  = result + '<input type="button" value="Cancel" class="btn btn-default btn-sm">';
+	     			result  = result + '</div>';
+	     			result  = result + '</div>';
+	     			result  = result + '</div>';
+	     			result  = result + '</div>';
+	     			/* <!-- Transaction Type Tab--> */
+	     			result  = result + '<div id="client" class="tab-pane fade">';
+
+
+	     			result  = result + '<section class="tbl-scroll require_wrap_table tbl-rate mb">';
+	     			result  = result + '<button type="button" class="btn btn-primary btn-custom pull-right mb10"><i class="fa fa-plus"></i>&nbsp;Add</button>';
+
+	     			result  = result + '<table class="table-responsive table-bordered clearfix">';
+	     			result  = result + '<thead>';
+	     			result  = result + '<tr>';
+	     			result  = result + '<th>By</th>';
+	     			result  = result + '<th>Rate</th>';
+	     			result  = result + '<th>Comment</th>';
+	     			result  = result + '<th>Date</th>';
+	     			result  = result + '<th>Action</th>';
+	     			result  = result + '</tr>';
+	     			result  = result + '</thead>';
+	     			result  = result + '<tbody>';
+	     			result  = result + '<tr>';
+	     			result  = result + '<td><div class="tbldata-dotdot-sm">Sarathkumar Jain</div></td>';
+	     			result  = result + '<td><div class="tblminwidth-75">200$</div></td>';
+	     			result  = result + '<td><div class="tbldata-dotdot">Loremipsum Loremipsum Loremipsum</div></td>';
+	     			result  = result + '<td><div class="tblminwidth-75">25/05/2016</div></td>';
+	     			result  = result + '<td><a href="javascript:void(0)" class="text-primary" title="Accept"><i class="fa fa-plus"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject"><i class="fa fa-times"></i></a></td>';
+	     			result  = result + '</tr>';
+	     			result  = result + '<tr>';
+	     			result  = result + '<td><div class="tbldata-dotdot-sm">Sarathkumar Jain</div></td>';
+	     			result  = result + '<td><div class="tblminwidth-75">200$</div></td>';
+	     			result  = result + '<td><div class="tbldata-dotdot">Loremipsum Loremipsum Loremipsum</div></td>';
+	     			result  = result + '<td><div class="tblminwidth-75">25/05/2016</div></td>';
+	     			result  = result + '<td><a href="javascript:void(0)" class="text-primary" title="Accept"><i class="fa fa-plus"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject"><i class="fa fa-times"></i></a></td>';
+	     			result  = result + '</tr>';
+	     			result  = result + '</tbody>';
+	     			result  = result + '</table>';
+	     			result  = result + '</section>';
+	     			result  = result + '<div class="clearfix row">';
+	     			result  = result + '<div class="form-group col-md-5">';
+	     			result  = result + '<input type="text" class="form-control input-sm" placeholder="Rate">';
+	     			result  = result + '<div class="clearfix mt10 pull-right">';
+	     			result  = result + '<input type="button" value="Add" class="btn btn-primary btn-sm mr">';
+	     			result  = result + '<input type="button" value="Cancel" class="btn btn-default btn-sm">';
+	     			result  = result + '</div>';
+	     			result  = result + '</div>';
+	     			result  = result + '<div class="form-group col-md-7">';
+	     			result  = result + '<textarea rows="2" class="form-control" placeholder="Comment"></textarea>';
+	     			result  = result + '</div>';
+	     			result  = result + '<div class="form-group col-md-12 hidden">';
+	     			result  = result + '<div class="pull-right">';
+	     			result  = result + '<input type="button" value="Add" class="btn btn-primary btn-sm mr">';
+	     			result  = result + '<input type="button" value="Cancel" class="btn btn-default btn-sm">';
+	     			result  = result + '</div>';
+	     			result  = result + '</div>';
+	     			result  = result + '</div>';
+
+
+	     			result  = result + '</div>';
+	     			result  = result + '</div>';
+	     			/* <!-- Transaction type tab ends -->  */
+	     			result  = result + '</div>';
+	     			result  = result + '</div>';
+	     			result  = result + '</div>';
+	     			/* <!-- Rate table -->  */
+	     			 
+	     			 
+	     			 
+	     			 
+	     			 
+	     			 
 	     			  
 	     			 result = result + ' </div>';      
 
@@ -1009,12 +1163,171 @@ function sendnotification(submissionId,offerId,notificationtype){
       },
         
    });  
-	 
-
-
 }
-
 </script>
 
+<script>
+		// Accept function
+	function acceptFun(submissionId){
+		$('#accpet').empty();
+		$('#reject').empty();
+		var result = "";	
+		result = result + '	        <form id="accept_form" name="accept_form" action="upload" enctype="multipart/form-data" method="post">';
+		result = result + '			<div class="row">';
+		result = result + '				<div class="col-md-12">';
+		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required" field-name="Comment"></textarea>';
+		result = result + '				</div>';
+		result = result + '				</div>';
+		result = result + '				<div class="row">';
+		result = result + '				<div class="col-md-8">';
+		result = result + '					<input type="file" multiple id="docFile" name="docFile" class="mt10" data-validation="required validate_Space validatedoc" field-name="Attachment">';
+		result = result + '				</div>';
+		result = result + '			<div class="col-md-2"><input type="button" id="accept_candidate" value="Submit" title="Sibmit" class="btn btn-primary btn-sm mt10 ml10" onclick="acceptCandidate(\''+submissionId+'\',\'accept\');">';
+		result = result + '			</div>';
+		result = result + '			</div>';
+		result = result + '	        </form>';
+		$('#accpet').fadeIn();
+		$('#accpet').append(result);
+		$('#reject').fadeOut();
+	};
+	$("#accpet, .acceptreject-pop, .labelsuccess, .col-md-6, .acceptreject-actions").click(function(e){
+		 e.stopPropagation();
+	 });
+	
+	function rejectFun(submissionId){
+		$('#reject').empty();
+		$('#accpet').empty();
+		var result = "";
+		result = result + '	        <form id="reject_form" name="reject_form" action="upload" enctype="multipart/form-data" method="post">';
+		result = result + '			<div class="row">';
+		result = result + '				<div class="col-md-12">';
+		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required" field-name="Comment"></textarea>';
+		result = result + '				</div>';
+		result = result + '			</div>';
+		result = result + '			<div class="row">';
+		result = result + '				<div class="col-md-12"><input type="button" id="reject_candidate" value="Submit" title="Sibmit" class="pull-right btn btn-primary mt10 btn-sm ml10" onclick="rejectCandidate(\''+submissionId+'\',\'reject\');">';
+		result = result + '				</div>';
+		result = result + '			</div>';
+		result = result + '	        </form>';
+		$('#reject').fadeIn();
+		$('#reject').append(result);
+		$('#accpet').fadeOut();
+	};
+	$("#reject, .acceptreject-pop, .labelsuccess").click(function(e){
+		 e.stopPropagation();
+	 });
+</script>
 
-
+<%-- 
+     @author : Venkat Kesav
+     this script is for accept Candidate
+     1.usage     : onclick
+     2.parameter : .
+     3.ajax url implementation in CandidateResumeRestController.
+--%>
+<script type="text/javascript">
+	function acceptCandidate(submissionId, decision){
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			        borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+		         }; 
+			 if ($('#accept_form').validate(false, validationSettings)){
+				var frm = $('#accept_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, "");
+				var form = $('#accept_form')[0];
+	      		var formData = new FormData(form); 
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#accept_candidate").attr("disabled", "disabled");
+         		$("#accept_candidate" ).addClass('button').val('Processing..');
+				//It will escape all the special characters
+		        var jsonData = encodeURIComponent(con);
+				$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/acceptRejectCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
+						success : function(result) {
+							 if( result.indexOf('Sign In') >= 0){
+					    		location.replace(sourceleadUrl);
+					    	 }
+		            		 else if (result.indexOf('exception') >= 0) {
+		            			 location.replace(sourceleadUrl+"/errorPage");
+		            		 }
+		            		 else{
+						 		/* $("#popUpDivResume").removeClass("edit-details-active");
+						 		candidateResumesList(candidateId); */
+		            			 $('#accpet').fadeOut();
+		            			 $('#reject').fadeOut();
+		            		 }
+						},
+					});
+					return true;
+			 }else{ 
+					return false;
+			 }
+		}
+		$('body').on('blur', '#accept_form', function() {
+		$("#accept_form").showHelpOnFocus();
+		$("#accept_form").validateOnBlur(false, validationSettings);
+	});
+</script>
+<script type="text/javascript">
+	function rejectCandidate(submissionId, decision){
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			        borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+		         }; 
+			 if ($('#reject_form').validate(false, validationSettings)){
+				var frm = $('#reject_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, "");
+				var form = $('#reject_form')[0];
+	      		var formData = new FormData(form); 
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#accept_candidate").attr("disabled", "disabled");
+         		$("#accept_candidate" ).addClass('button').val('Processing..');
+				//It will escape all the special characters
+		        var jsonData = encodeURIComponent(con);
+				$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/acceptRejectCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
+						success : function(result) {
+							 if( result.indexOf('Sign In') >= 0){
+					    		location.replace(sourceleadUrl);
+					    	 }
+		            		 else if (result.indexOf('exception') >= 0) {
+		            			 location.replace(sourceleadUrl+"/errorPage");
+		            		 }
+		            		 else{
+						 		/* $("#popUpDivResume").removeClass("edit-details-active");
+						 		candidateResumesList(candidateId); */
+		            			 $('#accpet').fadeOut();
+		            			 $('#reject').fadeOut();
+		            		 }
+						},
+					});
+					return true;
+			 }else{ 
+					return false;
+			 }
+		}
+		$('body').on('blur', '#reject_form', function() {
+		$("#reject_form").showHelpOnFocus();
+		$("#reject_form").validateOnBlur(false, validationSettings);
+	});
+</script>

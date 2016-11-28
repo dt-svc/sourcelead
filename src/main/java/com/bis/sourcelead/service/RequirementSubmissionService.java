@@ -2,7 +2,6 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
-import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -66,5 +65,7 @@ public interface RequirementSubmissionService {
 	
 	public void applicantRejectMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
 			OrgLocations orgLocations, String rejectreason) throws Exception;
+	
+	RequirementSubmission acceptRejectCandidate(JSONObject jsonObj, User user, RequirementSubmission requirementSubmission, String decision, MultipartFile multiFile) throws Exception;
 
 }
