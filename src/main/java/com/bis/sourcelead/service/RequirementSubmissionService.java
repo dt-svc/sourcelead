@@ -6,6 +6,7 @@ import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -56,5 +57,14 @@ public interface RequirementSubmissionService {
 	Integer getAllSubmissionCountByRequirementIdAndSubmissionStage(Long orgLocationsId, Long requirementId, String submissionStatus);
 	
 	public Integer getApplicantCountByrequirementIdandAssignedUsercode(Long requirementId, String userCode) throws Exception;
+	
+	/*public void applicantReceiveMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
+			OrgLocations orgLocations) throws Exception; */
+	
+	public void applicantAcceptMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
+			OrgLocations orgLocations) throws Exception;
+	
+	public void applicantRejectMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
+			OrgLocations orgLocations) throws Exception;
 
 }

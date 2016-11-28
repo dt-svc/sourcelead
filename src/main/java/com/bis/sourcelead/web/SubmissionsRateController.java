@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -67,13 +71,22 @@ public class SubmissionsRateController {
 		model.addObject("rateStatus",rateStatus);
 		model.setViewName("requirement/submissionRate");
 		
-		if("accept".equalsIgnoreCase(rateStatus)){
+		if("Accepted".equalsIgnoreCase(rateStatus)){
 			//write accept logic ....like send mail and put status as submission
 			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			Requirement requirement = requirementSubmission.getRequirement();
+			User initiatorUser = requirementSubmission.getOrgLocations().getUser();
+			Candidate candidate = requirementSubmission.getCandidate();
+			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
+			requirementSubmissionService.applicantAcceptMailAboutRequirement(requirement,initiatorUser,candidate,orgLocations);
 		}
-		if("reject".equalsIgnoreCase(rateStatus)){
-			//write accept logic ....like send mail and put status as submission
+		if("Rejected".equalsIgnoreCase(rateStatus)){
 			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+			Requirement requirement = requirementSubmission.getRequirement();
+			User initiatorUser = requirementSubmission.getOrgLocations().getUser();
+			Candidate candidate = requirementSubmission.getCandidate();
+			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
+			requirementSubmissionService.applicantRejectMailAboutRequirement(requirement,initiatorUser,candidate,orgLocations);
 			
 		}
 		if("negotiate".equalsIgnoreCase(rateStatus)){

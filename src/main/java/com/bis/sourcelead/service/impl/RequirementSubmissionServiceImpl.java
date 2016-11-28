@@ -53,6 +53,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionXls;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionXlsService;
@@ -106,6 +107,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	CandidateService candidateService;
 	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
@@ -783,7 +787,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }else{
 				 globalVarsMap.put("applicantName","--");
 			 }
-		 if(requirement.getMinExp()+"-"+requirement.getMaxExp()!= null && !"".equalsIgnoreCase(requirement.getMinExp()+"-"+requirement.getMaxExp())){
+		 if((requirement.getMinExp()!= null && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null && !"".equalsIgnoreCase(requirement.getMaxExp()))){
 			 globalVarsMap.put("experience", requirement.getMinExp()+"-"+requirement.getMaxExp()); 
 		 	 }else if(requirement.getMinExp()!= null && !"".equalsIgnoreCase(requirement.getMinExp())){
 			 globalVarsMap.put("experience", requirement.getMinExp());
@@ -867,5 +871,201 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 //emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, loginOrgLocation, notificationScenario);
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 
+	}
+
+	@Override
+	public void applicantAcceptMailAboutRequirement(Requirement requirement, User initiatorUser, Candidate candidate,
+			OrgLocations orgLocations) throws Exception {
+		 
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(initiatorUser.getFirstName());
+		 emailMessage.setLastName(initiatorUser.getLastName());
+		 emailMessage.setToEmail(initiatorUser.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
+		 emailMessage.setFromName(candidate.getFirstName()+" "+candidate.getLastName());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+
+		 if(initiatorUser.getFirstName()!= null && !"".equalsIgnoreCase(initiatorUser.getFirstName())){
+			 globalVarsMap.put("initiatorUserName", initiatorUser.getFirstName());
+			 }else{
+				 globalVarsMap.put("initiatorUserName","--");
+			 }
+		 
+		 if(requirement.getJobTitle()!= null && !"".equalsIgnoreCase(requirement.getJobTitle())){
+			 globalVarsMap.put("requirementName", requirement.getJobTitle());
+			 }else{
+				 globalVarsMap.put("requirementName","--");
+			 }
+		
+		 if(candidate.getFirstName()+""+candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()+""+candidate.getLastName())){
+			 globalVarsMap.put("applicantName", candidate.getFirstName()+""+candidate.getLastName());
+			 }else{
+				 globalVarsMap.put("applicantName","--");
+			 }
+		 if((requirement.getMinExp()!= null && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null && !"".equalsIgnoreCase(requirement.getMaxExp()))){
+			 globalVarsMap.put("experience", requirement.getMinExp()+"-"+requirement.getMaxExp()); 
+		 	 }else if(requirement.getMinExp()!= null && !"".equalsIgnoreCase(requirement.getMinExp())){
+			 globalVarsMap.put("experience", requirement.getMinExp());
+		 	 }else{
+			 globalVarsMap.put("experience","--");
+			 }
+		 if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState())){
+			 globalVarsMap.put("location", requirement.getCountry()+","+requirement.getState());
+		 	}else if(requirement.getCity()!= null && !"".equalsIgnoreCase(requirement.getCity())){
+			 globalVarsMap.put("location", requirement.getCountry()+","+requirement.getState()+","+requirement.getCity());
+		 	}else{
+			globalVarsMap.put("location","--");
+			}
+		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
+			 globalVarsMap.put("requirementRate", requirement.getCurrencyCode()+"-"+requirement.getRate()+"-"+requirement.getRateType());
+			 }else{
+				 globalVarsMap.put("requirementRate","--");
+			 }
+		 if(requirement.getSkills()!= null && !"".equalsIgnoreCase(requirement.getSkills())){
+			 globalVarsMap.put("skills", requirement.getSkills());
+			 }else{
+				 globalVarsMap.put("skills","--");
+			 }
+		 if(requirement.getDescription()!= null && !"".equalsIgnoreCase(requirement.getDescription())){
+			 globalVarsMap.put("jobDescription", requirement.getDescription());
+			 }else{
+				 globalVarsMap.put("jobDescription","--");
+			 }
+		
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_EMAIL,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		notificationScenario.setBody(notificationbody);
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		  
+		 User toUser = orgLocations.getUser();
+		 
+		 String actionLink="";
+		//calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendNotification(actionLink, initiatorUser,toUser, orgLocations, notificationScenario);
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+
+	}
+
+	@Override
+	public void applicantRejectMailAboutRequirement(Requirement requirement, User initiatorUser, Candidate candidate,
+			OrgLocations orgLocations) throws Exception {
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(initiatorUser.getFirstName());
+		 emailMessage.setLastName(initiatorUser.getLastName());
+		 emailMessage.setToEmail(initiatorUser.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
+		 emailMessage.setFromName(candidate.getFirstName()+" "+candidate.getLastName());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 
+		 if(initiatorUser.getFirstName()!= null && !"".equalsIgnoreCase(initiatorUser.getFirstName())){
+			 globalVarsMap.put("initiatorUserName", initiatorUser.getFirstName());
+			 }else{
+				 globalVarsMap.put("initiatorUserName","--");
+			 }
+		 
+		 if(requirement.getJobTitle()!= null && !"".equalsIgnoreCase(requirement.getJobTitle())){
+			 globalVarsMap.put("requirementName", requirement.getJobTitle());
+			 }else{
+				 globalVarsMap.put("requirementName","--");
+			 }
+		
+		 if(candidate.getFirstName()+""+candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()+""+candidate.getLastName())){
+			 globalVarsMap.put("applicantName", candidate.getFirstName()+""+candidate.getLastName());
+			 }else{
+				 globalVarsMap.put("applicantName","--");
+			 }
+		 if((requirement.getMinExp()!= null && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null && !"".equalsIgnoreCase(requirement.getMaxExp()))){
+			 globalVarsMap.put("experience", requirement.getMinExp()+"-"+requirement.getMaxExp()); 
+		 	 }else if(requirement.getMinExp()!= null && !"".equalsIgnoreCase(requirement.getMinExp())){
+			 globalVarsMap.put("experience", requirement.getMinExp());
+		 	 }else{
+			 globalVarsMap.put("experience","--");
+			 }
+		 if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState())){
+			 globalVarsMap.put("location", requirement.getCountry()+","+requirement.getState());
+		 	}else if(requirement.getCity()!= null && !"".equalsIgnoreCase(requirement.getCity())){
+			 globalVarsMap.put("location", requirement.getCountry()+","+requirement.getState()+","+requirement.getCity());
+		 	}else{
+			globalVarsMap.put("location","--");
+			}
+		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
+			 globalVarsMap.put("requirementRate", requirement.getCurrencyCode()+"-"+requirement.getRate()+"-"+requirement.getRateType());
+			 }else{
+				 globalVarsMap.put("requirementRate","--");
+			 }
+		 if(requirement.getSkills()!= null && !"".equalsIgnoreCase(requirement.getSkills())){
+			 globalVarsMap.put("skills", requirement.getSkills());
+			 }else{
+				 globalVarsMap.put("skills","--");
+			 }
+		 if(requirement.getDescription()!= null && !"".equalsIgnoreCase(requirement.getDescription())){
+			 globalVarsMap.put("jobDescription", requirement.getDescription());
+			 }else{
+				 globalVarsMap.put("jobDescription","--");
+			 }
+		 if(requirement.getDescription()!= null && !"".equalsIgnoreCase(requirement.getDescription())){
+			 globalVarsMap.put("rejectReason", requirement.getDescription());
+			 }else{
+				 globalVarsMap.put("rejectReason","--");
+			 }
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_REJECT_MAILABOUT_REQUIREMENT_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_REJECT_MAILABOUT_REQUIREMENT_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		notificationScenario.setBody(notificationbody);
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		  
+		 User toUser = orgLocations.getUser();
+		 
+		 String actionLink="";
+		//calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendNotification(actionLink, initiatorUser,toUser, orgLocations, notificationScenario);
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 	}
 }
