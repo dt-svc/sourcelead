@@ -1,4 +1,4 @@
-﻿@charset "utf-8";
+﻿﻿@charset "utf-8";
 /* CSS Document */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
 * {
@@ -16,7 +16,7 @@ body {
 	background-color: #e1e6fa;
 	font-size: 14px;
 	color: #333;
-	font-family: 'Roboto', sans-serif;
+	font-family: 'Roboto', sans-serif  !important;
 	min-height: 100%;
 }
 img {
@@ -4211,8 +4211,9 @@ inst-search .col-md-9{
     top: 5px;
 }
 .instsearch{
-	background: #fff;
+	background: #ccc;
 	padding: 10px 10px;
+	
 	
 }
 .require_wrap_details_cta.require_education{
@@ -4328,13 +4329,16 @@ background: #fdba5b;
 .accountlist-head ul li{
 	list-style-type: none;
 	float: left;
-	padding: 10px 0;
+	margin: 10px 0;
+	padding: 0 10px;
+	border-right: 1px solid #ccc;
 	position: relative;
 }
 .accountlist-head ul li a{
-	border-right: 1px solid #ccc;
 	color: #333;
-	padding: 0 10px;
+}
+.accountlist-head ul li:last-child{
+	border-right: 1px solid #fff;
 }
 .accountlist-head ul li a:hover{
 	color: #909090;
@@ -4433,7 +4437,153 @@ border-radius: 5px;
 import-tranhd  [class*="col-md-"]{
 	padding: 0 10px;
 }
+.timesheet_head.summary_head ul{
+	padding: 0;
+	float: left;
+}
+.timesheet_head.summary_head ul li{
+	margin-top: 0;
+	margin-bottom: 0;
+	float: left;
+}
+.timesheet_head.summary_head ul li:last-child{
+	border-right: 0;
+}
+.summary_head div.approved_pop{
+	left: 0;
+}
+.require_wrap_table.chosen-table{
+  overflow: visible;
+}
+.require_wrap_table.table-ttab {
+  overflow-y: visible;
+}
+.scroll-table .tab-content{
+	overflow-x: auto;
+}
+.tablehead {
+	background-color: #375d81;
+	color: #fff !important;
+	padding: 10px 15px !important;
+}
+.btn.btn-custom{
+ padding: 2px 5px;
+ font-size: 13px;
+}
+.acceptreject-actions {
+	position:absolute;
+	top:0;
+	right:15px;
+}
+.acceptreject-actions ul li{
+	padding:0;
+	cursor: pointer;
+	position: relative;
+}
+.labelsuccess{
+	background: #5cb85c;
+	padding: 5px 8px;
+	color: #fff;
+	border-radius: 3px;
+}
+.labelsuccess:hover{
+	background: #909090;
+}
+.labeldanger:hover{
+	background: #909090;
+}
+.labeldanger{
+	background: #d34836;
+	padding: 5px 10px;
+	border-radius: 3px;
+}
+.acceptreject-pop{
+	width: 300px;
+	background: #fff;
+	position: absolute;
+	top: 30px;
+	right: 0;
+	z-index: 9999;
+	border: 1px solid #ccc;
+	padding: 10px;
+	-webkit-box-shadow: 0 8px 6px -8px #505050;
+	-moz-box-shadow: 0 8px 6px -8px #505050;
+	box-shadow: 0 8px 6px -8px #505050;
+	border-radius: 5px;
+	display: none;
+}
 /* import fiels ends */
+.show-reason {
+	position: relative;
+}
+.reason {
+	position:absolute;
+	width:200px;
+	top:10px;
+	right:10px;
+	padding:5px 10px;
+	min-height: 20px;
+	max-height: 200px;
+	overflow-y:auto;
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radiu:3px !important;
+	z-index: 9999;
+	color:#333;
+	display:none;
+	font-weight: normal;
+	transistion:all 0.2s;
+}
+.show-reason:hover .reason{
+	display:block;
+}
+.success-wraper {
+	background: #e1e6fa;
+	min-height:515px;
+	margin:0 auto;
+	width: 100%;
+}
+.inner-widget {
+	padding:30px;
+	box-sizing:border-box;
+	margin-top:8%;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	-ms-border-radius: 10px;
+	border-radius: 10px;
+	color: #fff;
+}
+.inner-widget .fa{
+	text-align: center;
+	width: 100%;
+	padding: 20px;
+	font-size: 75px;
+}
+.success-user{
+	 background-color:#34c244;
+	 border: 1px solid #1dab2d;
+	 -webkit-box-shadow: 0 8px 6px -8px #505050;
+	-moz-box-shadow: 0 8px 6px -8px #505050;
+	box-shadow: 0 8px 6px -8px #505050;
+}
+.reject-user{
+    background-color:#d9534f;
+	border: 1px solid #cd4743;
+	-webkit-box-shadow: 0 8px 6px -8px #505050;
+	-moz-box-shadow: 0 8px 6px -8px #505050;
+	box-shadow: 0 8px 6px -8px #505050;
+}
+.negotiation-user{
+    background-color:#455a64;
+	border: 1px solid #263238;
+	-webkit-box-shadow: 0 8px 6px -8px #505050;
+	-moz-box-shadow: 0 8px 6px -8px #505050;
+	box-shadow: 0 8px 6px -8px #505050;
+}
+.reason-msg {
+	font-size: 25px;
+	text-align: center;
+}
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {

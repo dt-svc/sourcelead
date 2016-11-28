@@ -2,9 +2,14 @@ package com.bis.sourcelead.rest;
 
 import java.io.Writer;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.service.CandidateService;
@@ -48,6 +53,24 @@ public class SubmissionsRateRestController {
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
+	
+	@RequestMapping(value = "/storeReject", method = RequestMethod.POST)
+	public @ResponseBody String storeReject(@RequestParam(value = "json", required = false) String json) throws Exception {
+	 
+		String jsonc = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(jsonc);
+		return "success";
+		
+	}
+	
+	@RequestMapping(value = "/storeNegotiation", method = RequestMethod.POST)
+	public @ResponseBody String storeNegotiation(@RequestParam(value = "json", required = false) String json) throws Exception {
+	 
+		String jsonc = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(jsonc);
+		return "success";
+		
+	}
     
 	 
     private String toJSON(Object obj){
