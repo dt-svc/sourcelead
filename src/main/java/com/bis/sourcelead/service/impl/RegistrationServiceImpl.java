@@ -198,7 +198,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		
 		//For saving Employee details (Every User is an Employee)
-		Employees employee = getEmployeeDetails(user);
+		Employees employee = getEmployeeDetails(user,orgLocations);
 		try {
 			employeesService.addEmployee(employee);
 		} catch (Exception e) {
@@ -362,10 +362,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 	}
 	
-	private Employees getEmployeeDetails(User user){
+	private Employees getEmployeeDetails(User user,OrgLocations orgLocations){
 		
 		Employees employees = new Employees();
 		employees.setUser(user);
+		employees.setOrgLocations(orgLocations);
 		employees.setCreatedBy(user.getUserCode());
 		employees.setCreatedDate(new Date());
 		return employees;

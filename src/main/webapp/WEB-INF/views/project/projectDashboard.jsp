@@ -221,7 +221,7 @@ $(document).ready(function() {
 		  	result = result + '<ul class="project-tabs-menu">';
 		  	
 		  	result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_EMPLOYEES\')">'; 
-		  	result = result + '<li class="current"><a href="#tab-1" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\');" >Employees</a></li>';
+		  	result = result + '<li class="current"><a href="#tab-1" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',,\''+projectName+'\');" >Employees</a></li>';
 		  	result = result +'</sec:authorize>';
 		  	
 		  	result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\')">'; 
@@ -255,7 +255,7 @@ $(document).ready(function() {
 		    $(".side_mask").fadeIn(200);
 			$("body").css('overflow-y', 'hidden');
 			
-		    projectEmployee(projectId,startDateStr,endDateStr,status);
+		    projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
  }
  </script> 
  

@@ -332,7 +332,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		/**
 		 * this block is for submissions for project member
 		*/
-		if (jsonObj.has("employeeMaxCount")){
+		/*if (jsonObj.has("employeeMaxCount")){
 		String employeeMaxCount = jsonObj.getString("employeeMaxCount");
 		if(StringUtils.isNotEmpty(employeeMaxCount)){
 		int empMaxCount = Integer.parseInt(employeeMaxCount);
@@ -340,7 +340,18 @@ public class ProjectsServiceImpl implements ProjectsService{
 			Employees emp = employeesService.getEmployee(jsonObj.getString("employeeId"+c));
 			commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
 			}
-		}
+		 }
+		}*/
+		
+		
+		/**
+		 * this block is for submissions for project member
+		*/
+		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(updatedProjects.getId());
+		if (projectMembersList != null && !projectMembersList.isEmpty()){
+			for (ProjectMembers pm : projectMembersList) {
+		  	  commonUtil.storeTimesheetSubmissionRecords(pm.getEmployee().getUser());
+			}
 		}
 		
 		/*
@@ -585,7 +596,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    if(projectApproverHierarchies.size()==1){
 	    	
 	    	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
-		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2){
+		    	if(approverHierarchy.getLevel() != null){
 		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
 		    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
 		    	}
@@ -997,6 +1008,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	       	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
 	          		pm.setUserId(pm.getEmployee().getUser().getId().toString());
 	          	 }
+		      if(pm.getTerminateReason() != null){
+		    	  pm.setTerminateReason(pm.getTerminateReason());
+		      }
 	       	 
 	       	 if(pm.getEmployee()!=null){
 	
@@ -1029,7 +1043,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 
 		 
 		 myPM.setProjectMembersList(projectMembersArrList);
-		 myPM.setStatus(project.getProjectStatus().getValue());
+		 if(project.getProjectStatus() != null){
+			 myPM.setStatus(project.getProjectStatus().getValue());	 
+		 }
+		 
 		 
 		 return myPM;
 	}

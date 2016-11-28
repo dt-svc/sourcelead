@@ -53,6 +53,7 @@ import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Team;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.HIERARCHY_TYPE;
@@ -1535,7 +1536,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 
 	@Override
-	public File getExportRequirementFile(List<Requirement> requirementList, String orgName,String exportType) throws Exception {
+	public File getExportRequirementFile(List<Requirement> requirementList, String orgName,String exportType,TimeSheetSubmissionCount requirementSubCount) throws Exception {
 		
 		File file = null;
 		if (!"pdf".equalsIgnoreCase(exportType)) {
@@ -1543,7 +1544,7 @@ public class RequirementServiceImpl implements RequirementService {
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + dateFormat.format(new Date()));
 			Row writeRow = null;
-			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook);
+			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,requirementSubCount);
 			int column = 0;
 			for (Requirement requirement : requirementList) {
 				writeRow = createExcelsheet.createRow(column + 9);
@@ -1559,7 +1560,7 @@ public class RequirementServiceImpl implements RequirementService {
 				e.printStackTrace();
 			}
 		}else{
-			file = pdfUtil.getRequirementPdf(requirementList,orgName);
+			file = pdfUtil.getRequirementPdf(requirementList,orgName,requirementSubCount);
 		}
 			return file;	 
 	}
@@ -1610,7 +1611,7 @@ public class RequirementServiceImpl implements RequirementService {
 		return createExcelsheet;
 	}
 
-	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook) {
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, TimeSheetSubmissionCount requirementSubCount) {
 		
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 
@@ -1622,7 +1623,7 @@ public class RequirementServiceImpl implements RequirementService {
 		cell1.setCellValue("Draft :");
 		cell1.setCellStyle(style);
 		Cell cell2 = writeRow.createCell(1);
-	    cell2.setCellValue("6");
+	    cell2.setCellValue(requirementSubCount.getDraftRequirementCount());
 		cell2.setCellStyle(style);
 
 		writeRow = createExcelsheet.createRow(2);
@@ -1634,7 +1635,7 @@ public class RequirementServiceImpl implements RequirementService {
 		cell3.setCellStyle(style);
 
 		Cell cell4 = writeRow.createCell(1);
-		cell4.setCellValue("8");
+		cell4.setCellValue(requirementSubCount.getOpenRequirementCount());
 		cell4.setCellStyle(style);
 
 		writeRow = createExcelsheet.createRow(3);
@@ -1646,7 +1647,7 @@ public class RequirementServiceImpl implements RequirementService {
 		cell5.setCellStyle(style);
 
 		Cell cell6 = writeRow.createCell(1);
-		cell6.setCellValue("8");
+		cell6.setCellValue(requirementSubCount.getNewRequirementCount());
 		cell6.setCellStyle(style);
 		
 		
@@ -1659,7 +1660,7 @@ public class RequirementServiceImpl implements RequirementService {
 		cell7.setCellStyle(style);
 
 		Cell cell8 = writeRow.createCell(1);
-		cell8.setCellValue("9");
+		cell8.setCellValue(requirementSubCount.getSubmittedRequirementCount());
 		cell8.setCellStyle(style);
 		
 		writeRow = createExcelsheet.createRow(5);
@@ -1671,7 +1672,7 @@ public class RequirementServiceImpl implements RequirementService {
 		cell9.setCellStyle(style);
 
 		Cell cell10 = writeRow.createCell(1);
-		cell10.setCellValue("4");
+		cell10.setCellValue(requirementSubCount.getOnHoldRequirementCount());
 		cell10.setCellStyle(style);
 		
 		writeRow = createExcelsheet.createRow(6);
@@ -1683,10 +1684,10 @@ public class RequirementServiceImpl implements RequirementService {
 		cell11.setCellStyle(style);
 
 		Cell cell12 = writeRow.createCell(1);
-		cell12.setCellValue("4");
+		cell12.setCellValue(requirementSubCount.getCancelRequirementCount());
 		cell12.setCellStyle(style);
 		String headers [] = Constants.REQUIREMENT_EXCEL_HEADERS;
-		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers);
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,8);
 
 		return createExcelsheet;
 	}
