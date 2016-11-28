@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -14,8 +15,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
@@ -241,20 +244,39 @@ public class EmployeesDaoImpl implements EmployeesDao{
         	search ="";
         }
         
+        String actionsQuery = "select sa.id from SourceleadActions sa where (sa.tabs.id = :tabId or sa.tabs.id = :tabId2)  ";
+        List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong("tabId", Constants.TAB_MY_TIMESHEET).setLong("tabId2", Constants.TAB_TIMESHEET_APPROVAL).setCacheable(true).list();
+        
+        String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
+        List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationId).setCacheable(true).list();
+        List<Long> ownerRolesList = new ArrayList<Long>();
+        
+        for(Roles roles : rolesList){
+       	 List<Long> roleActionsList = new ArrayList<Long>();
+       	 for (String s : roles.getActionId().split(",")){
+       		 roleActionsList.add(Long.parseLong(s));
+       	 }
+       	 
+       	 roleActionsList.retainAll(tabActionsIds);
+       	 if(roleActionsList.size() > 0){
+       		 ownerRolesList.add(roles.getId());
+       	 }
+        }
+        
         
         List<Employees> employeeList = null;
         if(level1Manager!=null && level2Manager!=null){
         	
-        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user  where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and emp.user.id <> :level2Manager and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations = :orgLocationId and userRole.userType <>'Admin' and userRole.userState <> 'INACTIVE')) "+search+"");
-    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).setLong("level2Manager", level2Manager).list(); 
+        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user  where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and emp.user.id <> :level2Manager and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations = :orgLocationId and userRole.roles.roleName <> 'ROLE_ADMIN' and userRole.userState <> 'INACTIVE' and userRole.roles.id IN (:ownerRolesList))) "+search+"");
+    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).setLong("level2Manager", level2Manager).setParameterList("ownerRolesList", ownerRolesList).list(); 
         }else if(level1Manager!=null){
         	
-        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations = :orgLocationId and userRole.userType <> 'Admin' and userRole.userState <> 'INACTIVE')) "+search+"");
-    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).list();
+        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations = :orgLocationId and userRole.roles.roleName <> 'ROLE_ADMIN' and userRole.userState <> 'INACTIVE' and userRole.roles.id IN (:ownerRolesList))) "+search+"");
+    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).setParameterList("ownerRolesList", ownerRolesList).list();
         }else{
         	
-        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations = :orgLocationId and userRole.userType <> 'Admin' and userRole.userState <> 'INACTIVE'))  "+search+"");
-    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).list();
+        	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations = :orgLocationId and userRole.roles.roleName <> 'ROLE_ADMIN' and userRole.userState <> 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)))  "+search+"");
+    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setParameterList("ownerRolesList", ownerRolesList).list();
         }
 		return employeeList;
 	}
