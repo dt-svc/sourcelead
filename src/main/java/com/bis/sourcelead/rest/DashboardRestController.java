@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -86,7 +88,7 @@ public class DashboardRestController {
 	 * @author: Sammeta David
 	 */
 	
-	@PreAuthorize("hasRole('ROLE_VIEW_TIMESHEETS_APPROVAL','ROLE_VIEW_MY_TIMESHEETS')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_TIMESHEETS_APPROVAL','ROLE_VIEW_MY_TIMESHEETS')")
 	@RequestMapping(value = "/getTimeSheetSubmissionStatus")
 	public String getTimeSheetSubmissionStatus(HttpServletRequest request) throws Exception {
 
@@ -339,7 +341,12 @@ public class DashboardRestController {
 				
 				requirementInterview.setRequirementId(requirementInterview.getSubmissionId().getRequirement().getId().toString());
 				
-				requirementInterview.setInterviewStartDateTimeStr(requirementInterview.getStartTime().toString());
+				//requirementInterview.setInterviewStartDateTimeStr(requirementInterview.getStartTime().toString());
+				
+				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
+				String commonDateFormat = standardFormat.format(requirementInterview.getStartTime());
+				requirementInterview.setInterviewStartDateTimeStr(commonDateFormat.toString());
+				
 				
 				if(requirementInterview.getSubmissionId().getRequirement().getClientId() != null){
 					

@@ -97,7 +97,7 @@ overflow-x: auto;
 				<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
                        <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Vendor</a></li>	
                        </sec:authorize>
-                        <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS')">
+                        <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
                        <li><a href="<c:url value='/uploadVendorForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
                  </sec:authorize> 
                        	 <li id="vendorImports" style="display:none">
@@ -802,7 +802,7 @@ function pagination1(){
 							result = result + '</div>';
 							
 							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>Client City:</strong>';
+							result = result + '<strong>Vendor City:</strong>';
 							if(json.city != null && json.city !='' && json.city !='undefined'){
 								result = result + '<span>'+json.city+'</span><div class="clearfix"></div>';
 							}else{
@@ -811,7 +811,7 @@ function pagination1(){
 							result = result + '</div>';
 							
 							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>Client State:</strong>';
+							result = result + '<strong>Vendor State:</strong>';
 							if(json.state != null && json.state !='' && json.state !='undefined'){
 								result = result + '<span>'+json.state+'</span><div class="clearfix"></div>';
 							}else{
@@ -820,7 +820,7 @@ function pagination1(){
 							result = result + '</div>';
 							
 							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>Client Country:</strong>';
+							result = result + '<strong>Vendor Country:</strong>';
 							if(json.country != null && json.country !='' && json.country !='undefined'){
 								result = result + '<span>'+json.country+'</span><div class="clearfix"></div>';
 							}else{

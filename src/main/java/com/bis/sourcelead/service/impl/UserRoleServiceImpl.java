@@ -229,7 +229,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 		
 		 cell6.setCellStyle(style);
 		 String headers [] = Constants.USER_EXCEL_HEADERS;
-		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers);
+		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,7);
 	}
 
 	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column, UserRole userRoles) {

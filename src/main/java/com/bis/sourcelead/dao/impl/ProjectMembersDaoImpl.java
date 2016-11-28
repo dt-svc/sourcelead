@@ -160,7 +160,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id and pm.status ='1' "
 				+ "and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.userType = 'Employee')) ");*/
 
-		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id and pm.status ='1'");
+		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id");
 
 		projectsMembersList=projectsMembersListQuery.setLong("id", id).setCacheable(true).list();
 		return projectsMembersList;
@@ -311,6 +311,21 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			    .list(); 
 		return idsList;  
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectMembers getProjectMemberByUserIdAndProjectId(Long userId, Long projectId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
+		String subQueryForUserIdChecking = "(pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
+		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where "+subQueryForUserIdChecking+" and pm.projects.id = :projectId" ;
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("userId", userId).setLong("projectId", projectId).setCacheable(true).list(); 
+		ProjectMembers pm = null;
+		if(pmList != null && !pmList.isEmpty())  {
+			pm  = pmList.iterator().next();
+		}
+		return pm;  
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -320,5 +335,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setCacheable(true).list(); 
 		return pmList;  
 	}
+
+	
 
 }

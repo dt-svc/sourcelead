@@ -14,6 +14,12 @@ import java.util.TimeZone;
 public class Constants {
 	public static final String[] FILE_HEADER_MAPPING = { "Employee ID", "First Name", "Last Name", "Email id",
 			"Phone Number", "Rate", "Rate Per", "Date of Join (dd/mm/yyyy)", "Role", "Invoice Frequency", "Day Hours" };
+	
+	public static final String[] AMEX_FILE_HEADER_MAPPING = { "Date", "Description", "Amount" };
+	
+	public static final String[] COMERICA_FILE_HEADER_MAPPING = { "Date", "No.", "Description", "Debit", "Credit" };
+	
+	public static final String[] CHASE_FILE_HEADER_MAPPING = { "Details", "Posting Date", "Description", "Amount", "Type", "Balance", "Check Or Slip#" };
 
 	public static final String EMPLOYEE_ID = "Employee ID";
 	public static final String FIRST_NAME = "First Name*";
@@ -36,7 +42,7 @@ public class Constants {
 	public static final String COUNTRY = "Country";
 	public static final String SATATE = "State";
 	public static final String CITY = "City";
-	public static final String LEVEL = "Level";
+	public static final String LEVEL = "Tier";
 	public static final String VENDOR_NAME = "Vendor Name*";
 
 	public static final Integer RECORD_ACTIVE = 1;
@@ -85,9 +91,9 @@ public class Constants {
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
-	public static String loginUserAsAdmin =":userId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1' and userRole.orgLocations.id = ts.projectMembers.projects.orgLocationsId.id)";
+	public static String loginUserAsAdmin =":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = ts.projectMembers.projects.orgLocationsId.id)";
 	
-	public static String loginUserAsAdminWithMaxHeirarchyLevel ="(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles = '1' and userRole.orgLocations.id = pm.projects.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = pm.projects.id))";
+	public static String loginUserAsAdminWithMaxHeirarchyLevel ="(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pm.projects.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = pm.projects.id))";
 	
 	/** projectMember  constants**/
 	public static String MEMBER_ACTIVE = "1";
@@ -152,6 +158,7 @@ public class Constants {
 	public static int TAB_CLIENT = 7;
 	public static int TAB_MY_TIMESHEET = 5;
 	public static int TAB_TIMESHEET_APPROVAL = 6;
+	public static int TAB_REQUIREMENT = 8;
 	
 	public static  String Dashboard = "Dashboard";
 	public static  String Users = "Users";
@@ -160,6 +167,9 @@ public class Constants {
 	public static  String TimeSheet = "TimeSheet";
 	public static  String TimeSheetApproval = "TimeSheetApproval";
 	public static  String OrgSettings = "OrgSettings";
+	public static  String BackOffice = "BackOffice";
+	public static  String Finance = "Finance";
+	public static  String AssetManagement = "AssetManagement";
 	
 	public static  String Requirement = "Requirement";
 	public static  String Vendors = "Vendors";
@@ -263,4 +273,6 @@ public class Constants {
     public static String VENDOR = "Vendor";
     
     public static String CLIENT = "Client";
+    
+    public static String[] PROJECT_ASSIGNED_EMPLOYEES = {"Employee","Email id","Project Start Date","Project End Date","Approved Hours","Rejected Hours","Wiating for Approval","Saved Hours"};	
 }
