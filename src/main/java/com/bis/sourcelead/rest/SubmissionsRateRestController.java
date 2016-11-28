@@ -12,6 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RequirementService;
@@ -53,14 +59,17 @@ public class SubmissionsRateRestController {
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
-	
 	@RequestMapping(value = "/storeReject", method = RequestMethod.POST)
-	public @ResponseBody String storeReject(@RequestParam(value = "json", required = false) String json) throws Exception {
-	 
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
+	public @ResponseBody String storeReject(@RequestParam(value = "submissionId", required = false) Long submissionId,
+			@RequestParam(value = "rejectreason", required = false) String rejectreason) throws Exception {
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+		Requirement requirement = requirementSubmission.getRequirement();
+		User initiatorUser = requirementSubmission.getOrgLocations().getUser();
+		Candidate candidate = requirementSubmission.getCandidate();
+		OrgLocations orgLocations = requirementSubmission.getOrgLocations();
+		requirementSubmissionService.applicantRejectMailAboutRequirement(requirement,initiatorUser,candidate,orgLocations,rejectreason);
 		return "success";
-		
 	}
 	
 	@RequestMapping(value = "/storeNegotiation", method = RequestMethod.POST)
@@ -68,6 +77,7 @@ public class SubmissionsRateRestController {
 	 
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
+		
 		return "success";
 		
 	}

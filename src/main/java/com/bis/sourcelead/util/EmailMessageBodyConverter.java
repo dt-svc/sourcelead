@@ -110,6 +110,7 @@ public String convertTempBodyOfEmailTemplate(String body,Map<String, String> glo
 				}
 				else{
 					sb.delete(first, last);
+					sb.setLength(0);
 				 }
 				}
 			}

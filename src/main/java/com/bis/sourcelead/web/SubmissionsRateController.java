@@ -69,6 +69,9 @@ public class SubmissionsRateController {
 		
 		ModelAndView model = new ModelAndView();
 		model.addObject("rateStatus",rateStatus);
+		model.addObject("submissionId",submissionId);
+		model.addObject("sourceleadUrl",sourceleadUrl);
+		model.addObject("requirementSubmission",requirementSubmission);
 		model.setViewName("requirement/submissionRate");
 		
 		if("Accepted".equalsIgnoreCase(rateStatus)){
@@ -79,8 +82,9 @@ public class SubmissionsRateController {
 			Candidate candidate = requirementSubmission.getCandidate();
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
 			requirementSubmissionService.applicantAcceptMailAboutRequirement(requirement,initiatorUser,candidate,orgLocations);
+			
 		}
-		if("Rejected".equalsIgnoreCase(rateStatus)){
+	/*	if("Rejected".equalsIgnoreCase(rateStatus)){
 			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 			Requirement requirement = requirementSubmission.getRequirement();
 			User initiatorUser = requirementSubmission.getOrgLocations().getUser();
@@ -88,7 +92,7 @@ public class SubmissionsRateController {
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
 			requirementSubmissionService.applicantRejectMailAboutRequirement(requirement,initiatorUser,candidate,orgLocations);
 			
-		}
+		}*/
 		if("negotiate".equalsIgnoreCase(rateStatus)){
 			//write accept logic ....like send mail and put status as submission
 			

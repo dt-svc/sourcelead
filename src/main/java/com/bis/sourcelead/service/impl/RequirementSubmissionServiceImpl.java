@@ -816,10 +816,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }else{
 				 globalVarsMap.put("jobDescription","--");
 			 }
-		 if(loginUser.getFirstName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName())){
+		 if((loginUser.getFirstName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName())) && (loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getLastName()))){
 			 globalVarsMap.put("loginUserName", loginUser.getFirstName()+" "+loginUser.getLastName());
-			 }else{
-				 globalVarsMap.put("loginUserName","--");
+			 }
+		 else if(loginUser.getFirstName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName())){
+			 globalVarsMap.put("loginUserName", loginUser.getFirstName());
+		 	}else{
+			 globalVarsMap.put("loginUserName","--");
 			 }                       
 		
 		 globalVarsMap.put("acceptLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Accepted&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
@@ -943,8 +946,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_EMAIL,Constants.ENTITY_TYPE_EMAIL);
-		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_EMAIL,Constants.ENTITY_TYPE_NOTIFICATION);
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
 		
 		 //covert subject,body and signature
@@ -972,7 +975,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	@Override
 	public void applicantRejectMailAboutRequirement(Requirement requirement, User initiatorUser, Candidate candidate,
-			OrgLocations orgLocations) throws Exception {
+			OrgLocations orgLocations,String rejectreason) throws Exception {
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(initiatorUser.getFirstName());
 		 emailMessage.setLastName(initiatorUser.getLastName());
@@ -1030,8 +1033,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }else{
 				 globalVarsMap.put("jobDescription","--");
 			 }
-		 if(requirement.getDescription()!= null && !"".equalsIgnoreCase(requirement.getDescription())){
-			 globalVarsMap.put("rejectReason", requirement.getDescription());
+		 if(rejectreason != null && !"".equalsIgnoreCase(rejectreason)){
+			 globalVarsMap.put("rejectReason",rejectreason);
 			 }else{
 				 globalVarsMap.put("rejectReason","--");
 			 }
@@ -1043,8 +1046,84 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_REJECT_MAILABOUT_REQUIREMENT_EMAIL,Constants.ENTITY_TYPE_EMAIL);
-		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_REJECT_MAILABOUT_REQUIREMENT_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_REJECT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_REJECT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		notificationScenario.setBody(notificationbody);
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		  
+		 User toUser = orgLocations.getUser();
+		 
+		 String actionLink="";
+		//calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendNotification(actionLink, initiatorUser,toUser, orgLocations, notificationScenario);
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+	}
+	
+	
+	
+	public void applicantNegotiateEmail(Requirement requirement, User initiatorUser, Candidate candidate,
+			OrgLocations orgLocations) throws Exception {
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(initiatorUser.getFirstName());
+		 emailMessage.setLastName(initiatorUser.getLastName());
+		 emailMessage.setToEmail(initiatorUser.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
+		 emailMessage.setFromName(candidate.getFirstName()+" "+candidate.getLastName());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 
+		 if(initiatorUser.getFirstName()!= null && !"".equalsIgnoreCase(initiatorUser.getFirstName())){
+			 globalVarsMap.put("initiatorUserName", initiatorUser.getFirstName());
+			 }else{
+				 globalVarsMap.put("initiatorUserName","--");
+			 }
+		 
+		 if(requirement.getJobTitle()!= null && !"".equalsIgnoreCase(requirement.getJobTitle())){
+			 globalVarsMap.put("requirementName", requirement.getJobTitle());
+			 }else{
+				 globalVarsMap.put("requirementName","--");
+			 }
+		
+		 if(candidate.getFirstName()+""+candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()+""+candidate.getLastName())){
+			 globalVarsMap.put("applicantName", candidate.getFirstName()+""+candidate.getLastName());
+			 }else{
+				 globalVarsMap.put("applicantName","--");
+			 }
+		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
+			 globalVarsMap.put("requirementRate", requirement.getCurrencyCode()+"-"+requirement.getRate()+"-"+requirement.getRateType());
+			 }else{
+				 globalVarsMap.put("requirementRate","--");
+			 }
+		/* if(rejectreason != null && !"".equalsIgnoreCase(rejectreason)){
+			 globalVarsMap.put("applicantRate",rejectreason);
+			 }else{
+				 globalVarsMap.put("applicantRate","--");
+			 }*/
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_NEGOTIATE_REQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_NEGOTIATE_REQUIREMENT,Constants.ENTITY_TYPE_NOTIFICATION);
 
 		
 		 //covert subject,body and signature

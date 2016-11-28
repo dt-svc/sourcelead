@@ -68,10 +68,10 @@
 									  <i class="fa fa-ban fa-3x"></i>
 									  <p class="reason-msg">User Succefully Rejected</p>
 								  </div>
-								  <div class="col-md-6">
+								  <div class="col-md-6" id="rejectIdDiv">
 									  <div class="col-md-12">
 										  <label>Reason for Reject</label>
-										  <textarea class="form-control" rows="2" placeholder="Reason"></textarea>	
+										  <textarea class="form-control" rows="2" placeholder="Reason" id="rejectId"></textarea>	
 									  </div>
 									  <div class="col-md-12 mt10"><button type="button" class="btn btn-sm btn-danger pull-right" onclick="storeReject();">Submit</button></div>
 								  	
@@ -88,16 +88,33 @@
 							  </div>
 							  <div class="col-md-6">
 								  <div class="col-md-12 mb10">
-								  <input type="text" class="form-control input-sm" placeholder="Field One">
+								  <input type="text" class="form-control input-sm" placeholder="rate" value="${requirementSubmission.requirement.rate} " name="requirementRate">
 								  </div>
-								  <div class="col-md-12  mb10">
-								  <input type="text" class="form-control input-sm" placeholder="Field One">
+								  
+								  
+								   <div class="col-md-12 mb10">
+								  <div class="row">
+								  <div class="col-md-7">
+								  <input type="text" class="form-control input-sm" placeholder="rate" name="applicantRate">
 								  </div>
-								  <div class="col-md-12  mb10">
-								  <input type="text" class="form-control input-sm" placeholder="Field One">
+								  
+								  <div class="col-md-5 select-field">
+								  <select  class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Type">
+										<option value="">Rate Per</option>
+					                    <option>Hourly</option>
+					                    <option>Weekly</option>
+					                    <option>Bi-weekly</option>
+					                    <option>Semi-Monthly</option>
+					                    <option>Monthly</option>
+					                    <option>Bi-Monthly</option>
+					                    <option>Yearly</option>
+								  </select>
 								  </div>
+								  </div>
+								  </div>
+								 
 								  <div class="col-md-12 mb10">
-									  <textarea row="1" class="form-control" placeholder="Comments"></textarea>
+									  <textarea row="1" class="form-control" placeholder="Comments" name="comments"></textarea>
 								  </div>
 								  <div class="col-md-12 mt10"><button type="button" class="btn btn-sm btn-default" onclick="storeNegotiation();">Submit</button></div>
 							  	
@@ -121,17 +138,21 @@
 <script type="text/javascript">
 	function storeReject() {
 			var sourceleadUrl = '${sourceleadUrl}';
-			
+			var submissionId = '${submissionId}';
+			var rejectreason = document.getElementById("rejectId").value;
 			var frm = $('#reject_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
-			alert("con"+con);
 			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/storeReject?${_csrf.parameterName}=${_csrf.token}&json="+con,
+						url : sourceleadUrl+"/storeReject?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason,
 						success : function(data) {
-							     alert("success");
+							if("success"){
+								$('#rejectIdDiv').empty();
+								$('#rejectIdDiv').append("<span>Your Rejected Reason is submitted successfully !!</span>");	
+							}
+							
 						},
 					});
 			       

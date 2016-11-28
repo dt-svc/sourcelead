@@ -65,6 +65,6 @@ public interface RequirementSubmissionService {
 			OrgLocations orgLocations) throws Exception;
 	
 	public void applicantRejectMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
-			OrgLocations orgLocations) throws Exception;
+			OrgLocations orgLocations, String rejectreason) throws Exception;
 
 }
