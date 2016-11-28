@@ -57,4 +57,7 @@ public interface RequirementSubmissionService {
 	
 	public Integer getApplicantCountByrequirementIdandAssignedUsercode(Long requirementId, String userCode) throws Exception;
 
+	List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long valueOf, User user,
+			OrgLocations loginOrgLocation, String submissionType)throws Exception;
+
 }
