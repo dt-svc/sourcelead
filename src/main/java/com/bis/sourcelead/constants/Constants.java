@@ -42,7 +42,7 @@ public class Constants {
 	public static final String COUNTRY = "Country";
 	public static final String SATATE = "State";
 	public static final String CITY = "City";
-	public static final String LEVEL = "Level";
+	public static final String LEVEL = "Tier";
 	public static final String VENDOR_NAME = "Vendor Name*";
 
 	public static final Integer RECORD_ACTIVE = 1;

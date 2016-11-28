@@ -156,11 +156,11 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     		result = result +'</sec:authorize>';
     		result = result +'</li>';
 
-    		result = result +'<li>';
+    		/* result = result +'<li>';
     		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_PROJECT_EMPLOYEES\')">';
     		result = result + '<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
     		result = result +'</sec:authorize>';
-    		result = result +'</li>';
+    		result = result +'</li>'; */
 
     		result = result +'<li>';
     		result = result +' <a id="export-pop" onClick="exportFun()"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
@@ -773,7 +773,6 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	 var startDateStr =  $("#startDateStr").val();
 	 var endDateStr =  $("#assignEndDateStr").val();
 	 var status =  $("#assignStatus").val();
-	 alert("status"+status);
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',

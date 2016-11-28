@@ -124,7 +124,7 @@
 				            	}
 		                     result = result +"<tr>";
 
-			                 result = result +"  <td><input type='checkbox' id='checkbox12'/></td>";
+			                 /* result = result +"  <td><input type='checkbox' id='checkbox12'/></td>"; */
 			                
 			                 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\')">'; 
 			                   result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span title='"+opt.firstName+" "+opt.lastName+"'>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
