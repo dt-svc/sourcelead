@@ -4463,6 +4463,9 @@ import-tranhd  [class*="col-md-"]{
 .show-reason {
 	position: relative;
 }
+.show-reason b{
+	cursor: pointer;
+}
 .reason {
 	position:absolute;
 	width:200px;

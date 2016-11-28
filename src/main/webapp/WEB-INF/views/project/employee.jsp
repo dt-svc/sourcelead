@@ -36,7 +36,7 @@
                    </div>
                    <div class="modal-body-custom mt clearfix over" id="employeesList">
                    </div>
-                   <div class="col-md-12">exportType
+                   <div class="col-md-12">
                    
                    <div class="col-md-6">
 					<div class="checkbox">
@@ -229,11 +229,11 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 	                	result = result +'</div></td>';
                      }
                      else{
-                    	 result = result + '<td><div>';
+                    	 result = result + '<td><div class="tblminwidth-50">';
                     	 if(status != 'COMPLETED'){
-                    	 result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">Re-Assign &nbsp;<span class="show-reason"><b class="glyphicon glyphicon-comment"></b>';
+                    	 result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">Re-Assign &nbsp;</a><span class="show-reason"><b class="glyphicon glyphicon-comment text-success"></b>';
                     	 result = result + '<b class="reason">'+opt.terminateReason+'</b>';
-                    	 result = result + '</span></a>';
+                    	 result = result + '</span>';
                     	 }else{
                     		 result = result + '<font color="red">&nbsp;Terminated</font>';	 
                     	 }
@@ -677,27 +677,27 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
    result = result +'<div class="col-xs-12 col-md-12 col-lg-12" >';
     result = result +'<div class="form-group">';
    result = result +'	<label class="col-lg-3">Employee Name </label>';
-   result = result +'	<div class="col-lg-9">';
+   result = result +'	<div class="col-lg-9 ">';
    result = result +'		<input id="reAssignProjectName" type="text" class="form-control" value="'+empName+'"  name="reAssignProjectName" readonly="readonly" class="form-control"></span>';
    result = result +'	</div>';
    result = result +'	</div>';
    
    
    result = result +'<div class="form-group">';
-   result = result +'<label class="col-lg-3">Start date</label>';
-   result = result +'<div class="col-lg-9">';
-   result = result +'<div class="input-group">';
-   result = result +'	<span class="input-group-addon"><i class="fa fa-calendar"></i></span> <input type="text" class="form-control" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-StartDate" name="Re-StartDate" field-name="Start Date">';
-   result = result +'</div>';
+   result = result +'<label class="col-lg-3">Start date<span <span class="text-danger">*</span></label>';
+   result = result +'<div class="col-lg-9 positionRelative">';
+   
+   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-StartDate" name="Re-StartDate" field-name="Start Date" data-validation="required">';
+
    result = result +'</div>';
    result = result +'</div>';
    
    result = result +'<div class="form-group">';
-   result = result +'<label class="col-lg-3">End date</label>';
-   result = result +'<div class="col-lg-9">';
-   result = result +'<div class="input-group">';
-   result = result +'<span class="input-group-addon"><i class="fa fa-calendar"></i></span> <input type="text" class="form-control" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-EndDate" name="Re-EndDate" />';
-   result = result +'</div>';
+   result = result +'<label class="col-lg-3">End date <span class="text-danger">*</span></label>';
+   result = result +'<div class="col-lg-9 positionRelative">';
+
+   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-EndDate" name="Re-EndDate"  field-name="End Date" data-validation="required"/>';
+
    result = result +'</div>';
    result = result +'</div>';
 
