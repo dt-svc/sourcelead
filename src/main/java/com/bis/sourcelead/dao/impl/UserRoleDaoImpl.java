@@ -165,14 +165,14 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			subQuery = "and userRole.userState = '" + userState + "'";
 		}
 		
-		String subQuery1 = "";
+		/*String subQuery1 = "";
 		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
 			subQuery1 = "and userRole.createdBy = '" + userCode + "' ";
-		}
+		}*/
 
 		return session.createQuery(
 				"Select userRole from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId "
-						+ subQuery + " "+subQuery1+" ")
+						+ subQuery + " ")
 				.setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
 	}
 
@@ -187,14 +187,14 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			subQuery = "and userRole.userState = '" + userState + "'";
 		}
 		
-		String subQuery1 = "";
+		/*String subQuery1 = "";
 		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
 			subQuery1 = "and userRole.createdBy = '" + userCode + "' ";
-		}
+		}*/
 
 		return session
 				.createQuery("Select userRole from UserRole userRole where userRole.roles.id = :roleId "
-						+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId " + subQuery + " "+subQuery1+" ")
+						+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId " + subQuery + "  ")
 				.setLong("roleId", roleId).setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
 	}
 
@@ -208,15 +208,15 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			subQuery = "and userRole.userState = '" + userState + "'";
 		}
 		
-		String subQuery1 = "";
+		/*String subQuery1 = "";
 		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
 			subQuery1 = "and userRole.createdBy = '" + userCode + "' ";
-		}
+		}*/
 
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.createQuery("Select userRole from UserRole userRole where " + "((userRole.user.firstName LIKE '"
 				+ userName + "%') OR (userRole.user.lastName LIKE '" + userName + "%') OR (userRole.user.email LIKE '" + userName + "')) "
-				+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId " + subQuery + " " + subQuery1 + " ")
+				+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId " + subQuery + "  ")
 				.setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
 	}
 
@@ -231,16 +231,16 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			subQuery = "and userRole.userState = '" + userState + "'";
 		}
 		
-		String subQuery1 = "";
+		/*String subQuery1 = "";
 		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
 			subQuery1 = "and userRole.createdBy = '" + userCode + "' ";
-		}
+		}*/
 
 		return session
 				.createQuery("Select userRole from UserRole userRole where userRole.roles.id = :roleId and "
 						+ "((userRole.user.firstName LIKE '" + userName + "%') OR (userRole.user.lastName LIKE '"
 						+ userName + "%') OR (userRole.user.email LIKE '" + userName + "')) "
-						+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId " + subQuery + " " + subQuery1 + "")
+						+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId " + subQuery + " ")
 				.setLong("roleId", roleId).setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
 	}
 
@@ -249,16 +249,16 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	public List<UserRole> getUsersListByUserStateAndLocationId(String userState, Long locationId, Long userId,String loginUserRole,String userCode)
 			throws Exception {
 		
-		String subQuery = "";
+		/*String subQuery = "";
 		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
 			subQuery = "and userRole.createdBy = '" + userCode + "' ";
-		}
+		}*/
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		return session
 				.createQuery(
 						"Select userRole from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and "
-								+ "userRole.userState = :userState "+subQuery+" ")
+								+ "userRole.userState = :userState  ")
 				.setLong("locationId", locationId).setString("userState", userState).setLong("userId", userId).setCacheable(true).list();
 	}
 
