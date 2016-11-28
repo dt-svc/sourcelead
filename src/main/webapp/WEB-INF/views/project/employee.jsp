@@ -125,8 +125,6 @@
  <!-- this script is for Emplyee Listfunctionality at Projects screen -->
 <script>
 function projectEmployee(projectId,startDateStr,endDateStr,status){
-	
-	
 	$("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -141,13 +139,16 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
         	var result = "";
         	result = result + '<input type="hidden" name="projectId" id="projectId" value="'+projectId+'" >';
         	result = result + '<input type="hidden" name="startDateStr" id="startDateStr" value="'+startDateStr+'" >';
-        	result = result + '    	<div class="project_tabs_inn_head">';
+        	result = result + '<input type="hidden" name="assignEndDateStr" id="assignEndDateStr" value="'+endDateStr+'" >';
+        	result = result + '<input type="hidden" name="assignStatus" id="assignStatus" value="'+status+'" >';
+        	
+        	result = result + '    	<div class="project_tabs_inn_head" style="min-height:35px">';
+        	result = result    + '<span class="pad-sea">';
     		if(projectStatus != 'Completed' &&  projectStatus != '' &&  projectStatus != 'undefined' ){
-    		result = result	+ '<span class="pad-sea">';
     		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
     		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
-    		result = result	+ '</span>';
         	}
+    		result = result	+ '</span>';
     		result = result + '		</div>';
     		result = result + '        <div class="project_tabs_inn_table">';
     	    result = result + '        <div id="employeesLoadingImg"></div>';
@@ -193,7 +194,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
 	                result = result + '	     <td><div><input type="text" value='+opt.rejectedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.submittedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
 	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
-	                if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != "INACTIVE"){
+	                if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
 	                	result = result + '	<td><div>';
 	                	if(status != 'COMPLETED'){
 	                		result = result + '<i class="glyphicon glyphicon-trash" onClick="deleteProject('+opt.id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i>';
@@ -201,8 +202,17 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
 	                	result = result +'</div></td>';
                      }
                      else{
-                          result = result + '<td><div><font color="red">Terminated</font></div></td>';
+                    	 result = result + '<td><div>';
+                    	 if(status != 'COMPLETED'){
+                    	 result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">Re-Assign &nbsp;<span class="show-reason"><b class="glyphicon glyphicon-comment"></b>';
+                    	 result = result + '<b class="reason">'+opt.terminateReason+'</b>';
+                    	 result = result + '</span></a>';
+                    	 }else{
+                    		 result = result + '<font color="red">&nbsp;Terminated</font>';	 
+                    	 }
+                    	 result = result +'</div></td>';
                      }
+                    	 
 	                
 	                
 	                
@@ -582,4 +592,183 @@ function flushEmployee(){
 		$("#employee_form").showHelpOnFocus();;
 		$("#employee_form").validateOnBlur(false, validationSettings);  
 	});
+</script>
+
+
+
+
+
+<!-- Modal content Re-Asign Project-->
+<div role="dialog" id="Re-AssignProject" class="modal fade">
+	<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button data-dismiss="modal" class="close" type="button">X</button>
+					<h4 class="modal-title">Re-Assign Project</h4>
+				</div>
+				<form:form id="reAssignProject_form" name="reAssignProject_form" method="post">
+				<div class="modal-body clearfix">
+					<div id ="ReAssignProjectId"></div>
+				</div>
+				</form:form>
+				<div class="modal-footer">
+					<button class="btn btn-primary" type="button" id="saveReAssignProject" onclick="reAssignProject();">Select</button>
+					<button data-dismiss="modal" class="btn btn-default" onclick="flushProject();" type="button">Cancel</button>
+				</div>
+			</div>
+	</div>
+</div>
+<!-- Add Team modal popup ends -->
+<!-- Add Team modal popup ends -->
+<script>
+function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDateStr){  
+   var result = "";
+   result = result + '<input type="hidden" name="projectMemberId" id="projectMemberId" value="'+projectMemberId+'" >';
+   result = result +'<div class="modal-body clearfix">';
+   result = result +'<div class="form-horizontal custom-form clearfix">';
+   result = result +'<div class="col-xs-12 col-md-12 col-lg-12" >';
+    result = result +'<div class="form-group">';
+   result = result +'	<label class="col-lg-3">Employee Name </label>';
+   result = result +'	<div class="col-lg-9">';
+   result = result +'		<input id="reAssignProjectName" type="text" class="form-control" value="'+empName+'"  name="reAssignProjectName" readonly="readonly" class="form-control"></span>';
+   result = result +'	</div>';
+   result = result +'	</div>';
+   
+   
+   result = result +'<div class="form-group">';
+   result = result +'<label class="col-lg-3">Start date</label>';
+   result = result +'<div class="col-lg-9">';
+   result = result +'<div class="input-group">';
+   result = result +'	<span class="input-group-addon"><i class="fa fa-calendar"></i></span> <input type="text" class="form-control" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-StartDate" name="Re-StartDate" field-name="Start Date">';
+   result = result +'</div>';
+   result = result +'</div>';
+   result = result +'</div>';
+   
+   result = result +'<div class="form-group">';
+   result = result +'<label class="col-lg-3">End date</label>';
+   result = result +'<div class="col-lg-9">';
+   result = result +'<div class="input-group">';
+   result = result +'<span class="input-group-addon"><i class="fa fa-calendar"></i></span> <input type="text" class="form-control" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-EndDate" name="Re-EndDate" />';
+   result = result +'</div>';
+   result = result +'</div>';
+   result = result +'</div>';
+
+   result = result +'</div>';
+   result = result +'</div>';
+   result = result +'	</div>';
+   
+   $("#ReAssignProjectId").empty();
+   $("#ReAssignProjectId").append(result);
+	  
+   var reStatertDate = $('#Re-StartDate').val();
+   
+		  
+   
+  var reStatertDate = $('#Re-StartDate').val()
+  if(projectEndDateStr != null && projectEndDateStr != "" && projectEndDateStr != 'undefined'){
+	  $('#Re-StartDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+		  minDate:endDate,
+		  maxDate:projectEndDateStr,
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	            $("#Re-EndDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+	  
+	  $('#Re-EndDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      minDate:endDate,
+	      maxDate:projectEndDateStr,
+	        onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() - 1);
+	            $("#Re-StartDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+  }
+  else{
+	  $('#Re-StartDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+		  minDate:endDate,
+	      onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() + 1);
+	            $("#Re-EndDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+	  
+	  
+	
+	  $('#Re-EndDate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      minDate:endDate,
+	      maxDate:reStatertDate,
+	        onSelect: function (selected) {
+	            var dt = new Date(selected);
+	            dt.setDate(dt.getDate() - 1);
+	            $("#Re-StartDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+  }	  
+   
+}
+
+</script>
+
+<script type="text/javascript">
+ function reAssignProject() {
+	 var projectMemberId =  $("#projectMemberId").val();
+	 var projectId =  $("#projectId").val();
+	 var projectMemberId =  $("#projectId").val();
+	 var startDateStr =  $("#startDateStr").val();
+	 var endDateStr =  $("#assignEndDateStr").val();
+	 var status =  $("#assignStatus").val();
+	 alert("status"+status);
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+		   }; 
+	 if ($('#reAssignProject_form').validate(false, validationSettings)){ 
+		 var projectMemberId = $("#projectMemberId").val();
+	        var frm = $('#reAssignProject_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/saveReAssignProject?${_csrf.parameterName}=${_csrf.token}&json="+con+"&projectMemberId="+projectMemberId, 
+		        success: function(data) {
+		        	if(data="success"){
+		        	 	$("#Re-AssignProject").modal('hide');
+		        	 	projectEmployee(projectId,startDateStr,endDateStr,status);
+		        	}
+		        },
+		        error: function(e){
+		            
+		        }
+		    }); 
+	       return true;
+	  }else{
+		 $("#saveReAssignProject").removeAttr('data-dismiss','modal');
+		return false;
+	  }
+    }
+
+    $('body').on('blur', '#reAssignProject_form', function() {
+		$("#reAssignProject_form").showHelpOnFocus();;
+		$("#reAssignProject_form").validateOnBlur(false, validationSettings);  
+	});
+ 
+</script>
+<script type="text/javascript">
+function flushReProject(){
+	$('#Re-StartDate').val('');
+	$('#Re-EndDate').val('');
+	$(".error").removeClass("error");
+	$('#assignProjectDiv').find('p.jquery_form_error_message').remove();
+}
 </script>
