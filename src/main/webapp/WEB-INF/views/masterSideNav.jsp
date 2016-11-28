@@ -111,7 +111,7 @@
 							  </c:if>
 							  <c:if test="${sessionData.nav != 'Finance' || sessionData.nav != 'AssetManagement'}">
 							  <ul class="collapses" style="display: none">
-							  	<li class="${sessionData.nav == 'BackOffice' ? 'treview-active' : ''}"><a href="<c:url value='/finance'/>" title="My TimeSheets">Finance</a></li>
+							  	<li class="${sessionData.nav == 'BackOffice' ? 'treview-active' : ''}"><a href="<c:url value='/finance'/>" title="Finance">Finance</a></li>
 									<li class="${sessionData.nav == 'AssetManagement' ? 'treview-active' : ''}"><a href="<c:url value='/assetManagement'/>" title="Asset Management">Asset Management</a></li>
 							  </ul>
 							  </c:if>
