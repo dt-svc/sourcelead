@@ -309,7 +309,8 @@ function getInternalInterviewsList(submissionId){
 	                    	 var interviewTypeHeader = "";
 	                    	 var interviewType = "---";
 	                    	// var timeZone = "---";
-	                    	 
+	                    	 var location = "---"; 
+	                    	
 	                    	 if(report.notificationToApplicant != null && report.notificationToApplicant != 'undefined' && report.notificationToApplicant != "" && report.notificationToApplicant == "Y"){
 	                    		 notifiedDetails = 'Applicant';
 				             }
@@ -337,6 +338,10 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	                    	 if(report.timeZone != null && report.timeZone != 'undefined' && report.timeZone != ""){
 	                    		 timeZone = report.timeZone;
+	                    	 }
+	                    	 
+	                    	 if(report.location != null && report.location != 'undefined' && report.location != ""){
+	                    		 location = report.location;
 	                    	 }
 	                    	 
 	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
@@ -383,7 +388,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '<label class="col-md-5">';
 	                    	 result = result + '<strong>Interview Location</strong>';
 	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7">'+report.location+'</p>';
+	                    	 result = result + '<p class="col-md-7">'+location+'</p>';
 	                    	 result = result + '</div>';
 
 	                    	 result = result + '<div class="row clearfix">';
@@ -562,6 +567,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                    	 var interviewTypeHeader = "";
 	                    	 var interviewType = "---";
 	                    	//var timeZone = "---";
+	                    	 var location = "---";
 	                    	 
 	                    	 if(report.interviewType != null && report.interviewType != 'undefined' && report.interviewType != ""){
 	                    		 interviewType = report.interviewType;
@@ -570,6 +576,10 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                    	 
 	                    	 if(report.timeZone != null && report.timeZone != 'undefined' && report.timeZone != ""){
 	                    		 timeZone = report.timeZone;
+	                    	 }
+	                    	 
+	                    	 if(report.location != null && report.location != 'undefined' && report.location != ""){
+	                    		 location = report.location;
 	                    	 }
 	                    	 
 	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
@@ -603,7 +613,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                    	 result = result + '<label class="col-md-5">';
 	                    	 result = result + '<strong>Interview Location</strong>';
 	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7">'+report.location+'</p>';
+	                    	 result = result + '<p class="col-md-7">'+location+'</p>';
 	                    	 result = result + '</div>';
 
 	                    	 result = result + '<div class="row clearfix">';
