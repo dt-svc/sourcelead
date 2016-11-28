@@ -989,7 +989,7 @@ jQueryFormUtils.validatefile_doc = function(val) {
 };
 
 jQueryFormUtils.validatefile_docimgpdf = function(val) {
-    return val.match(/(.*)(docx|doc|pdf|txt|jpg|gif|png)$/) !== null;
+    return val.match(/(.*)(docx|doc|pdf|txt|jpg|JPG|gif|png)$/) !== null;
 };
 
 jQueryFormUtils.validatefile_resume = function(val) {

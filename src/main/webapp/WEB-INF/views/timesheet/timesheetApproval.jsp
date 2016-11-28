@@ -607,7 +607,7 @@ function getProjectTasksOnChange(projectTaskId,projectId){
 					   			    $('option', this).not(':eq(0), :selected').remove();
 					   		    }else{  
 					   		    	 $("#"+localId).empty();
-					   		   		 result = result + "<option value=''>--select option--</option>";
+					   		   		 result = result + "<option value=''>--select Task--</option>";
 					   		    }
 				    	    	for (var i=0; i<json.length; i++)
 							 	{

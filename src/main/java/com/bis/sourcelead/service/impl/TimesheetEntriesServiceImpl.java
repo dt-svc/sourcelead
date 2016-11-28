@@ -190,7 +190,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			    	  Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 			    	  endCal.setLenient(false);
 			    	  endCal.setTime(employeeEndDate);
-			    	  startCal.setTime(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(endCal,"MON").getTime());
+			    	  startCal.setTime(CalendarUtil.getPreviousWeekDayByCalendar(endCal,"MON").getTime());
 			      }
 			      else if(employeeStartDate.after(currentWeekStartDate)){
 			    	  startCal.setTime(employeeStartDate);
@@ -200,8 +200,16 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			 * startDate comes from ui screen when << or >> links clicked
 		   */
 		  else{
-               Date sDate  =  Constants.DMY.parse(startDate);
-			   startCal.setTime(sDate);
+			  Date sDate  =  Constants.DMY.parse(startDate);
+              if(sDate != null && employeeEndDate.before(sDate)){
+           	      Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+			    	  endCal.setLenient(false);
+			    	  endCal.setTime(employeeEndDate);
+			    	  startCal.setTime(CalendarUtil.getPreviousWeekDayByCalendar(endCal,"MON").getTime());
+              }
+              else{
+           	   startCal.setTime(sDate);
+              }
 		  }
 		 String weekStartDate = format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime());
 		 startDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime()));
@@ -395,7 +403,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              }
 						              else{
 						            	      sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
-						            	      sb.append("<option value=''>--select option--</option>");
+						            	      sb.append("<option value=''>--select task--</option>");
 						            	      for(ProjectTasks pt   : ProjectTasksList){
 										    	       if(timesheetEntries.getProjectTask() != null && pt.getId().equals(timesheetEntries.getProjectTask().getId())){
 										    	    	   sb.append("<option value='"+pt.getId()+"' selected>"+pt.getTaskName()+"</option>");
@@ -549,7 +557,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              else{
 						            	  
                                           sb.append("     <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
-                                          sb.append("<option value=''>--select option--</option>");
+                                          sb.append("<option value=''>--select task--</option>");
                                           for(ProjectTasks pt   : ProjectTasksList){
 									              sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");   
 									      }

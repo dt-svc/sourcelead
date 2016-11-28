@@ -124,7 +124,7 @@ public class VendorController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("vendors/vendor");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_VENDOR));
 			model.addObject("userList", userList);
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
@@ -148,7 +148,7 @@ public class VendorController {
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	 
+	@PreAuthorize("hasRole('ROLE_CREATE_VENDOR_CONTACT')")
 	@RequestMapping(value = "/addVendorContact")
 	public ModelAndView addVendorContac(HttpServletRequest request){
 		ModelAndView model = new ModelAndView();
@@ -156,7 +156,7 @@ public class VendorController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("vendors/addVendorContact");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_VENDOR));
 			List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 			model.addObject("userList", userList);
 			model.addObject("loginOrgLocId", orgLocations.getId());
@@ -175,7 +175,7 @@ public class VendorController {
 		return model;
 	}
 
-	@PreAuthorize("hasRole('ROLE_VENDOR_BULK_IMPORTS')")
+	@PreAuthorize("hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')")
 	 @RequestMapping(value = "/uploadVendorForm")
 		public ModelAndView uploadVendorForm(HttpServletRequest request) {
 		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");

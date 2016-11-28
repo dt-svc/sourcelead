@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
 
 @Service
@@ -38,6 +39,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 	
 	@Autowired
 	private PdfUtil pdfUtil;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@Override
 	public UserRole addUserRole(UserRole userRole) throws Exception {
@@ -224,21 +228,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 			 }
 		
 		 cell6.setCellStyle(style);
-		 
-		return createExcelsheet = setExcelHeader(createExcelsheet,style);
+		 String headers [] = Constants.USER_EXCEL_HEADERS;
+		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,7);
 	}
-
-	private Sheet setExcelHeader(Sheet createExcelsheet, CellStyle style) {
-		String headers [] = Constants.USER_EXCEL_HEADERS;
-		Row excelHeader = createExcelsheet.createRow(7);
-		 for (int i=0; i<headers.length;i++){
-		         Cell cell = excelHeader.createCell(i);
-		         cell.setCellValue(headers[i]);
-		         cell.setCellStyle(style);
-		     }
-		return createExcelsheet;
-	}
-
 
 	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column, UserRole userRoles) {
 		 Set<Employees> employeeSet = userRoles.getUser().getEmployee();
