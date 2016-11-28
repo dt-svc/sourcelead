@@ -48,7 +48,7 @@ public class OrgSettingsController {
 	@Autowired
 	RoleHierarchyService roleHierarchyService;
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_ORG_SETTINGS','ROLE_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/orgSettings")
  	public ModelAndView orgSettings(HttpServletRequest request) {
 		logger.debug("Org settings");
@@ -59,6 +59,7 @@ public class OrgSettingsController {
  			return model;
  	}
 	
+	 @PreAuthorize("hasRole('ROLE_ORG_SUBMISSION_TEMPLATE')")
 	@RequestMapping(value = "/orgSubmissionTemplate")
  	public ModelAndView orgSubmissionTemplate(HttpServletRequest request) {
 		    ModelAndView model = new ModelAndView();
