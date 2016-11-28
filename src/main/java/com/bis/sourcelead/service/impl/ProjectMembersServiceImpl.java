@@ -148,8 +148,14 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId) {
 		return projectMembersDao.getAllProjectsByUserId(userId);
 	}
+	
+	
 
-
+	@Override
+	public ProjectMembers getProjectMemberByUserIdAndProjectId(Long userId, Long projectId) throws Exception {
+		// TODO Auto-generated method stub
+		return projectMembersDao.getProjectMemberByUserIdAndProjectId(userId,projectId);
+	}
 	@Override
 	public Integer getAllProjectMembersCountByProjectId(Long id) throws Exception {
 		
@@ -555,5 +561,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public List<ProjectMembers> getAllProjectMembersAssignedOrTerminateDateisGreaterThanProjectEndDate(Long projectId) {
 		return projectMembersDao.getAllProjectMembersAssignedOrTerminateDateisGreaterThanProjectEndDate(projectId);
 	}
+
+	
 	
 }

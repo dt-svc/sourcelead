@@ -169,8 +169,21 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	public ProjectApproverHierarchy getByProjectApproverHierarchyId(Long projectApproverHierarchy) throws Exception {
 
 		logger.debug("In ProjectApproverHierarchy getByProjectApproverHierarchyId method");
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		return (ProjectApproverHierarchy) session.get(ProjectApproverHierarchy.class, projectApproverHierarchy);
+		String query = "from  ProjectApproverHierarchy projectHirachy left join fetch projectHirachy.approverUserId where projectHirachy.id =:projectApproverHierarchy";
+		 @SuppressWarnings("unchecked")
+		List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectApproverHierarchy", projectApproverHierarchy)
+				                                                                                     .setCacheable(true)
+	    																					 .list();
+		 
+		 ProjectApproverHierarchy pah = null;
+		 if(projectHirachyList != null && !projectHirachyList.isEmpty()){
+			 pah = projectHirachyList.iterator().next();
+		 }
+	        
+		 return pah;
+		
 	}
 
 	

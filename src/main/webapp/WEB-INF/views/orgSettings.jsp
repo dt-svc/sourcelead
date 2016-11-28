@@ -376,7 +376,7 @@ function getAllCountries(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#country').empty();
-	        	$('#country').append('<option value="">---select---</option>');
+	        	$('#country').append('<option value="">---select country---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == countryName){
 	            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -415,7 +415,7 @@ function getStates(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select---</option>');
+	        	$('#state').append('<option value="">---select state---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == stateName){
 	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -432,10 +432,10 @@ function getStates(){
 	    });
 	}else{
 		$('#state').empty();
-    	$('#state').append('<option value="">---select---</option>');
+    	$('#state').append('<option value="">---select state---</option>');
     	$('#state').trigger("chosen:updated");
     	$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').append('<option value="">---select city---</option>');
         $('#city').trigger("chosen:updated");
 	}
 }
@@ -462,7 +462,7 @@ function getCities(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select---</option>');
+	        	$('#city').append('<option value="">---select city---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == cityName){
 	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -478,7 +478,7 @@ function getCities(){
 	    });
 	}else{
 		$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').append('<option value="">---select city---</option>');
     	$('#city').trigger("chosen:updated");
 	}
 }

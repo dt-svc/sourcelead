@@ -332,7 +332,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		/**
 		 * this block is for submissions for project member
 		*/
-		if (jsonObj.has("employeeMaxCount")){
+		/*if (jsonObj.has("employeeMaxCount")){
 		String employeeMaxCount = jsonObj.getString("employeeMaxCount");
 		if(StringUtils.isNotEmpty(employeeMaxCount)){
 		int empMaxCount = Integer.parseInt(employeeMaxCount);
@@ -340,7 +340,18 @@ public class ProjectsServiceImpl implements ProjectsService{
 			Employees emp = employeesService.getEmployee(jsonObj.getString("employeeId"+c));
 			commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
 			}
-		}
+		 }
+		}*/
+		
+		
+		/**
+		 * this block is for submissions for project member
+		*/
+		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(updatedProjects.getId());
+		if (projectMembersList != null && !projectMembersList.isEmpty()){
+			for (ProjectMembers pm : projectMembersList) {
+		  	  commonUtil.storeTimesheetSubmissionRecords(pm.getEmployee().getUser());
+			}
 		}
 		
 		/*
@@ -585,7 +596,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    if(projectApproverHierarchies.size()==1){
 	    	
 	    	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
-		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2){
+		    	if(approverHierarchy.getLevel() != null){
 		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
 		    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
 		    	}
@@ -696,29 +707,63 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	}
 		    	
 		    	
-		    	if(jsonObj.has("level1Manager")){
+		    	if(jsonObj.has("level1Manager") || jsonObj.has("level2Manager") ){
 			    		Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
-						 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
-							 if(prHierarchy.getLevel() == 1){
+			    		HashSet<Long> oldlist = new HashSet<>();
+			    		HashSet<Long> freshlist = new HashSet<>();
+			    		HashSet<Long> templist = null;
+			    		for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
 								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
-								 Long fieldValuelong = Long.valueOf(jsonObj.getString("level1Manager"));
-								 User usr = userService.getUserById(fieldValuelong);
-								 pah.setApproverUserId(usr);
-								 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
-							 }
-			    	}
-		    	}
-		    	if(jsonObj.has("level2Manager")){
-			    		 Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
-						 for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
-							 if(prHierarchy.getLevel() == 2){
-								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
-								 Long fieldValuelong = Long.valueOf(jsonObj.getString("level2Manager"));
-								 User usr = userService.getUserById(fieldValuelong);
-								 pah.setApproverUserId(usr);
-								 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
-							 }
-						 }
+								 Long fieldValuelong = null;
+								     if(prHierarchy.getLevel() == 1 || (prHierarchy.getLevel() == 2 && projectApproverHierarchies.size() == 1))
+									  fieldValuelong = Long.valueOf(jsonObj.getString("level1Manager"));
+								     
+								     if(prHierarchy.getLevel() == 2 &&  jsonObj.has("level2Manager"))
+								      fieldValuelong = Long.valueOf(jsonObj.getString("level2Manager"));
+								     
+									 User usr = userService.getUserById(fieldValuelong);
+									 oldlist.add(pah.getApproverUserId().getId());
+									 freshlist.add(usr.getId());
+									 pah.setApproverUserId(usr);
+								
+								   projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
+			    	 }
+			    		if(oldlist != null && !oldlist.isEmpty()){
+			    			templist = (HashSet<Long>) oldlist.clone();
+			    		}
+			    		//getting projectmember userId's who are terminated or who are dropped from project
+			    		oldlist.removeAll(freshlist);
+			    		if(oldlist != null && !oldlist.isEmpty()){
+			    			for(Long terminatedUserId : oldlist){
+			    				if(projects != null && projects.getId() != null){
+			    					ProjectMembers pm = projectMembersService.getProjectMemberByUserIdAndProjectId(terminatedUserId, projects.getId());
+				    				if(pm.getId() != null){
+				    					ProjectMembersHistory projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
+				    					projectMembersHistory.setProjectTerminationDate(currentDate);
+				    					projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
+					    				commonUtil.terminateProjectMemberByProjectMemberId(pm.getId(), Primary.Yes);
+				    				}
+				    				 
+			    				}
+			    			}
+			    		}
+			    		
+			    		if(templist != null && !templist.isEmpty()){
+			    			//getting projectmember userId's who are added to the project
+			    			freshlist.removeAll(templist);
+			    			if(freshlist != null && !freshlist.isEmpty()){
+			    				for(Long freshlyaddedUserId : freshlist){
+			    					ProjectMembers pm = storeProjectMemberByMemberUserIdAndLoginUser(freshlyaddedUserId, user, projects, currentDate);
+			    					User usr = userService.getUserById(freshlyaddedUserId);
+			    					if(pm != null){
+			    						commonUtil.storeTimesheetSubmissionRecords(usr);
+			    					}
+			    				}
+			    				
+			    			}
+			    			
+			    		}
+			    		
 		    	}
 			    projects.setUpdatedBy(user.getUserCode());
 			    projects.setUpdatedDate(currentDate);
@@ -836,6 +881,39 @@ public class ProjectsServiceImpl implements ProjectsService{
 		return user;
 		
 	}
+	
+	/**
+	 * @throws Exception 
+	 * 
+	 */
+	private ProjectMembers storeProjectMemberByMemberUserIdAndLoginUser(Long memberUserId,User loginUser,Projects projects,Date currentDate) throws Exception{
+		
+		ProjectMembers pm = new ProjectMembers();
+		HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
+		ProjectMembersHistory pmh = new ProjectMembersHistory();
+		pmh.setProjectMemberId(pm);
+		pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+		pmh.setProjectAssignedDate(currentDate);
+		pmh.setProjectTerminationDate(projects.getEndDate());
+ 	    pmh.setCreatedDate(currentDate);
+		pmh.setCreatedBy(loginUser.getUserCode());
+		pmh.setUpdatedDate(currentDate);
+		pmh.setUpdatedBy(loginUser.getUserCode());
+		pmhList.add(pmh);
+		Employees emp = employeesService.getEmployeeByUserId(memberUserId);
+    	pm.setProjects(projects);
+    	pm.setEmployee(emp);
+		pm.setStatus(Constants.MEMBER_ACTIVE);
+		pm.setCreatedDate(currentDate);
+		pm.setUpdatedDate(currentDate);
+		pm.setCreatedBy(loginUser.getUserCode());
+		pm.setUpdatedBy(loginUser.getUserCode());
+		pm.setMemberHistoryList(pmhList);
+		pm = projectMembersService.saveProjectMember(pm);
+		return pm;
+	}
+	
+	
 	/**
 	 * populate Employees Data	
 	 * @param user
@@ -930,6 +1008,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	       	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
 	          		pm.setUserId(pm.getEmployee().getUser().getId().toString());
 	          	 }
+		      if(pm.getTerminateReason() != null){
+		    	  pm.setTerminateReason(pm.getTerminateReason());
+		      }
 	       	 
 	       	 if(pm.getEmployee()!=null){
 	
@@ -962,7 +1043,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 
 		 
 		 myPM.setProjectMembersList(projectMembersArrList);
-		 myPM.setStatus(project.getProjectStatus().getValue());
+		 if(project.getProjectStatus() != null){
+			 myPM.setStatus(project.getProjectStatus().getValue());	 
+		 }
+		 
 		 
 		 return myPM;
 	}
