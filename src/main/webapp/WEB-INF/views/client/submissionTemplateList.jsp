@@ -28,7 +28,7 @@ width: 100% !important;
 <script type="text/javascript">
 //On document ready
 $(function(){
-    generateForm();
+    //generateForm();
 });
 </script>
 

@@ -79,7 +79,7 @@ public class OrgSettingsRestController {
 	@Autowired
 	CommonUtil commonUtil;
 	
-	
+   @PreAuthorize("hasRole('ROLE_EDIT_ORG_SETTINGS')")
    @RequestMapping(value = "/saveOrgSettings" , method = RequestMethod.POST)
    public String saveOrgSettings(@RequestParam(value="json", required=false) String json,MultipartHttpServletRequest request) throws Exception {
 		
