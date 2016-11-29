@@ -157,7 +157,7 @@ public class RegistrationController {
 						 moduleIds.add(Integer.parseInt(s));
 					 }
 					 
-			    	if("VMS".equalsIgnoreCase(respondingOrgType)){
+			    	if("ATS".equalsIgnoreCase(respondingOrgType)){
 			    		flag = moduleIds.contains(Constants.MODULE_ATS);
 			    		tabId = (long) Constants.TAB_CLIENT;
 			    		moduleId = (long) Constants.MODULE_ATS;
@@ -165,7 +165,7 @@ public class RegistrationController {
 			    			modules = modules+","+Constants.MODULE_ATS;
 			    			saveUserRoleActions(moduleId,tabId,orgLocations);
 			    		}
-			    	}else{
+			    	}else if("VMS".equalsIgnoreCase(respondingOrgType)){
 			    		flag = moduleIds.contains(Constants.MODULE_VMS);
 			    		tabId = (long) Constants.TAB_VENDOR;
 			    		moduleId = (long) Constants.MODULE_VMS;

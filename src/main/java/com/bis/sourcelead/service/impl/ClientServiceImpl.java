@@ -308,10 +308,10 @@ public class ClientServiceImpl implements ClientService{
 			org.setOrgType("Guest");
 			
 			if(responderType.equalsIgnoreCase("Client")){
-				org.setModulesId(Integer.toString(Constants.MODULE_ATS));
+				org.setModulesId(Integer.toString(Constants.MODULE_VMS));
 			}
 			else if(responderType.equalsIgnoreCase("Vendor")){
-				org.setModulesId(Integer.toString(Constants.MODULE_VMS));
+				org.setModulesId(Integer.toString(Constants.MODULE_ATS));
 			}
 			
 			org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());

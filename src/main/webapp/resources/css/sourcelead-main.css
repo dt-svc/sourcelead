@@ -4458,8 +4458,61 @@ import-tranhd  [class*="col-md-"]{
 .require_wrap_table.table-ttab {
   overflow-y: visible;
 }
+.scroll-table .tab-content{
+	overflow-x: auto;
+}
+.tablehead {
+	background-color: #375d81;
+	color: #fff !important;
+	padding: 10px 15px !important;
+}
+.btn.btn-custom{
+ padding: 2px 5px;
+ font-size: 13px;
+}
+.acceptreject-actions {
+	position:absolute;
+	top:0;
+	right:15px;
+}
+.acceptreject-actions ul li{
+	padding:0;
+	cursor: pointer;
+	position: relative;
+}
+.labelsuccess{
+	background: #5cb85c;
+	padding: 5px 8px;
+	color: #fff;
+	border-radius: 3px;
+}
+.labelsuccess:hover{
+	background: #909090;
+}
+.labeldanger:hover{
+	background: #909090;
+}
+.labeldanger{
+	background: #d34836;
+	padding: 5px 10px;
+	border-radius: 3px;
+}
+.acceptreject-pop{
+	width: 300px;
+	background: #fff;
+	position: absolute;
+	top: 30px;
+	right: 0;
+	z-index: 9999;
+	border: 1px solid #ccc;
+	padding: 10px;
+	-webkit-box-shadow: 0 8px 6px -8px #505050;
+	-moz-box-shadow: 0 8px 6px -8px #505050;
+	box-shadow: 0 8px 6px -8px #505050;
+	border-radius: 5px;
+	display: none;
+}
 /* import fiels ends */
-
 .show-reason {
 	position: relative;
 }
@@ -4484,7 +4537,71 @@ import-tranhd  [class*="col-md-"]{
 .show-reason:hover .reason{
 	display:block;
 }
-/* media 320px */
+.success-wraper {
+	background: #e1e6fa;
+	min-height:515px;
+	margin:0 auto;
+	width: 100%;
+}
+.inner-widget {
+	padding:30px;
+	box-sizing:border-box;
+	margin-top:8%;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	-ms-border-radius: 10px;
+	border-radius: 10px;
+	color: #fff;
+}
+.inner-widget .fa{
+	text-align: center;
+	width: 100%;
+	padding: 20px;
+	font-size: 75px;
+}
+.success-user{
+	 background-color:#34c244;
+	 border: 1px solid #1dab2d;
+	 -webkit-box-shadow: 0 8px 6px -8px #505050;
+	-moz-box-shadow: 0 8px 6px -8px #505050;
+	box-shadow: 0 8px 6px -8px #505050;
+}
+.reject-user{
+    background-color:#d9534f;
+	border: 1px solid #cd4743;
+	-webkit-box-shadow: 0 8px 6px -8px #505050;
+	-moz-box-shadow: 0 8px 6px -8px #505050;
+	box-shadow: 0 8px 6px -8px #505050;
+}
+.negotiation-user{
+    background-color:#455a64;
+	border: 1px solid #263238;
+	-webkit-box-shadow: 0 8px 6px -8px #505050;
+	-moz-box-shadow: 0 8px 6px -8px #505050;
+	box-shadow: 0 8px 6px -8px #505050;
+}
+.reason-msg {
+	font-size: 25px;
+	text-align: center;
+}
+/* Compose mail styles */
+.compose-mail
+{
+/*	border: 1px solid #ccc;*/
+	margin-top: 15px;
+	margin-bottom: 15px;
+	padding: 15px;
+	background: #fff;
+	border-radius: 10px;
+}
+.email-icon:after{
+	content: '\f0e0';
+	font-family: FontAwesome;
+	font-weight: normal;
+	font-size: 14px;
+	border: 1px solid red;
+	z-index: 9999;
+}/* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {
 	display: none !important;
