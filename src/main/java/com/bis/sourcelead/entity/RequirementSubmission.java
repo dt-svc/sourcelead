@@ -123,6 +123,24 @@ public class RequirementSubmission implements Serializable{
     
 	@Transient
    	private String score;
+	
+	@Transient
+	private int numOfSubmissions;
+	
+	@Transient
+	private int numOfShortList;
+	
+	@Transient
+	private int numOfInterview;
+	
+	@Transient
+	private int numOfSubmitToClient;
+	
+	@Transient
+	private int numOfOffers;
+	
+	@Transient
+	private int numOfRejected;
 
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -356,6 +374,54 @@ public class RequirementSubmission implements Serializable{
 
 	public void setResumeId(Long resumeId) {
 		this.resumeId = resumeId;
+	}
+
+	public int getNumOfSubmissions() {
+		return numOfSubmissions;
+	}
+
+	public void setNumOfSubmissions(int numOfSubmissions) {
+		this.numOfSubmissions = numOfSubmissions;
+	}
+
+	public int getNumOfShortList() {
+		return numOfShortList;
+	}
+
+	public void setNumOfShortList(int numOfShortList) {
+		this.numOfShortList = numOfShortList;
+	}
+
+	public int getNumOfInterview() {
+		return numOfInterview;
+	}
+
+	public void setNumOfInterview(int numOfInterview) {
+		this.numOfInterview = numOfInterview;
+	}
+
+	public int getNumOfSubmitToClient() {
+		return numOfSubmitToClient;
+	}
+
+	public void setNumOfSubmitToClient(int numOfSubmitToClient) {
+		this.numOfSubmitToClient = numOfSubmitToClient;
+	}
+
+	public int getNumOfOffers() {
+		return numOfOffers;
+	}
+
+	public void setNumOfOffers(int numOfOffers) {
+		this.numOfOffers = numOfOffers;
+	}
+
+	public int getNumOfRejected() {
+		return numOfRejected;
+	}
+
+	public void setNumOfRejected(int numOfRejected) {
+		this.numOfRejected = numOfRejected;
 	}
 
 }
