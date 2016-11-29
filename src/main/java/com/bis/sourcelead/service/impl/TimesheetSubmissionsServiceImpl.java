@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
@@ -583,7 +584,6 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	  	    if(currentEndDate !=null){
 	  		   ts.setEndDateStr(Constants.DF_DMY.format(currentEndDate));
 	  	    }
-	  	    
 	  	   ts.setUserId(ts.getProjectMembers().getEmployee().getUser().getId().toString());
 	       ts.setEmployeeId(ts.getProjectMembers().getEmployee().getId().toString());
 		   if(ts.getProjectMembers() != null && ts.getProjectMembers().getEmployee() != null && ts.getProjectMembers().getEmployee().getUser() != null){
@@ -595,7 +595,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	         sb.append("    <span><b>"+ts.getFullName()+"</b></span>");
 	         sb.append(" <div></td>");
 	         
-	           sb.append("<td><div id='datefrequency"+ts.getUserId()+"'>");
+	           sb.append("<td><div id='datefrequency"+ts.getUserId()+ts.getStartDateStr().replaceAll("-", "")+"'>");
 	           Date leftNavStartDate = getLeftNavStartDateForApproverBasedOnCurrentStartDate(user.getId(), ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
 	           if(leftNavStartDate != null && (leftNavStartDate.after(employeeStartDate) || employeeStartDate.equals(leftNavStartDate))){
 		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
