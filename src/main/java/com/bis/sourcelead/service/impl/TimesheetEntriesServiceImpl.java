@@ -122,7 +122,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	@Override
 	public String newTimesheet(User user,String navigation, String startDate,Long locationsId) throws Exception {
 		 
-		
+		Boolean isFillMyTimeSheet = commonUtil.hasRole("ROLE_FILL_MY_TIMESHEETS");
+		Boolean isExportMyTimeSheet = commonUtil.hasRole("ROLE_EXPORT_MY_TIMESHEETS");
+		Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
 		/**
 		  * Get Logged-in Employee startDate and endDate range across Various Projects(which are assigned to respective employee)
 		  * @ Hint: Submission Table Records are already availble
@@ -229,16 +231,18 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		StringBuilder sb = new StringBuilder();	
 		sb.append("	<div class='timesheet_head'>");
 		sb.append("   	<ul>");
-		sb.append("       	<li><i class='glyphicon glyphicon-print'></i></li>");
-		sb.append("           <li><i class='glyphicon glyphicon-export'></i><span>Export</span><i class='glyphicon glyphicon-play' id='export-pop' onclick='exportType();'></i>|");
-		sb.append("           	<div class='export_pop'>");
-		sb.append("               	<ul>");
-		sb.append("                   	<li onclick='exportPdf();'>PDF &nbsp;&nbsp;<i class='fa fa-file-pdf-o'></i></li>");
-		sb.append("                       <li onclick='exportExcel(\""+weekStartDate+"\");'>Excel &nbsp;&nbsp;<i class='fa fa-file-excel-o'></i></li>");
-		sb.append("                   </ul>");
-		sb.append("               </div>");
-		sb.append("           </li><li>");
-		
+		/*sb.append("       	<li><i class='glyphicon glyphicon-print'></i></li>");*/
+		if(isExportMyTimeSheet){
+			sb.append("           <li><i class='glyphicon glyphicon-export'></i><span>Export</span><i class='glyphicon glyphicon-play' id='export-pop' onclick='exportType();'></i>|");
+			sb.append("           	<div class='export_pop'>");
+			sb.append("               	<ul>");
+			sb.append("                   	<li onclick='exportPdf();'>PDF &nbsp;&nbsp;<i class='fa fa-file-pdf-o'></i></li>");
+			sb.append("                       <li onclick='exportExcel(\""+weekStartDate+"\");'>Excel &nbsp;&nbsp;<i class='fa fa-file-excel-o'></i></li>");
+			sb.append("                   </ul>");
+			sb.append("               </div>");
+			sb.append("           </li>");
+		}
+		sb.append("           <li>");
 		
 	    /**
 		 * check whether previous submission records are available or not
@@ -320,31 +324,33 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			 Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 			 currentCal.setLenient(false);
 			 currentCal.setTime(currentStartDate);
-			if((!pmhDateList.contains(currentStartDate)) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+			 
+			
+			if( (!isFillMyTimeSheet) || (!pmhDateList.contains(currentStartDate)) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 				disbleCondition1 = "disabled";
 			}
 			String disbleCondition2 = "";
-            if((!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE").getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+            if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE").getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition2 = "disabled";
 			}
 			String disbleCondition3 = "";
-            if((!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED").getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+            if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED").getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition3 = "disabled";
 			}
 			String disbleCondition4 = "";
-            if((!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU").getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+            if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU").getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition4 = "disabled";
 			} 
 			String disbleCondition5 = "";
-            if((!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI").getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+            if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI").getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition5 = "disabled";
 			}
 			String disbleCondition6 = "";
-            if((!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT").getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+            if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT").getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition6 = "disabled";
 			}
 			String disbleCondition7 = "";
-            if((!pmhDateList.contains(currentEndDate)) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+            if((!isFillMyTimeSheet) || (!pmhDateList.contains(currentEndDate)) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition7 = "disabled";
 			} 
 						
@@ -399,7 +405,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              
 						              if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
 						            	  if(timesheetEntries.getProjectTask() != null){
-						            	  sb.append("<p>"+timesheetEntries.getProjectTask().getTaskName()+"</p>");
+						            		  sb.append("<p>"+timesheetEntries.getProjectTask().getTaskName()+"</p>");
 						            	  }
 						              }
 						              else{
@@ -410,16 +416,20 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 										    	    	   sb.append("<option value='"+pt.getId()+"' selected>"+pt.getTaskName()+"</option>");
 										    	       }
 										    	       else{
-										    	    	   sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");
+										    	    	   if(isFillMyTimeSheet){
+										    	    		   sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");
+										    	    	   }
 										    	       }
 										                
 										      }
 								              sb.append(" </select>"); 
-								              if(rowCount == 1){
-								             	  sb.append("<input type='button' value='' onClick='addTimeSheetRow(\""+ts.getId()+"\",\""+ts.getProjectMembers().getProjects().getId()+"\")' class='addtaskfield'/>");
-								              }else{
-								                  sb.append("<input type='button' value=''  onClick='removeTimeSheetRow(\""+rowCount+"\",\""+ts.getId()+"\");'  class='addtaskfield removetaskfield'/>");
-								              }
+								              if(isFillMyTimeSheet){
+									              if(rowCount == 1){
+									             	  sb.append("<input type='button' value='' onClick='addTimeSheetRow(\""+ts.getId()+"\",\""+ts.getProjectMembers().getProjects().getId()+"\")' class='addtaskfield'/>");
+									              }else{
+									                  sb.append("<input type='button' value=''  onClick='removeTimeSheetRow(\""+rowCount+"\",\""+ts.getId()+"\");'  class='addtaskfield removetaskfield'/>");
+									              }
+								              }   
 						              }
 						               
 						              sb.append("                      </div>");
@@ -524,7 +534,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 							        }
 							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
 							        	sb.append("<b class='proj_process'>"+submissionStatus+"</b>");
-							        	if(isSah == null ){
+							        	if(isSah == null && isModifyMyTimeSheet){
 							                String startDateStr = format.format(ts.getStartDate());
 							        		sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+ts.getId()+"\",\""+startDateStr+"\");' >Modify</b>");
 							        	}
@@ -557,17 +567,21 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						              }
 						              else{
 						            	  
-                                          sb.append("     <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
-                                          sb.append("<option value=''>--select task--</option>");
-                                          for(ProjectTasks pt   : ProjectTasksList){
-									              sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");   
-									      }
-							              sb.append(" </select>"); 
-							              if(rowCount == 1){
-							             	  sb.append("<input  type='button' value='' onClick='addTimeSheetRow(\""+ts.getId()+"\",\""+ts.getProjectMembers().getProjects().getId()+"\")' class='addtaskfield'/>");
-							              }else{
-							                  sb.append("<input type='button' value=''  onClick='removeTimeSheetRow(\""+rowCount+"\",\""+ts.getId()+"\");'  class='addtaskfield removetaskfield'/>");
-							              }
+						            	  if((isFillMyTimeSheet )){
+	                                          sb.append("     <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
+	                                          sb.append("<option value=''>--select task--</option>");
+	                                          for(ProjectTasks pt   : ProjectTasksList){
+										              sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");   
+										      }
+								              sb.append(" </select>"); 
+								              if(rowCount == 1){
+								             	  sb.append("<input  type='button' value='' onClick='addTimeSheetRow(\""+ts.getId()+"\",\""+ts.getProjectMembers().getProjects().getId()+"\")' class='addtaskfield'/>");
+								              }else{
+								                  sb.append("<input type='button' value=''  onClick='removeTimeSheetRow(\""+rowCount+"\",\""+ts.getId()+"\");'  class='addtaskfield removetaskfield'/>");
+								              }
+						            	  }else{
+						            		  sb.append("<p>NO DATA</p>");
+						            	  }
 						              }
 							              
 						             
@@ -644,7 +658,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								        }
 								        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
 								        	sb.append("<b class='proj_process'>"+submissionStatus+"</b>");
-								        	if(isSah == null ){
+								        	if(isSah == null && isModifyMyTimeSheet){
 								        		String startDateStr = format.format(ts.getStartDate());
 								        	    sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+ts.getId()+"\",\""+startDateStr+"\");' >Modify</b>");
 								        	}
@@ -719,7 +733,11 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			}else{
 					if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
 						sb.append("<div class='commentTime'>");
-						sb.append("<textarea  name='weekComment'  id='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+						if(isFillMyTimeSheet){
+							sb.append("<textarea  name='weekComment'  id='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+						}else{
+							sb.append("<textarea  name='weekComment'  readonly='readonly' id='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+						}
 						sb.append("</div>");
 					}else{
 						sb.append("<div class='commentTime'>");
@@ -744,7 +762,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 									documentBuffer.append(" <input type='button' value='"+tsd.getFileName()+"'>");
 									documentBuffer.append("</a>");
 									
-									if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
+									if( (!isFillMyTimeSheet ) ||  ( !isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))  ) ){
 									}else{
 										documentBuffer.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\",\""+startDate+"\");' >");
 									}
@@ -753,7 +771,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						}
 					} 
 			
-					if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
+					if( (!isFillMyTimeSheet ) || ( !isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))  ) ){
 					}else{
 		            	documentBuffer.append("<div class='commentFile'>"); 
 						documentBuffer.append("<span>"); 
@@ -785,7 +803,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			sb.append("     </div>");
 			
 			
-			if(combinedApprovalStatus == null || (combinedApprovalStatus != null && (combinedApprovalStatus.contains(Submission_ApprovalStatus.getNameByValue("rejected").getValue()) || combinedApprovalStatus.contains(Submission_ApprovalStatus.getNameByValue("new").getValue())))){
+			if(  (isFillMyTimeSheet ) &&  ( combinedApprovalStatus == null || (combinedApprovalStatus != null && (combinedApprovalStatus.contains(Submission_ApprovalStatus.getNameByValue("rejected").getValue()) || combinedApprovalStatus.contains(Submission_ApprovalStatus.getNameByValue("new").getValue()))) )){
 				   sb.append("	<div class='clearfix'></div>");
 				   sb.append("	<div class='timesheet_button'>");
 				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\",\"user\");' value='Save' class='time_btn time_dra'>");
