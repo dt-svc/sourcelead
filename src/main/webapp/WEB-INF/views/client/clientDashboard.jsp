@@ -107,15 +107,20 @@ overflow-x: auto;
 						 <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
 						 <li><a href="<c:url value='/uploadClientForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
 						 </sec:authorize>
-						 <li id="clientImports" style="display:none">
-		                     <a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportClient</a>
+						
+						 <sec:authorize access="hasRole('ROLE_EXPORT_CLIENTS')"> 
+						   <li id="clientImports" style="display:none">
+		                      <a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportClient</a>
 			                    <div class="export_pop">
-				                <ul>
-				                <li onclick="exportClientToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>
-				                <li onclick="exportClientToExcel();">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>
-				       </ul>
-				    </div>
-		            </li> 
+				                   <ul>
+				                     <li onclick="exportClientToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>
+				                     <li onclick="exportClientToExcel();">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>
+				                   </ul>
+				              </div>
+		                  </li> 
+		            </sec:authorize>
+		            
+		             <sec:authorize access="hasRole('ROLE_EXPORT_CLIENT_CONTACTS')"> 
 		            <li id="ContactImports">
 		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportContact</a>
 			                    <div class="export_pop">
@@ -125,7 +130,8 @@ overflow-x: auto;
 				       </ul>
 				    </div>
 		            </li> 
-                         
+                    </sec:authorize>
+                              
 						<div class="clearfix"></div>
 					</ul>
 					<div class="clearfix"></div>

@@ -1,9 +1,13 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Collection;
 
-public class TimeSheetSubmissionCount {
+public class TimeSheetSubmissionCount implements Serializable{
 	
+	
+	private static final long serialVersionUID = 1L;
+
 	private Float savedTimesheetSubmissionCount;
 	
 	private Float waitingForApprovalTimesheetSubmissionCount;	

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -21,9 +22,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_RELEASE_Status;
 @Entity
 @Table(name = "REQUIREMENT_RELEASE")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementRelease")
-public class RequirementRelease {
+public class RequirementRelease implements Serializable{
 	
-	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)

@@ -1,11 +1,10 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,7 +22,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name="ORG_RELATIONS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orgRelation")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class OrgRelations {
+public class OrgRelations implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
