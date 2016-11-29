@@ -92,7 +92,9 @@ function storeCertificate(candidateId){
 			con = con.replace(/[{}]/g, "");
 			var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
+			 
 			$("#Candidate_certification_form").attr("disabled", "disabled");
+			 $("#addCandidate").attr("disabled", "disabled");
 				$.ajax({
 						type : "POST",
 						url : sourceleadUrl
