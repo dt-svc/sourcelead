@@ -123,7 +123,8 @@ public class RequirementRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Requirement requirement = requirementService.storeRequirement(jsonObj,orgLocation,user,multiFile);
-		
+		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Requirement Created Succesfully");
+
 		return "success";
 		
 	}

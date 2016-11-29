@@ -268,7 +268,8 @@ public class TeamRestController {
 			
 			JSONObject jsonObj = new JSONObject(json1);
 			teamService.storeTeam(jsonObj,orgLocations);
-			
+			 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Team Created Successfully");
+
 			return "success";
 		}
 	   

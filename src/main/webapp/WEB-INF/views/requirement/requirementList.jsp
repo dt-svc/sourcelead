@@ -1026,6 +1026,11 @@ function requirementPipeline(requirementId){
 
 <section class="content-wraper">
   <section class="content-header clearfix">
+   <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
     <div class="pull-left">
       <h2>Requirement List</h2>
     </div>
@@ -1112,7 +1117,7 @@ function requirementPipeline(requirementId){
 });
  		</script> 
 <script>
-
+$('#selector').delay(2000).fadeOut('slow');
 // Error pop
 $(document).ready(function() {
     $(".glyphicon-trash").click(function(){
