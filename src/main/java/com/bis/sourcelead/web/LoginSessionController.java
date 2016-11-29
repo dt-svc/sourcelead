@@ -148,7 +148,7 @@ public class LoginSessionController {
 		
 		ModelAndView model = new ModelAndView();
 		User user = userService.findByUserName(authentication.getName());
-		UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(user.getEmail(), orgLocationId);
+		UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocationId);
 		if(null != userRole){
 			OrgLocations orgLocations = userRole.getOrgLocations();
 			Org org = orgLocations.getOrg();

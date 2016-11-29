@@ -454,10 +454,10 @@ $(document).ready(function () {
 			                    </c:if>
 						</c:forEach>
                     </select>
-                    <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')">
+                    <%-- <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')">
                     <i data-target="#addClient" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" onClick="addClientPopUp();"></i>
                     <div id="addClient" class="modal fade" role="dialog"></div>
-                    </sec:authorize>
+                    </sec:authorize> --%>
                   </div>
                   <div role="dialog" id="addLevel" class="modal fade">
                     <div class="modal-dialog">
@@ -504,9 +504,9 @@ $(document).ready(function () {
 			         		<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option> 
 					     </c:forEach>
                     </select>
-                    <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')">
+                    <%-- <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')">
                     <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i>
-                    </sec:authorize> 
+                    </sec:authorize>  --%>
                  </div>
                   
                 </div>
@@ -1142,6 +1142,26 @@ function getCities(){
                }
            });
            //Adding Customized Skills to the list
+           
+            //Adding Customized Educations to the list
+	        var selectone, chosenone;
+	        selectone = $("#education");
+	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
+	        chosenone = selectone.data('chosen');
+	        chosenone.search_field.on('keyup', function(e1)
+		    {
+		    	var newEducation = this.value.replace(",","");
+		        if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(newEducation).text(newEducation);
+		            selectone.append(option);
+		            selectone.find(option).prop('selected', true);
+	        		$("#education").trigger("chosen:updated");
+	        		
+		        }
+		    }); 
+		    //Adding Customized Educations to the list
            
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);

@@ -996,36 +996,6 @@ function requirementPipeline(requirementId,submissionType){
          success :function(data) {  
         	 requirementSubmissionCount(requirementId);
         	 var result =""; 
-        	 var all = 'all';
-  	         var shortList = 'SHORTLIST';
-  	     	 var interview = 'INTERVIEW';
-  	     	 var rejected = 'REJECTED';
-  	         var submitToClient = 'SUBMIT_TO_CLIENT';
-  	         var offerMade = 'OFFERMADE';
-  			 result = result + ' <!--- Pipline-count icon -->';
-  			 result = result + '  <div class="clearfix pipeline-count">';
-  			 result = result + '    <ul class="list-unstyled list-inline">';
-  			 result = result + '     <li onclick="filterReq('+requirementId+',\''+all+'\');"> <a href="javascript:void(0)" title="Applicants">';
-  			 result = result + '       <label><strong>Applicants</strong><span class="label label-default" id="applicantsStatus"></span></label>';
-  			 result = result + '       </a> </li>';
-  			 result = result + '      <li  onclick="filterReq('+requirementId+',\''+shortList+'\');"> <a href="javascript:void(0)" title="Shortlisted">';
-  			 result = result + '       <label><strong>Shortlisted</strong><span class="label label-warning" id="shortlistStatus"></span></label>';
-  			 result = result + '     </a> </li>';
-  			 result = result + '    <li onclick="filterReq('+requirementId+',\''+submitToClient+'\');"> <a href="javascript:void(0)" title="Submit to Client">';
-  			 result = result + '       <label><strong>Submit to Client</strong><span class="label label-info" id="submitToClientStatus"></span></label>';
-  			 result = result + '       </a> </li>';
-  			 result = result + '    <li onclick="filterReq('+requirementId+',\''+interview+'\');"> <a href="javascript:void(0)" title="Interviews">';
-  			 result = result + '      <label><strong>Interviews</strong><span class="label label-primary" id="interviewStatus"></span></label>';
-  			 result = result + '      </a> </li>';
-  			 result = result + '     <li onclick="filterReq('+requirementId+',\''+offerMade+'\');"> <a href="javascript:void(0)" title="Offers">';
-  			 result = result + '      <label><strong>Offers</strong><span class="label label-success" id="offersStatus"></span></label>';
-  	         result = result + '      </a> </li>';
-  	         result = result + '   <li onclick="filterReq('+requirementId+',\''+rejected+'\');"> <a href="javascript:void(0)" title="Rejected">';
-  	         result = result + '     <label><strong>Rejected</strong><span class="label label-warning" id="rejectedStatus"></span></label>';
-  	         result = result + '      </a> </li>';
-  	         result = result + '   </ul>';
-  	         result = result + ' </div>';
-  	         result = result + ' <!--- Pipline-count icon ends -->';
         	 if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
             		 if( data.indexOf('Sign In') >= 0){
@@ -1095,7 +1065,7 @@ function requirementPipeline(requirementId,submissionType){
 							 result = result + '<div id="viewCandidateDiv"></div>';
 							 result = result +'</div>';
 							 result = result +'</div>';
-							 result = result +'</div>';http://localhost:8080/sourcelead/requirementSummary?requirementId=2
+							 result = result +'</div>';
 							
 				           // result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
 				            result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
@@ -1140,7 +1110,6 @@ function requirementPipeline(requirementId,submissionType){
 				            result = result +'    </span>';
 				            result = result +' </div>';	
 				            result = result +' </li>';
-				            
 				            
 				            
 				            result = result +'    <div class="clearfix"></div>';
@@ -1305,12 +1274,45 @@ function requirementSubmissionCount(requirementId){
          success :function(data) { 
         	 var json = JSON.parse(data);
         	 var report1 = json[0];
-        	 $("#applicantsStatus").html(report1.numOfSubmissions);
+        	 var result = "";
+        	 var all = 'all';
+  	         var shortList = 'SHORTLIST';
+  	     	 var interview = 'INTERVIEW';
+  	     	 var rejected = 'REJECTED';
+  	         var submitToClient = 'SUBMIT_TO_CLIENT';
+  	         var offerMade = 'OFFERMADE';
+  			 result = result + ' <!--- Pipline-count icon -->';
+  			 result = result + '  <div class="clearfix pipeline-count">';
+  			 result = result + '    <ul class="list-unstyled list-inline">';
+  			 result = result + '     <li onclick="filterReq('+requirementId+',\''+all+'\');"> <a href="javascript:void(0)" title="Applicants">';
+  			 result = result + '       <label><strong>Applicants</strong><span class="label label-default" id="applicantsStatus">'+report1.numOfSubmissions+'</span></label>';
+  			 result = result + '       </a> </li>';
+  			 result = result + '      <li  onclick="filterReq('+requirementId+',\''+shortList+'\');"> <a href="javascript:void(0)" title="Shortlisted">';
+  			 result = result + '       <label><strong>Shortlisted</strong><span class="label label-warning" id="shortlistStatus">'+report1.numOfShortList+'</span></label>';
+  			 result = result + '     </a> </li>';
+  			 result = result + '    <li onclick="filterReq('+requirementId+',\''+submitToClient+'\');"> <a href="javascript:void(0)" title="Submit to Client">';
+  			 result = result + '       <label><strong>Submit to Client</strong><span class="label label-info" id="submitToClientStatus">'+report1.numOfSubmitToClient+'</span></label>';
+  			 result = result + '       </a> </li>';
+  			 result = result + '    <li onclick="filterReq('+requirementId+',\''+interview+'\');"> <a href="javascript:void(0)" title="Interviews">';
+  			 result = result + '      <label><strong>Interviews</strong><span class="label label-primary" id="interviewStatus">'+report1.numOfInterview+'</span></label>';
+  			 result = result + '      </a> </li>';
+  			 result = result + '     <li onclick="filterReq('+requirementId+',\''+offerMade+'\');"> <a href="javascript:void(0)" title="Offers">';
+  			 result = result + '      <label><strong>Offers</strong><span class="label label-success" id="offersStatus">'+report1.numOfOffers+'</span></label>';
+  	         result = result + '      </a> </li>';
+  	         result = result + '   <li onclick="filterReq('+requirementId+',\''+rejected+'\');"> <a href="javascript:void(0)" title="Rejected">';
+  	         result = result + '     <label><strong>Rejected</strong><span class="label label-warning" id="rejectedStatus">'+report1.numOfRejected+'</span></label>';
+  	         result = result + '      </a> </li>';
+  	         result = result + '   </ul>';
+  	         result = result + ' </div>';
+  	         $("#requirementStatusDiv").empty();
+  	       $("#requirementStatusDiv").append(result);
+  	         /* result = result + ' <!--- Pipline-count icon ends -->'; */
+        	/*  $("#applicantsStatus").html(report1.numOfSubmissions);
         	 $("#shortlistStatus").html(report1.numOfShortList);
         	 $("#submitToClientStatus").html(report1.numOfSubmitToClient);
         	 $("#interviewStatus").html(report1.numOfInterview);
         	 $("#offersStatus").html(report1.numOfOffers);
-        	 $("#rejectedStatus").html(report1.numOfRejected);
+        	 $("#rejectedStatus").html(report1.numOfRejected); */
          },
 	  });
 }

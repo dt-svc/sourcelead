@@ -235,6 +235,7 @@ public class SubmissionsRestController {
     }
     
     
+    @PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
     @RequestMapping(value = "/submitShortlistedToClient" , method = RequestMethod.POST)
 	   public String submitShortlistedToClient(@RequestParam(value="requirementId", required=false) Long requirementId,
 			   @RequestParam(value="submissionsList", required=false) String submissionsList,HttpServletRequest request) throws Exception {

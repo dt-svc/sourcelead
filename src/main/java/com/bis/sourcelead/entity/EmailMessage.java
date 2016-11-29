@@ -3,13 +3,9 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Map;
 
-import javax.persistence.Column;
-
 public class EmailMessage implements Serializable {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = -519129838464344312L;
 	
 	private String firstName;

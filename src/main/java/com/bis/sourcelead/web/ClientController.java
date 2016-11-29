@@ -97,6 +97,8 @@ public class ClientController {
 	  * @return ModelAndView
 	  * @throws Exception
 	  */
+	
+	/* This method is used for landing page of clients tab. So, who has client tab access they can see clients list. No preAuthorize for this method */
 	 @RequestMapping(value = "/clientDashboard")
 		public ModelAndView clientDashboard(HttpServletRequest request) throws Exception {
 		 

@@ -64,7 +64,7 @@ public class TabsDaoImpl implements TabsDao{
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId) "
-	    		+ "and moduleActions.sourceleadActions.id IN (select ram.sourceleadActions.id from RoleActionMapping ram where ram.roles.id = :roleId and ram.org.id = :orgId and ram.status = '1' ))) ";
+	    		+ "and moduleActions.sourceleadActions.id IN (select ram.sourceleadActions.id from RoleActionMapping ram where ram.roles.id = :roleId and ram.org.id = :orgId and ram.status = '1' ))) ORDER BY tabs.tabOrder ASC ";
 	    List<Tabs> tabsList = session.createQuery(query.toString()).setLong( "roleId", roleId).setLong( "orgId", orgId).setParameterList("modulesId", modulesId).setCacheable(true).list();
 	    return tabsList;
 	}
@@ -85,8 +85,7 @@ public class TabsDaoImpl implements TabsDao{
 			 }
 		 }
 		
-		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId) "
-	    		+ "and moduleActions.sourceleadActions.id IN (:roleActonList))) ";
+		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN (:modulesId) and moduleActions.sourceleadActions.id IN (:roleActonList))) ";
 	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesId).setParameterList("roleActonList", roleActonList).setCacheable(true).list();
 	    return tabsList;
 	}

@@ -1,10 +1,14 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class BackOfficeDTO {
+public class BackOfficeDTO implements Serializable{
 	
 	
+	
+	private static final long serialVersionUID = 1L;
+
 	private List<BoPaymentTypes> boPaymentTypesList;
 	
 	private List<Object> finalcialInstituesList;
