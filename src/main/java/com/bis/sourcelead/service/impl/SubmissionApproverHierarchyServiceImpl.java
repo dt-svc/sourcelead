@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -244,7 +245,9 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		
          if(list!=null && !list.isEmpty()){
 				for(SubmissionApproverHierarchy submissionApproverHierarchy:list){
-					sb.append("<tr id='row"+submissionApproverHierarchy.getSubmissionId().getProjectMembers().getEmployee().getUser().getId()+"'>");
+					  DateFormat DF_DMY_WITH_OUT_SEPERATORS = new SimpleDateFormat("ddMMyyyy");
+				         String userUniqueAppendor = DF_DMY_WITH_OUT_SEPERATORS.format(submissionApproverHierarchy.getSubmissionId().getStartDate());
+					sb.append("<tr id='row"+submissionApproverHierarchy.getSubmissionId().getProjectMembers().getEmployee().getUser().getId()+userUniqueAppendor+"'>");
 					TimesheetSubmissions  ts = timesheetSubmissionsService.getAllApprovalEmployeeTimesheetSubmissionsByEmployeeUserId(submissionApproverHierarchy.getSubmissionId().getStartDate(), 
                             submissionApproverHierarchy.getSubmissionId().getEndDate(), 
                             userId, 
@@ -262,8 +265,8 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 			         sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='#' alt='Profile Image' class='img-circle img-responsive'>");
 			         sb.append("    <span><b>"+ts.getFullName()+"</b></span>");
 			         sb.append(" <div></td>");
-				         
-			         sb.append("<td><div id='datefrequency"+ts.getUserId()+"'>");
+			       
+			         sb.append("<td><div id='datefrequency"+ts.getUserId()+userUniqueAppendor+"'>");
 			         sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+Constants.DF_DMY.format(submissionApproverHierarchy.getSubmissionId().getStartDate())+" To "+Constants.DF_DMY.format(submissionApproverHierarchy.getSubmissionId().getEndDate())+"</span>");
 			         sb.append("    </div>");
 			     	 sb.append("    </td>");
@@ -273,11 +276,11 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 			         sb.append("    </div>");
 			         sb.append("    </td>");
 			         
-			         sb.append("  <td><div id='status"+ts.getUserId()+"'>"+ts.getCombinedStatus()+"</div></td>");
+			         sb.append("  <td><div id='status"+ts.getUserId()+userUniqueAppendor+"'>"+ts.getCombinedStatus()+"</div></td>");
 			         
-			         sb.append("    <td><div id='action"+ts.getUserId()+"'> " );
+			         sb.append("    <td><div id='action"+ts.getUserId()+userUniqueAppendor+"'> " );
 			             if( (ts.getCombinedStatus() !=null && ts.getCombinedStatus().equalsIgnoreCase("NEW")) || ( ts.getCombinedStatus() != null && ts.getCombinedStatus().equalsIgnoreCase("SUBMITTED FOR APPROVAL")) ){
-			                 sb.append("<div><i class='fa fa-check' alt='Approve'  onclick='approveSubmission(\""+ts.getUserId()+"\",\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmission(\""+ts.getId()+"\",\""+ts.getEmployeeId()+"\",\""+ts.getUserId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'></i></div>");
+			                 sb.append("<div><i class='fa fa-check' alt='Approve'  onclick='approveSubmission(\""+ts.getUserId()+userUniqueAppendor+"\",\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmission(\""+ts.getId()+"\",\""+ts.getEmployeeId()+"\",\""+ts.getUserId()+userUniqueAppendor+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'></i></div>");
 			                 sb.append("<div id='rejectedPopup'></div>");
 			             }
 			             if(ts.getCombinedStatus() !=null && ts.getCombinedStatus().equalsIgnoreCase("REJECTED")){

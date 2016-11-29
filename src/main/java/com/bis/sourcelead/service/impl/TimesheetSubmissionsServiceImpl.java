@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CalendarUtil;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
@@ -36,6 +37,9 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	
 	@Autowired
 	HttpServletRequest request;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	
 	 /**
@@ -473,7 +477,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		
 		@Override
 		public String dynamicTimesheet(User user,String navigation,String startDate,Long memberId,Long projectMemberUserId, Long employeeId,Long locationsId) throws Exception {
-			 
+			
+			Boolean isViewMemberTimeSheet = commonUtil.hasRole("ROLE_VIEW_MEMBER_TIMESHEETS");
 			HashMap<String, Date> submissionDateRange =	 timesheetSubmissionsDao.getMinAndMaxTimesheetSubmissionDatesForApprover(user.getId(),projectMemberUserId,locationsId);
 			Date employeeStartDate = submissionDateRange.get("STARTDATE");
 			Date employeeEndDate = submissionDateRange.get("ENDDATE");
@@ -617,7 +622,11 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	     	   
 	     	 
 	         sb.append("    <td><div> " );
-	         sb.append(" <a onclick='myTimesheet(\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'  id='timesheetPopup"+ts.getId()+"'> "+ts.getCombinedTotalHours()+"</a>");
+	         if(isViewMemberTimeSheet){
+	        	 sb.append(" <a onclick='myTimesheet(\""+ts.getEmployeeId()+"\",\""+ts.getStartDateStr()+"\",\""+ts.getEndDateStr()+"\");'  id='timesheetPopup"+ts.getId()+"'> "+ts.getCombinedTotalHours()+"</a>");
+	         }else{
+	        	 sb.append(ts.getCombinedTotalHours());
+	         }
 	         sb.append("    </div>");
 	         sb.append("    </td>");
 	         
