@@ -803,6 +803,11 @@ public class UserServiceImpl implements UserService {
 		return userDao.getAllUsersByOrgLocationCodeExcludingEmployees(orgLocationsId);
 
 	}
+
+	@Override
+	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId, Long tabId) throws Exception {
+		return userDao.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationsId, tabId);
+	}
 	
 	
 	

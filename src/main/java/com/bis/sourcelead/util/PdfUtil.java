@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -20,9 +19,15 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.UserRole;
 import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -175,9 +180,9 @@ public class PdfUtil {
 	        document.add(table);
 	        logger.info("Pdf table created !!");
 	    } catch (DocumentException e) {
-	        e.printStackTrace();
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 	    } catch (FileNotFoundException e) {
-	        e.printStackTrace();
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 	    } finally {
 	        document.close();
 	    }
@@ -233,9 +238,9 @@ public class PdfUtil {
 	        document.add(table);
 	        logger.info("Pdf table created !!");
 	    } catch (DocumentException e) {
-	        e.printStackTrace();
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 	    } catch (FileNotFoundException e) {
-	        e.printStackTrace();
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 	    } finally {
 	        document.close();
 	    }
@@ -315,7 +320,7 @@ public class PdfUtil {
 		return candidateArray;
 		
 	}
-	public File getRequirementPdf(java.util.List<Requirement> requirementList, String orgName) {
+	public File getRequirementPdf(java.util.List<Requirement> requirementList, String orgName, TimeSheetSubmissionCount requirementSubCount) {
 
 
 		String[] headers = Constants.REQUIREMENT_EXCEL_HEADERS;
@@ -329,11 +334,19 @@ public class PdfUtil {
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
 	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
 	        boldFont.setColor(myColor1);
-            Paragraph para = new Paragraph(orgName+ " Candidates.",boldFont);
+            Paragraph para = new Paragraph(orgName+" Requirements.",boldFont);
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header and
-	        PdfPTable table = new PdfPTable(headers.length);
+            List orderedList = new List(List.ORDERED);
+	        orderedList.add(new ListItem("Draft :"+requirementSubCount.getDraftRequirementCount()));
+	        orderedList.add(new ListItem("Open :"+requirementSubCount.getOpenRequirementCount()));
+	        orderedList.add(new ListItem("New :"+requirementSubCount.getNewRequirementCount()));
+	        orderedList.add(new ListItem("Submitted :"+requirementSubCount.getSubmittedRequirementCount()));
+	        orderedList.add(new ListItem("On Hold :"+requirementSubCount.getOnHoldRequirementCount()));
+	        orderedList.add(new ListItem("Closed :"+requirementSubCount.getCancelRequirementCount()));
+	        document.add(orderedList);
+            PdfPTable table = new PdfPTable(headers.length);
 	        table.setWidthPercentage(100);
             table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5,3,3});
 	        for (int i = 0; i < headers.length; i++) {
@@ -366,9 +379,9 @@ public class PdfUtil {
 	        document.add(table);
 	        logger.info("Pdf table created !!");
 	    } catch (DocumentException e) {
-	        e.printStackTrace();
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 	    } catch (FileNotFoundException e) {
-	        e.printStackTrace();
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 	    } finally {
 	        document.close();
 	    }
@@ -443,5 +456,284 @@ public class PdfUtil {
 		}
 		return requirementArray;
 	}
+	public File getClientVendorPdfFile(java.util.List<OrgRelations> clientsList, String orgName, String[] clientHeaders, String vendorType) throws DocumentException {
+		Document document = new Document(PageSize.LETTER.rotate());
+	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+	    File file = new File(orgName+"_"+vendorType+"_"+dateFormat.format(new Date())+".pdf");
+	    try {
+	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+	        PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
+	        boldFont.setColor(myColor1);
+            Paragraph para = new Paragraph(orgName+" "+vendorType,boldFont);
+            para.setAlignment(Element.ALIGN_CENTER);
+            document.add(para);
+	        // Create an instance of PdfPTable. After that we transform the header 
+            int[] columnWidths = new int[]{3, 5, 3,5, 2};
+            PdfPTable table = getPdfTable(clientHeaders,columnWidths); 
+	        table.completeRow();
+	        java.util.List<String[]> clientList = new ArrayList<>();
+	        for(OrgRelations orgRelations : clientsList){
+	        	clientList.add(prepareClientsArray(orgRelations,clientHeaders));
+	        }
+	        
+	        for (String[] canArray: clientList) {
+                for (int i = 0; i < canArray.length; i++) {
+                    String datum = canArray[i];
+                    PdfPCell cell = new PdfPCell();
+                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+                    table.addCell(cell);
+                }
+                table.completeRow();
+            }
+	        
+	        document.addTitle("Client List Table");
+	        table.setSpacingBefore(15f);
+	        document.add(table);
+	        logger.info("Pdf table created !!");
+	}catch (FileNotFoundException e) {
+		logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+    } finally {
+        document.close();
+    }
+		return file;	
+    
+	}
+		
+	private String[] prepareClientsArray(OrgRelations orgRelations, String[] headers) {
+		
+		String clientArray[] = new String[headers.length];
+		if (orgRelations.getOrgName() != null && !"".equalsIgnoreCase(orgRelations.getOrgName())) {
+			clientArray[0] = orgRelations.getOrgName();
+		}else{
+			clientArray[0] = "--";
+		}
+		if (orgRelations.getWebSite() != null && !"".equalsIgnoreCase(orgRelations.getWebSite())) {
+			clientArray[1] = orgRelations.getWebSite();
+		}else{
+			clientArray[1] = "--";
+		}
+		if (orgRelations.getCity() != null && !"".equalsIgnoreCase(orgRelations.getCity())) {
+			clientArray[2] = orgRelations.getWebSite();
+		}else{
+			clientArray[2] = "--";
+		}
+		if (orgRelations.getLevel() != null && !"".equalsIgnoreCase(orgRelations.getLevel())) {
+			clientArray[3] = orgRelations.getLevel();
+		}else{
+			clientArray[3] = "--";
+		}
+		if (orgRelations.getNoOfContatcs() != null) {
+			clientArray[4] = orgRelations.getNoOfContatcs().toString();
+		}else{
+			clientArray[4] = "--";
+		}
+		return clientArray;
+	}
+	private PdfPTable getPdfTable(String[] headers, int[] columnWidths) {
+		PdfPTable table = new PdfPTable(headers.length);
+        table.setWidthPercentage(100);
+        try {
+			table.setWidths(columnWidths);
+			for (int i = 0; i < headers.length; i++) {
+	            String header = headers[i];
+	            PdfPCell cell = new PdfPCell();
+	            cell.setGrayFill(0.9f);
+	            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+	            BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
+	            cell.setBackgroundColor(myColor);
+	            table.addCell(cell);
+	        }
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		return table;
+	}
+	public File getClientVendorContactsPdfFile(java.util.List<OrgSpoc> vandorsContactList, String orgName,String vendorType, String[] headers) throws DocumentException {
+		Document document = new Document(PageSize.LETTER.rotate());
+	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+	    File file = new File(orgName+"_"+vendorType+" Contacts_"+dateFormat.format(new Date())+".pdf");
+	    try {
+	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+	        PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
+	        boldFont.setColor(myColor1);
+            Paragraph para = new Paragraph(orgName+" "+vendorType+" Contacts.",boldFont);
+            para.setAlignment(Element.ALIGN_CENTER);
+            document.add(para);
+	        // Create an instance of PdfPTable. After that we transform the header 
+            int[] columnWidths = new int[]{3, 5, 3,5, 2,3,3};
+            PdfPTable table = getPdfTable(headers,columnWidths); 
+	        table.completeRow();
+	        java.util.List<String[]> cantactsList = new ArrayList<>();
+	        for(OrgSpoc orgSpoc : vandorsContactList){
+	        	cantactsList.add(prepareContactsArray(orgSpoc,headers));
+	        }
+	        
+	        for (String[] canArray: cantactsList) {
+                for (int i = 0; i < canArray.length; i++) {
+                    String datum = canArray[i];
+                    PdfPCell cell = new PdfPCell();
+                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+                    table.addCell(cell);
+                }
+                table.completeRow();
+            }
+	        
+	        document.addTitle("Client Contacts List Table");
+	        table.setSpacingBefore(15f);
+	        document.add(table);
+	        logger.info("Pdf table created !!");
+	}catch (FileNotFoundException e) {
+		logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+    } finally {
+        document.close();
+    }
+		return file;	
+	}
+	private String[] prepareContactsArray(OrgSpoc orgSpoc, String[] headers) {
+		String contactsArray[] = new String[headers.length];
+		if (orgSpoc.getOrgName() != null && !"".equalsIgnoreCase(orgSpoc.getOrgName())) {
+			contactsArray[0] = orgSpoc.getOrgName();
+		}else{
+			contactsArray[0] = "--";
+		}
+		if (orgSpoc.getSpocName() != null && !"".equalsIgnoreCase(orgSpoc.getSpocName())) {
+			contactsArray[1] = orgSpoc.getSpocName();
+		}else{
+			contactsArray[1] = "--";
+		}
+		if (orgSpoc.getSpocEmail() != null && !"".equalsIgnoreCase(orgSpoc.getSpocEmail())) {
+			contactsArray[2] = orgSpoc.getSpocEmail();
+		}else{
+			contactsArray[2] = "--";
+		}
+		if (orgSpoc.getSpocMobilePhone() != null && !"".equalsIgnoreCase(orgSpoc.getSpocMobilePhone())) {
+			contactsArray[3] = orgSpoc.getSpocMobilePhone();
+		}else{
+			contactsArray[3] = "--";
+		}
+		if (orgSpoc.getOwnerName() != null && !"".equalsIgnoreCase(orgSpoc.getOwnerName())) {
+			contactsArray[4] = orgSpoc.getOwnerName();
+		}else{
+			contactsArray[4] = "--";
+		}
+		contactsArray[5] = "--";
+		if (orgSpoc.getSpocStatus() != null && !"".equalsIgnoreCase(orgSpoc.getSpocStatus())) {
+			contactsArray[6] = orgSpoc.getSpocStatus();
+		}else{
+			contactsArray[6] = "--";
+		}
+		return contactsArray;
+	}
+	public File getProjectEmployeesExportPdf(java.util.List<ProjectMembers> employeeList, String projectName,
+			Projects project, String projectManager) throws DocumentException {
+		String[] headers = Constants.PROJECT_ASSIGNED_EMPLOYEES;
+	    Document document = new Document(PageSize.LETTER.rotate());
+	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+	    File file = new File(projectName+"_"+dateFormat.format(new Date())+".pdf");
+	    try {
+	    	// Get an instance of PdfWriter and create a Table.pdf file as an output.
+	        PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+	        Font blue = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLUE);
+	        Chunk blueText = new Chunk("Project Name : " +projectName, blue);
+            Paragraph para = new Paragraph();
+            para.add(blueText);
+            document.add(para);
+	        
+	        List orderedList = new List(List.ORDERED);
+	        
+	        orderedList.add(new ListItem("Project Name :"+projectName));
+	        orderedList.add(new ListItem("Manager :"+projectManager));
+	        if(project.getStartDate()!=null && project.getEndDate() !=null){
+	        	orderedList.add(new ListItem("Date :"+project.getStartDate()+" to "+project.getEndDate()));
+			 }else{
+				 orderedList.add(new ListItem("Date :"+project.getStartDate()));
+			 }
+	        document.add(orderedList);
+	        // Create an instance of PdfPTable. After that we transform the header and
+	        int[] columnWidths = new int[]{3, 5, 3,5, 2,3,3,5};
+            PdfPTable table = getPdfTable(headers,columnWidths); 
+            java.util.List<String[]> assignedEmpList = new ArrayList<>();
+            for(ProjectMembers projectMembers : employeeList){
+            	assignedEmpList.add(prepareEmployeeArray(projectMembers,headers));
+	        }
+	        
+	        for (String[] canArray: assignedEmpList) {
+                for (int i = 0; i < canArray.length; i++) {
+                    String datum = canArray[i];
+                    PdfPCell cell = new PdfPCell();
+                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+                    table.addCell(cell);
+                }
+	        }
+	        table.completeRow();
+	        
+	        document.addTitle("Project Employee Table");
+	        table.setSpacingBefore(15f);
+	        document.add(table);
+	        logger.info("Pdf table created !!");
+	  
+	    } catch (FileNotFoundException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } finally {
+	        document.close();
+	    }
+	        
+		return file;
+	}
+	
+	    
 
-}
+	private String[] prepareEmployeeArray(ProjectMembers projectMember, String[] headers) {
+		
+		   String empArray[] = new String[headers.length];
+			if (projectMember.getEmpName() != null && !"".equalsIgnoreCase(projectMember.getEmpName())) {
+				empArray[0] = projectMember.getEmpName();
+			}else{
+				empArray[0] = "--";
+			}
+			if (projectMember.getEmployee().getUser().getEmail() != null && !"".equalsIgnoreCase(projectMember.getEmployee().getUser().getEmail())) {
+				empArray[1] = projectMember.getEmployee().getUser().getEmail();
+			}else{
+				empArray[1] = "--";
+			}
+			if (projectMember.getProjectAssignedDateStr() != null && !"".equalsIgnoreCase(projectMember.getProjectAssignedDateStr())) {
+				empArray[2] = projectMember.getProjectAssignedDateStr();
+			}else{
+				empArray[2] = "--";
+			}
+			if (projectMember.getProjectEndDateStr() != null && !"".equalsIgnoreCase(projectMember.getProjectEndDateStr())) {
+				empArray[3] = projectMember.getProjectEndDateStr();
+			}else{
+				empArray[3] = "--";
+			}
+			if (projectMember.getApprovedHrs() != null && !"".equalsIgnoreCase(projectMember.getApprovedHrs())) {
+				empArray[4] = projectMember.getApprovedHrs();
+			}else{
+				empArray[4] = "--";
+			}
+			if (projectMember.getRejectedHrs() != null && !"".equalsIgnoreCase(projectMember.getRejectedHrs())) {
+				empArray[5] = projectMember.getRejectedHrs();
+			}else{
+				empArray[5] = "--";
+			}
+			if (projectMember.getSubmittedHrs() != null && !"".equalsIgnoreCase(projectMember.getSubmittedHrs())) {
+				empArray[6] = projectMember.getSubmittedHrs();
+			}else{
+				empArray[6] = "--";
+			}
+			if (projectMember.getDraftHrs() != null && !"".equalsIgnoreCase(projectMember.getDraftHrs())) {
+				empArray[7] = projectMember.getDraftHrs();
+			}else{
+				empArray[7] = "--";
+			}
+		return empArray;
+	}
+	
+	}

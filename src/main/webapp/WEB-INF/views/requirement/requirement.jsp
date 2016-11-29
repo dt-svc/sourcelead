@@ -3,6 +3,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
@@ -398,7 +399,7 @@ $(document).ready(function () {
                   </span>
                 </label>
                 
-                <input type="text" class="form-control" readonly id="uploadFile" name="docFile"  value="${requirement.fileName}" type="file"   placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
+                <input type="text" class="form-control" readonly id="uploadFile" name="docFile"  value="${requirement.fileName}" type="file"   placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
               <div class="clearfix"></div> <div class="clearfix"></div>
               </div>
             </div>
@@ -453,8 +454,10 @@ $(document).ready(function () {
 			                    </c:if>
 						</c:forEach>
                     </select>
+                    <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')">
                     <i data-target="#addClient" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" onClick="addClientPopUp();"></i>
                     <div id="addClient" class="modal fade" role="dialog"></div>
+                    </sec:authorize>
                   </div>
                   <div role="dialog" id="addLevel" class="modal fade">
                     <div class="modal-dialog">
@@ -501,7 +504,9 @@ $(document).ready(function () {
 			         		<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option> 
 					     </c:forEach>
                     </select>
-                    <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i> 
+                    <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')">
+                    <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i>
+                    </sec:authorize> 
                  </div>
                   
                 </div>
@@ -666,7 +671,7 @@ $(document).ready(function () {
             <div class="col-md-9">
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-                  <input type="text" id="assignedTo" placeholder="Assign Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
+                  <input type="text" id="assignedTo" placeholder="Assign Team" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
                   <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
                   </div>
@@ -1168,6 +1173,8 @@ function getTemplateVal(){
         checkTemplateforDouplicate();
     }else{
         $("#isTemplate").val('N');
+        $('#jobTitleDiv').find('p.jquery_form_error_message').remove();
+
     }
 }
 
@@ -1978,34 +1985,7 @@ function removeEditButton() {
 }
 </script> -->
 
-<script>
-function changeCurrency(requirement){
-	var cntrynme = document.getElementById("countryReq").value;
 
-	 if (cntrynme == "United States") {
-			    $("#currencyCode").val("USD");
-			    $("#currencyCode").change();
-			  }else if(cntrynme == "India"){
-				  $("#currencyCode").val("INR");
-				    $("#currencyCode").change();
-			  }else if(cntrynme == "Australia"){
-				  $("#currencyCode").val("AUD");
-				    $("#currencyCode").change();
-			  }else if(cntrynme == "United Kingdom"){
-				  $("#currencyCode").val("GBP");
-				    $("#currencyCode").change();
-			  }else if(cntrynme == "Singapore"){
-				  $("#currencyCode").val("SGD");
-				    $("#currencyCode").change();
-			  }else if(cntrynme == "Germany"){
-				  $("#currencyCode").val("EUR");
-				    $("#currencyCode").change();
-			  }else {
-				  $("#currencyCode").val("INR");
-				  $("#currencyCode").change();
-		}
-}
-</script>
 
 
 <jsp:include page="../masterFooter.jsp" />

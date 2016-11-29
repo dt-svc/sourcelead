@@ -211,7 +211,7 @@ public class RequirementController {
 		model.addObject("spocOwnersList", userList);
 		
 		//approver list
-		List<User> approverList = userService.getAllUsersByOrgLocationCodeExcludingEmployees(orgLocations.getId());
+		List<User> approverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_REQUIREMENT));
 		model.addObject("approverList", approverList);
 		
 		//approver list

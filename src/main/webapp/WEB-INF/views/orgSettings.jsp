@@ -30,6 +30,7 @@ z-index: 9999999999 !important;
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!-- end files for autocomplete with tagit -->
 <script type="text/javascript">
@@ -170,6 +171,7 @@ function cancel(){
 				 <div class="well well-sm text-center">
 				  <div class="profile-img-container" style="position:relative;">
 				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
+				  <sec:authorize access="hasAnyRole('ROLE_EDIT_ORG_SETTINGS')">
 				  <div class="btn-group uploadfile">
 				  <button type="button" class="btn btn-sm btn-primary">
 				  <i class="fa fa-upload"></i></button>
@@ -181,6 +183,7 @@ function cancel(){
 					  <i class="fa fa-trash"></i></button>
 				  </c:if>
 				  </div>
+				  </sec:authorize>
 				  </div>
 				  </div>
 				  <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>
@@ -262,7 +265,9 @@ function cancel(){
 						</div>
 					<div class="clearfix">
 					<div class="pull-right">
+					<sec:authorize access="hasAnyRole('ROLE_EDIT_ORG_SETTINGS')">
 					<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">
+					</sec:authorize>
 					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/dashboard'">
 					</div>
 					</div>
@@ -376,7 +381,7 @@ function getAllCountries(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#country').empty();
-	        	$('#country').append('<option value="">---select---</option>');
+	        	$('#country').append('<option value="">---select country---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == countryName){
 	            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -415,7 +420,7 @@ function getStates(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select---</option>');
+	        	$('#state').append('<option value="">---select state---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == stateName){
 	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -432,10 +437,10 @@ function getStates(){
 	    });
 	}else{
 		$('#state').empty();
-    	$('#state').append('<option value="">---select---</option>');
+    	$('#state').append('<option value="">---select state---</option>');
     	$('#state').trigger("chosen:updated");
     	$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').append('<option value="">---select city---</option>');
         $('#city').trigger("chosen:updated");
 	}
 }
@@ -462,7 +467,7 @@ function getCities(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select---</option>');
+	        	$('#city').append('<option value="">---select city---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == cityName){
 	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -478,7 +483,7 @@ function getCities(){
 	    });
 	}else{
 		$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').append('<option value="">---select city---</option>');
     	$('#city').trigger("chosen:updated");
 	}
 }

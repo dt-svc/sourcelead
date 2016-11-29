@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.enums.Primary;
-import com.bis.sourcelead.service.ProjectMembersService;
 
 public interface ProjectMembersDao {
 
@@ -27,6 +26,8 @@ public interface ProjectMembersDao {
 	Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception;
 	
 	List<Long> getAllProjectMembersIdsByemployeeId(Long userId) throws Exception;
+	
+	public ProjectMembers getProjectMemberByUserIdAndProjectId(Long userId, Long projectId) throws Exception;
 	
 	List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
 	

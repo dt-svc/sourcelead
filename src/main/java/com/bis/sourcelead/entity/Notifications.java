@@ -86,6 +86,18 @@ public class Notifications {
 	@Transient
 	private Long notificationCount;
 
+	@Transient
+	private String notificationFirstName;
+	
+	@Transient
+	private String notificationLastName;
+	
+	
+	@Transient
+	private String notificationUserType;
+	
+	@Transient
+	private String notificationFormId;
 	
 	
 	
@@ -233,4 +245,35 @@ public class Notifications {
 		UUID = uUID;
 	}
 
+	public String getNotificationFirstName() {
+		return notificationFirstName;
+	}
+
+	public void setNotificationFirstName(String notificationFirstName) {
+		this.notificationFirstName = notificationFirstName;
+	}
+
+	public String getNotificationLastName() {
+		return notificationLastName;
+	}
+
+	public void setNotificationLastName(String notificationLastName) {
+		this.notificationLastName = notificationLastName;
+	}
+
+	public String getNotificationUserType() {
+		return notificationUserType;
+	}
+
+	public void setNotificationUserType(String notificationUserType) {
+		this.notificationUserType = notificationUserType;
+	}
+
+	public String getNotificationFormId() {
+		return notificationFormId;
+	}
+
+	public void setNotificationFormId(String notificationFormId) {
+		this.notificationFormId = notificationFormId;
+	}
 }

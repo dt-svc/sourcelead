@@ -53,6 +53,7 @@ import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Team;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.HIERARCHY_TYPE;
@@ -123,6 +124,7 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	private UserRoleService userRoleService;
+	
 	
 	
 	 @Autowired
@@ -1343,6 +1345,11 @@ public class RequirementServiceImpl implements RequirementService {
 		} else {
 			globalVarsMap.put("jobInitiatorName", "--");
 		}
+		if (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle()) ) {
+			globalVarsMap.put("requirementName", requirement.getJobTitle());
+		} else {
+			globalVarsMap.put("requirementName", "--");
+		}
 
 		// setting the Recipient information
 		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
@@ -1368,8 +1375,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 
 		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-				signature, url, new Org());
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, new Org());
 		emailMessage.setSubject(subject);
 		emailMessage.setMessageBody(emailTemplate);
 
@@ -1378,6 +1384,16 @@ public class RequirementServiceImpl implements RequirementService {
 		String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, initiatorUser, loginOrgLocation, notificationScenario);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	@Override
 	public void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc,OrgLocations loginOrgLocation,String releasetype,StringBuilder location) throws Exception {
@@ -1416,7 +1432,7 @@ public class RequirementServiceImpl implements RequirementService {
 				 globalVarsMap.put("RequirementRate", "--");
 			}
 		 if (requirement.getClientId() != null) {
-			 globalVarsMap.put("clientname", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+			 globalVarsMap.put("clientname", requirement.getClientId().getLocationId().getOrg().getOrgName());
 			 } else {
 				 globalVarsMap.put("clientname", "--");
 			}
@@ -1520,7 +1536,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 
 	@Override
-	public File getExportRequirementFile(List<Requirement> requirementList, String orgName,String exportType) throws Exception {
+	public File getExportRequirementFile(List<Requirement> requirementList, String orgName,String exportType,TimeSheetSubmissionCount requirementSubCount) throws Exception {
 		
 		File file = null;
 		if (!"pdf".equalsIgnoreCase(exportType)) {
@@ -1528,7 +1544,7 @@ public class RequirementServiceImpl implements RequirementService {
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + dateFormat.format(new Date()));
 			Row writeRow = null;
-			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook);
+			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,requirementSubCount);
 			int column = 0;
 			for (Requirement requirement : requirementList) {
 				writeRow = createExcelsheet.createRow(column + 9);
@@ -1544,7 +1560,7 @@ public class RequirementServiceImpl implements RequirementService {
 				e.printStackTrace();
 			}
 		}else{
-			file = pdfUtil.getRequirementPdf(requirementList,orgName);
+			file = pdfUtil.getRequirementPdf(requirementList,orgName,requirementSubCount);
 		}
 			return file;	 
 	}
@@ -1595,14 +1611,9 @@ public class RequirementServiceImpl implements RequirementService {
 		return createExcelsheet;
 	}
 
-	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook) {
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, TimeSheetSubmissionCount requirementSubCount) {
 		
-		CellStyle style = createExcelworkbook.createCellStyle();
-		style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
-		Font font = createExcelworkbook.createFont();
-		font.setColor(IndexedColors.BLACK.getIndex());
-		style.setFont(font);
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 
 		writeRow = createExcelsheet.createRow(1);
 		createExcelsheet.setColumnWidth(0, 10000);
@@ -1612,7 +1623,7 @@ public class RequirementServiceImpl implements RequirementService {
 		cell1.setCellValue("Draft :");
 		cell1.setCellStyle(style);
 		Cell cell2 = writeRow.createCell(1);
-	    cell2.setCellValue("6");
+	    cell2.setCellValue(requirementSubCount.getDraftRequirementCount());
 		cell2.setCellStyle(style);
 
 		writeRow = createExcelsheet.createRow(2);
@@ -1624,7 +1635,7 @@ public class RequirementServiceImpl implements RequirementService {
 		cell3.setCellStyle(style);
 
 		Cell cell4 = writeRow.createCell(1);
-		cell4.setCellValue("8");
+		cell4.setCellValue(requirementSubCount.getOpenRequirementCount());
 		cell4.setCellStyle(style);
 
 		writeRow = createExcelsheet.createRow(3);
@@ -1636,7 +1647,7 @@ public class RequirementServiceImpl implements RequirementService {
 		cell5.setCellStyle(style);
 
 		Cell cell6 = writeRow.createCell(1);
-		cell6.setCellValue("8");
+		cell6.setCellValue(requirementSubCount.getNewRequirementCount());
 		cell6.setCellStyle(style);
 		
 		
@@ -1649,7 +1660,7 @@ public class RequirementServiceImpl implements RequirementService {
 		cell7.setCellStyle(style);
 
 		Cell cell8 = writeRow.createCell(1);
-		cell8.setCellValue("9");
+		cell8.setCellValue(requirementSubCount.getSubmittedRequirementCount());
 		cell8.setCellStyle(style);
 		
 		writeRow = createExcelsheet.createRow(5);
@@ -1661,7 +1672,7 @@ public class RequirementServiceImpl implements RequirementService {
 		cell9.setCellStyle(style);
 
 		Cell cell10 = writeRow.createCell(1);
-		cell10.setCellValue("4");
+		cell10.setCellValue(requirementSubCount.getOnHoldRequirementCount());
 		cell10.setCellStyle(style);
 		
 		writeRow = createExcelsheet.createRow(6);
@@ -1673,24 +1684,14 @@ public class RequirementServiceImpl implements RequirementService {
 		cell11.setCellStyle(style);
 
 		Cell cell12 = writeRow.createCell(1);
-		cell12.setCellValue("4");
+		cell12.setCellValue(requirementSubCount.getCancelRequirementCount());
 		cell12.setCellStyle(style);
-		createExcelsheet = setExcelHeader(createExcelsheet, style);
-
-		return createExcelsheet;
-	}
-
-	private Sheet setExcelHeader(Sheet createExcelsheet, CellStyle style) {
 		String headers [] = Constants.REQUIREMENT_EXCEL_HEADERS;
-		Row excelHeader = createExcelsheet.createRow(8);
-		 for (int i=0; i<headers.length;i++){
-		         Cell cell = excelHeader.createCell(i);
-		         cell.setCellValue(headers[i]);
-		         cell.setCellStyle(style);
-		     }
-		return createExcelsheet;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,8);
 
+		return createExcelsheet;
 	}
+
 	@Override
 	public Boolean checkRequirementIsReleasedOrNot(Long requirementId,Long orgLocationId) throws Exception {
 		   

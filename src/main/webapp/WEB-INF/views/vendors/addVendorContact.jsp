@@ -157,7 +157,7 @@
 	             <div class="form-group">
 	              <label class="col-md-3">Owner<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9">
-	                <select multiple class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
+	                <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
 	                <c:forEach var="user" items="${userList}">
 		                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
 	                </c:forEach>
