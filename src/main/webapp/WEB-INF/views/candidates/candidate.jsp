@@ -290,7 +290,7 @@
          <div class="form-group">
               <label class="col-md-3">Education</label>
               <div class="col-md-9">
-                <select multiple data-placeholder="select Education" class="chosen-select form-control" name="candidateEducation" id="candidateEducation" data-validation="validate_Space" data-validation-optional="true">
+                <select multiple data-placeholder="select Education" class="chosenone-selectone form-control" name="candidateEducation" id="candidateEducation" data-validation="validate_Space" data-validation-optional="true">
                 <c:forEach var="edu" items="${educationsList}">
 	                     <option value="${edu.name}">${edu.name}</option>
                 </c:forEach>
@@ -595,6 +595,27 @@ function getCities(){
 		        }
 		    });
 		    //Adding Customized Skills to the list
+		    
+		    //Adding Customized Educations to the list
+	        var selectone, chosenone;
+	        selectone = $("#candidateEducation");
+	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
+	        chosenone = selectone.data('chosen');
+	        chosenone.search_field.on('keyup', function(e1)
+		    {
+		    	var newEducation = this.value.replace(",","");
+		        if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(newEducation).text(newEducation);
+		            selectone.append(option);
+		            selectone.find(option).prop('selected', true);
+	        		$("#candidateEducation").trigger("chosen:updated");
+	        		
+		        }
+		    }); 
+		    //Adding Customized Educations to the list
+	       
 	       
 	       $("#country").on('change', function (e) {
 	    	   getStates();
@@ -724,6 +745,25 @@ function getCities(){
 	     						}
 	     						$("#candidateSkills").append(internalOutput);
 	     		        		$("#candidateSkills").trigger("chosen:updated");
+	     		        		
+	     		        		
+	     		        		$("#candidateEducation").empty();
+	     						 var internalOutput = "";
+	     						 <c:forEach var="edu" items="${educationsList}">
+	     						    internalOutput = internalOutput+"<option value='${edu.name}'>${edu.name}</option>";
+	     	                     </c:forEach>
+	     						var edu = json.edu;
+	     						if(edu != null && edu != 'undefined' && edu != ''){
+	     							var str_array = edu.split(',');
+	     							for(var i = 0; i < str_array.length; i++) {
+	     							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+	     							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+	     							}
+	     						}
+	     						$("#candidateEducation").append(internalOutput);
+	     		        		$("#candidateEducation").trigger("chosen:updated");
+	     		        		
+	     		        		
 	     						$("#loading").removeAttr("style");
 	     						
 	     					},
