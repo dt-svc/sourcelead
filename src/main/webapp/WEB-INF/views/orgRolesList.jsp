@@ -21,6 +21,7 @@ window.onload = function () {
 
 
 <section class="content-wraper">
+<div id="listLoading"></div>
         <section class="content-header clearfix">
           <div class="pull-left">
             <h2>Roles List</h2>
@@ -39,6 +40,7 @@ window.onload = function () {
 				<!-- Popup Div -->
                     <div class="collapse-div-adduser addrole col-md-4"> <i class="fa fa-close close-div" onclick="flushRole();"></i>
                           <div class="form-horizontal clearfix">
+                          <div id="loading"></div> 
                         <form:form id="addRole_form"  name="addRole_form" method="post">                             
                             <div class="clearfix mb10">
                               <div class="col-md-12" id="roleDiv">
@@ -147,6 +149,9 @@ var validationSettings = {
 				    
 	          		var sourceleadUrl ='${sourceleadUrl}';
 	          		
+	          		 $("#add_role").attr("disabled", "disabled");
+	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	          		
 	          	     $.ajax({
 	     		    	type: "POST",
 	     		    	 url: sourceleadUrl+"/addNewRole?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
@@ -210,6 +215,7 @@ var validationSettings = {
 function getRolesList(){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
+	$("#listLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	
 	 $.ajax({
 		   	type: "POST",
@@ -248,6 +254,7 @@ function getRolesList(){
                 result = result +'  </tbody>';
                 result = result +'</div>';
                 $("#rolesList").empty();  
+                $("#listLoading").removeAttr("style");
    	    	    $("#rolesList").append(result);
    	    	    pagination();	
    		    }
