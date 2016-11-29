@@ -56,7 +56,7 @@
 	                 </c:if>
 	                 
 	                 <c:if test="${userTabs.tabName == 'Timesheet Approval' }">
-	                 <sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')"> 
+	                 <sec:authorize access="hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')"> 
 				           <li class="${sessionData.nav == 'TimeSheet' || sessionData.nav == 'TimeSheetApproval' ? 'side-nav-active' : ''}">
 							  <a href="#" class="tree-view-new" title="TimeSheets">
 								<span><i class="fa fa-clock-o"></i></span>
@@ -85,7 +85,7 @@
 	                 </c:if>
 	                 
 	                 <c:if test="${userTabs.tabName == 'My Timesheets'}">
-	                 <sec:authorize access="( hasAnyRole('ROLE_FILL_MY_TIMESHEETS') || hasAnyRole('ROLE_EXPORT_MY_TIMESHEETS') || hasAnyRole('ROLE_MODIFY_MY_TIMESHEETS') ) && !hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS')">
+	                 <sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS') && !hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')">
 	                       <li class="${sessionData.nav == 'TimeSheet' ? 'side-nav-active' : ''}"><a href="<c:url value='/timesheet'/>"><span><i class="fa fa-clock-o"></i></span>TimeSheet</a></li>
 	                 </sec:authorize>
 	                 </c:if>
