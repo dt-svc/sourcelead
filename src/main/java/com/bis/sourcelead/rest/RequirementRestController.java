@@ -123,7 +123,21 @@ public class RequirementRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Requirement requirement = requirementService.storeRequirement(jsonObj,orgLocation,user,multiFile);
-		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Requirement Created Succesfully");
+		
+		if(jsonObj.getString("saveType").equalsIgnoreCase("draft")){
+			SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Requirement Saved in Draft Mode");
+		}
+		if(jsonObj.getString("saveType").equalsIgnoreCase("save")){
+			SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Requirement Created Succesfully");
+		}
+		if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval")){
+			SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Requirement Created and Submitted Succesfully");
+		}
+		 if (jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())){
+			SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Requirement Updated Succesfully");
+		}
+		
+		
 
 		return "success";
 		
