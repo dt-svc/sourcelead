@@ -1,6 +1,6 @@
 package com.bis.sourcelead.entity;
 
-import java.util.List;
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,9 +20,12 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "SOURCELEAD_ACTIONS", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="sourceleadActions")
-public class SourceleadActions {
+public class SourceleadActions implements Serializable{
 
 	
+	private static final long serialVersionUID = 1L;
+
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)

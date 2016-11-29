@@ -100,6 +100,8 @@ overflow-x: auto;
                         <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
                        <li><a href="<c:url value='/uploadVendorForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
                  </sec:authorize> 
+                 
+                 <sec:authorize access="hasRole('ROLE_EXPORT_VENDORS')"> 
                        	 <li id="vendorImports" style="display:none">
 		                     <a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportVendor</a>
 			                    <div class="export_pop">
@@ -109,6 +111,9 @@ overflow-x: auto;
 				       </ul>
 				    </div>
 		            </li> 
+		          </sec:authorize>
+		           
+		          <sec:authorize access="hasRole('ROLE_EXPORT_VENDOR_CONTACTS')"> 
 		            <li id="VendorContactImports">
 		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportContact</a>
 			                    <div class="export_pop">
@@ -118,6 +123,8 @@ overflow-x: auto;
 				       </ul>
 				    </div>
 		            </li> 
+		          </sec:authorize>
+		            
             </ul>
             <div class="clearfix"></div>
         </div>
@@ -895,10 +902,12 @@ function listChange(sel){
 		 document.getElementById("vendorsList").style.display="none";
 		 document.getElementById("vendorSatatus").style.display="none";
 		 document.getElementById("vendorInvitation").style.display="none";
-		 
+         '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDORS\')">'; 
 		 document.getElementById("vendorImports").style.display="block";
+		 '</sec:authorize> ';
+		'<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDOR_CONTACTS\')">'; 
 		 document.getElementById("VendorContactImports").style.display="none";
-		 
+		 '</sec:authorize> ';
 		 getVendorLists();
 	 }
 	 if(sel.value=="listbyContact"){
@@ -911,8 +920,12 @@ function listChange(sel){
 		 document.getElementById("vendorsList").style.display="block";
 		 document.getElementById("vendorSatatus").style.display="block";
 		 document.getElementById("vendorInvitation").style.display="block";
+		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDORS\')">'; 
 		 document.getElementById("vendorImports").style.display="none";
+		 '</sec:authorize> ';
+		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDOR_CONTACTS\')">'; 
 		 document.getElementById("VendorContactImports").style.display="block";
+		 '</sec:authorize> ';
 		 getVendorContactLists();
 	 }
 	 
