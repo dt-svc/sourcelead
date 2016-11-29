@@ -1136,7 +1136,8 @@ function requirementPipeline(requirementId){
     <div class="vendor_wrap">
       <div class="timesheet_head">
         <ul>
-		<li><i class="glyphicon glyphicon-export"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
+        <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT')">
+		<li><i class="glyphicon glyphicon-export"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
 		            <div id="filter2ApprovedPop" class="approved_pop">
 		              <ul>
                 		    <li><input id="c6" type="checkbox" name="requirementStatus" value ="NEW"  onclick="requirementList();"><label for="c6">New<span id="newRequirementCount"></span></label></li>
@@ -1148,13 +1149,14 @@ function requirementPipeline(requirementId){
 		              </ul>
 		            </div>
           </li>
+          </sec:authorize>
           <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
           	<li> <a href="<c:url value='/requirement'/>"><i class="fa fa-plus"></i>Add Requirement</a></li>
           </sec:authorize>
           <sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
           	<li> <a href="<c:url value='/team'/>"><i class="fa fa-plus"></i>Team</a></li>
           </sec:authorize>
-          <sec:authorize access="hasRole('ROLE_EXPORT_REQUIREMENTS')"> 
+          <sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
            <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop" onClick="mypop();"></i>
             <div class="export_pop">
               <ul>

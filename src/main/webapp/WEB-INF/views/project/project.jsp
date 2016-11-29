@@ -912,7 +912,7 @@ function getOrgDetails()
 		var startDate     =    $("#StartDate").val();
 		var searchByName = $("#searchByName").val();
 		var sourceleadUrl = '${sourceleadUrl}';
-		if(startDate != null  && startDate != ''){
+		if(startDate != null  && startDate != '' && level1Manager != null && level1Manager != '' ){
 			
 			if(level2Manager != null){
 				level2Manager = level2Manager;

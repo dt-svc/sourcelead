@@ -72,6 +72,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	 * @param request
 	 * @return
 	 */
+	/* This method is used for landing page of user tab. So, who has user tab access they can see users list. No preAuthorize for this method */
 	@RequestMapping(value = "/usersList")
 	public ModelAndView usersList(HttpServletRequest request) {
 		

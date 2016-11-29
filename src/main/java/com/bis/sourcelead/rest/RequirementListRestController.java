@@ -128,7 +128,7 @@ public class RequirementListRestController {
 	   * 
 	   * @throws NullPointer
 	   */
-	 
+	 @PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT')")
 	 @RequestMapping(value = "/getRequirementListByOrgLocationID")
 	 public String getRequirementListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
 
@@ -425,7 +425,7 @@ public class RequirementListRestController {
 		  * @return void
 		  * @throws Exception
 		  */
-		 @PreAuthorize("hasRole('ROLE_EXPORT_REQUIREMENTS')")
+		 @PreAuthorize("hasAnyRole('ROLE_EXPORT_REQUIREMENTS')")
 		 @RequestMapping(value = "/getRequirementExportListByOrgLocationID")
 		 public void getRequirementExportListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 

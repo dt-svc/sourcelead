@@ -454,10 +454,10 @@ $(document).ready(function () {
 			                    </c:if>
 						</c:forEach>
                     </select>
-                    <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')">
+                    <%-- <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')">
                     <i data-target="#addClient" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" onClick="addClientPopUp();"></i>
                     <div id="addClient" class="modal fade" role="dialog"></div>
-                    </sec:authorize>
+                    </sec:authorize> --%>
                   </div>
                   <div role="dialog" id="addLevel" class="modal fade">
                     <div class="modal-dialog">
@@ -504,9 +504,9 @@ $(document).ready(function () {
 			         		<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option> 
 					     </c:forEach>
                     </select>
-                    <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')">
+                    <%-- <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')">
                     <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i>
-                    </sec:authorize> 
+                    </sec:authorize>  --%>
                  </div>
                   
                 </div>
