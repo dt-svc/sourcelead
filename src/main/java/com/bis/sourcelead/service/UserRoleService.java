@@ -36,6 +36,8 @@ public interface UserRoleService {
 	
 	public UserRole getUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception;
 	
+	public UserRole getUserDetailsByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
+	
 	public UserRole getUserByUserId(Long userId) throws Exception;
 	
 	/**To get user role by userid and locationId
