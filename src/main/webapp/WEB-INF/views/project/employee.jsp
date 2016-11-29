@@ -203,7 +203,15 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 	        		}
 	        		
 	        		result = result + '	 <tr>';
+	        		/* ROLE_VIEW_USER */
+	        		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\')">';
 	                result = result + '	 	<td><div><a href="<c:url value="/userSummary/'+opt.userId+'"/>""> '+opt.empName+' </a></div></td>';
+	                result = result +'</sec:authorize>';
+	                
+	                result = result +'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\')">';
+	                result = result + '	 	<td><div><a> '+opt.empName+'</a></div></td>';
+	                result = result +'</sec:authorize>';
+	                
 	                result = result + '	     <td><div>'+opt.projectAssignedDateStr+'</div></td>';
 	                if(status == 'COMPLETED'){
 	                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
@@ -225,14 +233,23 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 	                		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PROJECT_EMPLOYEES\')">'; 
 	                		result = result + '<i class="glyphicon glyphicon-trash" onClick="deleteProject('+opt.id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i>';
 	                		result = result +'</sec:authorize>';
+	                		
+	                		result = result +'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_PROJECT_EMPLOYEES\')">'; 
+	                		result = result + '<i class="glyphicon glyphicon-trash" ></i>';
+	                		result = result +'</sec:authorize>';
 	                	}
 	                	result = result +'</div></td>';
                      }
                      else{
                     	 result = result + '<td><div class="tblminwidth-50">';
                     	 if(status != 'COMPLETED'){
-                    	 result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">Re-Assign &nbsp;</a><span class="show-reason"><b class="glyphicon glyphicon-comment text-success"></b>';
-                    	 result = result + '<b class="reason">'+opt.terminateReason+'</b>';
+                    	 result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">Re-Assign &nbsp;</a><span class="show-reason">';
+                    	if(opt.terminateReason != null && opt.terminateReason != '' && opt.terminateReason != 'undefined'){
+                    		result = result + '<b class="glyphicon glyphicon-comment text-success"></b><b class="reason">'+opt.terminateReason+'</b>';
+                    	}else{
+                    		result = result + '';	
+                    	}
+                    	 
                     	 result = result + '</span>';
                     	 }else{
                     		 result = result + '<font color="red">&nbsp;Terminated</font>';	 

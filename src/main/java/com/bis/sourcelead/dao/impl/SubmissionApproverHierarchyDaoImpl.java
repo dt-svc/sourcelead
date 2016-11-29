@@ -615,7 +615,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					 */
 				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.id = sah.submissionId.id ) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+") "
 				+ "   ) "
-				+ " and  sah.submissionStatus = :submissionStatus    GROUP BY sah.submissionId order by pm.projects.id ASC)" ;
+				+ " and  sah.submissionStatus = :submissionStatus    GROUP BY CONCAT(emp.id,sah.submissionId.startDate)order by pm.projects.id ASC)" ;
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId",orgLocationId).setString("submissionStatus", submissionStatus).setCacheable(true).list(); 
 		return tslist;
