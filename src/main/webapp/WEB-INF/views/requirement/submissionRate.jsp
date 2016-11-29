@@ -97,7 +97,7 @@
 								   <div class="col-md-12 mb10">
 								  <div class="row">
 								  <div class="col-md-7">
-								  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="rate" id="applicantRate" name="applicantRate" data-validation="required validate_Space validate_length length1-8">
+								  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="rate" id="applicantRate" name="applicantRate" data-validation="required validate_Space validate_float validate_length length1-8">
 								  </div> 
 								  
 								  <div class="col-md-5 select-field">
@@ -191,8 +191,15 @@
 							$('#negotiationDivId').append("<span><center>Rate submitted successfully !!</center></span>");
 						},
 			});
+		}else{
+			    $('body').on('blur', '#negotiation_form', function() {
+				$("#negotiation_form").showHelpOnFocus();
+				$("#negotiation_form").validateOnBlur(false, validationSettings);
+			    });
 		}
 	} 
+	    
+	
 </script>
 
 
