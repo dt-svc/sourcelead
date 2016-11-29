@@ -325,14 +325,16 @@ public class UserDaoImpl implements UserDao {
 	     List<Long> ownerRolesList = new ArrayList<Long>();
 	     
 	     for(Roles roles : rolesList){
-	    	 List<Long> roleActionsList = new ArrayList<Long>();
-	    	 for (String s : roles.getActionId().split(",")){
-	    		 roleActionsList.add(Long.parseLong(s));
-	    	 }
-	    	 
-	    	 roleActionsList.retainAll(tabActionsIds);
-	    	 if(roleActionsList.size() > 0){
-	    		 ownerRolesList.add(roles.getId());
+	    	 if(null != roles.getActionId()){
+	    		 List<Long> roleActionsList = new ArrayList<Long>();
+		    	 for (String s : roles.getActionId().split(",")){
+		    		 roleActionsList.add(Long.parseLong(s));
+		    	 }
+		    	 
+		    	 roleActionsList.retainAll(tabActionsIds);
+		    	 if(roleActionsList.size() > 0){
+		    		 ownerRolesList.add(roles.getId());
+		    	 }
 	    	 }
 	     }
 	     
@@ -542,18 +544,20 @@ public class UserDaoImpl implements UserDao {
      List<Long> ownerRolesList = new ArrayList<Long>();
      
      for(Roles roles : rolesList){
-    	 List<Long> roleActionsList = new ArrayList<Long>();
-    	 for (String s : roles.getActionId().split(",")){
-    		 roleActionsList.add(Long.parseLong(s));
+    	 if(null != roles.getActionId()){
+    		 List<Long> roleActionsList = new ArrayList<Long>();
+    		 for (String s : roles.getActionId().split(",")){
+        		 roleActionsList.add(Long.parseLong(s));
+        	 }
+        	 
+        	 roleActionsList.retainAll(tabActionsIds);
+        	 if(roleActionsList.size() > 0){
+        		 ownerRolesList.add(roles.getId());
+        	 }
     	 }
     	 
-    	 roleActionsList.retainAll(tabActionsIds);
-    	 if(roleActionsList.size() > 0){
-    		 ownerRolesList.add(roles.getId());
-    	 }
      }
 	 
-		
 	 
      String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList))  ";
      List<User> userRoleList = session.createQuery(query.toString()).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();

@@ -39,6 +39,7 @@ window.onload = function () {
 				<!-- Popup Div -->
                     <div class="collapse-div-adduser addrole col-md-4"> <i class="fa fa-close close-div" onclick="flushRole();"></i>
                           <div class="form-horizontal clearfix">
+                          <div id="loading"></div> 
                         <form:form id="addRole_form"  name="addRole_form" method="post">                             
                             <div class="clearfix mb10">
                               <div class="col-md-12" id="roleDiv">
@@ -146,6 +147,9 @@ var validationSettings = {
         	        var jsonData = encodeURIComponent(con);
 				    
 	          		var sourceleadUrl ='${sourceleadUrl}';
+	          		
+	          		 $("#add_role").attr("disabled", "disabled");
+	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	          		
 	          	     $.ajax({
 	     		    	type: "POST",
