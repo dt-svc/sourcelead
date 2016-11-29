@@ -139,6 +139,8 @@ public interface UserService  {
 	
 	public List<User>  getUserListExceptExistedTeamMembersList(List<Long> teamMembersId,Long orgLocationId)throws Exception;
 	
+	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
+	
 }	
 		
 	

@@ -100,7 +100,7 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<ProjectApproverHierarchy> getApproverUsersByProjectId(long projectId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId and  ( usr.id IN (select userRole.user.id from UserRole userRole where (userRole.roles = '3'  OR userRole.roles = '9' OR userRole.roles = '1')))";
+		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId ";
 	        List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId)
 	        																							.setCacheable(true)
 	        																							.list();

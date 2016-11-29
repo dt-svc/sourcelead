@@ -124,7 +124,7 @@ public class VendorController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("vendors/vendor");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_VENDOR));
 			model.addObject("userList", userList);
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
@@ -156,7 +156,7 @@ public class VendorController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("vendors/addVendorContact");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_VENDOR));
 			List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 			model.addObject("userList", userList);
 			model.addObject("loginOrgLocId", orgLocations.getId());
