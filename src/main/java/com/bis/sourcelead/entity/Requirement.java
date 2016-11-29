@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -31,7 +32,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Entity
 	@Table(name = "REQUIREMENT", catalog = "sourcelead")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement")
-	public class Requirement {
+	public class Requirement implements Serializable{
+
+	
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

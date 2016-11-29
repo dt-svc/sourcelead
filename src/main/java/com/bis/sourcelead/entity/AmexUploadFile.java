@@ -1,10 +1,13 @@
 package com.bis.sourcelead.entity;
 
-import java.util.Date;
+import java.io.Serializable;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public class AmexUploadFile {
+public class AmexUploadFile  implements Serializable{
+
+	
+	private static final long serialVersionUID = 1L;
 
 	private MultipartFile file;
 	
