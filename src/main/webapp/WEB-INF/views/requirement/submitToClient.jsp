@@ -195,7 +195,8 @@ function clientSubmissions(requirementId){
 		        	$(".submitnew-wrap").removeClass("submitnew-wrap_active");
 		    		$(".side_mask").fadeOut(200);
 		    		$("body").css('overflow-y', 'auto');
-		    		requirementPipeline(requirementId); 
+		    		var allApplicants = 'all';
+		    		requirementPipeline(requirementId,allApplicants); 
 		        },
 		 }); 
 	 }else{
