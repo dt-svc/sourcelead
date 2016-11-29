@@ -1,4 +1,4 @@
-﻿﻿@charset "utf-8";
+﻿@charset "utf-8";
 /* CSS Document */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
 * {
@@ -4507,8 +4507,8 @@ import-tranhd  [class*="col-md-"]{
 	border: 1px solid #ccc;
 	padding: 10px;
 	-webkit-box-shadow: 0 8px 6px -8px #505050;
--moz-box-shadow: 0 8px 6px -8px #505050;
-box-shadow: 0 8px 6px -8px #505050;
+	-moz-box-shadow: 0 8px 6px -8px #505050;
+	box-shadow: 0 8px 6px -8px #505050;
 	border-radius: 5px;
 	display: none;
 }
@@ -4551,14 +4551,13 @@ box-shadow: 0 8px 6px -8px #505050;
 	-moz-border-radius: 10px;
 	-ms-border-radius: 10px;
 	border-radius: 10px;
-	text-align: center;
 	color: #fff;
-	font-size: 30px;
 }
 .inner-widget .fa{
 	text-align: center;
 	width: 100%;
 	padding: 20px;
+	font-size: 75px;
 }
 .success-user{
 	 background-color:#34c244;
@@ -4574,14 +4573,35 @@ box-shadow: 0 8px 6px -8px #505050;
 	-moz-box-shadow: 0 8px 6px -8px #505050;
 	box-shadow: 0 8px 6px -8px #505050;
 }
-.process-user{
-    background-color:#f0ad4e;
-	border: 1px solid #c58223;
+.negotiation-user{
+    background-color:#455a64;
+	border: 1px solid #263238;
 	-webkit-box-shadow: 0 8px 6px -8px #505050;
 	-moz-box-shadow: 0 8px 6px -8px #505050;
 	box-shadow: 0 8px 6px -8px #505050;
 }
-/* media 320px */
+.reason-msg {
+	font-size: 25px;
+	text-align: center;
+}
+/* Compose mail styles */
+.compose-mail
+{
+/*	border: 1px solid #ccc;*/
+	margin-top: 15px;
+	margin-bottom: 15px;
+	padding: 15px;
+	background: #fff;
+	border-radius: 10px;
+}
+.email-icon:after{
+	content: '\f0e0';
+	font-family: FontAwesome;
+	font-weight: normal;
+	font-size: 14px;
+	border: 1px solid red;
+	z-index: 9999;
+}/* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {
 	display: none !important;

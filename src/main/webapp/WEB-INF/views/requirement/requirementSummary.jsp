@@ -1096,8 +1096,6 @@ function requirementPipeline(requirementId,submissionType){
 							 result = result +'</div>';
 							 result = result +'</div>';
 							 result = result +'</div>';http://localhost:8080/sourcelead/requirementSummary?requirementId=2
-
-							 
 							
 				           // result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
 				            result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
@@ -1167,7 +1165,6 @@ function requirementPipeline(requirementId,submissionType){
 				           result = result + '       <tbody>';
 				           for (var i=0; i<json.length; i++)
 			   				{  
-			   	        		
 			   	        		var report = json[i];
 						           result = result + '       <tr>';
 						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';

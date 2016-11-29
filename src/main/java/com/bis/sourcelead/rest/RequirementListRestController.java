@@ -371,7 +371,6 @@ public class RequirementListRestController {
 										requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 									}
 									
-									
 									User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 									requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
 									requirementSubmission.setResumeName(candidateResumes.getFileName());
