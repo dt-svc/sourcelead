@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -1386,7 +1387,16 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		String result = "";
 		String resultJson = null;
 		
-		String localsubmissionId = jsonObj.getString("submissionId");
+		
+		 String localsubmissionId = null;
+	   	  try{
+	   		   JSONArray jsonArray = jsonObj.getJSONArray("submissionId");
+	   		localsubmissionId = jsonArray.toString();
+	   	  }
+	   	  catch(JSONException e){
+	   		localsubmissionId= jsonObj.getString("submissionId");
+	   	  }
+		
 	    localsubmissionId = localsubmissionId.replaceAll("\\[", "").replaceAll("\\]","");
 	    String[] submissionIds = localsubmissionId.split(",");
 	    Date startDate = new Date() ;
