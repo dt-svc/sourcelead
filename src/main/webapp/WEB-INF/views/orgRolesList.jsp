@@ -21,6 +21,7 @@ window.onload = function () {
 
 
 <section class="content-wraper">
+<div id="listLoading"></div>
         <section class="content-header clearfix">
           <div class="pull-left">
             <h2>Roles List</h2>
@@ -214,6 +215,7 @@ var validationSettings = {
 function getRolesList(){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
+	$("#listLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	
 	 $.ajax({
 		   	type: "POST",
@@ -252,6 +254,7 @@ function getRolesList(){
                 result = result +'  </tbody>';
                 result = result +'</div>';
                 $("#rolesList").empty();  
+                $("#listLoading").removeAttr("style");
    	    	    $("#rolesList").append(result);
    	    	    pagination();	
    		    }
