@@ -441,5 +441,24 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return userRoleList.get(0);
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public UserRole getUserDetailsByUserIdAndLocationId(Long userId, Long locationId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("getUserDetailsByEmailAndLocationId method  start");
+		userRole = session
+				.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles  "
+						+ "left join fetch userRole.user where userRole.user.id = :userId and userRole.orgLocations.id = :locationId")
+				.setLong("userId", userId).setLong("locationId", locationId).setCacheable(true).list();
+		logger.debug("getUserDetailsByEmailAndLocationId method ends");
+		if (userRole.size() > 0) {
+			return userRole.get(0);
+		} else {
+			return null;
+		}
+	}
+
 	
 }
