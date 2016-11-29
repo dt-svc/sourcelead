@@ -815,6 +815,8 @@ public class ClientRestController {
 	 * @param response
 	 * @throws Exception
 	 */
+	
+	@PreAuthorize("hasRole('ROLE_EXPORT_CLIENTS')")
 	 @RequestMapping(value = "/exportClientDetails")
 	   @ResponseBody void exportClientDetails(@RequestParam(value="values", required=false) String status,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 
@@ -849,6 +851,8 @@ public class ClientRestController {
 	  * @return
 	  * @throws Exception
 	  */
+	
+	 @PreAuthorize("hasRole('ROLE_EXPORT_CLIENT_CONTACTS')")
 	 @RequestMapping(value = "/exportClientContactDetails")
 		public void exportClientContactDetails(@RequestParam(value="status", required=false) String status,@RequestParam(value="clientIds", required=false) String clientIds,@RequestParam(value="invitationStatus", required=false) String invitationStatus,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 
