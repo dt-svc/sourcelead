@@ -1653,7 +1653,7 @@ function getTeamsList(teamType){
 				}else{
 					output = output +'           <option value="All">All</option>';
 				}
-				if(teamType == 'Admin'){
+				/* if(teamType == 'Admin'){
 					output = output +'           <option value="Admin" selected>Admin</option>';
 				}else{
 					output = output +'           <option value="Admin">Admin</option>';
@@ -1675,13 +1675,22 @@ function getTeamsList(teamType){
 				output = output +'           <option value="Project Manager" selected>Project Manager</option>';
 			  }else{
 				output = output +'           <option value="Project Manager">Project Manager</option>';
-			  } 
-				for (var i = 0; i < json.length; i++) {
-					var opt = json[i];
+			  } */ 
+			  for (var i = 0; i < json.teams.length; i++) {
+					var opt = json.teams[i];
 					if(teamType == opt.id){
 						output = output + "<option value='"+opt.id+"' selected>"+ opt.name + "</option>";
 					}else{
 						output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";	
+					}
+				}
+			  
+				for (var i = 0; i < json.roles.length; i++) {
+					var opt = json.roles[i];
+					if(teamType == opt.id){
+						output = output + "<option value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
+					}else{
+						output = output + "<option value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
 					}
 				}
 				$("#rolesDiv").empty();
