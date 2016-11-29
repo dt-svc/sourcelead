@@ -80,7 +80,7 @@ public class TimesheetSubmissionsRestController {
 	}
 		
 
-	@PreAuthorize("hasAnyRole('ROLE_CREATE_TIMESHEETS_APPROVAL','ROLE_VIEW_TIMESHEETS_APPROVAL','ROLE_EDIT_TIMESHEETS_APPROVAL')") 
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')") 
 	@RequestMapping(value = "/getArrovalSubmissions",  method = RequestMethod.POST)
 	public @ResponseBody  String getArrovalSubmissions(HttpServletRequest request, @RequestParam(value="employeeId", required=false) String employeeId) throws Exception {
 		

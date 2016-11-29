@@ -87,6 +87,7 @@ public class TimesheetEntriesRestController {
 	 * @return JSON
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/dynamicTimesheetpopUp", method = RequestMethod.POST )
 	public @ResponseBody String dynamicTimesheetpopUp(HttpServletRequest request,@RequestParam(value="employeeId", required=false) Long employeeId,
 																				 @RequestParam(value="startDate", required=false) String startDate,
