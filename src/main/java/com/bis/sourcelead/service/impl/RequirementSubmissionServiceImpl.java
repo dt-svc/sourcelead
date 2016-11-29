@@ -49,6 +49,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionXls;
@@ -1079,9 +1080,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 	
 	
-	
+	@Override
 	public void applicantNegotiateEmail(Requirement requirement, User initiatorUser, Candidate candidate,
-			OrgLocations orgLocations) throws Exception {
+			OrgLocations orgLocations,RequirementRateSubmissionNegotiation negotiation) throws Exception {
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(initiatorUser.getFirstName());
 		 emailMessage.setLastName(initiatorUser.getLastName());
@@ -1089,6 +1090,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
 		 emailMessage.setFromName(candidate.getFirstName()+" "+candidate.getLastName());
+		 
+		 
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1115,11 +1118,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }else{
 				 globalVarsMap.put("requirementRate","--");
 			 }
-		/* if(rejectreason != null && !"".equalsIgnoreCase(rejectreason)){
-			 globalVarsMap.put("applicantRate",rejectreason);
+		 if(negotiation.getCurrentRate() != null && !"".equalsIgnoreCase(negotiation.getCurrentRate())){
+			 globalVarsMap.put("applicantRate",negotiation.getCurrentRate()+" "+negotiation.getCurrentRateType());
 			 }else{
 				 globalVarsMap.put("applicantRate","--");
-			 }*/
+			 }
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
@@ -1177,5 +1180,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		requirementSubmissionDao.storeRequirementSubmission(requirementSubmission);
 		
 		return requirementSubmission;
+	}
+
+	@Override
+	public RequirementRateSubmissionNegotiation getRequirementRateBySubmissionById(Long submissionId) {
+		return requirementSubmissionDao.getRequirementRateBySubmissionById(submissionId);
 	}
 }

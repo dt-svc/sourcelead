@@ -23,6 +23,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+ <script src="resources/js/formvalidator.js"></script>
 <script>
 		$(document).ready(function() { 
 			var rateStatus = '${param.rateStatus}';
@@ -58,7 +59,8 @@
 		  		<div id="accept" style="display:none">
 				          <div class="col-md-8 col-md-offset-2 inner-widget success-user">
 					          <i class="fa fa-check-circle fa-3x"></i>
-							  <p class="reason-msg">User Succefully logged</p>
+							  <p class="reason-msg">You Have accepted the Requirement for ${requirementSubmission.requirement.jobTitle}</p>
+							  <p class="reason-msg"><center><h3>Thank You !!!</h3></center></p>
 						  </div>
 		  		</div>
 		  		<div id="reject" style="display:none">
@@ -66,7 +68,7 @@
 					          <div class="col-md-8 col-md-offset-2 inner-widget reject-user">
 								  <div class="col-md-6">
 									  <i class="fa fa-ban fa-3x"></i>
-									  <p class="reason-msg">User Succefully Rejected</p>
+									  <p class="reason-msg">You are not interested for the position <B> ${requirementSubmission.requirement.jobTitle}</B></p>
 								  </div>
 								  <div class="col-md-6" id="rejectIdDiv">
 									  <div class="col-md-12">
@@ -81,7 +83,7 @@
 		  		</div>
 		  		<div id="negotiation" style="display:none">
 		  			<form id="negotiation_form" name="negotiation_form" method="post" >
-				          <div class="col-md-8 col-md-offset-2 inner-widget negotiation-user">
+				          <div class="col-md-8 col-md-offset-2 inner-widget negotiation-user" id="negotiationDivId">
 							  <div class="col-md-6">
 							  	<i class="fa fa-handshake-o fa-3x"></i>
 							  <p class="reason-msg">Rate Negotiation</p>
@@ -95,11 +97,11 @@
 								   <div class="col-md-12 mb10">
 								  <div class="row">
 								  <div class="col-md-7">
-								  <input type="text" class="form-control input-sm" placeholder="rate" id="applicantRate" name="applicantRate">
+								  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="rate" id="applicantRate" name="applicantRate" data-validation="required validate_Space validate_length length1-8">
 								  </div> 
 								  
 								  <div class="col-md-5 select-field">
-								  <select  class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Type">
+								  <select  class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Type" data-validation="required">
 										<option value="">Rate Per</option>
 					                    <option>Hourly</option>
 					                    <option>Weekly</option>
@@ -116,7 +118,7 @@
 								 <!--  <div class="col-md-12 mb10">
 									  <textarea row="1" class="form-control" placeholder="Comments" name="comments"></textarea>
 								  </div> -->
-								  <div class="col-md-12 mt10"><button type="button" class="btn btn-sm btn-default" onclick="storeNegotiation();">Submit</button></div>
+								  <div class="col-md-12 mt10"><input type="button" class="btn btn-sm btn-default" id="negotiationButtonId" onclick="storeNegotiation();" value="submit"></div>
 							  	
 							  </div>
 						 </div>
@@ -158,12 +160,23 @@
 			       
 	} 
 </script>
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
 
 <script type="text/javascript">
 	function storeNegotiation() {
+		
+			
 			var sourceleadUrl = '${sourceleadUrl}';
 			var submissionId = '${submissionId}';
-			
+			if ($('#negotiation_form').validate(false, validationSettings)){ 
+			$('#negotiationButtonId').addClass('button').val('Processing..').attr('disabled','disabled');
 			var frm = $('#negotiation_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
@@ -172,9 +185,13 @@
 						type : "POST",
 						url : sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&submissionId="+submissionId,
 						success : function(result) {
-							
+							$('#applicantRate').val('');
+							$('#rateType').val('');
+							$('#negotiationButtonId').addClass('button').val('submit').removeAttr("disabled");
+							$('#negotiationDivId').append("<span><center>Rate submitted successfully !!</center></span>");
 						},
 			});
+		}
 	} 
 </script>
 

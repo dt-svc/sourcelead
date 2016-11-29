@@ -9,6 +9,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 
@@ -67,5 +68,10 @@ public interface RequirementSubmissionService {
 			OrgLocations orgLocations, String rejectreason) throws Exception;
 	
 	RequirementSubmission acceptRejectCandidate(JSONObject jsonObj, User user, RequirementSubmission requirementSubmission, String decision, MultipartFile multiFile) throws Exception;
+
+	public void applicantNegotiateEmail(Requirement requirement, User initiatorUser, Candidate candidate,
+			OrgLocations orgLocations, RequirementRateSubmissionNegotiation negotiation) throws Exception;
+
+	RequirementRateSubmissionNegotiation getRequirementRateBySubmissionById(Long submissionId);
 
 }

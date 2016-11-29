@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
+import java.util.Date;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,7 +99,19 @@ public class SubmissionsRateRestController {
 		if(jsonObj.has("rateType")){
 			requirementRateSubmissionNegotiation.setCurrentRateType(jsonObj.getString("rateType"));
 		}
+		requirementRateSubmissionNegotiation.setCreatedDate(new Date());
+		requirementRateSubmissionNegotiation.setCreatedBy("");
+		requirementRateSubmissionNegotiation.setUpdatedDate(new Date());
+		requirementRateSubmissionNegotiation.setUpdatedBy("");
+		
 		requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);
+	
+		 Requirement requirement = requirementSubmission.getRequirement();
+		 User initiatorUser = requirementSubmission.getOrgLocations().getUser();
+		 Candidate candidate = requirementSubmission.getCandidate();
+		 OrgLocations orgLocations = requirementSubmission.getOrgLocations();
+		 RequirementRateSubmissionNegotiation neogtation = requirementSubmissionService.getRequirementRateBySubmissionById(submissionId);
+		requirementSubmissionService.applicantNegotiateEmail(requirement,initiatorUser,candidate,orgLocations,neogtation);
 		
 		return "success";
 		
