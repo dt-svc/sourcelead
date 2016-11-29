@@ -28,14 +28,21 @@ public class RequirementRateSubmissionNegotiation {
     @JoinColumn(name="REQUIREMENT_SUBMISSION_ID", nullable=false )        
     private RequirementSubmission requirementsubmissionId;
 	
+	/*@Column(name = "CURRENTRATE")
+	private float currentRate;*/
+
 	@Column(name = "CURRENTRATE")
-	private float currentRate;
+	private String currentRate;
+	
+	@Column(name = "CURRENTRATETYPE")
+	private String currentRateType;
+	
 	
 	@Column(name = "EXPECTEDRATE")
-	private float expectedRate;
+	private String expectedRate;
 	
 	@Column(name = "FINALIZEDRATE")
-	private float finalizedRate;
+	private String finalizedRate;
 	
 	@Column(name = "STATUS")
 	private String status;
@@ -67,30 +74,25 @@ public class RequirementRateSubmissionNegotiation {
 	public void setRequirementsubmissionId(RequirementSubmission requirementsubmissionId) {
 		this.requirementsubmissionId = requirementsubmissionId;
 	}
+	 
 
-	public float getCurrentRate() {
+	public String getCurrentRate() {
 		return currentRate;
 	}
 
-	public void setCurrentRate(float currentRate) {
+	public void setCurrentRate(String currentRate) {
 		this.currentRate = currentRate;
 	}
 
-	public float getExpectedRate() {
-		return expectedRate;
+	public String getCurrentRateType() {
+		return currentRateType;
 	}
 
-	public void setExpectedRate(float expectedRate) {
-		this.expectedRate = expectedRate;
+	public void setCurrentRateType(String currentRateType) {
+		this.currentRateType = currentRateType;
 	}
 
-	public float getFinalizedRate() {
-		return finalizedRate;
-	}
-
-	public void setFinalizedRate(float finalizedRate) {
-		this.finalizedRate = finalizedRate;
-	}
+	 
 
 	public String getStatus() {
 		return status;
@@ -131,8 +133,5 @@ public class RequirementRateSubmissionNegotiation {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-
-	
-
 	
 }

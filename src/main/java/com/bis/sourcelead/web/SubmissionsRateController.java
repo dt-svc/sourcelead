@@ -7,9 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.Candidate;
@@ -30,7 +30,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
-@RestController
+@Controller  
 @PropertySource("${propertyLocation:app.properties}")
 public class SubmissionsRateController {
 	
@@ -77,6 +77,9 @@ public class SubmissionsRateController {
 		if("Accepted".equalsIgnoreCase(rateStatus)){
 			//write accept logic ....like send mail and put status as submission
 			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+			
+			
 			Requirement requirement = requirementSubmission.getRequirement();
 			User initiatorUser = requirementSubmission.getOrgLocations().getUser();
 			Candidate candidate = requirementSubmission.getCandidate();
@@ -84,20 +87,6 @@ public class SubmissionsRateController {
 			requirementSubmissionService.applicantAcceptMailAboutRequirement(requirement,initiatorUser,candidate,orgLocations);
 			
 		}
-	/*	if("Rejected".equalsIgnoreCase(rateStatus)){
-			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
-			Requirement requirement = requirementSubmission.getRequirement();
-			User initiatorUser = requirementSubmission.getOrgLocations().getUser();
-			Candidate candidate = requirementSubmission.getCandidate();
-			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
-			requirementSubmissionService.applicantRejectMailAboutRequirement(requirement,initiatorUser,candidate,orgLocations);
-			
-		}*/
-		if("negotiate".equalsIgnoreCase(rateStatus)){
-			//write accept logic ....like send mail and put status as submission
-			
-		}
-		
 		return model;
 
 	}

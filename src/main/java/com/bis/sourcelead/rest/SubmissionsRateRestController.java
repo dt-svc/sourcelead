@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
@@ -56,14 +58,22 @@ public class SubmissionsRateRestController {
 	@Autowired
 	EmailScenarioService emailScenarioService;
 	
+	@Autowired
+	RequirementRateSubmissionNegotiationService requirementRateSubmissionNegotiationService;
+	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
 	@RequestMapping(value = "/storeReject", method = RequestMethod.POST)
 	public @ResponseBody String storeReject(@RequestParam(value = "submissionId", required = false) Long submissionId,
 			@RequestParam(value = "rejectreason", required = false) String rejectreason) throws Exception {
+		 
+		//this logic is for update status 
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+		
+		//this logic is for mail 
 		Requirement requirement = requirementSubmission.getRequirement();
 		User initiatorUser = requirementSubmission.getOrgLocations().getUser();
 		Candidate candidate = requirementSubmission.getCandidate();
@@ -73,10 +83,22 @@ public class SubmissionsRateRestController {
 	}
 	
 	@RequestMapping(value = "/storeNegotiation", method = RequestMethod.POST)
-	public @ResponseBody String storeNegotiation(@RequestParam(value = "json", required = false) String json) throws Exception {
+	public @ResponseBody String storeNegotiation(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "submissionId", required = false) Long submissionId) throws Exception {
 	 
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
+		
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+		
+		RequirementRateSubmissionNegotiation  requirementRateSubmissionNegotiation = new RequirementRateSubmissionNegotiation();
+		requirementRateSubmissionNegotiation.setRequirementsubmissionId(requirementSubmission);
+		if(jsonObj.has("applicantRate")){
+			requirementRateSubmissionNegotiation.setCurrentRate(jsonObj.getString("applicantRate"));
+		}
+		if(jsonObj.has("rateType")){
+			requirementRateSubmissionNegotiation.setCurrentRateType(jsonObj.getString("rateType"));
+		}
+		requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);
 		
 		return "success";
 		

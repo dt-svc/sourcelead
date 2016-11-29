@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,7 +13,9 @@ import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 
 @Repository
 public class RequirementRateSubmissionNegotiationDaoImpl  implements RequirementRateSubmissionNegotiationDao{
-private SessionFactory sessionFactory;
+	
+	@Autowired	
+	private SessionFactory sessionFactory;
 	
 	@Override
 	@Transactional

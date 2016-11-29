@@ -88,15 +88,15 @@
 							  </div>
 							  <div class="col-md-6">
 								  <div class="col-md-12 mb10">
-								  <input type="text" class="form-control input-sm" placeholder="rate" value="${requirementSubmission.requirement.rate} " name="requirementRate">
+								   Requirement Rate : ${requirementSubmission.requirement.rate}
 								  </div>
 								  
 								  
 								   <div class="col-md-12 mb10">
 								  <div class="row">
 								  <div class="col-md-7">
-								  <input type="text" class="form-control input-sm" placeholder="rate" name="applicantRate">
-								  </div>
+								  <input type="text" class="form-control input-sm" placeholder="rate" id="applicantRate" name="applicantRate">
+								  </div> 
 								  
 								  <div class="col-md-5 select-field">
 								  <select  class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Type">
@@ -113,9 +113,9 @@
 								  </div>
 								  </div>
 								 
-								  <div class="col-md-12 mb10">
+								 <!--  <div class="col-md-12 mb10">
 									  <textarea row="1" class="form-control" placeholder="Comments" name="comments"></textarea>
-								  </div>
+								  </div> -->
 								  <div class="col-md-12 mt10"><button type="button" class="btn btn-sm btn-default" onclick="storeNegotiation();">Submit</button></div>
 							  	
 							  </div>
@@ -162,6 +162,7 @@
 <script type="text/javascript">
 	function storeNegotiation() {
 			var sourceleadUrl = '${sourceleadUrl}';
+			var submissionId = '${submissionId}';
 			
 			var frm = $('#negotiation_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -169,9 +170,9 @@
 			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json="+con,
+						url : sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&submissionId="+submissionId,
 						success : function(result) {
-							     alert("success");
+							
 						},
 			});
 	} 
