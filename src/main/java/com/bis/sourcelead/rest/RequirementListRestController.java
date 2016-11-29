@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -339,14 +340,20 @@ public class RequirementListRestController {
 		  */
 		 
 		 @RequestMapping(value = "/getSubmissionsByRequirementId" , method = RequestMethod.POST)
-		 @ResponseBody  String getSubmissionsByRequirementId(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
+		 @ResponseBody  String getSubmissionsByRequirementId(@RequestParam(value="requirementId", required=false) String  requirementId,@RequestParam(value="submissionType", required=false) String  submissionType,HttpServletRequest request) throws Exception {
 				String resultJson = null;
-				 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 					if(requirementId !=null && !requirementId.isEmpty()){
-						List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
-						if(requirementSubmissions != null){
-							for (RequirementSubmission requirementSubmission : requirementSubmissions) {
+						List<RequirementSubmission> requirementStatusList = null;
+						if(!"all".equalsIgnoreCase(submissionType)){
+							 requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);	
+						}else{
+							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
+						}
+						if(requirementStatusList != null){
+							for (RequirementSubmission requirementSubmission : requirementStatusList) {
 								if(requirementSubmission.getCandidateResumes() != null){
 									CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
 									RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
@@ -364,6 +371,7 @@ public class RequirementListRestController {
 									if(requirementSubmission.getCreatedDate() != null){
 										requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 									}
+									
 									User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 									requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
 									requirementSubmission.setResumeName(candidateResumes.getFileName());
@@ -381,7 +389,7 @@ public class RequirementListRestController {
 							}
 						}
 						
-						resultJson = commonUtil.toJSON(requirementSubmissions);
+						resultJson = commonUtil.toJSON(requirementStatusList);
 					}
 				return resultJson;
 		 }
@@ -417,6 +425,7 @@ public class RequirementListRestController {
 		  * @return void
 		  * @throws Exception
 		  */
+		 @PreAuthorize("hasRole('ROLE_EXPORT_REQUIREMENTS')")
 		 @RequestMapping(value = "/getRequirementExportListByOrgLocationID")
 		 public void getRequirementExportListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 
@@ -625,12 +634,8 @@ public class RequirementListRestController {
 
 			String resultJson;
 			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-
-			
-			
 		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			
 			
 			TimeSheetSubmissionCount  timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 			
@@ -666,7 +671,6 @@ public class RequirementListRestController {
 	        			  }
 	        			  
 	        		  }
-	        		  
 	        		  timeSheetSubmissionCount.setNewRequirementCount(newCount);
 	        		  timeSheetSubmissionCount.setDraftRequirementCount(draftCount);
    				      timeSheetSubmissionCount.setSubmittedRequirementCount(submittedCount);
@@ -677,5 +681,52 @@ public class RequirementListRestController {
 			
 			resultJson = commonUtil.toJSON(timeSheetSubmissionCount);
 			return resultJson;
+		}
+		
+		@RequestMapping(value = "/getSubmissionsCountBySubmissionStatus" , method = RequestMethod.POST)
+		 @ResponseBody  String getSubmissionsCountBySubmissionStatus(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
+				String resultJson = null;
+				int numOfShortList = 0;
+				int numOfInterview = 0;
+				int numOfSubmitToClient = 0;
+				int numOfOffers = 0;
+				int numOfRejected = 0;
+				
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				
+				if(requirementId !=null && !requirementId.isEmpty()){
+					List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+					
+					for(RequirementSubmission rmentSubmission :requirementSubmissions){
+						
+						if("SHORTLIST".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+							numOfShortList++;
+						}
+						else if("INTERVIEW".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+							numOfInterview++;
+						}
+						else if("SUBMIT_TO_CLIENT".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+							numOfSubmitToClient++;
+						}
+						else if("OFFERMADE".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+							numOfOffers++;
+						}else if("REJECTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+							numOfRejected++;
+						}
+						
+						
+					}
+					for(RequirementSubmission rmentSubmission :requirementSubmissions){
+						rmentSubmission.setNumOfSubmissions(requirementSubmissions.size());
+						rmentSubmission.setNumOfShortList(numOfShortList);
+						rmentSubmission.setNumOfInterview(numOfInterview);
+						rmentSubmission.setNumOfSubmitToClient(numOfSubmitToClient);
+						rmentSubmission.setNumOfOffers(numOfOffers);
+						rmentSubmission.setNumOfRejected(numOfRejected);
+						}
+					resultJson = commonUtil.toJSON(requirementSubmissions);
+				}
+				return resultJson;
 		}
 }

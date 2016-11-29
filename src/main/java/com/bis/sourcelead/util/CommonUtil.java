@@ -27,6 +27,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
@@ -655,5 +659,25 @@ public class CommonUtil {
 		}
 		
 
+
+		/**
+		 * HashRole is used for Java Code
+		 * @author: Naresh Bolisetty
+		 * 
+		 */
+		public boolean hasRole(String role) {
+	        // get security context from thread local
+			
+			 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	        if (authentication == null)
+	            return false;
+
+	        for (GrantedAuthority auth : authentication.getAuthorities()) {
+	            if (role.equals(auth.getAuthority()))
+	                return true;
+	        }
+
+	        return false;
+	    }
 		
 }
