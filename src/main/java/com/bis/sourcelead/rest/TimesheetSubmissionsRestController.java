@@ -72,7 +72,7 @@ public class TimesheetSubmissionsRestController {
 	TimesheetSubmissionsDocumentsService timesheetSubmissionsDocumentsService;
 	
 	// sarath kumar punnana : this  controller method is for withdraw  timwsheet entries.
-	@PreAuthorize("hasRole('ROLE_WITHDRAW_MY_TIMESHEETS')")
+	@PreAuthorize("hasRole('ROLE_MODIFY_MY_TIMESHEETS')")
 	@RequestMapping(value = "/withDrawTimesheet", method = RequestMethod.POST)
 	public @ResponseBody void withDrawTimesheet(@RequestParam(value="submissionId", required=false) String submissionId) throws Exception {
 				

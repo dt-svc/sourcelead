@@ -52,7 +52,7 @@ public class TimesheetEntriesController {
 	 * @return
 	 */
 	@RequestMapping(value = "/timesheet")
-	@PreAuthorize("hasAnyRole('ROLE_CREATE_MY_TIMESHEETS','ROLE_VIEW_MY_TIMESHEETS','ROLE_EDIT_MY_TIMESHEETS','ROLE_WITHDRAW_MY_TIMESHEETS')")
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS')")
 	public ModelAndView timesheet(HttpServletRequest request) {
 			ModelAndView model = new ModelAndView();
 			
