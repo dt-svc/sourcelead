@@ -717,6 +717,11 @@ function cancel(candidateId){
 
 <section class="content-wraper">
   <section class="content-header clearfix">
+   <c:if test="${!empty msg}">
+	        <div class="success_pop" id="sucesspop"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
     <div class="pull-left">
       <h2>Candidate List</h2>
     </div>
@@ -795,6 +800,7 @@ function cancel(candidateId){
 <!-- BELOW SCRIPTS ARE USED TO SHOW / HIDE POPUP'S --> 
 <script>
 // Error pop
+$('#sucesspop').delay(2000).fadeOut('slow');
 $(document).ready(function() {
     $(".glyphicon-trash").click(function(){
 		$(".vendor_error").slideToggle(200);

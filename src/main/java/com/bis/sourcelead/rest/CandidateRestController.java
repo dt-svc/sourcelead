@@ -105,6 +105,7 @@ public class CandidateRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Candidate candidate = candidateService.storeCandidate(jsonObj,orgLocation,user,multiFile);
+		SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", "Candidate created successfully..");
 		return "success";
 	}
 	

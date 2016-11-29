@@ -101,8 +101,19 @@ public class CandidateController {
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "candidateCreateMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "candidateCreateMsg");
+		}
+		
 		return model;
 
+	}
+
+	private boolean isNullOrEmpty(String msg) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
