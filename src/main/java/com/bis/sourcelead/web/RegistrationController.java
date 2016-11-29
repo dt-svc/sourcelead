@@ -1,7 +1,8 @@
 package com.bis.sourcelead.web;
 
-import java.util.Collection;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,26 +11,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.ActionRoles;
+import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.ActionRolesService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -59,11 +63,21 @@ public class RegistrationController {
 	 @Autowired
 	 private NotificationsService notificationsService;
 	 
+	 @Autowired
+	 private ModulesService moduleService;
+	 
 	 
 	 @Autowired
 	 CommonUtil commonUtil;
 	 
-	 @PreAuthorize("hasRole('ROLE_SOURCELEAD_ADMIN')")
+	 @Autowired
+	 SourceleadActionsService sourceleadActionsService;
+	 
+	 @Autowired
+	 RolesService rolesService;
+	 
+	 
+	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/enrolledOrgsList")
 		public ModelAndView enrolledOrgsList(HttpServletRequest request) {
 		 
@@ -83,10 +97,22 @@ public class RegistrationController {
 
 	 }
 	 
-	 @PreAuthorize("hasRole('ROLE_SOURCELEAD_ADMIN')")
+	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/enrollOrg")
 		public ModelAndView registration() {
 			ModelAndView model = new ModelAndView();
+			List<Modules> modulesList = null;
+			List<Modules> requirementSubModulesList = null;
+			try {
+				 modulesList = modulesService.getSourceLeadModules();
+				 model.addObject("modulesList", modulesList);
+				 
+				 requirementSubModulesList = moduleService.getRequirementSubModules();
+				 model.addObject("requirementSubModulesList", requirementSubModulesList);
+				 
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			
 			model.setViewName("registration/enrollOrg");
 
@@ -115,39 +141,45 @@ public class RegistrationController {
 			
 		    Org org = null;
 		    OrgLocations orgLocations = null;
+		    boolean flag;
 			
 		    try {
 		    	orgLocations = orgLocationService.getOrgLocations(respondingPartyOrgLocationId);
 		    	org = orgLocations.getOrg();
-		    	
+		    	String modules = org.getModulesId();
+		    	Long tabId = null;
+		    	Long moduleId = null;
 		    	if(null != org){
 			    	org.setOrgType("Company");
-			    	if("VMS".equalsIgnoreCase(respondingOrgType)){
-			    		org.setVms(Status.Y);
-			    	}else{
-			    		org.setAts(Status.Y);
-			    	}
-					orgService.updateOrg(org);
-					
-					 List<Long> modulesId = modulesService.getModulesIdByModuleName("Recruiting,");
-					 Collection<ActionRoles> actionRolesList = actionRolesService.getSourceLeadActionRolesListByOrgId(1L,modulesId,org);
-					 if(actionRolesList != null){
-						 for(ActionRoles actionRoles : actionRolesList){
-							 ActionRoles userActionroles = actionRolesService.getActionRolesByActionIdAndRoleIdAndLocationId(actionRoles.getTabActions().getId(), actionRoles.getRoles().getId(), org.getId());
-							 if(null == userActionroles){
-								 userActionroles = new ActionRoles();
-								 userActionroles.setTabActions(actionRoles.getTabActions());
-								 userActionroles.setRoles(actionRoles.getRoles());
-								 userActionroles.setIsNotify(actionRoles.getIsNotify());
-								 userActionroles.setOrg(org);
-								 userActionroles.setOrgLocations(orgLocations);
-								 userActionroles.setCreatedDate(new Date());
-								 actionRolesService.addActionRoles(userActionroles);
-							 }
-							 
-						 }
+			    	
+			    	List<Integer> moduleIds = new ArrayList<Integer>();
+					 for (String s : org.getModulesId().split(",")){
+						 moduleIds.add(Integer.parseInt(s));
 					 }
 					 
+			    	if("ATS".equalsIgnoreCase(respondingOrgType)){
+			    		flag = moduleIds.contains(Constants.MODULE_ATS);
+			    		tabId = (long) Constants.TAB_CLIENT;
+			    		moduleId = (long) Constants.MODULE_ATS;
+			    		if(flag == false){
+			    			modules = modules+","+Constants.MODULE_ATS;
+			    			saveUserRoleActions(moduleId,tabId,orgLocations);
+			    		}
+			    	}else if("VMS".equalsIgnoreCase(respondingOrgType)){
+			    		flag = moduleIds.contains(Constants.MODULE_VMS);
+			    		tabId = (long) Constants.TAB_VENDOR;
+			    		moduleId = (long) Constants.MODULE_VMS;
+			    		if(flag == false){
+			    			modules = modules+","+Constants.MODULE_VMS;
+			    			saveUserRoleActions(moduleId,tabId,orgLocations);
+			    		}
+			    	}
+			    	
+					
+			    	org.setModulesId(modules);
+			    	org.setStatus(Status.ACTIVE);
+					orgService.updateOrg(org);
+					
 					 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
 					 if(null != notifications){
 						 notifications.setUserNotificationStatus("Accepted");
@@ -168,8 +200,99 @@ public class RegistrationController {
 			}
 			
 		}
-		
 	 
+	 
+	 
+	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	 @RequestMapping(value = "/enrolledOrgSummary")
+		public ModelAndView enrolledOrgSummary(HttpServletRequest request,
+				@RequestParam(value = "orgId", required = false) Long orgId) throws Exception {
+			    ModelAndView model = new ModelAndView();
+			
+				OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(orgId);
+
+				List<Modules> modulesList = null;
+				List<Modules> requirementSubModulesList = null;
+				
+				if(null != orgLocations.getOrg().getModulesId()){
+					ArrayList<Modules> registeredModulesList = new ArrayList<Modules>();
+					ArrayList<Modules> registeredSubModulesList = new ArrayList<Modules>();
+					modulesList = modulesService.getSourceLeadModules();
+					requirementSubModulesList = moduleService.getRequirementSubModules();
+					
+					List<Long> orgModulesList = new ArrayList<Long>();
+					 for (String s : orgLocations.getOrg().getModulesId().split(",")){
+						 orgModulesList.add(Long.parseLong(s));
+					 }
+					 
+					 for(Modules modules : modulesList){
+						 if((orgModulesList.contains(modules.getId()))){
+							 modules.setIsModuleConfigured(Constants.YES);
+						 }else{
+							 modules.setIsModuleConfigured(Constants.NO);
+						 }
+						 registeredModulesList.add(modules);
+					 }
+					 
+					 for(Modules modules : requirementSubModulesList){
+						 if(orgModulesList.contains(modules.getId())){
+							 modules.setIsModuleConfigured(Constants.YES);
+						 }else{
+							 modules.setIsModuleConfigured(Constants.NO);
+						 }
+						 registeredSubModulesList.add(modules);
+					 }
+					 
+					 model.addObject("registeredModulesList", registeredModulesList);
+					 model.addObject("registeredSubModulesList", registeredSubModulesList);
+				}
+				
+				model.addObject("orgloc",orgLocations);
+				model.addObject("orgId",orgId);
+				model.setViewName("registration/enrolledOrgSummary");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				
+			
+			return model;
+
+		}
+		
+	
+	 public void saveUserRoleActions(Long moduleId,Long tabId,OrgLocations orgLocations) throws Exception{
+		 
+			List<Long> actionsList = sourceleadActionsService.getSourceLeadActionsByModuleId(moduleId);
+			
+			Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
+			 List<Long> adminRoleActonList = new ArrayList<Long>();
+			 for (String s : adminrole.getActionId().split(",")){
+				 adminRoleActonList.add(Long.parseLong(s));
+			 }
+			 
+			 adminRoleActonList.retainAll(actionsList);
+			 actionsList.removeAll(adminRoleActonList);
+			
+			
+	    	StringBuilder strbul  = new StringBuilder();
+		     Iterator<Long> iter = actionsList.iterator();
+		     while(iter.hasNext())
+		     {
+		         strbul.append(iter.next());
+		        if(iter.hasNext()){
+		         strbul.append(",");
+		        }
+		     }
+		     strbul.toString();
+			
+			
+	        String adminids = adminrole.getActionId()+","+strbul;
+			adminrole.setActionId(adminids);
+			rolesService.storeRoles(adminrole);
+			
+			Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, orgLocations.getId());
+			String managerids = managerrole.getActionId()+","+strbul;
+		    managerrole.setActionId(managerids);
+			rolesService.storeRoles(managerrole);
+	 }
 	 
 	 /**	 
 	  * checks if string is null or empty

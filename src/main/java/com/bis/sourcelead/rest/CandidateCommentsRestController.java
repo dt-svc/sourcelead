@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateComments;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCommentsService;
 import com.bis.sourcelead.service.CandidateService;
@@ -67,6 +67,8 @@ public class CandidateCommentsRestController {
 	* 
 	* @throws Exception
 	*/
+	
+	@PreAuthorize("hasRole('ROLE_POST_COMMENTS')")
 	@RequestMapping(value = "/saveCandidateComment", method = RequestMethod.POST)
 	public @ResponseBody String saveCandidateComment(@RequestParam(value = "json", required = false) String json, String candidateId, HttpServletRequest request) throws Exception {
 

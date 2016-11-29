@@ -2,10 +2,14 @@ package com.bis.sourcelead.web;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -13,9 +17,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,13 +34,16 @@ import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -76,12 +87,45 @@ public class LoginSessionController {
 	@Autowired 
 	private ProjectMembersHistoryService projectMembersHistoryService;
 	
+	@Autowired 
+	private ModulesService modulesService;
+	
+	@Autowired 
+	private SourceleadActionsService sourceleadActionsService;
 	
 	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
 	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication) throws Exception {
 		
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		
+		OrgLocations orgLocations = userRole.getOrgLocations();
+		Org org = orgLocations.getOrg();
+		List<Long> modulesId = modulesService.getOrgRegisteredModules(org);
+		List<Tabs> tabsList = null;
+		if(org.getOrgType().equalsIgnoreCase("Company")){
+			tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+		}
+		
+		SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
+		
+		
+		String[] modules = org.getModulesId().split(",");
+		for(int i = 0 ; i< modules.length ; i++){
+			if(modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)){
+				SourceLeadSessionManager.setSessionAttribute(request, "ats", "Y");
+			}
+			
+			if(modules[i].equalsIgnoreCase(Constants.MODULE_VMS_STR)){
+				SourceLeadSessionManager.setSessionAttribute(request, "vms", "Y");
+			}
+			
+			if(modules[i].equalsIgnoreCase(Constants.MODULE_TIMESHEET_STR)){
+				SourceLeadSessionManager.setSessionAttribute(request, "timesheet", "Y");
+			}
+		}
+		
+		
 		setLoginSession(request, authentication,user,userRole);
 		
 		ModelAndView model = new ModelAndView();
@@ -99,13 +143,43 @@ public class LoginSessionController {
 	
 	
 	@RequestMapping(value = "/dashboardLinks" , method = RequestMethod.GET)
-	   public ModelAndView loginSessionLinks(HttpServletRequest request,Authentication authentication,
+	   public ModelAndView loginSessionLinks(HttpServletRequest request,HttpServletResponse response,Authentication authentication,
 			   @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
 		User user = userService.findByUserName(authentication.getName());
-		UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(user.getEmail(), orgLocationId);
+		UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocationId);
 		if(null != userRole){
+			OrgLocations orgLocations = userRole.getOrgLocations();
+			Org org = orgLocations.getOrg();
+			
+			List<Long> modulesId = modulesService.getOrgRegisteredModules(org);
+			List<SourceleadActions> actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+			
+			List<Tabs> tabsList = null;
+			if(org.getOrgType().equalsIgnoreCase("Company")){
+				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+			}
+			
+			String[] modules = org.getModulesId().split(",");
+			for(int i = 0 ; i< modules.length ; i++){
+				if(modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)){
+					SourceLeadSessionManager.setSessionAttribute(request, "ats", "Y");
+				}
+				
+				if(modules[i].equalsIgnoreCase(Constants.MODULE_VMS_STR)){
+					SourceLeadSessionManager.setSessionAttribute(request, "vms", "Y");
+				}
+				
+				if(modules[i].equalsIgnoreCase(Constants.MODULE_TIMESHEET_STR)){
+					SourceLeadSessionManager.setSessionAttribute(request, "timesheet", "Y");
+				}
+			}
+			
+			String userName = (String) authentication.getPrincipal();
+			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userName,null, buildUserAuthority(actionsList)));
+			System.out.println(authentication.getAuthorities());
+			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			setLoginSession(request, authentication,user,userRole);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("dashboard");
@@ -151,17 +225,21 @@ public class LoginSessionController {
 			}
 			
 			
-			List<Tabs> tabsList;
-			if("slead".equalsIgnoreCase(org.getOrgCode())){
+			
+			/*if("slead".equalsIgnoreCase(org.getOrgCode())){
 				tabsList = tabsService.getSourceLeadTabsListByOrgId(userRole.getRoles().getId(), org.getId());
 			}else{
 				 tabsList = tabsService.getTabsListByLoginUserRoleIdAndOrgLocationId(userRole.getRoles().getId(), orgLocations.getId());
 			}
+			*/
 			
-			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRoleId", userRole.getRoles().getId());
+
+			SourceLeadSessionManager.setSessionAttribute(request, "roleHierarchyId", userRole.getRoles().getRoleHierarchy().getId());
+
 			SourceLeadSessionManager.setSessionAttribute(request, "userType", userRole.getUserType());
+			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
 			
 			
 		} catch (Exception e) {
@@ -256,11 +334,21 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "orgCode", org.getOrgCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "orgName", org.getOrgName());
 		SourceLeadSessionManager.setSessionAttribute(request, "website", org.getWebSite());
-		SourceLeadSessionManager.setSessionAttribute(request, "vms", org.getVms());
-		SourceLeadSessionManager.setSessionAttribute(request, "ats", org.getAts());
-		SourceLeadSessionManager.setSessionAttribute(request, "timesheet", org.getTimeSheet());
-		
 	}
 	
+	
+  private List<GrantedAuthority> buildUserAuthority(List<SourceleadActions> actionsList) {
+
+    	Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
+       
+    	if(actionsList != null && !actionsList.isEmpty()){
+    		// Build user's authorities
+    		for (SourceleadActions sourceleadActions : actionsList) {
+    			setAuths.add(new SimpleGrantedAuthority(sourceleadActions.getActionRole()));
+    		}
+    	}
+    	List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);
+    	return Result;
+    }
 	
 }

@@ -7,7 +7,3 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','USER_ROLE','TERMINATE_REASON'
 
 
 
-
-
-
-

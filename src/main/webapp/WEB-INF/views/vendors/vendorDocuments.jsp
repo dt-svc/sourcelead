@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
 .edit-details {
@@ -53,7 +54,14 @@ function vendorDocuments(orgRelationId,vendorLocationId){
 	result = result  +'<div class="timesheet_head">';
 	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
 	    result = result + '<ul>';
-		result = result  +'    	<a href="javascript:void(0)" onClick="addDocument('+vendorLocationId+','+orgRelationId+'); getSpocsList('+orgRelationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Documents</a>                                                            ';
+	    
+	    '<sec:authorize access="hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
+	        	result = result  +'    	<a href="javascript:void(0)" onClick="addDocument('+vendorLocationId+','+orgRelationId+'); getSpocsList('+orgRelationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Documents</a>                                                            ';
+		 '</sec:authorize>';
+		 
+		 '<sec:authorize access="!hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
+		      result = result  +'    	<a href="javascript:void(0)" class="addUser-org" ><i class=""></i></a>                                                            ';
+		 '</sec:authorize>';
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result = result  +'  <div class="clearfix"></div> ';
@@ -151,8 +159,14 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                    	 }
 	                    	 result = result+'	 <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
-	                    		 result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+vendorLocationId+','+orgRelationId+'); getSpocsList('+orgRelationId+'); getClientDocument('+vendorLocationId+','+orgRelationId+', '+opt.id+');"></a>';
-					           	 result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteVendorDocument('+vendorLocationId+','+orgRelationId+','+opt.id+');"></i>';
+	                    		 
+	                    		 '<sec:authorize access="hasAnyRole(\"ROLE_EDIT_VENDOR_DOCUMENT\")">';
+	                    				 result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+vendorLocationId+','+orgRelationId+'); getSpocsList('+orgRelationId+'); getClientDocument('+vendorLocationId+','+orgRelationId+', '+opt.id+');"></a>';
+	                    		 '</sec:authorize>';
+	                    		 
+	                    		 '<sec:authorize access="hasAnyRole(\"ROLE_DELETE_VENDOR_DOCUMENT\")">';
+					           	 		result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteVendorDocument('+vendorLocationId+','+orgRelationId+','+opt.id+');"></i>';
+					           	 '</sec:authorize>';
 	                    	 }
 	                    	 result = result+'	            </div></td>';
 	                    	 result  = result + '</tr>';

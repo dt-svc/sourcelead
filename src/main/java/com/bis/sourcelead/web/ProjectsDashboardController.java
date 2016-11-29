@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -53,7 +54,9 @@ public class ProjectsDashboardController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/projectDashboard")
+	
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT', 'ROLE_EDIT_PROJECT')")
+	 @RequestMapping(value = "/projectDashboard")
 	public ModelAndView projectDashboard(HttpServletRequest request) throws Exception {
            logger.debug("projectDashboard");
 		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");

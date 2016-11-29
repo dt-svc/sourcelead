@@ -124,13 +124,13 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 			if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
 				clientOrgLocations.setState(jsonObj.getString("state"));
 			}else if(jsonObj.has("orgState") && !isNullOrEmpty(jsonObj.getString("orgState"))){
-				clientOrgLocations.setState(jsonObj.getString("orgState"));
+				clientOrgLocations.setCountry(jsonObj.getString("orgState"));
 			}
 			
 			if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
 				clientOrgLocations.setCity(jsonObj.getString("city"));
 			}else if(jsonObj.has("orgCity") && !isNullOrEmpty(jsonObj.getString("orgCity"))){
-				clientOrgLocations.setCity(jsonObj.getString("orgCity"));
+				clientOrgLocations.setCountry(jsonObj.getString("orgCity"));
 			}
 			String clientCountry = locationCode.substring(Math.max(locationCode.length() - 2, 0));
 			clientOrgLocations.setLocationCode(addOrg.getOrgCode() + clientCountry);
@@ -151,5 +151,10 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
+	}
+
+	@Override
+	public OrgLocations getOrgLocationByOrgId(Long orgId) throws Exception {
+		return orgLocationsDao.getOrgLocationByOrgId(orgId);
 	}
 }

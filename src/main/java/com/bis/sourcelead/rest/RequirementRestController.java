@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -295,6 +296,7 @@ public class RequirementRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasRole('ROLE_CREATE_CLIENT_CONTACT')")
 	@RequestMapping(value = "/saveClientContact", method = RequestMethod.POST)
 	@ResponseBody
 	public String saveClientContact(@RequestParam(value = "json", required = false) String json, @RequestParam(value="orgRelationId", required=false) String orgRelationId,
@@ -383,6 +385,7 @@ public class RequirementRestController {
 	 * @return
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasRole('ROLE_CREAE_OFFER')")
 	@RequestMapping(value = "/getRequirementWhichIsReleasedOrNot", method = RequestMethod.POST)
 	public @ResponseBody String getRequirementWhichIsReleasedOrNot(@RequestParam(value = "requirementId", required = false)  Long requirementId,
 		HttpServletRequest request) throws Exception {

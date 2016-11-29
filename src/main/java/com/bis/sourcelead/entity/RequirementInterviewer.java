@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -18,7 +19,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Entity
 	@Table(name = "REQUIREMENT_INTERVIEWER", catalog = "sourcelead")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementInterviewer")
-	public class RequirementInterviewer {
+	public class RequirementInterviewer implements Serializable{
+
+	
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

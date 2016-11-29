@@ -3,7 +3,6 @@ package com.bis.sourcelead.service.impl;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.ActionRoles;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -27,7 +25,10 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -47,7 +48,10 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RegistrationService;
+import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -119,6 +123,16 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	private SubmissionTemplateService  submissionTemplateService;
 	
+	@Autowired
+	private RoleHierarchyService roleHierarchyService;
+	
+	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	private SourceleadRolesService sourceleadRolesService;
+	
+	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 	}
@@ -171,6 +185,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		
+		saveOrgRoleHierarchy(orgLocations,user);
+		
+		saveOrgBasedRoles(org,orgLocations,user);
+		
 		//For saving the User Role (At registration user will have Admin Role)
 		UserRole userRole = getUserRoleDetails(user,orgLocations);
 		try {
@@ -180,7 +198,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		
 		//For saving Employee details (Every User is an Employee)
-		Employees employee = getEmployeeDetails(user);
+		Employees employee = getEmployeeDetails(user,orgLocations);
 		try {
 			employeesService.addEmployee(employee);
 		} catch (Exception e) {
@@ -188,20 +206,18 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		
 		
-		if(registredModules.length == 2){
-			if(registredModules[1].equalsIgnoreCase("TimeSheet")){
-				saveProject(registration, orgLocations, user, employee);
-			}
-		}else if(registredModules.length == 1){
-			if(registredModules[0].equalsIgnoreCase("TimeSheet")){
-				saveProject(registration, orgLocations, user, employee);
-			}
-		}
+		List<Integer> moduleIds = new ArrayList<Integer>();
+		 for (String s : org.getModulesId().split(",")){
+			 moduleIds.add(Integer.parseInt(s));
+		 }
+		 
+		  boolean flag = moduleIds.contains(Constants.MODULE_TIMESHEET);
+		  if(flag == true){
+			  saveProject(registration, orgLocations, user, employee);
+ 		}
 		
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
 		
-		saveActionRoles(org,orgLocations,user,modules);
-
 		userService.sendEmail(user, loginUser, password,orgLocationsId);
 	
 	}
@@ -214,36 +230,30 @@ public class RegistrationServiceImpl implements RegistrationService{
 		org.setOrgType("Company");
 		org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 		org.setStatus(Status.ACTIVE);
+		String orgModules = "";
+		
+		
+		if(!isNullOrEmpty(subModules)){
+			String[] registeredSubModules =  subModules.split(",");
+			for(int i=0; i<registeredSubModules.length; i++){
+					orgModules = orgModules+registeredSubModules[i]+",";
+			}
+		}
 		
 		if(!isNullOrEmpty(modules)){
 			String[] registeredModules =  modules.split(",");
-			if(registeredModules.length == 2){
-				org.setTimeSheet(Status.Y);
-			}
-			else if(registeredModules[0].equalsIgnoreCase("TimeSheet")){
-					org.setTimeSheet(Status.Y);
-					org.setAts(Status.N);
-					org.setVms(Status.N);
-			}else{
-				org.setTimeSheet(Status.N);
-			}
-		}
-		
-		if(!isNullOrEmpty(subModules)){
-			String[] recruitingModules =  subModules.split(",");
-			if(recruitingModules.length == 2){
-				org.setAts(Status.Y);
-				org.setVms(Status.Y);
-			}else{
-				if(recruitingModules[0].equalsIgnoreCase("ATS")){
-					org.setAts(Status.Y);
-					org.setVms(Status.N);
-				}else{
-					org.setVms(Status.Y);
-					org.setAts(Status.N);
+			for(int i=0; i<registeredModules.length; i++){
+				if(Long.parseLong(registeredModules[i]) != 1L){
+					orgModules = orgModules+registeredModules[i]+",";
 				}
 			}
 		}
+		
+		
+		orgModules = orgModules.substring(0, orgModules.length()-1);
+		org.setModulesId(orgModules);
+		
+		
 		org.setCreatedDate(new Date());
 		return org;
 	}
@@ -329,7 +339,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		userRole.setUserType("Admin");
 		Roles roles = null;
 		try {
-			roles = rolesService.getRolesByRoleName("ROLE_ADMIN");
+			roles = rolesService.getRolesByRoleNameAndOrgLocationId("ROLE_ADMIN",orgLocations.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -352,38 +362,80 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 	}
 	
-	private Employees getEmployeeDetails(User user){
+	private Employees getEmployeeDetails(User user,OrgLocations orgLocations){
 		
 		Employees employees = new Employees();
 		employees.setUser(user);
+		employees.setOrgLocations(orgLocations);
 		employees.setCreatedBy(user.getUserCode());
 		employees.setCreatedDate(new Date());
 		return employees;
 	}
 	
 	
-	 public void  saveActionRoles(Org org,OrgLocations orgLocations,User user,String modules) throws Exception {
-		 
-		 List<Long> modulesId = modulesService.getModulesIdByModuleName(modules);
-		 Collection<ActionRoles> actionRolesList = actionRolesService.getSourceLeadActionRolesListByOrgId(1L,modulesId,org);
-		 if(actionRolesList != null){
-			 for(ActionRoles actionRoles : actionRolesList){
-				 ActionRoles userActionroles = new ActionRoles();
-				 userActionroles.setTabActions(actionRoles.getTabActions());
-				 userActionroles.setRoles(actionRoles.getRoles());
-				 userActionroles.setIsNotify(actionRoles.getIsNotify());
-				 userActionroles.setOrg(org);
-				 userActionroles.setOrgLocations(orgLocations);
-				 userActionroles.setCreatedDate(new Date());
-				 userActionroles.setCreatedBy(user.getUserCode());
-				 actionRolesService.addActionRoles(userActionroles);
-			 }
-		 }
-		 
-		 
-		 
-	 }
-	 
+	public void saveOrgRoleHierarchy(OrgLocations orgLocations,User user) throws Exception{
+		List<RoleHierarchy> hierarchyList = roleHierarchyService.getRoleHierarchyByOrgLocationId(1L);
+		if(null != hierarchyList){
+			for(RoleHierarchy roleHierarchy : hierarchyList){
+				RoleHierarchy orgRoleHierarchy = new RoleHierarchy();
+				orgRoleHierarchy.setHierarchyName(roleHierarchy.getHierarchyName());
+				orgRoleHierarchy.setHierarchyLevel(roleHierarchy.getHierarchyLevel());
+				orgRoleHierarchy.setOrgLocations(orgLocations);
+				orgRoleHierarchy.setStatus(roleHierarchy.getStatus());
+				orgRoleHierarchy.setCreatedBy(user.getUserCode());
+				orgRoleHierarchy.setCreatedDate(new Date());
+				roleHierarchyService.saveRoleHierarchy(orgRoleHierarchy);
+			}
+		}
+		
+	}
+	
+	public void saveOrgBasedRoles(Org org,OrgLocations orgLocations,User user) throws Exception{
+		List<SourceleadRoles> rolesList = sourceleadRolesService.getSourceleadRoles();
+		if(null != rolesList){
+			for(SourceleadRoles roles : rolesList){
+				Roles orgRoles = new Roles();
+				orgRoles.setRoleName(roles.getRoleName());
+				orgRoles.setDisplayName(roles.getDisplayName());
+				orgRoles.setOrgLocations(orgLocations);
+				RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyByHierarchyLevelAndOrgLocationId(roles.getRoleHierarchy().getHierarchyLevel(), orgLocations.getId());
+				orgRoles.setRoleHierarchy(roleHierarchy);
+				orgRoles.setOrg(orgLocations.getOrg());
+				orgRoles.setDefaultRole(1);
+				StringBuilder strbul  = new StringBuilder();
+				
+				List<Long> roleActonsList = new ArrayList<Long>();
+				if(null != roles.getActionId()){
+					for (String s : roles.getActionId().split(",")){
+						 roleActonsList.add(Long.parseLong(s));
+					 }
+				}
+				
+				List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActions(org);
+				for(SourceleadActions actions : sourceLeadActionsList){
+					if(roleActonsList.contains(actions.getId())){
+						 strbul.append(actions.getId()).append(",");
+					}
+				}
+				
+				String actionId = strbul.toString();
+				
+				if(!isNullOrEmpty(actionId)){
+					actionId = actionId.substring(0, actionId.length()-1);
+					orgRoles.setActionId(actionId);
+				}else{
+					orgRoles.setActionId(null);
+				}
+				
+				orgRoles.setStatus(roles.getStatus().toString());
+				orgRoles.setCreatedBy(user.getUserCode());
+				orgRoles.setCreatedDate(new Date());
+				rolesService.storeRoles(orgRoles);
+			}
+		}
+		
+	}
+	
 	 
 	 public void  saveDefaultSubmissionTemplate(Org org,OrgLocations orgLocations,User user) throws Exception {
 		 SubmissionTemplate sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateById(1L);

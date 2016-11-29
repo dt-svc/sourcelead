@@ -5,6 +5,9 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
  
@@ -44,7 +47,7 @@
 					</div>
 					
                  <div class=" col-md-6 modal-footer">
-                   <button data-dismiss="modal" class="btn btn-primary" type="button" id="assignId" onclick="assignEmployee();">Assign</button>
+                   <button  class="btn btn-primary" type="button" id="assignId" onclick="assignEmployee();">Assign</button>
                    <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
                  </div>					
 					
@@ -124,7 +127,8 @@
  
  <!-- this script is for Emplyee Listfunctionality at Projects screen -->
 <script>
-function projectEmployee(projectId,startDateStr,endDateStr,status){
+function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
+
 	$("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -139,15 +143,36 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
         	var result = "";
         	result = result + '<input type="hidden" name="projectId" id="projectId" value="'+projectId+'" >';
         	result = result + '<input type="hidden" name="startDateStr" id="startDateStr" value="'+startDateStr+'" >';
-        	result = result + '<input type="hidden" name="assignEndDateStr" id="assignEndDateStr" value="'+endDateStr+'" >';
+			result = result + '<input type="hidden" name="assignEndDateStr" id="assignEndDateStr" value="'+endDateStr+'" >';
         	result = result + '<input type="hidden" name="assignStatus" id="assignStatus" value="'+status+'" >';
-        	
-        	result = result + '    	<div class="project_tabs_inn_head" style="min-height:35px">';
-        	result = result    + '<span class="pad-sea">';
+
+        	result = result + '    	<div class="project_tabs_inn_head timesheet_head" style="min-height:35px">';
     		if(projectStatus != 'Completed' &&  projectStatus != '' &&  projectStatus != 'undefined' ){
-    		result = result + '		<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
-    		result = result + '		<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
-        	}
+    		result = result	+ '<ul>';
+
+    		result = result +'<li>';
+    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_PROJECT_EMPLOYEES\')">';
+    		result = result + '<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
+    		result = result +'</sec:authorize>';
+    		result = result +'</li>';
+
+    		/* result = result +'<li>';
+    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_PROJECT_EMPLOYEES\')">';
+    		result = result + '<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
+    		result = result +'</sec:authorize>';
+    		result = result +'</li>'; */
+
+    		result = result +'<li>';
+    		result = result +' <a id="export-pop" onClick="exportFun()"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+    		result = result +'<div class="export_pop">';
+    		result = result +'<ul>';
+    		result = result +'<li onclick="exportToPdf(\''+projectId+'\',\''+projectName+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+    		result = result +'<li onclick="exportToExcel(\''+projectId+'\',\''+projectName+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+    		result = result +'</ul>';
+    		result = result +'</div>';
+    		result = result +'</li> ';
+    		result = result +'</ul>';
+           	}
     		result = result	+ '</span>';
     		result = result + '		</div>';
     		result = result + '        <div class="project_tabs_inn_table">';
@@ -178,7 +203,15 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
 	        		}
 	        		
 	        		result = result + '	 <tr>';
+	        		/* ROLE_VIEW_USER */
+	        		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\')">';
 	                result = result + '	 	<td><div><a href="<c:url value="/userSummary/'+opt.userId+'"/>""> '+opt.empName+' </a></div></td>';
+	                result = result +'</sec:authorize>';
+	                
+	                result = result +'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\')">';
+	                result = result + '	 	<td><div><a> '+opt.empName+'</a></div></td>';
+	                result = result +'</sec:authorize>';
+	                
 	                result = result + '	     <td><div>'+opt.projectAssignedDateStr+'</div></td>';
 	                if(status == 'COMPLETED'){
 	                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
@@ -197,16 +230,27 @@ function projectEmployee(projectId,startDateStr,endDateStr,status){
 	                if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
 	                	result = result + '	<td><div>';
 	                	if(status != 'COMPLETED'){
+	                		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PROJECT_EMPLOYEES\')">'; 
 	                		result = result + '<i class="glyphicon glyphicon-trash" onClick="deleteProject('+opt.id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i>';
+	                		result = result +'</sec:authorize>';
+	                		
+	                		result = result +'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_PROJECT_EMPLOYEES\')">'; 
+	                		result = result + '<i class="glyphicon glyphicon-trash" ></i>';
+	                		result = result +'</sec:authorize>';
 	                	}
 	                	result = result +'</div></td>';
                      }
                      else{
-                    	 result = result + '<td><div>';
+                    	 result = result + '<td><div class="tblminwidth-50">';
                     	 if(status != 'COMPLETED'){
-                    	 result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">Re-Assign &nbsp;<span class="show-reason"><b class="glyphicon glyphicon-comment"></b>';
-                    	 result = result + '<b class="reason">'+opt.terminateReason+'</b>';
-                    	 result = result + '</span></a>';
+                    	 result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">Re-Assign &nbsp;</a><span class="show-reason">';
+                    	if(opt.terminateReason != null && opt.terminateReason != '' && opt.terminateReason != 'undefined'){
+                    		result = result + '<b class="glyphicon glyphicon-comment text-success"></b><b class="reason">'+opt.terminateReason+'</b>';
+                    	}else{
+                    		result = result + '';	
+                    	}
+                    	 
+                    	 result = result + '</span>';
                     	 }else{
                     		 result = result + '<font color="red">&nbsp;Terminated</font>';	 
                     	 }
@@ -533,8 +577,8 @@ function assignEmployee(){
 	    if(document.getElementById('membermailCheckbox').checked) {
 	    	mailtoMembers = "YES";
 	    }
-	    var sourceleadUrl ='${sourceleadUrl}';
-	    
+	    var sourceleadUrl ='${sourceleadUrl}'; 
+	    $('#assignTeam').modal('hide');
 	    $(".myCheckbox").each(function(){
 	        var employeeId =this.id;
 	        if($(this).is(':checked')){
@@ -548,7 +592,7 @@ function assignEmployee(){
 		            }
 				})
 	        }
-    	});
+    	}); 
 }
 </script>
 
@@ -595,6 +639,28 @@ function flushEmployee(){
 </script>
 
 
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+  function exportFun(){
+	  $("#export-pop").next("div.export_pop").toggle();
+  }
+</script> 
+
+<!--  -->
+
+<script>
+function exportToPdf(projectId,projectName){
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&projectName="+projectName+"&exportType=pdf";
+}
+</script>
+
+<script>
+function exportToExcel(projectId,projectName){
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&projectName="+projectName+"&exportType=xls";
+}
+</script>
 
 
 
@@ -619,7 +685,6 @@ function flushEmployee(){
 	</div>
 </div>
 <!-- Add Team modal popup ends -->
-<!-- Add Team modal popup ends -->
 <script>
 function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDateStr){  
    var result = "";
@@ -629,27 +694,27 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
    result = result +'<div class="col-xs-12 col-md-12 col-lg-12" >';
     result = result +'<div class="form-group">';
    result = result +'	<label class="col-lg-3">Employee Name </label>';
-   result = result +'	<div class="col-lg-9">';
+   result = result +'	<div class="col-lg-9 ">';
    result = result +'		<input id="reAssignProjectName" type="text" class="form-control" value="'+empName+'"  name="reAssignProjectName" readonly="readonly" class="form-control"></span>';
    result = result +'	</div>';
    result = result +'	</div>';
    
    
    result = result +'<div class="form-group">';
-   result = result +'<label class="col-lg-3">Start date</label>';
-   result = result +'<div class="col-lg-9">';
-   result = result +'<div class="input-group">';
-   result = result +'	<span class="input-group-addon"><i class="fa fa-calendar"></i></span> <input type="text" class="form-control" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-StartDate" name="Re-StartDate" field-name="Start Date">';
-   result = result +'</div>';
+   result = result +'<label class="col-lg-3">Start date<span <span class="text-danger">*</span></label>';
+   result = result +'<div class="col-lg-9 positionRelative">';
+   
+   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-StartDate" name="Re-StartDate" field-name="Start Date" data-validation="required">';
+
    result = result +'</div>';
    result = result +'</div>';
    
    result = result +'<div class="form-group">';
-   result = result +'<label class="col-lg-3">End date</label>';
-   result = result +'<div class="col-lg-9">';
-   result = result +'<div class="input-group">';
-   result = result +'<span class="input-group-addon"><i class="fa fa-calendar"></i></span> <input type="text" class="form-control" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-EndDate" name="Re-EndDate" />';
-   result = result +'</div>';
+   result = result +'<label class="col-lg-3">End date <span class="text-danger">*</span></label>';
+   result = result +'<div class="col-lg-9 positionRelative">';
+
+   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-EndDate" name="Re-EndDate"  field-name="End Date" data-validation="required"/>';
+
    result = result +'</div>';
    result = result +'</div>';
 
@@ -725,7 +790,6 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	 var startDateStr =  $("#startDateStr").val();
 	 var endDateStr =  $("#assignEndDateStr").val();
 	 var status =  $("#assignStatus").val();
-	 alert("status"+status);
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',

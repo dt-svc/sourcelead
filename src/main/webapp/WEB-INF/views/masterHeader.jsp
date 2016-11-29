@@ -96,7 +96,7 @@
               <img class="img-circle" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>"> </div>
               <div class="user-media-body">
                 <p><span>${SourceLeadWeb_userName}</span></p>
-                <p>${SourceLeadWeb_userType}</p>
+                <p>${SourceLeadWeb_displayName}</p>
               </div>
             </div>
             <ul class="list-unstyled">
@@ -233,25 +233,34 @@
             </div>
           </li>
           
-          
-	          <li> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
+          <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_ORG_SETTINGS','ROLE_EDIT_ORG_SETTINGS','ROLE_ORG_SUBMISSION_TEMPLATE')"> 
+	            <li> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
 	            <div class="setting-area">
 	              <ul class="list-unstyled">
-	              <c:if test="${SourceLeadWeb_orgSettingsVisible == 'Y' && SourceLeadWeb_enrollOrgVisible == 'Y'}">
+	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value="/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>Enroll Org</a></li>
-	               </c:if>
-	               		 <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
-	                     <li><a href="<c:url value="/orgSubmissionTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
+	                     </sec:authorize>
+	                     
+	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
+	                        <li><a href="<c:url value="/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Enroll Roles</a></li>
+	                     </sec:authorize>
+	                     <sec:authorize access="hasAnyRole('ROLE_VIEW_ORG_SETTINGS','ROLE_EDIT_ORG_SETTINGS')"> 
+	               		      <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
+	               		 </sec:authorize>
+	               		 <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE')"> 
+	                    	   <li><a href="<c:url value="/orgSubmissionTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
+	                     </sec:authorize>
 	                     
 	              </ul>
 	            </div>
 	          </li>
-         
+         </sec:authorize>
           <%-- <c:if test="${SourceLeadWeb_orgSettingsVisible == 'Y' && SourceLeadWeb_enrollOrgVisible != 'Y'}">
 	          <li> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
 	            <div class="setting-area">
 	              <ul class="list-unstyled">
                      <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
+                     <li><a href="<c:url value="/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Enroll Roles</a></li>
                      <li><a href="<c:url value="/orgSubmissionTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
 	                     
 	              </ul>

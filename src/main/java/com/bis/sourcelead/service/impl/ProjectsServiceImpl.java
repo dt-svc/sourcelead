@@ -350,7 +350,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(updatedProjects.getId());
 		if (projectMembersList != null && !projectMembersList.isEmpty()){
 			for (ProjectMembers pm : projectMembersList) {
-		  	  commonUtil.storeTimesheetSubmissionRecords(pm.getEmployee().getUser());
+				if(pm.getEmployee() != null){
+					commonUtil.storeTimesheetSubmissionRecords(pm.getEmployee().getUser());
+				}
+		  	  
 			}
 		}
 		
@@ -988,7 +991,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
 		 for(ProjectMembers pm : projectMembersList){
-			 pm.setEmpName(pm.getEmployee().getUser().getFirstName()+" "+pm.getEmployee().getUser().getLastName());
+			 if(pm.getEmployee() != null){
+				 pm.setEmpName(pm.getEmployee().getUser().getFirstName()+" "+pm.getEmployee().getUser().getLastName());	 
+			 }
 			 pm.setProjectStatus(pr.getStatus());
 			 
 			 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());

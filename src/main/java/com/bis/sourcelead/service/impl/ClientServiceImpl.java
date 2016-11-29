@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,6 +31,10 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RoleHierarchy;
+import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
@@ -43,6 +48,10 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RoleHierarchyService;
+import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -95,6 +104,19 @@ public class ClientServiceImpl implements ClientService{
 	@Autowired
 	SubmissionTemplateService  submissionTemplateService;
 	
+	@Autowired
+	RolesService rolesService;
+	
+	@Autowired
+	RoleHierarchyService roleHierarchyService;
+	
+	@Autowired
+	SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	private SourceleadRolesService sourceleadRolesService;
+	
+	
 	@Value("${SourceLead.100}")
 	private String notFound;
 	@Value("${SourceLead.101}")
@@ -107,71 +129,7 @@ public class ClientServiceImpl implements ClientService{
 	private String duplicateValue;
 	
 
-	@Override
-	public void saveClient(JSONObject jsonObj,User user,OrgLocations orgLocations) throws Exception {
-		
-		Org org = populateOrg(jsonObj, user.getUserCode());
-		orgService.addOrganization(org);
-		OrgLocations clientOrgLocation = populateOrgLocations(jsonObj, org, orgLocations.getLocationCode(), user.getUserCode());
-		orgLocationService.addOrgLocations(clientOrgLocation);
-
-		OrgRelations orgRelations = populateOrgRelations(clientOrgLocation, orgLocations, user.getUserCode());
-		if(jsonObj.getString("level") != null && !jsonObj.getString("level").isEmpty()){
-			orgRelations.setInitiatorLevel(jsonObj.getString("level"));
-	     }
-		orgRelationsService.addOrgRelations(orgRelations);
-		
-		if(jsonObj.has("maxTsRowNum")){
-			String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
-			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
-		
-		for (int c = 1; c < maxCount; c++) {
-			Projects project = new Projects();
-			ProjectApproverHierarchy projectApproverHierarchy = new ProjectApproverHierarchy();
-			Set<ProjectApproverHierarchy> projectApproverSet = new HashSet<ProjectApproverHierarchy>();
-			project.setProjectSequeneNumber(jsonObj.getString(c + "projectId"));
-			project.setProjectName(jsonObj.getString(c + "projectName"));
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-			project.setOrgLocationsId(orgLocations);
-			project.setOrgRelationId(orgRelations); // newly Added
-
-			String startDateString = jsonObj.getString(c + "projectStartDate");
-			String endDateString = jsonObj.getString(c + "projectEndDate");// projectEndDate
-			Date startDate = getDateFormat(startDateString);
-			if(!isNullOrEmpty(endDateString)){
-				Date endDate = getDateFormat(endDateString);
-				project.setEndDate(endDate);
-			}
-			
-			project.setStartDate(startDate);
-			project.setProjectStatus(Project_Status.STARTED);
-			project.setCreatedDate(new Date());
-			projectApproverHierarchy.setProjectId(project);
-			User approverUserId1 = new User();
-			approverUserId1.setId(Long.parseLong(jsonObj.getString(c + "projectManager")));
-			projectApproverHierarchy.setApproverUserId(approverUserId1);
-			projectApproverHierarchy.setLevel(1);
-			ProjectApproverHierarchy projectApproverHierarchy1 = new ProjectApproverHierarchy();
-			if (!isNullOrEmpty(jsonObj.getString("level2Manager"))) {
-				projectApproverHierarchy1.setProjectId(project);
-				User approverUserId2 = new User();
-				approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
-				projectApproverHierarchy1.setApproverUserId(approverUserId2);
-				projectApproverHierarchy1.setLevel(2);
-				projectApproverSet.add(projectApproverHierarchy1);
-			}
-			projectApproverSet.add(projectApproverHierarchy);
-
-			project.setProjectApprovers(projectApproverSet);
-			project.setCreatedBy(user.getUserCode());
-			/* Saving for Projects */
-			projectsService.saveProject(project);
-			commonUtil.storeSourceleadTasks(user, project);
-		}
-
-	}
-		
-	}
+	
 	
 	/**
 	 * @author VenkatKesav
@@ -206,19 +164,19 @@ public class ClientServiceImpl implements ClientService{
 				if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
 					clientOrgLocations.setState(jsonObj.getString("state"));
 				}else if(jsonObj.has("orgState") && !isNullOrEmpty(jsonObj.getString("orgState"))){
-					clientOrgLocations.setState(jsonObj.getString("orgState"));
+					clientOrgLocations.setCountry(jsonObj.getString("orgState"));
 				}
 				
 				if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
 					clientOrgLocations.setCity(jsonObj.getString("city"));
 				}else if(jsonObj.has("orgCity") && !isNullOrEmpty(jsonObj.getString("orgCity"))){
-					clientOrgLocations.setCity(jsonObj.getString("orgCity"));
+					clientOrgLocations.setCountry(jsonObj.getString("orgCity"));
 				}
 				
 			}
 			
 			if(clientOrgLocations == null){
-				org = populateOrg(jsonObj, user.getUserCode());
+				org = populateOrg(jsonObj, user.getUserCode(),responderType);
 				clientOrgLocations =   orgLocationService.orgLocationsListByJson(jsonObj, org, orgLocations, user.getUserCode(),responderType);
 				
 				orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
@@ -226,6 +184,8 @@ public class ClientServiceImpl implements ClientService{
 				orgLocationsList.add(clientOrgLocations);
 				org.setOrgLocationsList(orgLocationsList);
 				orgService.addOrganization(org);
+				saveOrgRoleHierarchy(clientOrgLocations,user);
+				saveOrgBasedRoles(org,clientOrgLocations,user);
 			}else{
 				orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
 				clientOrgLocations.setOrgRelationsList(orgRelationsList);
@@ -243,13 +203,8 @@ public class ClientServiceImpl implements ClientService{
 			
 			if(jsonObj.has("email")){
 				spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
-				if(!isNullOrEmpty(jsonObj.getString("roleType")) && null == clientOrgLocations.getUser() && null == org.getUser()){
-					clientOrgLocations.setUser(spocUser);
-					org.setUser(spocUser);
-					orgLocationService.updateOrgLocations(clientOrgLocations);
-					orgService.addOrganization(org);
-				}
 			}
+			
 			if(jsonObj.has("owner")){
 				String ownersId =null;
 				try{
@@ -337,7 +292,7 @@ public class ClientServiceImpl implements ClientService{
 	 * @return Org
 	 * @throws JSONException
 	 */
-		private Org populateOrg(JSONObject jsonObj, String loginUserCode) throws JSONException {
+		private Org populateOrg(JSONObject jsonObj, String loginUserCode,String responderType) throws JSONException {
 			Org org = new Org();
 		
 			if(jsonObj.has("orgName")){
@@ -351,6 +306,14 @@ public class ClientServiceImpl implements ClientService{
 				org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
 			}
 			org.setOrgType("Guest");
+			
+			if(responderType.equalsIgnoreCase("Client")){
+				org.setModulesId(Integer.toString(Constants.MODULE_VMS));
+			}
+			else if(responderType.equalsIgnoreCase("Vendor")){
+				org.setModulesId(Integer.toString(Constants.MODULE_ATS));
+			}
+			
 			org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 			org.setCreatedDate(commonUtil.currentDate());
 			org.setUpdatedBy(loginUserCode);
@@ -358,6 +321,71 @@ public class ClientServiceImpl implements ClientService{
 			org.setUpdatedDate(commonUtil.currentDate());
 			return org;
 
+		}
+		
+		
+		
+		public void saveOrgRoleHierarchy(OrgLocations orgLocations,User user) throws Exception{
+			List<RoleHierarchy> hierarchyList = roleHierarchyService.getRoleHierarchyByOrgLocationId(1L);
+			if(null != hierarchyList){
+				for(RoleHierarchy roleHierarchy : hierarchyList){
+					RoleHierarchy orgRoleHierarchy = new RoleHierarchy();
+					orgRoleHierarchy.setHierarchyName(roleHierarchy.getHierarchyName());
+					orgRoleHierarchy.setHierarchyLevel(roleHierarchy.getHierarchyLevel());
+					orgRoleHierarchy.setOrgLocations(orgLocations);
+					orgRoleHierarchy.setStatus(roleHierarchy.getStatus());
+					orgRoleHierarchy.setCreatedBy(user.getUserCode());
+					orgRoleHierarchy.setCreatedDate(new Date());
+					roleHierarchyService.saveRoleHierarchy(orgRoleHierarchy);
+				}
+			}
+			
+		}
+		
+		public void saveOrgBasedRoles(Org org,OrgLocations orgLocations,User user) throws Exception{
+			List<SourceleadRoles> rolesList = sourceleadRolesService.getSourceleadRoles();
+			if(null != rolesList){
+				for(SourceleadRoles roles : rolesList){
+					Roles orgRoles = new Roles();
+					orgRoles.setRoleName(roles.getRoleName());
+					orgRoles.setDisplayName(roles.getDisplayName());
+					orgRoles.setOrgLocations(orgLocations);
+					orgRoles.setOrg(orgLocations.getOrg());
+					RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyByHierarchyLevelAndOrgLocationId(roles.getRoleHierarchy().getHierarchyLevel(), orgLocations.getId());
+					orgRoles.setRoleHierarchy(roleHierarchy);
+					orgRoles.setStatus(roles.getStatus().toString());
+					orgRoles.setDefaultRole(1);
+					StringBuilder strbul  = new StringBuilder();
+					
+					List<Long> roleActonsList = new ArrayList<Long>();
+					if(null != roles.getActionId()){
+						for (String s : roles.getActionId().split(",")){
+							 roleActonsList.add(Long.parseLong(s));
+						 }
+					}
+					
+					List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActions(org);
+					for(SourceleadActions actions : sourceLeadActionsList){
+						if(roleActonsList.contains(actions.getId())){
+							 strbul.append(actions.getId()).append(",");
+						}
+					}
+					
+					String actionId = strbul.toString();
+					
+					if(!isNullOrEmpty(actionId)){
+						actionId = actionId.substring(0, actionId.length()-1);
+						orgRoles.setActionId(actionId);
+					}else{
+						orgRoles.setActionId(null);
+					}
+					
+					orgRoles.setCreatedBy(user.getUserCode());
+					orgRoles.setCreatedDate(new Date());
+					rolesService.storeRoles(orgRoles);
+				}
+			}
+			
 		}
 		
 		

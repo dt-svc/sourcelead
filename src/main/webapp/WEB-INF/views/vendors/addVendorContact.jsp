@@ -110,7 +110,8 @@
                    </c:if>  
                  </c:forEach> 
                 </select>
-                <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new"></i> </div>
+                <!-- Temporarily Commented.. because contact user doesnt exists, so issue occurs in enrolled org list -->
+                <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" style="display: none"></i> </div>
             </div>
           </div>
           </div>
@@ -164,19 +165,14 @@
 	              </div>
 	            </div>
 	            
-	            <div class="form-group" id="roleDiv" style="display: block;">
+	            <!-- <div class="form-group" id="roleDiv" style="display: block;">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
 	                            <option value="">-Select Role-</option>
-								<option value="1">Admin</option>
-								<option value="6">Account Manager</option>
-								<option value="7">Sales Manager</option>
-								<option value="5">HR Manager</option>
-								<option value="8">Recruiter</option>
 			             </select>
                   </div>
-                </div>
+                </div> -->
                 
                 <div class="form-group" id="userRoleDiv" style="display: none;">
 					<label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
@@ -252,9 +248,9 @@ function getOrgName(){
 	$("#webSite").attr("disabled", false);
 	$("#webSite" ).val('');
 	
-	$("#role" ).val('');
+	/* $("#role" ).val('');
 	$("#role").attr("data-validation", "required");
-	document.getElementById("roleDiv").style.display="";
+	document.getElementById("roleDiv").style.display=""; */
 	document.getElementById("userRoleDiv").style.display="none";
 	
 	$.ajax({                           
@@ -662,16 +658,16 @@ function getSpocUserDetails(){
 	        		 
 	        		 
 	        		 if(json[3] != null && json[3] != ''){
-	        			$("#role").removeAttr("data-validation");
-	        			$("#role" ).val('');
-        			    document.getElementById("roleDiv").style.display="none";
+	        			 /*$("#role").removeAttr("data-validation");
+	        			 $("#role" ).val('');
+        			    document.getElementById("roleDiv").style.display="none"; */
    	        			document.getElementById("userRoleDiv").style.display="";
    	        			$("#userRole").val(json[3]);
    	        			$("#userRoleText").val(json[4]);
 	        		 }else{
-	        			 $("#role").attr("data-validation", "required");
+	        			/*  $("#role").attr("data-validation", "required"); */
 	        			 $("#userRole" ).val('');
-	        			 document.getElementById("roleDiv").style.display="";
+	        			/*  document.getElementById("roleDiv").style.display=""; */
 	        			 document.getElementById("userRoleDiv").style.display="none";
 	        		 }
 			      	 
@@ -690,9 +686,9 @@ function getSpocUserDetails(){
 	    $("#phoneNumber").attr("disabled", false);
 	    $("#phoneNumber").val('');
 	    
-	    $("#role").attr("data-validation", "required");
+	    /* $("#role").attr("data-validation", "required"); */
 	    $("#userRole" ).val('');
-	    document.getElementById("roleDiv").style.display="";
+	  /*   document.getElementById("roleDiv").style.display=""; */
 		document.getElementById("userRoleDiv").style.display="none";
 	   
 	}
@@ -702,7 +698,43 @@ function getSpocUserDetails(){
 
 
 
-
+<script type="text/javascript">
+function getRolesList(){
+	var vendorName = document.getElementById("vendorName").value;
+	var array = vendorName.split(',');
+	var orgLocationId = array[1];
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	if(vendorName){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getRolesList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&moduleType=ATS", 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	output = output + "<option value=''>-- Select Role --</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.displayName+"</option>";
+				}
+	        	$("#role").empty();
+		        $("#role").append(output);
+		        $('#role').trigger("chosen:updated");
+		        $("#loading").removeAttr("style"); 
+	        },
+	    });
+	}else{
+		var output = "";
+    	 output = output + "<option value=''>-- Select Role --</option>"; 
+    	 $("#role").empty();
+	     $("#role").append(output);
+	     $('#role').trigger("chosen:updated");
+	}  
+	 
+}
+</script>
 
 <script type="text/javascript">
 	(function($) {

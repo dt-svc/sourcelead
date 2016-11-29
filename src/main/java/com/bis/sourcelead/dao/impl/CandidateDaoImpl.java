@@ -152,7 +152,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	         java.sql.Date endDate = new java.sql.Date(parsed.getTime());
 	         
 			
-   	    	 String query = "from Candidate cnadidate left join fetch cnadidate.orgLocationId orglocation where  cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" and ( cnadidate.updatedDate >= :endDate)  ";  
+   	    	 String query = "from Candidate cnadidate left join fetch cnadidate.orgLocationId orglocation where  cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" and ( cnadidate.updatedDate >= :endDate) ORDER BY cnadidate.id DESC ";  
 		     candidateList = session.createQuery(query)
 				                    .setDate("endDate", endDate)
 				                    .setLong("orgLocationId", orgLocationId)
@@ -161,7 +161,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				                    .list();
 		}else{
 			
-			String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+"";  
+			String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" ORDER BY cnadidate.id DESC";  
 		    candidateList = session.createQuery(query)
 					               .setLong("orgLocationId", orgLocationId)
 					               .setLong("orgId", orgId).setCacheable(true).list();
@@ -239,7 +239,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		List<Candidate> candidate = new ArrayList<Candidate>();
 		logger.debug("findByEmail start");
 		try{
-			candidate = session.createQuery("from Candidate can where can.email=:email and can.orgLocationId.id = :orgLocationId" )
+			candidate = session.createQuery("from Candidate can where can.email=:email and can.orgLocationId.id = :orgLocationId ORDER BY candidate.id DESC" )
 					.setString( "email", email ).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
 			
 			logger.debug("findByEmail end");
@@ -262,7 +262,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		List<Candidate> candidatesList = null;
 		Query candidateListQuery= session.createQuery("from Candidate candidate where candidate.orgLocationId.id = :orgLocationId "
 				+ "and candidate.status = '1' and candidate.id NOT IN (select submission.candidate.id from RequirementSubmission submission "
-				+ "where submission.requirement.id = :requirementId) ");
+				+ "where submission.requirement.id = :requirementId) ORDER BY candidate.id DESC ");
 		candidatesList = candidateListQuery.setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setCacheable(true).list();
 		return candidatesList;
 	}
@@ -271,7 +271,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId";  
+		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId ORDER BY candidate.id DESC";  
         return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
 	

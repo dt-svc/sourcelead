@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -70,6 +72,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	 * @param request
 	 * @return
 	 */
+	/* This method is used for landing page of user tab. So, who has user tab access they can see users list. No preAuthorize for this method */
 	@RequestMapping(value = "/usersList")
 	public ModelAndView usersList(HttpServletRequest request) {
 		
@@ -81,6 +84,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		model.setViewName("users/usersList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		
+		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -91,7 +96,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		request.getSession().setAttribute("sessionData",sessionData);
 		
 		try {
-			rolesList = rolesService.getMoudleRoles(org.getId(), loginUserRoleId);
+			rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 		} catch (Exception e) {
 			logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 		}
@@ -124,6 +129,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	 * @return
 	 * @throws Exception 
 	 */
+	@PreAuthorize("hasRole('ROLE_EXPORT_USERS')")
 	@RequestMapping(value = "/getExportUsers")
 	public void getExportUsersData(HttpServletRequest request,
 			@RequestParam(value="userRole", required=false) String userRole,

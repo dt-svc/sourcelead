@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -22,8 +23,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION_TEMPLATE_FIELDS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementSubmissionTemplateFields")
-public class RequirementSubmissionTemplateFields {
+public class RequirementSubmissionTemplateFields implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)

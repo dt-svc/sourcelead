@@ -11,6 +11,7 @@
 <script src="resources/js/chosen.jquery.min.js"></script>
 <script src="resources/js/bootstrap-select.min.js"></script>
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -97,10 +98,40 @@ overflow-x: auto;
 		                        </ul>
 		                    </div>                	
 		                </li>
-                
+                		<sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
                         <li><a href="<c:url value='/addClientContact'/>"><i class="fa fa-plus"></i>Contact</a></li>
-						<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Client</a></li>
+                        </sec:authorize>
+                        <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
+							<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Client</a></li>
+						</sec:authorize>
+						 <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
 						 <li><a href="<c:url value='/uploadClientForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
+						 </sec:authorize>
+						
+						 <sec:authorize access="hasRole('ROLE_EXPORT_CLIENTS')"> 
+						   <li id="clientImports" style="display:none">
+		                      <a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportClient</a>
+			                    <div class="export_pop">
+				                   <ul>
+				                     <li onclick="exportClientToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>
+				                     <li onclick="exportClientToExcel();">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>
+				                   </ul>
+				              </div>
+		                  </li> 
+		            </sec:authorize>
+		            
+		             <sec:authorize access="hasRole('ROLE_EXPORT_CLIENT_CONTACTS')"> 
+		            <li id="ContactImports">
+		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportContact</a>
+			                    <div class="export_pop">
+				                <ul>
+				                <li onclick="exportContactToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>
+				                <li onclick="exportContactToExcel();">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>
+				       </ul>
+				    </div>
+		            </li> 
+                    </sec:authorize>
+                              
 						<div class="clearfix"></div>
 					</ul>
 					<div class="clearfix"></div>
@@ -196,8 +227,20 @@ function getClientDetails(){
    	        		result = result +'<tr>';
    	        		
    	        			result = result +'<td>';
-   	        			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.vendorlocationId+'\',\''+report.orgName+'\',\''+report.id+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+   	        		    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+   	        			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.vendorlocationId+'\',\''+report.orgName+'\',\''+report.id+'\');">';
+						result = result +'<span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+   	        			
    	        			result = result +'</div>';
+   	        			'</sec:authorize>';
+   	        			
+   	        			'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+   	        			result = result +'<div class="proj_show" ';
+						result = result +'<span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span>';
+   	        			result = result +'</div>';
+   	        			'</sec:authorize>';
+   	        			
+   	        				
    	        			result = result +'</td>';
 						
    	        	
@@ -280,15 +323,23 @@ function pagination(){
 		result = result + '<ul class="project-tabs-menu">';
 		
 		//for client details tab
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
 		result = result + '<li class="current"><a href="#tab-1" onClick="clientDetails('+clientLocationId+','+orgRelationId+');">Details</a></li>';
+		'</sec:authorize>';
 		
 		//for client contatcs tab
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
 		result = result + '<li><a href="#tab-2" onclick="clientContacts('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
+		'</sec:authorize>';
 		
 		//for client documents tab
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_DOCUMENT\')">';
 		result = result+'  <li><a href="#tab-3" onclick="clientDocuments('+orgRelationId+','+clientLocationId+');">Documents</a></li>';		
-				
+		'</sec:authorize>';	
+		
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_SUBMISSION_TEMPLATE\')">';
 		result = result + '<li><a href="#tab-4" onclick="clientSubmissionTemplate('+clientLocationId+');">Submission Templates</a></li>';	
+		'</sec:authorize>';
 		
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
@@ -404,7 +455,14 @@ function getVendorContactLists(){
    	        		
    	        		
    	        		result = result +'<tr>';
-   	        		result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\','+report.tempOwnerId+');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
+   	        			result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\','+report.tempOwnerId+');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        		'</sec:authorize>';
+   	        		
+   	        		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
+   	        			result = result +'<td><div class="proj_show"><span>'+report.spocName+'</span></i></div></td>';
+   	        		'</sec:authorize>';
+   	        		
    	        		result = result +'<td><div><span>'+report.spocEmail+'</span></div></td>';
    	        		if(report.spocMobilePhone != null && report.spocMobilePhone  != '' && report.spocMobilePhone  != 'undefined'){
    	        			result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
@@ -458,8 +516,14 @@ function getVendorContactLists(){
    	        		
    	        		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
    	        		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
-   	        		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
    	        		
+   	        		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
+   	        		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
+   	        		'</sec:authorize>';
+   	        		
+   	        		'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
+   	        		result = result + '<td><div>--</div></td>';
+   	        		'</sec:authorize>';
    	        		
    	        		result = result +'</tr>';
    				}
@@ -549,11 +613,17 @@ function updateSpocStatus(spocId){
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
+		
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
 		result = result
 				+ '<li class="current"><a href="#tab-1"  id="spocDetailsId" onClick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+');">Details</a></li>';
+		'</sec:authorize>';
+		
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT_DOCUMENT\')">';
 		result = result
 				+ '<li><a href="#tab-2" onClick="clientSpocDocuments('+orgRelationId+','+spocLocationId+',\''+spocName+'\','+userId+');">Documents</a></li>';
-		/* result = result + '<li><a href="#tab-3">Activity</a></li>';  */
+		'</sec:authorize>';
+				/* result = result + '<li><a href="#tab-3">Activity</a></li>';  */
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
@@ -590,11 +660,19 @@ function listChange(sel){
 		 document.getElementById("clientList").style.display="table";
 		 document.getElementById("vendorContactList").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="none";
-		document.getElementById("contactLevel").style.display="block";
-		document.getElementById("clientsList").style.display="none";
+		 document.getElementById("contactLevel").style.display="block";
+		 document.getElementById("clientsList").style.display="none";
 		 document.getElementById("clientSatatus").style.display="none";
 		 document.getElementById("clientInvitation").style.display="none";
-		 
+		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENTS\')">'; 
+		 document.getElementById("clientImports").style.display="block";
+		 '</sec:authorize> ';
+		'<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENT_CONTACTS\')">'; 
+		 document.getElementById("ContactImports").style.display="none";
+		'</sec:authorize> ';	 
+		 document.getElementById("vendorContactList_paginate").style.display="none";
+		 document.getElementById("vendorContactList_info").style.display="none";
+		 document.getElementById("vendorContactList_filter").style.display="none";
 		 
 		 getClientDetails();
 	 }
@@ -603,12 +681,17 @@ function listChange(sel){
 		 document.getElementById("vendorContactList").style.display="table";
 		 document.getElementById("clientList").style.display="none";
 		 document.getElementById("clientList_wrapper").style.display="none";
-		 document.getElementById("vendorContactList_wrapper").style.display="block";
+// 		 document.getElementById("vendorContactList_wrapper").style.display="block";
 		 document.getElementById("contactLevel").style.display="none";
 		 document.getElementById("clientsList").style.display="block";
 		 document.getElementById("clientSatatus").style.display="block";
 		 document.getElementById("clientInvitation").style.display="block";
-		 
+		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENTS\')">'; 
+		 document.getElementById("clientImports").style.display="none";
+		 '</sec:authorize> ';
+		'<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENT_CONTACTS\')">'; 
+		 document.getElementById("ContactImports").style.display="block";
+		'</sec:authorize> ';	 
 		 
 		 getVendorContactLists();
 	 }
@@ -965,6 +1048,81 @@ function rejectInvitation(spocId){
 </script>
 <!-- Scripts for invitations  -->	
 
+<script>
+function exportClientToPdf(){
+	var values = [];
+	$('input:checkbox[name=clinetLevel]:checked').each(function() 
+    {
+			values.push($(this).val());
+    });
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.location.href = sourceleadUrl+"/exportClientDetails?${_csrf.parameterName}=${_csrf.token}&values="+values+"&exportType=pdf";
+}
+</script>
+
+<script>
+function exportClientToExcel(){
+	var values = [];
+	$('input:checkbox[name=clinetLevel]:checked').each(function() 
+    {
+			values.push($(this).val());
+    });
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.location.href = sourceleadUrl+"/exportClientDetails?${_csrf.parameterName}=${_csrf.token}&values="+values+"&exportType=xls";
+}
+</script>
+
+<script>
+function exportContactToPdf(){
+	var clientIds = [];
+	$('input:checkbox[name=clientNameById]:checked').each(function() 
+    {
+		clientIds.push($(this).val());
+    });
+	var status = [];
+	$('input:checkbox[name=clientStatus]:checked').each(function() 
+    {
+		status.push($(this).val());
+    });
+	
+	var invitationStatus = [];
+	$('input:checkbox[name=clientInvitationStatus]:checked').each(function() 
+    {
+		invitationStatus.push($(this).val());
+    });
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	window.location.href = sourceleadUrl+"/exportClientContactDetails?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus+"&exportType=pdf";
+}
+</script>
+
+<script>
+function exportContactToExcel(){
+	var clientIds = [];
+	$('input:checkbox[name=clientNameById]:checked').each(function() 
+    {
+		clientIds.push($(this).val());
+    });
+	var status = [];
+	$('input:checkbox[name=clientStatus]:checked').each(function() 
+    {
+		status.push($(this).val());
+    });
+	
+	var invitationStatus = [];
+	$('input:checkbox[name=clientInvitationStatus]:checked').each(function() 
+    {
+		invitationStatus.push($(this).val());
+    });
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	window.location.href = sourceleadUrl+"/exportClientContactDetails?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus+"&exportType=xls";
+}
+</script>
 
 <script>
 // Edit pop
@@ -976,6 +1134,38 @@ $(document).ready(function() {
 		
 });
 </script> 
+
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+  $(document).ready(function() {
+	   $("#export-pop").click(function(){
+	               $(".export_pop").slideToggle(200);
+	       });
+	   $("html").click(function() {
+	       $(".export_pop").slideUp(200);
+	   });
+	   $(".export_pop, #export-pop").click(function(e) {
+	       e.stopPropagation();
+	   });        
+	});  
+</script> 
+
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+  $(document).ready(function() {
+	   $("#export-popcon").click(function(){
+	               $(".export_pop").slideToggle(200);
+	       });
+	   $("html").click(function() {
+	       $(".export_pop").slideUp(200);
+	   });
+	   $(".export_pop, #export-popcon").click(function(e) {
+	       e.stopPropagation();
+	   });        
+	});  
+</script> 
+
+
 <jsp:include page="editClientSpocDetails.jsp" />
 <jsp:include page="clientDetails.jsp" />	
 <jsp:include page="clientContacts.jsp" />

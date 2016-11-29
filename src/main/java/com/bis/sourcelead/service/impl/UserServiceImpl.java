@@ -315,8 +315,9 @@ public class UserServiceImpl implements UserService {
 		
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		
+		Roles roles = null;
+		
 		if(jsonObj.has("roleType")){
-			Roles roles;
 			try {
 				roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleType")));
 				userRole.setUserType(roles.getDisplayName());
@@ -327,16 +328,17 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		
-		Roles roles = null;
+		
 		try {
-			if(jsonObj.has("roleType") && !isNullOrEmpty(jsonObj.getString("roleType"))){
-				roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleType")));
+			
+			if(jsonObj.has("roleTypeId")){
+				if(!isNullOrEmpty(jsonObj.getString("roleTypeId"))){
+					roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleTypeId")));
+				}else{
+					roles = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER,orgLocations.getId());
+				}
 			}
-			else if(jsonObj.has("roleTypeId") && !isNullOrEmpty(jsonObj.getString("roleTypeId"))){
-				roles = rolesService.getRolesById(Long.parseLong(jsonObj.getString("roleTypeId")));
-			}else{
-				roles = rolesService.getRolesById(2L);
-			}
+			
 			
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
@@ -599,13 +601,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception {
-		return userDao.getManagersByUserRolesAndOrgLocationId(roleType, orgLocationsId);
+	public List<User> getManagersByUserRolesAndOrgLocationId(Long roleId , Long orgLocationsId,Long tabId) throws Exception {
+		return userDao.getManagersByUserRolesAndOrgLocationId(roleId, orgLocationsId,tabId);
 	}
 	
 	@Override
-	public List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception {
-		return userDao.getManagersByUserIdAndUserRolesAndOrgLocationId(userId, roleType, orgLocationsId);
+	public List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,Long roleId , Long orgLocationsId) throws Exception {
+		return userDao.getManagersByUserIdAndUserRolesAndOrgLocationId(userId, roleId, orgLocationsId);
 	}
 	
 
@@ -756,7 +758,7 @@ public class UserServiceImpl implements UserService {
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
-		 
+		 emailMessage.setOrgLocationId(respondingPartyOrgLocation.getId());
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,respondingPartyOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
@@ -791,9 +793,20 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public List<User> getReoprtingManagersByOrgLocationId(Long orgLocationsId) throws Exception {
+		return userDao.getReoprtingManagersByOrgLocationId(orgLocationsId);
+	}
+	
+	@Override
 	public List<User> getAllUsersByOrgLocationCodeExcludingEmployees(Long orgLocationsId) throws Exception {
-		
+	
 		return userDao.getAllUsersByOrgLocationCodeExcludingEmployees(orgLocationsId);
+
+	}
+
+	@Override
+	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId, Long tabId) throws Exception {
+		return userDao.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationsId, tabId);
 	}
 	
 	

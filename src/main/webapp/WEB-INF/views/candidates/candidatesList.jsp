@@ -4,6 +4,7 @@
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 
 <script src="resources/js/formvalidator.js"></script>
@@ -15,8 +16,10 @@
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="candidatesActivities.jsp"></jsp:include>
-<jsp:include page="candidatesCommentsList.jsp"></jsp:include>
 
+ <sec:authorize access="hasRole(\'ROLE_POST_COMMENTS\')">
+<jsp:include page="candidatesCommentsList.jsp"></jsp:include>
+ </sec:authorize>
 <script>
  window.onload = function() {
  	 candidateList();
@@ -84,7 +87,7 @@
 	                	 result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                   /*   result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";  */
+	                    /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
 	                     result = result +"    <th>Name</th>"; 
 	                     result = result +"    <th>Designation</th>"; 
 	                     result = result +"    <th>Position type</th>"; 
@@ -122,8 +125,17 @@
 				            		candidateUpdateDateToString = "---";
 				            	}
 		                     result = result +"<tr>";
-			               /*   result = result +"  <td><input type='checkbox' id='checkbox12'/></td>"; */
-			                 result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span title='"+opt.firstName+" "+opt.lastName+"'>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+
+			                 /* result = result +"  <td><input type='checkbox' id='checkbox12'/></td>"; */
+			                
+			                 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\')">'; 
+			                   result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span title='"+opt.firstName+" "+opt.lastName+"'>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+			                 '</sec:authorize>';
+			                 
+			                 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\')">'; 
+			                  result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+opt.lastName+"'>"+opt.firstName+" "+opt.lastName+"</span></div></td>";
+			                 '</sec:authorize>';
+
 			                 result = result +"  <td><div><span>"+designation+"</span></div></td>";
 			                 if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
 			                	 {
@@ -357,7 +369,7 @@ function clientSideBar(candidateId){
 			             
 			             result = result+'                 </ul>';
 			            /* New comments div creation Nov 8th, 2016 */
-			            
+			            '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\')">'; 
 			            result = result+'<div class="comments-div clearfix" id="latestMessage">';
 			            result = result+'    <div class="commentsimg">';
 			            result = result+'    <i class="fa fa-comments"></i>';
@@ -384,6 +396,7 @@ function clientSideBar(candidateId){
 			 			result = result+'		</div>';
 			            result = result+'     </div>';
 			            result = result+'</div>';
+			            '</sec:authorize>';
 			 		    /* New comments div creation Nov 8th, 2016 */
 			             
 			             
@@ -761,7 +774,10 @@ function cancel(candidateId){
                   </div>                	
           </li>  
           
-          <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
+          
+           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
+              <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
+           </sec:authorize>
          
           <div class="clearfix"></div>
         </ul>
@@ -940,7 +956,7 @@ function exportToPdf(){
         $("#canDiv").removeAttr("onClick");
     }
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&exportType=pdf";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf";	
 	  }
 }
 
@@ -962,7 +978,7 @@ function exportToExcel(){
          $("#canDiv").removeAttr("onClick");
      }
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&exportType=xls";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls";	
 	  }
 }
 </script>
