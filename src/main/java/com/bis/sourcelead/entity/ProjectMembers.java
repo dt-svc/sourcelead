@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -37,8 +38,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "PROJECT_MEMBERS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectMembers")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class ProjectMembers {
+public class ProjectMembers implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)

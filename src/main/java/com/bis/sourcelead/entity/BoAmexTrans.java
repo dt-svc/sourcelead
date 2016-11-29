@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -21,9 +22,9 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "BO_AMEX_TRANS", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "boAmexTrans")
-public class BoAmexTrans {
+public class BoAmexTrans implements Serializable{
 	
-	
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
