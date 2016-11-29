@@ -98,6 +98,12 @@ public class CandidateSkillsServiceImpl implements CandidateSkillsService {
 		 
 		return candidateSkillsDao.getCandidateSkillsByCandidateId(candidateId);
 	}
+	
+	
+	@Override
+	public List<String> getCandidateSkillNamesByCandidateId(String candidateId) throws Exception {
+		return candidateSkillsDao.getCandidateSkillNamesByCandidateId(candidateId);
+	}
 
 	/**
 	 * @author Venkat Kesav

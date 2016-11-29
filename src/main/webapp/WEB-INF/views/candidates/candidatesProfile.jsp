@@ -585,16 +585,13 @@ function candidateProfile(candidateId){
 							result = result +'		          <div class="select-skills">                                                                                                         ';
 							result = result +'		            <div class="divskill col-md-12">                                                                                                  ';
 							result = result +'		              <!-- Add skills div -->                                                                                                         ';
-							result = result +'		              <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
+							result = result +'		              <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="getAllSkills('+candidateId+'); removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
 							result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div" onClick="removeSkillPopUp('+candidateId+');"></i>                                                       ';
 							result = result +'		                  <div class="form-horizontal clearfix">                                                                                      ';
 							result = result +'		                    <div class="clearfix div-padding">                                                                                        ';
 							result = result +'		                      <div class="col-md-10">                                                                                                 ';
 							
 							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
-			                <c:forEach var="skill" items="${skillsList}">
-			              			  result = result + ' <option value="${skill.name}">${skill.name}</option>';
-			                </c:forEach>
 			                result = result + '</select>';
 							
 							result = result +'		                      </div>                                                                                                                  ';
@@ -1331,5 +1328,29 @@ function certificationSubmissionProfile(candidateId){
      }); 
 }
 </script>
+       
            
-  
+<script>
+function getAllSkills(candidateId){
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+		$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getSkillsExcludeExistingSkills?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.name+ "'>"+opt.name+"</option>";
+				}
+	        	$("#skillName").empty();
+		        $("#skillName").append(output);
+		        $('#skillName').trigger("chosen:updated");
+	        },
+	    });
+	
+}
+
+</script>

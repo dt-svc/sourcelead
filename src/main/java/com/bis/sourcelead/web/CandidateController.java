@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,6 +62,7 @@ public class CandidateController {
 			model.addObject("educationsList", educationsList);
 			
 			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			
 			model.addObject("skillsList", skillsList);
 			
 			return model;

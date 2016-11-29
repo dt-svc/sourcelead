@@ -36,9 +36,9 @@ $(document).ready(function() {
 
 
 <style>
-.tbldata-dotdot span{
+/* .tbldata-dotdot span{
 max-width:220px;
-} 
+} */ 
  .clsDatePicker {
    z-index: 100000 !important;
 }
@@ -54,6 +54,9 @@ overflow: visible;
 }
 .timesheet_head ul {
 padding: 1px 280px 2px 0;
+}
+.require_wrap_table select {
+width:100% !important;
 }
  </style>
  
@@ -136,7 +139,7 @@ function requirementList(){
 
 	                    		 }
 		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
+		                    	 result = result +"<td><div><span>"+opt.clientName+"</span></div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }

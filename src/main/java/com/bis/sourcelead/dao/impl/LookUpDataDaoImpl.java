@@ -50,6 +50,22 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
       
 	    return skillsList;
 	}
+
+	@Override
+	@Transactional
+	public List<LookUpData> getSkillsBySkillsName(List<String> skillNames) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<LookUpData> skillsList;
+		if(skillNames != null && !skillNames.isEmpty()){
+			String query = " from LookUpData lookupdata where lookupdata.category = 'Skills' and lookupdata.name NOT IN (:skillNames)";
+		    skillsList = session.createQuery(query).setParameterList("skillNames", skillNames).setCacheable(true).list();
+		}else{
+			String query = " from LookUpData lookupdata where lookupdata.category = 'Skills'";
+		    skillsList = session.createQuery(query).setCacheable(true).list();
+		}
+	    return skillsList;
+	}
 	
 	
 	
