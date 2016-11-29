@@ -1,12 +1,16 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
+
 import org.springframework.web.multipart.MultipartFile;
 /**
  * Upload File Entity
  * @author Rajashekar
  *
  */
-public class UploadedFile {
+public class UploadedFile implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	private MultipartFile file;
 	

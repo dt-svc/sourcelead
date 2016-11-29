@@ -148,7 +148,7 @@ public class LoginSessionController {
 		
 		ModelAndView model = new ModelAndView();
 		User user = userService.findByUserName(authentication.getName());
-		UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(user.getEmail(), orgLocationId);
+		UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocationId);
 		if(null != userRole){
 			OrgLocations orgLocations = userRole.getOrgLocations();
 			Org org = orgLocations.getOrg();
@@ -239,6 +239,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "roleHierarchyId", userRole.getRoles().getRoleHierarchy().getId());
 
 			SourceLeadSessionManager.setSessionAttribute(request, "userType", userRole.getUserType());
+			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
 			
 			
 		} catch (Exception e) {

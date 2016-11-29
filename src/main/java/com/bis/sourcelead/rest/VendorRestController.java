@@ -370,6 +370,8 @@ public class VendorRestController {
 	    * @param request
 	    * @throws Exception
 	    */
+	   
+	   @PreAuthorize("hasRole('ROLE_EXPORT_VENDORS')")
 	   @RequestMapping(value = "/exportVendorDetails")
 		public void  exportVendorDetails(@RequestParam(value="values", required=false) String status,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 
@@ -445,6 +447,7 @@ public class VendorRestController {
 	   * @param request
 	   * @throws Exception
 	   */
+	   @PreAuthorize("hasRole('ROLE_EXPORT_VENDOR_CONTACTS')") 
 	   @RequestMapping(value = "/exportVendorContactLists")
 		public  void exportVendorContactLists(@RequestParam(value="vendorStatus", required=false) String status,@RequestParam(value="vendorId", required=false) String vendorIds,@RequestParam(value="invitationStatus", required=false) String invitationStatus,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 

@@ -1,5 +1,7 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -21,7 +23,10 @@ import com.bis.sourcelead.enums.Status;
 @Entity
 @Table(name = "MODULES", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="modules")
-public class Modules {
+public class Modules implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

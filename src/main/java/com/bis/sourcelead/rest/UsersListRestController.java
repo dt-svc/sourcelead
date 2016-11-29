@@ -95,6 +95,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	 * @param loginUserRole
 	 * @return
 	 */
+	
+	/* This method is used for landing page of user tab. So, who has user tab access they can see users list. No preAuthorize for this method */
 	@RequestMapping(value = "/getUsersList")
 	@ResponseBody
 	public String getUsersList(HttpServletRequest request,

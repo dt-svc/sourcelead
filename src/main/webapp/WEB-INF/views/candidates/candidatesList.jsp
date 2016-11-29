@@ -16,8 +16,10 @@
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="candidatesActivities.jsp"></jsp:include>
-<jsp:include page="candidatesCommentsList.jsp"></jsp:include>
 
+ <sec:authorize access="hasRole(\'ROLE_POST_COMMENTS\')">
+<jsp:include page="candidatesCommentsList.jsp"></jsp:include>
+ </sec:authorize>
 <script>
  window.onload = function() {
  	 candidateList();
@@ -85,7 +87,7 @@
 	                	 result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                   /*   result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";  */
+	                    /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
 	                     result = result +"    <th>Name</th>"; 
 	                     result = result +"    <th>Designation</th>"; 
 	                     result = result +"    <th>Position type</th>"; 
@@ -367,7 +369,7 @@ function clientSideBar(candidateId){
 			             
 			             result = result+'                 </ul>';
 			            /* New comments div creation Nov 8th, 2016 */
-			            
+			            '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\')">'; 
 			            result = result+'<div class="comments-div clearfix" id="latestMessage">';
 			            result = result+'    <div class="commentsimg">';
 			            result = result+'    <i class="fa fa-comments"></i>';
@@ -394,6 +396,7 @@ function clientSideBar(candidateId){
 			 			result = result+'		</div>';
 			            result = result+'     </div>';
 			            result = result+'</div>';
+			            '</sec:authorize>';
 			 		    /* New comments div creation Nov 8th, 2016 */
 			             
 			             

@@ -71,16 +71,12 @@ window.onload = function () {
 				<span class="action-search" onclick="getUsersList();"><i class="fa fa-search"></i></span>
 		  </li> 
 		
-		 
-		  
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_USER')"> 
 	           <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Create</a></li>
 	       </sec:authorize>
 		  
-		  
-		  
-		   <li>
-		    <a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
+		   <sec:authorize access="hasRole('ROLE_EXPORT_USERS')"> 
+		   <li><a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
 			    <div class="export_pop">
 				   <ul>
 				   <li onclick="exportToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>
@@ -88,6 +84,8 @@ window.onload = function () {
 				   </ul>
 				</div>
 		   </li>
+		    </sec:authorize>
+		   
 		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
 	                      <li><a href="<c:url value='/uploadForm'/>"><i class="fa fa-upload"></i>&nbsp;Bulk Imports</a></li>
 	         </sec:authorize>

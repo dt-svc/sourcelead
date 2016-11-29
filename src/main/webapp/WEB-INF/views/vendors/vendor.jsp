@@ -139,7 +139,7 @@ window.onload = function () {
             <div class="form-group" id="EmailIdDiv">
 				<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
-					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();">
+					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateWebsite();getSpocUserDetails();">
 	                            <span class="hidden">Valid Email</span>
 				</div>
 			</div>
@@ -401,7 +401,7 @@ function validateEmail(){
 </script>
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function getRolesList(){
 	var orgName = document.getElementById("orgName").value;
 	var orgLocationId = document.getElementById("orgLocationId").value;
@@ -436,8 +436,7 @@ function getRolesList(){
 	}
 	 
 }
-</script>
-
+</script> -->
 
 <script type="text/javascript">
 	(function($) {
