@@ -128,7 +128,6 @@
  <!-- this script is for Emplyee Listfunctionality at Projects screen -->
 <script>
 function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
-
 	$("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -151,9 +150,9 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     		result = result	+ '<ul>';
 
     		result = result +'<li>';
-    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_PROJECT_EMPLOYEES\')">';
+    		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
     		result = result + '<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
-    		result = result +'</sec:authorize>';
+    		'</sec:authorize>';
     		result = result +'</li>';
 
     		/* result = result +'<li>';
@@ -204,39 +203,46 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 	        		
 	        		result = result + '	 <tr>';
 	        		/* ROLE_VIEW_USER */
-	        		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\')">';
+	        		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\')">';
 	                result = result + '	 	<td><div><a href="<c:url value="/userSummary/'+opt.userId+'"/>""> '+opt.empName+' </a></div></td>';
-	                result = result +'</sec:authorize>';
+	                '</sec:authorize>';
 	                
-	                result = result +'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\')">';
+	                '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\')">';
 	                result = result + '	 	<td><div><a> '+opt.empName+'</a></div></td>';
-	                result = result +'</sec:authorize>';
+	                '</sec:authorize>';
 	                
 	                result = result + '	     <td><div>'+opt.projectAssignedDateStr+'</div></td>';
 	                if(status == 'COMPLETED'){
 	                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
 	                }else{
+	                	'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_PROJECT_EMPLOYEES\')">'; 
 	                	if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != "INACTIVE"){
 		                	result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field project_inline_field_enddate" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
 		                }
 		                else{
-		                	  result = result + '	     <td><div>'+projectEndDateStr+'</div></td>';
+		                	  result = result + '	     <td><div><span>'+projectEndDateStr+'</span></div></td>';
 		                }
+	                	'</sec:authorize>';
+	                	
+	                	'<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_PROJECT_EMPLOYEES\')">'; 
+	                	  result = result + '	     <td><div><span>'+projectEndDateStr+'</span></div></td>';
+                	   '</sec:authorize>';
+	                	
 	                }
-	                result = result + '	     <td><div><input type="text" value='+opt.approvedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
-	                result = result + '	     <td><div><input type="text" value='+opt.rejectedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
-	                result = result + '	     <td><div><input type="text" value='+opt.submittedHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
-	                result = result + '	     <td><div><input type="text" value='+opt.draftHrs+' class="project_inline_field project_inline_field_time" readonly="readonly"></div></td>';
+	                result = result + '	     <td><div><span>'+opt.approvedHrs+'</span></div></td>';
+	                result = result + '	     <td><div><span>'+opt.rejectedHrs+'</span></div></td>';
+	                result = result + '	     <td><div><span>'+opt.submittedHrs+'</span></div></td>';
+	                result = result + '	     <td><div><span>'+opt.draftHrs+'</span></div></td>';
 	                if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
 	                	result = result + '	<td><div>';
 	                	if(status != 'COMPLETED'){
-	                		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PROJECT_EMPLOYEES\')">'; 
+	                		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PROJECT_EMPLOYEES\')">'; 
 	                		result = result + '<i class="glyphicon glyphicon-trash" onClick="deleteProject('+opt.id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i>';
-	                		result = result +'</sec:authorize>';
+	                		'</sec:authorize>';
 	                		
-	                		result = result +'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_PROJECT_EMPLOYEES\')">'; 
-	                		result = result + '<i class="glyphicon glyphicon-trash" ></i>';
-	                		result = result +'</sec:authorize>';
+	                		'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_PROJECT_EMPLOYEES\')">'; 
+	                		result = result + '---';
+	                		'</sec:authorize>';
 	                	}
 	                	result = result +'</div></td>';
                      }
@@ -280,12 +286,12 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     		$("#tab-2").empty();  
     	    $("#tab-1").empty();
     	    $("#employeesLoadingImg").empty();
-    	    $("#tab-1").append(result);  
+    	    $("#tab-2").append(result);  
     	    
     	    //pagination function
     	    projectEmployeePagination();
     	    
-    	    $("#tab-1").show();
+    	    $("#tab-2").show();
     		$(".project-tabs-menu a").click(function(event) {
     		     event.preventDefault();
     		     $(this).parent().addClass("current");

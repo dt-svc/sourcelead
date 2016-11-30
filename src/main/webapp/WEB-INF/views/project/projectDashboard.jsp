@@ -48,7 +48,7 @@ overflow-x: auto;
 
         
 	   <div class="timesheet_out">
-	   <c:if test="${empty projectsList}">
+	   <%-- <c:if test="${empty projectsList}">
 			<div class="project_wrap">
         <div class="timesheet_head">
         	<ul>
@@ -72,6 +72,9 @@ overflow-x: auto;
                         </ul>
                     </div>                	
                 </li>
+                <sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')"> 
+	                   	<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Create Project</a></li>		
+	             </sec:authorize>	
                 
                 <div class="clearfix"></div>
             </ul>
@@ -84,8 +87,8 @@ overflow-x: auto;
 							</table>
 			</div>	   
 		</div>
-		</c:if>
-		<c:if test="${!empty projectsList}">
+		</c:if> --%>
+		<%-- <c:if test="${!empty projectsList}"> --%>
 		<div class="project_wrap">
         <div class="timesheet_head">
         	<ul>
@@ -103,7 +106,7 @@ overflow-x: auto;
                     	<ul>
                         	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
 							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">STARTED</label></li>
-							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">INPROGRESS</label></li>
+							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRES-S"  onclick="filter();"><label for="c7">INPROGRESS</label></li>
 							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">COMPLETED</label></li>
                				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">ONHOLD</label></li>
                         </ul>
@@ -124,7 +127,7 @@ overflow-x: auto;
 			</div>	   
 				
 		</div>
-		</c:if>
+		<%-- </c:if> --%>
 		<div class="side_mask"><div class="proj_close"><i></i></div></div>
 		<div class="project_side_wrap">
 			<div class="project_side_wrap_inn">
@@ -218,17 +221,17 @@ $(document).ready(function() {
 	  	    result = result + '<div class="project_side_wrap_inn_tabs">';
 		  	result = result + '<ul class="project-tabs-menu">';
 		  	
-		  	result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_EMPLOYEES\')">'; 
-		  	result = result + '<li class="current"><a href="#tab-1" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',,\''+projectName+'\');" >Employees</a></li>';
-		  	result = result +'</sec:authorize>';
+			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_EDIT_PROJECT\')">'; 
+		  	   result = result + ' <li class="current"><a href="#tab-1" onClick="projectDetails('+projectId+');" >Details</a></li>';
+			'</sec:authorize>';
 		  	
-		  	result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\')">'; 
-		  	result = result + '<li><a href="#tab-2" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
-		  	result = result +'</sec:authorize>';
+		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_EDIT_PROJECT_EMPLOYEES\')">'; 
+		  	  result = result + '<li><a href="#tab-2" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Employees</a></li>';
+		  	'</sec:authorize>';
 		  	
-		  	result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\')">'; 
-		  	result = result + ' <li><a href="#tab-3" onClick="projectDetails('+projectId+');" >Details</a></li>';
-			result = result +'</sec:authorize>';
+		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_EDIT_PROJECT_TASKS\')">' ; 
+		  	  result = result + '<li><a href="#tab-3" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
+		  	'</sec:authorize>';
 			
 		  	result = result + ' <div class="clearfix"></div>';
 		  	result = result + ' </ul>';
@@ -253,7 +256,8 @@ $(document).ready(function() {
 		    $(".side_mask").fadeIn(200);
 			$("body").css('overflow-y', 'hidden');
 			
-		    projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
+		    //projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
+		    projectDetails(projectId);
  }
  </script> 
  
@@ -354,9 +358,13 @@ function filter(){
    		    		result = result +'<td data-title="Id"><div><span>'+projectSequeneNumber+'</span></div></td>';
 
    		    		
-   		    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\')">'; 
+   		    		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\')">'
    		    		  result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span>'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
-   		    		result = result +'</sec:authorize>';
+   		    		'</sec:authorize>';
+   		    		
+   		    		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\')">'
+ 		    		  result = result +'<td data-title="Name"><div class="proj_show"><span>'+report.projectName+'</span></div></td>';
+ 		    		'</sec:authorize>';
 
    		    		/*result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span class="tbldata-dotdot-vsm">'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';*/
 
