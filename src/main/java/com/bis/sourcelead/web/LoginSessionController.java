@@ -199,9 +199,9 @@ public class LoginSessionController {
 		
 		
 		setSessionUserAttributes(user,request,sourceleadUrl);
-		
+		OrgLocations orgLocations = null;
 		try {
-			OrgLocations orgLocations = userRole.getOrgLocations();
+			orgLocations = userRole.getOrgLocations();
 			setSessionOrgLocationAttributes(orgLocations,request);
 			Org org = orgLocations.getOrg();
 			setSessionOrgAttributes(org,request);
@@ -249,7 +249,6 @@ public class LoginSessionController {
 		String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		
 		//get notification count
@@ -267,7 +266,7 @@ public class LoginSessionController {
 		commonUtil.terminateAllProjectMembersByUser(user);
 		
 		try {
-			List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(orgLoc.getId(), loginUser.getId());
+			List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(orgLocations.getId(), loginUser.getId());
 			for(Projects project : projectsList){
 				commonUtil.terminateProject(project);
 			}
