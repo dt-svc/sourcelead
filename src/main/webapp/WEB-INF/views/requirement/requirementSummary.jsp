@@ -523,7 +523,7 @@ function sideBar(requirementId){
 					   
 					    if(json.requirementSubmissionStatus != 'SUBMITTED' && json.requirementSubmissionStatus != 'CANCEL' && json.requirementSubmissionStatus != 'DRAFT' && json.requirementSubmissionStatus != 'ONHOLD' && json.requirementSubmissionStatus != 'FILLEDCLOSED'){
                             var all = 'all';
-					    	result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');requirementStatusBar('+requirementId+')">Pipeline</a></li>';
+					    	result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');">Pipeline</a></li>';
                              result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
                         }
 					   
