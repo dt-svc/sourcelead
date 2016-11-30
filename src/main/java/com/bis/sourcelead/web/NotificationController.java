@@ -77,7 +77,7 @@ public class NotificationController {
 
 	    String resultJson;
 	    Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"userId");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String locationCode =  (String) SourceLeadSessionManager.getSessionAttribute(request,"locationCode");
 		List<Notifications> notificationsList = notificationsService.getAllNotificationsListByUserId(userId,orgLocations.getOrg().getOrgCode(), locationCode);
 		if(notificationsList!=null){
