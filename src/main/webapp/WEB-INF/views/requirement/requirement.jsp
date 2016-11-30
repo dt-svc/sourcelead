@@ -430,7 +430,7 @@ $(document).ready(function () {
 		            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
 		            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
 		            &nbsp;&nbsp;
-		            <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
+		            </label>
 			  	</div>
 	        </c:if>
 	      
