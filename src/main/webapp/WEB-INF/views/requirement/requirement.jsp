@@ -243,7 +243,7 @@ $(document).ready(function () {
           <div class="form-group" id="jobIdDiv">
             <label class="col-md-3">Id</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  onblur="validateJobId();"  onmouseout="validateJobId();" value="">
+              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  onblur="validateJobId();"  onKeyUp="validateJobId();" value="">
             </div>
           </div>
           
@@ -430,7 +430,7 @@ $(document).ready(function () {
 		            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
 		            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
 		            &nbsp;&nbsp;
-		            <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
+		            </label>
 			  	</div>
 	        </c:if>
 	      
@@ -728,7 +728,7 @@ $(document).ready(function () {
       <div class="pull-right">
         <input type="button" value="Submit for Approval" id="submitForApproval" onclick="storeRequirement('submitForApproval');" class="btn btn-primary" style="display:none;">
         <c:if test="${empty requirement.requirementSubmissionStatus || requirement.requirementSubmissionStatus == 'DRAFT' || requirement.requirementSubmissionStatus == 'REJECTED'}">
-        	<input type="button" value="Draft" id="draft" onclick="storeRequirement('draft');" class="btn btn-danger ml">
+        	<input type="button" value="Draft" id="draft" onclick="storeRequirement('draft'); " class="btn btn-danger ml">
         </c:if>
         <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >    
         <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
@@ -793,7 +793,7 @@ $(document).ready(function () {
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
-		
+		validateJobId();
 		$('#addClient').empty();
 		$('#addContact').empty();
 		$('#addTeam').empty();
@@ -1246,7 +1246,7 @@ function setTemplateValues(){
 			    	var country = '';
 					 var state = '';
 					 var city = '';
-					
+					 validateJobId(json.jobId);
 					
 						if(json.country != null && json.country !='' && json.country !='undefined'){
 							$("#existingCountry").val(json.country);
@@ -1653,7 +1653,7 @@ function getTeamsList(teamType){
 				}else{
 					output = output +'           <option value="All">All</option>';
 				}
-				if(teamType == 'Admin'){
+				/* if(teamType == 'Admin'){
 					output = output +'           <option value="Admin" selected>Admin</option>';
 				}else{
 					output = output +'           <option value="Admin">Admin</option>';
@@ -1675,13 +1675,22 @@ function getTeamsList(teamType){
 				output = output +'           <option value="Project Manager" selected>Project Manager</option>';
 			  }else{
 				output = output +'           <option value="Project Manager">Project Manager</option>';
-			  } 
-				for (var i = 0; i < json.length; i++) {
-					var opt = json[i];
+			  } */ 
+			  for (var i = 0; i < json.teams.length; i++) {
+					var opt = json.teams[i];
 					if(teamType == opt.id){
 						output = output + "<option value='"+opt.id+"' selected>"+ opt.name + "</option>";
 					}else{
 						output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";	
+					}
+				}
+			  
+				for (var i = 0; i < json.roles.length; i++) {
+					var opt = json.roles[i];
+					if(teamType == opt.id){
+						output = output + "<option value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
+					}else{
+						output = output + "<option value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
 					}
 				}
 				$("#rolesDiv").empty();
@@ -1899,13 +1908,17 @@ function getLevel2Approvers(currentApproverId){
 <!-- Job Id validation script starts here -->
 
 <script type="text/javascript">
- function validateJobId() {
-	
-	 var jobId = document.getElementById("jobId").value; 
+ function validateJobId(jobId) {
+	 if(jobId == null || jobId == "" || jobId == "undefined"){
+		 jobId = document.getElementById("jobId").value; 
+	 }
 	 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 if(jobId != null && jobId != ""){
-		
+		 $("#draft").attr("disabled", "disabled");
+		 $("#save").attr("disabled", "disabled");
+		 $("#submitForApproval").attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateJobId?${_csrf.parameterName}=${_csrf.token}&jobId="+jobId, 
@@ -1920,8 +1933,9 @@ function getLevel2Approvers(currentApproverId){
 		        	else{
 		        		 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#jobIdDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#requirement_form" ).addClass('button').val('Save');
-                         $("#requirement_form").removeAttr("disabled");
+                         $("#draft").removeAttr("disabled");
+                         $("#save").removeAttr("disabled", "disabled");
+                		 $("#submitForApproval").removeAttr("disabled", "disabled");
 		        	}
 		        },
 		    });

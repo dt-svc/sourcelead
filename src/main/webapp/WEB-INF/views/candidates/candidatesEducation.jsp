@@ -581,7 +581,8 @@ function candidateEducationStore(candidateId){
 		     var jsonData = encodeURIComponent(con);
 			 var sourceleadUrl = '${sourceleadUrl}';
 			 $("#education_form").attr("disabled", "disabled");
-			
+			 $("#save_button").attr("disabled", "disabled");
+
 			$.ajax({
 					type : "POST",
 					url : sourceleadUrl+"/storeCandidateEducation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&candidateId="+candidateId,

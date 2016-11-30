@@ -3869,6 +3869,27 @@ height:35px !important;
     top: -4px;
     z-index: 9999;
 }
+/*srinivas nov29*/
+.comments-content {
+       margin-left: 2px;
+}
+.comment-by span{
+       display: inline-block !important;
+}
+.comments-div.comments-inner{
+       margin: 10px;
+}
+.comments-inner p.commentText{
+       display: block;
+       width:950px;
+       line-height:20px;
+       height: auto;
+       min-height: 20px;
+}
+.comments-inner .comments-content {
+       width: 965px;
+}
+/*srinivas nov29*/
 .comments-div .commentsimg-inner{
 	width:50px;
 	height:50px;
@@ -4587,7 +4608,6 @@ import-tranhd  [class*="col-md-"]{
 /* Compose mail styles */
 .compose-mail
 {
-/*	border: 1px solid #ccc;*/
 	margin-top: 15px;
 	margin-bottom: 15px;
 	padding: 15px;
@@ -4596,12 +4616,49 @@ import-tranhd  [class*="col-md-"]{
 }
 .email-icon:after{
 	content: '\f0e0';
+	color:#909090;
 	font-family: FontAwesome;
 	font-weight: normal;
 	font-size: 14px;
-	border: 1px solid red;
 	z-index: 9999;
-}/* media 320px */
+	right: 15px;top: 5px;
+	position: absolute;
+}
+.compose-mail input.form-control{
+	border: none;
+	box-shadow: none;
+	border-radius: 0;
+	border-bottom: 1px solid #ccc;
+}
+.compose-mail .chosen-container-multi .chosen-choices{
+	border: none;
+	box-shadow: none;
+	font-size: 12px;
+	border-radius: 0;
+	font-family: 'Roboto', sans-serif  !important;
+	border-bottom: 1px solid #ccc;
+}
+.compose-mail [class^="col-md"]{
+	padding: 0 5px;
+}
+.compose-mail.form-horizontal .control-label {
+	position: relative;
+	top: 16px;
+}
+.compose-mail .form-control[readonly]{
+	background: none;
+}
+.select-multiple{
+	position: absolute;
+	right: 15px;top: 8px;
+	cursor: pointer;
+	color:#909090;
+}
+#multiplemail input.form-control{
+	border: 1px solid #ccc;
+	border-radius: 3px;
+}
+/* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {
 	display: none !important;
