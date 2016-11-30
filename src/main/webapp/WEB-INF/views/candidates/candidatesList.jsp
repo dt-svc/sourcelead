@@ -355,7 +355,7 @@ function clientSideBar(candidateId){
 			             result = result+'<li><i class="fa fa-rupee"></i><b>Current Rate:</b>  ';
 			             
 		             	 if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
-			             	result = result+''+json.currentRate+' '+json.rateType+'';
+			             	result = result+''+json.currentRate+' '+json.currentRateType+'';
 			             }else{
 			             	result = result+'---- ';                                    
 			             }
