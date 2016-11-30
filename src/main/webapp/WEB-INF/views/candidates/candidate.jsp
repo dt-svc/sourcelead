@@ -290,7 +290,7 @@
          <div class="form-group">
               <label class="col-md-3">Education</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="candidateEducation" id="candidateEducation" data-validation="validate_Space" data-validation-optional="true">
+                <select multiple data-placeholder="select Education" class="chosenone-selectone form-control" name="candidateEducation" id="candidateEducation" data-validation="validate_Space" data-validation-optional="true">
                 <c:forEach var="edu" items="${educationsList}">
 	                     <option value="${edu.name}">${edu.name}</option>
                 </c:forEach>
@@ -302,7 +302,7 @@
         <div class="form-group">
               <label class="col-md-3">Skills</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">
+                <select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">
                 <c:forEach var="skill" items="${skillsList}">
 	                     <option value="${skill.name}">${skill.name}</option>
                 </c:forEach>
@@ -471,7 +471,7 @@ function getAllCountries(){
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#country').empty();
-        	$('#country').append('<option value="">---select---</option>');
+        	$('#country').append('<option value="">---select country---</option>');
             for(var i=0;i<json.length;i++){
             	if(json[i] == '${loginCountryName}'){
             		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -502,13 +502,14 @@ function getStates(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select---</option>');
+	        	$('#state').append('<option value="">---select state---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            }
 	            $('#state').trigger("chosen:updated");
 	            
 	            $('#city').empty();
+	            $('#city').append('<option value="">---select city---</option>');
 	            $('#city').trigger("chosen:updated");
 	        },
 	        error: function(e){
@@ -516,10 +517,10 @@ function getStates(){
 	    });
 	}else{
 		$('#state').empty();
-    	$('#state').append('<option value="">---select---</option>');
+    	$('#state').append('<option value="">---select state---</option>');
     	$('#state').trigger("chosen:updated");
     	$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').append('<option value="">---select city---</option>');
         $('#city').trigger("chosen:updated");
 	}
 }
@@ -528,7 +529,6 @@ function getStates(){
 
 <script>
 function getCities(){
-	
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
 	
@@ -540,7 +540,7 @@ function getCities(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select---</option>');
+	        	$('#city').append('<option value="">---select city---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            }
@@ -551,12 +551,11 @@ function getCities(){
 	    });
 	}else{
 		$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').append('<option value="">---select city---</option>');
     	$('#city').trigger("chosen:updated");
 	}
 }
 </script>
-
 
 
 <!-- Country,State,City Script Ends Here -->
@@ -596,6 +595,27 @@ function getCities(){
 		        }
 		    });
 		    //Adding Customized Skills to the list
+		    
+		    //Adding Customized Educations to the list
+	        var selectone, chosenone;
+	        selectone = $("#candidateEducation");
+	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
+	        chosenone = selectone.data('chosen');
+	        chosenone.search_field.on('keyup', function(e1)
+		    {
+		    	var newEducation = this.value.replace(",","");
+		        if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(newEducation).text(newEducation);
+		            selectone.append(option);
+		            selectone.find(option).prop('selected', true);
+	        		$("#candidateEducation").trigger("chosen:updated");
+	        		
+		        }
+		    }); 
+		    //Adding Customized Educations to the list
+	       
 	       
 	       $("#country").on('change', function (e) {
 	    	   getStates();
@@ -660,76 +680,104 @@ function getCities(){
         	 $("#experienceMonths").attr("disabled", false); 
      });
  }
- 
- /* upload file script for size validation 2MB*/
- var selectedFile = document.getElementById("uploadBtn");
- selectedFile.addEventListener("change", function() {
- 	 $("#uploadFile").focus();
- 	 if(validate_fileupload(this.value)){
- 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-		var form = $('#candidate_form')[0];
-  		var formData = new FormData(form); 
-		var sourceleadUrl = '${sourceleadUrl}';
-		   $.ajax({
-					type : "POST",
-	        	    data: formData,
-	        	    contentType : 'application/json; charset=utf-8',
-	        	    enctype: 'multipart/form-data',
-	    	        processData: false,
-	    	        contentType:false,
-	        	    dataType : 'json',
-					url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}",
-					success : function(data) {
-						var json = JSON.parse(data);
-						var name = json.name;
-						var firstName = '';
-						var lastName = '';
-						if(name != null && name != 'undefined' && name != ''){
-							 firstName = name.split(".")[0]; 
-							 lastName = name.split(".")[1]; 
-							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-								 firstName = name;
-							 }
-						}
-						
-						$("#firstName").val(firstName);
-						$("#lastName").val(lastName);
-						$("#email").val(json.email);
-						$("#mobilePhone").val(json.phoneNumbers);
-						validateCandidateEmail();
-						$("#candidateSkills").empty();
-						 var internalOutput = "";
-						 <c:forEach var="skill" items="${skillsList}">
-						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
-	                     </c:forEach>
-						var skills = json.skills;
-						if(skills != null && skills != 'undefined' && skills != ''){
-							var str_array = skills.split(',');
-							for(var i = 0; i < str_array.length; i++) {
-							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-							}
-						}
-						$("#candidateSkills").append(internalOutput);
-		        		$("#candidateSkills").trigger("chosen:updated");
-						$("#loading").removeAttr("style");
-						
-					},
-				});
- 	 }
-  // var docSize = this.files[0].size;
-   //$("#uploadFileGroup").find('p.jquery_form_error_message').remove();
- 	  //document.getElementById("uploadFile").value = '';
- 	  //$("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
- });
+	      var selectedFile = document.getElementById("uploadBtn");
+	      selectedFile.addEventListener("change", function() {
+	      	 $("#uploadFile").focus();
+	      	 if(validate_fileupload(this.value)){
+	      		 
+	      		 var docSize = this.files[0].size;
+	     	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+	     	      
+	     	      if(docSize > 2097152){
+	     	    	  document.getElementById("uploadFile").value = '';
+	     	    	 /*  $("#uploadFileGroup").append("<p class='jquery_form_error_message'></p>"); */
+	     	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+	     			  $("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+	     			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
+	     			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	     	      }else{
+	     	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
+	        		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	     		var form = $('#candidate_form')[0];
+	       		var formData = new FormData(form); 
+	     		var sourceleadUrl = '${sourceleadUrl}';
+	      	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	     		   $.ajax({
+	     					type : "POST",
+	     	        	    data: formData,
+	     	        	    contentType : 'application/json; charset=utf-8',
+	     	        	    enctype: 'multipart/form-data',
+	     	    	        processData: false,
+	     	    	        contentType:false,
+	     	        	    dataType : 'json',
+	     				 	url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}", 
+	     					success : function(data) {
+	     						var json = JSON.parse(data);
+	     						var name = json.name;
+	     						var firstName = '';
+	     						var lastName = '';
+	     						if(name != null && name != 'undefined' && name != ''){
+	     							 firstName = name.split(".")[0]; 
+	     							 lastName = name.split(".")[1]; 
+	     							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
+	     									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
+	     								 firstName = name;
+	     							 }
+	     						}
+	     						
+	     						$("#firstName").val(firstName);
+	     						$("#lastName").val(lastName);
+	     						$("#email").val(json.email);
+	     						$("#mobilePhone").val(json.phoneNumbers);
+	     						validateCandidateEmail();
+	     						$("#candidateSkills").empty();
+	     						 var internalOutput = "";
+	     						 <c:forEach var="skill" items="${skillsList}">
+	     						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+	     	                     </c:forEach>
+	     						var skills = json.skills;
+	     						if(skills != null && skills != 'undefined' && skills != ''){
+	     							var str_array = skills.split(',');
+	     							for(var i = 0; i < str_array.length; i++) {
+	     							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+	     							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+	     							}
+	     						}
+	     						$("#candidateSkills").append(internalOutput);
+	     		        		$("#candidateSkills").trigger("chosen:updated");
+	     		        		
+	     		        		
+	     		        		$("#candidateEducation").empty();
+	     						 var internalOutput = "";
+	     						 <c:forEach var="edu" items="${educationsList}">
+	     						    internalOutput = internalOutput+"<option value='${edu.name}'>${edu.name}</option>";
+	     	                     </c:forEach>
+	     						var edu = json.edu;
+	     						if(edu != null && edu != 'undefined' && edu != ''){
+	     							var str_array = edu.split(',');
+	     							for(var i = 0; i < str_array.length; i++) {
+	     							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+	     							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+	     							}
+	     						}
+	     						$("#candidateEducation").append(internalOutput);
+	     		        		$("#candidateEducation").trigger("chosen:updated");
+	     		        		
+	     		        		
+	     						$("#loading").removeAttr("style");
+	     						
+	     					},
+	     				});
+	      	 }
+	      	 }
+	      });
 
+	     /* upload file script */
+	     document.getElementById("uploadBtn").onchange = function () {
+	     	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+	       // document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+	     };
 
-/* upload file script */
-document.getElementById("uploadBtn").onchange = function () {
-	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
-  // document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
-};
  
 </script>
 <!-- Experience Years and Months validation Script End here -->

@@ -65,7 +65,7 @@ public class VendorController {
 	@Autowired
 	ClientImportsService clientImportsService;
 
-	
+	/* This method is used for landing page of vendors tab. So, who has vendors tab access they can see vendors list. No preAuthorize for this method */
 	@RequestMapping(value = "/vendorsList")
 	public ModelAndView vendorsList(HttpServletRequest request) throws Exception {
 		
@@ -124,7 +124,7 @@ public class VendorController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("vendors/vendor");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_VENDOR));
 			model.addObject("userList", userList);
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
@@ -148,7 +148,7 @@ public class VendorController {
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	 
+	@PreAuthorize("hasRole('ROLE_CREATE_VENDOR_CONTACT')")
 	@RequestMapping(value = "/addVendorContact")
 	public ModelAndView addVendorContac(HttpServletRequest request){
 		ModelAndView model = new ModelAndView();
@@ -156,7 +156,7 @@ public class VendorController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("vendors/addVendorContact");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_VENDOR));
 			List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 			model.addObject("userList", userList);
 			model.addObject("loginOrgLocId", orgLocations.getId());
@@ -175,7 +175,7 @@ public class VendorController {
 		return model;
 	}
 
-	@PreAuthorize("hasRole('ROLE_VENDOR_BULK_IMPORTS')")
+	@PreAuthorize("hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')")
 	 @RequestMapping(value = "/uploadVendorForm")
 		public ModelAndView uploadVendorForm(HttpServletRequest request) {
 		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -203,6 +203,7 @@ public class VendorController {
 		 * @return
 	 * @throws Exception 
 		 */
+	    @PreAuthorize("hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')")
 		@RequestMapping("/vendorFileUpload")
 		public String fileUploaded(@ModelAttribute("uploadedFile") UploadedFile uploadedFile,Model model, HttpServletRequest request,@RequestParam(value = "type", required = false) String responderType)throws Exception {
 					
@@ -244,6 +245,7 @@ public class VendorController {
 		 * @param response
 		 * @throws IOException
 		 */
+	    
 		@RequestMapping(value = "/downloadVendorErrorFile/{fileName}", method = RequestMethod.GET)
 		public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws IOException {
 			

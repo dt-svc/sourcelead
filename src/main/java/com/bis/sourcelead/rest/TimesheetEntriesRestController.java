@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,7 +70,8 @@ public class TimesheetEntriesRestController {
 	 * @return JSON
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/newTimesheet", method = RequestMethod.POST )    
+	@RequestMapping(value = "/newTimesheet", method = RequestMethod.POST )   
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS')")
 	public @ResponseBody String newTimesheet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -85,6 +87,7 @@ public class TimesheetEntriesRestController {
 	 * @return JSON
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/dynamicTimesheetpopUp", method = RequestMethod.POST )
 	public @ResponseBody String dynamicTimesheetpopUp(HttpServletRequest request,@RequestParam(value="employeeId", required=false) Long employeeId,
 																				 @RequestParam(value="startDate", required=false) String startDate,

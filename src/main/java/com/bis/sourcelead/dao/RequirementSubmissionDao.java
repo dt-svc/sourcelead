@@ -43,5 +43,8 @@ public interface RequirementSubmissionDao {
 	
 	public Integer getApplicantCountByrequirementIdandAssignedUsercode(Long requirementId, String userCode) throws Exception;
  
-	
+	RequirementSubmission getVendorSubmissionByClientSubmissionIdAndCLientLocationId(Long clientSubmissionId,Long clientOrgLocationId);
+
+	List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long requirementId, User user,
+			OrgLocations loginOrgLocation, String submissionType)throws Exception;
 }

@@ -1,7 +1,7 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,8 +19,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Entity
 	@Table(name = "REQUIREMENT_ASSIGN_TO")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementAssignTo")
-	public class RequirementAssignTo {
+	public class RequirementAssignTo implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

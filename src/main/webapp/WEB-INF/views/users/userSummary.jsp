@@ -112,12 +112,18 @@ $(document).ready(function(){
 
 		<script>
  function userDetails(userId){    
+	
+	 var isTimeSheetEnrolled = '${SourceLeadWeb_timesheet}';
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 var projectsCount = '${assignedProjectsCount}';
-	 var totalOpenTimeSheetCount = '${totalOpenTimeSheetCount}';
-	 var approvedTimeSheetsCount = '${approvedTimeSheetsCount}';
-	 var rejectedTimeSheetsCount = '${rejectedTimeSheetsCount}';
-	 var waitingTimeSheetsCount = '${waitingTimeSheetsCount}';
+	 
+	 if(isTimeSheetEnrolled == 'Y'){
+		 var projectsCount = '${assignedProjectsCount}';
+		 var totalOpenTimeSheetCount = '${totalOpenTimeSheetCount}';
+		 var approvedTimeSheetsCount = '${approvedTimeSheetsCount}';
+		 var rejectedTimeSheetsCount = '${rejectedTimeSheetsCount}';
+		 var waitingTimeSheetsCount = '${waitingTimeSheetsCount}';
+	 }
+	
 	 
 	 $.ajax({
 	    	type: "POST",
@@ -129,12 +135,16 @@ $(document).ready(function(){
 			    var result = "";
 			    var submissionCountsResult = "";
 			    
-			    submissionCountsResult = '<p>Projects<strong class="label label-default">'+projectsCount+'</strong></p>';
-            	submissionCountsResult = submissionCountsResult +'<p>Approved Timesheets<strong class="label label-success">'+approvedTimeSheetsCount+'</strong></p>';
-            	submissionCountsResult = submissionCountsResult +'<p>Rejected Timesheets<strong class="label label-warning">'+rejectedTimeSheetsCount+'</strong></p>';
-            	submissionCountsResult = submissionCountsResult +'<p>Waiting for Timesheets<strong class="label label-primary">'+waitingTimeSheetsCount+'</strong></p>';
-            	submissionCountsResult = submissionCountsResult +'<p>Open Timesheets<strong class="label label-info">'+totalOpenTimeSheetCount+'</strong></p>';
-			    
+			    if(isTimeSheetEnrolled == 'Y'){
+			    	
+			    	    submissionCountsResult = '<p>Projects<strong class="label label-default">'+projectsCount+'</strong></p>';
+		            	submissionCountsResult = submissionCountsResult +'<p>Approved Timesheets<strong class="label label-success">'+approvedTimeSheetsCount+'</strong></p>';
+		            	submissionCountsResult = submissionCountsResult +'<p>Rejected Timesheets<strong class="label label-warning">'+rejectedTimeSheetsCount+'</strong></p>';
+		            	submissionCountsResult = submissionCountsResult +'<p>Waiting for Timesheets<strong class="label label-primary">'+waitingTimeSheetsCount+'</strong></p>';
+		            	submissionCountsResult = submissionCountsResult +'<p>Open Timesheets<strong class="label label-info">'+totalOpenTimeSheetCount+'</strong></p>';
+					    
+			    }
+			   
 				result = result + '<div class="project_tabs_inn_table">';
 				firstname(json.user.firstName);
 				
@@ -891,7 +901,7 @@ function editUserDetails(userId){
 						result = result + ' <div class="user_summary_edit_cta">';
 						result = result + ' <label>Manager</label>';
 						result = result + '  <select id="reportingManager" name="reportingManager" >'+
-			 	     	"<option value=''>-Select-</option>";    
+			 	     	"<option value=''>-Select Manager-</option>";    
 			 	     	 for (var i=0; i<json.allReportingManagers.length; i++)
 	    					{
 	    		 	    	   manager = json.allReportingManagers[i];

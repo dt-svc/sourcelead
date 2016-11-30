@@ -4,6 +4,7 @@
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 
 <script src="resources/js/formvalidator.js"></script>
@@ -15,14 +16,27 @@
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="candidatesActivities.jsp"></jsp:include>
-<jsp:include page="candidatesCommentsList.jsp"></jsp:include>
 
+ <sec:authorize access="hasRole(\'ROLE_POST_COMMENTS\')">
+<jsp:include page="candidatesCommentsList.jsp"></jsp:include>
+ </sec:authorize>
 <script>
  window.onload = function() {
  	 candidateList();
  	 $("#upcandidateStatus").val('');
 };
 </script>
+
+<style type="text/css">
+.candidate_wrap_table table tr td:first-child {
+    padding: 0;
+    text-align: center;
+    width: 200px;
+    padding-right: 5px;
+}
+</style>
+
+
 
 <%-- 
      @author : sarath kumar.
@@ -44,7 +58,7 @@
           $("#canDiv").text("Active Candidates");
       }else if(candidateStatus == 0){
     	  $("#canDiv").text("In Active Candidates");
-      }else if(candidateStatus == 'ALL'){
+      }else if(candidateStatus == 2){
     	  $("#canDiv").text("All Candidates");
       }else{
           $("#canDiv").removeAttr("onClick");
@@ -73,13 +87,13 @@
 	                	 result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>"; 
+	                    /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
 	                     result = result +"    <th>Name</th>"; 
 	                     result = result +"    <th>Designation</th>"; 
 	                     result = result +"    <th>Position type</th>"; 
 	                     result = result +"    <th>Email</th>"; 
 	                     result = result +"    <th>Mobile</th>"; 
-	                     result = result +"    <th>Address</th>"; 
+	                     result = result +"    <th>Location</th>"; 
 	                     result = result +"    <th>Last Update</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -111,8 +125,17 @@
 				            		candidateUpdateDateToString = "---";
 				            	}
 		                     result = result +"<tr>";
-			                 result = result +"  <td><input type='checkbox' id='checkbox12'/></td>";
-			                 result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+
+			                 /* result = result +"  <td><input type='checkbox' id='checkbox12'/></td>"; */
+			                
+			                 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\')">'; 
+			                   result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span title='"+opt.firstName+" "+opt.lastName+"'>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+			                 '</sec:authorize>';
+			                 
+			                 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\')">'; 
+			                  result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+opt.lastName+"'>"+opt.firstName+" "+opt.lastName+"</span></div></td>";
+			                 '</sec:authorize>';
+
 			                 result = result +"  <td><div><span>"+designation+"</span></div></td>";
 			                 if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
 			                	 {
@@ -120,9 +143,18 @@
 			                	 }else{
 			                		 result = result +"  <td><div>----</div></td>"; 
 			                	 }
-			                 result = result +"  <td><div ><span>"+opt.email+"</span></div></td>";
+			                 result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 			                 result = result +"  <td><div>"+mobilePhone+"</div></td>";
-			                 result = result +"  <td><div><span title='"+address+"'>"+address+"</span></div></td>";
+			                 if(opt.state !='' && opt.state != 'undefined' && opt.city !='' && opt.city != 'undefined'){
+	                             result = result +"  <td><div><span title='"+opt.country+", "+opt.state+", "+opt.city+"'>"+opt.country+", "+opt.state+", "+opt.city+"</span></div></td>";
+	                              } else if(opt.state !='' && opt.state != 'undefined')
+	                            {
+	                             result = result +"  <td><div><span title='"+opt.country+", "+opt.state+"'>"+opt.country+", "+opt.state+"</span></div></td>";
+	                            }
+	                            else{
+	                            result = result +"  <td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
+	                            }
+
 			                 result = result +"  <td><div>"+candidateUpdateDateToString+"</div></td>";
 			                 result = result +"</tr>"; 
 	                     }
@@ -200,6 +232,7 @@ function cpagination(){
 var candidateStatusGlobal ="";
 function clientSideBar(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var loginUserId = '${SourceLeadWeb_userId}';
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -337,13 +370,13 @@ function clientSideBar(candidateId){
 			             
 			             result = result+'                 </ul>';
 			            /* New comments div creation Nov 8th, 2016 */
-			            
+			            '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\')">'; 
 			            result = result+'<div class="comments-div clearfix" id="latestMessage">';
 			            result = result+'    <div class="commentsimg">';
 			            result = result+'    <i class="fa fa-comments"></i>';
 			            result = result+'        <div class="commentsimg-inner">';
 			            
-			            result = result+'        	<img src="resources/images/userprofile-img.png" alt="User Comment" title="User Comment">';
+			            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
 			            result = result+'        </div>';
 			            result = result+'    </div>';
 			            result = result+'     <div class="comments-content">';
@@ -364,6 +397,7 @@ function clientSideBar(candidateId){
 			 			result = result+'		</div>';
 			            result = result+'     </div>';
 			            result = result+'</div>';
+			            '</sec:authorize>';
 			 		    /* New comments div creation Nov 8th, 2016 */
 			             
 			             
@@ -741,7 +775,10 @@ function cancel(candidateId){
                   </div>                	
           </li>  
           
-          <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
+          
+           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
+              <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
+           </sec:authorize>
          
           <div class="clearfix"></div>
         </ul>
@@ -920,7 +957,7 @@ function exportToPdf(){
         $("#canDiv").removeAttr("onClick");
     }
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&exportType=pdf";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf";	
 	  }
 }
 
@@ -942,7 +979,7 @@ function exportToExcel(){
          $("#canDiv").removeAttr("onClick");
      }
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&exportType=xls";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls";	
 	  }
 }
 </script>
@@ -1058,7 +1095,7 @@ function savedCommentAndCount(candidateId){
 				            result = result+'    <i class="fa fa-comments"></i>';
 				            result = result+'        <div class="commentsimg-inner">';
 				            
-				            result = result+'        	<img src="resources/images/userprofile-img.png" alt="User Comment" title="User Comment">';
+				            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
 				            result = result+'        </div>';
 				            result = result+'    </div>';
 				            result = result+'     <div class="comments-content">';

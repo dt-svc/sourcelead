@@ -337,6 +337,83 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			}
 			return count;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementSubmission getVendorSubmissionByClientSubmissionIdAndCLientLocationId(Long clientSubmissionId,
+			Long clientOrgLocationId) {
+		
+
+		Session session = this.sessionFactory.getCurrentSession();
+		
+	     String query = "from RequirementSubmission rs where rs.id = :clientSubmissionId and rs.orgLocations.id =:clientOrgLocationId ";
+	     List<RequirementSubmission> vendorsubmissionList = session.createQuery(query).setLong( "clientSubmissionId", clientSubmissionId).setLong( "clientOrgLocationId", clientOrgLocationId).setCacheable(true).list();
+	   
+	     if(vendorsubmissionList != null && vendorsubmissionList.size() >0){
+				return vendorsubmissionList.get(0);
+			}
+	  return null;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long requirementId, User user,
+			OrgLocations loginOrgLocation, String submissionType) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
+		List<RequirementAssignTo> requirementAssignToList =  requirementAssignToService.getRequirementAssignToListByRequirementId(requirementId);
+		List<RequirementSubmission>  requirementSubmission = null;
+		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(user.getId(),loginOrgLocation.getId());
+		if (isadmin && requirement.getManagerUserId().getId()!=user.getId()) {
+			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId and reqSub.submissionStatus = :submissionType";
+			 requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).setString("submissionType", submissionType).list();
+		}
+		
+		if(requirement.getManagerUserId().getId()== user.getId()){
+			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId and reqSub.submissionStatus = :submissionType";
+			requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).setString("submissionType", submissionType).list();
+		}
+		
+		Boolean teamFlag = teamDao.getTeamOwnersListByUserId(user,loginOrgLocation.getId());
+		if(requirement.getManagerUserId().getId()!=user.getId()&& teamFlag){
+			for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
+				if(requirementAssignTo.getTeamId()!=null){
+					Team team = teamDao.getTeamByTeamId(requirementAssignTo.getTeamId().getId());
+					if(team.getOwnerUserId()!=null){
+						if(team.getOwnerUserId().getId()==user.getId()){
+							List<TeamMembers> teamMembers =  teamMemberDao.getTeamMembersListByTeamID(requirementAssignTo.getTeamId().getId(),loginOrgLocation.getId());
+							List<String> userCodes = new ArrayList<>();
+							userCodes.add(user.getUserCode());
+							for (TeamMembers teamMember : teamMembers) {
+								User usercode= userDao.getUserById(teamMember.getMemberUserId().getId());
+								userCodes.add(usercode.getUserCode());
+							}
+							
+							String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.createdBy IN (:usercode) and reqSub.requirement.id =:requirementId and reqSub.submissionStatus = :submissionType";
+							  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setParameterList("usercode", userCodes).setLong("requirementId", requirementId).setString("submissionType", submissionType).list();
+						}
+				}
+			}
+			}
+		}
+		boolean flag = false;
+		for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
+			if(requirementAssignTo.getAssignUserId().getId()==user.getId()){
+				flag = true;
+			}
+		}
+		
+		if(requirement.getManagerUserId().getId()!=user.getId()&& flag && !teamFlag ){
+			String query = "from RequirementSubmission reqSub where (reqSub.orgLocations.id =:loginOrgLocation or reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId";
+		  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).list();
+		}
+		
+		if(requirement.getManagerUserId().getId()!=user.getId()&& !flag && !teamFlag && !isadmin){
+			String query = "from RequirementSubmission reqSub where (reqSub.orgLocations.id =:loginOrgLocation or reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId";
+		  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).list();
+		}
+		return requirementSubmission;
+	}
 	
 	
 	/*

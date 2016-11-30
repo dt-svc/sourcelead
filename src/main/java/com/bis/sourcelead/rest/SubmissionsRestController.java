@@ -115,7 +115,7 @@ public class SubmissionsRestController {
 		
 	}
     
-    @PreAuthorize("hasAnyRole('ROLE_VIEW_SUBMISSION_TEMPLATE')")
+    @PreAuthorize("hasAnyRole('ROLE_VIEW_SUBMISSION_TEMPLATE','ROLE_ADD_APPLICANT')")
     @RequestMapping(value = "/getRequirmentOrgSubmissionTemplate" , method = RequestMethod.GET)
 	   public String getRequirmentOrgSubmissionTemplate(@RequestParam(value="requirementId", required=false) Long requirementId) throws Exception {
 			
@@ -126,6 +126,7 @@ public class SubmissionsRestController {
     }
     
     
+    @PreAuthorize("hasRole('ROLE_ADD_APPLICANT')")
     @RequestMapping(value = "/saveAddApplicant" , method = RequestMethod.POST)
 	   public String saveAddApplicant(@RequestParam(value="jsonData", required=false) String json,
 			   @RequestParam(value="con", required=false) String con,MultipartHttpServletRequest request,
@@ -197,6 +198,7 @@ public class SubmissionsRestController {
 	   }
     
     
+    @PreAuthorize("hasAnyRole('ROLE_SHORTLIST','ROLE_SUBMIT_TO_CLIENT')")
     @RequestMapping(value = "/getSubmissionCandidates" , method = RequestMethod.POST)
 	   public String getSubmissionCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
 			   @RequestParam(value="status", required=false) String status,HttpServletRequest request) throws Exception {
@@ -233,6 +235,7 @@ public class SubmissionsRestController {
     }
     
     
+    @PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
     @RequestMapping(value = "/submitShortlistedToClient" , method = RequestMethod.POST)
 	   public String submitShortlistedToClient(@RequestParam(value="requirementId", required=false) Long requirementId,
 			   @RequestParam(value="submissionsList", required=false) String submissionsList,HttpServletRequest request) throws Exception {
@@ -275,7 +278,7 @@ public class SubmissionsRestController {
  	return "success";
  }
     
-
+    @PreAuthorize("hasRole('ROLE_VIEW_APPLICANT')")
 	@RequestMapping(value = "/getSubmissionDetails" , method = RequestMethod.POST)
 	   public String getSubmissionDetails(@RequestParam(value="submissionId", required=false) Long submissionId,HttpServletRequest request) throws Exception {
     	 

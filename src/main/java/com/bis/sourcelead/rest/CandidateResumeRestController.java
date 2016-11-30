@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -79,6 +80,9 @@ public class CandidateResumeRestController {
 	* 
 	* @throws Exception
 	*/
+	
+	
+	@PreAuthorize("hasRole('ROLE_ADD_CANDIDATE_RESUMES')")
 	@RequestMapping(value = "/saveCandidateResume", method = RequestMethod.POST)
 	public @ResponseBody String saveCandidateResume(@RequestParam(value = "json", required = false) String json, String candidateId, String resumeId, MultipartHttpServletRequest request) throws Exception {
 
@@ -151,6 +155,8 @@ public class CandidateResumeRestController {
 	* 
 	* @throws Exception
 	*/
+	
+	 @PreAuthorize("hasRole('ROLE_DELETE_CANDIDATE_RESUMES')")
 	@RequestMapping(value = "/terminateResume", method = RequestMethod.POST)
 	public @ResponseBody String terminateResume(String resumeId, HttpServletRequest request) throws Exception {
 		
@@ -179,6 +185,8 @@ public class CandidateResumeRestController {
 	* 
 	* @throws Exception
 	*/
+	
+	@PreAuthorize("hasRole('ROLE_EDIT_CANDIDATE_RESUMES')")
 	@RequestMapping(value = "/getResume", method = RequestMethod.POST)
 	public @ResponseBody String getResume(String resumeId, HttpServletRequest request) throws Exception {
 		String resultJson = null;

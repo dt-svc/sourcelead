@@ -74,9 +74,9 @@ window.onload = function () {
 			</div>
 						
 			<div class="form-group" id="countryDiv" style="display: block;">
-				<label class="col-md-3">Country</label>
+				<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
-				 <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country"  >
+				 <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country"  data-validation="required" >
                  </select>
 				</div>
 			</div>
@@ -139,7 +139,7 @@ window.onload = function () {
             <div class="form-group" id="EmailIdDiv">
 				<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
-					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();">
+					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateWebsite();getSpocUserDetails();">
 	                            <span class="hidden">Valid Email</span>
 				</div>
 			</div>
@@ -180,7 +180,7 @@ window.onload = function () {
             <div class="form-group">
               <label class="col-md-3">Owner<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
+                <select data-placeholder="select owner" multiple class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
                 <c:forEach var="user" items="${userList}">
 	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
                 </c:forEach>
@@ -401,7 +401,7 @@ function validateEmail(){
 </script>
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function getRolesList(){
 	var orgName = document.getElementById("orgName").value;
 	var orgLocationId = document.getElementById("orgLocationId").value;
@@ -436,8 +436,7 @@ function getRolesList(){
 	}
 	 
 }
-</script>
-
+</script> -->
 
 <script type="text/javascript">
 	(function($) {
@@ -727,13 +726,14 @@ function getStates(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select---</option>');
+	        	$('#state').append('<option value="">---select state---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            }
 	            $('#state').trigger("chosen:updated");
 	            
 	            $('#city').empty();
+	            $('#city').append('<option value="">---select city---</option>');
 	            $('#city').trigger("chosen:updated");
 	        },
 	        error: function(e){
@@ -741,10 +741,10 @@ function getStates(){
 	    });
 	}else{
 		$('#state').empty();
-    	$('#state').append('<option value="">---select---</option>');
+    	$('#state').append('<option value="">---select state---</option>');
     	$('#state').trigger("chosen:updated");
     	$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').append('<option value="">---select city---</option>');
         $('#city').trigger("chosen:updated");
 	}
 }
@@ -771,7 +771,7 @@ function getCities(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select---</option>');
+	        	$('#city').append('<option value="">---select city---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            }
@@ -782,7 +782,7 @@ function getCities(){
 	    });
 	}else{
 		$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
+    	$('#city').append('<option value="">---select city---</option>');
     	$('#city').trigger("chosen:updated");
 	}
 }

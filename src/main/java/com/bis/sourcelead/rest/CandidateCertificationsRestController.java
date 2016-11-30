@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
-import com.bis.sourcelead.entity.CandidateEmployers;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCertificationsService;
@@ -77,7 +74,7 @@ public class CandidateCertificationsRestController {
 	   * 
 	   * @throws Exception
 	   */
-	//@PreAuthorize("hasAnyRole('ROLE_VIEW_CANDIDATE_CERTIFICATION')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_CANDIDATE_CERTIFICATION')")
 	 @RequestMapping(value = "/getCandidateCertificationListByCandidateIdAndOrgLocationID") 
 	 public String getCandidateCertificationListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
 

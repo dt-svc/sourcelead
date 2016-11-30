@@ -1,4 +1,5 @@
 
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <%-- 
 <jsp:include page="masterHeader.jsp" />
@@ -232,7 +233,11 @@ float: none !important;
 } */
 </style>
 
- 
+ <style type="text/css">
+.clients_wrap_table {
+overflow-x: auto;
+}
+</style>
 
  <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
@@ -250,26 +255,35 @@ float: none !important;
 	    </section>
 	    
 	    <div class="clearfix row mb">
-			<c:if test = "${SourceLeadWeb_timesheet == 'Y'}">      
+	      <sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')"> 
+			<%-- <c:if test = "${SourceLeadWeb_timesheet == 'Y'}">     --%>  
 			   <jsp:include page="dashboardTimesheets.jsp"></jsp:include>  
-			</c:if>
-			<c:if test = "${SourceLeadWeb_userType != 'Employee'}">
+			<%-- </c:if> --%>
+	      </sec:authorize>
+			 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
+			<%-- <c:if test = "${SourceLeadWeb_userType != 'Employee'}"> --%>
 				<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 					<jsp:include page="dashboardRequirement.jsp"></jsp:include> 
 				</c:if>
-			</c:if>
-		 
+			<%-- </c:if> --%>
+		     </sec:authorize>
 	      	 <%-- <jsp:include page="dashboardTasks.jsp"></jsp:include> --%>
 	    </div>
-    	<c:if test = "${SourceLeadWeb_userType != 'Employee'}">
+    	<%-- <c:if test = "${SourceLeadWeb_userType != 'Employee'}"> --%>
 	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
+	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 					<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> 
+					</sec:authorize>
 			    <div class="clearfix row mb"> 
+			    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 			   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
+			   	 	 </sec:authorize>
+			   	 	  <sec:authorize access="hasAnyRole('ROLE_VIEW_INTERVIEW')">
 			    	 <jsp:include page="dashboardInterviews.jsp"></jsp:include>
+			    	 </sec:authorize>
 			    </div>
 		    </c:if>
-	    </c:if>
+	    <%-- </c:if> --%>
 	    
 	    <div class="clearfix row mb"> 
 	   	 <%--  <jsp:include page="dashboardTimesheetsApprovals.jsp"></jsp:include> --%>

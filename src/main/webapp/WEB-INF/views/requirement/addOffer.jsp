@@ -172,7 +172,7 @@ function loadRemiderDiv(){
 
 
 <div id="divOfferTd1" style="display: none; float: left;">
-       <select multiple class="chosen-select blminwidth-50" id="REPLACEROWIDapplicantId" name="REPLACEROWIDapplicantId" field-name="Applicant" data-validation="required" >
+       <select multiple class="chosen-select blminwidth-50" id="REPLACEROWIDapplicantId" data-placeholder="select Apllicants" name="REPLACEROWIDapplicantId" field-name="Applicant" data-validation="required" >
 			
 	  </select>
 </div>
@@ -208,7 +208,7 @@ function loadRemiderDiv(){
         <label class="input-group-btn"> <span class="btn btn-primary file-btn"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
           <input type="file" style="display: none;"  multiple id="uploadBtn"  class="upload" id="REPLACEROWIDOfferAttachment" name="REPLACEROWIDOfferAttachment"></span>
 		</label> 
-		<input type="text" class="form-control file1" readonly id="uploadFile" placeholder="Files are not selected..."  >
+		<input type="text" class="form-control file1" readonly id="uploadFile" placeholder="Upload File."  >
      </div>                 
 </div>
 
@@ -366,7 +366,8 @@ function cancelAddOffer(){
 	        	$(".add_offer_wrap").removeClass("add_offer_wrap_active");
         		$(".side_mask").fadeOut(200);
         		$("body").css('overflow-y', 'auto');
-        		requirementPipeline(requirementId); 
+        		var allApplicants = 'all';
+	    		requirementPipeline(requirementId,allApplicants); 
 	        },
 	    });   
         return true;

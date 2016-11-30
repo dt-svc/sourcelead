@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -71,6 +72,7 @@ public class TimesheetSubmissionsRestController {
 	TimesheetSubmissionsDocumentsService timesheetSubmissionsDocumentsService;
 	
 	// sarath kumar punnana : this  controller method is for withdraw  timwsheet entries.
+	@PreAuthorize("hasRole('ROLE_MODIFY_MY_TIMESHEETS')")
 	@RequestMapping(value = "/withDrawTimesheet", method = RequestMethod.POST)
 	public @ResponseBody void withDrawTimesheet(@RequestParam(value="submissionId", required=false) String submissionId) throws Exception {
 				
@@ -78,7 +80,7 @@ public class TimesheetSubmissionsRestController {
 	}
 		
 
-	
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')") 
 	@RequestMapping(value = "/getArrovalSubmissions",  method = RequestMethod.POST)
 	public @ResponseBody  String getArrovalSubmissions(HttpServletRequest request, @RequestParam(value="employeeId", required=false) String employeeId) throws Exception {
 		

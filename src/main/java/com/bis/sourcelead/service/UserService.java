@@ -10,9 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.TeamMembers;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.UserProfile;
 public interface UserService  {
 
@@ -77,7 +76,7 @@ public interface UserService  {
 	public List<User> getOwnersByOrgLocationId(Long orgLocationsId) throws Exception;
 
 	//Prasad Salina to get managers list baded on role type
-	List<User> getManagersByUserRolesAndOrgLocationId(Long roleId , Long orgLocationsId) throws Exception;
+	List<User> getManagersByUserRolesAndOrgLocationId(Long roleId , Long orgLocationsId,Long tabId) throws Exception;
 			
 	//Prasad Salina to get managers list baded on role type and except current user
 	List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,Long roleId , Long orgLocationsId) throws Exception;
@@ -138,6 +137,10 @@ public interface UserService  {
 
 	
 	public List<User>  getUserListExceptExistedTeamMembersList(List<Long> teamMembersId,Long orgLocationId)throws Exception;
+	
+	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
+	
+	public List<Roles> getTabAccessRolesListByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
 	
 }	
 		

@@ -2,6 +2,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+ <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
  <jsp:include page="employeeSubmissionDetails.jsp" />
  <jsp:include page="educationSubmissionDetails.jsp" />
@@ -195,8 +196,9 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	                    
 	                  
 	                  result = result + '<div class="col-md-6">';
-
+	                  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTERVIEW\')">';
 	                  result  = result + '   <div id="internalInterviewsList" ></div>';
+	                  '</sec:authorize>';
 	     			  
 	     			  //Customer Interviews List
 	     			  result  = result + '   <div id="customerInterviewsList" ></div>';
@@ -208,7 +210,9 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	     			  result = result+'<div id="offerDetailsByClient" ></div>  ';
 	     			 
 	     			 //Internal Offer List
+	     			 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_OFFER\')">';
 	     			  result  = result + '   <div id="offerDetails" ></div>';
+	     			 '</sec:authorize>';
 	     			  
 	     			 result = result + ' </div>';      
 
@@ -305,7 +309,8 @@ function getInternalInterviewsList(submissionId){
 	                    	 var interviewTypeHeader = "";
 	                    	 var interviewType = "---";
 	                    	// var timeZone = "---";
-	                    	 
+	                    	 var location = "---"; 
+	                    	
 	                    	 if(report.notificationToApplicant != null && report.notificationToApplicant != 'undefined' && report.notificationToApplicant != "" && report.notificationToApplicant == "Y"){
 	                    		 notifiedDetails = 'Applicant';
 				             }
@@ -333,6 +338,10 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	                    	 if(report.timeZone != null && report.timeZone != 'undefined' && report.timeZone != ""){
 	                    		 timeZone = report.timeZone;
+	                    	 }
+	                    	 
+	                    	 if(report.location != null && report.location != 'undefined' && report.location != ""){
+	                    		 location = report.location;
 	                    	 }
 	                    	 
 	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
@@ -379,7 +388,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '<label class="col-md-5">';
 	                    	 result = result + '<strong>Interview Location</strong>';
 	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7">'+report.location+'</p>';
+	                    	 result = result + '<p class="col-md-7">'+location+'</p>';
 	                    	 result = result + '</div>';
 
 	                    	 result = result + '<div class="row clearfix">';
@@ -558,6 +567,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                    	 var interviewTypeHeader = "";
 	                    	 var interviewType = "---";
 	                    	//var timeZone = "---";
+	                    	 var location = "---";
 	                    	 
 	                    	 if(report.interviewType != null && report.interviewType != 'undefined' && report.interviewType != ""){
 	                    		 interviewType = report.interviewType;
@@ -566,6 +576,10 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                    	 
 	                    	 if(report.timeZone != null && report.timeZone != 'undefined' && report.timeZone != ""){
 	                    		 timeZone = report.timeZone;
+	                    	 }
+	                    	 
+	                    	 if(report.location != null && report.location != 'undefined' && report.location != ""){
+	                    		 location = report.location;
 	                    	 }
 	                    	 
 	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
@@ -599,7 +613,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                    	 result = result + '<label class="col-md-5">';
 	                    	 result = result + '<strong>Interview Location</strong>';
 	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7">'+report.location+'</p>';
+	                    	 result = result + '<p class="col-md-7">'+location+'</p>';
 	                    	 result = result + '</div>';
 
 	                    	 result = result + '<div class="row clearfix">';
@@ -711,8 +725,12 @@ function getOfferDetails(submissionId){
                     	 result = result + '<div class="action-nav">';
                     	 result = result + '<span id="'+submissionId+'actionDiv">';
                     	 if(json.offerStatus != "OFFERACCEPTED"  && json.offerStatus != "OFFERREJECTED" ){
-                    		 result = result + '<a  href="javascript:void(0)" title="Accept" onClick="acceptingOffer(\''+accept+'\' ,\''+submissionId+'\');"   ><i class="fa fa-check text-success"></i></a>';
-                        	 result = result + '<a  href="javascript:void(0)"  title="Reject"  onClick="rejectOffer( \''+reject+'\' ,\''+submissionId+'\');"  ><i class="fa fa-close text-danger"></i></a>';
+                    		 '<sec:authorize access="hasAnyRole(\'ROLE_ACCEPT_OFFER\')">';
+                    		 	result = result + '<a  href="javascript:void(0)" title="Accept" onClick="acceptingOffer(\''+accept+'\' ,\''+submissionId+'\');"   ><i class="fa fa-check text-success"></i></a>';
+                    		 '</sec:authorize>';
+                    		 '<sec:authorize access="hasAnyRole(\'ROLE_REJECT_OFFER\')">';
+                        	 	result = result + '<a  href="javascript:void(0)"  title="Reject"  onClick="rejectOffer( \''+reject+'\' ,\''+submissionId+'\');"  ><i class="fa fa-close text-danger"></i></a>';
+                        	 '</sec:authorize>';
                         	 result = result + '<a  href="javascript:void(0)"  onClick="acceptingOffer(\''+mybe+'\',\''+submissionId+'\');"   ><i class="fa fa-question-circle text-muted"></i></a>';
                     	 }
                     	
@@ -834,7 +852,7 @@ function getOfferDetails(submissionId){
 			    	} 
               }else{
             	 
-	    	         var result ="";
+	    	         /* var result ="";
 		    	     result = result+"   <div class='row'>"; 
 					 result = result+"	<div class='col-lg-12'>"; 
 					 result = result+"		<div class='content-area clearfix'>"; 
@@ -844,9 +862,9 @@ function getOfferDetails(submissionId){
 					 result = result+"			 </div>";
 					 result = result+"		</div>"; 
 					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
+					 result = result+"  </div> "; */ 
 					$("#offerDetails").empty();
-				    $("#offerDetails").append(result); 
+				   /*  $("#offerDetails").append(result);  */
               }
        },
          

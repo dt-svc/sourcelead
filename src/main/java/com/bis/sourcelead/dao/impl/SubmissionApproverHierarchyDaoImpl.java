@@ -597,38 +597,27 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		return tslist;
 	}
 
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<SubmissionApproverHierarchy> getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(
-			Long userId, Long orgLocationId, String approvalStatus) {
-		
-
-        Session session = this.sessionFactory.getCurrentSession();
-		
-		//Getting List for which employee  is Assigned
-		String subQueryForUserIdChecking = "(pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
-		String subQueryForList = " from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where "+subQueryForUserIdChecking+" and emp.orgLocations.id = :orgLocationId";
-		
-		//Getting Max Hierarchy Level for which employee is Assigned
-		String subQueryForUserIdCheckingInMaxLevel = " (subsah.submissionId.projectMembers.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId)) ";
-		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from  SubmissionApproverHierarchy subsah  where "+subQueryForUserIdCheckingInMaxLevel+" and subsah.submissionId.projectMembers.employee.orgLocations.id = :orgLocationId ";
-		
-		String query = subQueryForList +" and ( hierarchy.level IN("+subQueryForMaxLevel+"))  and  sah.submissionApprovalStatus = :approvalStatus GROUP BY sah.submissionId,hierarchy.level order by pm.projects.id ASC" ;
-		List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId",orgLocationId).setString("approvalStatus", approvalStatus).setCacheable(true).list(); 
-		
-		return tslist;
-	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<SubmissionApproverHierarchy> getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(
+	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(
 			Long userId, Long orgLocationId, String submissionStatus) {
-		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee  emp  left join fetch emp.user where  emp.orgLocations.id = :orgLocationId and hierarchy.approverUserId.id = :userId and  sah.submissionStatus = :submissionStatus    GROUP BY sah.submissionId order by pm.projects.id ASC)" ;
+		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee  emp  left join fetch emp.user "
+				+ " where  emp.orgLocations.id = :orgLocationId and "
+				+ " ( "
+				    /*
+				    *  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
+				    */
+				+ "  hierarchy.approverUserId.id = :userId "
+				    /*
+					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
+					 */
+				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.id = sah.submissionId.id ) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+") "
+				+ "   ) "
+				+ " and  sah.submissionStatus = :submissionStatus    GROUP BY CONCAT(emp.id,sah.submissionId.startDate)order by pm.projects.id ASC)" ;
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId",orgLocationId).setString("submissionStatus", submissionStatus).setCacheable(true).list(); 
-		
 		return tslist;
 	}
 

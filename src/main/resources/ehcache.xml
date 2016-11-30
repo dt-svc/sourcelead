@@ -467,21 +467,92 @@
     <cache name="sourceleadActions"
         maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
         <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
     </cache>
     
     <cache name="moduleActions"
         maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
         <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
     </cache>
     
      <cache name="roleHierarchy"
         maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
         <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
     </cache>
     
       <cache name="sourceleadRoles"
         maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
         <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    
+     <cache name="boPaymentTypes"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="boAmexTrans"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="boComericaTrans"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="boJmpcTrans"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>
+    
+    <cache name="boUploadedFiles"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
     </cache>
     
     

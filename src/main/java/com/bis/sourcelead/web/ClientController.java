@@ -30,6 +30,8 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+
+import opennlp.tools.parser.Cons;
 /**
  * Handles requests for the Client service.
  * 
@@ -81,7 +83,7 @@ public class ClientController {
 			ModelAndView model = new ModelAndView();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
-			List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
 			model.addObject("userList", userList);
 			model.setViewName("client/client");
 			model.addObject("sourceleadUrl", sourceleadUrl);
@@ -95,6 +97,8 @@ public class ClientController {
 	  * @return ModelAndView
 	  * @throws Exception
 	  */
+	
+	/* This method is used for landing page of clients tab. So, who has client tab access they can see clients list. No preAuthorize for this method */
 	 @RequestMapping(value = "/clientDashboard")
 		public ModelAndView clientDashboard(HttpServletRequest request) throws Exception {
 		 
@@ -158,7 +162,7 @@ public class ClientController {
 				try{
 					
 					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-					List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+					List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
 					model.addObject("userList", userList);
 					model.setViewName("client/addClientContact");
 					model.addObject("sourceleadUrl", sourceleadUrl);

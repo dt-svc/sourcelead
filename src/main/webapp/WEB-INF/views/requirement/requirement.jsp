@@ -3,6 +3,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
@@ -242,7 +243,7 @@ $(document).ready(function () {
           <div class="form-group" id="jobIdDiv">
             <label class="col-md-3">Id</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  onblur="validateJobId();"  onmouseout="validateJobId();" value="">
+              <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  onblur="validateJobId();"  onKeyUp="validateJobId();" value="">
             </div>
           </div>
           
@@ -398,7 +399,7 @@ $(document).ready(function () {
                   </span>
                 </label>
                 
-                <input type="text" class="form-control" readonly id="uploadFile" name="docFile"  value="${requirement.fileName}" type="file"   placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
+                <input type="text" class="form-control" readonly id="uploadFile" name="docFile"  value="${requirement.fileName}" type="file"   placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
               <div class="clearfix"></div> <div class="clearfix"></div>
               </div>
             </div>
@@ -429,7 +430,7 @@ $(document).ready(function () {
 		            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
 		            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
 		            &nbsp;&nbsp;
-		            <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
+		            </label>
 			  	</div>
 	        </c:if>
 	      
@@ -453,8 +454,10 @@ $(document).ready(function () {
 			                    </c:if>
 						</c:forEach>
                     </select>
+                    <%-- <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')">
                     <i data-target="#addClient" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" onClick="addClientPopUp();"></i>
                     <div id="addClient" class="modal fade" role="dialog"></div>
+                    </sec:authorize> --%>
                   </div>
                   <div role="dialog" id="addLevel" class="modal fade">
                     <div class="modal-dialog">
@@ -501,7 +504,9 @@ $(document).ready(function () {
 			         		<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option> 
 					     </c:forEach>
                     </select>
-                    <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i> 
+                    <%-- <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')">
+                    <i data-target="#addContact" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" id="addContactPlus" style="display: none;" ></i>
+                    </sec:authorize>  --%>
                  </div>
                   
                 </div>
@@ -666,7 +671,7 @@ $(document).ready(function () {
             <div class="col-md-9">
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-                  <input type="text" id="assignedTo" placeholder="Assign Role" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
+                  <input type="text" id="assignedTo" placeholder="Assign Team" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
                   <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
                   </div>
@@ -723,7 +728,7 @@ $(document).ready(function () {
       <div class="pull-right">
         <input type="button" value="Submit for Approval" id="submitForApproval" onclick="storeRequirement('submitForApproval');" class="btn btn-primary" style="display:none;">
         <c:if test="${empty requirement.requirementSubmissionStatus || requirement.requirementSubmissionStatus == 'DRAFT' || requirement.requirementSubmissionStatus == 'REJECTED'}">
-        	<input type="button" value="Draft" id="draft" onclick="storeRequirement('draft');" class="btn btn-danger ml">
+        	<input type="button" value="Draft" id="draft" onclick="storeRequirement('draft'); " class="btn btn-danger ml">
         </c:if>
         <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >    
         <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
@@ -788,7 +793,7 @@ $(document).ready(function () {
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
-		
+		validateJobId();
 		$('#addClient').empty();
 		$('#addContact').empty();
 		$('#addTeam').empty();
@@ -1138,6 +1143,26 @@ function getCities(){
            });
            //Adding Customized Skills to the list
            
+            //Adding Customized Educations to the list
+	        var selectone, chosenone;
+	        selectone = $("#education");
+	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
+	        chosenone = selectone.data('chosen');
+	        chosenone.search_field.on('keyup', function(e1)
+		    {
+		    	var newEducation = this.value.replace(",","");
+		        if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(newEducation).text(newEducation);
+		            selectone.append(option);
+		            selectone.find(option).prop('selected', true);
+	        		$("#education").trigger("chosen:updated");
+	        		
+		        }
+		    }); 
+		    //Adding Customized Educations to the list
+           
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
@@ -1168,6 +1193,8 @@ function getTemplateVal(){
         checkTemplateforDouplicate();
     }else{
         $("#isTemplate").val('N');
+        $('#jobTitleDiv').find('p.jquery_form_error_message').remove();
+
     }
 }
 
@@ -1219,7 +1246,7 @@ function setTemplateValues(){
 			    	var country = '';
 					 var state = '';
 					 var city = '';
-					
+					 validateJobId(json.jobId);
 					
 						if(json.country != null && json.country !='' && json.country !='undefined'){
 							$("#existingCountry").val(json.country);
@@ -1626,7 +1653,7 @@ function getTeamsList(teamType){
 				}else{
 					output = output +'           <option value="All">All</option>';
 				}
-				if(teamType == 'Admin'){
+				/* if(teamType == 'Admin'){
 					output = output +'           <option value="Admin" selected>Admin</option>';
 				}else{
 					output = output +'           <option value="Admin">Admin</option>';
@@ -1648,13 +1675,22 @@ function getTeamsList(teamType){
 				output = output +'           <option value="Project Manager" selected>Project Manager</option>';
 			  }else{
 				output = output +'           <option value="Project Manager">Project Manager</option>';
-			  } 
-				for (var i = 0; i < json.length; i++) {
-					var opt = json[i];
+			  } */ 
+			  for (var i = 0; i < json.teams.length; i++) {
+					var opt = json.teams[i];
 					if(teamType == opt.id){
 						output = output + "<option value='"+opt.id+"' selected>"+ opt.name + "</option>";
 					}else{
 						output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";	
+					}
+				}
+			  
+				for (var i = 0; i < json.roles.length; i++) {
+					var opt = json.roles[i];
+					if(teamType == opt.id){
+						output = output + "<option value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
+					}else{
+						output = output + "<option value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
 					}
 				}
 				$("#rolesDiv").empty();
@@ -1872,13 +1908,17 @@ function getLevel2Approvers(currentApproverId){
 <!-- Job Id validation script starts here -->
 
 <script type="text/javascript">
- function validateJobId() {
-	
-	 var jobId = document.getElementById("jobId").value; 
+ function validateJobId(jobId) {
+	 if(jobId == null || jobId == "" || jobId == "undefined"){
+		 jobId = document.getElementById("jobId").value; 
+	 }
 	 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 if(jobId != null && jobId != ""){
-		
+		 $("#draft").attr("disabled", "disabled");
+		 $("#save").attr("disabled", "disabled");
+		 $("#submitForApproval").attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateJobId?${_csrf.parameterName}=${_csrf.token}&jobId="+jobId, 
@@ -1893,8 +1933,9 @@ function getLevel2Approvers(currentApproverId){
 		        	else{
 		        		 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#jobIdDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#requirement_form" ).addClass('button').val('Save');
-                         $("#requirement_form").removeAttr("disabled");
+                         $("#draft").removeAttr("disabled");
+                         $("#save").removeAttr("disabled", "disabled");
+                		 $("#submitForApproval").removeAttr("disabled", "disabled");
 		        	}
 		        },
 		    });
@@ -1978,34 +2019,7 @@ function removeEditButton() {
 }
 </script> -->
 
-<script>
-function changeCurrency(requirement){
-	var cntrynme = document.getElementById("countryReq").value;
 
-	 if (cntrynme == "United States") {
-			    $("#currencyCode").val("USD");
-			    $("#currencyCode").change();
-			  }else if(cntrynme == "India"){
-				  $("#currencyCode").val("INR");
-				    $("#currencyCode").change();
-			  }else if(cntrynme == "Australia"){
-				  $("#currencyCode").val("AUD");
-				    $("#currencyCode").change();
-			  }else if(cntrynme == "United Kingdom"){
-				  $("#currencyCode").val("GBP");
-				    $("#currencyCode").change();
-			  }else if(cntrynme == "Singapore"){
-				  $("#currencyCode").val("SGD");
-				    $("#currencyCode").change();
-			  }else if(cntrynme == "Germany"){
-				  $("#currencyCode").val("EUR");
-				    $("#currencyCode").change();
-			  }else {
-				  $("#currencyCode").val("INR");
-				  $("#currencyCode").change();
-		}
-}
-</script>
 
 
 <jsp:include page="../masterFooter.jsp" />

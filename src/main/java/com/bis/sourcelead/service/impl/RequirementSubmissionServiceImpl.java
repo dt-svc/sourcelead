@@ -733,7 +733,16 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		    return requirementSubmissionDao.getApplicantCountByrequirementIdandAssignedUsercode(requirementId, userCode);
 	}
 
-	 
-	
-	
+	@Override
+	public RequirementSubmission getVendorSubmissionByClientSubmissionIdAndCLientLocationId(Long clientSubmissionId,
+			Long clientLocationId) {
+			return requirementSubmissionDao.getVendorSubmissionByClientSubmissionIdAndCLientLocationId(clientSubmissionId,clientLocationId);
+			
+		}
+
+	@Override
+	public List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long requirementId, User user,
+			OrgLocations loginOrgLocation, String submissionType) throws Exception {
+		return requirementSubmissionDao.getSubmissionsByRequirementIdandStatus(requirementId,user,loginOrgLocation,submissionType);
+	}
 }

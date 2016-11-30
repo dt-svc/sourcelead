@@ -34,7 +34,6 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
@@ -317,12 +316,13 @@ public class CandidateServiceImpl implements CandidateService {
 	public File getCandidateExcelFile(List<Candidate> candidatesList,String orgName) throws Exception {
 		
 		Workbook createExcelworkbook =  new XSSFWorkbook();
-		CellStyle style = getCellStyle(createExcelworkbook);
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
         
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		Sheet createExcelsheet = createExcelworkbook.createSheet(orgName+"_candidate_"+dateFormat.format(new Date()));
 		Row writeRow = null;
-		createExcelsheet = setExcelHeaders(createExcelsheet,style);
+		String headers [] = Constants.CANDIDATE_EXCEL_HEADERS;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
 		 int column=0;
 	        for(Candidate candidate : candidatesList){
 	       	 writeRow = createExcelsheet.createRow(column+1);
@@ -341,37 +341,6 @@ public class CandidateServiceImpl implements CandidateService {
 		return file;
 	}
 
-/**
- * @author Rajashekar
- * @param createExcelworkbook
- * @return Style
- */
-private CellStyle getCellStyle(Workbook createExcelworkbook) {
-	CellStyle style = createExcelworkbook.createCellStyle();
-    style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-    style.setFillPattern(CellStyle.SOLID_FOREGROUND);
-    Font font = createExcelworkbook.createFont();
-   font.setColor(IndexedColors.BLACK.getIndex());
-   style.setFont(font);
-   return style;
-}
-/**
- * @author Rajashekar
- * It resturns sheet with Headers
- * @param createExcelsheet
- * @param style
- * @return Sheet
- */
-private Sheet setExcelHeaders(Sheet createExcelsheet, CellStyle style) {
-	String headers [] = Constants.CANDIDATE_EXCEL_HEADERS;
-	Row excelHeader = createExcelsheet.createRow(0);
-	 for (int i=0; i<headers.length;i++){
-	         Cell cell = excelHeader.createCell(i);
-	         cell.setCellValue(headers[i]);
-	         cell.setCellStyle(style);
-	     }
-	return createExcelsheet;
-}
 	/**
 	 * @author Rajashekar
 	 * writes candidate data to excel

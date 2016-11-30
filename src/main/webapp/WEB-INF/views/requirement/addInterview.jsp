@@ -203,7 +203,7 @@ function checkEmails(){
 
 
 <div id="divTaskTd1" style="display: none; float: left;">
-       <select multiple class="chosen-select blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
+       <select multiple data-placeholder="select applicants" class="chosen-select blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
 			
 	  </select>
 </div>
@@ -232,7 +232,7 @@ function checkEmails(){
 </div> 
 
 <div id="divTaskTd6" style="display: none; float: left;">
-		  <select multiple class="chosen-select" id="REPLACEROWIDinterviewer" name="REPLACEROWIDinterviewer" field-name="Interviewer" >
+		  <select multiple data-placeholder="select interviewer" class="chosen-select" id="REPLACEROWIDinterviewer" name="REPLACEROWIDinterviewer" field-name="Interviewer" >
 			
 	  </select>
 </div> 
@@ -434,7 +434,8 @@ function cancelAddInterviewDiv(){
 	        	    $(".add_inter_wrap").removeClass("add_inter_wrap_active");
 	        		$(".side_mask").fadeOut(200);
 	        		$("body").css('overflow-y', 'auto');
-	        		requirementPipeline(requirementId); 
+	        		var allApplicants = 'all';
+		    		requirementPipeline(requirementId,allApplicants); 
 	        },
 	    });   
         return true;

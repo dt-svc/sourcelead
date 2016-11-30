@@ -45,6 +45,10 @@ public interface RequirementSubmissionService {
 
 	RequirementSubmission getRequirementSubmissionByIdAndSubmissionStatus(Long submissionId,String submissionStatus)throws Exception;
 	
+	
+	RequirementSubmission getVendorSubmissionByClientSubmissionIdAndCLientLocationId(Long sourceSubmissionId, Long vendorLocationID);
+	
+	
 	RequirementSubmission getSubmissionsBySourceSubmissionId(Long sourceSubmissionId, Long orgLocationsId);
 	
 	RequirementSubmission getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(Long sourceSubmissionId, Long vendorLocationID);
@@ -52,5 +56,8 @@ public interface RequirementSubmissionService {
 	Integer getAllSubmissionCountByRequirementIdAndSubmissionStage(Long orgLocationsId, Long requirementId, String submissionStatus);
 	
 	public Integer getApplicantCountByrequirementIdandAssignedUsercode(Long requirementId, String userCode) throws Exception;
+
+	List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long valueOf, User user,
+			OrgLocations loginOrgLocation, String submissionType)throws Exception;
 
 }

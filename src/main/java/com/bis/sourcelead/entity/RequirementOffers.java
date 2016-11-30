@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -19,7 +20,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Entity
 	@Table(name = "REQUIREMENT_OFFERS", catalog = "sourcelead")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementOffers")
-	public class RequirementOffers {
+	public class RequirementOffers implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -89,7 +92,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Transient
     private String clientName;
 	
-
+	@Transient
+    private Boolean requirementReleasedOrNot;
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -256,6 +262,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 	public void setClientName(String clientName) {
 		this.clientName = clientName;
+	}
+
+	public Boolean getRequirementReleasedOrNot() {
+		return requirementReleasedOrNot;
+	}
+
+	public void setRequirementReleasedOrNot(Boolean requirementReleasedOrNot) {
+		this.requirementReleasedOrNot = requirementReleasedOrNot;
 	}
 	
 	

@@ -95,6 +95,7 @@ public class ClientUploadController {
 	 * @return
 	 * @throws Exception 
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')")
 	@RequestMapping("/clientFileUpload")
 	public String fileUploaded(@ModelAttribute("uploadedFile") UploadedFile uploadedFile,Model model, HttpServletRequest request,@RequestParam(value = "type", required = false) String responderType)throws Exception {
 				
@@ -134,6 +135,8 @@ public class ClientUploadController {
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 */
+	
+	@PreAuthorize("hasAnyRole('ROLE_VENDOR_CONTACT_BULK_IMPORTS')")
 	@RequestMapping(value = "/downloadVendorTemplate", method = RequestMethod.GET)
 	public void downloadVendorTemplate(HttpServletResponse response,@RequestParam(value = "name", required = false) String name) throws IOException, URISyntaxException{
 		logger.debug("download template is for : "+ name);

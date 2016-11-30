@@ -1,4 +1,3 @@
-<jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -196,7 +195,8 @@ function clientSubmissions(requirementId){
 		        	$(".submitnew-wrap").removeClass("submitnew-wrap_active");
 		    		$(".side_mask").fadeOut(200);
 		    		$("body").css('overflow-y', 'auto');
-		    		requirementPipeline(requirementId); 
+		    		var allApplicants = 'all';
+		    		requirementPipeline(requirementId,allApplicants); 
 		        },
 		 }); 
 	 }else{

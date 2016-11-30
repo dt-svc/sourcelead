@@ -29,12 +29,11 @@ function candidateCommentsList(candidateId){
             			  result  = result + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
             	          for(var i=0;i<json.length;i++){
             	            	var report = json[i];
-            	        	  	result = result+'<div class="comments-div clearfix">';
+            	        	  	result = result+'<div class="comments-div comments-inner clearfix">';
             	        	    result = result+'    <div class="commentsimg">';
             	        	    result = result+'    <i class="fa fa-comments"></i>';
             	        	    result = result+'        <div class="commentsimg-inner">';
-            	        	    /* result = result+'        	<img onerror="predefineProfileImage(this);"  src="<c:url value="/displayUserImage/'+report.commentAuthorUserId'+"/>" alt="User Comment" title="User Comment">'; */
-            	        	    result = result+'        	<img onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/${SourceLeadWeb_userId}"/>">';
+            	        	    result = result+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
             	        	    result = result+'        </div>';
             	        	    result = result+'    </div>';
             	        	    result = result+'     <div class="comments-content">';
@@ -42,7 +41,7 @@ function candidateCommentsList(candidateId){
             	        	    result = result+'         <p class="comment-by">';
             	        	    result = result+'            By <span class="text-danger">'+report.commentAuthor+'</span>';
             	        	    result = result+'            <span class="small">('+report.commentTime+')</span></p>';
-            	        	    result = result+'         <p class="comment-text">'+report.comment+'</p>';
+            	        	    result = result+'         <p class="commentText">'+report.comment+'</p>';
             	        	    result = result+'         </div>';
             	        	    result = result+'     </div>';
             	        	    result = result+'</div>';

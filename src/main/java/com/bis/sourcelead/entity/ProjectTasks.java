@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -11,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -22,8 +22,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Table(name = "PROJECT_TASKS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectTasks")
-public class ProjectTasks {
+public class ProjectTasks implements Serializable{
 	
+	
+	private static final long serialVersionUID = 1L;
+
+
 	@Id
     @Column(name = "ID", nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

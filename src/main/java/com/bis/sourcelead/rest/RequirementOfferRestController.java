@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -83,7 +84,7 @@ public class RequirementOfferRestController {
 	
 	
 	
-	
+	@PreAuthorize("hasRole('ROLE_CREAE_OFFER')")
 	@RequestMapping(value = "/saveOffer" , method = RequestMethod.POST)
 	public String saveOffer(@RequestParam(value="jsonData", required=false) String json,MultipartHttpServletRequest request) throws Exception {
 			   					 
@@ -179,6 +180,7 @@ public class RequirementOfferRestController {
 	* 
 	* @throws Exception
 	*/
+	@PreAuthorize("hasRole('ROLE_VIEW_OFFER')")
 	@RequestMapping(value = "/getOfferDetails")
 	public @ResponseBody String getOfferDetails(@RequestParam(value="submissionId", required=false) Long submissionId,
 			                                             
@@ -195,15 +197,28 @@ public class RequirementOfferRestController {
 		
 		requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		String loginUserType =  (String) SourceLeadSessionManager.getSessionAttribute(request, "userType");
-		requirementOffers =  requirementOffersService.offerDetails(submissionId, loginUser, orgLocations, loginUserType);
 		
-		if(requirementOffers !=null){
-			resultJson = commonUtil.toJSON(requirementOffers);
-			return resultJson;
+		requirementOffers =  requirementOffersService.offerDetails(submissionId, loginUser, orgLocations, loginUserType);
+		if(requirementOffers != null){
+			
+			Boolean  flag = requirementService.checkRequirementIsReleasedOrNot(requirementSubmission.getRequirement().getId(), orgLocations.getId());
+			if(flag){
+				requirementOffers.setRequirementReleasedOrNot(flag);
+			}else{
+				requirementOffers.setRequirementReleasedOrNot(false);
+			}
+			if(requirementOffers !=null){
+				resultJson = commonUtil.toJSON(requirementOffers);
+				return resultJson;
+			}else{
+				return null;
+			}
 		}else{
 			
 			return null;
 		}
+		
+		
 	}
 	
 	
@@ -220,6 +235,7 @@ public class RequirementOfferRestController {
 	* 
 	* @throws Exception
 	*/
+	@PreAuthorize("hasAnyRole('ROLE_ACCEPT_OFFER','ROLE_REJECT_OFFER')")
 	@RequestMapping(value = "/acceptingOffer")
 	public @ResponseBody String acceptingOffer(@RequestParam(value="submissionId", required=false) Long submissionId,
 			                                   @RequestParam(value="offerStatus", required=false) String offerStatus,
@@ -287,7 +303,7 @@ public class RequirementOfferRestController {
 	@RequestMapping(value = "/acceptOrRejectOffer")
     @ResponseBody  String acceptOrRejectOffer(@RequestParam(value="offerStatus", required=false) String offerStatus,
                            @RequestParam(value = "submissionId", required = false) Long submissionId,
-                    HttpServletRequest request) throws Exception {
+                           HttpServletRequest request) throws Exception {
 
 			 String setofferStatus = "";
             RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submissionId);
@@ -320,34 +336,37 @@ public class RequirementOfferRestController {
 
 
 
-		/**
-		* @author David Raju 
-		* 
-		* This method user to  notify To Applicant Of Requirement OfferMade 
-		* 
-		* @param offerId
-		* 
-		* @param submissionId
-		* 
-		* 
-		* @param request
-		* 
-		* @return String
-		* 
-		* @throws Exception
-		*/
-	
-		@RequestMapping(value = "/notifyToApplicantOfRequirementOfferMade" , method = RequestMethod.POST)
-		public String notifyToApplicantOfRequirementOfferMade(@RequestParam(value="submissionId", required=false) Long submissionId,@RequestParam(value="offerId", required=false) Long offerId, HttpServletRequest request) throws Exception {
-				
-				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				
-		        requirementOffersService.notifyToApplicantOfRequirementOfferMade(submissionId, offerId, loginUser, orgLocations);
-		          
-				return "success";
-		    
-		}
+	/**
+	* @author David Raju 
+	* 
+	* This method user to  notify To Applicant Of Requirement OfferMade 
+	* 
+	* @param offerId
+	* 
+	* @param submissionId
+	* 
+	* 
+	* @param request
+	* 
+	* @return String
+	* 
+	* @throws Exception
+	*/
+
+	@RequestMapping(value = "/sendNotificationAboutRequirementOfferMade" , method = RequestMethod.POST)
+	public String notifyToApplicantOfRequirementOfferMade(@RequestParam(value="submissionId", required=false) Long submissionId,
+														  @RequestParam(value="offerId", required=false) Long offerId,
+														  @RequestParam(value="notificationtype", required=false) String notificationtype,
+														  HttpServletRequest request) throws Exception {
+		
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+	        requirementOffersService.sendNotificationAboutRequirementOfferMade(submissionId, offerId, loginUser, orgLocations,notificationtype);
+			return "success";
+	    
+	}
+
 	
 	
 	

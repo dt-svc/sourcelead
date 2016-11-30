@@ -100,7 +100,7 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<ProjectApproverHierarchy> getApproverUsersByProjectId(long projectId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId and  ( usr.id IN (select userRole.user.id from UserRole userRole where (userRole.roles = '3'  OR userRole.roles = '9' OR userRole.roles = '1')))";
+		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId ";
 	        List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId)
 	        																							.setCacheable(true)
 	        																							.list();
@@ -169,8 +169,21 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	public ProjectApproverHierarchy getByProjectApproverHierarchyId(Long projectApproverHierarchy) throws Exception {
 
 		logger.debug("In ProjectApproverHierarchy getByProjectApproverHierarchyId method");
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		return (ProjectApproverHierarchy) session.get(ProjectApproverHierarchy.class, projectApproverHierarchy);
+		String query = "from  ProjectApproverHierarchy projectHirachy left join fetch projectHirachy.approverUserId where projectHirachy.id =:projectApproverHierarchy";
+		 @SuppressWarnings("unchecked")
+		List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectApproverHierarchy", projectApproverHierarchy)
+				                                                                                     .setCacheable(true)
+	    																					 .list();
+		 
+		 ProjectApproverHierarchy pah = null;
+		 if(projectHirachyList != null && !projectHirachyList.isEmpty()){
+			 pah = projectHirachyList.iterator().next();
+		 }
+	        
+		 return pah;
+		
 	}
 
 	
