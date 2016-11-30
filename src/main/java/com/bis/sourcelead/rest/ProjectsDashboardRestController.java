@@ -129,6 +129,7 @@ public class ProjectsDashboardRestController {
 		 * @return String
 		 * @throws Exception
         */
+	       // @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT', 'ROLE_EDIT_PROJECT')")
 			@RequestMapping(value = "/getProjectsByStatusAndClient")
 			public String getProjectsByStatusAndClient(@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
 

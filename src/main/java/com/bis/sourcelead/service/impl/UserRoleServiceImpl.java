@@ -296,6 +296,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		return userRoleDao.getAllUserTimeSheetSubmissionStatusCurrentWeek();
 	}
+
+	@Override
+	public UserRole getUserDetailsByUserIdAndLocationId(Long userId, Long locationId) throws Exception {
+		return userRoleDao.getUserDetailsByUserIdAndLocationId(userId, locationId);
+	}
 	
 
 }

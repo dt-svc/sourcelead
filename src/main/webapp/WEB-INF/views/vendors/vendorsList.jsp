@@ -902,10 +902,12 @@ function listChange(sel){
 		 document.getElementById("vendorsList").style.display="none";
 		 document.getElementById("vendorSatatus").style.display="none";
 		 document.getElementById("vendorInvitation").style.display="none";
-		 
+         '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDORS\')">'; 
 		 document.getElementById("vendorImports").style.display="block";
+		 '</sec:authorize> ';
+		'<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDOR_CONTACTS\')">'; 
 		 document.getElementById("VendorContactImports").style.display="none";
-		 
+		 '</sec:authorize> ';
 		 getVendorLists();
 	 }
 	 if(sel.value=="listbyContact"){
@@ -918,8 +920,12 @@ function listChange(sel){
 		 document.getElementById("vendorsList").style.display="block";
 		 document.getElementById("vendorSatatus").style.display="block";
 		 document.getElementById("vendorInvitation").style.display="block";
+		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDORS\')">'; 
 		 document.getElementById("vendorImports").style.display="none";
+		 '</sec:authorize> ';
+		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDOR_CONTACTS\')">'; 
 		 document.getElementById("VendorContactImports").style.display="block";
+		 '</sec:authorize> ';
 		 getVendorContactLists();
 	 }
 	 

@@ -441,7 +441,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		UserRole userRole = new UserRole();
 		Employees employee = new Employees();
 
-		Roles role = rolesService.getRolesByDisplayName(userImport.getRole());
+		Roles role = rolesService.getRolesByRoleDisplayNameAndOrgLocationId(userImport.getRole(), orgLocations.getId());
 
 		user.setFirstName(userImport.getFirstName());
 		user.setLastName(userImport.getLastName());

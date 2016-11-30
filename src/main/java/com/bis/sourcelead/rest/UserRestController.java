@@ -625,7 +625,7 @@ public class UserRestController {
 				@RequestParam(value = "role", required = false) Long roleId, HttpServletRequest request) throws Exception {
 			String resultJson = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<User> userList = userService.getManagersByUserRolesAndOrgLocationId(roleId, orgLocations.getId());
+			List<User> userList = userService.getManagersByUserRolesAndOrgLocationId(roleId, orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
 			for (User user : userList) {
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 				if(userRole != null){
