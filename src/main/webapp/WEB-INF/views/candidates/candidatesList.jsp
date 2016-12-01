@@ -325,15 +325,15 @@ function clientSideBar(candidateId){
 			             
 			             result = result+'</ul>';
 			             
-			             result = result+'                 </div>';
-			             result = result+'                 <div class="socialnetwork-details">';
-			             result = result+'                 <ul class="list-inline list-unstyled">';
-			             result = result+'                                 <li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>';
-			             result = result+'                                 <li class="bg-twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square"></i></a></li>';
-			             result = result+'                                 <li class="bg-google "><a href="javascript:void(0)"> <i class="fa fa-google-plus-square"></i></a></li>';
-			             result = result+'                                 <li class="bg-linked"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square"></i></a></li>';
-			             result = result+'                                 <li class="bg-web"><a href="javascript:void(0)"> <i class="fa fa-globe"></i></a></li>';
-			             result = result+'                               </ul>';
+			             result = result+'</div>';
+			             result = result+'<div class="socialnetwork-details">';
+			             result = result+'<ul class="list-inline list-unstyled">';
+			             result = result+'<li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>';
+			             result = result+'<li class="bg-twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square"></i></a></li>';
+			             result = result+'<li class="bg-google "><a href="javascript:void(0)"> <i class="fa fa-google-plus-square"></i></a></li>';
+			             result = result+'<li class="bg-linked"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square"></i></a></li>';
+			             result = result+'<li class="bg-web"><a href="javascript:void(0)"> <i class="fa fa-globe"></i></a></li>';
+			             result = result+'</ul>';
 			             result = result+'                 </div>';
 			             result = result+'                 </div>';
 			             result = result+'               </div>';
@@ -346,29 +346,29 @@ function clientSideBar(candidateId){
 			             result = result+'                   <li><i class="fa fa-phone"></i>+'+json.mobilePhone+'</li>';
 			                                                  }else{
 			                                                	  
-			             result = result+'                   <li><i class="fa fa-phone"></i>----</li>';         	  
+			             result = result+'<li><i class="fa fa-phone"></i>----</li>';         	  
 			                                                  }
 			                                                  if(json.address != null && json.address != '' && json.address != 'undefined'){
-			             result = result+'                   <li><i class="fa fa-location-arrow"></i>'+json.address+'</li>';
+			             result = result+' <li><i class="fa fa-location-arrow"></i>'+json.address+'</li>';
 			                                                  }else{
-			             result = result+'                   <li><i class="fa fa-location-arrow"></i>----</li>';                                  	  
+			             result = result+'<li><i class="fa fa-location-arrow"></i>----</li>';                                  	  
 			                                                  }
-			             result = result+'                   <li><i class="fa fa-rupee"></i><b>Current Rate:</b>  ';
+			             result = result+'<li><i class="fa fa-rupee"></i><b>Current Rate:</b>  ';
 			             
 		             	 if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
-			             	result = result+'                    '+json.currentRate+'/Per Hour';
+			             	result = result+''+json.currentRate+' '+json.currentRateType+'';
 			             }else{
-			             	result = result+'                     ---- ';                                    
+			             	result = result+'---- ';                                    
 			             }
 		             	 result = result+'				     <b>Expected:</b> ';
 			             if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
-			             	result = result+'                    '+json.expectedRate+'/Per Hour';
+			             	result = result+''+json.expectedRate+' '+json.rateType+'';
 			             }else{
-			             	result = result+'                     ----';                                  	  
+			             	result = result+'----';                                  	  
 			             }
-			             result = result+'					 </li>'; 
+			             result = result+'</li>'; 
 			             
-			             result = result+'                 </ul>';
+			             result = result+'</ul>';
 			            /* New comments div creation Nov 8th, 2016 */
 			            '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\')">'; 
 			            result = result+'<div class="comments-div clearfix" id="latestMessage">';

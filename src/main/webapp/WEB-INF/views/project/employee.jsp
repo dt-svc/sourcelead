@@ -181,6 +181,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     		result = result + '	<thead>';
     		result = result + '		<tr>';
             result = result + '	 	<th>Emp name</th>';
+            result = result + '	 	<th>Emp email</th>';
             result = result + '	     <th>Start Date</th>';
             result = result + '	     <th>End Date</th>';
             result = result + '	     <th>Approved hrs</th>';
@@ -202,15 +203,9 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 	        		}
 	        		
 	        		result = result + '	 <tr>';
-	        		/* ROLE_VIEW_USER */
-	        		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\')">';
-	                result = result + '	 	<td><div><a href="<c:url value="/userSummary/'+opt.userId+'"/>""> '+opt.empName+' </a></div></td>';
-	                '</sec:authorize>';
 	                
-	                '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\')">';
-	                result = result + '	 	<td><div><a> '+opt.empName+'</a></div></td>';
-	                '</sec:authorize>';
-	                
+	                result = result + '	 	<td><div class="tbldata-dotdot-sm" title="'+opt.empName+'">'+opt.empName+'</div></td>';
+	                result = result + '	 	<td><div class="tbldata-dotdot-me" title="'+opt.empEmail+'">'+opt.empEmail+'</div></td>';
 	                result = result + '	     <td><div>'+opt.projectAssignedDateStr+'</div></td>';
 	                if(status == 'COMPLETED'){
 	                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
