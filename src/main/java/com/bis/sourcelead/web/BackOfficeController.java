@@ -205,6 +205,28 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	}
 	
 	
+
+	@RequestMapping(value = "/assetCategory")
+	public ModelAndView assetCategory(HttpServletRequest request) {
+		
+		ModelAndView model = new ModelAndView();
+		model.setViewName("backOffice/assetCategory");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.AssetManagement);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		
+		return model;
+		
+	}
+	
+	
 	@RequestMapping(value = "/downloadFailedTransactions/{fileName}", method = RequestMethod.GET)
 	public void downloadFailedTransactions(@PathVariable String fileName,HttpServletResponse response) throws IOException {
 		

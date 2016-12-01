@@ -20,14 +20,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.BoAmexTrans;
 import com.bis.sourcelead.entity.BoComericaTrans;
 import com.bis.sourcelead.entity.BoJmpcTrans;
 import com.bis.sourcelead.entity.BoUploadedFiles;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.AssetCategoryService;
+import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.BoAmexTransService;
 import com.bis.sourcelead.service.BoComericaTransService;
 import com.bis.sourcelead.service.BoJmpcTransService;
 import com.bis.sourcelead.service.BoUploadedFilesService;
+import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -52,6 +61,15 @@ public class BackOfficeRestController {
 	
 	@Autowired
 	BoUploadedFilesService boUploadedFilesService;
+	
+	@Autowired
+	AssetService assetService;
+	
+	@Autowired
+	AssetCategoryService assetCategoryService;
+	
+	@Autowired
+	UserService userService;
 	
 	@RequestMapping(value = "/getAccountsList")
 	@ResponseBody
@@ -294,6 +312,47 @@ public class BackOfficeRestController {
 		
 		return status;
 	}
+	
+	
+	
+	
+	
+	@RequestMapping(value = "/getAssetList")
+	@ResponseBody
+	public String getAssetList(HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String resultJson = null;
+		
+		List<Asset> assetList = assetService.getAssetListByLocationId(orgLocations.getId());
+		
+		resultJson = toJSON(assetList);
+		return resultJson;
+	}
+	
+	
+	
+	@RequestMapping(value = "/getAssetCategoryList")
+	@ResponseBody
+	public String getAssetCategoryList(HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String resultJson = null;
+		
+		List<AssetCategory> assetCategoryList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId());
+		for(AssetCategory assetCategory : assetCategoryList){
+			User user = userService.getUserByUserCode(assetCategory.getCreatedBy());
+			assetCategory.setCreatedUser(user.getFirstName()+" "+user.getLastName());
+			
+			 if(assetCategory.getUpdatedDate() != null){
+				 assetCategory.setDateStr(Constants.DF_DMY.format(assetCategory.getUpdatedDate()));
+			    }
+		}
+		
+		resultJson = toJSON(assetCategoryList);
+		return resultJson;
+	}
+	
 	
 	
 	private String toJSON(Object obj){
