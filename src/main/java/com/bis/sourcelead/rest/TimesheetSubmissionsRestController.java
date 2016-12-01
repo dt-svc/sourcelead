@@ -72,7 +72,7 @@ public class TimesheetSubmissionsRestController {
 	TimesheetSubmissionsDocumentsService timesheetSubmissionsDocumentsService;
 	
 	// sarath kumar punnana : this  controller method is for withdraw  timwsheet entries.
-	@PreAuthorize("hasRole('ROLE_WITHDRAW_MY_TIMESHEETS')")
+	@PreAuthorize("hasRole('ROLE_MODIFY_MY_TIMESHEETS')")
 	@RequestMapping(value = "/withDrawTimesheet", method = RequestMethod.POST)
 	public @ResponseBody void withDrawTimesheet(@RequestParam(value="submissionId", required=false) String submissionId) throws Exception {
 				
@@ -80,7 +80,7 @@ public class TimesheetSubmissionsRestController {
 	}
 		
 
-	@PreAuthorize("hasAnyRole('ROLE_CREATE_TIMESHEETS_APPROVAL','ROLE_VIEW_TIMESHEETS_APPROVAL','ROLE_EDIT_TIMESHEETS_APPROVAL')") 
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')") 
 	@RequestMapping(value = "/getArrovalSubmissions",  method = RequestMethod.POST)
 	public @ResponseBody  String getArrovalSubmissions(HttpServletRequest request, @RequestParam(value="employeeId", required=false) String employeeId) throws Exception {
 		
@@ -93,6 +93,7 @@ public class TimesheetSubmissionsRestController {
 	
 	
 	// sarath kumar punnana : this controller  method is for get new timwsheet screen at page load.
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/dynamicTimesheet", method = RequestMethod.POST )    
 	public @ResponseBody String dynamicTimesheet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate,@RequestParam(value="memberId", required=false) Long memberId,@RequestParam(value="projectMemberUserId", required=false) Long projectMemberUserId,@RequestParam(value="employeeId", required=false) Long employeeId) throws Exception {
 		 
@@ -102,6 +103,7 @@ public class TimesheetSubmissionsRestController {
 		return output;
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/saveSubmissionApprovalStatus", method = RequestMethod.POST)
     public  String saveSubmissionApprovalStatus(HttpServletRequest request,
 									    		@RequestParam(value="employeeId", required=false) Long employeeId,
@@ -120,7 +122,7 @@ public class TimesheetSubmissionsRestController {
         return "success";
     }
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/downloadDocument", method = RequestMethod.GET)
     public void downloadDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId ,HttpServletResponse response) throws Exception {
 		
@@ -153,7 +155,7 @@ public class TimesheetSubmissionsRestController {
 		}  
 		 
 
-	
+	//unused method : default method
 	@RequestMapping(value = "timesheetSubmissions/saveOrUpdate", method = RequestMethod.GET)
 	public @ResponseBody  TimesheetSubmissions addTimesheetSubmissions() throws Exception
 			 
@@ -162,7 +164,7 @@ public class TimesheetSubmissionsRestController {
 		return timesheetSubmissionsService.addTimesheetSubmissions(timesheetSubmissions);
 	}
 	
-	
+	//unused method : default method
 	@RequestMapping(value = "timesheetSubmissions/update", method = RequestMethod.GET)
 	public @ResponseBody  TimesheetSubmissions updateTimesheetSubmissions() throws Exception
 			 
@@ -172,6 +174,7 @@ public class TimesheetSubmissionsRestController {
 	}
 	
 	
+	//unused method : default method
 	@RequestMapping(value = "timesheetSubmissions/delete/{id}", method = RequestMethod.GET)
 	public @ResponseBody  Boolean deleteTimesheetSubmissions(@PathVariable String id) throws Exception
 			 
@@ -179,6 +182,7 @@ public class TimesheetSubmissionsRestController {
 		return timesheetSubmissionsService.deleteTimesheetSubmissions(id);
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/deleteSubmissionDocument", method = RequestMethod.POST)
     public String deleteSubmissionDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId ,HttpServletResponse response) throws Exception {
         

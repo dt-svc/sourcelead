@@ -1,10 +1,8 @@
 package com.bis.sourcelead.web;
-import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +10,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
@@ -52,7 +48,7 @@ public class TimesheetEntriesController {
 	 * @return
 	 */
 	@RequestMapping(value = "/timesheet")
-	@PreAuthorize("hasAnyRole('ROLE_CREATE_MY_TIMESHEETS','ROLE_VIEW_MY_TIMESHEETS','ROLE_EDIT_MY_TIMESHEETS','ROLE_WITHDRAW_MY_TIMESHEETS')")
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS')")
 	public ModelAndView timesheet(HttpServletRequest request) {
 			ModelAndView model = new ModelAndView();
 			
@@ -86,18 +82,18 @@ public class TimesheetEntriesController {
 	 * This method is for TimeSheet Pdf Download
 	 * @return
 	 */
-	@RequestMapping(value = "/downloadTimesheetPdf", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/downloadTimesheetPdf", method = RequestMethod.GET)
 	public ModelAndView generateAllTimesheetPdf()  {
 		ModelAndView view = new ModelAndView("redirect:/timesheetPdf/downloadPdf");
 		return view;
-	}
+	}*/
 		
 	/**
 	 * @author shivayogi s kadagad
 	 * controller to download Exceltimesheet
 	 * @return ModelAndView
 	 */
-	@RequestMapping(value = "/Excel", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/Excel", method = RequestMethod.GET)
 	public ModelAndView getExcel()  {
 		
 		Collection<TimesheetEntries> timesheetEntriesList = null;
@@ -107,7 +103,7 @@ public class TimesheetEntriesController {
 			logger.error(ExceptionUtils.getFullStackTrace(exception)); 
 		} 		
 		return new ModelAndView(timeSheetExcelView,"timesheetEntriesList",timesheetEntriesList);
-	}
+	}*/
 		
 	/**
 	 * @author sarath kumar punnana

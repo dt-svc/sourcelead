@@ -1,8 +1,6 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -14,7 +12,6 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -64,7 +61,7 @@ public interface RequirementService {
 	
 	public Boolean checkRequirementIsReleasedOrNot(Long requirementId,Long orgLocationId) throws Exception;
 	
-	Integer validateJobId(Long id, Long orgLocation) throws Exception;
+	Integer validateJobId(String id, Long orgLocation) throws Exception;
 
 	public File getExportRequirementFile(List<Requirement> requirementList, String orgName, String exportType, TimeSheetSubmissionCount requirementSubCount)throws Exception;
 

@@ -15,11 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEmployersService;
@@ -149,7 +146,7 @@ public class CandidateEmployersRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasRole('ROLE_EDIT_EMPLOYEER')")
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_EMPLOYEER')")
 	@RequestMapping(value = "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId")
 	public String getCandidateEmployerByCandidateIdAndCandidateEmpoyerId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEmpId", required = false) Long candidateEmpId,HttpServletRequest request) throws Exception {
 

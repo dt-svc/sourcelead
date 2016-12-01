@@ -16,7 +16,7 @@
                 <p class="text-center text-danger permissondenied mb">
                     <img src="resources/images/under-construction.jpg" >
                 </p>
-                <p class="big-txt mt">UNDER CONSTRUCTION</p>
+                <p class="big-txt mt">WORK IN PROGRESS</p>
                 <p class="positionRelative move-btn btn-group mt">
                 <i class="fa fa-home btn btn-primary"></i>
                 <a href="<c:url value='/dashboard'/>" type="button" class="btn btn-primary">Take me home<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>

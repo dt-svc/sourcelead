@@ -1,6 +1,7 @@
 <!-- Side Nav Bar -->
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
   <aside>
   <div class="side-bar">
     <div class="side-bar-inner">
@@ -26,9 +27,8 @@
       <div class="side-nav">
         <ul class="list-unstyled">
           <li class="${sessionData.nav == 'Dashboard' ? 'side-nav-active' : ''}"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>" title="Dashboard"><span><i class="fa fa-dashboard"></i></span>Dashboard</a></li>
-          
+           <c:set var="timesheetTabExist" scope="session" value="N"/>
           <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-	                 
                     <c:if test="${userTabs.tabName == 'Clients'}">
                  	  <li class="${sessionData.nav == 'Clients' ? 'side-nav-active' : ''}"><a href="<c:url value='/clientDashboard'/>" title="Clients"><span><i class="fa fa-user-plus"></i></span>Clients</a></li>
                     </c:if>
@@ -50,13 +50,11 @@
 	                 </c:if>
 	                 
 	                 <c:if test="${userTabs.tabName == 'Projects'}">
-	                 <sec:authorize access="hasAnyRole('ROLE_VIEW_PROJECT','ROLE_CREATE_PROJECT')"> 
 	                	  <li class="${sessionData.nav == 'Projects' ? 'side-nav-active' : ''}"><a href="<c:url value='/projectDashboard'/>" title="Projects"><span><i class="fa fa-bar-chart"></i></span>Projects</a></li>
-	                 </sec:authorize>
 	                 </c:if>
 	                 
-	                 <c:if test="${userTabs.tabName == 'Timesheet Approval' }">
-	                 <sec:authorize access="hasAnyRole('ROLE_CREATE_TIMESHEETS_APPROVAL','ROLE_VIEW_TIMESHEETS_APPROVAL','ROLE_EDIT_TIMESHEETS_APPROVAL','ROLE_CREATE_MY_TIMESHEETS','ROLE_EDIT_MY_TIMESHEETS','ROLE_VIEW_MY_TIMESHEETS','ROLE_WITHDRAW_MY_TIMESHEETS')"> 
+	                 <c:if test="${timesheetTabExist == 'N'}">
+	                 <sec:authorize access="hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')"> 
 				           <li class="${sessionData.nav == 'TimeSheet' || sessionData.nav == 'TimeSheetApproval' ? 'side-nav-active' : ''}">
 							  <a href="#" class="tree-view-new" title="TimeSheets">
 								<span><i class="fa fa-clock-o"></i></span>
@@ -67,14 +65,16 @@
 								<span><i class="fa fa-clock-o"></i></span>
 							  Timesheets <i class="fa fa-fw fa-caret-down"></i>
 							  </a>
-							  
+							 
 							  <c:if test="${sessionData.nav == 'TimeSheet' || sessionData.nav == 'TimeSheetApproval'}">
+							   <c:set var ="timesheetTabExist" scope="session" value="Y"/> 
 							  <ul class="collapses" style="display: block">
 							  	<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
 									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>" title="TimeSheet Approval">TimeSheet Approval</a></li>
 							  </ul>
 							  </c:if>
 							  <c:if test="${sessionData.nav != 'TimeSheet' || sessionData.nav != 'TimeSheetApproval'}">
+							  <c:set var ="timesheetTabExist" scope="session" value="Y"/>
 							  <ul class="collapses" style="display: none">
 							  	<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
 									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>" title="TimeSheet Approval">TimeSheet Approval</a></li>
@@ -83,13 +83,16 @@
 						  </li>
 					  </sec:authorize>
 	                 </c:if>
-	                 
 	                 <c:if test="${userTabs.tabName == 'My Timesheets'}">
-	                 <sec:authorize access="( hasAnyRole('ROLE_CREATE_MY_TIMESHEETS') || hasAnyRole('ROLE_VIEW_MY_TIMESHEETS') || hasAnyRole('ROLE_EDIT_MY_TIMESHEETS') || hasAnyRole('ROLE_WITHDRAW_MY_TIMESHEETS') ) && !hasAnyRole('ROLE_VIEW_TIMESHEETS_APPROVAL')">
+	                 <sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS') && !hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')">
 	                       <li class="${sessionData.nav == 'TimeSheet' ? 'side-nav-active' : ''}"><a href="<c:url value='/timesheet'/>"><span><i class="fa fa-clock-o"></i></span>TimeSheet</a></li>
 	                 </sec:authorize>
 	                 </c:if>
-	                 
+	                 <c:if test="${userTabs.tabName == 'Timesheet Approval'}">
+	                 <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS') && hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')">
+	                       <li class="${sessionData.nav == 'TimeSheetApproval' ? 'side-nav-active' : ''}"><a href="<c:url value='/timesheetApproval'/>"><span><i class="fa fa-clock-o"></i></span>TimeSheet</a></li>
+	                 </sec:authorize>
+	                 </c:if>
 	                 
 	                 <c:if test="${userTabs.tabName == 'Finance' }">
 				           <li class="${sessionData.nav == 'Finance' || sessionData.nav == 'AssetManagement' ? 'side-nav-active' : ''}">
