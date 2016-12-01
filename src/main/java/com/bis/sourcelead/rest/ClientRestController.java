@@ -197,7 +197,7 @@ public class ClientRestController {
 			
 		}
 	
-		
+	 @PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT','ROLE_CREATE_VENDOR')")
 		@RequestMapping(value = "/saveClient", method = RequestMethod.POST)
 			public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,
 					@RequestParam(value = "responderType", required = false) String responderType,

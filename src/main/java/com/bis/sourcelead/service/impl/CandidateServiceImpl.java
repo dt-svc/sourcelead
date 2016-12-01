@@ -10,10 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -141,6 +138,11 @@ public class CandidateServiceImpl implements CandidateService {
 		if(jsonObj.has("currentRate") && jsonObj.getString("currentRate") !=null){
 		candidate.setCurrentRate(jsonObj.getString("currentRate"));
 		}
+		
+		if(jsonObj.has("currentRateType") && jsonObj.getString("currentRateType") !=null){
+			candidate.setCurrentRateType(jsonObj.getString("currentRateType"));
+			}
+		
 		if(jsonObj.has("currentRateCurrency") && jsonObj.getString("currentRateCurrency") !=null){
 		candidate.setCurrentRateCurrency(jsonObj.getString("currentRateCurrency"));
 		}

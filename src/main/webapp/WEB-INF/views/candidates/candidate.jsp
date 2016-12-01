@@ -219,7 +219,7 @@
           </div>
         </div>
        
-         <div class="form-group">
+         <%-- <div class="form-group">
          <label class="col-md-3">Current Rate</label>
          <div class="col-md-9">
            <div class="input-group ratetype">
@@ -238,7 +238,44 @@
              </div>
            </div>
          </div>
-       </div>
+       </div> --%>
+       
+       
+       <div class="form-group">
+            <label class="col-md-3">Current Rate</label>
+            <div class="col-md-9">
+             <div class="input-group er ratetype">
+                <div class="input-group-btn tblminwidth-75">
+                  
+                  <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
+                 
+                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
+                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
+                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
+                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
+                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
+                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+                 
+                </select>
+                
+                </div>
+                 <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
+                <div class="input-group-btn tblminwidth-75 ratetype">
+                  <select class="selectpicker" id="currentRateType" name="currentRateType" field-name="Rate Type">
+                    <option value="">Rate Per</option>
+                    <option ${currentRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                    <option ${currentRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+                    <option ${currentRateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
+                    <option ${currentRateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+                    <option ${currentRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+                    <option ${currentRateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
+                    <option ${currentRateType  == 'others' ? 'selected' : ''}>Yearly</option>
+                  </select>
+                </div>
+                 <div class="clearfix"></div> <div class="clearfix"></div>
+              </div>
+            </div>
+          </div>
        
         
         

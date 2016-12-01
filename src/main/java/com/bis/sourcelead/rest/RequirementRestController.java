@@ -343,13 +343,16 @@ public class RequirementRestController {
 	*/
 	@RequestMapping(value = "/getTeamsList", method = RequestMethod.POST)
 	public @ResponseBody String getTeamsList(HttpServletRequest request) throws Exception {
-		
 		String resultJson;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		CombinedList combinedList = new CombinedList();
-		List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocation.getId());
-		if(teamsList != null){
-			combinedList.setTeams(teamsList);
+		
+		Boolean isTeamViewAccess = commonUtil.hasRole("ROLE_VIEW_TEAM");
+		if(isTeamViewAccess){
+			List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocation.getId());
+			if(teamsList != null){
+				combinedList.setTeams(teamsList);
+			}
 		}
 		
 		List<Roles> usersList = userService.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_REQUIREMENT));
@@ -422,7 +425,7 @@ public class RequirementRestController {
 	 * @throws Exception
 	 */
 	 @RequestMapping(value = "/validateJobId",  method = RequestMethod.POST)
-	    public @ResponseBody String validateJobId(@RequestParam(value="jobId", required=false) Long jobId,HttpServletRequest request) throws Exception {
+	    public @ResponseBody String validateJobId(@RequestParam(value="jobId", required=false) String jobId,HttpServletRequest request) throws Exception {
 		    	String result;
 				String resultJson;
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

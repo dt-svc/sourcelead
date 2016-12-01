@@ -151,7 +151,20 @@
 						$("#tab-1").empty();
 						$("#tab-2").empty();
 						$("#tab-3").empty();
-						$("#tab-3").append(result);
+						$("#tab-1").append(result);
+						$("#tab-1").show();
+						
+						$(".project-tabs-menu a").click(
+								function(event) {
+									event.preventDefault();
+									$(this).parent().addClass("current");
+									$(this).parent().siblings().removeClass(
+											"current");
+									var tab = $(this).attr("href");
+									$(".project_tabs_inn").not(tab).css(
+											"display", "none");
+									$(tab).fadeIn();
+								});
 
 					}
 				});
