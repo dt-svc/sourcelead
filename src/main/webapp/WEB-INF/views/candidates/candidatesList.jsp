@@ -10,6 +10,33 @@
 <script src="resources/js/formvalidator.js"></script>
 
 
+
+<%-- 
+     @author : p.sarath kumar
+     this script is for candidate Activation
+--%>
+<script>
+  function noAccess(id){ 	
+	 
+	    var result = "";
+		result = result + '	  <div class="blank-pages-tech">';
+		result = result + '   <p class="text-center text-danger permissondenied mb">';
+		result = result + '       <img src="resources/images/sourcelead-load.png" alt="Source Lead" title="Source Lead">';
+		result = result + '   </p>';
+		result = result + '   <p class="big-txt mt">PERMISSION DENIED</p>';
+		result = result + '   <p class="text-muted">You dont have permission to access this page.</p>';
+		result = result + '   <p class="positionRelative move-btn btn-group mt">';
+		result = result + '   <i class="fa fa-home btn btn-primary"></i>';
+		result = result + '   <a href="<c:url value='/dashboard'/>" type="button" class="btn btn-primary">Take me home<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>';
+		result = result + '   </span></a>';
+		result = result + '   </p>';
+		result = result + ' </div>';
+		    
+	   $("#tab-"+id).empty();
+	   $("#tab-"+id).append(result);
+  }
+</script>
+
 <jsp:include page="candidatesProfile.jsp"></jsp:include>
 <jsp:include page="candidatesResumes.jsp"></jsp:include>
 <jsp:include page="candidatesExperience.jsp"></jsp:include>
@@ -367,9 +394,10 @@ function clientSideBar(candidateId){
 			             	result = result+'----';                                  	  
 			             }
 			             result = result+'</li>'; 
+			             result = result+'                 </ul>';
 			             
-			             result = result+'</ul>';
-			            /* New comments div creation Nov 8th, 2016 */
+			            /* New comments div creation Nov 8th, 2016 */ 
+			            if(json.status == '1' ){
 			            '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\')">'; 
 			            result = result+'<div class="comments-div clearfix" id="latestMessage">';
 			            result = result+'    <div class="commentsimg">';
@@ -398,6 +426,7 @@ function clientSideBar(candidateId){
 			            result = result+'     </div>';
 			            result = result+'</div>';
 			            '</sec:authorize>';
+			            }
 			 		    /* New comments div creation Nov 8th, 2016 */
 			             
 			             
@@ -408,11 +437,35 @@ function clientSideBar(candidateId){
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
 			             result = result+'     <ul class="project-tabs-menu">'; 
 			             result = result+'       <li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
-			             result = result+'       <li id="candidateResumeTab"><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');" >Resume</a></li>';
-			             result = result+'       <li id="candidateEmployersTab"><a href="#tab-3" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
-			             result = result+'       <li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
-			             result = result+'       <li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
-			             result = result+'       <li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
+			             if(json.status == '1'){
+			             	result = result+'       <li id="candidateResumeTab"><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+','+json.status+');" >Resume</a></li>';
+			             }else{
+			            	 result = result+'       <li id="candidateResumeTab"><a href="#tab-2" onclick="noAccess(2);" >Resume</a></li>';
+			             }
+			             if(json.status == '1'){
+			            	 result = result+'       <li id="candidateEmployersTab"><a href="#tab-3" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
+			             }else{
+			            	 result = result+'       <li id="candidateEmployersTab"><a href="#tab-3" onclick="noAccess(3);" >Employers</a></li>';
+			             }
+			             
+			             if(json.status == '1'){
+			           	    result = result+'       <li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
+			             }else{
+			            	 result = result+'       <li id="candidateEducationTab"><a href="#tab-4" onclick="noAccess(4);">Education</a></li>';
+			             }
+			             
+			             if(json.status == '1'){
+			            	 result = result+'       <li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
+			             }
+			             else{
+			            	 result = result+'       <li id="candidateCertificationsTab"><a href="#tab-5" onclick="noAccess(5);" >Certifications</a></li>';
+			             }
+			             if(json.status == '1'){
+			             	result = result+'       <li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
+			             }
+			             else{
+			            	 result = result+'       <li id="candidateCommentTab"><a href="#tab-7" onclick="noAccess(7);">Comments</a></li>';
+			             }
 			             /* result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; */
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
