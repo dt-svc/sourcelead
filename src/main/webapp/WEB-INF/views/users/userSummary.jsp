@@ -168,7 +168,7 @@ $(document).ready(function(){
 				}
 				
 				else{
-					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\')">'
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\',\'ROLE_CREATE_USER\')">'
                          result = result + '<i class="glyphicon glyphicon-user"></i><a id="edit-user" href="javascript:reActiveUser('+userId+');">&nbsp;Re-Active</a>';
                     '</sec:authorize>';	 
 				}
