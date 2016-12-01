@@ -1,0 +1,1 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE','CURRENT_RATE_TYPE','VARCHAR(20) NULL   AFTER `CURRENT_RATE`');

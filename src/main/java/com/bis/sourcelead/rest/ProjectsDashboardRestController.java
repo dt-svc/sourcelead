@@ -155,6 +155,7 @@ public class ProjectsDashboardRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
+	 @PreAuthorize("hasAnyRole('ROLE_EDIT_PROJECT','ROLE_VIEW_PROJECT')")
 	 @RequestMapping(value = "/getProjectById", method = RequestMethod.POST)
 	 public @ResponseBody String getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
 		   String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
@@ -237,6 +238,7 @@ public class ProjectsDashboardRestController {
 	 * @return JSON
 	 * @throws Exception
 	 */
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_TASKS', 'ROLE_EDIT_PROJECT_TASKS')")
 	 @RequestMapping(value = "/getProjectTasks" , method = RequestMethod.POST)
 	 public @ResponseBody  String getProjectTasks(
 			 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
@@ -253,7 +255,7 @@ public class ProjectsDashboardRestController {
 	 * @return JSON
 	 * @throws Exception
 	 */
-	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_EMPLOYEES')")
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_EMPLOYEES', 'ROLE_EDIT_PROJECT_EMPLOYEES')")
 	 @RequestMapping(value = "/getProjectEmployeeListById", method = RequestMethod.POST)
 	 public @ResponseBody String  getProjectEmployeeListById(@RequestParam(value="projectId", required=false) Long projectId) throws Exception{ 
 		 String resultJson;
@@ -318,7 +320,7 @@ public class ProjectsDashboardRestController {
 	 * @throws Exception
 	 */
 	
-	 @PreAuthorize("hasRole('ROLE_CREATE_PROJECT_EMPLOYEES')")
+	 @PreAuthorize("hasRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')")
 	 @RequestMapping(value = "/storeAssignEmployee",  method = RequestMethod.POST)
 		 public @ResponseBody  String storeAssignEmployee(
 				@RequestParam(value="ProjectId", required=false) Long projectId,

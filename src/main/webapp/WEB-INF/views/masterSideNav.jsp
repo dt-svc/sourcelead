@@ -50,9 +50,7 @@
 	                 </c:if>
 	                 
 	                 <c:if test="${userTabs.tabName == 'Projects'}">
-	                 <sec:authorize access="hasAnyRole('ROLE_VIEW_PROJECT','ROLE_CREATE_PROJECT')"> 
 	                	  <li class="${sessionData.nav == 'Projects' ? 'side-nav-active' : ''}"><a href="<c:url value='/projectDashboard'/>" title="Projects"><span><i class="fa fa-bar-chart"></i></span>Projects</a></li>
-	                 </sec:authorize>
 	                 </c:if>
 	                 
 	                 <c:if test="${userTabs.tabName == 'Timesheet Approval' }">
