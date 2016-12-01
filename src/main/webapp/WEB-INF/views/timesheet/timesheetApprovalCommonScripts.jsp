@@ -547,7 +547,7 @@ function saveRejectSubmission(local,employeeId,userId,startDate,endDate){
          success: function(data) {    
         	   // approvalList();
         	   var uniqueSepartor = startDate.replace('-','').replace('-','');
-        	   if(!userId.contains(uniqueSepartor)){
+        	   if(!userId.indexOf(uniqueSepartor)){
         		   $("#row"+userId).empty();
      	    	  $("#row"+userId).html(rowHtmlContent);
      	    	  $("#status"+userId).html("REJECTED");
@@ -594,7 +594,7 @@ function approveSubmission(userId,employeeId,startDate,endDate){
 	    url: sourceleadUrl+"/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 		    success: function(data) {
 		    	 var uniqueSepartor = startDate.replace('-','').replace('-','');
-	        	 if(!userId.contains(uniqueSepartor)){
+	        	 if(!userId.indexOf(uniqueSepartor)){
 	        		 $("#row"+userId).empty();
 			    	 $("#row"+userId).html(rowHtmlContent);
 			    	 $("#status"+userId).html("APPROVED");
