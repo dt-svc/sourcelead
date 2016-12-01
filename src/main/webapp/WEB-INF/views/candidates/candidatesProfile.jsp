@@ -19,7 +19,11 @@
      2.parameter : csrf token .
      3.ajax url implementation in CandidateListRestController.
 --%>
-
+ <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
 
 <style type="text/css">
 .require_wrap_details{
@@ -456,6 +460,7 @@ function deleteCandidate(candidateId){
      1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
 --%>
 <script type="text/javascript">
+$('#selector').delay(2000).fadeOut('slow');
 function cancelAlert(){ 
 	$("#removeCandidateAlert").empty();
 	$(".project_inn_mask").fadeOut(200);
