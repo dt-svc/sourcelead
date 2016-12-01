@@ -84,7 +84,7 @@ public class VendorRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')")
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT_CONTACT','ROLE_CREATE_VENDOR_CONTACT')")
 	@RequestMapping(value = "/saveClinentAndVendorContact", method = RequestMethod.POST)
 	@ResponseBody
 	public String saveVenodrContact(@RequestParam(value = "json", required = false) String json, @RequestParam(value="orgRelationId", required=false) String orgRelationId,
@@ -289,6 +289,11 @@ public class VendorRestController {
 					}
 					//if login user is Owner
 					else if(orgSpoc.getOwnerUser().getId() == loginUser.getId()){
+						if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
+							orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+						}else{
+							orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
+						}
 							 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
 							 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 							 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
@@ -301,7 +306,12 @@ public class VendorRestController {
 					 
 				}else{
 					if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
-						 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+						if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
+							orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+						}else{
+							orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
+						}
+						 //orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
 						 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 						 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 						 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());

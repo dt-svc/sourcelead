@@ -129,7 +129,6 @@ public class ProjectsDashboardRestController {
 		 * @return String
 		 * @throws Exception
         */
-	       // @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT', 'ROLE_EDIT_PROJECT')")
 			@RequestMapping(value = "/getProjectsByStatusAndClient")
 			public String getProjectsByStatusAndClient(@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
 
@@ -155,6 +154,7 @@ public class ProjectsDashboardRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT','ROLE_VIEW_PROJECT')")
 	 @RequestMapping(value = "/getProjectById", method = RequestMethod.POST)
 	 public @ResponseBody String getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
 		   String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
@@ -174,7 +174,7 @@ public class ProjectsDashboardRestController {
 	  * @return String
 	  * @throws Exception
 	  */
-	 @PreAuthorize("hasAnyRole('ROLE_EDIT_PROJECT')")
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT')")
 	 @RequestMapping(value = "/updateProjectByProjectId", method = RequestMethod.POST)
 	 public String updateProjectByProjectId(@RequestParam(value="json", required=false) String json,@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
 
@@ -197,7 +197,7 @@ public class ProjectsDashboardRestController {
 	 * @throws Exception
 	 */
 	 
-	 @PreAuthorize("hasAnyRole('ROLE_EDIT_PROJECT_TASKS')")
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT_TASKS')")
 	 @RequestMapping(value = "/updateProjectTaskById", method = RequestMethod.POST)
 	 public String updateProjectTaskById(@RequestParam(value="taskId", required=false) String taskId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue) throws Exception{ 
 		    
@@ -237,6 +237,7 @@ public class ProjectsDashboardRestController {
 	 * @return JSON
 	 * @throws Exception
 	 */
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_TASKS', 'ROLE_VIEW_EDIT_PROJECT_TASKS')")
 	 @RequestMapping(value = "/getProjectTasks" , method = RequestMethod.POST)
 	 public @ResponseBody  String getProjectTasks(
 			 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
@@ -253,7 +254,7 @@ public class ProjectsDashboardRestController {
 	 * @return JSON
 	 * @throws Exception
 	 */
-	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_EMPLOYEES')")
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_EMPLOYEES', 'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES', 'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES')")
 	 @RequestMapping(value = "/getProjectEmployeeListById", method = RequestMethod.POST)
 	 public @ResponseBody String  getProjectEmployeeListById(@RequestParam(value="projectId", required=false) Long projectId) throws Exception{ 
 		 String resultJson;
@@ -318,7 +319,7 @@ public class ProjectsDashboardRestController {
 	 * @throws Exception
 	 */
 	
-	 @PreAuthorize("hasRole('ROLE_CREATE_PROJECT_EMPLOYEES')")
+	 @PreAuthorize("hasRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')")
 	 @RequestMapping(value = "/storeAssignEmployee",  method = RequestMethod.POST)
 		 public @ResponseBody  String storeAssignEmployee(
 				@RequestParam(value="ProjectId", required=false) Long projectId,
@@ -342,6 +343,7 @@ public class ProjectsDashboardRestController {
 	  * @return
 	  * @throws Exception
 	  */
+	 @PreAuthorize("hasAnyRole('ROLE_EXPORT_EMPLOYEE')")
 	 @RequestMapping(value = "/exportProjectEmployeeList")
 	 public void  exportProjectEmployeeList(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="projectName", required=false) String projectName,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception{ 
 		 ProjectMembers employeeList = projectsService.getProjectEmployeeListByProjectId(projectId);

@@ -1427,6 +1427,10 @@ function addLvl(){
 <script>
 function approvalType(type){
 	    if($("#apprverReq").is(':checked')){
+	    	
+	    	$("#parallelApprover").val('');
+			$('#parallelApprover').trigger("chosen:updated");
+	    	
 			$("#submitForApproval").removeAttr("style");
 		    $("#save").attr("style","display:none"); 
 		    
@@ -1676,6 +1680,7 @@ function getTeamsList(teamType){
 			  }else{
 				output = output +'           <option value="Project Manager">Project Manager</option>';
 			  } */ 
+			  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_TEAM\')">'; 
 			  for (var i = 0; i < json.teams.length; i++) {
 					var opt = json.teams[i];
 					if(teamType == opt.id){
@@ -1684,6 +1689,7 @@ function getTeamsList(teamType){
 						output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";	
 					}
 				}
+			  '</sec:authorize>';
 			  
 				for (var i = 0; i < json.roles.length; i++) {
 					var opt = json.roles[i];
@@ -1819,7 +1825,24 @@ function getIsClientVal(){
 var existingValue = document.getElementById('isClientJob').value;
 
 	if (document.getElementById('isClientJob').checked){
-		 $("#isClientJob").val('Y');	
+		 $("#isClientJob").val('Y');
+		 
+		 $("#addClientId").val('');
+		 $('#addClientId').trigger("chosen:updated");
+		 
+		 $("#selectContact").val('');
+		 $('#selectContact').trigger("chosen:updated");
+		 
+		 $('select[name=clientCurrencyCode]').val(1);
+		 $('.selectpicker').selectpicker('refresh');
+		 
+		 $('#clientRate').val('');
+		 
+		 $('select[name=clientRateType]').val(1);
+		 $('.selectpicker').selectpicker('refresh');
+		 
+		 $("#clientSubmissionForm").val('');
+		 $('#clientSubmissionForm').trigger("chosen:updated");
 		 existingValue = document.getElementById('isClientJob').value;
 	}else {
 		 $("#isClientJob").val('N');
@@ -1909,6 +1932,7 @@ function getLevel2Approvers(currentApproverId){
 
 <script type="text/javascript">
  function validateJobId(jobId) {
+	 
 	 if(jobId == null || jobId == "" || jobId == "undefined"){
 		 jobId = document.getElementById("jobId").value; 
 	 }

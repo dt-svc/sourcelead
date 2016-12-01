@@ -524,7 +524,9 @@ function sideBar(requirementId){
 					    if(json.requirementSubmissionStatus != 'SUBMITTED' && json.requirementSubmissionStatus != 'CANCEL' && json.requirementSubmissionStatus != 'DRAFT' && json.requirementSubmissionStatus != 'ONHOLD' && json.requirementSubmissionStatus != 'FILLEDCLOSED'){
                             var all = 'all';
 					    	result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');">Pipeline</a></li>';
+					    	'<sec:authorize access="hasAnyRole(\'ROLE_RECOMMENDATIONS\')">'; 
                              result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
+                             '</sec:authorize>';
                         }
 					   
 					    result = result+'      <div class="clearfix"></div>';
@@ -650,6 +652,9 @@ function requirementDetails(requirementId){
 				             
 				             
 				             result = result +'     </div>';
+				             result = result +'     </div>';
+				            
+				             result = result +'     <div class="clearfix">';
 				             
 				            result = result +'     <div class="clearfix row">';
 					        result = result +'     <div class="col-md-10 divskill divsAssigned">';

@@ -95,12 +95,15 @@
 								&& status != 'undefined' && status != null) {
 							result = result	+ '<span class="pad-sea">';
 							
-							result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_PROJECT_TASKS\')">'; 
+							'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_PROJECT_TASKS\')">';  
 							result = result	+ '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask" onclick="flushTasks();"><i class="glyphicon glyphicon-plus"></i>Add Task</a>';
-		   		    		result = result +'</sec:authorize>';
+		   		    		'</sec:authorize>'; 
 		   		    		
 							result = result	+ '</span>';
 						}
+						result = result	+ '<input type="hidden" id="projectStatus" value="'+status+'">';
+						
+						
 						result = result	+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
 						result = result	+ '<div id="tasksLoadingImg"></div>';
 						result = result + '<table id="projectTaskPagination" class="display" cellspacing="0" width="100%">';
@@ -115,14 +118,15 @@
 							var opt = json[i];
 							result = result + '<tr>';
 							
-							result = result +'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_PROJECT_TASKS\')">'; 
+							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'; 
 							result = result+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'taskName\');"  id="taskName'+ opt.Id+ '" value="'+ opt.taskName+ '"  class="project_inline_field"></div></td>';
-							result = result +'</sec:authorize>';
-							
-							result = result +'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_PROJECT_TASKS\')">';
 							result = result	+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'description\');" id="description'+ opt.Id+ '" value="'+ opt.description+ '" class="project_inline_field"></div></td>';
-							result = result +'</sec:authorize>';
+							'</sec:authorize>'; 
 							
+							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">';
+							result = result+ '<td><div><span>'+ opt.taskName+ '</span></div></td>';
+							result = result	+ '<td><div><span>'+ opt.description+ '</span></div></td>';
+							'</sec:authorize>'; 
 							result = result + '</tr>';
 
 						}
@@ -133,7 +137,19 @@
 						$("#tab-3").empty();
 						$("#tab-2").empty();
 						$("#tasksLoadingImg").empty();
-						$("#tab-2").append(result);
+						$("#tab-3").append(result);
+						$("#tab-3").show();
+						$(".project-tabs-menu a").click(
+								function(event) {
+									event.preventDefault();
+									$(this).parent().addClass("current");
+									$(this).parent().siblings().removeClass(
+											"current");
+									var tab = $(this).attr("href");
+									$(".project_tabs_inn").not(tab).css(
+											"display", "none");
+									$(tab).fadeIn();
+								});
 						taskPagination();
 
 					}
@@ -327,11 +343,13 @@
 						result = result + '</tbody>';
 						result = result + '</table>   ';
 						result = result + '</div>';
-						$("#tab-2").empty();
-						$("#tab-2").append(result);
+						$("#tab-3").empty();
+						$("#tab-3").append(result);
 						
 					},
 				});
+		var status = $("#projectStatus").val();
+		projectTask(projectId, status);
 
 	}
 </script>

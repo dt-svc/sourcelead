@@ -86,6 +86,9 @@ public class Candidate implements Serializable{
 	@Column(name = "CURRENT_RATE")
 	private String currentRate;
 	
+	@Column(name = "CURRENT_RATE_TYPE")
+	private String currentRateType;
+	
 	@Column(name = "CURRENT_RATE_CURRENCY")
 	private String currentRateCurrency;
 	
@@ -625,4 +628,16 @@ public class Candidate implements Serializable{
 	public void setReqSubmissionId(String reqSubmissionId) {
 		this.reqSubmissionId = reqSubmissionId;
 	}
+
+
+	public String getCurrentRateType() {
+		return currentRateType;
+	}
+
+
+	public void setCurrentRateType(String currentRateType) {
+		this.currentRateType = currentRateType;
+	}
+	
+	
 }

@@ -55,15 +55,10 @@ $(function(){
 	                result = result + '<td><div><span class="mid-span">'+opt.templateName+'</span></a></div></td>';
 	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.description+'"><span class="mid-span">'+opt.description+'</span></div></td>';
 	                result = result + '<td><div>';
-	                '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT_TEMPLATE\')">'
-	                    result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;';
-                    '</sec:authorize>';
-                    '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_APPLICANT_TEMPLATE\',\'ROLE_EDIT_APPLICANT_TEMPLATE\')">'
+	                    result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;|&nbsp;';
+                    '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_APPLICANT_TEMPLATE\',\'ROLE_VIEW_EDIT_APPLICANT_TEMPLATE\')">'
 	                    result = result + '&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\',\''+opt.description+'\')">Edit</a>';
                     '</sec:authorize>';
-                    '<sec:authorize access="!hasAnyRole(\'ROLE_CREATE_APPLICANT_TEMPLATE\',\'ROLE_VIEW_APPLICANT_TEMPLATE\',\'ROLE_EDIT_APPLICANT_TEMPLATE\')">'
-                        result = result + '---';
-                     '</sec:authorize>';
 	                result = result +'</div></td>';
 	                result = result + '	 </tr>';
 				}  

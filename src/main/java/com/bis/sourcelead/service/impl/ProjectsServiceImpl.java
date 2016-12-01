@@ -993,6 +993,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 for(ProjectMembers pm : projectMembersList){
 			 if(pm.getEmployee() != null){
 				 pm.setEmpName(pm.getEmployee().getUser().getFirstName()+" "+pm.getEmployee().getUser().getLastName());	 
+				 pm.setEmpEmail(pm.getEmployee().getUser().getEmail());	 
 			 }
 			 pm.setProjectStatus(pr.getStatus());
 			 
