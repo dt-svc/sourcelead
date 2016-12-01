@@ -52,13 +52,16 @@ public class CandidateCertificationsRestController {
 	 */
 	 @RequestMapping(value = "/storeCandidateCertifications", method = RequestMethod.POST)
      public @ResponseBody String storeCandidateCertifications(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
-
+		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 		String json1 = "{"+json+"}";
 		JSONObject jsonObject = new JSONObject(json1);
 		candidateCertificationsService.storeCandidateCertifications(jsonObject,users,loginOrgLocation,candidateId);
+		
+		SourceLeadSessionManager.setSessionAttribute(request, "addCertification", "New Certification added for Candidate ");
+		
 		return json;
 	 }
 	
@@ -78,9 +81,28 @@ public class CandidateCertificationsRestController {
 	 @RequestMapping(value = "/getCandidateCertificationListByCandidateIdAndOrgLocationID") 
 	 public String getCandidateCertificationListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
 
+		 String msg = "";
 		String resultJson;
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<CandidateCertifications>   candidateCertificationsList = candidateCertificationsService.getCandidateCertificationListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId) , loginOrgLocation.getId());
+		
+		for(CandidateCertifications candidateCertifications : candidateCertificationsList){
+
+			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addCertification");
+			if(msg == null){
+				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editCertification");
+			}
+			if(msg == null){
+				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "deleteCertification");
+			}
+			if(msg != null && msg != ""){
+				candidateCertifications.setMsg(msg);
+			}
+				 SourceLeadSessionManager.removeSessionAttribute(request, "deleteCertification");
+			    SourceLeadSessionManager.removeSessionAttribute(request, "addCertification");
+			    SourceLeadSessionManager.removeSessionAttribute(request, "editCertification");
+			
+		}
 		resultJson = commonUtil.toJSON(candidateCertificationsList);
 		return resultJson;
 	 }
@@ -105,6 +127,8 @@ public class CandidateCertificationsRestController {
 
 			 CandidateCertifications  candidatesCertificate = candidateCertificationsService.removeCandidateCertificateBycandidateIdandcandidateCertificateId(candidateId, candidateCertificationId);
 			 resultJson = commonUtil.toJSON(candidatesCertificate);
+				SourceLeadSessionManager.setSessionAttribute(request, "deleteCertification", "Certfification deleted");
+
 			 return resultJson;
 		}
 	   
@@ -160,6 +184,8 @@ public class CandidateCertificationsRestController {
 			String json1 = "{"+json+"}";
 			JSONObject jsonObject = new JSONObject(json1);
 			candidateCertificationsService.storeCandidateCertifications(jsonObject,users,loginOrgLocation,candidateId);
+			SourceLeadSessionManager.setSessionAttribute(request, "editCertification", "Certification details updated ");
+
 			return json;
 		 }
 

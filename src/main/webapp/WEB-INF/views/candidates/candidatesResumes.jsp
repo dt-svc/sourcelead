@@ -36,7 +36,9 @@
 <script>
 function candidateResume(candidateId){
 	var result ="";
+	
 	result = result+'	    <div class="project_tabs_inn_head addUser-org">';
+	
 	if(window.candidateStatusGlobal == '0'){
 		result = result+'	    	<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
 	}else{
@@ -44,6 +46,7 @@ function candidateResume(candidateId){
 	}
 		result = result  +'     <div id="popUpDivResume" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
+		
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		result  = result + '   <div id="resumesList" ></div>';
 		result  = result + '   </div>';
@@ -56,6 +59,7 @@ function candidateResume(candidateId){
     $("#tab-5").empty();  
     $("#tab-6").empty();  
     $("#tab-2").append(result); 
+   
     
 }
 </script>
@@ -227,6 +231,8 @@ function addResume(candidateId) {
 						 		$("#popUpDivResume").removeClass("edit-details-active");
 						 		candidateResumesList(candidateId);
 		            		 }
+							 /* $("#conMsg").fadeIn(200);
+							 $('#conMsg').delay(2000).fadeOut('slow'); */
 						},
 					});
 					return true;
@@ -238,6 +244,7 @@ function addResume(candidateId) {
 		$("#candidateResume_form").showHelpOnFocus();
 		$("#candidateResume_form").validateOnBlur(false, validationSettings);
 	});
+		
 </script>
 
 <%-- 
