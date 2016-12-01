@@ -49,6 +49,7 @@ UPDATE `sourcelead`.`SOURCELEAD_ACTIONS` SET `ACTION_NAME`='View & Edit Vendor C
 
 
 
+
 DELETE FROM `sourcelead`.`MODULE_ACTIONS` WHERE `ID`='55';
 DELETE FROM `sourcelead`.`SOURCELEAD_ACTIONS` WHERE `ID`='27';
 
