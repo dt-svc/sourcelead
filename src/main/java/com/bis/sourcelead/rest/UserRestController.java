@@ -591,7 +591,7 @@ public class UserRestController {
 		 * @return
 		 * @throws Exception
 		 */
-		@PreAuthorize("hasRole('ROLE_VIEW_DELETE_USER')")
+		@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_USER','ROLE_CREATE_USER')")
 		@RequestMapping(value = "/reActiveUser", method = RequestMethod.POST)
         public String reActiveUser(@RequestParam(value = "userId", required = false) String userID, HttpServletRequest request) throws Exception {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

@@ -100,10 +100,10 @@ function teamList(){
 				             }
 		            	     result = result +"<td><div><span>"+opt.teamMembersCount+"</span></div></td>";
 				             result = result +"<td><div class='tblicons'>";
-				             '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_TEAM\')">'; 
+				             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_TEAM\')">'; 
 				             	result = result +"<i class='glyphicon glyphicon-pencil' onclick='sideBar("+opt.id+");'></i>";
 				             '</sec:authorize>';
-				             '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_TEAM\')">'; 
+				             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_TEAM\')">'; 
 				             	result = result +"<i class='glyphicon glyphicon-trash' onclick='deleteTeam("+opt.id+");'></i>";
 				             '</sec:authorize>';
 				             result = result +"</div></td>";

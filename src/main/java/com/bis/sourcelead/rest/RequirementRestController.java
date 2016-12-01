@@ -371,6 +371,7 @@ public class RequirementRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_RECOMMENDATIONS')")
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/getRequirementRecommendationsByRequirementId", method = RequestMethod.POST)
 	public @ResponseBody String getRequirementRecommendationsByRequirementId(@RequestParam(value="requirementId",required = false) Long requirementId,HttpServletRequest request) throws Exception {
