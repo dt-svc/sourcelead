@@ -83,77 +83,7 @@ $(document).ready(function() {
 					$("#timesheetApprList").empty();
 				    $("#timesheetApprList").append(result);
                  }
-                 /* var json = JSON.parse(data); */
-                 /* if(json.length > 0){
-                	 
-                 var output = "";
-                 output = output+' <table>';
-                 output = output+' <tbody>';
-                 output = output+' <thead>';
-                 output = output+'     <tr>';
-                 output = output+'         <th>Employee</th>';
-                 output = output+'         <th>Frequency</th>';
-                 output = output+'         <th>Total hours</th>';
-                 output = output+'         <th>Stage</th>';
-                 output = output+'         <th>Action</th>';
-                 output = output+'     </tr>';
-                 output = output+' </thead>';
-                 
-                 
-                 for (var i=0; i<json.length; i++)
-                 {
-                         var approval = json[i];
-                         output = output+'<tr>';
-                         output = output+'<td><div class="time_appr_user">';
-                         output = output+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/'+approval.userId+'"/>" alt="Profile Image" class="img-circle img-responsive">'; 
-                         output = output+    '<span><b>'+approval.fullName+'</b></span></div></div>';
-                         output = output+'</td>';
-                         output = output+'<td><div> '+approval.startDateStr+'  To  ';
-                         output = output+         ''+approval.endDateStr+'';
-                         output = output+     '</div>';
-                         output = output+ '</td>';
-                         output = output+ '<td><div><a onclick="myTimesheet(\''+approval.employeeId+'\',\''+approval.startDateStr+'\',\''+approval.endDateStr+'\');"  id="timesheetPopup'+approval.Id+'"> '+approval.combinedTotalHours+'</a></div></td>';
-                         output = output+'<td><div>'+approval.combinedStatus+'</div></td>';
-                         output = output+'<td>';
-                           if(approval.combinedStatus == 'NEW' || approval.combinedStatus == 'SUBMITTED FOR APPROVAL'){
-                               output = output+'<div><i class="fa fa-check" alt="Approve"  onclick="approveSubmission(\''+approval.employeeId+'\',\''+approval.startDateStr+'\',\''+approval.endDateStr+'\');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejecteSubmission(\''+approval.Id+'\',\''+approval.employeeId+'\',\''+approval.startDateStr+'\',\''+approval.endDateStr+'\');"></i></div>';
-                               output = output+'<div id="rejectedPopup"></div>';
-                           }
-                         if(approval.combinedStatus =='REJECTED'){
-                             output = output+'<div><h3 class="reje_color">Rejected</h3>';
-                             output = output+'<i class="glyphicon glyphicon-comment" onclick="rejectedMessage(\'rejectedMessage'+approval.Id+'\');">';
-                             output = output+  '<strong id="rejectedMessage'+approval.Id+'"><p>'+approval.rejectedReason+'</p></strong>';
-                             output = output+ '</i>';
-                             output = output+'</div>';
-                         }
-                         if(approval.combinedStatus =='APPROVED'){
-                             output = output+'<div><h3>Approved</h3></div>';
-                         }  
-                          output = output+'</td>' ;
-                          output = output+ '</tr>';
-                 }
-               
-                 output = output+' </tbody>';
-                 output = output+' </table>';
-                 
-                 $("#timesheetApprList").empty();
-                 $("#timesheetApprList").append(output);
-              }else{
-            	     $("#timesheetApprList").removeAttr("style");
-  	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Timesheets Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#timesheetApprList").empty();
-				    $("#timesheetApprList").append(result); 
-              }   */
+                
           }
             
        }); 
@@ -202,6 +132,41 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 
 <!-- Common Scripts for approval timesheets and dashboard count links separated in to timesheetApprovalCommonScripts.jsp   -->
 <jsp:include page="timesheetApprovalCommonScripts.jsp" />	
-
+<section class="content-wraper">
+        <section class="content-header clearfix">
+          <div class="pull-left">
+            <h2>Timesheet approval</h2>
+          </div>
+            <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; TimeSheet List</div>
+        </section>
+        
+<div class="timesheet-content">
+<div class="timesheet_out">
+	<div class="timesheet_appr_wrap" >
+		<div class="timesheet_appr_wrap">
+		<div class="timesheet_head">
+        	 <ul>
+        	 <%-- <li><i class="fa fa-filter"></i><span>Employee</span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
+                	<div id="filter3ApprovedPop" class="approved_pop">
+                    	<ul>
+                    	 <c:forEach var="report" items="${thslist}">  
+                        	<li><input  id="employee${report.employeeId}" name="employeeById" value ="${report.employeeId}"  onclick="approvalList();"  type="checkbox"><label for="employee${report.employeeId}">${report.fullName}</label></li>
+						  </c:forEach>
+                        </ul>
+                    </div>                	
+                </li> --%>	
+            </ul> 
+            <div class="clearfix"></div>
+        </div> 
+		
+		<div class="timesheet_appr_table">
+				<div id="timesheetApprList">   </div>
+	    </div>
+	</div>
+	
+</div>
+</div></div>
+		
+</section>
 </body>
 <jsp:include page="../masterFooter.jsp" />	

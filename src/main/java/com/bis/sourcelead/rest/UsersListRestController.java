@@ -183,7 +183,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	  * @return
 	  * @throws Exception
 	  */
-	 @PreAuthorize("hasAnyRole('ROLE_EDIT_USER','ROLE_VIEW_USER')")
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_USER','ROLE_VIEW_USER','ROLE_VIEW_DELETE_USER')")
 	 @RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
 	 public @ResponseBody String getUserDetailsById(HttpServletRequest request, @RequestParam(value="userId", required=false) Long userId) throws Exception{ 
 		 String resultJson = null;   
@@ -231,7 +231,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	  * @return
 	  * @throws Exception
 	  */
-	 @PreAuthorize("hasRole('ROLE_DELETE_USER')")
+	 @PreAuthorize("hasRole('ROLE_VIEW_DELETE_USER')")
 	 @RequestMapping(value = "/terminateUser", method = RequestMethod.POST)
 		public @ResponseBody String terminateUser(
 				@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value="reason", required=false) String reason, HttpServletRequest request) throws Exception{
@@ -263,7 +263,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	  * @return
 	  * @throws Exception
 	  */
-	 @PreAuthorize("hasRole('ROLE_EDIT_USER')")
+	 @PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
 	 @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
 	 @ResponseBody String updateUser(@RequestParam(value="json", required=false) String json,@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value="emailId", required=false) String emailId,HttpServletRequest request) throws Exception{
 
