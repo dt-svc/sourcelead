@@ -255,10 +255,10 @@ overflow-x: auto;
 	    </section>
 	    
 	    <div class="clearfix row mb">
-	      <sec:authorize access="hasAnyRole('ROLE_VIEW_TIMESHEETS_APPROVAL','ROLE_VIEW_MY_TIMESHEETS')"> 
-			<c:if test = "${SourceLeadWeb_timesheet == 'Y'}">      
+	      <sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')"> 
+			<%-- <c:if test = "${SourceLeadWeb_timesheet == 'Y'}">     --%>  
 			   <jsp:include page="dashboardTimesheets.jsp"></jsp:include>  
-			</c:if>
+			<%-- </c:if> --%>
 	      </sec:authorize>
 			 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 			<%-- <c:if test = "${SourceLeadWeb_userType != 'Employee'}"> --%>

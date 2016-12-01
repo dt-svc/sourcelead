@@ -366,7 +366,8 @@ function cancelAddOffer(){
 	        	$(".add_offer_wrap").removeClass("add_offer_wrap_active");
         		$(".side_mask").fadeOut(200);
         		$("body").css('overflow-y', 'auto');
-        		requirementPipeline(requirementId); 
+        		var allApplicants = 'all';
+	    		requirementPipeline(requirementId,allApplicants); 
 	        },
 	    });   
         return true;

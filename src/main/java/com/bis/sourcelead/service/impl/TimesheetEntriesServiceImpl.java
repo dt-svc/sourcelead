@@ -852,7 +852,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	public String dynamicTimesheetpopUp(User user, Long employeeId, String startDate, String endDate)
 			throws Exception {
 		
-		
+		Boolean isFillMemberTimeSheet = commonUtil.hasRole("ROLE_FILL_MEMBER_TIMESHEETS");
 		
 		String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
@@ -912,31 +912,31 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			 Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 			 currentCal.setLenient(false);
 			 currentCal.setTime(currentStartDate);
-			if(!pmhDateList.contains(currentStartDate) || (!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+			if( (!isFillMemberTimeSheet) ||  ( !pmhDateList.contains(currentStartDate) || (!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())) ) ){
 				disbleCondition1 = "disabled";
 			}
 			String disbleCondition2 = "";
-           if(!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE").getTime()) || (!isNullOrEmpty(submissionStatusStr) &&  submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+           if( (!isFillMemberTimeSheet) ||  ( !pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE").getTime()) || (!isNullOrEmpty(submissionStatusStr) &&  submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())) ) ){
            	disbleCondition2 = "disabled";
 			}
 			String disbleCondition3 = "";
-           if(!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED").getTime()) || (!isNullOrEmpty(submissionStatusStr) &&  submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+           if((!isFillMemberTimeSheet) ||  ( !pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED").getTime()) || (!isNullOrEmpty(submissionStatusStr) &&  submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())) )){
            	disbleCondition3 = "disabled";
 			}
 			String disbleCondition4 = "";
-           if(!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU").getTime()) || (!isNullOrEmpty(submissionStatusStr) &&  submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+           if((!isFillMemberTimeSheet) || ( !pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU").getTime()) || (!isNullOrEmpty(submissionStatusStr) &&  submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())) ) ){
            	disbleCondition4 = "disabled";
 			} 
 			String disbleCondition5 = "";
-           if(!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI").getTime()) || (!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+           if((!isFillMemberTimeSheet) ||  ( !pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI").getTime()) || (!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())) ) ){
            	disbleCondition5 = "disabled";
 			}
 			String disbleCondition6 = "";
-           if(!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT").getTime()) || (!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+           if((!isFillMemberTimeSheet) || ( !pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT").getTime()) || (!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())) )){
            	disbleCondition6 = "disabled";
 			}
 			String disbleCondition7 = "";
-           if(!pmhDateList.contains(currentEndDate) || (!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+           if( (!isFillMemberTimeSheet) ||  ( !pmhDateList.contains(currentEndDate) || (!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())) ) ){
            	disbleCondition7 = "disabled";
 			} 
 			/*String disbleCondition = null;
@@ -996,15 +996,19 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								    	    	   sb.append("<option value='"+pt.getId()+"' selected>"+pt.getTaskName()+"</option>");
 								    	       }
 								    	       else{
-								    	    	   sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");
+								    	    	  if(isFillMemberTimeSheet){ 
+								    	    		  sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");
+								    	    	  }
 								    	       }  
 									      }
 							              sb.append(" </select>"); 
-							              if(rowCount == 1){
-							             	  sb.append("<input type='button' value='' onClick='addTimeSheetRow(\""+ts.getId()+"\",\""+ts.getProjectMembers().getProjects().getId()+"\")' class='addtaskfield'/>");
-							              }else{
-							                  sb.append("<input type='button' value=''  onClick='removeTimeSheetRow(\""+rowCount+"\",\""+ts.getId()+"\");'  class='addtaskfield removetaskfield'/>");
-							              }
+							              if(isFillMemberTimeSheet){ 
+								              if(rowCount == 1){
+								             	  sb.append("<input type='button' value='' onClick='addTimeSheetRow(\""+ts.getId()+"\",\""+ts.getProjectMembers().getProjects().getId()+"\")' class='addtaskfield'/>");
+								              }else{
+								                  sb.append("<input type='button' value=''  onClick='removeTimeSheetRow(\""+rowCount+"\",\""+ts.getId()+"\");'  class='addtaskfield removetaskfield'/>");
+								              }
+							              }   
 						              }
 							               
 						              sb.append("                      </div>");
@@ -1103,17 +1107,24 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				              sb.append("       <tr id='timesheetRow"+rowCount+"submission"+ts.getId()+"'>");
 				              sb.append("                 <td>");
 				              sb.append("                      <div> ");
-				              sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
-						      
-						      for(ProjectTasks pt   : ProjectTasksList){
-						              sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");   
-						      }
-				              sb.append(" </select>"); 
-				              if(rowCount == 1){
-				             	  sb.append("<input  type='button' value='' onClick='addTimeSheetRow(\""+ts.getId()+"\",\""+ts.getProjectMembers().getProjects().getId()+"\")' class='addtaskfield'/>");
+				              
+				              if(isFillMemberTimeSheet){ 
+					              sb.append("                       <select id='"+rowCount+"submission"+ts.getId()+"task1Id' name='"+rowCount+"submission"+ts.getId()+"task1Id' class='existedProjectTaskId"+ts.getProjectMembers().getProjects().getId()+"' onChange='getProjectTasksOnChange(\""+rowCount+"submission"+ts.getId()+"task1Id\",\""+ts.getProjectMembers().getProjects().getId()+"\")' >");
+							      
+							      for(ProjectTasks pt   : ProjectTasksList){
+							              sb.append("<option value='"+pt.getId()+"'>"+pt.getTaskName()+"</option>");   
+							      }
+					              sb.append(" </select>");
 				              }else{
-				                  sb.append("<input type='button' value=''  onClick='removeTimeSheetRow(\""+rowCount+"\",\""+ts.getId()+"\");'  class='addtaskfield removetaskfield'/>");
+				            	  sb.append("<p>NO DATA</p>");
 				              }
+				              if(isFillMemberTimeSheet){ 
+					              if(rowCount == 1){
+					             	  sb.append("<input  type='button' value='' onClick='addTimeSheetRow(\""+ts.getId()+"\",\""+ts.getProjectMembers().getProjects().getId()+"\")' class='addtaskfield'/>");
+					              }else{
+					                  sb.append("<input type='button' value=''  onClick='removeTimeSheetRow(\""+rowCount+"\",\""+ts.getId()+"\");'  class='addtaskfield removetaskfield'/>");
+					              }
+					          }
 				               
 				              sb.append("                      </div>");
 				              sb.append("                 </td> ");
@@ -1251,11 +1262,20 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			TimesheetSubmissions tsFirst = timesheetSubmissionsList.iterator().next();
 			if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
 				sb.append("<div class='commentTime'>");
-				sb.append("<textarea   name='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+				if(isFillMemberTimeSheet){ 
+					sb.append("<textarea   name='weekComment' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");	
+				}else{
+					sb.append("<textarea   name='weekComment' readonly='readonly' placeholder='comments here...'>"+tsFirst.getWeekcomments()+"</textarea>");
+				}
+				
 				sb.append("</div>");
 			}else{
 				sb.append("<div class='commentTime'>");
-				sb.append("<textarea   name='weekComment' placeholder='comments here...'></textarea>");
+				if(isFillMemberTimeSheet){ 
+					sb.append("<textarea   name='weekComment' placeholder='comments here...'></textarea>");
+				}else{
+					sb.append("<textarea   name='weekComment' readonly='readonly' placeholder='comments here...'></textarea>");
+				}
 				sb.append("</div>");
 			}
 			
@@ -1300,7 +1320,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 							    String startDate1  =  sdf.format(tsFirst.getStartDate());
 							    String endDate1  =  sdf.format(tsFirst.getEndDate());
-							    if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){ 
+							    if( (!isFillMemberTimeSheet ) ||  (!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) )){ 
 								}else{
 									documentBuffer.append("<input class='dele' type='button'  onClick='deleteSubmissionDocument(\""+tsd.getId()+"\",\""+tsFirst.getProjectMembers().getEmployee().getId()+"\",\""+startDate1+"\",\""+endDate1+"\");'>");
 								}
@@ -1310,7 +1330,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					}
 				} 
 		
-				if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){ 
+				if( (!isFillMemberTimeSheet ) || ( !isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) )){ 
 				}else{
 	            	documentBuffer.append("<div class='commentFile'>"); 
 					documentBuffer.append("<span>"); 
@@ -1328,32 +1348,34 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			sb.append("<div class='clearfix'></div>");
 			sb.append("</div>");
 			 
-			if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue()))){
-				   sb.append("	<div class='clearfix'></div>");
-				   sb.append("	<div class='timesheet_button'>");
-				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\",\""+format.format(CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())+"\","+employeeUserId+","+projectMemberId+","+employeeId+");' value='Update' class='time_btn'>");
-				   /*sb.append("        <input type='button' value='Clear' class='time_btn time_cancel'>");*/
-				   sb.append("    </div>");
-				   sb.append("</div>");
-			}
-			else if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
-				   sb.append("	<div class='clearfix'></div>");   
-				   sb.append("	<div class='timesheet_button'>");
-				   sb.append("  </div>");
-				   sb.append("</div>");
-			}
-			else{
-				   sb.append("	<div class='clearfix'></div>");
-				   sb.append("	<div class='timesheet_button'>");
-				   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\",\"approver\",\""+format.format(CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())+"\","+employeeUserId+","+projectMemberId+","+employeeId+");' value='Save' class='time_btn time_dra'>");
-				   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\",\""+format.format(CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())+"\","+employeeUserId+","+projectMemberId+","+employeeId+");' value='Submit' class='time_btn'>");
-				   sb.append("        <input type='button' onClick='clearTimesheet();' value='Clear' class='time_btn time_cancel'>");
-				   
-				   sb.append("");
-				   
-				   sb.append("    </div>");
-				   sb.append("</div>");
-			}
+			if(isFillMemberTimeSheet){
+				if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())) ){
+					   sb.append("	<div class='clearfix'></div>");
+					   sb.append("	<div class='timesheet_button'>");
+					   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\",\""+format.format(CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())+"\","+employeeUserId+","+projectMemberId+","+employeeId+");' value='Update' class='time_btn'>");
+					   /*sb.append("        <input type='button' value='Clear' class='time_btn time_cancel'>");*/
+					   sb.append("    </div>");
+					   sb.append("</div>");
+				}
+				else if(!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
+					   sb.append("	<div class='clearfix'></div>");   
+					   sb.append("	<div class='timesheet_button'>");
+					   sb.append("  </div>");
+					   sb.append("</div>");
+				}
+				else{
+					   sb.append("	<div class='clearfix'></div>");
+					   sb.append("	<div class='timesheet_button'>");
+					   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\",\"approver\",\""+format.format(CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())+"\","+employeeUserId+","+projectMemberId+","+employeeId+");' value='Save' class='time_btn time_dra'>");
+					   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\",\""+format.format(CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())+"\","+employeeUserId+","+projectMemberId+","+employeeId+");' value='Submit' class='time_btn'>");
+					   sb.append("        <input type='button' onClick='clearTimesheet();' value='Clear' class='time_btn time_cancel'>");
+					   
+					   sb.append("");
+					   
+					   sb.append("    </div>");
+					   sb.append("</div>");
+				}
+			}	
 		  
 			
 		    sb.append("	<div class='clearfix'></div>");
