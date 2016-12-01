@@ -100,6 +100,7 @@ public class SecurityConfig  {
     			.antMatchers("/acceptOrRejectInterview").permitAll() 
     			.antMatchers("/acceptOrRejectOffer").permitAll()
     			.antMatchers("/downloadOfferAttachment").permitAll()
+    			.antMatchers("/downloadRequirementAttachment").permitAll()
     			.antMatchers("/resources/**/**").permitAll() 
     			.antMatchers("/acceptOrRejectOrRateNegotiateApplicantRates").permitAll() 
     			.antMatchers("/storeReject").permitAll() 

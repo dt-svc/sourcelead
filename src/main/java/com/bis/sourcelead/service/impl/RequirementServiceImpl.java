@@ -509,7 +509,7 @@ public class RequirementServiceImpl implements RequirementService {
 					  rah.setUpdatedDate(commonUtil.currentDate());
 					  
 					  requirementApproverHierarchyList.add(rah);
-						approverEmailScenario(user, approverUser ,requirement,location,orgLocations);
+						
 
 				  }
 				  
@@ -600,7 +600,12 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
-		mailRequirementtoManager(user,user,requirement,location,orgLocations);
+		mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
+		  if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
+			  String approverNames = jsonObj.getString("sequentialApprover1");
+			  User approverUser = userService.getUserById(Long.parseLong(approverNames));
+			  approverEmailScenario(user, approverUser ,savedRequirement,location,orgLocations);
+		  }
 		return savedRequirement;
 	}
 
@@ -752,6 +757,7 @@ public class RequirementServiceImpl implements RequirementService {
 			}else{
 			globalVarsMap.put("jobInitiatorName","--");
 		}
+		 
 		if(approverUser.getEmail()!=null && !"".equalsIgnoreCase(approverUser.getEmail())){
 			globalVarsMap.put("userEmailId",approverUser.getEmail());
 			}else{
@@ -768,6 +774,12 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("role","--");
 			}
+		 
+		 if(requirement.getFileName() != null && !requirement.getFileName().isEmpty() ){
+	            globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"downloadRequirementAttachment?requirementId="+requirement.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment"+"<br/></div></a>");
+         }else{
+            globalVarsMap.put(" ","<a href='"+sourceleadUrl+"/"+"downloadRequirementAttachment?requirementId="+requirement.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment"+"<br/></div></a>");
+         }
 		 
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
@@ -847,6 +859,10 @@ public class RequirementServiceImpl implements RequirementService {
 		 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
 		 globalVarsMap.put("role", loginUser.getUserType());
 		 globalVarsMap.put("approverOne", loginUser.getFirstName());
+		 
+		 
+		 globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>");
+
 		 
 		 
 		 //setting the Recipient information
@@ -1171,6 +1187,8 @@ public class RequirementServiceImpl implements RequirementService {
 			 }
 		 
 		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+		 globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>");
+
 
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
@@ -1262,6 +1280,8 @@ public class RequirementServiceImpl implements RequirementService {
 				 globalVarsMap.put("Role","--"); 
 			 }
 		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+		 globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>");
+
 
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
