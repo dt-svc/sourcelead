@@ -97,7 +97,7 @@ public class CandidateCertificationsDaoImpl implements CandidateCertificationsDa
 	public List<CandidateCertifications> getCandidateCertificationListByCandidateIdAndOrgLocationID(Long candidateId,
 			Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateCertifications cc where cc.orgLocationId.id =:orgLocationId and cc.candidateId.id =:candidateId and cc.status = '1'";  
+		String query = "from CandidateCertifications cc where cc.orgLocationId.id =:orgLocationId and cc.candidateId.id =:candidateId and cc.status = '1' ORDER BY cc.id DESC";  
 		List<CandidateCertifications> candidateCertifications = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return candidateCertifications;	
 	}

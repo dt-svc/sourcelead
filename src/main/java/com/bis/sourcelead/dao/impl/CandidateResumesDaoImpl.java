@@ -96,7 +96,7 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, Integer status) throws Exception {
 		logger.debug("In get Resumes list by candidateid and status method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateResumes candidateResumes where candidateResumes.candidateId =:candidateId and candidateResumes.status = :status";  
+		String query = "from CandidateResumes candidateResumes where candidateResumes.candidateId =:candidateId and candidateResumes.status = :status ORDER BY candidateResumes.id DESC";  
 		List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setInteger("status", status).setCacheable(true).list();
 		return candidateResumesList;
 		

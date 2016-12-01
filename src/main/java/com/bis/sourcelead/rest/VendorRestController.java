@@ -84,7 +84,7 @@ public class VendorRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')")
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT_CONTACT','ROLE_CREATE_VENDOR_CONTACT')")
 	@RequestMapping(value = "/saveClinentAndVendorContact", method = RequestMethod.POST)
 	@ResponseBody
 	public String saveVenodrContact(@RequestParam(value = "json", required = false) String json, @RequestParam(value="orgRelationId", required=false) String orgRelationId,

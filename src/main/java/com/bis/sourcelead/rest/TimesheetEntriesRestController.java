@@ -71,7 +71,7 @@ public class TimesheetEntriesRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/newTimesheet", method = RequestMethod.POST )   
-	@PreAuthorize("hasAnyRole('ROLE_CREATE_MY_TIMESHEETS','ROLE_VIEW_MY_TIMESHEETS','ROLE_EDIT_MY_TIMESHEETS','ROLE_WITHDRAW_MY_TIMESHEETS')")
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS')")
 	public @ResponseBody String newTimesheet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -87,6 +87,7 @@ public class TimesheetEntriesRestController {
 	 * @return JSON
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/dynamicTimesheetpopUp", method = RequestMethod.POST )
 	public @ResponseBody String dynamicTimesheetpopUp(HttpServletRequest request,@RequestParam(value="employeeId", required=false) Long employeeId,
 																				 @RequestParam(value="startDate", required=false) String startDate,
@@ -96,15 +97,17 @@ public class TimesheetEntriesRestController {
 		String result = timesheetEntriesService.dynamicTimesheetpopUp(user, employeeId, startDate, endDate);
 		return result;
 	}
-/**
- * @author sarath kumar punnana 
- * @param timesheetEntriesForm
- * @param json
- * @param request
- * @param status
- * @return
- * @throws Exception
- */
+	/**
+	 * @author sarath kumar punnana 
+	 * @param timesheetEntriesForm
+	 * @param json
+	 * @param request
+	 * @param status
+	 * @return
+	 * @throws Exception
+	 */
+	
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/saveTimesheet", method = RequestMethod.POST)
 	public @ResponseBody String saveTimesheet(TimesheetEntriesForm timesheetEntriesForm,@RequestParam(value="json", required=false) String json,
 				MultipartHttpServletRequest request,@RequestParam(value="status", required=false) String status,String savingType) throws Exception {
@@ -120,8 +123,9 @@ public class TimesheetEntriesRestController {
 	 * @return
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/projectTasksById" , method = RequestMethod.POST)
-	 public @ResponseBody  String getProjectTasks(
+	public @ResponseBody  String getProjectTasks(
 			 @RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="avilableProjectTaskIds", required=false) String  avilableProjectTaskIds) throws Exception {
 		 	
 			 
@@ -139,11 +143,14 @@ public class TimesheetEntriesRestController {
 			 return resultJson;
 		 	
 	 }
-/**
- * @author sarath kumar punnana
- * @return
- * @throws Exception
- */
+	/**
+	 * @author sarath kumar punnana
+	 * 
+	 * usage : unused method : this is default method
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/saveOrUpdate", method = RequestMethod.GET)
 	public @ResponseBody  TimesheetEntries addTimesheetEntries() throws Exception
 			 
@@ -157,6 +164,9 @@ public class TimesheetEntriesRestController {
 	}
 	/**
 	 * @author sarath kumar punnana
+	 * 
+	 *  usage : unused method : this is default method
+	 *  
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.GET)
 	public @ResponseBody  TimesheetEntries updateTimesheetEntries() throws Exception
@@ -176,6 +186,9 @@ public class TimesheetEntriesRestController {
 	 * @author sarath kumar punnana
 	 * @param id
 	 * @return
+	 * 
+	 * usage : unused method : this is default method
+	 *  
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getTimesheetEntries/{id}", method = RequestMethod.GET)
@@ -185,8 +198,12 @@ public class TimesheetEntriesRestController {
 		TimesheetEntries savedTimesheetEntries = timesheetEntriesService.getTimesheetEntries(id);
 		return savedTimesheetEntries; 
 	}
+	
 	/**
 	 * @author sarath kumar punnana 
+	 * 
+	 * usage : unused method : this is default method
+	 *  
 	 * @param id
 	 * @return json
 	 * @throws Exception
@@ -200,7 +217,16 @@ public class TimesheetEntriesRestController {
 		return status; 
 	}
 	
-	//sarath kumar punnana : unused method 
+	/**
+	 * @author sarath kumar punnana 
+	 * 
+	 *  usage : unused method : this is default method
+	 *  
+	 * @param id
+	 * @return json
+	 * @throws Exception
+	 */
+	
 	@RequestMapping(value = "/getAll", method = RequestMethod.GET)
 	public @ResponseBody Collection<TimesheetEntries> getAllTimesheetEntries() throws Exception
 			 
@@ -209,7 +235,16 @@ public class TimesheetEntriesRestController {
 		  return timesheetEntriesList;
 	}
 	
-	//sarath kumar punnana : unused method 
+	/**
+	 * @author sarath kumar punnana 
+	 * 
+	 *  usage : unused method : this is default method
+	 *  
+	 * @param id
+	 * @return json
+	 * @throws Exception
+	 */
+	
 	@RequestMapping(value = "/saveAll", method = RequestMethod.GET)
 	public @ResponseBody Collection<TimesheetEntries> saveAll() throws Exception
 			 
@@ -231,7 +266,9 @@ public class TimesheetEntriesRestController {
 	 * @return JSON
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/exportTimeShhet")    
+	
+	@RequestMapping(value = "/exportTimeShhet")  
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS')")
 	public void ExportTimeShhet(HttpServletRequest request,@RequestParam(value="navigation", required=false) String navigation,@RequestParam(value="startDate", required=false) String startDate,HttpServletResponse response) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

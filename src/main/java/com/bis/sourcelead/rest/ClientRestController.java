@@ -197,7 +197,7 @@ public class ClientRestController {
 			
 		}
 	
-		
+	 @PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT','ROLE_CREATE_VENDOR')")
 		@RequestMapping(value = "/saveClient", method = RequestMethod.POST)
 			public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,
 					@RequestParam(value = "responderType", required = false) String responderType,
@@ -325,7 +325,7 @@ public class ClientRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasRole('ROLE_VIEW_VENDOR_CONTACT')")
+	@PreAuthorize("hasRole('ROLE_VIEW_VENDOR_CONTACT','ROLE_VIEW_EDIT_VENDOR_CONTACT')")
 	@RequestMapping(value = "/getOrgSpocsList", method = RequestMethod.POST)
 	@ResponseBody String getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -524,8 +524,7 @@ public class ClientRestController {
 	  * @return
 	  * @throws Exception
 	  */
-
-	 @PreAuthorize("hasAnyRole('ROLE_VIEW_CLIENT_CONTACT','ROLE_EDIT_CLIENT_CONTACT','ROLE_VIEW_VENDOR_CONTACT','ROLE_EDIT_VENDOR_CONTACT')")
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_CLIENT_CONTACT','ROLE_VIEW_EDIT_CLIENT_CONTACT','ROLE_VIEW_VENDOR_CONTACT','ROLE_VIEW_EDIT_VENDOR_CONTACT')")
 	 @RequestMapping(value = "/getSpocAndOwnerDetailsById", method = RequestMethod.POST)
 	 @ResponseBody String getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId,@RequestParam(value = "tempOwnerId", required = false) Long tempOwnerId ) throws Exception{
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -619,8 +618,7 @@ public class ClientRestController {
 	 * @return
 	 * @throws Exception
 	 */
-
-	@PreAuthorize("hasAnyRole('ROLE_EDIT_CLIENT','ROLE_VIEW_CLIENT','ROLE_VIEW_VENDOR','ROLE_EDIT_VENDOR')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CLIENT','ROLE_VIEW_CLIENT','ROLE_VIEW_VENDOR','ROLE_VIEW_EDIT_VENDOR')")
 	@RequestMapping(value = "/getClientAndVendorOrgDeatilsById", method = RequestMethod.POST)
 	@ResponseBody String getClientAndVendorOrgDeatilsById(@RequestParam(value = "vendorLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {

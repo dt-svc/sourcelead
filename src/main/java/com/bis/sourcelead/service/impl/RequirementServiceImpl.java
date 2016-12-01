@@ -17,8 +17,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -1530,7 +1528,7 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public Integer validateJobId(Long id,Long orgLocation) throws Exception {
+	public Integer validateJobId(String id,Long orgLocation) throws Exception {
 		return requirementDao.validateJobId(id,orgLocation);
 	}
 
