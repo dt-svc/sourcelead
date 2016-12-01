@@ -193,7 +193,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		List<SubmissionApproverHierarchy> list = new ArrayList<SubmissionApproverHierarchy>();
 		
          if(status != null){
- 			if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_APPROVER".equalsIgnoreCase(userRole)   ||  "ROLE_TEAM_LEAD".equalsIgnoreCase(userRole)){
+ 			//if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_APPROVER".equalsIgnoreCase(userRole)   ||  "ROLE_TEAM_LEAD".equalsIgnoreCase(userRole)){
  				/*
  				 *  New  Timesheet List  as  per new User Story 
  				 */
@@ -210,7 +210,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
      				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId, status);
   				}
  				
- 			}else if("ROLE_USER".equalsIgnoreCase(userRole)  ){
+                 /*}else if("ROLE_USER".equalsIgnoreCase(userRole)  ){
  				
  				
  				if("APPROVED".equalsIgnoreCase(status)){
@@ -227,7 +227,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
  				}
 
  				
- 			}
+ 			}*/
 
  		}
      	StringBuilder sb = new StringBuilder();	
