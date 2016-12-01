@@ -220,8 +220,8 @@ function addEducation(candidateId) {
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
-	result = result  +'                  <div class="clearfix mb10"> ';
-	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education " name="name" id="name" data-validation=" required">';
+	result = result  +'                  <div class="clearfix mb10" id="nameIdDiv"> ';
+	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education " name="name" id="name" data-validation=" required" onchange="validateEduname('+candidateId+');">';
 	
 											 <c:forEach var="edu" items="${educationsList}">
     result = result  +'	                        <option value="" disabled selected></option>';										 
@@ -381,7 +381,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10"> ';
-	result = result + "<select  class='chosen-select form-control' name='name' id='name' data-validation='validate_Space' data-validation-optional='true'>";
+	result = result + "<select  class='chosen-select form-control' name='name' id='name' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'>";
 	                 for (var j = 0; j < json.educationList.length; j++) {
 							var education = json.educationList[j];
 							   if(education.name == json.name){
@@ -767,3 +767,33 @@ function clearSearchKey() {
 				});
 	}
 </script>
+
+
+
+<script type="text/javascript">
+ function validateEduname(candidateId) {
+	  var name = document.getElementById("name").value; 
+ 	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateEduname?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&name="+name, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+		        		  /* document.getElementById("name").setAttribute('record-exist','yes');
+						  document.getElementById("name").setAttribute('record-exist-errorMsg',name+' is Already Existed'); 
+						   */
+						   $("#name").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+						  $("#save_button").attr('disabled','disabled');
+						 // return false;
+		        	}
+		        	else{
+		        		 $('#nameIdDiv').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#nameIdDiv').find('p.jquery_form_error_message').remove(); 
+                         $("#save_button").removeAttr("disabled");
+		        	}
+		        },
+		    });
+ }
+ </script>     

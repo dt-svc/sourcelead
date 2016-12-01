@@ -221,6 +221,11 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 			Long candidateEducationId) throws Exception {
 		  return candidateEducationDao.getCandidateEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
 	}
+	
+	@Override
+	public Boolean validateEducationName(Long candidateId, String candidateEducation) throws Exception {
+		return candidateEducationDao.validateEducationName(candidateId, candidateEducation);
+	}
 
 
 }

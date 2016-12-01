@@ -125,22 +125,22 @@ public class RequirementRestController {
 		Requirement requirement = requirementService.storeRequirement(jsonObj,orgLocation,user,multiFile);
 		
 		if(jsonObj.getString("saveType").equalsIgnoreCase("draft")){
-			SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Requirement Saved in Draft Stage");
+			SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success!! New "+requirement.getJobTitle()+" requirement  saved to Draft");
 		}
 		if(jsonObj.getString("saveType").equalsIgnoreCase("save")){
-			SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Requirement Created Succesfully");
+			SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success!! New "+requirement.getJobTitle()+" requirement  saved");
 		}
 		if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval")){
-			SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Requirement Created and Submitted Succesfully");
+			SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success!! New "+requirement.getJobTitle()+" requirement  submitted for approval");
 		}
 		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("save"))){
-			SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Requirement Updated Succesfully");
+			SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success!! "+requirement.getJobTitle()+" details updated");
 		}
 		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval"))){
-			SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Requirement Updated and Submitted Succesfully");
+			SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success!! "+requirement.getJobTitle()+" Updated and Submitted ");
 		}
 		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("draft"))){
-			SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Requirement Updated in Draft Stage");
+			SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success!!  "+requirement.getJobTitle()+" Updated in Draft Stage");
 		}
 		
 		

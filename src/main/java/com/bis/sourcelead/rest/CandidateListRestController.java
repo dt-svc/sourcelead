@@ -396,7 +396,11 @@ public class CandidateListRestController {
 			JSONObject jsonObj = new JSONObject(jsonc);
 
 			 candidate = candidateService.storeCandidate(jsonObj,loginOrgLocation,user,multiFile);
-			
+				if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
+					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", "Success!!  "+candidate.getFirstName()+" Details Updated");
+
+				}
+
 			return "success";
 			
 		 }
@@ -426,6 +430,10 @@ public class CandidateListRestController {
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidateService.saveOrUpdateCandidate(candidate);
+				
+				SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg",  ""+candidate.getFirstName()+" Removed");
+	
+			
 			}
 			return "success";
 		 }

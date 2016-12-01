@@ -162,5 +162,15 @@ public class CandidateEducationRestController {
 			return "success";
 	}
 	
+	
+	@RequestMapping(value = "/validateEduname")
+	public Boolean validateEduname(@RequestParam(value="name", required=false) String  name,@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
+		String candidateEducation = name;
+			Boolean canEdu = candidateEducationService.validateEducationName(candidateId, candidateEducation );
+			return canEdu;
+	}
+	
+	
+	
 }
 
