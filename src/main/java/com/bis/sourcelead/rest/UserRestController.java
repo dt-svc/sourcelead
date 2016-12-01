@@ -438,7 +438,7 @@ public class UserRestController {
 			 * @param reason
 			 * @return
 			 */
-			 @PreAuthorize("hasAnyRole('ROLE_DELETE_PROJECT_EMPLOYEES')")
+			@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_PROJECT_EMPLOYEES')")
 			@RequestMapping(value = "/saveReason", method = RequestMethod.POST)
 			@ResponseBody String saveReason(
 					@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,
@@ -591,7 +591,7 @@ public class UserRestController {
 		 * @return
 		 * @throws Exception
 		 */
-		@PreAuthorize("hasRole('ROLE_DELETE_USER')")
+		@PreAuthorize("hasRole('ROLE_VIEW_DELETE_USER')")
 		@RequestMapping(value = "/reActiveUser", method = RequestMethod.POST)
         public String reActiveUser(@RequestParam(value = "userId", required = false) String userID, HttpServletRequest request) throws Exception {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
