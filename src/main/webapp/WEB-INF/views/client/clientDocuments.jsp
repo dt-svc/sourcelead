@@ -152,8 +152,9 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
+	                    	    result = result+'	 <td><div class="tblicons">';
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_CLIENT_DOCS\')">'; 
-	                    	    result = result+'	 <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
+	                    	    result = result+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
 	                    	 '</sec:authorize>';
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\')">'; 

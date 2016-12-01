@@ -11,10 +11,10 @@ function vendorSpocDocuments(orgRelationId,clientLocationId,spocName,userId){
 	result = result  +'<div class="timesheet_head">';
 	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
 	    result = result + '<ul>';
-	    '<sec:authorize access="hasAnyRole(\"ROLE_CREATE_VENDOR_CONTACT_DOCUMENT\")">';
+	    '<sec:authorize access="hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
 		result = result  +'    	<a href="javascript:void(0)" onClick="addDocumentForSpoc('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+'); getSpocsList('+orgRelationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Documents</a>                                                            ';
 		 '</sec:authorize>';
-		 '<sec:authorize access="!hasAnyRole(\"ROLE_CREATE_VENDOR_CONTACT_DOCUMENT\")">';
+		 '<sec:authorize access="!hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
 			result = result  +'    	<a href="javascript:void(0)" " class="addUser-org" ><i class=""></i></a>                                                            ';
 			 '</sec:authorize>';
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
@@ -116,11 +116,11 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
 	                    		 result = result+'	 <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
 	                    		 
-	                    		 '<sec:authorize access="hasAnyRole(\"ROLE_EDIT_VENDOR_CONTACT_DOCUMENT\")">';
+	                    		 '<sec:authorize access="hasAnyRole(\"ROLE_EDIT_VENDOR_DOCUMENT\")">';
 	                    				 result = result+'	 <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocumentForSpoc('+clientLocationId+',\''+spocName+'\','+userId+');  getVendorSpocDocument('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+opt.id+');"></a>';
 	                    		 '</sec:authorize>';
 	                    				 
-	                    		'<sec:authorize access="hasAnyRole(\"ROLE_DELETE_VENDOR_CONTACT_DOCUMENT\")">';
+	                    		'<sec:authorize access="hasAnyRole(\"ROLE_DELETE_VENDOR_DOCUMENT\")">';
 	                    				 result = result+'	 <i class="glyphicon glyphicon-trash" onclick="deleteDocument(\''+clientLocationId+'\',\''+orgRelationId+'\',\''+spocName+'\',\''+userId+'\',\''+opt.id+'\');"></i>';
 	                    		 '</sec:authorize>'; 
 	                    		 result = result+'	 </div></td>';
