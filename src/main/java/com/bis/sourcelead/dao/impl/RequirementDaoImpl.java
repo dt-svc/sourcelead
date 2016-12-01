@@ -20,13 +20,11 @@ import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
-import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -443,12 +441,12 @@ public class RequirementDaoImpl implements RequirementDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer validateJobId(Long id,Long orgLocationId) throws Exception {
+	public Integer validateJobId(String id,Long orgLocationId) throws Exception {
 	Session session = this.sessionFactory.getCurrentSession();
 		
 		String query ="select count(*)from Requirement requirement where requirement.jobId = :id and requirement.orgLocationId.id =:orgLocationId";
 		
-		List<Long> jobCount =   session.createQuery(query.toString()).setLong("id", id).setLong("orgLocationId", orgLocationId).list();
+		List<Long> jobCount = session.createQuery(query.toString()).setString("id", id).setLong("orgLocationId", orgLocationId).list();
 			Integer count = 0;
 			if(jobCount != null && !jobCount.isEmpty()){
 					count = jobCount.get(0).intValue();

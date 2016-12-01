@@ -425,7 +425,7 @@ public class RequirementRestController {
 	 * @throws Exception
 	 */
 	 @RequestMapping(value = "/validateJobId",  method = RequestMethod.POST)
-	    public @ResponseBody String validateJobId(@RequestParam(value="jobId", required=false) Long jobId,HttpServletRequest request) throws Exception {
+	    public @ResponseBody String validateJobId(@RequestParam(value="jobId", required=false) String jobId,HttpServletRequest request) throws Exception {
 		    	String result;
 				String resultJson;
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
