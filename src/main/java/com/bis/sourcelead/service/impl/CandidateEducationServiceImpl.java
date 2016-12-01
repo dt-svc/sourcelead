@@ -82,15 +82,19 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		if(jsonObject.has("specialization")){
 			candidateEducation.setSpecialization(jsonObject.getString("specialization"));
 		}
-		if(jsonObject.has("startDate")){
+		if(jsonObject.has("startDate") && !(jsonObject.getString("startDate").isEmpty()) && !" ".equals(jsonObject.get("startDate"))){
 			try {
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
-				candidateEducation.setStartDate(sdf.parse(jsonObject.getString("startDate")));
+				
+				String pattern = "yyyy-MM-dd";
+                SimpleDateFormat format = new SimpleDateFormat(pattern);
+                Date startDate = format.parse(jsonObject.getString("startDate"));
+                candidateEducation.setStartDate(startDate);
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		if (jsonObject.has("endDate") && !(jsonObject.getString("endDate").isEmpty())) {
+		if (jsonObject.has("endDate") && !(jsonObject.getString("endDate").isEmpty()) && !" ".equals(jsonObject.get("endDate"))) {
 			try {
 				String pattern = "yyyy-MM-dd";
                 SimpleDateFormat format = new SimpleDateFormat(pattern);
