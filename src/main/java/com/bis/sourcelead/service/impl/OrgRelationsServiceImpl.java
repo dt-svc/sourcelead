@@ -273,7 +273,11 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 					}
 					//if login user is Owner
 					else if(orgSpoc.getOwnerUser().getId() == loginUserId){
-							 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+							if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
+								orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+							}else{
+								orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
+							}
 							 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 							 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 							 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
@@ -284,7 +288,12 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 					 
 				}else{
 					if(orgSpoc.getInitiatorLocationId().getId() == orgLocationId ){
-						 orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+						
+						if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
+							orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+						}else{
+							orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
+						}
 						 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 						 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 						 orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
@@ -316,6 +325,16 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	   }
 		
 		return vandorsContactsList;
+	}
+
+	@Override
+	public List<OrgRelations> getAllVendorsListByOrgName(String orgName,Long orgLocationId) {
+		return orgRelationsDao.getAllVendorsListByOrgName(orgName,orgLocationId);
+	}
+
+	@Override
+	public List<OrgRelations> getAllClientsByOrgNameOrgLocationId(String orgName, Long orgLocationId) throws Exception {
+		return orgRelationsDao.getAllClientsByOrgNameOrgLocationId(orgName,orgLocationId);
 	}
 	
 }

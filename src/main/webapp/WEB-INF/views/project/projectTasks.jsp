@@ -118,12 +118,12 @@
 							var opt = json[i];
 							result = result + '<tr>';
 							
-							'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_PROJECT_TASKS\')">'; 
+							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'; 
 							result = result+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'taskName\');"  id="taskName'+ opt.Id+ '" value="'+ opt.taskName+ '"  class="project_inline_field"></div></td>';
 							result = result	+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'description\');" id="description'+ opt.Id+ '" value="'+ opt.description+ '" class="project_inline_field"></div></td>';
 							'</sec:authorize>'; 
 							
-							'<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_PROJECT_TASKS\')">';
+							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">';
 							result = result+ '<td><div><span>'+ opt.taskName+ '</span></div></td>';
 							result = result	+ '<td><div><span>'+ opt.description+ '</span></div></td>';
 							'</sec:authorize>'; 
