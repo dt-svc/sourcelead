@@ -7,7 +7,7 @@ var Tree = require('./tree');
 var UiBuilder = require('./ui-builder');
 var Util = require('./utility');
 
-var treeMultiselect = function treeMultiselect(opts) {
+var treeMultiselect = function treeMultiselect(opts,roleName) {
   var _this = this;
 
   var options = mergeDefaultOptions(opts);
@@ -18,7 +18,7 @@ var treeMultiselect = function treeMultiselect(opts) {
     $originalSelect.attr('multiple', '').css('display', 'none');
 
     var tree = new Tree(uniqueId, $originalSelect, options);
-    tree.initialize();
+    tree.initialize(roleName);
 
     ++uniqueId;
   });
@@ -91,9 +91,9 @@ function Tree(id, $originalSelect, options) {
   this.keysToRemove = [];
 }
 
-Tree.prototype.initialize = function () {
+Tree.prototype.initialize = function (roleName) {
   var data = this.generateSelections();
-  var generatedHtmlData = this.generateHtmlFromData(data);
+  var generatedHtmlData = this.generateHtmlFromData(data,roleName);
   this.$selectionContainer.append(generatedHtmlData);
 
   this.popupDescriptionHover();
@@ -113,7 +113,7 @@ Tree.prototype.initialize = function () {
   this.armRemoveSelectedOnClick();
   this.updateSelectedAndOnChange();
 
-  this.render(true);
+  this.render(true,roleName);
 };
 
 Tree.prototype.generateSelections = function () {
@@ -161,19 +161,26 @@ Tree.prototype.generateSelections = function () {
   return data;
 };
 
-Tree.prototype.generateHtmlFromData = function (data) {
+Tree.prototype.generateHtmlFromData = function (data,roleName) {
   // returns array, 0th el is number of options, 1st el is HTML string
   var str = "";
   for (var ii = 0; ii < data[0].length; ++ii) {
+	
+	var disabled = '';  
     var option = data[0][ii];
-
-    var optionLabelCheckboxId = 'treemultiselect-' + this.id + '-' + option.id;
+    var optionLabelCheckboxId = 'treemultiselect-'  + option.value;
     var descriptionStr = option.description ? ' data-description=\'' + option.description + '\'' : "";
     var indexStr = option.initialIndex ? ' data-index=\'' + option.initialIndex + '\'' : "";
     var optionCheckboxStr = "";
     var optionLabelStr = "";
     if (!this.options.onlyBatchSelection) {
-      optionCheckboxStr += '<input class=\'option\' name=\'actionsList[]\' value=\'' + option.value + '\' type=\'checkbox\' id=\'' + optionLabelCheckboxId + '\'';
+    	
+      if(roleName == 'ROLE_ADMIN'){
+    	  optionCheckboxStr += '<input class=\'option\' name=\'actionsList[]\'  onclick=\'isCheckboxChecked(this) \'  value=\'' + option.value + '\' type=\'checkbox\' id=\'' + optionLabelCheckboxId + '\'';
+      }	else{
+    	  optionCheckboxStr += '<input class=\'option\' name=\'actionsList[]\'  value=\'' + option.value + '\' type=\'checkbox\' id=\'' + optionLabelCheckboxId + '\'';
+      }
+     
       if (this.options.freeze) {
         optionCheckboxStr += " disabled";
       }
@@ -189,16 +196,20 @@ Tree.prototype.generateHtmlFromData = function (data) {
 
   var keys = Object.keys(data[1]);
   for (var jj = 0; jj < keys.length; ++jj) {
+	  var disabled = '';
+	  if(roleName == 'ROLE_ADMIN'){
+    	  disabled = 'disabled'
+      }	
     var sectionCheckboxStr = "";
     if (this.options.onlyBatchSelection || this.options.allowBatchSelection) {
-      sectionCheckboxStr += "<input class='section' type='checkbox'";
+      sectionCheckboxStr += "<input class='section' "+disabled+" type='checkbox'";
       if (this.options.freeze) {
         sectionCheckboxStr += " disabled";
       }
       sectionCheckboxStr += "/>";
     }
 
-    var generatedData = this.generateHtmlFromData(data[1][keys[jj]]);
+    var generatedData = this.generateHtmlFromData(data[1][keys[jj]],roleName);
     str += '<div class=\'section\'><div class=\'title\'>' + sectionCheckboxStr + keys[jj] + '</div>' + generatedData + '</div>';
   }
   return str;
@@ -387,7 +398,7 @@ Tree.prototype.updateSelectedAndOnChange = function () {
   }*/
 };
 
-Tree.prototype.render = function (noCallbacks) {
+Tree.prototype.render = function (noCallbacks,roleName) {
   var _this = this;
 
   // fix arrays first
@@ -418,8 +429,13 @@ Tree.prototype.render = function (noCallbacks) {
     var key = this.keysToAdd[jj];
     var option = this.selectOptions[key];
     this.selectedKeys.push(key);
-
-    var freezeStr = this.options.freeze ? '' : "<span class='remove-selected'>x</span>";
+    var freezeStr = '';
+    if(roleName!= 'undefined' && roleName == 'ROLE_ADMIN'){
+    	freezeStr = this.options.freeze ? '' : "";
+    }else{
+    	freezeStr = this.options.freeze ? '' : "<span class='remove-selected'>x</span>";
+    }
+    
     var sectionNameStr = this.options.showSectionOnSelected ? '<span class=\'section-name\'>' + option.section + '</span>' : '';
     domStr += '<div class=\'item\'   data-key=\'' + option.id + '\' value=\'' + option.value + '\'>' + freezeStr + sectionNameStr + option.text + '</div>';
   }

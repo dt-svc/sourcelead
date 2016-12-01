@@ -121,7 +121,14 @@ function cancel(){
 
  <script type="text/javascript">
  // Multiselect script
-      $("#test-select").treeMultiselect({ enableSelectAll: true, sortable: true });
+      var roleName = '${roleName}';
+      if(roleName == 'ROLE_ADMIN'){
+    	  $("#test-select").treeMultiselect({ enableSelectAll: false},roleName);
+      }else{
+    	  $("#test-select").treeMultiselect({ enableSelectAll: true },roleName);
+      }
+      
+      
     </script>
     
     
@@ -172,6 +179,14 @@ function cancel(){
 	   });        
 	});  
 </script> 
+
+<script>
+function isCheckboxChecked(id){
+	if($("#treemultiselect-"+id.value).is(':checked') == false){
+		$("#treemultiselect-"+id.value).prop('checked', true);
+	}
+}
+</script>
     
     
 </body>
