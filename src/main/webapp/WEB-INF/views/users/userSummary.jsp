@@ -152,11 +152,11 @@ $(document).ready(function(){
 				if(json.userState != null && json.userState != "" && json.userState != 'INACTIVE'){
 				    result = result + ' <div class="useredit">';
 						
-				    '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_USER\')">'
+				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_USER\')">'
 				        result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 				    '</sec:authorize>';
 				      
-				    '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_USER\')">'
+				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\')">'
 						result = result + ' <a id="remove-user" href="javascript:removeUser();"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
 							result = result + ' <div id="remove_user_id" class="remove_user_pop" >';
 									result = result +'<textarea placeholder="Comments here" id="reason" name="reason"/></textarea>';
@@ -168,7 +168,7 @@ $(document).ready(function(){
 				}
 				
 				else{
-					'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_USER\')">'
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\')">'
                          result = result + '<i class="glyphicon glyphicon-user"></i><a id="edit-user" href="javascript:reActiveUser('+userId+');">&nbsp;Re-Active</a>';
                     '</sec:authorize>';	 
 				}

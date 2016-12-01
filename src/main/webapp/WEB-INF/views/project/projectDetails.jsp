@@ -56,7 +56,7 @@
 						result = result + '	<div class="project_details">';
 						result = result + '<div class="useredit useredit_a">';
 						
-						result = result +'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_PROJECT\')">'; 
+						result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT\')">'; 
 						result = result	+ '<a id="edit-user" href="javascript:editProjectDetails('+ projectId+ ')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 	   		    		result = result +'</sec:authorize>';
 						
