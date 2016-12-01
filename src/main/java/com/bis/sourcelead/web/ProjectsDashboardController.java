@@ -55,7 +55,7 @@ public class ProjectsDashboardController {
 	 * @throws Exception
 	 */
 	
-	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT', 'ROLE_EDIT_PROJECT')")
+	// @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT', 'ROLE_EDIT_PROJECT')")
 	 @RequestMapping(value = "/projectDashboard")
 	public ModelAndView projectDashboard(HttpServletRequest request) throws Exception {
            logger.debug("projectDashboard");

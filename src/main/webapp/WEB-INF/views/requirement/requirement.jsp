@@ -430,7 +430,7 @@ $(document).ready(function () {
 		            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
 		            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
 		            &nbsp;&nbsp;
-		            <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
+		            </label>
 			  	</div>
 	        </c:if>
 	      
@@ -1427,6 +1427,10 @@ function addLvl(){
 <script>
 function approvalType(type){
 	    if($("#apprverReq").is(':checked')){
+	    	
+	    	$("#parallelApprover").val('');
+			$('#parallelApprover').trigger("chosen:updated");
+	    	
 			$("#submitForApproval").removeAttr("style");
 		    $("#save").attr("style","display:none"); 
 		    
@@ -1819,7 +1823,24 @@ function getIsClientVal(){
 var existingValue = document.getElementById('isClientJob').value;
 
 	if (document.getElementById('isClientJob').checked){
-		 $("#isClientJob").val('Y');	
+		 $("#isClientJob").val('Y');
+		 
+		 $("#addClientId").val('');
+		 $('#addClientId').trigger("chosen:updated");
+		 
+		 $("#selectContact").val('');
+		 $('#selectContact').trigger("chosen:updated");
+		 
+		 $('select[name=clientCurrencyCode]').val(1);
+		 $('.selectpicker').selectpicker('refresh');
+		 
+		 $('#clientRate').val('');
+		 
+		 $('select[name=clientRateType]').val(1);
+		 $('.selectpicker').selectpicker('refresh');
+		 
+		 $("#clientSubmissionForm").val('');
+		 $('#clientSubmissionForm').trigger("chosen:updated");
 		 existingValue = document.getElementById('isClientJob').value;
 	}else {
 		 $("#isClientJob").val('N');
