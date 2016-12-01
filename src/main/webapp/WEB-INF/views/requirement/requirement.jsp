@@ -1900,6 +1900,7 @@ function getLevel2Approvers(currentApproverId){
 
 <script type="text/javascript">
  function validateJobId(jobId) {
+	 
 	 if(jobId == null || jobId == "" || jobId == "undefined"){
 		 jobId = document.getElementById("jobId").value; 
 	 }
