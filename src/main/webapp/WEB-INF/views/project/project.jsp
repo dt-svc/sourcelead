@@ -119,10 +119,13 @@
 								<div class="input-group">
 									<div class="input-group-btn">
 										<button class="btn btn-default" type="button">
-											<span class="badge" id="addTaskCount">0
+											<span class="badge" id="addTaskCount">0</span>
 										</button>
-										<button class="btn btn-primary" id="david" type="button" onclick="addSourceleadTasks();" data-toggle="modal" data-target="#addTask">
-											<i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;View / Add Tasks </button>
+										<sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT_TASKS')"> 
+											<button class="btn btn-primary" id="david" type="button" onclick="addSourceleadTasks();" data-toggle="modal" data-target="#addTask">
+												<i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;View / Add Tasks 
+											</button>
+										</sec:authorize>
 									</div>
 								</div>
 								<!-- Modal -->
@@ -145,6 +148,7 @@
 													</tr>
 												  </table>
 											   </div>
+											   
 											   <div class="form-horizontal row custom-form">
 													<div class="col-xs-12 col-lg-7">
 														<div class="form-group" id="taskNameDIV">
@@ -164,6 +168,7 @@
 														<a href="javascript:void(0)" class="btn btn-primary" id="save_task" onclick="addTasks();" data-target="addTask"> <i class="fa fa-plus"></i><span id="addTaskText"> Add Task</span></a>
 													</div>
 												</div>
+												
 											</div>
 											<div class="modal-footer">
 												<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -237,6 +242,8 @@
 								<span class="hidden">Enter Project Id</span>
 							</div>
 						</div>
+						
+				   <sec:authorize access="hasAnyRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')"> 		
 						<div class="form-group">
 							<label class="col-md-3">Assign Team &nbsp;<i class=" text-info fa fa-info-circle" title="Before Assinging Team Project Start Date is Mandatory"></i></label>
 
@@ -283,6 +290,8 @@
 								<!-- Assign Team modal popup ends -->
 							</div>
 						</div>
+					</sec:authorize>	
+						
 						<div class="form-group">
 							<label class="col-md-3" for="Project Id">Status</label>
 							<div class="col-md-9">
@@ -294,6 +303,8 @@
 								</select> <span class="hidden">Select Status</span>
 							</div>
 						</div>
+						
+					 <sec:authorize access="hasAnyRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')"> 		
 						<div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
@@ -305,6 +316,7 @@
 								<span class="hidden">Select Check Box</span>
 							</div>
 						</div>
+					</sec:authorize>
 					</div>
 				</div>
 				<div class="form-footer clearfix row">
@@ -565,12 +577,8 @@ function getOrgDetails()
 		id="REPLACEROWIDtaskDescriptionValue">TASKDESCRIPTIONVALUE</span>
 </div>
 <div id="divTaskTd3" style="display: none; float: left;">
-    <sec:authorize access="hasAnyRole('ROLE_EDIT_PROJECT_TASKS')">
 	    <span><a title="Edit" href="javascript:void(0)" onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
-	 </sec:authorize>
-	 <sec:authorize access="hasAnyRole('ROLE_DELETE_PROJECT_TASKS')"> 
 	    <span><a title="Remove" href="javascript:void(0)" onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
-    </sec:authorize>
 </div>
 <!-- =============================== AddTask Divs  ============================ -->
 <!-- Add Task Script start -->
@@ -912,7 +920,7 @@ function getOrgDetails()
 		var startDate     =    $("#StartDate").val();
 		var searchByName = $("#searchByName").val();
 		var sourceleadUrl = '${sourceleadUrl}';
-		if(startDate != null  && startDate != ''){
+		if(startDate != null  && startDate != '' && level1Manager != null && level1Manager != '' ){
 			
 			if(level2Manager != null){
 				level2Manager = level2Manager;

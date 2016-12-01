@@ -95,6 +95,7 @@ public class ClientUploadController {
 	 * @return
 	 * @throws Exception 
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')")
 	@RequestMapping("/clientFileUpload")
 	public String fileUploaded(@ModelAttribute("uploadedFile") UploadedFile uploadedFile,Model model, HttpServletRequest request,@RequestParam(value = "type", required = false) String responderType)throws Exception {
 				

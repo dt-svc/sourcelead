@@ -65,7 +65,7 @@ public class VendorController {
 	@Autowired
 	ClientImportsService clientImportsService;
 
-	
+	/* This method is used for landing page of vendors tab. So, who has vendors tab access they can see vendors list. No preAuthorize for this method */
 	@RequestMapping(value = "/vendorsList")
 	public ModelAndView vendorsList(HttpServletRequest request) throws Exception {
 		
@@ -203,6 +203,7 @@ public class VendorController {
 		 * @return
 	 * @throws Exception 
 		 */
+	    @PreAuthorize("hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')")
 		@RequestMapping("/vendorFileUpload")
 		public String fileUploaded(@ModelAttribute("uploadedFile") UploadedFile uploadedFile,Model model, HttpServletRequest request,@RequestParam(value = "type", required = false) String responderType)throws Exception {
 					
@@ -244,6 +245,7 @@ public class VendorController {
 		 * @param response
 		 * @throws IOException
 		 */
+	    
 		@RequestMapping(value = "/downloadVendorErrorFile/{fileName}", method = RequestMethod.GET)
 		public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws IOException {
 			

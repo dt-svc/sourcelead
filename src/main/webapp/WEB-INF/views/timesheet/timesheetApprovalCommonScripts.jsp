@@ -1,40 +1,4 @@
 <body onclick="bodyClick();">
-      <section class="content-wraper">
-        <section class="content-header clearfix">
-          <div class="pull-left">
-            <h2>Timesheet approval</h2>
-          </div>
-            <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; TimeSheet List</div>
-        </section>
-        
-<div class="timesheet-content">
-<div class="timesheet_out">
-	<div class="timesheet_appr_wrap" >
-		<div class="timesheet_appr_wrap">
-		<div class="timesheet_head">
-        	 <ul>
-        	 <%-- <li><i class="fa fa-filter"></i><span>Employee</span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
-                	<div id="filter3ApprovedPop" class="approved_pop">
-                    	<ul>
-                    	 <c:forEach var="report" items="${thslist}">  
-                        	<li><input  id="employee${report.employeeId}" name="employeeById" value ="${report.employeeId}"  onclick="approvalList();"  type="checkbox"><label for="employee${report.employeeId}">${report.fullName}</label></li>
-						  </c:forEach>
-                        </ul>
-                    </div>                	
-                </li> --%>	
-            </ul> 
-            <div class="clearfix"></div>
-        </div> 
-		
-		<div class="timesheet_appr_table">
-				<div id="timesheetApprList">   </div>
-	    </div>
-	</div>
-	
-</div>
-</div></div>
-		
-</section>
       
   <!-- dummy divs above -->          
 			  <div id="divadttTd1" style="display:none;" >   

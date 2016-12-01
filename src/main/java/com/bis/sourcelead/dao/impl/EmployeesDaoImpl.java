@@ -290,16 +290,38 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Employees> getEmployeesExcludeTeamMembersBySearchByName(Long projectId, Long orgLocationsId,
 			String searchByName) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
 		   logger.debug("In Employee getEmployeesExcludeTeamMembers method");
 		  String search = "";
 	        if (searchByName != null && searchByName != "") {
 	        	search = "and (emp.user.firstName LIKE '" + searchByName + "%') OR (emp.user.lastName LIKE '" +searchByName + "%') OR (emp.user.email LIKE '" + searchByName + "')";
 	        }
-		Session session = this.sessionFactory.getCurrentSession();
+		
+		
+		 String actionsQuery = "select sa.id from SourceleadActions sa where (sa.tabs.id = :tabId or sa.tabs.id = :tabId2)  ";
+	        List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong("tabId", Constants.TAB_MY_TIMESHEET).setLong("tabId2", Constants.TAB_TIMESHEET_APPROVAL).setCacheable(true).list();
+	        
+	        String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
+	        List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+	        List<Long> ownerRolesList = new ArrayList<Long>();
+	        
+	        for(Roles roles : rolesList){
+	       	 List<Long> roleActionsList = new ArrayList<Long>();
+	       	 for (String s : roles.getActionId().split(",")){
+	       		 roleActionsList.add(Long.parseLong(s));
+	       	 }
+	       	 
+	       	 roleActionsList.retainAll(tabActionsIds);
+	       	 if(roleActionsList.size() > 0){
+	       		 ownerRolesList.add(roles.getId());
+	       	 }
+	        }
+	        
+	        
 		List<Employees> addItemsList = null;
 		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user usr where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId) and emp.orgLocations = :orgLocationsId  "
-				+ "and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations = :orgLocationsId and userRole.userState <> 'INACTIVE' and userRole.userType <> 'Admin' )) "+search+"");
-		addItemsList=employeesListQuery.setLong("projectId", projectId).setLong("orgLocationsId", orgLocationsId).list();
+				+ "and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations = :orgLocationsId and userRole.userState <> 'INACTIVE' and userRole.userType <> 'Admin' and userRole.roles.id IN (:ownerRolesList))) "+search+"");
+		addItemsList=employeesListQuery.setLong("projectId", projectId).setLong("orgLocationsId", orgLocationsId).setParameterList("ownerRolesList", ownerRolesList).list();
 		return addItemsList;
 	}
 
