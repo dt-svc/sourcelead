@@ -650,6 +650,9 @@ function requirementDetails(requirementId){
 				             
 				             
 				             result = result +'     </div>';
+				             result = result +'     </div>';
+				            
+				             result = result +'     <div class="clearfix">';
 				             
 				            result = result +'     <div class="clearfix row">';
 					        result = result +'     <div class="col-md-10 divskill divsAssigned">';
