@@ -232,6 +232,7 @@ function cpagination(){
 var candidateStatusGlobal ="";
 function clientSideBar(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var loginUserId = '${SourceLeadWeb_userId}';
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -375,7 +376,7 @@ function clientSideBar(candidateId){
 			            result = result+'    <i class="fa fa-comments"></i>';
 			            result = result+'        <div class="commentsimg-inner">';
 			            
-			            result = result+'        	<img src="resources/images/userprofile-img.png" alt="User Comment" title="User Comment">';
+			            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
 			            result = result+'        </div>';
 			            result = result+'    </div>';
 			            result = result+'     <div class="comments-content">';
@@ -1094,7 +1095,7 @@ function savedCommentAndCount(candidateId){
 				            result = result+'    <i class="fa fa-comments"></i>';
 				            result = result+'        <div class="commentsimg-inner">';
 				            
-				            result = result+'        	<img src="resources/images/userprofile-img.png" alt="User Comment" title="User Comment">';
+				            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
 				            result = result+'        </div>';
 				            result = result+'    </div>';
 				            result = result+'     <div class="comments-content">';

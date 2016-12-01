@@ -103,7 +103,8 @@ function filter(){
 </script>
 <!-- for dynamic timesheets copied from timesheetapproval.jsp -->
 <script type="text/javascript">
-function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,employeeId){    
+function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,employeeId){ 
+	      
 			var sourceleadUrl ='${sourceleadUrl}';  
 			$("#dynamic").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			$.ajax({
@@ -116,10 +117,11 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 	               		else if (data.indexOf('exception') >= 0) {
 	               			 location.replace(sourceleadUrl+"/errorPage");
 	               		}else{
-	               		    var dateFrequencyTdContent =  $("#datefrequency"+projectMemberUserId).html();
-				    		$("#row"+projectMemberUserId).empty();
-					        $("#row"+projectMemberUserId).append(data);
-					        $("#datefrequency"+projectMemberUserId).html(dateFrequencyTdContent)
+	               			 var uniqueSepartor = startDate.replace('-','').replace('-','');
+	               		    var dateFrequencyTdContent =  $("#datefrequency"+projectMemberUserId+uniqueSepartor).html();
+				    		$("#row"+projectMemberUserId+uniqueSepartor).empty();
+					        $("#row"+projectMemberUserId+uniqueSepartor).append(data);
+					        $("#datefrequency"+projectMemberUserId+uniqueSepartor).html(dateFrequencyTdContent);
 					        /* pagination(); */
 				    	}
 				        

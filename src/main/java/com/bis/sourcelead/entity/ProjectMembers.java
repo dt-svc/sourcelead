@@ -96,6 +96,8 @@ public class ProjectMembers implements Serializable{
     @Transient
     private String empName;
     @Transient
+    private String empEmail;
+    @Transient
     private String startDate;
     @Transient
     private String endDate;
@@ -305,6 +307,14 @@ public class ProjectMembers implements Serializable{
 
 	public void setEmpName(String empName) {
 		this.empName = empName;
+	}
+
+	public String getEmpEmail() {
+		return empEmail;
+	}
+
+	public void setEmpEmail(String empEmail) {
+		this.empEmail = empEmail;
 	}
 
 	public String getStartDate() {

@@ -430,7 +430,7 @@ $(document).ready(function () {
 		            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
 		            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
 		            &nbsp;&nbsp;
-		            <i class="fa fa-question-circle-o text-info" title="Click the Checkbox"></i></label>
+		            </label>
 			  	</div>
 	        </c:if>
 	      
@@ -1427,6 +1427,10 @@ function addLvl(){
 <script>
 function approvalType(type){
 	    if($("#apprverReq").is(':checked')){
+	    	
+	    	$("#parallelApprover").val('');
+			$('#parallelApprover').trigger("chosen:updated");
+	    	
 			$("#submitForApproval").removeAttr("style");
 		    $("#save").attr("style","display:none"); 
 		    
@@ -1653,7 +1657,7 @@ function getTeamsList(teamType){
 				}else{
 					output = output +'           <option value="All">All</option>';
 				}
-				if(teamType == 'Admin'){
+				/* if(teamType == 'Admin'){
 					output = output +'           <option value="Admin" selected>Admin</option>';
 				}else{
 					output = output +'           <option value="Admin">Admin</option>';
@@ -1675,13 +1679,24 @@ function getTeamsList(teamType){
 				output = output +'           <option value="Project Manager" selected>Project Manager</option>';
 			  }else{
 				output = output +'           <option value="Project Manager">Project Manager</option>';
-			  } 
-				for (var i = 0; i < json.length; i++) {
-					var opt = json[i];
+			  } */ 
+			  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_TEAM\')">'; 
+			  for (var i = 0; i < json.teams.length; i++) {
+					var opt = json.teams[i];
 					if(teamType == opt.id){
 						output = output + "<option value='"+opt.id+"' selected>"+ opt.name + "</option>";
 					}else{
 						output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";	
+					}
+				}
+			  '</sec:authorize>';
+			  
+				for (var i = 0; i < json.roles.length; i++) {
+					var opt = json.roles[i];
+					if(teamType == opt.id){
+						output = output + "<option value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
+					}else{
+						output = output + "<option value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
 					}
 				}
 				$("#rolesDiv").empty();
@@ -1810,7 +1825,24 @@ function getIsClientVal(){
 var existingValue = document.getElementById('isClientJob').value;
 
 	if (document.getElementById('isClientJob').checked){
-		 $("#isClientJob").val('Y');	
+		 $("#isClientJob").val('Y');
+		 
+		 $("#addClientId").val('');
+		 $('#addClientId').trigger("chosen:updated");
+		 
+		 $("#selectContact").val('');
+		 $('#selectContact').trigger("chosen:updated");
+		 
+		 $('select[name=clientCurrencyCode]').val(1);
+		 $('.selectpicker').selectpicker('refresh');
+		 
+		 $('#clientRate').val('');
+		 
+		 $('select[name=clientRateType]').val(1);
+		 $('.selectpicker').selectpicker('refresh');
+		 
+		 $("#clientSubmissionForm").val('');
+		 $('#clientSubmissionForm').trigger("chosen:updated");
 		 existingValue = document.getElementById('isClientJob').value;
 	}else {
 		 $("#isClientJob").val('N');
