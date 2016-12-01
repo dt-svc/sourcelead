@@ -502,6 +502,30 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		} 
 		return finalList;	
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgRelations> getAllVendorsListByOrgName(String orgName,Long orgLocationId) {
+		logger.debug("In OrgRelations getAllVendorsByOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OrgRelations> vandorsList = null;
+		Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgLocation.org.orgName = :orgName and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )");
+		
+		vandorsList = vendorsListQuery.setString("orgName", orgName).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return vandorsList;
+	}
+	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgRelations> getAllClientsByOrgNameOrgLocationId(String orgName, Long orgLocationId) {
+		logger.debug("In OrgRelations getAllClientsByOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OrgRelations> clientsList = null;
+		Query clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgLocation.org.orgName = :orgName and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor' )");
+		clientsList = clientsListQuery.setString("orgName", orgName).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return clientsList;
+	}
 	
 	
 }

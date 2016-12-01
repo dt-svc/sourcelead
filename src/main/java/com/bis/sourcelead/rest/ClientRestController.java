@@ -269,8 +269,11 @@ public class ClientRestController {
 						logger.error(ExceptionUtils.getFullStackTrace(e));
 					}
 					if(userRole != null){
-						userList.add(userRole.getRoles().getId().toString());
-						userList.add(userRole.getRoles().getDisplayName());
+						if(userRole.getRoles() !=null){
+							userList.add(userRole.getRoles().getId().toString());
+							userList.add(userRole.getRoles().getDisplayName());
+						}
+						
 					}
 					
 				}
