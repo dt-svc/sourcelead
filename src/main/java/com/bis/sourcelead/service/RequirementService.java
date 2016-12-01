@@ -64,7 +64,7 @@ public interface RequirementService {
 	
 	public Boolean checkRequirementIsReleasedOrNot(Long requirementId,Long orgLocationId) throws Exception;
 	
-	Integer validateJobId(Long id, Long orgLocation) throws Exception;
+	Integer validateJobId(String id, Long orgLocation) throws Exception;
 
 	public File getExportRequirementFile(List<Requirement> requirementList, String orgName, String exportType, TimeSheetSubmissionCount requirementSubCount)throws Exception;
 
