@@ -82,7 +82,7 @@ public class TeamRestController {
 	   * 
 	   * @throws NullPointer
 	   */
-	 
+	  @PreAuthorize("hasRole('ROLE_VIEW_TEAM','ROLE_VIEW_EDIT_TEAM','ROLE_VIEW_DELETE_TEAM')")
 	  @RequestMapping(value = "/getTeamListByOrgLocationID")
 	  public String getTeamListByOrgLocationID(HttpServletRequest request) throws Exception {
 
@@ -279,7 +279,7 @@ public class TeamRestController {
 		  * @return
 		  * @throws Exception
 		  */
-	   	 @PreAuthorize("hasRole('ROLE_DELETE_TEAM')")
+	   	 @PreAuthorize("hasRole('ROLE_VIEW_DELETE_TEAM')")
 		 @RequestMapping(value = "/deleteTeamById", method = RequestMethod.POST,headers="Accept=application/json")
 		 public String deleteTeamById(@RequestParam( value = "teamId", required = false) Long teamId) throws Exception { 
 			 Team team = teamService.deleteTeamById(teamId);

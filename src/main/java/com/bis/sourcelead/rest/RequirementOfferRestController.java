@@ -180,7 +180,7 @@ public class RequirementOfferRestController {
 	* 
 	* @throws Exception
 	*/
-	@PreAuthorize("hasRole('ROLE_VIEW_OFFER')")
+	@PreAuthorize("hasRole('ROLE_VIEW_OFFER','ROLE_VIEW_ACCEPT_OFFER','ROLE_VIEW_REJECT_OFFER')")
 	@RequestMapping(value = "/getOfferDetails")
 	public @ResponseBody String getOfferDetails(@RequestParam(value="submissionId", required=false) Long submissionId,
 			                                             
@@ -235,7 +235,7 @@ public class RequirementOfferRestController {
 	* 
 	* @throws Exception
 	*/
-	@PreAuthorize("hasAnyRole('ROLE_ACCEPT_OFFER','ROLE_REJECT_OFFER')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_ACCEPT_OFFER','ROLE_VIEW_REJECT_OFFER')")
 	@RequestMapping(value = "/acceptingOffer")
 	public @ResponseBody String acceptingOffer(@RequestParam(value="submissionId", required=false) Long submissionId,
 			                                   @RequestParam(value="offerStatus", required=false) String offerStatus,
