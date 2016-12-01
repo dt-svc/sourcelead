@@ -219,7 +219,7 @@ public class UploadFileServiceImpl implements UploadFileService {
  */
 	private boolean validateDuplicateUser(String email, String EmployeeId, UsersImport userImport, OrgLocations orgLocations) throws Exception {
 		boolean isUserFound = false;
-		User user = userService.findByEmail(email);
+		User user = userService.findByEmailAndOrgLocationsId(email,orgLocations.getId());
 		if(user != null){
 			isUserFound = true;
 			userImport.setReason("duplicate data");
