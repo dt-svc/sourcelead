@@ -235,11 +235,11 @@ function candidateCertificateList(candidateId){
 	                    	 result  = result + '           <td><div class="tblicons">';
 	                    	 
 	                    	 if(window.candidateStatusGlobal == '0'){
-	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CANDIDATE_CERTIFICATION\')"> ';
+	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\')"> ';
 	                    		 result = result  +'	            <a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
 	                    		 result = result +' </sec:authorize>';
 	                    	 }else{
-	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CANDIDATE_CERTIFICATION\')"> ';
+	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\')"> ';
 	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');"></a>';
 	                    		result = result +' </sec:authorize>';
 	                    	 }

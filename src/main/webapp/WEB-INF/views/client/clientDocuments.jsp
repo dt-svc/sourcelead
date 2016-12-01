@@ -152,17 +152,19 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
-	                    	
-	                    	 result = result+'	 <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
+	                    	    result = result+'	 <td><div class="tblicons">';
+	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_CLIENT_DOCS\')">'; 
+	                    	    result = result+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
+	                    	 '</sec:authorize>';
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
-	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CLIENT_CONTACT_DOCUMENT\')">'; 
+	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\')">'; 
 	                    		 	result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+clientLocationId+','+orgRelationId+'); getSpocsList('+orgRelationId+'); getClientDocument('+clientLocationId+','+orgRelationId+', '+opt.id+');"></a>';
 	                    		 '</sec:authorize>';
-	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT_DOCUMENT\')">'; 
+	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_DOCUMENT\')">'; 
 	                    		 	result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteClientDocument('+clientLocationId+','+orgRelationId+','+opt.id+');"></i>';
 	                    		 '</sec:authorize>';
 	                    		 
-	                    		 '<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_CLIENT_CONTACT_DOCUMENT\',\'ROLE_DELETE_CLIENT_CONTACT_DOCUMENT\')">';
+	                    		 '<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\',\'ROLE_DELETE_CLIENT_DOCUMENT\')">';
 	                    			 result = result+'--';
 	                    		 '</sec:authorize>';
 	                    	 }

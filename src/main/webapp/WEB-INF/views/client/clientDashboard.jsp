@@ -227,14 +227,14 @@ function getClientDetails(){
    	        		result = result +'<tr>';
    	        		
    	        			result = result +'<td>';
-   	        		    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+   	        		    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
    	        			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.vendorlocationId+'\',\''+report.orgName+'\',\''+report.id+'\');">';
 						result = result +'<span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
    	        			
    	        			result = result +'</div>';
    	        			'</sec:authorize>';
    	        			
-   	        			'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+   	        			'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
    	        			result = result +'<div class="proj_show" ';
 						result = result +'<span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span>';
    	        			result = result +'</div>';
@@ -323,7 +323,7 @@ function pagination(){
 		result = result + '<ul class="project-tabs-menu">';
 		
 		//for client details tab
-		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
 		result = result + '<li class="current"><a href="#tab-1" onClick="clientDetails('+clientLocationId+','+orgRelationId+');">Details</a></li>';
 		'</sec:authorize>';
 		
@@ -619,7 +619,7 @@ function updateSpocStatus(spocId){
 				+ '<li class="current"><a href="#tab-1"  id="spocDetailsId" onClick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+');">Details</a></li>';
 		'</sec:authorize>';
 		
-		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT_DOCUMENT\')">';
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_DOCUMENT\')">';
 		result = result
 				+ '<li><a href="#tab-2" onClick="clientSpocDocuments('+orgRelationId+','+spocLocationId+',\''+spocName+'\','+userId+');">Documents</a></li>';
 		'</sec:authorize>';

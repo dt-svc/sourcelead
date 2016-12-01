@@ -43,7 +43,7 @@ position: relative !important;
 top:0px !important;
 }
 </style>
-<div class="wraper">
+<%-- <div class="wraper">
 	<!-- Content Area -->
 	<section class="content-wraper">
 		<section class="content-header clearfix">
@@ -63,7 +63,7 @@ top:0px !important;
 			</div>	  
 
 </section>
-</div>
+</div> --%>
 <div id="TimeshgeetStatusListId"></div>
 <script type="text/javascript">
 window.onload = function () {
@@ -94,9 +94,39 @@ function filter(){
 		    	type: "POST",
 		        url: sourceleadUrl+"/getTimesheetListByStatus?${_csrf.parameterName}=${_csrf.token}&status="+status,
 		        success: function(data) {
-		        $("#timesheetApprList").empty();  
+		     /*    $("#timesheetApprList").empty();  
 		   	    $("#timesheetApprList").append(data);
-		    	pagination();
+		    	pagination(); */
+		        	  if(data != null && data != 'undefined' && data != ""){
+		               		if( data.indexOf('Sign In') >= 0){
+					    		location.replace(sourceleadUrl);
+					    	}
+		               		else if (data.indexOf('exception') >= 0) {
+		               			 location.replace(sourceleadUrl+"/errorPage");
+		               		}
+		               		else{
+					    		 $("#timesheetApprList").removeAttr("style");
+			                	 $("#timesheetApprList").empty();
+			                     $("#timesheetApprList").append(data); 
+			                     pagination();
+					    	}
+		                 }else{
+		                	 $("#timesheetApprList").removeAttr("style");
+		  	    	         var result ="";
+				    	     result = result+"   <div class='row'>"; 
+							 result = result+"	<div class='col-lg-12'>"; 
+							 result = result+"		<div class='content-area clearfix'>"; 
+							 result = result+"			<div class='blank-pages'>";
+							 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+							 result = result+"			        <p>No Timesheets Found</p>";
+							 result = result+"			 </div>";
+							 result = result+"		</div>"; 
+							 result = result+"	</div>"; 
+							 result = result+"  </div> "; 
+							$("#timesheetApprList").empty();
+						    $("#timesheetApprList").append(result);
+		                 }
+		                
 		        },
 		    });
 } 
@@ -117,12 +147,18 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 	               		else if (data.indexOf('exception') >= 0) {
 	               			 location.replace(sourceleadUrl+"/errorPage");
 	               		}else{
-	               			 var uniqueSepartor = startDate.replace('-','').replace('-','');
-	               		    var dateFrequencyTdContent =  $("#datefrequency"+projectMemberUserId+uniqueSepartor).html();
-				    		$("#row"+projectMemberUserId+uniqueSepartor).empty();
-					        $("#row"+projectMemberUserId+uniqueSepartor).append(data);
-					        $("#datefrequency"+projectMemberUserId+uniqueSepartor).html(dateFrequencyTdContent);
-					        /* pagination(); */
+	               			var uniqueSepartor = startDate.replace('-','').replace('-','');
+	               			if('${param.status}' != 'REJECTED' && '${param.status}' != 'DRAFT'){
+		               		    var dateFrequencyTdContent =  $("#datefrequency"+projectMemberUserId+uniqueSepartor).html();
+					    		$("#row"+projectMemberUserId+uniqueSepartor).empty();
+						        $("#row"+projectMemberUserId+uniqueSepartor).append(data);
+						        $("#datefrequency"+projectMemberUserId+uniqueSepartor).html(dateFrequencyTdContent);
+	               			}
+	               			else{
+	               			   var table = $('#example').DataTable();
+	   	        		       table.row('#row'+projectMemberUserId+uniqueSepartor+'').remove().draw( false );
+	               			}
+	               			
 				    	}
 				        
 				    }
@@ -134,6 +170,36 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 <!-- Common Scripts for approval timesheets and dashboard count links separated in to timesheetApprovalCommonScripts.jsp   -->
 <jsp:include page="timesheetApprovalCommonScripts.jsp" />
 
+<section class="content-wraper">
+        <section class="content-header clearfix">
+          <div class="pull-left">
+            <h2>
+              ${status == 'SUBMITTED' ? 'Waiting For Approval' : (status == 'DRAFT') ? 'Draft Timesheets' :(status == 'APPROVED') ? 'Approved Timesheets' : (status == 'REJECTED') ? 'Rejected Timesheets'  : ''} 
+             </h2>
+          </div>
+            <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  ${status == 'SUBMITTED' ? 'Waiting For Approval' : (status == 'DRAFT') ? 'Draft Timesheets' :(status == 'APPROVED') ? 'Approved Timesheets' : (status == 'REJECTED') ? 'Rejected Timesheets'  : ''}</div>
+        </section>
+        
+<div class="timesheet-content">
+<div class="timesheet_out">
+	<div class="timesheet_appr_wrap" >
+		<div class="timesheet_appr_wrap">
+		<div class="timesheet_head">
+        	 <ul>
+            </ul> 
+            <div class="clearfix"></div>
+        </div> 
+		
+		<div class="timesheet_appr_table">
+				<div id="timesheetApprList">   </div>
+	    </div>
+	</div>
+	
+</div>
+</div></div>
+		
+</section>
+</body>
 <!-- this script is for dynamicTimesheetpopUp when click on count -->	
 
 
