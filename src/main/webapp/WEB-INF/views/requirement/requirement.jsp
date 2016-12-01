@@ -1680,6 +1680,7 @@ function getTeamsList(teamType){
 			  }else{
 				output = output +'           <option value="Project Manager">Project Manager</option>';
 			  } */ 
+			  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_TEAM\')">'; 
 			  for (var i = 0; i < json.teams.length; i++) {
 					var opt = json.teams[i];
 					if(teamType == opt.id){
@@ -1688,6 +1689,7 @@ function getTeamsList(teamType){
 						output = output + "<option value='"+opt.id+"'>"+ opt.name + "</option>";	
 					}
 				}
+			  '</sec:authorize>';
 			  
 				for (var i = 0; i < json.roles.length; i++) {
 					var opt = json.roles[i];
