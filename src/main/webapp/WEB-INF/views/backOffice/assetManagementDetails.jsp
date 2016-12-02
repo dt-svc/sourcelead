@@ -20,10 +20,12 @@ function assetDetails(assetId) {
 				    
 				    var make = "NO DATA";
 				    var model = "NO DATA";
+				    var name = "NO DATA";
 				    var memory = "NO DATA";
 				    var cpu = "NO DATA";
 				    var workingStatus = "NO DATA";
 				    var hardDisk = "NO DATA";
+				    var monitor = "NO DATA";
 				    var description = "NO DATA";
 				    var shiftAEmpName = " ";
 				    var shiftBEmpName = " ";
@@ -35,6 +37,10 @@ function assetDetails(assetId) {
 					if (json.model != null && json.model != '' && json.model != 'undefined') {
 						model = json.model;
 					} 
+					
+					/* if (json.name != null && json.name != '' && json.name != 'undefined') {
+						name = json.name;
+					}  */
 					
 					if (json.memory != null && json.memory != '' && json.memory != 'undefined') {
 						memory = json.memory;
@@ -50,6 +56,10 @@ function assetDetails(assetId) {
 					
 					if (json.hardDisk != null && json.hardDisk != '' && json.hardDisk != 'undefined') {
 						hardDisk = json.hardDisk;
+					}
+					
+					if (json.monitor != null && json.monitor != '' && json.monitor != 'undefined') {
+						monitor = json.monitor;
 					}
 					
 					if (json.description != null && json.description != '' && json.description != 'undefined') {
@@ -85,6 +95,10 @@ function assetDetails(assetId) {
 					result = result + '  <div class="clearfix"></div>';
 					result = result + ' </div>';
 					
+					/* result = result + ' <div class="require_wrap_details_cta"> <b>Name:</b> <span>'+name+'</span>';
+					result = result + '  <div class="clearfix"></div>';
+					result = result + ' </div>'; */
+					
 					result = result + '<div class="require_wrap_details_cta"> <b>Memory:</b> <span>'+memory+'</span>';
 					result = result + ' <div class="clearfix"></div>';
 					result = result + '</div>';
@@ -100,6 +114,12 @@ function assetDetails(assetId) {
 					result = result + ' <div class="require_wrap_details_cta"> <b>Hard Disk:</b> <span>'+hardDisk+'</span>';
 					result = result + ' <div class="clearfix"></div>';
 					result = result + ' </div>';
+					
+					if (json.assetCategory != null && json.assetCategory != '' && json.assetCategory != 'undefined' && json.assetCategory.id == 2) {
+						result = result + ' <div class="require_wrap_details_cta"> <b>Monitor:</b> <span>'+monitor+'</span>';
+						result = result + ' <div class="clearfix"></div>';
+						result = result + ' </div>';
+					}
 					
 					result = result + ' <div class="require_wrap_details_cta"> <b>Description:</b> <span>'+description+'</span>';
 					result = result + ' <div class="clearfix"></div>';
