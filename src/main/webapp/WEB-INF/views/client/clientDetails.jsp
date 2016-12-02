@@ -22,7 +22,7 @@
 						result = result+ '<div class="project_tabs_inn_table">';
                         
 						result = result + '<div class="project_details">';
-						'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CLIENT\')">';
+						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CLIENT\')">';
 							result = result + ' <div class="useredit useredit_a">';
 							result = result + '<a id="edit-client" href="javascript:editClientDetails('+clientLocationId+','+orgRelationID+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 							result = result + ' </div>';

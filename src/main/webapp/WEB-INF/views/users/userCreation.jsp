@@ -369,6 +369,15 @@
 		        	}
 		        },
 		    });
+	 }else{
+		 $("#FirstName").attr("disabled", false);
+		 $("#FirstName").val('');
+		 
+		 $("#lastName").attr("disabled", false);
+		 $("#lastName").val('');
+		 
+		 $("#phone").attr("disabled", false);
+		 $("#phone").val('');
 	 }
  }
  </script>     

@@ -37,7 +37,7 @@
 						
 						result = result+ '<div class="project_tabs_inn_table">';
 						result = result + '<div class="project_details">';
-						'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CLIENT_CONTACT\')">';
+						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CLIENT_CONTACT\')">';
 							result = result + ' <div class="useredit useredit_a">';
 								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 							result = result + ' </div>'; 

@@ -4670,6 +4670,31 @@ import-tranhd  [class*="col-md-"]{
 	right:10px;top:0px;
 	position: absolute;
 }
+
+
+/*clients tab header custom 2nd dec */
+.customtimesheet-head ul{
+	padding: 2px 225px 2px 0px !important;
+}
+.customtimesheet-head .fa-filter {
+    padding: 0px 5px 0px 0px !important;
+}
+.customtimesheet-head ul ul{
+	width: 150px !important;
+}
+.customtimesheet-head ul ul li {
+	    text-overflow: ellipsis;
+	    overflow: hidden;
+	    width: 150px;
+}
+.customtimesheet-head ul ul li label{
+	top:0;
+}
+.customtimesheet-head ul li span{
+	padding: 0px 30px 0px 0px !important;
+}
+/*clients tab header custom 2nd dec */
+
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {

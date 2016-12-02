@@ -189,17 +189,17 @@ function requirementList(){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
 	                    	 if(opt.jobId != '' && opt.jobId != null){
-	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\')">'; 
+	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
 		                     	result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"-"+opt.jobId+"'>"+opt.jobTitle+"-"+opt.jobId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 		                     '</sec:authorize>';
-		                     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\')">'; 
+		                     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
 		                     	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"-"+opt.jobId+"'>"+opt.jobTitle+"-"+opt.jobId+"</span></div></td>";
 		                     '</sec:authorize>';
 	                    	 }else{
-	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\')">'; 
+	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
 			                     	result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"-"+opt.jobId+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 			                     '</sec:authorize>';
-			                     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\')">'; 
+			                     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
 			                     	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"-"+opt.jobId+"'>"+opt.jobTitle+"</span></div></td>";
 			                     '</sec:authorize>';
 	                    	 }
@@ -1136,7 +1136,7 @@ function requirementPipeline(requirementId){
     <div class="vendor_wrap">
       <div class="timesheet_head">
         <ul>
-        <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT')">
+        <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
 		<li><i class="glyphicon glyphicon-export"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
 		            <div id="filter2ApprovedPop" class="approved_pop">
 		              <ul>

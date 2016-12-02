@@ -35,7 +35,7 @@ public interface RequirementDao {
 	
 	
 	
-	Integer validateJobId(Long id,Long orgLocationId) throws Exception;
+	Integer validateJobId(String id,Long orgLocationId) throws Exception;
 
 	public Boolean validateRequirementTitle(String jobName, Long orgLocationId);
 
