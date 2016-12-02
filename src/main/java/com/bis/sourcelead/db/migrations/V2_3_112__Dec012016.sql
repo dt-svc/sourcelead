@@ -55,3 +55,4 @@ CREATE TABLE `sourcelead`.`ASSET` (
 
 INSERT INTO `sourcelead`.`ASSET_CATEGORY` (`ID`, `CATEGORY_NAME`, `DESCRIPTION`, `ORG_LOCATION_ID`, `DEFAULT_CATEGORY`, `STATUS`, `CREATED_DATE`, `CREATED_BY`, `UPDATED_DATE`, `UPDATED_BY`) VALUES ('1', 'Laptop', 'Laptop Description', '1', '1', '1', '2016-12-01', 'sladmin', '2016-12-01', 'sladmin');
 INSERT INTO `sourcelead`.`ASSET_CATEGORY` (`ID`, `CATEGORY_NAME`, `DESCRIPTION`, `ORG_LOCATION_ID`, `DEFAULT_CATEGORY`, `STATUS`, `CREATED_DATE`, `CREATED_BY`, `UPDATED_DATE`, `UPDATED_BY`) VALUES ('2', 'Desktop', 'Desktop Description', '1', '1', '1', '2016-12-01', 'sladmin', '2016-12-01', 'sladmin');
+INSERT INTO `sourcelead`.`ASSET_CATEGORY` (`ID`, `CATEGORY_NAME`, `DESCRIPTION`, `ORG_LOCATION_ID`, `DEFAULT_CATEGORY`, `STATUS`, `CREATED_DATE`, `CREATED_BY`, `UPDATED_DATE`, `UPDATED_BY`) VALUES ('3', 'Others', 'Others Description', '1', '1', '1', '2016-12-01', 'sladmin', '2016-12-01', 'sladmin');

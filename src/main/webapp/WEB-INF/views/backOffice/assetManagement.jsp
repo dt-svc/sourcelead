@@ -19,6 +19,7 @@
 <script>
 $(document).ready(function(){
 	getAssetList();
+	loadCategory();
 });
 </script> 
 
@@ -49,7 +50,7 @@ $(document).ready(function(){
             </ul>
           </div>
         </li>
-        <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
+        <!-- <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
           <div class="export_pop">
             <ul>
               <li>PDF<i class="fa fa-file-pdf-o"></i></li>
@@ -57,8 +58,8 @@ $(document).ready(function(){
               <li>Word<i class="fa fa-file-word-o"></i></li>
             </ul>
           </div>
-        </li>
-        <li><i class="glyphicon glyphicon-export"></i><span>Import</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
+        </li> -->
+        <!-- <li><i class="glyphicon glyphicon-export"></i><span>Import</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
           <div class="export_pop">
             <ul>
               <li>PDF<i class="fa fa-file-pdf-o"></i></li>
@@ -66,172 +67,90 @@ $(document).ready(function(){
               <li>Word<i class="fa fa-file-word-o"></i></li>
             </ul>
           </div>
-        </li>
+        </li> -->
         <li>
           <a href="javascript:void(0)" class="addcon-pop"><i class="fa fa-plus"></i>Add Asset</a> 
           <!-- Add Asset Popup -->
           <div class="collapse-div-adduser pop-div col-md-12 assetaddpop">
-           <i class="fa fa-close close-div"></i>
+          <div id="loading"></div>
+          <form:form id="addAsset_form"  name="addAsset_form" method="post"> 
+           <i class="fa fa-close close-div" onclick="flushAsset();"></i>
 			  <div class="clearfix">
             <div class="clearfix assetaddpop-ul col-md-6">
-				<select class="chosen-select" id="assetmn" name="assetmn" onChange="myFunction(this)">
-					<option selected disabled>-Selct Category-</option>
-					<option value="laptop">Laptop</option>
-					<option value="desktop">Desktop</option>
-					<option value="others">Others..</option>
+				<select class="chosen-select" id="category" name="category" onChange="assetCategory(this)">
+					<c:forEach var="option" items="${categoryList}">
+							<option value="${option.categoryName},${option.id}" ${option.categoryName  == 'Laptop' ? 'selected' : ''}>${option.categoryName}</option>
+					</c:forEach>
 				</select>	
             </div>
             <div class="clearfix assetaddpop-ul col-md-6">
-				<select class="chosen-select" id="assetmn" name="assetmn">
+				<select class="chosen-select" id="workingStatus" name="workingStatus" data-validation="required" field-name="Working Status">
 					<option selected disabled>-Selct Working Status-</option>
-					<option value="laptop">Working</option>
-					<option value="desktop">Desktop</option>
-					<option value="others">Others..</option>
+					<option value="Working">Working</option>
+					<option value="Out Of Service">Out Of Service</option>
 				</select>	
             </div>
             </div>
 			  <div class="clearfix mb10"></div>
-            <!-- Laptop popup div -->
-            <div class="clearfix" id="laptop">
+         
+            <div class="clearfix">
               <div class="form-horizontal clearfix">
                 <div class="clearfix mb10">
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Serial Number *">
+                    <input type="text" class="form-control input-sm" name="sno" placeholder="Serial Number *" field-name="Sl No" data-validation="required">
                   </div>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Make">
+                    <input type="text" class="form-control input-sm" name="make" placeholder="Make">
                   </div>
                 </div>
                 <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Model *">
+                  <div class="col-md-4">
+                    <input type="text" class="form-control input-sm" name="model" placeholder="Model">
                   </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Memory *">
+                  <div class="col-md-4">
+                    <input type="text" class="form-control input-sm" name="name" id="name" placeholder="Name" style="display: none;">
+                  </div>
+                  <div class="col-md-4">
+                    <input type="text" class="form-control input-sm" name="memory" id="memory" placeholder="Memory" style="display: none;">
+                  </div>
+                  
+                </div>
+                <div class="clearfix mb10">
+                  <div class="col-md-4">
+                    <input type="text" class="form-control input-sm" name="cpu" id="cpu" placeholder="CPU" style="display: none;">
+                  </div>
+                  <div class="col-md-4">
+                    <input type="text" class="form-control input-sm" name="harddisk" id="harddisk" placeholder="Hard Disk" style="display: none;">
+                  </div>
+                  <div class="col-md-4">
+                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor" style="display: none;">
                   </div>
                 </div>
                 <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="CPU *">
-                  </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Hard Disk *">
-                    <textarea class="form-control hidden" rows="2" placeholder="Description"></textarea>
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <textarea class="form-control" rows="2" placeholder="Description"></textarea>
-                  </div>
-                </div>
-                <!-- Shift A Fields -->
-                <div class="clearfix">
-                  <h4 class="col-md-12">Shift A</h4>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <select class="form-control chosen-select">
-                      <option selected>-Select Employee-</option>
-                      <option>Employee1</option>
-                      <option>Employee2</option>
-                      <option>Employee3</option>
-                    </select>
-                  </div>
                   <div class="col-md-6">
                     <div class="input-group">
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" style="display: none;" multiple id="uploadBtn-lapA" class="upload">
+                        <input type="file" style="display: none;" multiple id="attachment" class="upload">
                         </b> </label>
-                      <input type="text" class="form-control" readonly id="uploadFile-lapA" placeholder="Files are not selected...">
+                      <input type="text" class="form-control" name="attachment" readonly id="uploadFile-attachment" placeholder="Files are not selected...">
                     </div>
-                  </div>
-                </div>
-                <!-- Shift A Fields --> 
-                <!-- Shift B Fields -->
-                <div class="clearfix">
-                  <h4 class="col-md-12">Shift B</h4>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <select class="form-control chosen-select">
-                      <option selected>-Select Employee-</option>
-                      <option>Employee1</option>
-                      <option>Employee2</option>
-                      <option>Employee3</option>
-                    </select>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="input-group">
-                      <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" style="display: none;" multiple id="uploadBtn-lapB" class="upload">
-                        </b> </label>
-                      <input type="text" class="form-control" readonly id="uploadFile-lapB" placeholder="Files are not selected...">
-                    </div>
-                  </div>
-                </div>
-                <!-- Shift A Fields -->
-                <div class="clearfix mr">
-                  <div class="pull-right">
-                    <button type="submit" class="btn btn-sm btn-primary">Add</button>
-                    <button type="submit" class="btn btn-sm btn-default ml10">Cancel</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Laptop popup div --> 
-            <!-- Desktop popup div -->
-            <div class="clearfix" id="desktop">
-              <div class="form-horizontal clearfix">
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Serial Number *">
-                  </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Make *">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Model *">
-                  </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Memory *">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-4">
-                    <input type="text" class="form-control input-sm" value="" placeholder="CPU *">
-                  </div>
-                  <div class="col-md-4">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Hard Disk *">
-                  </div>
-                  <div class="col-md-4">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Monitor *">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <select class="form-control chosen-select">
-                      <option selected>-Select Location-</option>
-                      <option>India</option>
-                      <option>USA</option>
-                    </select>
                   </div>
                   <div class="col-md-6">
                     <textarea class="form-control" rows="2" placeholder="Description"></textarea>
                   </div>
                 </div>
                 <!-- Shift A Fields -->
+                <div class="clearfix" id="shiftADetails" style="display: none;">
                 <div class="clearfix">
                   <h4 class="col-md-12">Shift A</h4>
                 </div>
                 <div class="clearfix mb10">
                   <div class="col-md-6">
-                    <select class="form-control chosen-select">
+                    <select class="form-control chosen-select" id="shiftAEmp" name="shiftAEmp">
                       <option selected>-Select Employee-</option>
-                      <option>Employee1</option>
-                      <option>Employee2</option>
-                      <option>Employee3</option>
+                      <c:forEach var="option" items="${employeesList}">
+					     <option value="${option.id}">${option.user.firstName} ${option.user.lastName}</option>
+					  </c:forEach>
                     </select>
                   </div>
                   <div class="col-md-6">
@@ -239,22 +158,25 @@ $(document).ready(function(){
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                         <input type="file" style="display: none;" multiple id="uploadBtn-dskA" class="upload">
                         </b> </label>
-                      <input type="text" class="form-control" readonly id="uploadFile-dskA" placeholder="Files are not selected...">
+                      <input type="text" class="form-control" name="shiftAAttachment" readonly id="uploadFile-dskA" placeholder="Files are not selected...">
                     </div>
                   </div>
                 </div>
+                </div>
                 <!-- Shift A Fields --> 
+                
                 <!-- Shift B Fields -->
+               <div class="clearfix" id="shiftBDetails" style="display: none;">
                 <div class="clearfix">
                   <h4 class="col-md-12">Shift B</h4>
                 </div>
                 <div class="clearfix mb10">
                   <div class="col-md-6">
-                    <select class="form-control chosen-select">
+                    <select class="form-control chosen-select" id="shiftBEmp" name="shiftBEmp">
                       <option selected>-Select Employee-</option>
-                      <option>Employee1</option>
-                      <option>Employee2</option>
-                      <option>Employee3</option>
+                      <c:forEach var="option" items="${employeesList}">
+					     <option value="${option.id}">${option.user.firstName} ${option.user.lastName}</option>
+					  </c:forEach>
                     </select>
                   </div>
                   <div class="col-md-6">
@@ -262,67 +184,22 @@ $(document).ready(function(){
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                         <input type="file" style="display: none;" multiple id="uploadBtn-dskB" class="upload">
                         </b> </label>
-                      <input type="text" class="form-control" readonly id="uploadFile-dskB" placeholder="Files are not selected...">
+                      <input type="text" class="form-control"  name="shiftBAttachment" readonly id="uploadFile-dskB" placeholder="Files are not selected...">
                     </div>
                   </div>
                 </div>
+                </div>
+                
                 <!-- Shift A Fields -->
                 <div class="clearfix mr">
                   <div class="pull-right">
-                    <button type="submit" class="btn btn-sm btn-primary">Add</button>
-                    <button type="submit" class="btn btn-sm btn-default ml10">Cancel</button>
+                   <button type="submit" id="add_asset" class="btn btn-sm btn-primary">Add</button>
                   </div>
                 </div>
               </div>
             </div>
-            <!-- Desktop popup div --> 
-            <!-- Others popup div -->
-            <div class="clearfix" id="others">
-              <div class="form-horizontal clearfix">
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Serial Number *">
-                  </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Name *">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Make *">
-                  </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Model *">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Memory *">
-                  </div>
-                  <div class="col-md-6">
-                    <select class="form-control chosen-select">
-                      <option selected>-Select Location-</option>
-                      <option>India</option>
-                      <option>USA</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-12">
-                    <textarea class="form-control" rows="2" placeholder="Description"></textarea>
-                  </div>
-                </div>
-                <div class="clearfix mr">
-                  <div class="pull-right">
-                    <button type="submit" class="btn btn-sm btn-primary">Add</button>
-                    <button type="submit" class="btn btn-sm btn-default ml10">Cancel</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Others popup div --> 
+            </form:form>
           </div>
-          <!-- Add Asset Popup --> 
         </li>
         <li>
         <a href="<c:url value='/assetCategory'/>" class=""><i class="fa fa-plus"></i>Categories</a>
@@ -650,7 +527,7 @@ $(document).ready(function(){
                 </div>
                 <div class="clearfix mr">
                   <div class="pull-right">
-                    <button type="submit" class="btn btn-sm btn-primary">Add</button>
+                     <button type="submit" class="btn btn-sm btn-primary">Add</button>
                     <button type="submit" class="btn btn-sm btn-default ml10">Cancel</button>
                   </div>
                 </div>
@@ -671,6 +548,84 @@ $(document).ready(function(){
   </div>
   </section>
   
+  
+  
+  <script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#addAsset_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		    e.preventDefault(); 
+	          		
+        		    var frm = $('#addAsset_form').serializeFormJSON();
+        	        var con = JSON.stringify(frm);
+        	        con = con.replace(/[{}]/g, "");
+        	        
+        	        //It will escape all the special characters
+        	        var jsonData = encodeURIComponent(con);
+        	        var form = $('#addAsset_form')[0];
+	           		var formData = new FormData(form);
+	          		var sourceleadUrl ='${sourceleadUrl}';
+	          		
+	          		
+	          		 $("#add_asset").attr("disabled", "disabled");
+	          		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	          		
+	          	      $.ajax({
+	     		    	type: "POST",
+	     		    	data: formData,
+              	        contentType : 'application/json; charset=utf-8',
+              	        enctype: 'multipart/form-data',
+          	            processData: false,
+          	            contentType:false,
+              	        dataType : 'json',
+	     		    	 url: sourceleadUrl+"/addAssets?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+	     		        success: function(data) {
+	     		        	if(data != null && data != ''){
+	     	   	        		var json = JSON.parse(data);
+	     	   	        	    location.replace(sourceleadUrl+ "/assetManagement");
+	     		        	}
+	     			        
+	     		        },
+	     		    }); 
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+         $('#addAsset_form').showHelpOnFocus();
+         $('#addAsset_form').validateOnBlur(false, validationSettings); 
+            
+     
+</script> 
+
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
   
   
   <script>
@@ -729,8 +684,65 @@ $(document).ready(function(){
 </script>
   
   
+  <script>
+  function assetCategory(category){
+	  var selectedCategory = category.value;
+	  var  assestCategory = selectedCategory.split(",");
+	
+	   if(assestCategory[0] == 'Desktop'){
+		  document.getElementById("monitor").style.display="";
+		  document.getElementById("name").style.display="";
+		  document.getElementById("memory").style.display="";
+		  document.getElementById("cpu").style.display="";
+		  document.getElementById("harddisk").style.display="";
+		  document.getElementById("shiftADetails").style.display="";
+		  document.getElementById("shiftBDetails").style.display="";
+		  
+	  }else if((assestCategory[0] != 'Desktop' && assestCategory[0] == 'Laptop') || category == 'Laptop'){
+		  document.getElementById("monitor").style.display="none";
+		  document.getElementById("name").style.display="";
+		  document.getElementById("memory").style.display="";
+		  document.getElementById("cpu").style.display="";
+		  document.getElementById("harddisk").style.display="";
+		  document.getElementById("shiftADetails").style.display="";
+		  document.getElementById("shiftBDetails").style.display="";
+		  
+		  $("#monitor").val('');
+	  }else{
+		  document.getElementById("monitor").style.display="none";
+		  document.getElementById("memory").style.display="none";
+		  document.getElementById("cpu").style.display="none";
+		  document.getElementById("harddisk").style.display="none";
+		  document.getElementById("shiftADetails").style.display="none";
+		  document.getElementById("shiftBDetails").style.display="none";
+		  $("#monitor").val('');
+		  $("#name").val('');
+		  $("#memory").val('');
+		  $("#cpu").val('');
+		  $("#harddisk").val('');
+		  $("#uploadFile-dskA").val('');
+		  $("#uploadFile-dskB").val('');
+	  } 
+	 
+  }
+  </script>
   
-   <script> 
+  
+  <script>
+  function loadCategory(){
+	  document.getElementById("monitor").style.display="none";
+	  document.getElementById("name").style.display="";
+	  document.getElementById("memory").style.display="";
+	  document.getElementById("cpu").style.display="";
+	  document.getElementById("harddisk").style.display="";
+	  document.getElementById("harddisk").style.display="";
+	  document.getElementById("shiftADetails").style.display="";
+	  document.getElementById("shiftBDetails").style.display="";
+  }
+  </script>
+  
+  
+   <!-- <script> 
 	   $('#laptop, #desktop, #others').addClass('asstmake');
 		  $('#laptop').removeClass('asstmake');
 	 function myFunction(local){
@@ -747,7 +759,7 @@ $(document).ready(function(){
 			$('#desktop, #others').addClass('asstmake');
 		 }
 	 };    
-   </script>
+   </script> -->
   <script>
 	  $('#laptop-edit, #desktop-edit, #others-edit').addClass('asstmake');
 		  $('#laptop-edit').removeClass('asstmake');
@@ -766,7 +778,10 @@ $(document).ready(function(){
 		 }
 	 };  
     </script> 
-  <script>
+ 
+ 
+ 
+ <script>
 // Edit pop
 $(document).ready(function() {	
 	$("#edit-user").click(function(){
@@ -1016,10 +1031,8 @@ $(".addcon-pop").click(function(){
  $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
 	 e.stopPropagation();
  });
- $('html').click(function(){
-    $(".collapse-div-adduser").removeClass("show-div");
-	$(".collapse-div").removeClass("show-div");
-   });
+
+ 
     //upload file script -laptop-shiftA
      document.getElementById("uploadBtn-lapA").onchange = function () {
      $('#uploadFile-lapA').val($(this).val().replace(/C:\\fakepath\\/i, ''))
