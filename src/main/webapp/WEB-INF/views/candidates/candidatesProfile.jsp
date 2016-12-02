@@ -556,7 +556,7 @@ function candidateProfile(candidateId){
 							
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
 							if(json.status == '0'){
-								'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
+								'<sec:authorize access="hasAnyRole(\'ROLE_REACTIVATE_CANDIDATE\')">'; 
 								result = result + '<div class="project_tabs_inn_head"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> ';
 								'</sec:authorize>';
 							}else{
