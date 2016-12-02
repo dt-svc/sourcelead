@@ -776,6 +776,6 @@ function clearSearchKey() {
 <script>
        function msgFadein() {
            setTimeout(function(){
-                   $('#selector1').fadeOut('slow'); }, 800);
+                   $('#selector1').fadeOut('slow'); }, 1000);
        }
 </script>                   

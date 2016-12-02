@@ -12,6 +12,7 @@
 
 		var result = "";
 		result = result	+ '    <div class="project_tabs_inn_head addUser-org">  ';
+		result =result +'<div id = "msgDiv2"></div>';
 		if(window.candidateStatusGlobal == '0'){
 		result = result	+ '   	<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a>                                                            ';
 		}else{
@@ -412,6 +413,18 @@ function closeCertificatePopup(){
 							} else if (data.indexOf('exception') >= 0) {
 								location.replace(sourceleadUrl + "/errorPage");
 							} else {
+								var json = JSON.parse(data);
+		             			for (var i = 0; i < 1; i++) {
+		                            var val= json[i];
+		                            var opt = "";
+		                                    if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+		                                            opt  = opt + '<div class="success_pop" id="selector3" style="display: block;">';
+		                                            opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+		                                            opt  = opt + '</div>';
+		                                            }
+		                                    $("#msgDiv2").empty();
+		                                    $("#msgDiv2").append(opt);
+		                            }
 								$("#candidateEmployersList").empty();
 								var result = "";
 								result = result	+ "<table id='candidateEmployersPagination' class='display' cellspacing='0' width='100%' >";
@@ -426,7 +439,6 @@ function closeCertificatePopup(){
 								result = result + "  </tr>";
 								result = result + "</thead>";
 								result = result + "<tbody>";
-								var json = JSON.parse(data);
 								for (var i = 0; i < json.length; i++) {
 									var opt = json[i];
 									result = result + '         <tr>';
@@ -474,6 +486,7 @@ function closeCertificatePopup(){
 								result = result + "</table>";
 								$("#candidateEmployersList").append(result);
 								employeePagination();
+								msgFadein2();
 							}
 						} else {
 							var result = "";
@@ -728,3 +741,10 @@ function validYearEdit(){
 }
 
 </script>
+
+<script>
+       function msgFadein2() {
+           setTimeout(function(){
+                   $('#selector3').fadeOut('slow'); }, 1000);
+       }
+</script>  

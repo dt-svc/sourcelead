@@ -80,6 +80,8 @@ public class CandidateEmployersRestController {
 		String json1 = "{"+json+"}";
 		JSONObject jsonObject = new JSONObject(json1);
 	    candidateEmployersService.storeCandidateEmployers(jsonObject,users,loginOrgLocation,candidateId);
+		SourceLeadSessionManager.setSessionAttribute(request, "addExep", "New Employer added for Candidate ");
+
 		return json;
 	}
 	
@@ -98,11 +100,28 @@ public class CandidateEmployersRestController {
 	@RequestMapping(value = "/getCandidatesEmployersListByCandidateIdAndOrgLocationID")
 	public String getCandidatesEmployersListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
 
+		String msg = "";
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson;
-		
-
 		 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), loginOrgLocation.getId());
+		 
+		 for(CandidateEmployers candidateEmployers : candidatesEmployersList){
+			 
+			 msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addExep");
+			 if(msg == null){
+					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editExep");
+				}
+				if(msg == null){
+					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "deleteExep");
+				}
+				if(msg !=null && msg != ""){
+					candidateEmployers.setMsg(msg);
+				}
+				 	SourceLeadSessionManager.removeSessionAttribute(request, "addExep");
+				    SourceLeadSessionManager.removeSessionAttribute(request, "editExep");
+				    SourceLeadSessionManager.removeSessionAttribute(request, "deleteExep");
+		 }
+		 
 		 resultJson = commonUtil.toJSON(candidatesEmployersList);
 		 return resultJson;
 	}
@@ -128,6 +147,8 @@ public class CandidateEmployersRestController {
 
 		CandidateEmployers  candidatesEmployersList = candidateEmployersService.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateemployerId);
 		 resultJson = commonUtil.toJSON(candidatesEmployersList);
+		SourceLeadSessionManager.setSessionAttribute(request, "deleteExep", "Employer deleted");
+
 		 return resultJson;
 	}
 	
@@ -180,7 +201,8 @@ public class CandidateEmployersRestController {
 			JSONObject jsonObj = new JSONObject(jsonc);
 			
 			candidateEmp = candidateEmployersService.storeCandidateEmployers(jsonObj,user,loginOrgLocation,candidateId);
-			
+			SourceLeadSessionManager.setSessionAttribute(request, "editExep", "Employers details updated");
+
 			return "success";
 	}
 	
