@@ -6,14 +6,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +24,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -38,7 +32,6 @@ import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.BoPaymentTypes;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.UploadedFile;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AmexFileUploadService;
 import com.bis.sourcelead.service.AssetCategoryService;
@@ -47,8 +40,10 @@ import com.bis.sourcelead.service.BoPaymentTypesService;
 import com.bis.sourcelead.service.BoUploadedFilesService;
 import com.bis.sourcelead.service.ChaseUploadFileService;
 import com.bis.sourcelead.service.ComericaFileUploadService;
+
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UploadFileService;
+
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.validation.FileValidator;
@@ -196,17 +191,21 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	
 	@RequestMapping(value = "/assetManagement")
 	public ModelAndView assetManagement(HttpServletRequest request) throws Exception {
-		
+	
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		List<AssetCategory> categoryList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId());
 		List<Employees> employeesList = employeesService.getEmployeesByLocationId(orgLocations.getId());
 		
+
 		ModelAndView model = new ModelAndView();
 		model.setViewName("backOffice/assetManagement");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("categoryList", categoryList);
 		model.addObject("employeesList", employeesList);
+		
+		List<AssetCategory> assetCategoriesList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId());
+		model.addObject("assetCategoriesList", assetCategoriesList);
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)

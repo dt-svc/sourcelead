@@ -34,40 +34,27 @@ $(document).ready(function(){
   <div class="vendor_wrap">
     <div class="timesheet_head">
       <ul>
-        
-        <li><i class="fa fa-filter"></i><span>Category</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+        <li><i class="fa fa-filter"></i><span>Category</span><i class="glyphicon glyphicon-play" id="category"></i>|
           <div class="approved_pop">
             <ul>
-              <li>
-                <input type="checkbox">
-                &nbsp;&nbsp;Desktop</li>
-              <li>
-                <input type="checkbox">
-                &nbsp;&nbsp;Laptop</li>
-              <li>
-                <input type="checkbox">
-                &nbsp;&nbsp;Other</li>
+                   <c:forEach var="report" items="${assetCategoriesList}">  
+		               <li><input  id="category${report.id}" name="categoryId" value ="${report.id}"  onclick="getAssetList();"  type="checkbox"><label>${report.categoryName}</label></li>
+				   </c:forEach>
             </ul>
           </div>
         </li>
-        <!-- <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
+         <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
           <div class="export_pop">
             <ul>
-              <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-              <li>Excel<i class="fa fa-file-excel-o"></i></li>
-              <li>Word<i class="fa fa-file-word-o"></i></li>
+              <li><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
+              <li><i class="fa fa-file-excel-o"></i>&nbsp;Excel</li>
+              <li><i class="fa fa-file-word-o"></i>&nbsp;Word</li>
             </ul>
           </div>
-        </li> -->
-        <!-- <li><i class="glyphicon glyphicon-export"></i><span>Import</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
-          <div class="export_pop">
-            <ul>
-              <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-              <li>Excel<i class="fa fa-file-excel-o"></i></li>
-              <li>Word<i class="fa fa-file-word-o"></i></li>
-            </ul>
-          </div>
-        </li> -->
+        </li>
+       <!--  <li><i class="glyphicon glyphicon-save"></i><span>Import</span>|</li> -->
+            
+              
         <li>
           <a href="javascript:void(0)" class="addcon-pop"><i class="fa fa-plus"></i>Add Asset</a> 
           <!-- Add Asset Popup -->
@@ -229,7 +216,7 @@ $(document).ready(function(){
       <div class="clearfix"></div>
     </nav>
     <!-- list Table -->
-  </div>
+  </div></div>
   <div class="side_mask">
     <div class="proj_close"></div>
   </div>
@@ -237,49 +224,11 @@ $(document).ready(function(){
     <div class="clients_side_wrap_inn">
       <h1>Asset Management Details</h1>
       <div class="project_side_wrap_inn_tabs">
+      <div id="projectSideDiv">
+		     </div> 
         <div class="project_tabs">
           <div id="tab-1" class="project_tabs_inn" style="display: block;">
-            <div class="require_wrap_details">
-              <h1>Asset Management details: <a id="edit-user" href="javascript:void(0)">Edit<i class="glyphicon glyphicon-pencil"></i></a></h1>
-              <div class="require_one">
-                <div class="require_wrap_details_cta"> <b>S. No.:</b> <span>00012..</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Make:</b> <span>Make text here..</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Model:</b> <span>Model text here..</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Memory:</b> <span>Memory text here...</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>CPU:</b> <span>CPU</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Hard Disk:</b> <span>HardDisk here..</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Location:</b> <span>Hyderabad, Telangana, India</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Description:</b> <span>Description here..</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Shfit A:</b> <span>Sudhakar Reddy</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Attched File:</b> <span>Attched File</span>
-                  <div class="clearfix"></div>
-                </div>
-                                <div class="require_wrap_details_cta"> <b>Shfit B:</b> <span>Sudhakar Reddy</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Attched File:</b> <span>Attched File</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="user_summary_edit client_summary_edit" style="display: none;">
+              <div class="user_summary_edit client_summary_edit" style="display: none;">
                   <div class="form-horizontal req-dtls myForm row">
                   
                             <!-- Add Asset Popup -->
@@ -633,9 +582,14 @@ var validationSettings = {
 		
 		var sourceleadUrl ='${sourceleadUrl}';
 		
+		var categoryIds = [];
+		$('input:checkbox[name=categoryId]:checked').each(function() 
+	    {
+			categoryIds.push($(this).val());
+	    });
 		  $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/getAssetList?${_csrf.parameterName}=${_csrf.token}", 	   
+			    url: sourceleadUrl+"/getAssetList?${_csrf.parameterName}=${_csrf.token}&categoryIds="+categoryIds, 	   
 	   		    success: function(data) {
 	   		    	
 	   		    	
@@ -656,25 +610,35 @@ var validationSettings = {
 	   	        	
 		   	     	for (var i=0; i<json.length; i++)
 	   				{  
-		   	     	    var report = json[i];
-		   	     	    
-		   	     	    result = result+'<tr>';
-			   	        result = result+'<td><div class="tbldata-dotdot-100" title="'+report.slno+'">'+report.slno+'</div></td>';
-				   	    result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot">';
-					   	result = result+'<div class="proj_show"> <span class="tbldata-dotdot-sm">'+report.assetCategory.categoryName+'</span> <i class="fa fa-binoculars"></i> </div>';
+		   	     	    var shiftAEmpName = "--- ";
+					    var shiftBEmpName = "--- ";
+					    var report = json[i];
+					    
+					    if (report.shiftAEmpName != null && report.shiftAEmpName != '' && report.shiftAEmpName != 'undefined') {
+							shiftAEmpName = report.shiftAEmpName;
+						}
+						
+						if (report.shiftBEmpName != null && report.shiftBEmpName != '' && report.shiftBEmpName != 'undefined') {
+							shiftBEmpName = report.shiftBEmpName;
+						}
+
+						result = result+'<tr>';
+			   	        result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot-sm">';
+					   	result = result+'<div class="proj_show" onclick="assetSideBar('+report.id+');"> <span class="tbldata-dotdot-100">'+report.slno+'</span> <i class="fa fa-binoculars"></i> </div>';
 					   	result = result+'</a></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm">'+report.model+'</div></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.shiftAEmployee.user.firstName+' '+report.shiftAEmployee.user.lastName+'">'+report.shiftAEmployee.user.firstName+' '+report.shiftAEmployee.user.lastName+'</div></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.shiftBEmployee.user.firstName+' '+report.shiftBEmployee.user.lastName+'">'+report.shiftBEmployee.user.firstName+' '+report.shiftBEmployee.user.lastName+'</div></td>';
+					   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.assetCategory.categoryName+'">'+report.assetCategory.categoryName+'</div></td>';
+						result = result+'<td><div class="tbldata-dotdot-vsm">'+report.model+'</div></td>';
+					   	result = result+'<td><div class="tbldata-dotdot-vsm" >'+shiftAEmpName+'</div></td>';
+					   	result = result+'<td><div class="tbldata-dotdot-vsm" >'+shiftBEmpName+'</div></td>';
 					   	result = result+'<td><div class="tbldata-dotdot-100">'+report.workingStatus+'</div></td>';
 					   	result = result+'<td><div class="tblminwidth-50"><i class="fa fa-trash-o text-danger"></i></div></td>';
 			   	        result = result +'</tr>';
 	   				}
 		   	     	
-	   	        	
 	   	        	result = result +'</tbody>';
 	   	    	    $("#assetManagementList").empty();  
 	   	    	    $("#assetManagementList").append(result)
+	   	    	
 	   	    	   
 	   	    	    
 	   		    	
@@ -682,6 +646,15 @@ var validationSettings = {
 		  });
 	}
 </script>
+
+<script>
+ function assetSideBar(assetId){ 
+		    $(".clients_side_wrap").addClass("clients_side_wrap_active");
+		    $(".side_mask").fadeIn(200);
+			$("body").css('overflow-y', 'hidden');
+			assetDetails(assetId);
+ }
+</script> 
   
   
   <script>
@@ -782,18 +755,7 @@ var validationSettings = {
  
  
  <script>
-// Edit pop
-$(document).ready(function() {	
-	$("#edit-user").click(function(){
-		$(".user_summary_edit").slideToggle(100);
-	});
-    $("html, #canBTN, .us-btn_a").click(function() {
-        $(".user_summary_edit").slideUp(100);
-    });
-    $("#edit-user, .user_summary_edit").click(function(e) {
-        e.stopPropagation();
-    });		
-});
+
 </script> 
   <script type="text/javascript">
             $(function () {
@@ -834,33 +796,28 @@ $(document).ready(function() {
 });	
 
 // Approved Popup
-$(document).ready(function() {
-    $("#appro-pop").click(function(){
-		$(".approved_pop").slideToggle(200);
+    $("#category").click(function(){
+		$(".approved_pop").toggle();
 	});
     $("html").click(function() {
-        $(".approved_pop").slideUp(200);
+        $(".approved_pop").slideUp();
     });
-    $(".approved_pop, #appro-pop").click(function(e) {
+    $(".approved_pop, #category").click(function(e) {
         e.stopPropagation();
     });	
-});
 
 // Export Popup
-$(document).ready(function() {
     $("#export-pop").click(function(){
-		$(".export_pop").slideToggle(200);
+		$(".export_pop").toggle();
 	});
     $("html").click(function() {
-        $(".export_pop").slideUp(200);
+        $(".export_pop").slideUp();
     });
     $(".export_pop, #export-pop").click(function(e) {
         e.stopPropagation();
     });	
-});	
 	
 // project side bar
-$(document).ready(function() {
     $(".proj_show").click(function(){
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
@@ -871,7 +828,6 @@ $(document).ready(function() {
 		$(".side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
 	});
-});
 
 // project side bar tabs
 $(document).ready(function() {
@@ -1065,5 +1021,5 @@ $(".addcon-pop").click(function(){
     </select>
   </div>
 </div>
- 
+<jsp:include page="assetManagementDetails.jsp" />
 <jsp:include page="../masterFooter.jsp" />

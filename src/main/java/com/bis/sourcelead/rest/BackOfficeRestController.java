@@ -319,14 +319,31 @@ public class BackOfficeRestController {
 	
 	@RequestMapping(value = "/getAssetList")
 	@ResponseBody
-	public String getAssetList(HttpServletRequest request) throws Exception {
+	public String getAssetList(HttpServletRequest request,@RequestParam(value="categoryIds", required=false) String categoryIds) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson = null;
 		
-		List<Asset> assetList = assetService.getAssetListByLocationId(orgLocations.getId());
+		List<Asset> assetList = assetService.getAssetFilterListByLocationId(orgLocations.getId(),categoryIds);
 		
 		resultJson = toJSON(assetList);
+		return resultJson;
+	}
+	
+	/**
+	 * @author Prasad Salina
+	 * @param request
+	 * @param assetId
+	 * @return
+	 * @throws Exception
+	 * To get asset by Id
+	 */
+	@RequestMapping(value = "/getAssetById")
+	@ResponseBody
+	public String getAssetById(HttpServletRequest request,@RequestParam(value="assetId", required=false) Long assetId) throws Exception {
+		String resultJson = null;
+		Asset asset = assetService.getAssetById(assetId);
+		resultJson = toJSON(asset);
 		return resultJson;
 	}
 	
