@@ -168,7 +168,29 @@ public class CandidateRestController {
 			return resultJson;
 		}
 	 
-	 
+	 /**
+		 * @author sarath kumar
+		 * @since  Dec 1 2016
+		 * @version 0.0.1
+		 * 
+		 * 
+		 * @throws NullPointer
+		*/
+	 @RequestMapping(value = "/checkCandidateState", method = RequestMethod.POST)
+	 public @ResponseBody String checkCandidateState(
+				@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception {
+			
+		    String resultJson = null;
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+			Boolean isCandidateActive = false;
+			if(candidate != null){
+				 if(candidate.getStatus() == 1){
+					 isCandidateActive = true;
+				 }
+			}
+			resultJson = toJSON(isCandidateActive);
+			return resultJson;
+		}
 	 
 	 
 	 /**
