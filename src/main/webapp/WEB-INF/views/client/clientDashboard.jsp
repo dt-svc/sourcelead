@@ -29,8 +29,8 @@ overflow-x: auto;
 	<!-- Content Area -->
 	<section class="content-wraper">
 		<section class="content-header clearfix">
-		<c:if test="${not empty msg}">
-	        <div class="success_pop" id="selector">
+		  <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector"  style="display: none;">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
@@ -51,14 +51,14 @@ overflow-x: auto;
 		<!-- Project -->
 		<div class="timesheet_out">
 			<div class="clients_wrap">
-				<div class="timesheet_head datatbl-filters">
+				<div class="timesheet_head datatbl-filters customtimesheet-head">
 					<ul>
 
 		                  <li id="clientsList" ><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
 		                	<div id="filter1ApprovedPop" class="approved_pop">
 		                    	<ul>
 		                    	  <c:forEach var="report" items="${clientsList}">  
-		                        	<li><input  id="clientName${report.id}" name="clientNameById" value ="${report.id}"  onclick="getVendorContactLists();"  type="checkbox"><label>${report.clientName}</label></li>
+		                        	<li><input  id="clientName${report.id}" name="clientNameById" value ="${report.id}"  onclick="getVendorContactLists();"  type="checkbox"><label title="${report.clientName}">${report.clientName}</label></li>
 								  </c:forEach>
 		                        </ul>
 		                    </div>                	
