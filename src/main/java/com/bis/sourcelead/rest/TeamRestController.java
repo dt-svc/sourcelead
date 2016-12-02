@@ -82,7 +82,7 @@ public class TeamRestController {
 	   * 
 	   * @throws NullPointer
 	   */
-	  @PreAuthorize("hasRole('ROLE_VIEW_TEAM','ROLE_VIEW_EDIT_TEAM','ROLE_VIEW_DELETE_TEAM')")
+	  @PreAuthorize("hasAnyRole('ROLE_VIEW_TEAM','ROLE_VIEW_EDIT_TEAM','ROLE_VIEW_DELETE_TEAM')")
 	  @RequestMapping(value = "/getTeamListByOrgLocationID")
 	  public String getTeamListByOrgLocationID(HttpServletRequest request) throws Exception {
 
