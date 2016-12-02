@@ -42,7 +42,7 @@ public class RequirementRateSubmissionNegotiationDaoImpl  implements Requirement
 	public List<RequirementRateSubmissionNegotiation> getRequirementRateSubmissionByOrgLocationsId(Long orgLocationsId)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementRateSubmissionNegotiation rateNegotiation where rateNegotiation.orgLocationsId = :orgLocationsId ";
+		String query = "from RequirementRateSubmissionNegotiation rateNegotiation left join fetch rateNegotiation.requirementsubmissionId where rateNegotiation.requirementsubmissionId.orgLocations.id = :orgLocationsId ";
 		List<RequirementRateSubmissionNegotiation> rateNegotiation =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
 		return rateNegotiation;
 	}
