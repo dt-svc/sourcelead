@@ -24,43 +24,43 @@
 				  <input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay2Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                       <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment2Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment2Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment2Id"></textarea></span></div>
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment2Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment2Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea2Id"></textarea></span></div>
              </div>
              <div id="divadttTd4" style="display:none;">
 				  <input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay3Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment3Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment3Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment3Id"></textarea></span></div>
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment3Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment3Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea3Id"></textarea></span></div>
              </div>
              <div id="divadttTd5" style="display:none;">
 				  <input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay4Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment4Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment4Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment4Id"></textarea></span></div>           
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment4Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment4Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea4Id"></textarea></span></div>           
              </div>
              <div id="divadttTd6" style="display:none;">
 				  <input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay5Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment5Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment5Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment5Id"></textarea></span></div>  
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment5Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment5Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea5Id"></textarea></span></div>  
 	    	 </div>
              <div id="divadttTd7" style="display:none;">
 				  <input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay6Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment6Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment6Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment6Id"></textarea></span></div>
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment6Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment6Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea6Id"></textarea></span></div>
               </div>
              <div id="divadttTd8" style="display:none;">
 				  <input type="text" onblur='checkHours()' id="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" name="REPLACEROWIDsubmissionsubmissionIdtimeSheetDay7Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment7Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment7Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment7Id"></textarea></span></div>            
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment7Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment7Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea7Id"></textarea></span></div>            
 	    	 </div>
              <div  id="divadttTd9" style="display:none;">
 				  <input type="text" onblur='checkHours()'  id="REPLACEROWIDsubmissionsubmissionIdtotal1Id" name="REPLACEROWIDsubmissionsubmissionIdtotal1Id" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDsubmissionsubmissionIdcomment8Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment8Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment8Id"></textarea></span></div>  
+                  <span class="teskcomment" id="REPLACEROWIDsubmissionsubmissionIdcomment8Id" ><textarea name="REPLACEROWIDsubmissionsubmissionIdcomment8Id" id="REPLACEROWIDsubmissionsubmissionIdtextArea8Id"></textarea></span></div>  
              </div>
 <!-- dummy divs above -->            
 
@@ -547,16 +547,16 @@ function saveRejectSubmission(local,employeeId,userId,startDate,endDate){
          success: function(data) {    
         	   // approvalList();
         	   var uniqueSepartor = startDate.replace('-','').replace('-','');
-        	   if(!userId.indexOf(uniqueSepartor)){
-        		   $("#row"+userId).empty();
-     	    	  $("#row"+userId).html(rowHtmlContent);
-     	    	  $("#status"+userId).html("REJECTED");
-     	    	  $("#action"+userId).empty();
-     	    	  $("#action"+userId).append(" <div><h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+local+"' onclick='rejectedMessage(\"rejectedMessage"+local+"\");'><div class='app_error_mes' id='rejectedMessage"+local+"'>"+msg+"</div></i></div>");  
-        	   }
-        	   else{
+        	   if(userId.indexOf(uniqueSepartor) >= 0){
         		   var table = $('#example').DataTable();
         		   table.row('#row'+userId+'').remove().draw( false );
+        	   }
+        	   else{
+        		  $("#row"+userId).empty();
+      	    	  $("#row"+userId).html(rowHtmlContent);
+      	    	  $("#status"+userId).html("REJECTED");
+      	    	  $("#action"+userId).empty();
+      	    	  $("#action"+userId).append(" <div><h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+local+"' onclick='rejectedMessage(\"rejectedMessage"+local+"\");'><div class='app_error_mes' id='rejectedMessage"+local+"'>"+msg+"</div></i></div>");  
         	   }
         	  pagination();
            }
@@ -594,15 +594,16 @@ function approveSubmission(userId,employeeId,startDate,endDate){
 	    url: sourceleadUrl+"/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 		    success: function(data) {
 		    	 var uniqueSepartor = startDate.replace('-','').replace('-','');
-	        	 if(!userId.indexOf(uniqueSepartor)){
+	        	 if(userId.indexOf(uniqueSepartor) >= 0){
+			    	 var table = $('#example').DataTable();
+	        		 table.row('#row'+userId+'').remove().draw( false );
+	        		   
+	        	 }
+	        	 else{
 	        		 $("#row"+userId).empty();
 			    	 $("#row"+userId).html(rowHtmlContent);
 			    	 $("#status"+userId).html("APPROVED");
-			    	 $("#action"+userId).html("<div><h3>Approved</h3></div>");  
-	        	 }
-	        	 else{
-	        		   var table = $('#example').DataTable();
-	        		   table.row('#row'+userId+'').remove().draw( false );
+			    	 $("#action"+userId).html("<div><h3>Approved</h3></div>"); 
 	        	   }
 		    	 
 		    }
