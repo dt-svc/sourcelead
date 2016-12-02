@@ -52,7 +52,7 @@ $(document).ready(function(){
             </ul>
           </div>
         </li>
-        <li><i class="glyphicon glyphicon-save"></i><span>Import</span>|</li>
+       <!--  <li><i class="glyphicon glyphicon-save"></i><span>Import</span>|</li> -->
             
               
         <li>
@@ -224,49 +224,11 @@ $(document).ready(function(){
     <div class="clients_side_wrap_inn">
       <h1>Asset Management Details</h1>
       <div class="project_side_wrap_inn_tabs">
+      <div id="projectSideDiv">
+		     </div> 
         <div class="project_tabs">
           <div id="tab-1" class="project_tabs_inn" style="display: block;">
-            <div class="require_wrap_details">
-              <h1>Asset Management details: <a id="edit-user" href="javascript:void(0)">Edit<i class="glyphicon glyphicon-pencil"></i></a></h1>
-              <div class="require_one">
-                <div class="require_wrap_details_cta"> <b>S. No.:</b> <span>00012..</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Make:</b> <span>Make text here..</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Model:</b> <span>Model text here..</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Memory:</b> <span>Memory text here...</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>CPU:</b> <span>CPU</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Hard Disk:</b> <span>HardDisk here..</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Location:</b> <span>Hyderabad, Telangana, India</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Description:</b> <span>Description here..</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Shfit A:</b> <span>Sudhakar Reddy</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Attched File:</b> <span>Attched File</span>
-                  <div class="clearfix"></div>
-                </div>
-                                <div class="require_wrap_details_cta"> <b>Shfit B:</b> <span>Sudhakar Reddy</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Attched File:</b> <span>Attched File</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="user_summary_edit client_summary_edit" style="display: none;">
+              <div class="user_summary_edit client_summary_edit" style="display: none;">
                   <div class="form-horizontal req-dtls myForm row">
                   
                             <!-- Add Asset Popup -->
@@ -648,15 +610,26 @@ var validationSettings = {
 	   	        	
 		   	     	for (var i=0; i<json.length; i++)
 	   				{  
-		   	     	    var report = json[i];
-		   	     	    result = result+'<tr>';
-			   	        result = result+'<td><div class="tbldata-dotdot-100" title="'+report.slno+'">'+report.slno+'</div></td>';
-				   	    result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot">';
-					   	result = result+'<div class="proj_show"> <span class="tbldata-dotdot-sm">'+report.assetCategory.categoryName+'</span> <i class="fa fa-binoculars"></i> </div>';
+		   	     	    var shiftAEmpName = "--- ";
+					    var shiftBEmpName = "--- ";
+					    var report = json[i];
+					    
+					    if (report.shiftAEmpName != null && report.shiftAEmpName != '' && report.shiftAEmpName != 'undefined') {
+							shiftAEmpName = report.shiftAEmpName;
+						}
+						
+						if (report.shiftBEmpName != null && report.shiftBEmpName != '' && report.shiftBEmpName != 'undefined') {
+							shiftBEmpName = report.shiftBEmpName;
+						}
+
+						result = result+'<tr>';
+			   	        result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot-sm">';
+					   	result = result+'<div class="proj_show" onclick="assetSideBar('+report.id+');"> <span class="tbldata-dotdot-100">'+report.slno+'</span> <i class="fa fa-binoculars"></i> </div>';
 					   	result = result+'</a></td>';
+					   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.assetCategory.categoryName+'">'+report.assetCategory.categoryName+'</div></td>';
 						result = result+'<td><div class="tbldata-dotdot-vsm">'+report.model+'</div></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.shiftAEmployee.user.firstName+' '+report.shiftAEmployee.user.lastName+'">'+report.shiftAEmployee.user.firstName+' '+report.shiftAEmployee.user.lastName+'</div></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.shiftBEmployee.user.firstName+' '+report.shiftBEmployee.user.lastName+'">'+report.shiftBEmployee.user.firstName+' '+report.shiftBEmployee.user.lastName+'</div></td>';
+					   	result = result+'<td><div class="tbldata-dotdot-vsm" >'+shiftAEmpName+'</div></td>';
+					   	result = result+'<td><div class="tbldata-dotdot-vsm" >'+shiftBEmpName+'</div></td>';
 					   	result = result+'<td><div class="tbldata-dotdot-100">'+report.workingStatus+'</div></td>';
 					   	result = result+'<td><div class="tblminwidth-50"><i class="fa fa-trash-o text-danger"></i></div></td>';
 			   	        result = result +'</tr>';
@@ -673,6 +646,15 @@ var validationSettings = {
 		  });
 	}
 </script>
+
+<script>
+ function assetSideBar(assetId){ 
+		    $(".clients_side_wrap").addClass("clients_side_wrap_active");
+		    $(".side_mask").fadeIn(200);
+			$("body").css('overflow-y', 'hidden');
+			assetDetails(assetId);
+ }
+</script> 
   
   
   <script>
@@ -773,18 +755,7 @@ var validationSettings = {
  
  
  <script>
-// Edit pop
-$(document).ready(function() {	
-	$("#edit-user").click(function(){
-		$(".user_summary_edit").slideToggle(100);
-	});
-    $("html, #canBTN, .us-btn_a").click(function() {
-        $(".user_summary_edit").slideUp(100);
-    });
-    $("#edit-user, .user_summary_edit").click(function(e) {
-        e.stopPropagation();
-    });		
-});
+
 </script> 
   <script type="text/javascript">
             $(function () {
@@ -847,7 +818,6 @@ $(document).ready(function() {
     });	
 	
 // project side bar
-$(document).ready(function() {
     $(".proj_show").click(function(){
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
@@ -858,7 +828,6 @@ $(document).ready(function() {
 		$(".side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
 	});
-});
 
 // project side bar tabs
 $(document).ready(function() {
@@ -1052,5 +1021,5 @@ $(".addcon-pop").click(function(){
     </select>
   </div>
 </div>
- 
+<jsp:include page="assetManagementDetails.jsp" />
 <jsp:include page="../masterFooter.jsp" />

@@ -65,13 +65,33 @@ public class AssetDaoImpl implements AssetDao{
 	
 	/**
 	 * @author Prasad salina
+	 * @param Id
+	 * @return
+	 * @throws Exception
+	 * To get the asset by Id.
+	 * This method used in BackOfficeRestController
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Asset getAssetById(Long id) throws Exception {
+		logger.debug("In AssetDaoImpl getAssetById method");
+		Session session = this.sessionFactory.getCurrentSession();
+		return (Asset) session.get(Asset.class, id);
+	}
+	
+	/**
+	 * 
+	 * @param orgLocationId
+	 * @param categoryIds
+	 * @return
+	 * @throws Exception
 	 * To get the asset list with filters.
 	 * This method used in BackOfficeRestController
 	 */
 	@Override
 	@Transactional
 	public List<Asset> getAssetFilterListByLocationId(Long orgLocationId, String categoryIds) throws Exception {
-		
+		logger.debug("In AssetDaoImpl getAssetFilterListByLocationId method");
 		Session session =  this.sessionFactory.getCurrentSession();
 		String[] category = null;
 		String subquery1 = "";

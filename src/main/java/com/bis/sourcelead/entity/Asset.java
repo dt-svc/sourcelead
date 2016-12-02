@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -123,6 +124,12 @@ public class Asset implements Serializable{
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	private String shiftAEmpName;
+	
+	@Transient 
+	private String shiftBEmpName;
 
 	public Long getId() {
 		return id;
@@ -323,6 +330,22 @@ public class Asset implements Serializable{
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getShiftAEmpName() {
+		return shiftAEmpName;
+	}
+
+	public void setShiftAEmpName(String shiftAEmpName) {
+		this.shiftAEmpName = shiftAEmpName;
+	}
+
+	public String getShiftBEmpName() {
+		return shiftBEmpName;
+	}
+
+	public void setShiftBEmpName(String shiftBEmpName) {
+		this.shiftBEmpName = shiftBEmpName;
 	}
 
 	public byte[] getDocFile() {

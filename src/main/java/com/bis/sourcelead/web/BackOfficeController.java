@@ -69,9 +69,6 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	ComericaFileUploadService comericaFileUploadService;
 	
 	@Autowired
-	AssetCategoryService assetCategoryService;
-	
-	@Autowired
 	ChaseUploadFileService chaseUploadFileService;
 	
 	@Autowired

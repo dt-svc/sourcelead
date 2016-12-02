@@ -330,6 +330,23 @@ public class BackOfficeRestController {
 		return resultJson;
 	}
 	
+	/**
+	 * @author Prasad Salina
+	 * @param request
+	 * @param assetId
+	 * @return
+	 * @throws Exception
+	 * To get asset by Id
+	 */
+	@RequestMapping(value = "/getAssetById")
+	@ResponseBody
+	public String getAssetById(HttpServletRequest request,@RequestParam(value="assetId", required=false) Long assetId) throws Exception {
+		String resultJson = null;
+		Asset asset = assetService.getAssetById(assetId);
+		resultJson = toJSON(asset);
+		return resultJson;
+	}
+	
 	
 	
 	@RequestMapping(value = "/getAssetCategoryList")
