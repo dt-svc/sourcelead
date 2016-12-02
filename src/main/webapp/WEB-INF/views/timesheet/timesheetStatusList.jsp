@@ -147,12 +147,18 @@ function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,emp
 	               		else if (data.indexOf('exception') >= 0) {
 	               			 location.replace(sourceleadUrl+"/errorPage");
 	               		}else{
-	               			 var uniqueSepartor = startDate.replace('-','').replace('-','');
-	               		    var dateFrequencyTdContent =  $("#datefrequency"+projectMemberUserId+uniqueSepartor).html();
-				    		$("#row"+projectMemberUserId+uniqueSepartor).empty();
-					        $("#row"+projectMemberUserId+uniqueSepartor).append(data);
-					        $("#datefrequency"+projectMemberUserId+uniqueSepartor).html(dateFrequencyTdContent);
-					        /* pagination(); */
+	               			var uniqueSepartor = startDate.replace('-','').replace('-','');
+	               			if('${param.status}' != 'REJECTED' && '${param.status}' != 'DRAFT'){
+		               		    var dateFrequencyTdContent =  $("#datefrequency"+projectMemberUserId+uniqueSepartor).html();
+					    		$("#row"+projectMemberUserId+uniqueSepartor).empty();
+						        $("#row"+projectMemberUserId+uniqueSepartor).append(data);
+						        $("#datefrequency"+projectMemberUserId+uniqueSepartor).html(dateFrequencyTdContent);
+	               			}
+	               			else{
+	               			   var table = $('#example').DataTable();
+	   	        		       table.row('#row'+projectMemberUserId+uniqueSepartor+'').remove().draw( false );
+	               			}
+	               			
 				    	}
 				        
 				    }

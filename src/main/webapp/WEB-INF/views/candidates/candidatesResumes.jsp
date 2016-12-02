@@ -324,8 +324,8 @@ function addResume(candidateId) {
 					           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 						           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
 					           		}else{
-					           			result = result+'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CANDIDATE_RESUMES\')">  <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"></a></sec:authorize>';
-						           		result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_RESUMES\')"><i class="glyphicon glyphicon-trash" onclick="deleteResume('+candidateId+','+opt.id+');"></i></sec:authorize>';
+					           			result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\')">  <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"></a></sec:authorize>';
+						           		result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\')"><i class="glyphicon glyphicon-trash" onclick="deleteResume('+candidateId+','+opt.id+');"></i></sec:authorize>';
 					           		}
 					           		result = result+'</div></td>';
 					           		result = result+'</tr>';
