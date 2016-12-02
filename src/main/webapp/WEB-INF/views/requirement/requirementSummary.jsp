@@ -821,14 +821,14 @@ function requirementDetails(requirementId){
 				            }else{
 				            	for (var i=0; i<json.approverNames.length; i++)
 				   				{
-				            		var level = 1;
+				            		var level = 2;
 					            	for (var i=0; i<json.approverNames.length; i++)
 					   				{
 					            		result = result +'<div class="require_wrap_details_cta"> <b>Approvers '+level+':</b> <span>'; 
 					            		result = result +json.approverNames[i];
 					            		result = result +'</span>';
 					            		result = result +'</div>';
-					            		level = level+1;
+					            		level = level-1;
 					   				}
 					            	
 				   				}
