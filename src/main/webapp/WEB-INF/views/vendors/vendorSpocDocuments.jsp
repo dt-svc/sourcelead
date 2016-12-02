@@ -9,7 +9,13 @@
 function vendorSpocDocuments(orgRelationId,clientLocationId,spocName,userId){
 	var result = "";
 	result = result  +'<div class="timesheet_head">';
+	
 	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
+    
+    result  = result + '<div class="success_pop" id="selector2" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="docMsgDiv"></span>';
+    result  = result + '</div>';
+    
 	    result = result + '<ul>';
 	    '<sec:authorize access="hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
 		result = result  +'    	<a href="javascript:void(0)" onClick="addDocumentForSpoc('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+'); getSpocsList('+orgRelationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Documents</a>                                                            ';
@@ -52,6 +58,18 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
              			 location.replace(sourceleadUrl+"/errorPage");
              		 }
              		 else{
+             			var json = JSON.parse(data);
+             			/* for (var i = 0; i < 1; i++) { 
+             				var val= json[i];
+             				var opt = "";
+             					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+	             					opt  = opt + '<div class="success_pop" id="selector2" style="display: block;">';
+	             					opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+	             					opt  = opt + '</div>';
+             						}
+             					$("#docMsgDiv").empty();
+             					$("#docMsgDiv").append(opt);
+             				} */
 	                	 $("#spocDocumentsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='vendorDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -68,7 +86,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                     var json = JSON.parse(data);
+	                     
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
@@ -132,6 +150,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                     result = result +"</table>";
 	                     $("#spocDocumentsList").append(result); 
 	                     spocDocumentpagination(); 
+	                    
 			    	} 
                }else{
 	    	         var result ="";
@@ -374,7 +393,11 @@ function closePopup(){
 	            		 }
 	            		 else{
 	            			$("#popUpDiv").removeClass("edit-details-active");
+	            			$("#selector2").removeAttr("style");
+	            			$("#selector2").css({ display: "block" });
+	            			$("#docMsgDiv").html("document Removed");
 	            			spocDocumentsList(clientLocationId,orgRelationId,userId,spocName);
+	            			 spocDocMsgFadein();
 	            		 }
 					},
 				});
@@ -589,3 +612,12 @@ function manageDates() {
 	  }
   } 
 </script>
+
+<!-- Show success message after form submission script -->
+<script>
+	function spocDocMsgFadein() {
+	        $("#selector2").fadeIn(200);
+	        $('#selector2').delay(2000).fadeOut('slow');
+	}
+</script> 
+<!-- End -->
