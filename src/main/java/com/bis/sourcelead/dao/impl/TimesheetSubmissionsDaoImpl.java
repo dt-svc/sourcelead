@@ -161,7 +161,9 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		Session session = this.sessionFactory.getCurrentSession();  
 		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee emp left join fetch emp.user  user where project.orgLocationsId.id = :locationsId and user.id IN(select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE')  and  ts.status != '0' "
 				+ " and ( "
-				+ "  (ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:approverUserId)) )OR "+Constants.loginUserAsAdmin+""
+				+ "  ( ts.projectMembers.id IN ( select pm.id from ProjectMembers pm where pm.projects.id  IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:approverUserId)) ) "
+				+ "   OR "
+				+     Constants.loginUserAsAdmin+""
 			    + ")  GROUP BY emp.id";   
 		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("approverUserId", userId).setLong("userId", userId).setLong("locationsId", locationsId).list();
 	    for(TimesheetSubmissions ts : timesheetSubmissionsList){

@@ -30,7 +30,7 @@ overflow-x: auto;
 	<section class="content-wraper">
 		<section class="content-header clearfix">
 		  <c:if test="${!empty msg}">
-	        <div class="success_pop" id="selector"  style="display: block;">
+	        <div class="success_pop" id="selector"  style="display: none;">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
