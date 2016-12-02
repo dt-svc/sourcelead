@@ -37,6 +37,8 @@ function editCandidate(candidateId){
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
+		
+		
  if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
 	  
 	  $.ajax({
@@ -180,7 +182,7 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mr">';
 							result = result + '<div class="pull-right">';
 							result = result + '<button type="button"  onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
-							result = result + '		            <button type="button" class="btn btn-sm btn-danger" onClick ="cancelEdit();">Cancel</button>';
+							result = result + '<button type="button" class="btn btn-sm btn-danger" onClick ="cancelEdit();">Cancel</button>';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							result = result + '		      </div>';
@@ -836,13 +838,17 @@ function removeSkillPopUp(candidateId){
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
+		
+		
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-			
+			 
 			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
 			
 			 var con = JSON.stringify(frm);
 				 con = con.replace(/[{}]/g, "");
 				var jsonData = encodeURIComponent(con);
+				
+				
 			  //It will escape all the special characters
 			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
@@ -850,7 +856,7 @@ function removeSkillPopUp(candidateId){
 						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(result) {
 							/* location.replace(sourceleadUrl+"/candidatesList");  */
-							clientSideBar(candidateId);
+							candidateSideBar(candidateId);
 						},
 					});
 			return true;
