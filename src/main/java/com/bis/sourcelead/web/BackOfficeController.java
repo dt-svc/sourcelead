@@ -30,14 +30,20 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.AmexUploadFile;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.BoPaymentTypes;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AmexFileUploadService;
 import com.bis.sourcelead.service.AssetCategoryService;
+import com.bis.sourcelead.service.BoComericaTransService;
 import com.bis.sourcelead.service.BoPaymentTypesService;
 import com.bis.sourcelead.service.BoUploadedFilesService;
 import com.bis.sourcelead.service.ChaseUploadFileService;
 import com.bis.sourcelead.service.ComericaFileUploadService;
+
+import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.UploadFileService;
+
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.validation.FileValidator;
@@ -70,6 +76,12 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	
 	@Autowired
 	BoPaymentTypesService boPaymentTypesService;
+	
+	@Autowired
+	EmployeesService employeesService;
+	
+	@Autowired
+	AssetCategoryService assetCategoryService;
 	
 	@RequestMapping(value = "/finance")
 	public ModelAndView finance(HttpServletRequest request) throws Exception {
@@ -182,10 +194,18 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	
 	@RequestMapping(value = "/assetManagement")
 	public ModelAndView assetManagement(HttpServletRequest request) throws Exception {
+	
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		List<AssetCategory> categoryList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId());
+		List<Employees> employeesList = employeesService.getEmployeesByLocationId(orgLocations.getId());
+		
+
 		ModelAndView model = new ModelAndView();
 		model.setViewName("backOffice/assetManagement");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("categoryList", categoryList);
+		model.addObject("employeesList", employeesList);
 		
 		List<AssetCategory> assetCategoriesList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId());
 		model.addObject("assetCategoriesList", assetCategoriesList);
