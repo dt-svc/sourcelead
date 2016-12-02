@@ -135,10 +135,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     	type: "POST",
         url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
         success: function(data) {
-        	
         	var json = JSON.parse(data);
-        	var projectStatus =  json.status;
-        	
         	var result = "";
         	result = result + '<input type="hidden" name="projectId" id="projectId" value="'+projectId+'" >';
         	result = result + '<input type="hidden" name="startDateStr" id="startDateStr" value="'+startDateStr+'" >';
@@ -146,7 +143,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
         	result = result + '<input type="hidden" name="assignStatus" id="assignStatus" value="'+status+'" >';
 
         	result = result + '    	<div class="project_tabs_inn_head timesheet_head" style="min-height:35px">';
-    		if(projectStatus != 'Completed' &&  projectStatus != '' &&  projectStatus != 'undefined' ){
+    		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
     		result = result	+ '<ul>';
 
     		result = result +'<li>';
@@ -214,7 +211,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 	                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
 	                }else{
 	                	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\')">'; 
-	                	if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != "INACTIVE"){
+	                	if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
 		                	result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field project_inline_field_enddate" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
 		                }
 		                else{
@@ -305,11 +302,12 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     		     $(tab).fadeIn();
     		 });
     		
-    		if(json.length > 0)
+    		if(json.projectMembersList.length > 0)
 	   		{
-    			 for(var i=0; i<json.length; i++){
-					 var jsonData = json[i];
-					 if(jsonData.status != null && jsonData.status != '' && jsonData.status !='undefined' && jsonData.status == "IN-ACTIVE")
+    			for (var i=0; i<json.projectMembersList.length; i++)
+    			{      
+    	             var jsonData = json.projectMembersList[i];
+					 if(jsonData.status != null && jsonData.status != '' && jsonData.status !='undefined' && jsonData.status == 0)
 						   continue;
 					 //Assign date of project member
 					 var selected = jsonData.projectAssignedDateStr;
