@@ -337,6 +337,7 @@ function getContactsLists(){
 					 result = result+"		<p><i class='fa fa-5x fa-bar-chart'></i></p>";
 					 result = result+"		<p>No Contacts Found</p>";
 					 result = result+"	</div>";
+					$("#vendorStatus").hide();
 					$("#vendorContacts").empty();
 				    $("#vendorContacts").append(result); 
 	            }
@@ -480,8 +481,10 @@ function getVendorLists(){
 					 result = result+"		<p><i class='fa fa-5x fa-bar-chart'></i></p>";
 					 result = result+"		<p>No Vendors Found</p>";
 					 result = result+"	</div>";
-					$("#vendor").empty();
-				    $("#vendor").append(result); 
+					 $("#vendorSelected").hide();
+					 $("#vendorStatus").hide();
+					 $("#vendor").empty();
+				     $("#vendor").append(result); 
 	            }
    		    },
 	 });
@@ -536,7 +539,7 @@ $(document).ready(function(){
  function listChange(sel) {
 	
     	if(sel.value=="releaseByVendors"){
-			document.getElementById("vendor").style.display="block";
+    		document.getElementById("vendor").style.display="block";
 			document.getElementById("vendorContacts").style.display="none";
 			getVendorLists();
 			$('span.jquery_form_error_message').hide();
