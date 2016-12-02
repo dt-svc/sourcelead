@@ -156,7 +156,7 @@
 			                 /* result = result +"  <td><input type='checkbox' id='checkbox12'/></td>"; */
 			                
 			                 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
-			                   result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span title='"+opt.firstName+" "+opt.lastName+"'>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+			                   result = result +"  <td><div class='proj_show' onclick='candidateSideBar("+opt.id+");'><span title='"+opt.firstName+" "+opt.lastName+"'>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
 			                 '</sec:authorize>';
 			                 
 			                 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
@@ -257,7 +257,7 @@ function cpagination(){
 
 <script>
 var candidateStatusGlobal ="";
-function clientSideBar(candidateId){
+function candidateSideBar(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var loginUserId = '${SourceLeadWeb_userId}';
 	  $.ajax({
@@ -587,7 +587,7 @@ $(document).ready(function() {
 <%-- 
      @author : sarath kumar.
      this script is for load predefined image for candidate.
-     1.usage     : called at clientSideBar() function. line number 166.
+     1.usage     : called at candidateSideBar() function. line number 166.
 --%>
 
 <script>
@@ -697,7 +697,7 @@ function refreshImageBlock(candidateId){
 <%-- 
      @author : sarath kumar.
      this script is for validate image for candidate.
-     1.usage     : used in clientSideBar() function line number :171.
+     1.usage     : used in candidateSideBar() function line number :171.
 --%>
 <script type="text/javascript">
 function loadFile(event,candidateId){
