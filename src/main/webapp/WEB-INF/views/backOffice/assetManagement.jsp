@@ -33,40 +33,25 @@ $(document).ready(function(){
   <div class="vendor_wrap">
     <div class="timesheet_head">
       <ul>
-        
-        <li><i class="fa fa-filter"></i><span>Category</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+        <li><i class="fa fa-filter"></i><span>Category</span><i class="glyphicon glyphicon-play" id="category"></i>|
           <div class="approved_pop">
             <ul>
-              <li>
-                <input type="checkbox">
-                &nbsp;&nbsp;Desktop</li>
-              <li>
-                <input type="checkbox">
-                &nbsp;&nbsp;Laptop</li>
-              <li>
-                <input type="checkbox">
-                &nbsp;&nbsp;Other</li>
+                   <c:forEach var="report" items="${assetCategoriesList}">  
+		               <li><input  id="category${report.id}" name="categoryId" value ="${report.id}"  onclick="getAssetList();"  type="checkbox"><label>${report.categoryName}</label></li>
+				   </c:forEach>
             </ul>
           </div>
         </li>
         <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
           <div class="export_pop">
             <ul>
-              <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-              <li>Excel<i class="fa fa-file-excel-o"></i></li>
-              <li>Word<i class="fa fa-file-word-o"></i></li>
+              <li><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
+              <li><i class="fa fa-file-excel-o"></i>&nbsp;Excel</li>
+              <li><i class="fa fa-file-word-o"></i>&nbsp;Word</li>
             </ul>
           </div>
         </li>
-        <li><i class="glyphicon glyphicon-export"></i><span>Import</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
-          <div class="export_pop">
-            <ul>
-              <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-              <li>Excel<i class="fa fa-file-excel-o"></i></li>
-              <li>Word<i class="fa fa-file-word-o"></i></li>
-            </ul>
-          </div>
-        </li>
+        <li><i class="glyphicon glyphicon-save"></i><span>Import</span>|</li>
         <li>
           <a href="javascript:void(0)" class="addcon-pop"><i class="fa fa-plus"></i>Add Asset</a> 
           <!-- Add Asset Popup -->
@@ -352,7 +337,7 @@ $(document).ready(function(){
       <div class="clearfix"></div>
     </nav>
     <!-- list Table -->
-  </div>
+  </div></div>
   <div class="side_mask">
     <div class="proj_close"></div>
   </div>
@@ -678,9 +663,14 @@ $(document).ready(function(){
 		
 		var sourceleadUrl ='${sourceleadUrl}';
 		
+		var categoryIds = [];
+		$('input:checkbox[name=categoryId]:checked').each(function() 
+	    {
+			categoryIds.push($(this).val());
+	    });
 		  $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/getAssetList?${_csrf.parameterName}=${_csrf.token}", 	   
+			    url: sourceleadUrl+"/getAssetList?${_csrf.parameterName}=${_csrf.token}&categoryIds="+categoryIds, 	   
 	   		    success: function(data) {
 	   		    	
 	   		    	
@@ -702,13 +692,12 @@ $(document).ready(function(){
 		   	     	for (var i=0; i<json.length; i++)
 	   				{  
 		   	     	    var report = json[i];
-		   	     	    
 		   	     	    result = result+'<tr>';
 			   	        result = result+'<td><div class="tbldata-dotdot-100" title="'+report.slno+'">'+report.slno+'</div></td>';
 				   	    result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot">';
 					   	result = result+'<div class="proj_show"> <span class="tbldata-dotdot-sm">'+report.assetCategory.categoryName+'</span> <i class="fa fa-binoculars"></i> </div>';
 					   	result = result+'</a></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm">'+report.model+'</div></td>';
+						result = result+'<td><div class="tbldata-dotdot-vsm">'+report.model+'</div></td>';
 					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.shiftAEmployee.user.firstName+' '+report.shiftAEmployee.user.lastName+'">'+report.shiftAEmployee.user.firstName+' '+report.shiftAEmployee.user.lastName+'</div></td>';
 					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.shiftBEmployee.user.firstName+' '+report.shiftBEmployee.user.lastName+'">'+report.shiftBEmployee.user.firstName+' '+report.shiftBEmployee.user.lastName+'</div></td>';
 					   	result = result+'<td><div class="tbldata-dotdot-100">'+report.workingStatus+'</div></td>';
@@ -716,10 +705,10 @@ $(document).ready(function(){
 			   	        result = result +'</tr>';
 	   				}
 		   	     	
-	   	        	
 	   	        	result = result +'</tbody>';
 	   	    	    $("#assetManagementList").empty();  
 	   	    	    $("#assetManagementList").append(result)
+	   	    	
 	   	    	   
 	   	    	    
 	   		    	
@@ -819,30 +808,26 @@ $(document).ready(function() {
 });	
 
 // Approved Popup
-$(document).ready(function() {
-    $("#appro-pop").click(function(){
-		$(".approved_pop").slideToggle(200);
+    $("#category").click(function(){
+		$(".approved_pop").toggle();
 	});
     $("html").click(function() {
-        $(".approved_pop").slideUp(200);
+        $(".approved_pop").slideUp();
     });
-    $(".approved_pop, #appro-pop").click(function(e) {
+    $(".approved_pop, #category").click(function(e) {
         e.stopPropagation();
     });	
-});
 
 // Export Popup
-$(document).ready(function() {
     $("#export-pop").click(function(){
-		$(".export_pop").slideToggle(200);
+		$(".export_pop").toggle();
 	});
     $("html").click(function() {
-        $(".export_pop").slideUp(200);
+        $(".export_pop").slideUp();
     });
     $(".export_pop, #export-pop").click(function(e) {
         e.stopPropagation();
     });	
-});	
 	
 // project side bar
 $(document).ready(function() {

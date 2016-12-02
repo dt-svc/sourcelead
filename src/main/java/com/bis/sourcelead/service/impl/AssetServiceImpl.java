@@ -19,6 +19,16 @@ public class AssetServiceImpl implements AssetService{
 	public Asset saveAsset(Asset asset) throws Exception {
 		return assetDao.saveAsset(asset);
 	}
+	
+	/**
+	 * @author Prasad salina
+	 * To get the asset list with filters.
+	 * This method used in BackOfficeRestController
+	 */
+	@Override
+	public List<Asset> getAssetFilterListByLocationId(Long orgLocationId, String categoryIds) throws Exception {
+		return assetDao.getAssetFilterListByLocationId(orgLocationId, categoryIds);
+	}
 
 	@Override
 	public List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception {

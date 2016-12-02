@@ -62,6 +62,35 @@ public class AssetDaoImpl implements AssetDao{
 		}
 		return asset;
 	}
+	
+	/**
+	 * @author Prasad salina
+	 * To get the asset list with filters.
+	 * This method used in BackOfficeRestController
+	 */
+	@Override
+	@Transactional
+	public List<Asset> getAssetFilterListByLocationId(Long orgLocationId, String categoryIds) throws Exception {
+		
+		Session session =  this.sessionFactory.getCurrentSession();
+		String[] category = null;
+		String subquery1 = "";
+		if(categoryIds != null){
+			category = categoryIds.split(",");
+		}
+		if (category != null && category[0] != null && category[0].length() > 0) {
+			for (String cat : category) {
+				  subquery1 = subquery1 + " asset.assetCategory.id = '"+cat+"' OR ";
+			}
+			if(!subquery1.equalsIgnoreCase("")){
+				subquery1 = " (" + subquery1.substring(0, subquery1.length() - 4) + ")";
+				subquery1 = " and " +subquery1;
+			}
+		}
+		String query = "from Asset asset left join fetch asset.shiftAEmployee.user left join fetch asset.shiftBEmployee.user  where asset.orgLocations.id = :orgLocationId and asset.status = '1' "+subquery1+" "; 
+		List<Asset> assetList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return assetList;
+	}
 
 	@Override
 	@Transactional
