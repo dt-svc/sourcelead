@@ -134,6 +134,9 @@ public class Asset implements Serializable{
 	
 	@Transient 
 	private String shiftBEmpName;
+	
+	@Transient 
+	private String categoryName;
 
 	public Long getId() {
 		return id;
@@ -384,6 +387,14 @@ public class Asset implements Serializable{
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
 
 }

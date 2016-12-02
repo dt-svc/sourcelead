@@ -171,7 +171,7 @@ function cancel(){
 				 <div class="well well-sm text-center">
 				  <div class="profile-img-container" style="position:relative;">
 				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
-				  <sec:authorize access="hasAnyRole('ROLE_EDIT_ORG_SETTINGS')">
+				  <sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_ORG_SETTINGS')">
 				  <div class="btn-group uploadfile">
 				  <button type="button" class="btn btn-sm btn-primary">
 				  <i class="fa fa-upload"></i></button>
@@ -265,7 +265,7 @@ function cancel(){
 						</div>
 					<div class="clearfix">
 					<div class="pull-right">
-					<sec:authorize access="hasAnyRole('ROLE_EDIT_ORG_SETTINGS')">
+					<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_ORG_SETTINGS')">
 					<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">
 					</sec:authorize>
 					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/dashboard'">

@@ -60,7 +60,7 @@ $(document).ready(function(){
           <!-- Add Asset Popup -->
           <div class="collapse-div-adduser pop-div col-md-12 assetaddpop">
           <div id="loading"></div>
-          <form:form id="addAsset_form"  name="addAsset_form" method="post" enctype='multipart/form-data'> 
+          <form:form id="addAsset_form"  name="addAsset_form" enctype='multipart/form-data'> 
            <i class="fa fa-close close-div" onclick="flushAsset();"></i>
 			  <div class="clearfix">
             <div class="clearfix assetaddpop-ul col-md-6">
@@ -84,15 +84,15 @@ $(document).ready(function(){
               <div class="form-horizontal clearfix">
                 <div class="clearfix mb10">
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" name="sno" placeholder="Serial Number *" field-name="Sl No" data-validation="required">
+                    <input type="text" class="form-control input-sm" id="sno" name="sno" placeholder="Serial Number *" field-name="Sl No" data-validation="required">
                   </div>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" name="make" placeholder="Make">
+                    <input type="text" class="form-control input-sm" id="make" name="make" placeholder="Make">
                   </div>
                 </div>
                 <div class="clearfix mb10">
                   <div class="col-md-4">
-                    <input type="text" class="form-control input-sm" name="model" placeholder="Model">
+                    <input type="text" class="form-control input-sm" id="model" name="model" placeholder="Model">
                   </div>
                   <div class="col-md-4">
                     <input type="text" class="form-control input-sm" name="name" id="name" placeholder="Name" style="display: none;">
@@ -117,13 +117,13 @@ $(document).ready(function(){
                   <div class="col-md-6">
                     <div class="input-group">
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" style="display: none;" multiple id="attachment" class="upload">
+                        <input type="file" name="attachment" id="attachment"  class="hidden upload">
                         </b> </label>
-                      <input type="text" type="file" class="form-control" name="attachment" readonly id="uploadFileAttachment" placeholder="Files are not selected...">
+                      <input type="text" class="form-control" name="attachment" readonly id="uploadFileAttachment" placeholder="Files are not selected...">
                     </div>
                   </div>
                   <div class="col-md-6">
-                    <textarea class="form-control" rows="2" name="description" placeholder="Description"></textarea>
+                    <textarea class="form-control" rows="2" name="description" id="description" placeholder="Description"></textarea>
                   </div>
                 </div>
                 <!-- Shift A Fields -->
@@ -143,9 +143,9 @@ $(document).ready(function(){
                   <div class="col-md-6">
                     <div class="input-group">
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" style="display: none;" multiple id="uploadBtn-dskA" class="upload">
+                        <input type="file" name="uploadBtn-dskA" id="uploadBtn-dskA"  class="hidden upload">
                         </b> </label>
-                      <input type="text" type="file" class="form-control" name="shiftAAttachment" readonly id="uploadFileShiftA" placeholder="Files are not selected...">
+                      <input type="text"  class="form-control" name="shiftAAttachment" readonly id="uploadFileShiftA" placeholder="Files are not selected...">
                     </div>
                   </div>
                 </div>
@@ -169,9 +169,9 @@ $(document).ready(function(){
                   <div class="col-md-6">
                     <div class="input-group">
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" style="display: none;" multiple id="uploadBtn-dskB" class="upload">
+                         <input type="file" name="uploadBtn-dskB" id="uploadBtn-dskB"  class="hidden upload">
                         </b> </label>
-                      <input type="text" type="file" class="form-control"  name="shiftBAttachment" readonly id="uploadFileShiftB" placeholder="Files are not selected...">
+                      <input type="text"  class="form-control"  name="shiftBAttachment" readonly id="uploadFileShiftB" placeholder="Files are not selected...">
                     </div>
                   </div>
                 </div>
@@ -194,27 +194,13 @@ $(document).ready(function(){
         <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>
-      <div class="remove_search">
-        <input type="text" placeholder="search" />
-      </div>
-    </div>
+      
     <!-- list Table -->
     <div class="require_wrap_table table-wrap">
     <table id="assetManagementList" class="display" cellspacing="0" width="100%"> </table>
       
     </div>
-    <nav>
-      <ul id="paging" class="pagination">
-        <li><a href="#">Previous</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li class="disabled"><a href="#">6</a></li>
-        <li data-page="last"><a href="#">Next</a></li>
-      </ul>
-      <div class="clearfix"></div>
-    </nav>
+    
     <!-- list Table -->
   </div></div>
   <div class="side_mask">
@@ -575,6 +561,23 @@ var validationSettings = {
 })(jQuery);
 </script>
   
+  <script>
+  function flushAsset(){
+	  $("#sno").val('');
+	  $("#model").val('');
+	  $("#monitor").val('');
+	  $("#name").val('');
+	  $("#make").val('');
+	  $("#memory").val('');
+	  $("#description").val('');
+	  $("#cpu").val('');
+	  $("#harddisk").val('');
+	  $("#uploadFile-dskA").val('');
+	  $("#uploadFile-dskB").val('');
+	  
+  }
+  
+  </script>
   
   <script>
 	function getAssetList(){
@@ -611,6 +614,7 @@ var validationSettings = {
 	   				{  
 		   	     	    var shiftAEmpName = "--- ";
 					    var shiftBEmpName = "--- ";
+					    var model = "---";
 					    var report = json[i];
 					    
 					    if (report.shiftAEmpName != null && report.shiftAEmpName != '' && report.shiftAEmpName != 'undefined') {
@@ -620,13 +624,17 @@ var validationSettings = {
 						if (report.shiftBEmpName != null && report.shiftBEmpName != '' && report.shiftBEmpName != 'undefined') {
 							shiftBEmpName = report.shiftBEmpName;
 						}
+						
+						if (report.model != null && report.model != '' && report.model != 'undefined') {
+							model = report.model;
+						}
 
 						result = result+'<tr>';
 			   	        result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot-sm">';
 					   	result = result+'<div class="proj_show" onclick="assetSideBar('+report.id+');"> <span class="tbldata-dotdot-100">'+report.slno+'</span> <i class="fa fa-binoculars"></i> </div>';
 					   	result = result+'</a></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.assetCategory.categoryName+'">'+report.assetCategory.categoryName+'</div></td>';
-						result = result+'<td><div class="tbldata-dotdot-vsm">'+report.model+'</div></td>';
+					   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.categoryName+'">'+report.categoryName+'</div></td>';
+						result = result+'<td><div class="tbldata-dotdot-vsm">'+model+'</div></td>';
 					   	result = result+'<td><div class="tbldata-dotdot-vsm" >'+shiftAEmpName+'</div></td>';
 					   	result = result+'<td><div class="tbldata-dotdot-vsm" >'+shiftBEmpName+'</div></td>';
 					   	result = result+'<td><div class="tbldata-dotdot-100">'+report.workingStatus+'</div></td>';
@@ -637,13 +645,30 @@ var validationSettings = {
 	   	        	result = result +'</tbody>';
 	   	    	    $("#assetManagementList").empty();  
 	   	    	    $("#assetManagementList").append(result)
-	   	    	
-	   	    	   
+	   	    	    pagination1();
+	   	    	     
 	   	    	    
 	   		    	
 	   		    }
 		  });
 	}
+</script>
+
+
+<script>
+function pagination1(){ 
+    $('#assetManagementList').DataTable( { 
+    	"scrollCollapse": false,
+    	"chosen-select": true,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    })
+}
 </script>
 
 <script>
@@ -784,16 +809,7 @@ var validationSettings = {
   <script>
 
 // Error pop
-$(document).ready(function() {
-    $(".glyphicon-trash").click(function(){
-		$(".vendor_error").slideToggle(200);
-		$(".vendor_wrap_mask").fadeIn(200);
-	});
-	$(".vendor_error a").click(function(){
-		$(".vendor_error").slideUp(200);
-		$(".vendor_wrap_mask").fadeOut(200);
-	});
-});	
+
 
 // Approved Popup
     $("#category").click(function(){
@@ -857,36 +873,15 @@ $(document).ready(function() {
 
 // script for scroll Popups:: Add or Edit details
 $(document).ready(function(event) {	
-$(".addUser-org").click(function(){
-	 $(".edit-details").toggleClass("edit-details-active");
-	 $(".collapse-div").removeClass("edit-details-active");
- });
- $(".close-div").click(function(){
-	 $(this).closest(".edit-details").toggleClass("edit-details-active");
-	 });
- $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+ $(".collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 	 e.stopPropagation();
  });
- $('html').click(function(){
-	$(".edit-details").removeClass("edit-details-active");
-   });	
-   $("#endDate").click(function(){
-	   $(".endDate").toggle(200);
-   });
    event.preventDefault();
 });
 
-$(".addSkills").click(function(){
-	$(".add-skills").toggleClass('add-skills-active');
-	});
 $(".close-div").click(function(){
-	$(".add-skills").removeClass('add-skills-active');
-	});
-$(".add-skills").click(function(e){
-	 e.stopPropagation();
- });
-
-
+	 $(this).parents().toggleClass("show-div");
+});
 // Bar chat pop
 $(document).ready(function() {
     $(".graf_icon").click(function(){
@@ -915,24 +910,6 @@ $( "#pri-ch li").click(function(){
   <script>
 $(document).ready(function(){
 	// Levels adding script
-$(".add-offer").click(function(){
-	 $(".addOffer-Req").toggleClass("show-div");
-	 $(".addInterview-Re").removeClass("show-div");
-	 $(".addApplicant-Re").removeClass("show-div");
- });
-$(".add-interview").click(function(){
-	 $(".addInterview-Re").toggleClass("show-div");
-	 $(".addOffer-Req").removeClass("show-div");
-	 $(".addApplicant-Re").removeClass("show-div");
- });
-$(".add-applicant").click(function(){
-	 $(".addApplicant-Re").toggleClass("show-div");
-	 $(".addOffer-Req").removeClass("show-div");
-	 $(".addInterview-Re").removeClass("show-div");
- });
-$(".reminder").click(function(){
-	 $(".reminder-div").toggleClass("reminder-div-active");
- });
 
  $(".close-div").click(function(){
 	 $(this).parent().toggleClass("show-div");

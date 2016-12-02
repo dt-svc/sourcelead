@@ -2,11 +2,13 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.dao.AssetDao;
@@ -169,6 +171,50 @@ public class AssetServiceImpl implements AssetService{
 		 if(jsonObj.has("description") && !isNullOrEmpty(jsonObj.getString("description"))){
 			 asset.setDescription(jsonObj.getString("description"));
 		 }
+		 
+		 
+		    		 
+		   MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
+	       final Map files = multiRequest.getFileMap();
+	       MultipartFile multiFile = (MultipartFile)files.get("attachment");
+	        if(null != multiFile && null != multiFile.getContentType() && !isNullOrEmpty(multiFile.getOriginalFilename())){
+		     	  try {
+		     		 asset.setFileContentType(multiFile.getContentType());
+		     		 asset.setDocFile(multiFile.getBytes());
+		     		 asset.setFileName(multiFile.getOriginalFilename());
+		     	   
+		 	       }catch (Exception e) {
+		     	      	 e.printStackTrace();
+		 			    }
+		         }
+	       
+	       
+	        MultipartFile multiFile1 = (MultipartFile)files.get("uploadBtn-dskA");
+	       if(null != multiFile1 && null != multiFile1.getContentType() && !isNullOrEmpty(multiFile1.getOriginalFilename())){
+		     	  try {
+		     		 asset.setShiftAFileContentType(multiFile1.getContentType());
+		     		 asset.setShiftADocFile(multiFile1.getBytes());
+		     		 asset.setShiftAFileName(multiFile1.getOriginalFilename());
+		     	   
+		 	       }catch (Exception e) {
+		     	      	 e.printStackTrace();
+		 			    }
+		         }
+	       
+	        
+	        MultipartFile multiFile2 = (MultipartFile)files.get("uploadBtn-dskB");
+		       if(null != multiFile2 && null != multiFile2.getContentType() && !isNullOrEmpty(multiFile2.getOriginalFilename())){
+			     	  try {
+			     		 asset.setShiftBFileContentType(multiFile2.getContentType());
+			     		 asset.setShiftBDocFile(multiFile2.getBytes());
+			     		 asset.setShiftBFileName(multiFile2.getOriginalFilename());
+			     	   
+			 	       }catch (Exception e) {
+			     	      	 e.printStackTrace();
+			 			    }
+			         }
+	       
+		 
 		 asset.setOrgLocations(orgLocations);
 		 asset.setCreatedBy(user.getUserCode());
 		 asset.setCreatedDate(new Date());
