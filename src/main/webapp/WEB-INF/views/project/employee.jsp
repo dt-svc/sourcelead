@@ -135,10 +135,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     	type: "POST",
         url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
         success: function(data) {
-        	
         	var json = JSON.parse(data);
-        	var projectStatus =  json.status;
-        	
         	var result = "";
         	result = result + '<input type="hidden" name="projectId" id="projectId" value="'+projectId+'" >';
         	result = result + '<input type="hidden" name="startDateStr" id="startDateStr" value="'+startDateStr+'" >';
@@ -146,7 +143,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
         	result = result + '<input type="hidden" name="assignStatus" id="assignStatus" value="'+status+'" >';
 
         	result = result + '    	<div class="project_tabs_inn_head timesheet_head" style="min-height:35px">';
-    		if(projectStatus != 'Completed' &&  projectStatus != '' &&  projectStatus != 'undefined' ){
+    		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
     		result = result	+ '<ul>';
 
     		result = result +'<li>';
@@ -160,7 +157,8 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     		result = result + '<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
     		result = result +'</sec:authorize>';
     		result = result +'</li>'; */
-
+    	
+    		'<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_EMPLOYEE\')">';
     		result = result +'<li>';
     		result = result +' <a id="export-pop" onClick="exportFun()"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
     		result = result +'<div class="export_pop">';
@@ -170,6 +168,8 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     		result = result +'</ul>';
     		result = result +'</div>';
     		result = result +'</li> ';
+    		'</sec:authorize>';
+    		
     		result = result +'</ul>';
            	}
     		result = result	+ '</span>';
@@ -210,8 +210,8 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 	                if(status == 'COMPLETED'){
 	                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
 	                }else{
-	                	'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_PROJECT_EMPLOYEES\')">'; 
-	                	if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != "INACTIVE"){
+	                	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\')">'; 
+	                	if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
 		                	result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field project_inline_field_enddate" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
 		                }
 		                else{
@@ -219,7 +219,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 		                }
 	                	'</sec:authorize>';
 	                	
-	                	'<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_PROJECT_EMPLOYEES\')">'; 
+	                	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\')">'; 
 	                	  result = result + '	     <td><div><span>'+projectEndDateStr+'</span></div></td>';
                 	   '</sec:authorize>';
 	                	
@@ -231,11 +231,11 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 	                if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
 	                	result = result + '	<td><div>';
 	                	if(status != 'COMPLETED'){
-	                		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PROJECT_EMPLOYEES\')">'; 
+	                		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
 	                		result = result + '<i class="glyphicon glyphicon-trash" onClick="deleteProject('+opt.id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i>';
 	                		'</sec:authorize>';
 	                		
-	                		'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_PROJECT_EMPLOYEES\')">'; 
+	                		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
 	                		result = result + '---';
 	                		'</sec:authorize>';
 	                	}
@@ -244,12 +244,18 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
                      else{
                     	 result = result + '<td><div class="tblminwidth-50">';
                     	 if(status != 'COMPLETED'){
-                    	 result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">Re-Assign &nbsp;</a><span class="show-reason">';
-                    	if(opt.terminateReason != null && opt.terminateReason != '' && opt.terminateReason != 'undefined'){
-                    		result = result + '<b class="glyphicon glyphicon-comment text-success"></b><b class="reason">'+opt.terminateReason+'</b>';
-                    	}else{
-                    		result = result + '';	
-                    	}
+                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\',\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">'; 
+                    		    result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">Re-Assign &nbsp;</a><span class="show-reason">';
+	                    	if(opt.terminateReason != null && opt.terminateReason != '' && opt.terminateReason != 'undefined'){
+	                    		result = result + '<b class="glyphicon glyphicon-comment text-success"></b><b class="reason">'+opt.terminateReason+'</b>';
+	                    	}else{
+	                    		result = result + '';	
+	                    	}
+	                      '</sec:authorize>';
+	                      
+	                      '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\',\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">'; 
+	                        result = result + '---';
+	                      '</sec:authorize>';
                     	 
                     	 result = result + '</span>';
                     	 }else{
@@ -296,11 +302,12 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     		     $(tab).fadeIn();
     		 });
     		
-    		if(json.length > 0)
+    		if(json.projectMembersList.length > 0)
 	   		{
-    			 for(var i=0; i<json.length; i++){
-					 var jsonData = json[i];
-					 if(jsonData.status != null && jsonData.status != '' && jsonData.status !='undefined' && jsonData.status == "IN-ACTIVE")
+    			for (var i=0; i<json.projectMembersList.length; i++)
+    			{      
+    	             var jsonData = json.projectMembersList[i];
+					 if(jsonData.status != null && jsonData.status != '' && jsonData.status !='undefined' && jsonData.status == 0)
 						   continue;
 					 //Assign date of project member
 					 var selected = jsonData.projectAssignedDateStr;

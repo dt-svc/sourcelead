@@ -114,7 +114,7 @@ public class RequirementInterviewRestController {
 
   }
 	
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_INTERVIEW')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW')")
 	@RequestMapping(value = "/getAllInternalInterviews" , method = RequestMethod.POST)
 	 public @ResponseBody  String getAllInternalInterviews(@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
 		
@@ -126,7 +126,7 @@ public class RequirementInterviewRestController {
 		 return resultJson;
 	   }
 	  
-	
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW')")
 	@RequestMapping(value = "/getAllCustomerInterviews" , method = RequestMethod.POST)
 	 public @ResponseBody  String getAllCustomerInterviews(@RequestParam(value="submissionId", required=false) Long submissionId,
 			 @RequestParam(value = "requirementId", required = false) Long requirementId,

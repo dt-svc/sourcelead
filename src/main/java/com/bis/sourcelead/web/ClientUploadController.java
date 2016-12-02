@@ -55,22 +55,27 @@ public class ClientUploadController {
 	 * Handles download templates for client and client contacts
 	 * @author Rajashekar
 	 * @param response
-	 * @throws IOException
-	 * @throws URISyntaxException
+	 * @throws Exception 
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_CLIENT_CONTACT_BULK_IMPORTS')")
 	@RequestMapping(value = "/downloadClientTemplate", method = RequestMethod.GET)
-	public void downloadClientTemplate(HttpServletResponse response,@RequestParam(value = "name", required = false) String name) throws IOException, URISyntaxException{
+	public void downloadClientTemplate(HttpServletRequest request,HttpServletResponse response,@RequestParam(value = "name", required = false) String name) throws Exception{
 		logger.debug("download template is for : "+ name);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		File file = null;
 		String fn;	
 		    if("client".equalsIgnoreCase(name)){
 	    		fn = "/templates/clients_import_template.xls";
+	    		 URL url = getClass().getResource(fn);
+			     file = new File(url.toURI());
 	    	}else{
-	    		fn = "/templates/clients_contacts_Import.xls";
+	    		//fn = "/templates/clients_contacts_Import.xls";
+	    		file = clientImportsService.getClientContactsTemplate(orgLocations.getId());
 	    	}
 			
-			URL url = getClass().getResource(fn);
-			File file = new File(url.toURI());
+		    
+		/*	URL url = getClass().getResource(fn);
+			File file = new File(url.toURI());*/
 
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
@@ -132,23 +137,25 @@ public class ClientUploadController {
 	 * Handles download templates for vendor and  contacts
 	 * @author Rajashekar
 	 * @param response
-	 * @throws IOException
-	 * @throws URISyntaxException
+	 * @throws Exception 
 	 */
 	
 	@PreAuthorize("hasAnyRole('ROLE_VENDOR_CONTACT_BULK_IMPORTS')")
 	@RequestMapping(value = "/downloadVendorTemplate", method = RequestMethod.GET)
-	public void downloadVendorTemplate(HttpServletResponse response,@RequestParam(value = "name", required = false) String name) throws IOException, URISyntaxException{
+	public void downloadVendorTemplate(HttpServletRequest request,HttpServletResponse response,@RequestParam(value = "name", required = false) String name) throws Exception{
 		logger.debug("download template is for : "+ name);
 		String fn;	
-		    if("Vendor".equalsIgnoreCase(name)){
-	    		fn = "/templates/vendors_import_template.xls";
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		File file = null;
+		
+		if("Vendor".equalsIgnoreCase(name)){
+	    		 fn = "/templates/vendors_import_template.xls";
+	    		 URL url = getClass().getResource(fn);
+			     file = new File(url.toURI());
 	    	}else{
-	    		fn = "/templates/vendors_contacts_Import.xls";
+	    		 file = clientImportsService.getVendorContactsTemplate(orgLocations.getId());
 	    	}
-			
-			URL url = getClass().getResource(fn);
-			File file = new File(url.toURI());
 
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {

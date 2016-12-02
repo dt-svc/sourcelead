@@ -39,7 +39,7 @@ public class Constants {
 	public static final String STATUS = "Status";
 	public static final String OWNER = "Owner";
 	public static final String WEBSITE = "Website";
-	public static final String COUNTRY = "Country";
+	public static final String COUNTRY = "Country*";
 	public static final String SATATE = "State";
 	public static final String CITY = "City";
 	public static final String LEVEL = "Tier";
@@ -276,4 +276,10 @@ public class Constants {
     public static String CLIENT = "Client";
     
     public static String[] PROJECT_ASSIGNED_EMPLOYEES = {"Employee","Email id","Project Start Date","Project End Date","Approved Hours","Rejected Hours","Wiating for Approval","Saved Hours"};	
+
+    public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
+    public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
+    
+    public static String[] VENDOR_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};
+    public static String[] CLIENT_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};
 }

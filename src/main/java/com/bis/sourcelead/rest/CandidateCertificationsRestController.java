@@ -121,7 +121,7 @@ public class CandidateCertificationsRestController {
 		   * 
 		   * @throws Exception
 		   */
-	   @PreAuthorize("hasAnyRole('ROLE_EDIT_CANDIDATE_CERTIFICATION')")
+	   @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION')")
 	   @RequestMapping(value = "/getCandidateCertificateBycandidateIdandCertificateId")
 		public String getCandidateCertificateBycandidateIdandCertificateId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateCertificationId", required = false) Long candidateCertificationId,HttpServletRequest request) throws Exception {
 

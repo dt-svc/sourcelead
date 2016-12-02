@@ -29,8 +29,8 @@ overflow-x: auto;
 	<!-- Content Area -->
 	<section class="content-wraper">
 		<section class="content-header clearfix">
-		<c:if test="${not empty msg}">
-	        <div class="success_pop" id="selector">
+		  <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector"  style="display: none;">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
@@ -51,14 +51,14 @@ overflow-x: auto;
 		<!-- Project -->
 		<div class="timesheet_out">
 			<div class="clients_wrap">
-				<div class="timesheet_head datatbl-filters">
+				<div class="timesheet_head datatbl-filters customtimesheet-head">
 					<ul>
 
 		                  <li id="clientsList" ><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
 		                	<div id="filter1ApprovedPop" class="approved_pop">
 		                    	<ul>
 		                    	  <c:forEach var="report" items="${clientsList}">  
-		                        	<li><input  id="clientName${report.id}" name="clientNameById" value ="${report.id}"  onclick="getVendorContactLists();"  type="checkbox"><label>${report.clientName}</label></li>
+		                        	<li><input  id="clientName${report.id}" name="clientNameById" value ="${report.id}"  onclick="getVendorContactLists();"  type="checkbox"><label title="${report.clientName}">${report.clientName}</label></li>
 								  </c:forEach>
 		                        </ul>
 		                    </div>                	
@@ -227,14 +227,14 @@ function getClientDetails(){
    	        		result = result +'<tr>';
    	        		
    	        			result = result +'<td>';
-   	        		    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+   	        		    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
    	        			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.vendorlocationId+'\',\''+report.orgName+'\',\''+report.id+'\');">';
 						result = result +'<span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
    	        			
    	        			result = result +'</div>';
    	        			'</sec:authorize>';
    	        			
-   	        			'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+   	        			'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
    	        			result = result +'<div class="proj_show" ';
 						result = result +'<span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span>';
    	        			result = result +'</div>';
@@ -323,7 +323,7 @@ function pagination(){
 		result = result + '<ul class="project-tabs-menu">';
 		
 		//for client details tab
-		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
 		result = result + '<li class="current"><a href="#tab-1" onClick="clientDetails('+clientLocationId+','+orgRelationId+');">Details</a></li>';
 		'</sec:authorize>';
 		
@@ -619,7 +619,7 @@ function updateSpocStatus(spocId){
 				+ '<li class="current"><a href="#tab-1"  id="spocDetailsId" onClick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+');">Details</a></li>';
 		'</sec:authorize>';
 		
-		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT_DOCUMENT\')">';
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_DOCUMENT\')">';
 		result = result
 				+ '<li><a href="#tab-2" onClick="clientSpocDocuments('+orgRelationId+','+spocLocationId+',\''+spocName+'\','+userId+');">Documents</a></li>';
 		'</sec:authorize>';
