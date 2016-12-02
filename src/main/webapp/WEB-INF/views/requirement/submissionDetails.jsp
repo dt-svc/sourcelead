@@ -707,7 +707,7 @@ function getOfferDetails(submissionId){
 	                     var json = JSON.parse(data);
 	                  
    					     result = result + '<div id="accordion-sl" class="release-jobs">';
-                    	 result = result + '<h2  class="active">Offer</h2>';
+                    	 result = result + '<h2  class="active">Offer :<span>'+json.offerStatus+' </span></h2>';
                     	 result = result + '<div class="content clearfix">';
                     	 result = result + '<div class="interview-type">';
 

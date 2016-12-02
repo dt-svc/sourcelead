@@ -669,16 +669,16 @@ $(document).ready(function () {
                 <label class="col-md-3">Approver1<span class="text-danger">*</span></label>
                 <div class="col-md-9">   
                     <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required" data-validation-optional="true" onchange="getLevel2Approvers();">
-                        <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' &&  requirement.requirementSubmissionStatus == 'ONHOLD'}">
+                        <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
 	                       <option disabled>Select Approver</option>
 	                       <c:forEach var="report" items="${approverList}">
-			                    <option value="${report.id}"   >${report.firstName}&nbsp;${report.lastName}</option>
+			                    <option value="${report.id}"    disabled="disabled">${report.firstName}&nbsp;${report.lastName}</option>
 			               </c:forEach>
 		               </c:if>
-		               <c:if test="${requirement.requirementSubmissionStatus != 'OPEN' ||  requirement.requirementSubmissionStatus != 'ONHOLD'}">
+		               <c:if test="${requirement.requirementSubmissionStatus != 'OPEN' &&  requirement.requirementSubmissionStatus != 'ONHOLD'}">
 	                       <option disabled>Select Approver</option>
 	                       <c:forEach var="report" items="${approverList}">
-			                    <option value="${report.id}"    disabled="disabled" >${report.firstName}&nbsp;${report.lastName}</option>
+			                    <option value="${report.id}"    >${report.firstName}&nbsp;${report.lastName}</option>
 			               </c:forEach>
 		               </c:if>
                     </select>
@@ -688,16 +688,16 @@ $(document).ready(function () {
 	            <label class="col-md-3 mt">Approver2<span class="text-danger">*</span></label>
 	            <div class="col-md-9 mt">
 	              		<select   class="chosen-select form-control" id="sequentialApprover2" name="sequentialApprover2" field-name="Approver 2" data-validation="required" data-validation-optional="true">
-                       <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' &&  requirement.requirementSubmissionStatus == 'ONHOLD'}">
+                       <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
 	                       <option disabled>Select Approver</option>
 	                       <c:forEach var="report" items="${approverList}">
-			                    <option value="${report.id}"   >${report.firstName}&nbsp;${report.lastName}</option>
+			                    <option value="${report.id}" disabled="disabled"   >${report.firstName}&nbsp;${report.lastName}</option>
 			               </c:forEach>
 		               </c:if>
-		               <c:if test="${requirement.requirementSubmissionStatus != 'OPEN' ||  requirement.requirementSubmissionStatus != 'ONHOLD'}">
+		               <c:if test="${requirement.requirementSubmissionStatus != 'OPEN' &&  requirement.requirementSubmissionStatus != 'ONHOLD'}">
 	                       <option disabled>Select Approver</option>
 	                       <c:forEach var="report" items="${approverList}">
-			                    <option value="${report.id}"    disabled="disabled" >${report.firstName}&nbsp;${report.lastName}</option>
+			                    <option value="${report.id}"    >${report.firstName}&nbsp;${report.lastName}</option>
 			               </c:forEach>
 		               </c:if>
 	                    </select>
