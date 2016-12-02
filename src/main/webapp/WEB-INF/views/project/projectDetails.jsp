@@ -12,7 +12,6 @@
 <script>
 	function projectDetails(projectId) {
 		var sourceleadUrl = '${sourceleadUrl}';
-	            alert(projectId);
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+ projectId,
