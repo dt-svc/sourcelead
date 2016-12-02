@@ -661,7 +661,7 @@ $(document).ready(function () {
 		                    <option value="${report.id}" disabled="disabled"  >${report.firstName}&nbsp;${report.lastName}</option>
 		               </c:forEach>
 		               </c:if>
-		               <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' &&  requirement.requirementSubmissionStatus == 'ONHOLD'}">
+		               <c:if test="${requirement.requirementSubmissionStatus != 'OPEN' &&  requirement.requirementSubmissionStatus != 'ONHOLD'}">
                        <option disabled>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
 		                    <option value="${report.id}"   >${report.firstName}&nbsp;${report.lastName}</option>
