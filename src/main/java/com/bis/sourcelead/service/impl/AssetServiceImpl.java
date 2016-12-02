@@ -1,13 +1,20 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.dao.AssetDao;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.AssetCategory;
+import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AssetService;
 
 @Service
@@ -19,6 +26,11 @@ public class AssetServiceImpl implements AssetService{
 	@Override
 	public Asset saveAsset(Asset asset) throws Exception {
 		return assetDao.saveAsset(asset);
+	}
+	
+	
+	protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
 	}
 	
 	/**
@@ -90,6 +102,81 @@ public class AssetServiceImpl implements AssetService{
 	@Override
 	public List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception {
 		return assetDao.getAssetListByLocationId(orgLocationId);
+	}
+	
+	
+	@Override
+	public void saveAssetDetails(JSONObject jsonObj, User user, OrgLocations orgLocations,
+			MultipartHttpServletRequest request) throws Exception {
+		
+		Asset asset = new Asset();
+		
+		 if(jsonObj.has("sno") && !isNullOrEmpty(jsonObj.getString("sno"))){
+			 asset.setSlno(jsonObj.getString("sno"));
+		 }
+		 
+		 if(jsonObj.has("make") && !isNullOrEmpty(jsonObj.getString("make"))){
+			 asset.setMake(jsonObj.getString("make"));
+		 }
+		 
+		 if(jsonObj.has("model") && !isNullOrEmpty(jsonObj.getString("model"))){
+			 asset.setModel(jsonObj.getString("model"));
+		 }
+		 
+		 if(jsonObj.has("name") && !isNullOrEmpty(jsonObj.getString("name"))){
+			 asset.setName(jsonObj.getString("name"));
+		 }
+		 
+		 if(jsonObj.has("memory") && !isNullOrEmpty(jsonObj.getString("memory"))){
+			 asset.setMemory(jsonObj.getString("memory"));
+		 }
+		 
+		 if(jsonObj.has("cpu") && !isNullOrEmpty(jsonObj.getString("cpu"))){
+			 asset.setCpu(jsonObj.getString("cpu"));
+		 }
+		 
+		 if(jsonObj.has("harddisk") && !isNullOrEmpty(jsonObj.getString("harddisk"))){
+			 asset.setHardDisk(jsonObj.getString("harddisk"));
+		 }
+		 
+		 if(jsonObj.has("monitor") && !isNullOrEmpty(jsonObj.getString("monitor"))){
+			 asset.setMonitor(jsonObj.getString("monitor"));
+		 }
+		 
+		 if(jsonObj.has("category") && !isNullOrEmpty(jsonObj.getString("category"))){
+			 String[] category = jsonObj.getString("category").split(",");
+			 AssetCategory assetCategory = new AssetCategory();
+			 assetCategory.setId(Long.valueOf(category[1]));
+			 asset.setAssetCategory(assetCategory);
+		 }
+		 
+		 if(jsonObj.has("workingStatus") && !isNullOrEmpty(jsonObj.getString("workingStatus"))){
+			 asset.setWorkingStatus(jsonObj.getString("workingStatus"));
+		 }
+		 
+		 if(jsonObj.has("shiftAEmp") && !isNullOrEmpty(jsonObj.getString("shiftAEmp"))){
+			 Employees shiftAEmp = new Employees();
+			 shiftAEmp.setId(Long.parseLong(jsonObj.getString("shiftAEmp")));
+			 asset.setShiftAEmployee(shiftAEmp);
+		 }
+		 
+		 if(jsonObj.has("shiftBEmp") && !isNullOrEmpty(jsonObj.getString("shiftBEmp"))){
+			 Employees shiftBEmp = new Employees();
+			 shiftBEmp.setId(Long.parseLong(jsonObj.getString("shiftBEmp")));
+			 asset.setShiftBEmployee(shiftBEmp);
+		 }
+		 
+		 if(jsonObj.has("description") && !isNullOrEmpty(jsonObj.getString("description"))){
+			 asset.setDescription(jsonObj.getString("description"));
+		 }
+		 asset.setOrgLocations(orgLocations);
+		 asset.setCreatedBy(user.getUserCode());
+		 asset.setCreatedDate(new Date());
+		 asset.setUpdatedBy(user.getUserCode());
+		 asset.setUpdatedDate(new Date());
+		 asset.setStatus(1);
+		 
+		 assetDao.saveAsset(asset);		 
 	}
 
 }

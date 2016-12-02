@@ -33,7 +33,11 @@ public class Asset implements Serializable{
 	
 	
 	@Column(name = "SL_NO")
-	private Integer slno;
+	private String slno;
+	
+	
+	@Column(name = "NAME")
+	private String name;
 	
 	
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -139,12 +143,22 @@ public class Asset implements Serializable{
 		this.id = id;
 	}
 
-	public Integer getSlno() {
+	
+
+	public String getSlno() {
 		return slno;
 	}
 
-	public void setSlno(Integer slno) {
+	public void setSlno(String slno) {
 		this.slno = slno;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public AssetCategory getAssetCategory() {

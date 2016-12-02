@@ -60,7 +60,7 @@ $(document).ready(function(){
           <!-- Add Asset Popup -->
           <div class="collapse-div-adduser pop-div col-md-12 assetaddpop">
           <div id="loading"></div>
-          <form:form id="addAsset_form"  name="addAsset_form" method="post"> 
+          <form:form id="addAsset_form"  name="addAsset_form" method="post" enctype='multipart/form-data'> 
            <i class="fa fa-close close-div" onclick="flushAsset();"></i>
 			  <div class="clearfix">
             <div class="clearfix assetaddpop-ul col-md-6">
@@ -119,11 +119,11 @@ $(document).ready(function(){
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                         <input type="file" style="display: none;" multiple id="attachment" class="upload">
                         </b> </label>
-                      <input type="text" class="form-control" name="attachment" readonly id="uploadFile-attachment" placeholder="Files are not selected...">
+                      <input type="text" type="file" class="form-control" name="attachment" readonly id="uploadFileAttachment" placeholder="Files are not selected...">
                     </div>
                   </div>
                   <div class="col-md-6">
-                    <textarea class="form-control" rows="2" placeholder="Description"></textarea>
+                    <textarea class="form-control" rows="2" name="description" placeholder="Description"></textarea>
                   </div>
                 </div>
                 <!-- Shift A Fields -->
@@ -134,7 +134,7 @@ $(document).ready(function(){
                 <div class="clearfix mb10">
                   <div class="col-md-6">
                     <select class="form-control chosen-select" id="shiftAEmp" name="shiftAEmp">
-                      <option selected>-Select Employee-</option>
+                      <option selected value="">-Select Employee-</option>
                       <c:forEach var="option" items="${employeesList}">
 					     <option value="${option.id}">${option.user.firstName} ${option.user.lastName}</option>
 					  </c:forEach>
@@ -145,7 +145,7 @@ $(document).ready(function(){
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                         <input type="file" style="display: none;" multiple id="uploadBtn-dskA" class="upload">
                         </b> </label>
-                      <input type="text" class="form-control" name="shiftAAttachment" readonly id="uploadFile-dskA" placeholder="Files are not selected...">
+                      <input type="text" type="file" class="form-control" name="shiftAAttachment" readonly id="uploadFileShiftA" placeholder="Files are not selected...">
                     </div>
                   </div>
                 </div>
@@ -160,7 +160,7 @@ $(document).ready(function(){
                 <div class="clearfix mb10">
                   <div class="col-md-6">
                     <select class="form-control chosen-select" id="shiftBEmp" name="shiftBEmp">
-                      <option selected>-Select Employee-</option>
+                      <option selected value="">-Select Employee-</option>
                       <c:forEach var="option" items="${employeesList}">
 					     <option value="${option.id}">${option.user.firstName} ${option.user.lastName}</option>
 					  </c:forEach>
@@ -171,7 +171,7 @@ $(document).ready(function(){
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                         <input type="file" style="display: none;" multiple id="uploadBtn-dskB" class="upload">
                         </b> </label>
-                      <input type="text" class="form-control"  name="shiftBAttachment" readonly id="uploadFile-dskB" placeholder="Files are not selected...">
+                      <input type="text" type="file" class="form-control"  name="shiftBAttachment" readonly id="uploadFileShiftB" placeholder="Files are not selected...">
                     </div>
                   </div>
                 </div>
@@ -532,10 +532,9 @@ var validationSettings = {
           	            processData: false,
           	            contentType:false,
               	        dataType : 'json',
-	     		    	 url: sourceleadUrl+"/addAssets?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-	     		        success: function(data) {
-	     		        	if(data != null && data != ''){
-	     	   	        		var json = JSON.parse(data);
+	     		    	 url: sourceleadUrl+"/addCategoryAssets?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+	     		        success: function(result) {
+	     		        	if(result == 'home'){
 	     	   	        	    location.replace(sourceleadUrl+ "/assetManagement");
 	     		        	}
 	     			        
@@ -657,7 +656,7 @@ var validationSettings = {
 </script> 
   
   
-  <script>
+   <script>
   function assetCategory(category){
 	  var selectedCategory = category.value;
 	  var  assestCategory = selectedCategory.split(",");
@@ -713,6 +712,7 @@ var validationSettings = {
 	  document.getElementById("shiftBDetails").style.display="";
   }
   </script>
+  
   
   
    <!-- <script> 
@@ -989,25 +989,19 @@ $(".addcon-pop").click(function(){
  });
 
  
-    //upload file script -laptop-shiftA
-     document.getElementById("uploadBtn-lapA").onchange = function () {
-     $('#uploadFile-lapA').val($(this).val().replace(/C:\\fakepath\\/i, ''))
-     };
-	
-	//upload file script -laptop-shiftB
-     document.getElementById("uploadBtn-lapB").onchange = function () {
-     $('#uploadFile-lapB').val($(this).val().replace(/C:\\fakepath\\/i, ''))
-     };
-    //upload file script -Desktop-shiftA
-     document.getElementById("uploadBtn-dskA").onchange = function () {
-     $('#uploadFile-dskA').val($(this).val().replace(/C:\\fakepath\\/i, ''))
-     };
-	
-	//upload file script -Desktop-shiftB
-     document.getElementById("uploadBtn-dskB").onchange = function () {
-     $('#uploadFile-dskB').val($(this).val().replace(/C:\\fakepath\\/i, ''))
-     };
+//upload file script -Desktop-shiftA
+ document.getElementById("uploadBtn-dskA").onchange = function () {
+ $('#uploadFileShiftA').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+ };
 
+//upload file script -Desktop-shiftB
+ document.getElementById("uploadBtn-dskB").onchange = function () {
+ $('#uploadFileShiftB').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+ };
+ 
+ document.getElementById("attachment").onchange = function () {
+	 $('#uploadFileAttachment').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+  };
 	
 	</script>
 <div class="clearfix mb10 hidden">
