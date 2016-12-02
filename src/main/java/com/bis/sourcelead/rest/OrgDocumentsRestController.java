@@ -168,7 +168,7 @@ public class OrgDocumentsRestController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasRole('ROLE_DOWNLOAD_VENODR_DOCS','ROLE_DOWNLOAD_CLIENT_DOCS')")
+	@PreAuthorize("hasAnyRole('ROLE_DOWNLOAD_VENODR_DOCS','ROLE_DOWNLOAD_CLIENT_DOCS')")
 	@RequestMapping(value = "/downloadOrgDocument", method = RequestMethod.GET)
     public void downloadResume(@RequestParam(value="docId", required=false) String docId ,HttpServletResponse response) throws Exception {
 		
