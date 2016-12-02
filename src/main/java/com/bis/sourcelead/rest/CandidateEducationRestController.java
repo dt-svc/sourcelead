@@ -16,12 +16,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
-import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -52,6 +53,9 @@ public class CandidateEducationRestController {
 	
 	@Autowired
 	LookUpDataService lookUpDataService;
+	
+	@Autowired
+	private CandidateService candidateService;
 
 
 	 /**
@@ -80,7 +84,8 @@ public class CandidateEducationRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
 		candidateEducationService.storeCandidateEducation(jsonObject,Long.parseLong(candidateId),loginOrgLocation.getId(), user);
-		SourceLeadSessionManager.setSessionAttribute(request, "addEducation", "New Education added for Candidate ");
+		Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
+		SourceLeadSessionManager.setSessionAttribute(request, "addEducation", "New Education added for "+candidate.getFirstName()+" ");
 		return "success";
 	}
 	

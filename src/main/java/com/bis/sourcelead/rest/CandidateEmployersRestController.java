@@ -14,14 +14,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEmployersService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -49,6 +48,8 @@ public class CandidateEmployersRestController {
 	private CommonUtil commonUtil;
 
 	
+	@Autowired
+	private CandidateService candidateService;
 
 	/*------------Create a Candidate Employers details--------------------------------*/
 	
@@ -80,7 +81,8 @@ public class CandidateEmployersRestController {
 		String json1 = "{"+json+"}";
 		JSONObject jsonObject = new JSONObject(json1);
 	    candidateEmployersService.storeCandidateEmployers(jsonObject,users,loginOrgLocation,candidateId);
-		SourceLeadSessionManager.setSessionAttribute(request, "addExep", "New Employer added for Candidate ");
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		SourceLeadSessionManager.setSessionAttribute(request, "addExep", "New Employer added for "+candidate.getFirstName()+" ");
 
 		return json;
 	}

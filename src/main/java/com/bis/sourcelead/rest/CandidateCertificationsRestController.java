@@ -15,11 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
-import com.bis.sourcelead.entity.CandidateEmployers;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCertificationsService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -35,6 +34,9 @@ public class CandidateCertificationsRestController {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	private CandidateService candidateService;
 	 
 	
 	/**
@@ -59,8 +61,8 @@ public class CandidateCertificationsRestController {
 		String json1 = "{"+json+"}";
 		JSONObject jsonObject = new JSONObject(json1);
 		candidateCertificationsService.storeCandidateCertifications(jsonObject,users,loginOrgLocation,candidateId);
-		
-		SourceLeadSessionManager.setSessionAttribute(request, "addCertification", "New Certification added for Candidate ");
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		SourceLeadSessionManager.setSessionAttribute(request, "addCertification", "New Certification added for "+candidate.getFirstName()+" ");
 		
 		return json;
 	 }

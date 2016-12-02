@@ -104,7 +104,7 @@ public class CandidateResumeRestController {
 			if(resumeId != null && !"null".equalsIgnoreCase(resumeId)){
 				SourceLeadSessionManager.setSessionAttribute(request, "editResume", "Resume details updated");
 			}else{
-				SourceLeadSessionManager.setSessionAttribute(request, "addResume", "New Resume added for Candidate");
+				SourceLeadSessionManager.setSessionAttribute(request, "addResume", "New Resume added for "+candidate.getFirstName()+"");
 				
 			}
 			
