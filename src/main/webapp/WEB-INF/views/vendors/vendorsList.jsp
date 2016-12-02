@@ -24,6 +24,12 @@ overflow-x: auto;
     <!-- Content Area -->
       <section class="content-wraper">
         <section class="content-header clearfix">
+        <div id="msgDiv" ></div>
+		<c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector1" style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
           <div class="pull-left">
             <h2>Vendors<span class="select-fild">
                 	<select id="listOfVendors" onchange="listChange(this);">
@@ -1194,3 +1200,12 @@ function exportVendorContactToExcel(){
 	window.location.href = sourceleadUrl+"/exportVendorContactLists?${_csrf.parameterName}=${_csrf.token}&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus+"&exportType=xls";
 }
 </script>
+
+<!-- Show success message after form submission script -->
+<script>
+	function msgFadein() {
+	    setTimeout(function(){ 
+	    	$('#selector1').fadeOut('slow'); }, 300);
+	}
+</script> 
+<!-- End -->

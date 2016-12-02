@@ -107,7 +107,7 @@ public class VendorRestController {
 				OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(jsonObj.getString("email"), Long.parseLong(orgRelationId), ownerUser.getId());
 			     if(orgSpoc == null){*/
 			    	orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId,responderType,org);
-					SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg","Successfully you have created a client");
+					SourceLeadSessionManager.setSessionAttribute(request, "clientContactCreateMsg","Success !! New contact added.");
 			    /*}
 			} */
 		}

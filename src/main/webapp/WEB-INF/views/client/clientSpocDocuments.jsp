@@ -8,6 +8,7 @@
 function clientSpocDocuments(orgRelationId,clientLocationId,spocName,userId){
 	var result = "";
 	result = result  +'<div class="timesheet_head">';
+	result  = result + '   <div id="msgDiv" ></div>';
 	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
 	    result = result + '<ul>';
 	    '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_CLIENT_CONTACT_DOCUMENT\')">';
@@ -48,6 +49,18 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
              			 location.replace(sourceleadUrl+"/errorPage");
              		 }
              		 else{
+             			 var json = JSON.parse(data);
+             			for (var i = 0; i < 1; i++) { 
+             				var val= json[i];
+             				var opt = "";
+             					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+	             					opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
+	             					opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+	             					opt  = opt + '</div>';
+             						}
+             					$("#msgDiv").empty();
+             					$("#msgDiv").append(opt);
+             				}
 	                	 $("#spocDocumentsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='clientSpocDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -64,7 +77,6 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
@@ -127,6 +139,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                     result = result +"</table>";
 	                     $("#spocDocumentsList").append(result); 
 	                     spocDocumentpagination(); 
+	                     msgFadein();
 			    	} 
                }else{
 	    	         var result ="";
@@ -584,3 +597,12 @@ function manageDates() {
 	  }
   } 
 </script>
+
+<!-- Show success message after form submission script -->
+<script>
+	function msgFadein() {
+	    setTimeout(function(){ 
+	    	$('#selector1').fadeOut('slow'); }, 500);
+	}
+</script> 
+<!-- End -->

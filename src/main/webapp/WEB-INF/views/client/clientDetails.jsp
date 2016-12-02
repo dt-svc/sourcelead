@@ -13,6 +13,12 @@
 						var state = "";
 						var country = "";
 						
+						if(json.msg != null && json.msg != "" && json.msg != 'undefined'){
+							result = result+ '<div class="success_pop" id="selector1" style="display: block;">';
+							result = result+ ' <i class="fa fa-check-circle"></i><span>'+json.msg+'</span>';
+							result = result+ '</div>';
+						}
+						
 						result = result+ '<div class="project_tabs_inn_table">';
                         
 						result = result + '<div class="project_details">';
@@ -112,7 +118,7 @@
 											"display", "none");
 									$(tab).fadeIn();
 								});
-
+						msgFadeIn();
 					}
 				});
 	}
@@ -536,3 +542,12 @@ function getCities(){
 	}
 }
 </script>
+
+<!-- Show success message after form submission script -->
+<script>
+	function msgFadeIn() {
+	    setTimeout(function(){ 
+	    	$('#selector1').fadeOut('slow'); }, 500);
+	}
+</script> 
+<!-- End -->

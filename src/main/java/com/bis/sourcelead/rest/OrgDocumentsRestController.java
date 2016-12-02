@@ -78,6 +78,12 @@ public class OrgDocumentsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		orgDocumentsService.saveDocument(jsonObj,multiFile,responderLocationId,docId, orgLocation,user, sourceType);
+		if(docId.equalsIgnoreCase("null")){
+			SourceLeadSessionManager.setSessionAttribute(request, "addDocument", "Success !! New document added.");
+		}else{
+			SourceLeadSessionManager.setSessionAttribute(request, "editDocument", "Success!! Document details updated.");
+		}
+		
 		return "success";
 
 	} 	
@@ -97,8 +103,23 @@ public class OrgDocumentsRestController {
 
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 String resultJson;
+		 String resultJson , msg="" ;
 		 List<OrgDocuments> clientDocumentsList = orgDocumentsService.getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long.valueOf(responderLocationId), user.getId(), loginOrgLocation.getId(), sourceType);
+		 for(OrgDocuments orgDocuments :clientDocumentsList){
+			 msg = (String) SourceLeadSessionManager.getSessionAttribute(request,"addDocument");
+			 if(msg == null){
+				 msg = (String) SourceLeadSessionManager.getSessionAttribute(request,"editDocument");
+			 }
+			 if(msg == null){
+				 msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "deleteDocument");
+			 }
+			 if(msg != null){
+				 orgDocuments.setMsg(msg);
+			 }
+				 SourceLeadSessionManager.removeSessionAttribute(request, "addDocument");
+				 SourceLeadSessionManager.removeSessionAttribute(request, "editDocument");
+				 SourceLeadSessionManager.removeSessionAttribute(request, "deleteDocument");
+		 }
 		 resultJson = commonUtil.toJSON(clientDocumentsList);
 		 return resultJson;
 	}	
@@ -208,9 +229,25 @@ public class OrgDocumentsRestController {
 	public String getclientDocumentsListByResponderLocationIdAndSpocUserId(@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 			@RequestParam(value = "userId", required = false) String spocUserId,HttpServletRequest request) throws Exception {
 
+		String msg = "";
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 String resultJson;
 		 List<OrgDocuments> clientDocumentsList = orgDocumentsService.getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(Long.valueOf(responderLocationId), loginOrgLocation.getId(),Long.valueOf(spocUserId));
+		 for(OrgDocuments orgDocuments : clientDocumentsList){
+			 msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addDocument");
+			 if(msg == null){
+				 msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editDocument");
+			 }
+			 if(msg == null){
+				 msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "deleteDocument");
+			 }
+			 if(msg != null){
+				 orgDocuments.setMsg(msg);
+			 }
+			 SourceLeadSessionManager.removeSessionAttribute(request, "addDocument");
+			 SourceLeadSessionManager.removeSessionAttribute(request, "editDocument");
+			 SourceLeadSessionManager.removeSessionAttribute(request, "deleteDocument");
+		 }
 		 resultJson = commonUtil.toJSON(clientDocumentsList);
 		 return resultJson;
 	}	
@@ -238,6 +275,7 @@ public class OrgDocumentsRestController {
 			orgDocument.setUpdatedBy(user.getUserCode());
 			orgDocument.setUpdatedDate(commonUtil.currentDate());
 			orgDocumentsService.updateDocumnet(orgDocument);
+			SourceLeadSessionManager.setSessionAttribute(request, "deleteDocument", ""+orgDocument.getDocName()+" removed.");
 		}
 		return "success";
 	}

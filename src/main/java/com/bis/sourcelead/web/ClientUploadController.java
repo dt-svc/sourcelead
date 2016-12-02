@@ -124,6 +124,7 @@ public class ClientUploadController {
 		}else{
 			return "upload/uploadClientForm";
 		}
+		SourceLeadSessionManager.setSessionAttribute(request, "clientImport", "Success!! New clients created ");
 		return "redirect:/clientDashboard";
 		
 	}

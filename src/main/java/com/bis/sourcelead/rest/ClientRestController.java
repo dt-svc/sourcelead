@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -215,13 +216,14 @@ public class ClientRestController {
 					}
 					
 					clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
-				 	
-					SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg",
-							"Successfully you have created a client");
-
+				 	if(responderType.equalsIgnoreCase("Vendor")){
+				 		SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg",
+								"Success!! New Vendor created");
+				 	}else if(responderType.equalsIgnoreCase("Client")){
+				 		SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg",
+								"Success!! New client created");
+				 	}
 					return "clientDashboard";
-				
-				
 			} 
 		
 		
@@ -325,12 +327,18 @@ public class ClientRestController {
 	@PreAuthorize("hasRole('ROLE_VIEW_VENDOR_CONTACT')")
 	@RequestMapping(value = "/getOrgSpocsList", method = RequestMethod.POST)
 	@ResponseBody String getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+		String msg = "";
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId());
 		if(orgSpocsList != null){
 			for(OrgSpoc orgSpoc : orgSpocsList){
+				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientContactCreateMsg");
+				if(msg != null && msg != ""){
+					orgSpoc.setMsg(msg);
+					SourceLeadSessionManager.removeSessionAttribute(request, "clientContactCreateMsg");
+				}
 				String ownerLastName = "";
 				if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getLastName() != null){
 					ownerLastName = orgSpoc.getOwnerUser().getLastName();
@@ -505,8 +513,10 @@ public class ClientRestController {
 	        if(orgSpoc !=  null){
 	        	if(invitationStaus != null && "Accepted".equals(invitationStaus)){
 	        		orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
+	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Success !! Accepted the invitation.");
 	        	}else if(invitationStaus != null && "Rejected".equals(invitationStaus)){
 	        		orgSpoc.setInvitationStatus(Constants.MAIL_REJECTED);
+	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Rejected the invitation.");
 	        	}
 	        	orgSpocService.addOrgSpoc(orgSpoc);
 	        }
@@ -532,6 +542,12 @@ public class ClientRestController {
 		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
 		     List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
 		     orgSpoc.setUserList(userList);
+		     String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editSpocMsg");
+		     if(msg != null && msg != ""){
+		    	 orgSpoc.setMsg(msg);
+		    	 SourceLeadSessionManager.removeSessionAttribute(request, "editSpocMsg");
+		     }
+		     
 		 return commonUtil.toJSON(orgSpoc);
 		}
 
@@ -554,6 +570,7 @@ public class ClientRestController {
 	       String json1 = "{" + json + "}";
 	       JSONObject jsonObj = new JSONObject(json1);
 	       clientService.updateClientDetails(jsonObj, orgRelationId,clientLocationId, orgLocation.getId());
+	       SourceLeadSessionManager.setSessionAttribute(request, "editClient","Success !! "+jsonObj.getString("clientName")+" details updated.");
 
 		return "success";
 	}
@@ -625,7 +642,11 @@ public class ClientRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId(orgLocationId,orgRelationId,orgLocation.getId());
-		
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editClient");
+		if(msg != null && msg != ""){
+			orgRelation.setMsg(msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "editClient");
+		}
 		String resultJson;
 		resultJson = commonUtil.toJSON(orgRelation);
 		return resultJson;
@@ -690,7 +711,9 @@ public class ClientRestController {
 	       JSONObject jsonObj = new JSONObject(jsonVal);
 	       User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	       clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation);
+	       OrgSpoc orgSpoc = clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation);
+	       
+	       SourceLeadSessionManager.setSessionAttribute(request, "editSpocMsg",	"Success !! "+orgSpoc.getSpocUser().getFirstName()+" details updated.");
 
 		return jsonObj.getString("owner");
 	}
@@ -702,10 +725,17 @@ public class ClientRestController {
 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
-	    String resultJson;
+	    String resultJson , msg="" ;
 	    
 	    List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(loginUser.getId(),orgLocations.getId(), "Vendor",status,clientIds,invitationStatus);
-		resultJson = commonUtil.toJSON(vandorsContactListByOrgLocationId);
+	    for(OrgSpoc orgSpoc :vandorsContactListByOrgLocationId){
+			 msg = (String) SourceLeadSessionManager.getSessionAttribute(request,"acceptContact");
+			 if(msg != null){
+				 orgSpoc.setMsg(msg);
+				 SourceLeadSessionManager.removeSessionAttribute(request, "acceptContact");
+			 }
+		 }
+	    resultJson = commonUtil.toJSON(vandorsContactListByOrgLocationId);
 		return resultJson;
 	}
 	

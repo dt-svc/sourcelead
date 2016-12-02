@@ -26,6 +26,7 @@ function clientContacts(orgRelationID,clientLocationId){
 	
 	var result = "";
 	result = result  +'<div class="timesheet_head">';
+	result  = result + '   <div id="msgDiv" ></div>';
 	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
 	    result = result + '<ul>';
 	    '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_CLIENT_CONTACT\')">';
@@ -62,6 +63,17 @@ function clientContacts(orgRelationID,clientLocationId){
 	        success: function(data) {
 	        	
 	        var json = JSON.parse(data);
+	        for (var i = 0; i < 1; i++) { 
+ 				var val= json[i];
+ 				var opt = "";
+ 					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+     					opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
+     					opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+     					opt  = opt + '</div>';
+ 						}
+ 					$("#msgDiv").empty();
+ 					$("#msgDiv").append(opt);
+ 				}
 	      
     		if(json.length != null && json.length != ''){
     			$("#clientContactList").empty();
@@ -199,6 +211,7 @@ function clientContacts(orgRelationID,clientLocationId){
 			    result = result + '</div>';
 			    $("#clientContactList").append(result); 
 	    	    contactPagination();
+	    	    msgFadein();
     		}else{
     			 var result ="";
 	    	     result = result+"   <div class='row'>"; 
@@ -765,3 +778,11 @@ function validateEmail(orgRelationID){
 	}
 }
 </script>
+<!-- Show success message after form submission script -->
+<script>
+	function msgFadein() {
+	    setTimeout(function(){ 
+	    	$('#selector1').fadeOut('slow'); }, 500);
+	}
+</script> 
+<!-- End -->

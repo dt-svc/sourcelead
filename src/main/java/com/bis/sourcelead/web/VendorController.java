@@ -95,7 +95,13 @@ public class VendorController {
 		}
 		model.addObject("vendor_list", vendorsList);
         model.addObject(vendorsList);
-		
+        
+        String msg = "";
+		msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "vendorCreateMsg");
+		if(msg != null && !"".equals(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "vendorCreateMsg");
+		}
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
