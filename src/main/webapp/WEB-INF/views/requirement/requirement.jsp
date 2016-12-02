@@ -386,6 +386,8 @@ $(document).ready(function () {
                 </select>
               </div>
             </div>
+            
+            
          
           <div class="form-group">
             <input type="hidden" name="templateId" id="templateId" value="" />

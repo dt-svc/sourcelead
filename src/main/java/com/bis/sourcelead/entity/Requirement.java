@@ -58,7 +58,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "POSITIONS")
 	private String positions;
 	
-	@Column(name = "EDUCATION")
+	@Column(name = "EDUCATION", columnDefinition = "TEXT default NULL")
 	private String education;
 	
 	@Column(name = "MIN_EXP")
@@ -85,7 +85,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "CITY")
 	private String city;
 	
-	@Column(name = "SKILLS")
+	@Column(name = "SKILLS", columnDefinition = "TEXT default NULL")
 	private String skills;
 	
 	@Column(name = "DESCRIPTION" , columnDefinition = "TEXT default NULL")
