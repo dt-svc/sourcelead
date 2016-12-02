@@ -376,7 +376,15 @@ public class RequirementServiceImpl implements RequirementService {
 					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
 				}
 				if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval")){
-					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED);
+					
+					if(requirement.getId() != null){
+							if(requirement.getRequirementSubmissionStatus().equals("OPEN")){
+								requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+							}
+					}else{
+						requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED);
+					}
+					
 				}
 				
 			}
