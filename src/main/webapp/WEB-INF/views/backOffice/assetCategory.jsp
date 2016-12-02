@@ -14,6 +14,15 @@
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 
 
+
+<script src="resources/js/chosen.jquery.min.js"></script> 
+<script src="resources/js/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <script>
 $(document).ready(function(){
 	getAssetCategoryList();
@@ -32,8 +41,11 @@ $(document).ready(function(){
   <div class="vendor_wrap">
     <div class="timesheet_head">
       <ul>
-        <li> <a href="javascript:void(0)" class="addcon-pop"><i class="fa fa-plus"></i>Add Categories</a> 
+        <li> <a href="javascript:void(0)" class="addcon-pop" onClick="addCategoryDoc();"><i class="fa fa-plus"></i>Add Categories</a> 
           <!-- Add Asset Popup -->
+           <div id="popUpDiv"> 
+           </div>
+          <%-- <form role="form"  id="addCategory_form" name="addCategory_form" method="post" > 
           <div class="collapse-div-adduser col-md-4 category"><i class="fa fa-close close-div"></i>
 			  <div class="clearfix mb10"></div>
             <!-- Laption popup div -->
@@ -41,25 +53,27 @@ $(document).ready(function(){
               <div class="form-horizontal clearfix">
                 <div class="clearfix mb10">
                   <div class="col-md-12">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Category Number *">
+                    <input type="text" class="form-control input-sm" field-name="Category name" id="categoryName" data-validation="required validate_Space validate_length length2-100" name="categoryName" placeholder="Category Name *">
                   </div>
                 </div>
                 <div class="clearfix mb10">
                   <div class="col-md-12">
-                    <textarea class="form-control" rows="2" placeholder="Description"></textarea>
+                    <textarea class="form-control" rows="2" placeholder="Description"  data-validation="validate_Space validate_length length5-500" id="description" name="description"></textarea>
                   </div>
                 </div>
 
                 <!-- Shift A Fields -->
                 <div class="clearfix mr">
                   <div class="pull-right">
-                    <button type="submit" class="btn btn-sm btn-primary">Add</button>
+	                 <button type="button" id="update_button" class="btn btn-sm btn-primary pull-right">Update</button>';
+                    <button type="submit" class="btn btn-sm btn-primary" value="Add" name="btnAddPr" id="save_button" onclick="addCategory(null,null);">Add</button>
                     <button type="submit" class="btn btn-sm btn-default ml10">Cancel</button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          </form> --%>
           <!-- Add Category Popup --> 
         </li>
         <li>
@@ -154,7 +168,7 @@ $(document).ready(function(){
 					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+report.description+'</div></td>';
 					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+report.createdUser+'</div></td>';
 					   	result = result +'<td><div class="tbldata-dotdot-vsm" title="'+report.dateStr+'">'+report.dateStr+'</div></td>';
-					   	result = result +'<td><div><i class="glyphicon glyphicon-trash"></i></div></td>';
+					   	result = result +'<td><div ><a href="javascript:void(0)" class="addcon-pop1" onClick="addCategoryDoc();editCategory('+report.orgLocationId+','+report.id+');"><i class="glyphicon glyphicon-pencil" ></i></div></td>';
 			   	        result = result +'</tr>';
 	   				}
 		   	     	
@@ -162,7 +176,10 @@ $(document).ready(function(){
 	   	        	result = result +'</tbody>';
 	   	    	    $("#assetCategoryList").empty();  
 	   	    	    $("#assetCategoryList").append(result)
-	   	    	   
+	   	    	 $(".addcon-pop1").click(function(){
+	   	    		 $(".collapse-div-adduser").toggleClass("show-div");
+	   	    		 $(".collapse-div").removeClass("show-div");
+	   	    	 });
 	   	    	    
 	   		    	
 	   		    }
@@ -178,15 +195,158 @@ $(".addcon-pop").click(function(){
  $(".close-div").click(function(){
 	 $(this).parent().removeClass("show-div");
 	 });
- $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
+ $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div, #save_button").click(function(e){
 	 e.stopPropagation();
  });
- $('html').click(function(){
+ /* $('html').click(function(){
     $(".collapse-div-adduser").removeClass("show-div");
 	$(".collapse-div").removeClass("show-div");
-   });
+   }); */
 	
 	</script>
+
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>
+
+<script type="text/javascript">
+	function addCategory(catLocationId,categoryId){
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			        borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+		         }; 
+			 if ($('#addCategory_form').validate(false, validationSettings)){
+				var frm = $('#addCategory_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+		        con = con.replace(/[{}]/g, "");
+		        var jsonData = encodeURIComponent(con);
+				$("#save_button").attr("disabled", "disabled");
+				$( "#save_button" ).addClass('button').val('Processing..');
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#addCategory_form").attr("disabled", "disabled");
+				
+				//It will escape all the special characters
+				$.ajax({
+						type : "POST",
+						url : sourceleadUrl+"/saveCategory?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&categoryId="+categoryId+"&catLocationId="+catLocationId,
+						success : function(result) {
+							 if( result.indexOf('Sign In') >= 0){
+					    		location.replace(sourceleadUrl);
+					    	 }
+		            		 else if (result.indexOf('exception') >= 0) {
+		            			 location.replace(sourceleadUrl+"/errorPage");
+		            		 }
+		            		 else{
+		            			 document.getElementById("popUpDiv").style.display="none";
+		            			 getAssetCategoryList();
+		            		 }
+						},
+					});
+					return true;
+			 }else{ 
+					return false;
+			 } 
+		}
+		$('body').on('blur', '#addCategory_form', function() {
+		$("#addCategory_form").showHelpOnFocus();
+		$("#addCategory_form").validateOnBlur(false, validationSettings);
+	});
+</script>
+<script>
+function closePopup(){
+	document.getElementById("popUpDiv").style.display="none";
+}
+</script>
+<script>
+function editCategory(catLocationId,categoryId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getCategoryById?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId+"&catLocationId="+catLocationId, 	   
+		    success: function(data) {
+		    	var json = JSON.parse(data);
+		    	if( data.indexOf('Sign In') >= 0){
+	    		location.replace(sourceleadUrl);
+	    	 	}
+    		 else if (data.indexOf('exception') >= 0) {
+    			 location.replace(sourceleadUrl+"/errorPage");
+    		 }
+    		 else{
+    			 $("#save_button").hide();
+    			 $("#update_button").show(); 
+    			 
+    			 
+    			 if(json.categoryName != null && json.categoryName != "undefined" && json.categoryName != ""){
+    				 document.getElementById("categoryName").value = json.categoryName;
+    			 }  			 
+    			 
+    			 if(json.description != null && json.description != "undefined" && json.description != ""){
+    				 document.getElementById("description").value = json.description;
+    			 }
+    			 
+    			 $("#update_button").attr("onclick", "addCategory("+catLocationId+","+categoryId+");");
+    		  }
+		    }
+     }); 
+}
+</script>
+          
+
+<script>
+function addCategoryDoc(){
+	var result = "";
+	result = result  +'<!-- Popup Div -->';
+	result = result  +'	<form role="form"  id="addCategory_form" name="addCategory_form" method="post" > ';
+	result = result  +'	          <div class="collapse-div-adduser col-md-4 category"><i class="fa fa-close close-div" onClick="closePopup();"></i>';
+	result = result  +'				  <div class="clearfix mb10"></div>';
+	result = result  +'	            <!-- Laption popup div -->';
+	result = result  +'	            <div class="clearfix">';
+	result = result  +'              <div class="form-horizontal clearfix">';
+	result = result  +'	                <div class="clearfix mb10">';
+	result = result  +'	                  <div class="col-md-12">';
+	result = result  +'	                    <input type="text" class="form-control input-sm" field-name="Category name" id="categoryName" data-validation="required validate_Space validate_length length2-100" name="categoryName" placeholder="Category Name *">';
+	result = result  +'	                  </div>';
+	result = result  +'	                </div>';
+	result = result  +'	                <div class="clearfix mb10">';
+	result = result  +'	                  <div class="col-md-12">';
+	result = result  +'	                    <textarea class="form-control" rows="2" placeholder="Description"  data-validation="validate_Space validate_length length5-500" id="description" name="description"></textarea>';
+	result = result  +'	                  </div>';
+	result = result  +'	                </div>';
+		
+	result = result  +'	                <div class="clearfix mr">';
+	result = result  +'	                  <div class="pull-right">';
+	result = result  +'		                 <button type="button" id="update_button" style="display: none;" class="btn btn-sm btn-primary pull-right">Update</button>';
+	result = result  +'	                    <button type="submit" class="btn btn-sm btn-primary" value="Add" name="btnAddPr" id="save_button" onclick="addCategory(null,null);">Add</button>';
+	result = result  +'	                    <button type="submit" class="btn btn-sm btn-default ml10" onclick="closePopup();">Cancel</button>';
+	result = result  +'	                  </div>';
+	result = result  +'	                </div>';
+	result = result  +'	              </div>';
+	result = result  +'	            </div>';
+	result = result  +'	          </div>';
+	result = result  +'	          </form>';
+	$("#popUpDiv").empty();
+	$("#popUpDiv").append(result);
+	 document.getElementById("popUpDiv").style.display="block";
+}
+</script>
 
 </body>
 </html>

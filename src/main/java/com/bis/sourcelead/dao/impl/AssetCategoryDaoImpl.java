@@ -76,4 +76,15 @@ public class AssetCategoryDaoImpl implements AssetCategoryDao{
 	}
 
 
+
+	@Override
+	@Transactional
+	public AssetCategory getAssetCategoryListByLocationIdAndCatId(Long catLocationId, Long categoryId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from AssetCategory ac where ac.orgLocations.id = :orgLocationId and ac.status = '1' and ac.id = :categoryId"; 
+		List<AssetCategory> assetCategoryList = session.createQuery(query.toString()).setLong("orgLocationId", catLocationId).setLong("categoryId", categoryId).setCacheable(true).list();
+		return assetCategoryList.get(0);
+	}
+
+
 }
