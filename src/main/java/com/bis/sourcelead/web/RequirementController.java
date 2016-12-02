@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -77,7 +78,7 @@ public class RequirementController {
 	SubmissionTemplateService submissionTemplateService;
 	
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/requirement")
 	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
 		Requirement requirement ;
@@ -210,7 +211,7 @@ public class RequirementController {
 		model.addObject("spocOwnersList", userList);
 		
 		//approver list
-		List<User> approverList = userService.getAllUsersByOrgLocationCodeExcludingEmployees(orgLocations.getId());
+		List<User> approverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_REQUIREMENT));
 		model.addObject("approverList", approverList);
 		
 		//approver list
@@ -229,6 +230,7 @@ public class RequirementController {
 
 	}
 	
+	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
 	@RequestMapping(value = "/requirementSummary")
 	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementId", required=false)Long requirementId) throws Exception {
 		 

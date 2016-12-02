@@ -9,16 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEmployersService;
@@ -70,6 +68,7 @@ public class CandidateEmployersRestController {
 	 * @throws NullPointer
 	 */
 	
+	@PreAuthorize("hasRole('ROLE_ADD_EMPLOYEER')")
 	@RequestMapping(value = "/storeCandidateEmployers", method = RequestMethod.POST)
 	public @ResponseBody String storeCandidateEmployers(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
 
@@ -121,6 +120,8 @@ public class CandidateEmployersRestController {
 	 * 
 	 * @throws Exception
 	 */
+	
+	@PreAuthorize("hasRole('ROLE_DELETE_EMPLOYEER')")
 	@RequestMapping(value = "/removeCandidateEmployerBycandidateIdandCandidateEmployerID")
 	public String removeCandidateEmployerBycandidateIdandCandidateEmployerID(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateemployerId", required = false) Long candidateemployerId,HttpServletRequest request) throws Exception {
 
@@ -145,6 +146,7 @@ public class CandidateEmployersRestController {
 	 * 
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_EMPLOYEER')")
 	@RequestMapping(value = "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId")
 	public String getCandidateEmployerByCandidateIdAndCandidateEmpoyerId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEmpId", required = false) Long candidateEmpId,HttpServletRequest request) throws Exception {
 

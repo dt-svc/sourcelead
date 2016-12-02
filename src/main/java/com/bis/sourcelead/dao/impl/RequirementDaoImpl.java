@@ -20,13 +20,11 @@ import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
-import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -158,7 +156,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 		String whereCondition = subQuery;
 		
-		Query query = session.createQuery(from+" "+whereCondition);
+		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
 		for (String str : query.getNamedParameters())
         {
 			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId") || str.equalsIgnoreCase("managerUserId")){
@@ -325,52 +323,33 @@ public class RequirementDaoImpl implements RequirementDao {
 		Map<String, Object> params = new HashMap<String,Object>();
 		
 		
-		String subQueryRole = "";
+		/*String subQueryRole = "";*/
+		String from = "from Requirement requirement"; 
+		String subQuery = "";
 		if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
-			subQueryRole = "and (requirement.managerUserId.id =:userId OR requirement.createdBy =:userCode)";
+			
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT' ) ";
 			params.put("userId",userId);
-			params.put("userCode",userCode);
-			params.put("orgLocationId",orgLocationId);
+
+			String subQuery2 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			params.put("managerUserId",userId);
+			
+			if(subQuery1 != "" || subQuery2 != ""){
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+")  ) ";
+				params.put("orgLocationId",orgLocationId);
+			}
 		}else{
 			params.put("orgLocationId",orgLocationId);
 		}
 		
 		
-		String from = "from Requirement requirement"; 
-		
-		String subQuery1 = "requirement.createdBy =:loginUserCode";
-		params.put("loginUserCode",user.getUserCode());
-		
-		String subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level ) or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT' ) ";
-		params.put("userId",userId);
-		params.put("level",1);
-		
-		String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2 and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'APPROVED'))  or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) )  and  requirement.requirementSubmissionStatus <>  'DRAFT'  )";
-		params.put("approverUserId",userId);
-		params.put("level1",1);
-		params.put("level2",2);
-		
-		/*String subQuery4 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and requirement.requirementSubmissionStatus = 'APPROVED' ";
-		params.put("userId",userId);*/
-		
-		
-		String subQuery = "";
-		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
-			subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) "+subQueryRole;
-			params.put("orgLocationId",orgLocationId);
-		}
 		String whereCondition = subQuery;
-		
-		Query query = session.createQuery(from+" "+whereCondition);
+		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
 		for (String str : query.getNamedParameters())
         {
-			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId")){
+			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId")){
 				query.setLong(str, (long) params.get( str ));
 			}
-			if(str.equalsIgnoreCase("level") || str.equalsIgnoreCase("level1") || str.equalsIgnoreCase("level2")){
-				query.setInteger(str, (int) params.get( str ));
-			}
-			
 			else{
 				query.setParameter( str, params.get( str ) );
 			}
@@ -443,12 +422,12 @@ public class RequirementDaoImpl implements RequirementDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer validateJobId(Long id,Long orgLocationId) throws Exception {
+	public Integer validateJobId(String id,Long orgLocationId) throws Exception {
 	Session session = this.sessionFactory.getCurrentSession();
 		
 		String query ="select count(*)from Requirement requirement where requirement.jobId = :id and requirement.orgLocationId.id =:orgLocationId";
 		
-		List<Long> jobCount =   session.createQuery(query.toString()).setLong("id", id).setLong("orgLocationId", orgLocationId).list();
+		List<Long> jobCount = session.createQuery(query.toString()).setString("id", id).setLong("orgLocationId", orgLocationId).list();
 			Integer count = 0;
 			if(jobCount != null && !jobCount.isEmpty()){
 					count = jobCount.get(0).intValue();

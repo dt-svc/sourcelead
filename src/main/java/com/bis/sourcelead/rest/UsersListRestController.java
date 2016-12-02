@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -94,6 +95,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	 * @param loginUserRole
 	 * @return
 	 */
+	
+	/* This method is used for landing page of user tab. So, who has user tab access they can see users list. No preAuthorize for this method */
 	@RequestMapping(value = "/getUsersList")
 	@ResponseBody
 	public String getUsersList(HttpServletRequest request,
@@ -180,6 +183,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	  * @return
 	  * @throws Exception
 	  */
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_USER','ROLE_VIEW_USER','ROLE_VIEW_DELETE_USER')")
 	 @RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
 	 public @ResponseBody String getUserDetailsById(HttpServletRequest request, @RequestParam(value="userId", required=false) Long userId) throws Exception{ 
 		 String resultJson = null;   
@@ -206,7 +210,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		 }
 		
 		 
-		 List<User> userList = userService.getManagersByUserIdAndUserRolesAndOrgLocationId(userRole.getUser().getId(), userRole.getUserType(), orgLocations.getId());
+		 List<User> userList = userService.getManagersByUserIdAndUserRolesAndOrgLocationId(userRole.getUser().getId(), userRole.getRoles().getId(), orgLocations.getId());
 		 for (User user : userList) {
 			    UserRole userRole1 = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 				if(userRole1 != null){
@@ -227,6 +231,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	  * @return
 	  * @throws Exception
 	  */
+	 @PreAuthorize("hasRole('ROLE_VIEW_DELETE_USER')")
 	 @RequestMapping(value = "/terminateUser", method = RequestMethod.POST)
 		public @ResponseBody String terminateUser(
 				@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value="reason", required=false) String reason, HttpServletRequest request) throws Exception{
@@ -258,6 +263,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	  * @return
 	  * @throws Exception
 	  */
+	 @PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
 	 @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
 	 @ResponseBody String updateUser(@RequestParam(value="json", required=false) String json,@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value="emailId", required=false) String emailId,HttpServletRequest request) throws Exception{
 
@@ -282,6 +288,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 						User reportingManager = new User();
 						reportingManager.setId(Long.parseLong(jsonObj.getString("reportingManager")));
 						userRole.setReportingManager(reportingManager);
+					}else{
+						userRole.setReportingManager(null);
 					}
 					
 					isUserActive = userRoleService.isUserActive(user.getId());

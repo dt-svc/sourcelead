@@ -4,7 +4,7 @@
      1.usage     : onload
      2.parameter : candidateId.
 --%>
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style>
 #uploadFileGroup p.jquery_form_error_message{
@@ -36,18 +36,23 @@
 <script>
 function candidateResume(candidateId){
 	var result ="";
-	result = result+'	    <div class="project_tabs_inn_head addUser-org">';
+	result = result+'<div class="project_tabs_inn_head addUser-org">';
 	if(window.candidateStatusGlobal == '0'){
-		result = result+'	    	<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
+		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\')">'; 
+		  result = result+'<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
+		'</sec:authorize>';
+		
 	}else{
-		result = result+'	    	<a href="javascript:void(0)" onClick="refreshResumeList('+candidateId+'); addResume('+candidateId+');" class="addUser-org" id="addCandidateResume"><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
+		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\')">';
+		   result = result+'<a href="javascript:void(0)" onClick="refreshResumeList('+candidateId+'); addResume('+candidateId+');" class="addUser-org" id="addCandidateResume"><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
+		'</sec:authorize>';
 	}
-		result = result  +'     <div id="popUpDivResume" class="edit-details col-md-4"> ';
-		result = result  +'     </div>  ';
-		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-		result  = result + '   <div id="resumesList" ></div>';
-		result  = result + '   </div>';
-		result = result+'	    </div>';
+		result = result  +' <div id="popUpDivResume" class="edit-details col-md-4"> ';
+		result = result  +' </div>  ';
+		result  = result + '<div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + ' <div id="resumesList" ></div>';
+		result  = result + '</div>';
+		result = result+'</div>';
 	
     $("#tab-1").empty();
     $("#tab-2").empty(); 
@@ -309,21 +314,21 @@ function addResume(candidateId) {
 					            		createdBy = '----';
 					            	}
 					            	
-					            	result = result+'	          <tr>';
-					           		result = result+'	            <td><div><span>'+title+'</span></div></td>';
-					           		result = result+'	            <td><div><span>'+opt.fileName+'</span></div></td>';
-					           		result = result+'	            <td><div><span title="'+description+'">'+description+'</span></div></td>';
-					           		result = result+'	            <td><div><span>'+createdBy+'</span></div></td>';
-					           		result = result+'	            <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+opt.id+'\"></a>';
+					            	result = result+'<tr>';
+					           		result = result+'<td><div><span>'+title+'</span></div></td>';
+					           		result = result+'<td><div><span>'+opt.fileName+'</span></div></td>';
+					           		result = result+'<td><div><span title="'+description+'">'+description+'</span></div></td>';
+					           		result = result+'<td><div><span>'+createdBy+'</span></div></td>';
+					           		result = result+'<td><div class="tblicons"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+opt.id+'\"></a>';
 					           		if(window.candidateStatusGlobal == 0){
-					           			result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
-						           		result = result+'	            <i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
+					           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
+						           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
 					           		}else{
-					           			result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"></a>';
-						           		result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteResume('+candidateId+','+opt.id+');"></i>';
+					           			result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\')">  <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"></a></sec:authorize>';
+						           		result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\')"><i class="glyphicon glyphicon-trash" onclick="deleteResume('+candidateId+','+opt.id+');"></i></sec:authorize>';
 					           		}
-					           		result = result+'	            </div></td>';
-					           		result = result+'	          </tr>';
+					           		result = result+'</div></td>';
+					           		result = result+'</tr>';
 				             }
 				            result = result+'	          </tbody>';
 				       		result = result+'	      </table>';

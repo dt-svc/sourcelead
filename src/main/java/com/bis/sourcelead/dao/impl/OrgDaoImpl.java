@@ -265,7 +265,7 @@ public class OrgDaoImpl implements OrgDao {
 		
 		String userStateSubQuery = "";
 		if (!isNullOrEmpty(userState)) {
-			userStateSubQuery = "and org.user.id IN(select ur.user.id from UserRole ur where ur.userState = '" + userState + "')";
+			userStateSubQuery = "and org.user.id IN (select userRole.user.id from UserRole userRole where userRole.userState = '" + userState + "')";
 		}
 		
 		String orgNameSubQuery = "";
@@ -292,6 +292,7 @@ public class OrgDaoImpl implements OrgDao {
 		            return isOrgFound;
 	}
 
+
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Org getOrgByOrgName(String orgName) {
@@ -303,3 +304,4 @@ public class OrgDaoImpl implements OrgDao {
 	}
 
 }
+

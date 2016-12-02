@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -205,7 +206,7 @@ public class HomeController {
 	 * @param request
 	 * @return ModelAndView
 	 */
-	
+	@PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
 	 @RequestMapping(value = "/uploadForm")
 		public ModelAndView fileUploadForm(HttpServletRequest request) {
 		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");

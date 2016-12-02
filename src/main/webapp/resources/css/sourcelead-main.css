@@ -16,7 +16,7 @@ body {
 	background-color: #e1e6fa;
 	font-size: 14px;
 	color: #333;
-	font-family: 'Roboto', sans-serif;
+	font-family: 'Roboto', sans-serif  !important;
 	min-height: 100%;
 }
 img {
@@ -3869,6 +3869,27 @@ height:35px !important;
     top: -4px;
     z-index: 9999;
 }
+/*srinivas nov29*/
+.comments-content {
+       margin-left: 2px;
+}
+.comment-by span{
+       display: inline-block !important;
+}
+.comments-div.comments-inner{
+       margin: 10px;
+}
+.comments-inner p.commentText{
+       display: block;
+       width:950px;
+       line-height:20px;
+       height: auto;
+       min-height: 20px;
+}
+.comments-inner .comments-content {
+       width: 965px;
+}
+/*srinivas nov29*/
 .comments-div .commentsimg-inner{
 	width:50px;
 	height:50px;
@@ -4211,8 +4232,9 @@ inst-search .col-md-9{
     top: 5px;
 }
 .instsearch{
-	background: #fff;
+	background: #ccc;
 	padding: 10px 10px;
+	
 	
 }
 .require_wrap_details_cta.require_education{
@@ -4223,10 +4245,11 @@ inst-search .col-md-9{
        margin-top: 5px;
 }
 .assetaddpop {
-right: 20px;
-    top: 25px;
-    width: 650px;
-	}
+right: 20px  !important
+top: 25px  !important
+width: 650px  !important
+position: absolute !important;
+}
 .assetaddpop-ul ul{
 	float:left !important;
 	padding:0 !important;
@@ -4236,7 +4259,7 @@ right: 20px;
 	margin-bottom: 5px !important;
     margin-left: 5px !important;
     padding: 5px !important;
-	float: noe;
+	float: none;
 	clear: both;
 	width: 100%;
 }
@@ -4249,6 +4272,12 @@ right: 20px;
     position: relative;
     top: 2px;
 }
+.assetaddpop .chosen-container .chosen-results{
+	float: none;
+}
+.assetaddpop .chosen-container .chosen-results li{
+	float: none;
+}
 .asstmake {
 	display: none;
 }
@@ -4256,8 +4285,9 @@ right: 20px;
 	width: 100%;
 }
 .category{
-	width:300px;
-	right: 40px;
+	width:300px !important;
+	right: 40px !important;
+	position: absolute !important;
 }
 .inst-search .fa-search {
     font-size: 14px !important;
@@ -4328,13 +4358,16 @@ background: #fdba5b;
 .accountlist-head ul li{
 	list-style-type: none;
 	float: left;
-	padding: 10px 0;
+	margin: 10px 0;
+	padding: 0 10px;
+	border-right: 1px solid #ccc;
 	position: relative;
 }
 .accountlist-head ul li a{
-	border-right: 1px solid #ccc;
 	color: #333;
-	padding: 0 10px;
+}
+.accountlist-head ul li:last-child{
+	border-right: 1px solid #fff;
 }
 .accountlist-head ul li a:hover{
 	color: #909090;
@@ -4433,8 +4466,82 @@ border-radius: 5px;
 import-tranhd  [class*="col-md-"]{
 	padding: 0 10px;
 }
+.timesheet_head.summary_head ul{
+	padding: 0;
+	float: left;
+}
+.timesheet_head.summary_head ul li{
+	margin-top: 0;
+	margin-bottom: 0;
+	float: left;
+}
+.timesheet_head.summary_head ul li:last-child{
+	border-right: 0;
+}
+.summary_head div.approved_pop{
+	left: 0;
+}
+.require_wrap_table.chosen-table{
+  overflow: visible;
+}
+.require_wrap_table.table-ttab {
+  overflow-y: visible;
+}
+.scroll-table .tab-content{
+	overflow-x: auto;
+}
+.tablehead {
+	background-color: #375d81;
+	color: #fff !important;
+	padding: 10px 15px !important;
+}
+.btn.btn-custom{
+ padding: 2px 5px;
+ font-size: 13px;
+}
+.acceptreject-actions {
+	position:absolute;
+	top:0;
+	right:15px;
+}
+.acceptreject-actions ul li{
+	padding:0;
+	cursor: pointer;
+	position: relative;
+}
+.labelsuccess{
+	background: #5cb85c;
+	padding: 5px 8px;
+	color: #fff;
+	border-radius: 3px;
+}
+.labelsuccess:hover{
+	background: #909090;
+}
+.labeldanger:hover{
+	background: #909090;
+}
+.labeldanger{
+	background: #d34836;
+	padding: 5px 10px;
+	border-radius: 3px;
+}
+.acceptreject-pop{
+	width: 300px;
+	background: #fff;
+	position: absolute;
+	top: 30px;
+	right: 0;
+	z-index: 9999;
+	border: 1px solid #ccc;
+	padding: 10px;
+	-webkit-box-shadow: 0 8px 6px -8px #505050;
+	-moz-box-shadow: 0 8px 6px -8px #505050;
+	box-shadow: 0 8px 6px -8px #505050;
+	border-radius: 5px;
+	display: none;
+}
 /* import fiels ends */
-
 .show-reason {
 	position: relative;
 }
@@ -4459,6 +4566,141 @@ import-tranhd  [class*="col-md-"]{
 .show-reason:hover .reason{
 	display:block;
 }
+.success-wraper {
+	background: #e1e6fa;
+	min-height:515px;
+	margin:0 auto;
+	width: 100%;
+}
+.inner-widget {
+	padding:30px;
+	box-sizing:border-box;
+	margin-top:8%;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	-ms-border-radius: 10px;
+	border-radius: 10px;
+	color: #fff;
+}
+.inner-widget .fa{
+	text-align: center;
+	width: 100%;
+	padding: 20px;
+	font-size: 75px;
+}
+.success-user{
+	 background-color:#34c244;
+	 border: 1px solid #1dab2d;
+	 -webkit-box-shadow: 0 8px 6px -8px #505050;
+	-moz-box-shadow: 0 8px 6px -8px #505050;
+	box-shadow: 0 8px 6px -8px #505050;
+}
+.reject-user{
+    background-color:#d9534f;
+	border: 1px solid #cd4743;
+	-webkit-box-shadow: 0 8px 6px -8px #505050;
+	-moz-box-shadow: 0 8px 6px -8px #505050;
+	box-shadow: 0 8px 6px -8px #505050;
+}
+.negotiation-user{
+    background-color:#455a64;
+	border: 1px solid #263238;
+	-webkit-box-shadow: 0 8px 6px -8px #505050;
+	-moz-box-shadow: 0 8px 6px -8px #505050;
+	box-shadow: 0 8px 6px -8px #505050;
+}
+.reason-msg {
+	font-size: 25px;
+	text-align: center;
+}
+/* Compose mail styles */
+.compose-mail
+{
+	margin-top: 15px;
+	margin-bottom: 15px;
+	padding: 15px;
+	background: #fff;
+	border-radius: 10px;
+}
+.email-icon:after{
+	content: '\f0e0';
+	color:#909090;
+	font-family: FontAwesome;
+	font-weight: normal;
+	font-size: 14px;
+	z-index: 222;
+	right: 25px;top: 5px;
+	position: absolute;
+}
+.compose-mail input.form-control{
+	border: none;
+	box-shadow: none;
+	border-radius: 0;
+	border-bottom: 1px solid #ccc;
+}
+.compose-mail .chosen-container-multi .chosen-choices{
+	border: none;
+	box-shadow: none;
+	font-size: 12px;
+	border-radius: 0;
+	font-family: 'Roboto', sans-serif  !important;
+	border-bottom: 1px solid #ccc;
+	max-height: 75px;
+	overflow-y: auto;
+}
+.compose-mail [class^="col-md"]{
+	padding: 0 5px;
+}
+.compose-mail.form-horizontal .control-label {
+	position: relative;
+	top: 16px;
+}
+.compose-mail .form-control[readonly]{
+	background: none;
+}
+.select-multiple{
+	position: absolute;
+	right: 25px;top: 8px;
+	cursor: pointer;
+	color:#909090;
+}
+#multiplemail input.form-control{
+	border: 1px solid #ccc;
+	border-radius: 3px;
+}
+.active-comp:after{
+	content: '\f14a';
+	color:#4CAF50;
+	font-family: FontAwesome;
+	font-weight: normal;
+	font-size: 14px;
+	z-index: 222;
+	right:0px;top: 0px;
+	position: absolute;
+}
+/*clients tab header custom 2nd dec */
+.customtimesheet-head ul{
+       padding: 2px 225px 2px 0px !important;
+}
+.customtimesheet-head .fa-filter {
+   padding: 0px 5px 0px 0px !important;
+}
+.customtimesheet-head ul ul{
+       width: 150px !important;
+}
+.customtimesheet-head ul ul li {
+           text-overflow: ellipsis;
+           overflow: hidden;
+           width: 150px;
+}
+.customtimesheet-head ul ul li label{
+       top:0;
+}
+.customtimesheet-head ul li span{
+       padding: 0px 30px 0px 0px !important;
+}
+/*clients tab header custom 2nd dec */
+
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {

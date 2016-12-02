@@ -4,7 +4,7 @@
 <script src="resources/js/bootstrap-select.min.js"></script>
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 
@@ -37,6 +37,8 @@ function editCandidate(candidateId){
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
+		
+		
  if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
 	  
 	  $.ajax({
@@ -180,7 +182,7 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mr">';
 							result = result + '<div class="pull-right">';
 							result = result + '<button type="button"  onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
-							result = result + '		            <button type="button" class="btn btn-sm btn-danger" onClick ="cancelEdit();">Cancel</button>';
+							result = result + '<button type="button" class="btn btn-sm btn-danger" onClick ="cancelEdit();">Cancel</button>';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							result = result + '		      </div>';
@@ -553,11 +555,12 @@ function candidateProfile(candidateId){
 							var result ="";
 							
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
-							if(json.status == 0){
+							if(json.status == '0'){
+								'<sec:authorize access="hasAnyRole(\'ROLE_REACTIVATE_CANDIDATE\')">'; 
 								result = result + '<div class="project_tabs_inn_head"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> ';
+								'</sec:authorize>';
 							}else{
-								result = result + '<div class="project_tabs_inn_head "> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
-
+								   result = result + '<div class="project_tabs_inn_head "> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\')">  <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a></sec:authorize> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\')"><a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> </sec:authorize>';
 							}
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details candidate_wrap_details">';	 
@@ -835,13 +838,17 @@ function removeSkillPopUp(candidateId){
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
+		
+		
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-			
+			 
 			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
 			
 			 var con = JSON.stringify(frm);
 				 con = con.replace(/[{}]/g, "");
 				var jsonData = encodeURIComponent(con);
+				
+				
 			  //It will escape all the special characters
 			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
@@ -849,7 +856,7 @@ function removeSkillPopUp(candidateId){
 						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(result) {
 							/* location.replace(sourceleadUrl+"/candidatesList");  */
-							clientSideBar(candidateId);
+							candidateSideBar(candidateId);
 						},
 					});
 			return true;

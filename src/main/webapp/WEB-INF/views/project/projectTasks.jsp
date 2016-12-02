@@ -4,6 +4,8 @@
  <link href="resources/css/jquery-ui.css" rel="stylesheet">
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
@@ -81,12 +83,9 @@
 		
 		var sourceleadUrl = '${sourceleadUrl}';
 		var status = status;
-		$
-				.ajax({
+		$.ajax({
 					type : "POST",
-					url : sourceleadUrl
-							+ "/getProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="
-							+ projectId,
+					url : sourceleadUrl	+ "/getProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+ projectId,
 					success : function(data) {
 						var json = JSON.parse(data);
 
@@ -95,9 +94,16 @@
 						if (status != 'COMPLETED' && status != ''
 								&& status != 'undefined' && status != null) {
 							result = result	+ '<span class="pad-sea">';
+							
+							'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_PROJECT_TASKS\')">';  
 							result = result	+ '<a href="javascript:void(0)" data-toggle="modal" data-target="#addTask" onclick="flushTasks();"><i class="glyphicon glyphicon-plus"></i>Add Task</a>';
+		   		    		'</sec:authorize>'; 
+		   		    		
 							result = result	+ '</span>';
 						}
+						result = result	+ '<input type="hidden" id="projectStatus" value="'+status+'">';
+						
+						
 						result = result	+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
 						result = result	+ '<div id="tasksLoadingImg"></div>';
 						result = result + '<table id="projectTaskPagination" class="display" cellspacing="0" width="100%">';
@@ -111,22 +117,16 @@
 						for (var i = 0; i < json.length; i++) {
 							var opt = json[i];
 							result = result + '<tr>';
-							result = result
-									+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('
-									+ opt.Id
-									+ ',\'taskName\');"  id="taskName'
-									+ opt.Id
-									+ '" value="'
-									+ opt.taskName
-									+ '"  class="project_inline_field"></div></td>';
-							result = result
-									+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('
-									+ opt.Id
-									+ ',\'description\');" id="description'
-									+ opt.Id
-									+ '" value="'
-									+ opt.description
-									+ '" class="project_inline_field"></div></td>';
+							
+							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'; 
+							result = result+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'taskName\');"  id="taskName'+ opt.Id+ '" value="'+ opt.taskName+ '"  class="project_inline_field"></div></td>';
+							result = result	+ '<td><div><input type="text" onBlur="inlineEditForProjectsTasks('+ opt.Id+ ',\'description\');" id="description'+ opt.Id+ '" value="'+ opt.description+ '" class="project_inline_field"></div></td>';
+							'</sec:authorize>'; 
+							
+							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">';
+							result = result+ '<td><div><span>'+ opt.taskName+ '</span></div></td>';
+							result = result	+ '<td><div><span>'+ opt.description+ '</span></div></td>';
+							'</sec:authorize>'; 
 							result = result + '</tr>';
 
 						}
@@ -137,7 +137,19 @@
 						$("#tab-3").empty();
 						$("#tab-2").empty();
 						$("#tasksLoadingImg").empty();
-						$("#tab-2").append(result);
+						$("#tab-3").append(result);
+						$("#tab-3").show();
+						$(".project-tabs-menu a").click(
+								function(event) {
+									event.preventDefault();
+									$(this).parent().addClass("current");
+									$(this).parent().siblings().removeClass(
+											"current");
+									var tab = $(this).attr("href");
+									$(".project_tabs_inn").not(tab).css(
+											"display", "none");
+									$(tab).fadeIn();
+								});
 						taskPagination();
 
 					}
@@ -277,8 +289,7 @@
 		var fieldName = localFieldName;
 		var fieldValue = $("#" + localFieldName + "" + taskId).val();
 		var sourceleadUrl = '${sourceleadUrl}';
-		$
-				.ajax({
+		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
 							+ "/updateProjectTaskById?${_csrf.parameterName}=${_csrf.token}&taskId="
@@ -332,11 +343,13 @@
 						result = result + '</tbody>';
 						result = result + '</table>   ';
 						result = result + '</div>';
-						$("#tab-2").empty();
-						$("#tab-2").append(result);
+						$("#tab-3").empty();
+						$("#tab-3").append(result);
 						
 					},
 				});
+		var status = $("#projectStatus").val();
+		projectTask(projectId, status);
 
 	}
 </script>

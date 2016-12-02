@@ -1,5 +1,7 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -20,7 +23,10 @@ import com.bis.sourcelead.enums.Status;
 @Entity
 @Table(name = "MODULES", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="modules")
-public class Modules {
+public class Modules implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,17 +35,26 @@ public class Modules {
 	
 	
 	@Column(name = "MODULE_NAME")
-	@Enumerated(EnumType.STRING)
-	private Status moduleName;
+	private String moduleName;
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID", nullable = false)
 	private Org org;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PARENT_MODULE_ID")
+	private Modules parentModule;
+	
 	@Column(name = "IS_ENROLED")
 	@Enumerated(EnumType.STRING)
 	private Status isEnrolled;
+	
+	@Transient
+	private String isModuleConfigured;
+	
+	@Transient
+	private String isRecruitingConfigured;
 	
 	
 	
@@ -52,11 +67,12 @@ public class Modules {
 		this.id = id;
 	}
 
-	public Status getModuleName() {
+
+	public String getModuleName() {
 		return moduleName;
 	}
 
-	public void setModuleName(Status moduleName) {
+	public void setModuleName(String moduleName) {
 		this.moduleName = moduleName;
 	}
 
@@ -75,6 +91,31 @@ public class Modules {
 	public void setIsEnrolled(Status isEnrolled) {
 		this.isEnrolled = isEnrolled;
 	}
+
+	public Modules getParentModule() {
+		return parentModule;
+	}
+
+	public void setParentModule(Modules parentModule) {
+		this.parentModule = parentModule;
+	}
+
+	public String getIsModuleConfigured() {
+		return isModuleConfigured;
+	}
+
+	public void setIsModuleConfigured(String isModuleConfigured) {
+		this.isModuleConfigured = isModuleConfigured;
+	}
+
+	public String getIsRecruitingConfigured() {
+		return isRecruitingConfigured;
+	}
+
+	public void setIsRecruitingConfigured(String isRecruitingConfigured) {
+		this.isRecruitingConfigured = isRecruitingConfigured;
+	}
+
 	
 	
 	

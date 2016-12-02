@@ -1,6 +1,6 @@
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
-
+ <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <style>
 .clsDatePicker {
 	z-index: 100000 !important;
@@ -21,11 +21,17 @@ function candidateCertificate(candidateId){
 	 
 	var result = "";
 	result  = result + '   <div class="project_tabs_inn_head addUser-org"> ';
+	
 	if(window.candidateStatusGlobal == '0'){
+		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\')"> ';
 		 result  = result + '   	<a href="javascript:void(0)" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a> ';
-	 }else{
+		 result = result +' </sec:authorize>';
+	}
+	else{
+	  	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\')"> ';
 		 result  = result + '   	<span class="pad-sea"> <a href="javascript:void(0)" id="newCandidate" onClick="addCertification('+candidateId+');flushCandiadate();" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a></span> ';
-	 }
+		 result = result +' </sec:authorize>';
+	}
 	result = result  +'     <div id="popUpDivEmp" class="edit-details col-md-4" > ';
 	result = result  +'     </div>  ';
 	result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
@@ -86,7 +92,9 @@ function storeCertificate(candidateId){
 			con = con.replace(/[{}]/g, "");
 			var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
+			 
 			$("#Candidate_certification_form").attr("disabled", "disabled");
+			 $("#addCandidate").attr("disabled", "disabled");
 				$.ajax({
 						type : "POST",
 						url : sourceleadUrl
@@ -223,17 +231,29 @@ function candidateCertificateList(candidateId){
 	                    	 result  = result + '           <td><div><span>'+description+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidFromDateToString+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidToDateToString+'</span></div></td>';
-	                    	 if(window.candidateStatusGlobal == '0'){
-	                    		 result = result  +'	            <td><div class="tblicons"><a a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
-	                    	}else{
-	                    		result = result  +'	            <td><div class="tblicons"><a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');"></a>';
-	                    	}
+	                    	 
+	                    	 result  = result + '           <td><div class="tblicons">';
 	                    	 
 	                    	 if(window.candidateStatusGlobal == '0'){
-	                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i></div></td>';
+	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\')"> ';
+	                    		 result = result  +'	            <a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
+	                    		 result = result +' </sec:authorize>';
+	                    	 }else{
+	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\')"> ';
+	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');"></a>';
+	                    		result = result +' </sec:authorize>';
+	                    	 }
+	                    	 
+	                    	 if(window.candidateStatusGlobal == '0'){
+	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_CERTIFICATION\')"> ';
+	                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i>';
+	                    		 result = result +' </sec:authorize>';
 	                    	}else{
-	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate"></i></div></td>';
+	                    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_CERTIFICATION\')"> ';
+	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate"></i>';
+	                    		 result = result +' </sec:authorize>';
 	                    	}
+	                    	 result  = result + '           </div></td>';
 	                    	 result  = result + '         </tr>';
 	                      } 
 	                     result = result +" </tbody>";
@@ -342,7 +362,9 @@ function addCertification(candidateId) {
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		result  = result + '                 <div class="clearfix mr">';
+		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\')"> ';
 		result  = result + '                   <button type="button" class="btn btn-sm btn-primary pull-right" id="addCandidate"  onclick="storeCertificate('+candidateId+');"  >Add</button>';
+		result = result +' </sec:authorize>';
 		result  = result + '                 </div>';
 		result  = result + '               </div>';
 		result  = result + '              </form>';

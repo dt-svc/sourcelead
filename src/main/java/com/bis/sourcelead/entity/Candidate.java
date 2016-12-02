@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -27,7 +28,9 @@ import org.hibernate.annotations.FetchMode;
 @Entity
 @Table(name = "CANDIDATE", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidate")
-public class Candidate {
+public class Candidate implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -82,6 +85,9 @@ public class Candidate {
 	
 	@Column(name = "CURRENT_RATE")
 	private String currentRate;
+	
+	@Column(name = "CURRENT_RATE_TYPE")
+	private String currentRateType;
 	
 	@Column(name = "CURRENT_RATE_CURRENCY")
 	private String currentRateCurrency;
@@ -622,4 +628,16 @@ public class Candidate {
 	public void setReqSubmissionId(String reqSubmissionId) {
 		this.reqSubmissionId = reqSubmissionId;
 	}
+
+
+	public String getCurrentRateType() {
+		return currentRateType;
+	}
+
+
+	public void setCurrentRateType(String currentRateType) {
+		this.currentRateType = currentRateType;
+	}
+	
+	
 }

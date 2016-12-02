@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.RolesDao;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.service.RolesService;
 
@@ -44,6 +45,54 @@ public class RolesServiceImpl implements RolesService{
 	@Override
 	public Roles getRolesById(Long id) throws Exception {
 		return rolesDao.getRolesById(id);
+	}
+
+
+	@Override
+	public List<Roles> getSourceleadRoles(Long orgId) throws Exception {
+		return rolesDao.getSourceleadRoles(orgId);
+	}
+
+
+	@Override
+	public Roles storeRoles(Roles roles) {
+		return rolesDao.storeRoles(roles);
+	}
+
+
+	@Override
+	public Roles getRolesByRoleNameAndOrgLocationId(String roleName, Long orgLocationId) throws Exception {
+		return rolesDao.getRolesByRoleNameAndOrgLocationId(roleName, orgLocationId);
+	}
+
+
+	@Override
+	public List<Roles> getUserRolesListByModuleAndLoginUserRoleHierarchy(Org org, Long orgLocationId,Long hierarchyId) {
+		return rolesDao.getUserRolesListByModuleAndLoginUserRoleHierarchy(org, orgLocationId,hierarchyId);
+	}
+
+
+	@Override
+	public List<Roles> getClientOrVendorRolesList(Long orgLocationId,String moduleType) {
+		return rolesDao.getClientOrVendorRolesList(orgLocationId,moduleType);
+	}
+
+
+	@Override
+	public List<Roles> getOrgEnrolledRolesByOrgLocationId(Org org, Long orgLocationId) throws Exception {
+		return rolesDao.getOrgEnrolledRolesByOrgLocationId(org, orgLocationId);
+	}
+
+
+	@Override
+	public Roles getRolesByIdAndOrgLocationId(Long id, Long orgLocationId) throws Exception {
+		return rolesDao.getRolesByIdAndOrgLocationId(id, orgLocationId);
+	}
+
+
+	@Override
+	public Roles getRolesByRoleDisplayNameAndOrgLocationId(String roleName, Long orgLocationId) throws Exception {
+		return rolesDao.getRolesByRoleDisplayNameAndOrgLocationId(roleName, orgLocationId);
 	}
 
 }

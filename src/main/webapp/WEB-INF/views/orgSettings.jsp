@@ -30,6 +30,7 @@ z-index: 9999999999 !important;
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!-- end files for autocomplete with tagit -->
 <script type="text/javascript">
@@ -170,6 +171,7 @@ function cancel(){
 				 <div class="well well-sm text-center">
 				  <div class="profile-img-container" style="position:relative;">
 				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
+				  <sec:authorize access="hasAnyRole('ROLE_EDIT_ORG_SETTINGS')">
 				  <div class="btn-group uploadfile">
 				  <button type="button" class="btn btn-sm btn-primary">
 				  <i class="fa fa-upload"></i></button>
@@ -181,6 +183,7 @@ function cancel(){
 					  <i class="fa fa-trash"></i></button>
 				  </c:if>
 				  </div>
+				  </sec:authorize>
 				  </div>
 				  </div>
 				  <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>
@@ -262,7 +265,9 @@ function cancel(){
 						</div>
 					<div class="clearfix">
 					<div class="pull-right">
+					<sec:authorize access="hasAnyRole('ROLE_EDIT_ORG_SETTINGS')">
 					<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">
+					</sec:authorize>
 					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/dashboard'">
 					</div>
 					</div>

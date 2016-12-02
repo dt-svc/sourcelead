@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -137,6 +138,7 @@ public class UserRestController {
 	 * @return
 	 * @throws Exception
 	 */
+	 @PreAuthorize("hasRole('ROLE_CREATE_USER')")
 	 @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
 	 public  String createUser(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		 	
@@ -436,6 +438,7 @@ public class UserRestController {
 			 * @param reason
 			 * @return
 			 */
+			@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_PROJECT_EMPLOYEES')")
 			@RequestMapping(value = "/saveReason", method = RequestMethod.POST)
 			@ResponseBody String saveReason(
 					@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,
@@ -588,6 +591,7 @@ public class UserRestController {
 		 * @return
 		 * @throws Exception
 		 */
+		@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_USER','ROLE_CREATE_USER')")
 		@RequestMapping(value = "/reActiveUser", method = RequestMethod.POST)
         public String reActiveUser(@RequestParam(value = "userId", required = false) String userID, HttpServletRequest request) throws Exception {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -618,10 +622,10 @@ public class UserRestController {
 		 */
 		@RequestMapping(value = "/getReportingManager", method = RequestMethod.POST)
 		public @ResponseBody String getReportingManager(
-				@RequestParam(value = "role", required = false) String role, HttpServletRequest request) throws Exception {
+				@RequestParam(value = "role", required = false) Long roleId, HttpServletRequest request) throws Exception {
 			String resultJson = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<User> userList = userService.getManagersByUserRolesAndOrgLocationId(role, orgLocations.getId());
+			List<User> userList = userService.getManagersByUserRolesAndOrgLocationId(roleId, orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
 			for (User user : userList) {
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 				if(userRole != null){

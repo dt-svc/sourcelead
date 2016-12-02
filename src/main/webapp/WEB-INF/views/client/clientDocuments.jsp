@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <style type="text/css">
 .edit-details {
 text-align:left;
@@ -53,7 +53,9 @@ function clientDocuments(orgRelationId,clientLocationId){
 	result = result  +'<div class="timesheet_head">';
 	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
 	    result = result + '<ul>';
+	    '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_CLIENT_DOCUMENT\')">';
 		result = result  +'    	<a href="javascript:void(0)" onClick="addDocument('+clientLocationId+','+orgRelationId+'); getSpocsList('+orgRelationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Documents</a>                                                            ';
+		'</sec:authorize>';
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result = result  +'  <div class="clearfix"></div> ';
@@ -150,12 +152,25 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
-	                    	 result = result+'	 <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
+	                    	    result = result+'	 <td><div class="tblicons">';
+	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_CLIENT_DOCS\')">'; 
+	                    	    result = result+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
+	                    	 '</sec:authorize>';
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
-	                    		 result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+clientLocationId+','+orgRelationId+'); getSpocsList('+orgRelationId+'); getClientDocument('+clientLocationId+','+orgRelationId+', '+opt.id+');"></a>';
-					           	 result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteClientDocument('+clientLocationId+','+orgRelationId+','+opt.id+');"></i>';
+	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\')">'; 
+	                    		 	result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+clientLocationId+','+orgRelationId+'); getSpocsList('+orgRelationId+'); getClientDocument('+clientLocationId+','+orgRelationId+', '+opt.id+');"></a>';
+	                    		 '</sec:authorize>';
+	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_DOCUMENT\')">'; 
+	                    		 	result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteClientDocument('+clientLocationId+','+orgRelationId+','+opt.id+');"></i>';
+	                    		 '</sec:authorize>';
+	                    		 
+	                    		 '<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\',\'ROLE_DELETE_CLIENT_DOCUMENT\')">';
+	                    			 result = result+'--';
+	                    		 '</sec:authorize>';
 	                    	 }
 	                    	 result = result+'	            </div></td>';
+	                    	 
+	                    	 
 	                    	 result  = result + '</tr>';
 	                      } 
 	                     result = result +" </tbody>";

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
@@ -26,7 +27,6 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 
@@ -37,7 +37,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name="ORG")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="org")
-public class Org {
+public class Org implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="ID", nullable = false)
@@ -102,6 +105,10 @@ public class Org {
 	@OneToMany(mappedBy="org",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<OrgLocations> orgLocationsList;
+	
+	@Column(name = "MODULES_ID")
+	@Type(type="text")
+	private String modulesId;
 	
 	@Transient
 	private String email;
@@ -292,6 +299,14 @@ public class Org {
 
 	public void setIsMailSent(Status isMailSent) {
 		this.isMailSent = isMailSent;
+	}
+
+	public String getModulesId() {
+		return modulesId;
+	}
+
+	public void setModulesId(String modulesId) {
+		this.modulesId = modulesId;
 	}
 
 	

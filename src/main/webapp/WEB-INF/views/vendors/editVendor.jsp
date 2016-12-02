@@ -53,7 +53,7 @@
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 						if(json.orgType == 'Company'){
 							result = result + '<div class="user_summary_edit_cta" id="vendorNameDiv">';
-							result = result + '<label>Client Name <span	class="text-danger">*</span></label>';
+							result = result + '<label>Vendor Name <span	class="text-danger">*</span></label>';
 							result = result + '<input type="text"  id="vendorName" name="vendorName" value="'+json.orgName+'" placeholder="vendor name" readonly="readonly" field-name="vendor name" >';
 							result = result + '</div>';
 							
@@ -79,7 +79,7 @@
 							result = result + '</div> ';
 						}else{
 							result = result + '<div class="user_summary_edit_cta" id="vendorNameDiv">';
-							result = result + '<label>Client Name <span	class="text-danger">*</span></label>';
+							result = result + '<label>Vendor Name <span	class="text-danger">*</span></label>';
 							result = result + '<input type="text"  id="vendorName" name="vendorName" value="'+json.orgName+'" placeholder="vendor name" field-name="vendor name" data-validation="required validate_Space validate_length length2-250" onblur="flushVendor(); validateClientName(\''+json.orgName+'\',\''+orgRelationId+'\');" >';
 							result = result + '</div>';
 							
