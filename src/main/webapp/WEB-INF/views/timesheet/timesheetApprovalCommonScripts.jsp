@@ -547,16 +547,16 @@ function saveRejectSubmission(local,employeeId,userId,startDate,endDate){
          success: function(data) {    
         	   // approvalList();
         	   var uniqueSepartor = startDate.replace('-','').replace('-','');
-        	   if(!userId.indexOf(uniqueSepartor)){
-        		   $("#row"+userId).empty();
-     	    	  $("#row"+userId).html(rowHtmlContent);
-     	    	  $("#status"+userId).html("REJECTED");
-     	    	  $("#action"+userId).empty();
-     	    	  $("#action"+userId).append(" <div><h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+local+"' onclick='rejectedMessage(\"rejectedMessage"+local+"\");'><div class='app_error_mes' id='rejectedMessage"+local+"'>"+msg+"</div></i></div>");  
-        	   }
-        	   else{
+        	   if(userId.indexOf(uniqueSepartor) >= 0){
         		   var table = $('#example').DataTable();
         		   table.row('#row'+userId+'').remove().draw( false );
+        	   }
+        	   else{
+        		  $("#row"+userId).empty();
+      	    	  $("#row"+userId).html(rowHtmlContent);
+      	    	  $("#status"+userId).html("REJECTED");
+      	    	  $("#action"+userId).empty();
+      	    	  $("#action"+userId).append(" <div><h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+local+"' onclick='rejectedMessage(\"rejectedMessage"+local+"\");'><div class='app_error_mes' id='rejectedMessage"+local+"'>"+msg+"</div></i></div>");  
         	   }
         	  pagination();
            }
@@ -594,15 +594,16 @@ function approveSubmission(userId,employeeId,startDate,endDate){
 	    url: sourceleadUrl+"/saveSubmissionApprovalStatus?${_csrf.parameterName}=${_csrf.token}&employeeId="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 		    success: function(data) {
 		    	 var uniqueSepartor = startDate.replace('-','').replace('-','');
-	        	 if(!userId.indexOf(uniqueSepartor)){
+	        	 if(userId.indexOf(uniqueSepartor) >= 0){
+			    	 var table = $('#example').DataTable();
+	        		 table.row('#row'+userId+'').remove().draw( false );
+	        		   
+	        	 }
+	        	 else{
 	        		 $("#row"+userId).empty();
 			    	 $("#row"+userId).html(rowHtmlContent);
 			    	 $("#status"+userId).html("APPROVED");
-			    	 $("#action"+userId).html("<div><h3>Approved</h3></div>");  
-	        	 }
-	        	 else{
-	        		   var table = $('#example').DataTable();
-	        		   table.row('#row'+userId+'').remove().draw( false );
+			    	 $("#action"+userId).html("<div><h3>Approved</h3></div>"); 
 	        	   }
 		    	 
 		    }
