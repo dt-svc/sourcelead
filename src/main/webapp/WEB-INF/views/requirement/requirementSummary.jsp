@@ -861,6 +861,8 @@ function requirementDetails(requirementId){
 							$("#tab-1").empty();
 							$("#tab-2").empty();
 							$("#tab-3").empty();
+							$("#status-div").empty();
+						    $("#status-data").empty();
 							$("#tab-1").append(result); 
 							
 							assignedMemberList(requirementId);
@@ -1479,6 +1481,8 @@ function requirementRecommendations(requirementId){
 		    $("#tab-1").empty();
 			$("#tab-2").empty(); 
 		    $("#tab-3").empty();
+		    $("#status-div").empty();
+		    $("#status-data").empty();
 			$("#tab-3").append(result); 
 			recommendationpagination();
 			$("#tab-3").show();
