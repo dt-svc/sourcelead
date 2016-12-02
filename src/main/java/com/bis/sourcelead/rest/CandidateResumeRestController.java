@@ -38,6 +38,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.google.common.base.Strings;
 import com.google.gson.Gson;
 
 @RestController
@@ -99,9 +100,17 @@ public class CandidateResumeRestController {
 			
 			candidateResumesService.storeCandidateResume(jsonObj, user, candidate, resumeId, orgLocation, multiFile);
 
-			SourceLeadSessionManager.setSessionAttribute(request, "resumeAddMessage",
-					"Successfully you have added");
-
+			
+			if(resumeId != null && !"null".equalsIgnoreCase(resumeId)){
+				SourceLeadSessionManager.setSessionAttribute(request, "editResume", "Resume details updated");
+			}else{
+				SourceLeadSessionManager.setSessionAttribute(request, "addResume", "New Resume added for Candidate");
+				
+			}
+			
+			
+			
+			
 			return "success";
 		}else{
 			return "exception";
@@ -121,8 +130,9 @@ public class CandidateResumeRestController {
 	* @throws Exception
 	*/
 	@RequestMapping(value = "/candidateResumesListByCandidateId", method = RequestMethod.POST)
-	public @ResponseBody String candidateResumesListByCandidateId(String candidateId) throws Exception {
+	public @ResponseBody String candidateResumesListByCandidateId(String candidateId,HttpServletRequest request) throws Exception {
 
+		String msg = "";
 		String resultJson = null;
 		Integer status = Constants.CANDIDATE_ACTIVE;
 		if(candidateId != null){
@@ -132,6 +142,19 @@ public class CandidateResumeRestController {
 				if(createdUser != null){
 					candidateResume.setCreatedBy(createdUser.getFirstName()+" "+createdUser.getLastName());
 				}
+				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addResume");
+				 if(msg == null){
+						msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editResume");
+					}
+					if(msg == null){
+						msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "deleteResume");
+					}
+					if(msg !=null && msg != ""){
+						candidateResume.setMsg(msg);
+					}
+					 	SourceLeadSessionManager.removeSessionAttribute(request, "addResume");
+					    SourceLeadSessionManager.removeSessionAttribute(request, "editResume");
+					    SourceLeadSessionManager.removeSessionAttribute(request, "deleteResume");
 			}
 			resultJson = commonUtil.toJSON(candidateResumesList);
 		}
@@ -162,6 +185,8 @@ public class CandidateResumeRestController {
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(commonUtil.currentDate());
 			candidateResumesService.updateCandidateResume(candidateResume);
+			SourceLeadSessionManager.setSessionAttribute(request, "deleteResume", "Resume deleted");
+
 		}
 		return "success";
 	}

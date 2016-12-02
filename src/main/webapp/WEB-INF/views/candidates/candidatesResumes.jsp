@@ -38,6 +38,7 @@ function candidateResume(candidateId){
 	var result ="";
 	
 	result = result+'	    <div class="project_tabs_inn_head addUser-org">';
+	result = result +' <div id="msgDiv3" ></div>';
 	
 	if(window.candidateStatusGlobal == '0'){
 		result = result+'	    	<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
@@ -272,6 +273,17 @@ function addResume(candidateId) {
         			 location.replace(sourceleadUrl+"/errorPage");
         		 }
         		 else{
+        			 for (var i = 0; i < 1; i++) {
+                         var val= json[i];
+                         var opt = "";
+                                 if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+                                         opt  = opt + '<div class="success_pop" id="selector3" style="display: block;">';
+                                         opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+                                         opt  = opt + '</div>';
+                                         }
+                                 $("#msgDiv3").empty();
+                                 $("#msgDiv3").append(opt);
+                         }
 					if(json.length<=0 || (data == null && data == 'undefined' && data == "")){
 							result = result+"   <div class='row'>"; 
 						 	result = result+"	<div class='col-lg-12'>"; 
@@ -341,6 +353,7 @@ function addResume(candidateId) {
 					}
 					$("#resumesList").empty();
 					$("#resumesList").append(result);
+					  msgFadein2(); 
         		}
 				},
 		});
@@ -456,3 +469,9 @@ function removeResumeNameDiv(){
 		};
 	})(jQuery);
 </script>
+<script>
+       function msgFadein2() {
+           setTimeout(function(){
+                   $('#selector3').fadeOut('slow'); }, 1000);
+       }
+</script>  

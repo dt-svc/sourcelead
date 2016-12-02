@@ -127,6 +127,17 @@ function requirementList(){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     var json = JSON.parse(data);
+	                     for (var i = 0; i < 1; i++) {
+	                            var val= json[i];
+	                            var opt = "";
+	                                    if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+	                                            opt  = opt + '<div class="success_pop" id="selector2" style="display: block;">';
+	                                            opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+	                                            opt  = opt + '</div>';
+	                                            }
+	                                    $("#msgDiv").empty();
+	                                    $("#msgDiv").append(opt);
+	                            }
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
@@ -248,6 +259,7 @@ function requirementList(){
 	                     $("#noReq").val('');
 	                     $("#requirementList").append(result); 
 	                     pagination(); 
+	                     msgFadein1(); 
 			    	} 
                  }else{
                 	 $("#requirementList").empty();
@@ -1083,6 +1095,7 @@ function requirementPipeline(requirementId){
       				<div id="requirementSideDiv">
 				     </div>  
       </div>
+      <div id ="msgDiv"></div>
     </div>
     <!-- Project --> 
   </div>
@@ -1339,5 +1352,16 @@ function exportToExcel(){
 }
 
 </script>
-  
+  <script>
+       function msgFadein1() {
+           setTimeout(function(){
+                   $('#selector2').fadeOut('slow'); }, 1000);
+       }
+</script>  
+<script>
+       function msgFadein1() {
+           setTimeout(function(){
+                   $('#selector2').fadeOut('slow'); }, 1000);
+       }
+</script>  
 <jsp:include page="../masterFooter.jsp" />

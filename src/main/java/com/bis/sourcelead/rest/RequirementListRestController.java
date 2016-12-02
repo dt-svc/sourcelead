@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -129,7 +130,7 @@ public class RequirementListRestController {
 	 
 	 @RequestMapping(value = "/getRequirementListByOrgLocationID")
 	 public String getRequirementListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
-
+		String msg = "";
 		String resultJson;
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -155,6 +156,13 @@ public class RequirementListRestController {
 				}
 				requirement.setManager(managerFirstName+" "+managerLastName);
 			}
+			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqstatusMsg");
+			 
+			if(msg !=null && msg != ""){
+				requirement.setMsg(msg);
+			}
+			 	SourceLeadSessionManager.removeSessionAttribute(request, "reqstatusMsg");
+			  
 		}
 		
 		ArrayList<Requirement>  requirementList1 = new ArrayList<Requirement>();
@@ -188,6 +196,7 @@ public class RequirementListRestController {
 				}
 				
 			}
+			 
 			resultJson = commonUtil.toJSON(requirementList1);
 		}else{
 			
@@ -405,6 +414,9 @@ public class RequirementListRestController {
 			 requirement.setUpdatedBy(loginUser.getUserCode());
 			 requirement.setUpdatedDate(commonUtil.currentDate());
 			 requirementService.addRequirement(requirement); 
+			SourceLeadSessionManager.setSessionAttribute(request, "reqstatusMsg", " "+requirement.getJobTitle()+" status changed from "+requirement.getRequirementSubmissionPreviousStatus()+" to "+requirement.getRequirementSubmissionStatus()+" " );
+
+			 
 			return "success";
 		 }
 		 

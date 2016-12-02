@@ -182,6 +182,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private  Long  requirementId;
 	
+	@Transient
+	private String msg;
+	
 	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementAssignTo> requirementAssignTo = new HashSet<RequirementAssignTo>(0);
@@ -793,6 +796,15 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public String getIsLoginUserAsManager() {
 		return isLoginUserAsManager;
+	}
+	
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 
 	public void setIsLoginUserAsManager(String isLoginUserAsManager) {

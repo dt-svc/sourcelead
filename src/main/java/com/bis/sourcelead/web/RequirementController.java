@@ -261,8 +261,18 @@ public class RequirementController {
         }
 		
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "reqsummaryMsg");
+		}
 		return model;
 
+	}
+
+	private boolean isNullOrEmpty(String msg) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

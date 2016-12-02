@@ -113,6 +113,7 @@ $(document).ready(function() {
     
      <div class="clients_side_wrap_inn no_pad">
         <div id="requirementSideDiv"> </div>
+          <div id="loading"></div>
       </div>   
       
       <!-- Addede by Rajashekar -->
@@ -630,7 +631,7 @@ function requirementDetails(requirementId){
 				            var REJECTED = "REJECTED";
 
 				             if(json.requirementSubmissionStatus  !='DRAFT'  &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
-               					 result = result +'<button  class="btn btn-success mr" type="button" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
+               					 result = result +'<button  class="btn btn-success mr" type="button" id = "approverbut" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
                		             result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
    				           	 }else if(json.requirementApproverHierarchyStatus == 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
       						              result = result +'<strong  id="requirementStatus" class="pull-right mr btn btn-success disabled">OPEN</strong>';
@@ -903,6 +904,8 @@ function updateReuqirementStatus(status){
 	 {
 		 reason = '';
 	 }
+     $("#approverbut").attr("disabled", "disabled");
+
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason, 
