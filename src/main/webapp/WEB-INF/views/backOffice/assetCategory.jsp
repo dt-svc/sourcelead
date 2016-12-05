@@ -86,6 +86,7 @@ $(document).ready(function(){
       </div>
     </div>
     <div class="require_wrap_table table-wrap">
+    <div id="popUp"></div>
     <table id="assetCategoryList" class="display" cellspacing="0" width="100%"> </table>
       <!-- <table>
         <thead>
@@ -159,13 +160,20 @@ $(document).ready(function(){
 	   				{  
 		   	     	    var report = json[i];
 		   	     	    
-			    	    result = result+'<tr>';
+		   	     	    var description = '';
+		   	     	    if(report.description != null && report.description != '' && report.description != 'undefined') {
+		   	     		   description = report.description;
+		   	     	    }else{
+		   	     	       description = "----";
+		   	     	    }
+		   	     	    
+			    	    result = result+'<tr id="category'+report.id+'">';
 			   	     	result = result +'<td>';
 			   	        result = result +'<a href="javascript:void(0)" class="tbldata-dotdot">';
 				   	    result = result +'<div class="proj_show"> <span class="tbldata-dotdot-sm">'+report.categoryName+'</span> <i class="fa fa-binoculars"></i> </div>';
 					   	result = result +'</a>';
 					   	result = result +'</td>';
-					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+report.description+'</div></td>';
+					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+description+'</div></td>';
 					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+report.createdUser+'</div></td>';
 					   	result = result +'<td><div class="tbldata-dotdot-vsm" title="'+report.dateStr+'">'+report.dateStr+'</div></td>';
 					   	result = result +'<td><div>';
@@ -174,11 +182,14 @@ $(document).ready(function(){
 					   			result = result +'In-Active';
 					   		}
 					   		else{
-					   		result = result +'<a href="javascript:void(0)" class="addcon-pop1" onClick="terminateCategory('+report.id+');"><i class="fa fa-trash removeIcon"></i>';
+					   		result = result +'<a href="javascript:void(0)" class="addcon-pop1"  onClick="deleteCategory('+report.id+');"><i class="fa fa-trash removeIcon"></i>';
 					   		}
+					   		result = result +'&nbsp;|&nbsp;<a href="javascript:void(0)" class="addcon-pop1" onClick="addCategoryDoc();editCategory('+report.orgLocationId+','+report.id+');"><i class="glyphicon glyphicon-pencil" ></i></div>';
+					   	}else{
+					   		result = result +'---';
 					   	}
 					   		
-					   	result = result +'<a href="javascript:void(0)" class="addcon-pop1" onClick="addCategoryDoc();editCategory('+report.orgLocationId+','+report.id+');"><i class="glyphicon glyphicon-pencil" ></i></div>';
+					   
 					   	result = result +'</div></td>';
 					   	result = result +'</tr>';
 	   				}
@@ -407,22 +418,48 @@ function validateCategoryName(){
   }
 </script>  
 
+
+<script type="text/javascript">
+function deleteCategory(categoryId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_category' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='terminateCategory("+categoryId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_category").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
  
 <script type="text/javascript">
 function terminateCategory(categoryId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	if (categoryId != null && categoryId != '') {
-		//$("#save_client").attr("disabled", "disabled");
-		// $( "#save_client" ).addClass('button').val('Processing..');
+		$("#category"+categoryId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/terminateCategory?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId,
 			success : function(data) {
-				 getAssetCategoryList();
+				$("#popUp").empty();
+				$(".project_inn_mask").fadeOut(200);
+					document.getElementById("category"+categoryId).remove();
 				},
 		});
 	}
   }
 </script>  
+
+
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
 </body>
 </html>

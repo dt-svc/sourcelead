@@ -235,7 +235,7 @@ function cancel(){
 				   </div>
 				
 					<div class="col-md-5">
-						<div class="form-group mt">
+						<div class="form-group">
 							<label class="col-md-3">Zip</label>
 							<div class="col-md-9">
 							<input type="text"  class="form-control" name="zipcode" field-name="Zip" data-validation="validate_int validate_Space validate_length length5-10" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
