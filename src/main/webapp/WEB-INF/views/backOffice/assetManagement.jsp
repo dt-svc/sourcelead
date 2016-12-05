@@ -28,7 +28,7 @@ $(document).ready(function(){
   <div class="pull-left">
     <h2>Asset Management</h2>
   </div>
-  <div class="pull-right brud-crum">Home &raquo; Back Office &raquo; Assetmanagement</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Assetmanagement</div>
 </section>
 <div class="timesheet_out">
   <div class="vendor_wrap">
@@ -773,8 +773,7 @@ function cancel(){
 
 <script>
 function removeAssetManagement(assetId){
-	var sourceleadUrl = '${sourceleadUrl}';
-	var rowHtmlContent =  $("#"+assetId).html();
+	 var sourceleadUrl = '${sourceleadUrl}';
 	
 	 $("#popUp").empty();
 	 $(".project_inn_mask").fadeOut(200);
@@ -1081,13 +1080,13 @@ $(document).ready(function(){
                 });
             });
         </script>
-  <div class="theme-color"> <span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
+  <!-- <div class="theme-color"> <span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
     <ul class="list-unstyled">
       <li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>
       <li><a href="#" class="" id="btn2"><span class="flat-green"></span><span class="dark-purle"></span></a></li>
       <li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
     </ul>
-  </div>
+  </div> -->
 </div>
 <script>
 $(".addcon-pop").click(function(){
