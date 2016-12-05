@@ -1,5 +1,9 @@
 package com.bis.sourcelead.rest;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,7 +12,9 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -320,18 +326,69 @@ public class BackOfficeRestController {
 		return status;
 	}
 	
+	/**
+	 * @author Prasad Salina
+	 * @param fileType
+	 * @param assetId
+	 * @param response
+	 * @throws Exception
+	 * To download attached files
+	 */
+	@RequestMapping(value = "/downloadAssetFile", method = RequestMethod.GET)
+    public void downloadAssetFile(@RequestParam(value="fileType", required=false) String fileType ,@RequestParam(value="assetId", required=false) Long assetId ,HttpServletResponse response) throws Exception {
+		
+		     Asset asset = assetService.getAssetById(assetId);
+		    
+		     InputStream inputStream;
+		     if(null != fileType && "shiftAfile".equals(fileType)){
+		    	 response.setHeader("content-disposition", "attachment; filename=\"" + asset.getShiftAFileName() + "\"");
+				 inputStream = new ByteArrayInputStream(asset.getShiftADocFile()); 
+		     }else if(null != fileType && "shiftBfile".equals(fileType)){
+		    	 response.setHeader("content-disposition", "attachment; filename=\"" + asset.getShiftBFileName() + "\"");
+				 inputStream = new ByteArrayInputStream(asset.getShiftBDocFile()); 
+		     }else{
+		    	 response.setHeader("content-disposition", "attachment; filename=\"" + asset.getFileName() + "\"");
+				 inputStream = new ByteArrayInputStream(asset.getDocFile()); 
+		     }
+		     
+	        
+			try {
+				OutputStream outStream = response.getOutputStream();
+
+				byte[] buffer = new byte[4096];
+				int bytesRead = -1;
+
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+
+				inputStream.close();
+				outStream.close();
+
+			} catch (FileNotFoundException e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			} 
+		}
 	
 	
 	
-	
+	/**
+	 * @author Prasad Salina
+	 * @param request
+	 * @param categoryIds
+	 * @param workingStatus
+	 * @return
+	 * @throws Exception
+	 * To get the Asset Management List by using filters
+	 */
 	@RequestMapping(value = "/getAssetList")
 	@ResponseBody
-	public String getAssetList(HttpServletRequest request,@RequestParam(value="categoryIds", required=false) String categoryIds) throws Exception {
+	public String getAssetList(HttpServletRequest request,@RequestParam(value="categoryIds", required=false) String categoryIds,@RequestParam(value="workingStatus", required=false) String workingStatus) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson = null;
 		
-		List<Asset> assetList = assetService.getAssetFilterListByLocationId(orgLocations.getId(),categoryIds);
+		List<Asset> assetList = assetService.getAssetFilterListByLocationId(orgLocations.getId(),categoryIds,workingStatus);
 		ArrayList<Asset> assetsList = new ArrayList<Asset>();
 		for(Asset asset : assetList){
 			asset.setCategoryName(asset.getAssetCategory().getCategoryName());
@@ -341,6 +398,41 @@ public class BackOfficeRestController {
 		resultJson = toJSON(assetsList);
 		return resultJson;
 	}
+	
+	/**
+	 * @author Prasad Salina
+	 * @param assetId
+	 * @param workingStatus
+	 * @return
+	 * @throws Exception
+	 * To update working status of Asset Management
+	 */
+	 @RequestMapping(value = "/updateAssetWorkingStatus", method = RequestMethod.POST)
+	 @ResponseBody String updateAssetWorkingStatus(@RequestParam(value = "assetId", required = false) Long assetId,@RequestParam(value="workingStatus", required=false) String workingStatus) throws Exception {
+	       Asset asset = assetService.getAssetById(assetId);
+           if(asset != null){
+				asset.setWorkingStatus(workingStatus);
+				assetService.saveAsset(asset);
+			}
+			return "success";
+	 }
+	 
+	 /**
+	  * @author Prasad Salina
+	  * @param assetId
+	  * @return
+	  * @throws Exception
+	  * To remove Asset Management
+	  */
+	 @RequestMapping(value = "/removeAssetManagement", method = RequestMethod.POST)
+	 @ResponseBody String removeAssetManagement(@RequestParam(value = "assetId", required = false) Long assetId) throws Exception {
+	       Asset asset = assetService.getAssetById(assetId);
+           if(asset != null){
+				asset.setStatus(Constants.RECORD_INACTIVE);
+				assetService.saveAsset(asset);
+			}
+			return "success";
+	 }
 	
 	/**
 	 * @author Prasad Salina
