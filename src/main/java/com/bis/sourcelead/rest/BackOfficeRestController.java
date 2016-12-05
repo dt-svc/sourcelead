@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Asset;
@@ -27,6 +28,7 @@ import com.bis.sourcelead.entity.BoAmexTrans;
 import com.bis.sourcelead.entity.BoComericaTrans;
 import com.bis.sourcelead.entity.BoJmpcTrans;
 import com.bis.sourcelead.entity.BoUploadedFiles;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AssetCategoryService;
@@ -325,8 +327,13 @@ public class BackOfficeRestController {
 		String resultJson = null;
 		
 		List<Asset> assetList = assetService.getAssetFilterListByLocationId(orgLocations.getId(),categoryIds);
-		
-		resultJson = toJSON(assetList);
+		ArrayList<Asset> assetsList = new ArrayList<Asset>();
+		for(Asset asset : assetList){
+			asset.setCategoryName(asset.getAssetCategory().getCategoryName());
+			assetsList.add(asset);
+			
+		}
+		resultJson = toJSON(assetsList);
 		return resultJson;
 	}
 	
@@ -369,6 +376,25 @@ public class BackOfficeRestController {
 		resultJson = toJSON(assetCategoryList);
 		return resultJson;
 	}
+	
+	
+	@RequestMapping(value = "/addCategoryAssets" , method = RequestMethod.POST)
+	   public String addCategoryAssets(@RequestParam(value="json", required=false) String json,MultipartHttpServletRequest request) throws Exception {
+			
+		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    
+		    String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+			
+			assetService.saveAssetDetails(jsonObj, user, orgLocations, request);
+			
+		
+		   return "home";
+	    
+	   }
+	
 	
 	
 	

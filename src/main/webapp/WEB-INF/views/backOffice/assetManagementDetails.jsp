@@ -80,7 +80,7 @@ function assetDetails(assetId) {
 					
 					var result = "";
 					result = result + '<div class="require_wrap_details">';
-					result = result + '<h1>Asset Management details: <a id="edit-user" href="javascript:void(0)">Edit<i class="glyphicon glyphicon-pencil"></i></a></h1>';
+					//result = result + '<h1>Asset Management details: <a id="edit-user" href="javascript:void(0)">Edit<i class="glyphicon glyphicon-pencil"></i></a></h1>';
 					result = result + '<div class="require_one">';
 					
 					result = result + '<div class="require_wrap_details_cta"> <b>S. No.:</b> <span>'+json.slno+'</span>';

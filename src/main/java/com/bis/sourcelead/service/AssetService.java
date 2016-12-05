@@ -2,7 +2,12 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
+import org.json.JSONObject;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 
 public interface AssetService {
 
@@ -30,4 +35,6 @@ public interface AssetService {
 	List<Asset> getAssetFilterListByLocationId(Long orgLocationId, String categoryIds) throws Exception;
 	
 	List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception;
+	
+	public void saveAssetDetails(JSONObject jsonObj,User user,OrgLocations orgLocations,MultipartHttpServletRequest request) throws Exception;
 }
