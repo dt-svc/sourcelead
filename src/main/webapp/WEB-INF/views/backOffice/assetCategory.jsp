@@ -22,12 +22,19 @@
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+ <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
 <script>
 $(document).ready(function(){
 	getAssetCategoryList();
 });
 </script> 
+
+<style>
+.table-wrap{
+      overflow-y: visible;
+  }
+</style>
                          
                          
 <section class="content-wraper">
@@ -45,86 +52,18 @@ $(document).ready(function(){
           <!-- Add Asset Popup -->
            <div id="popUpDiv"> 
            </div>
-          <%-- <form role="form"  id="addCategory_form" name="addCategory_form" method="post" > 
-          <div class="collapse-div-adduser col-md-4 category"><i class="fa fa-close close-div"></i>
-			  <div class="clearfix mb10"></div>
-            <!-- Laption popup div -->
-            <div class="clearfix">
-              <div class="form-horizontal clearfix">
-                <div class="clearfix mb10">
-                  <div class="col-md-12">
-                    <input type="text" class="form-control input-sm" field-name="Category name" id="categoryName" data-validation="required validate_Space validate_length length2-100" name="categoryName" placeholder="Category Name *">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-12">
-                    <textarea class="form-control" rows="2" placeholder="Description"  data-validation="validate_Space validate_length length5-500" id="description" name="description"></textarea>
-                  </div>
-                </div>
-
-                <!-- Shift A Fields -->
-                <div class="clearfix mr">
-                  <div class="pull-right">
-	                 <button type="button" id="update_button" class="btn btn-sm btn-primary pull-right">Update</button>';
-                    <button type="submit" class="btn btn-sm btn-primary" value="Add" name="btnAddPr" id="save_button" onclick="addCategory(null,null);">Add</button>
-                    <button type="submit" class="btn btn-sm btn-default ml10">Cancel</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          </form> --%>
-          <!-- Add Category Popup --> 
         </li>
         <li>
         </li>
         <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>
-      <div class="remove_search">
-        <input type="text" placeholder="search" />
-      </div>
     </div>
     <div class="require_wrap_table table-wrap">
     <div id="popUp"></div>
     <table id="assetCategoryList" class="display" cellspacing="0" width="100%"> </table>
-      <!-- <table>
-        <thead>
-          <tr>
-            <th>Category</th>
-            <th>Description</th>
-            <th>Created By</th>
-            <th>Date</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-             <a href="javascript:void(0)" class="tbldata-dotdot">
-              <div class="proj_show"> <span class="tbldata-dotdot-sm">Laptop</span> <i class="fa fa-binoculars"></i> </div>
-              </a>
-              </td>
-            <td><div class="tbldata-dotdot-vsm">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</div></td>
-            <td><div class="tbldata-dotdot-vsm">Abhibhushpam Kumar Sarangapani</div></td>
-            <td><div class="tbldata-dotdot-vsm" title="HitechCity, Hyderabad">25/09/2016</div></td>
-			  <td><div><i class="glyphicon glyphicon-trash"></i></div></td>
-          </tr>
-        </tbody>
-      </table> -->
+     
     </div>
-    <nav>
-      <ul id="paging" class="pagination">
-        <li><a href="#">Previous</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li class="disabled"><a href="#">6</a></li>
-        <li data-page="last"><a href="#">Next</a></li>
-      </ul>
-      <div class="clearfix"></div>
-    </nav>
   </div>
   <div class="side_mask">
     <div class="proj_close"></div>
@@ -198,6 +137,7 @@ $(document).ready(function(){
 	   	        	result = result +'</tbody>';
 	   	    	    $("#assetCategoryList").empty();  
 	   	    	    $("#assetCategoryList").append(result)
+	   	    	    pagination();
 	   	    	 $(".addcon-pop1").click(function(){
 	   	    		 $(".collapse-div-adduser").toggleClass("show-div");
 	   	    		 $(".collapse-div").removeClass("show-div");
@@ -207,6 +147,21 @@ $(document).ready(function(){
 	   		    }
 		  });
 	}
+</script>
+
+<script>
+function pagination(){  
+    $('#assetCategoryList').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
 </script>
   
 <script>
@@ -220,12 +175,7 @@ $(".addcon-pop").click(function(){
  $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div, #save_button").click(function(e){
 	 e.stopPropagation();
  });
- /* $('html').click(function(){
-    $(".collapse-div-adduser").removeClass("show-div");
-	$(".collapse-div").removeClass("show-div");
-   }); */
-	
-	</script>
+</script>
 
 <script type="text/javascript">
 	(function($) {
