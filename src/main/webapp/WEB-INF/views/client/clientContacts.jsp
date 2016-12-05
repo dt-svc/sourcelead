@@ -704,7 +704,11 @@ function acceptSpocInvitation(spocId,orgRelationId,clientLocationId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Accepted",	    	   
 		    success: function(data) {
-		    	clientContactList(orgRelationId,clientLocationId);
+		    	$("#clientTerminateMsgDiv").removeAttr("style");
+	 			$("#clientTerminateMsgDiv").css({ display: "block" });
+	 			$("#clientTerminateMsg").html("Invitation Accepted");
+	 			clientContactList(orgRelationId,clientLocationId);
+		    	clientTerminateMsgFadein();
 		    }
 	   });
 }
@@ -717,7 +721,11 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Rejected",
 		    success: function(data) {
-		    	clientContactList(orgRelationId,clientLocationId);
+		    	$("#clientTerminateMsgDiv").removeAttr("style");
+	 			$("#clientTerminateMsgDiv").css({ display: "block" });
+	 			$("#clientTerminateMsg").html("Invitation Rejected");
+	 			clientContactList(orgRelationId,clientLocationId);
+		    	clientTerminateMsgFadein();
 		    }
 	   });
 }

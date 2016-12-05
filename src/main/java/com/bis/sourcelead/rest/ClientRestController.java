@@ -341,6 +341,12 @@ public class ClientRestController {
 				if(msg != null && msg != ""){
 					orgSpoc.setMsg(msg);
 					SourceLeadSessionManager.removeSessionAttribute(request, "clientContactCreateMsg");
+				}else{
+					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "vendorContactCreateMsg");
+					if(msg != null){
+						orgSpoc.setMsg(msg);
+						SourceLeadSessionManager.removeSessionAttribute(request, "vendorContactCreateMsg");
+					}
 				}
 				String ownerLastName = "";
 				if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getLastName() != null){
@@ -647,6 +653,10 @@ public class ClientRestController {
 		if(msg != null && msg != ""){
 			orgRelation.setMsg(msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "editClient");
+		}else{
+			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editVendor");
+			orgRelation.setMsg(msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "editVendor");
 		}
 		String resultJson;
 		resultJson = commonUtil.toJSON(orgRelation);
@@ -691,6 +701,7 @@ public class ClientRestController {
 	
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	       clientService.updateVendorDetails(jsonObj, orgRelationId,vendorLocationId, orgLocation.getId());
+	       SourceLeadSessionManager.setSessionAttribute(request, "editVendor","Success !! "+jsonObj.getString("vendorName")+" details updated.");
 
 		return "success";
 	}

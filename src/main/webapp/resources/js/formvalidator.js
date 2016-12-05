@@ -1024,7 +1024,7 @@ jQueryFormUtils.validateMaskZipCode = function(val) {
 };
 //Below is REGEX for firstName
 jQueryFormUtils.validateName = function(val) {
-	return val.match(/^[A-Za-z][A-Za-z0-9( \+&$@#!.,?:;"']*$/) !== null;
+	return val.match(/^[A-Za-z][A-Za-z0-9( \+&$@#!.,*-_?:;"']*$/) !== null;
 };
 // Below is REGEX for SpecialChar
  jQueryFormUtils.validateSpecialChar = function(val) {
@@ -1351,7 +1351,7 @@ jQueryFormUtils.LANG =  {
 	badOrgname: 'Only Alphanumeric Ampersand period and Hyphen Allowed',
 	badSpecialChar: 'Only -_.,&() are allowed',
 	badTax: 'Only - and Alpha Numerics Allowed',
-	badName: 'First letter should be Alphabet'
+	badName: 'Muststart with Alphabet & Only \+&$@#!.,*-_?:;" allowed.'
 };
 /**
  * Validate url
