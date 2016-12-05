@@ -47,9 +47,8 @@ $(document).ready(function(){
          <li><i class="fa fa-filter"></i><span>Working Status</span><i class="glyphicon glyphicon-play" id="workingStatus"></i>|
           <div class="approved_pop">
             <ul>
-                   <c:forEach var="report" items="${assetCategoriesList}">  
-		               <li><input  id="category${report.id}" name="categoryId" value ="${report.id}"  onclick="getAssetList();"  type="checkbox"><label>${report.categoryName}</label></li>
-				   </c:forEach>
+                    <li><input id="c1" type="checkbox"  name="workingStatus"  value ="Working"  onclick="getAssetList();"  ><label>Working</label></li>
+				    <li><input id="c2" type="checkbox"  name="workingStatus"  value ="Out Of Service"   onclick="getAssetList();"><label>Out Of Service</label></li>
             </ul>
           </div>
         </li>
@@ -619,9 +618,16 @@ var validationSettings = {
 	    {
 			categoryIds.push($(this).val());
 	    });
+		
+		var workingStatus = [];
+		$('input:checkbox[name=workingStatus]:checked').each(function() 
+	    {
+			workingStatus.push($(this).val());
+	    });
+		
 		  $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/getAssetList?${_csrf.parameterName}=${_csrf.token}&categoryIds="+categoryIds, 	   
+			    url: sourceleadUrl+"/getAssetList?${_csrf.parameterName}=${_csrf.token}&categoryIds="+categoryIds+"&workingStatus="+workingStatus, 	   
 	   		    success: function(data) {
 	   		    	
 	   		    	
@@ -645,6 +651,9 @@ var validationSettings = {
 		   	     	    var shiftAEmpName = "--- ";
 					    var shiftBEmpName = "--- ";
 					    var model = "---";
+					    var selected1 = '';
+	   					var selected2 = '';
+					    
 					    var report = json[i];
 					    
 					    if (report.shiftAEmpName != null && report.shiftAEmpName != '' && report.shiftAEmpName != 'undefined') {
@@ -658,8 +667,16 @@ var validationSettings = {
 						if (report.model != null && report.model != '' && report.model != 'undefined') {
 							model = report.model;
 						}
+						
+						if(report.workingStatus == 'Working'){
+							selected1 = 'selected';
+						} 
+					
+						if(report.workingStatus == 'Out Of Service'){
+							selected2 = 'selected';
+						} 
 
-						result = result+'<tr>';
+						result = result+'<tr id="'+report.id+'">';
 			   	        result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot-sm">';
 					   	result = result+'<div class="proj_show" onclick="assetSideBar('+report.id+');"> <span class="tbldata-dotdot-100">'+report.slno+'</span> <i class="fa fa-binoculars"></i> </div>';
 					   	result = result+'</a></td>';
@@ -667,7 +684,14 @@ var validationSettings = {
 						result = result+'<td><div class="tbldata-dotdot-vsm">'+model+'</div></td>';
 					   	result = result+'<td><div class="tbldata-dotdot-vsm" >'+shiftAEmpName+'</div></td>';
 					   	result = result+'<td><div class="tbldata-dotdot-vsm" >'+shiftBEmpName+'</div></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-100">'+report.workingStatus+'</div></td>';
+					   	
+					   	result = result + ' <td><div class="tbldata-dotdot-100">';
+						result = result + ' <select id="workingStatus'+report.id+'" name="workingStatus" onChange="updateWorkingStatus(\''+report.id+'\');">';
+						result = result + ' <option '+selected1+'>Working</option>';
+						result = result + ' <option '+selected2+'>Out Of Service</option>';
+						result = result + ' </select>';
+						result = result + ' </div></td>';
+					   	
 					   	result = result+'<td><div class="tblminwidth-50"><i class="fa fa-trash-o text-danger"></i></div></td>';
 			   	        result = result +'</tr>';
 	   				}
@@ -698,6 +722,47 @@ function pagination1(){
      		"sSearch": ""
      	}
     })
+}
+</script>
+
+<script>
+function updateWorkingStatus(assetId){
+    var workingStatus = $('#workingStatus'+assetId).val();
+	var sourceleadUrl = '${sourceleadUrl}';
+	var rowHtmlContent =  $("#"+assetId).html();
+	
+	 $("#"+assetId).empty();
+	 $("#"+assetId).html("<td colspan='7'  id='loading"+assetId+"'></td>");
+	 $("#loading"+assetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/updateAssetWorkingStatus?${_csrf.parameterName}=${_csrf.token}&assetId="+assetId+"&workingStatus="+workingStatus,	    	   
+	    success: function(data) {
+	    	$("#"+assetId).empty();
+	    	$("#"+assetId).html(rowHtmlContent);
+	        $("#workingStatus"+assetId).val(workingStatus);
+	    	
+	    }
+   });
+}
+</script>
+
+<script>
+function removeAssetManagement(assetId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var rowHtmlContent =  $("#"+assetId).html();
+	
+	 $("#"+assetId).empty();
+	 $("#"+assetId).html("<td colspan='7'  id='loading"+assetId+"'></td>");
+	 $("#loading"+assetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/removeAssetManagement?${_csrf.parameterName}=${_csrf.token}&assetId="+assetId,	    	   
+	    success: function(data) {
+	    	 var table = $('#example').DataTable();
+  		     table.row("#"+assetId).remove().draw( false );
+	    }
+   });
 }
 </script>
 
@@ -844,14 +909,26 @@ function pagination1(){
 
 // Approved Popup
     $("#category").click(function(){
-		$(".approved_pop").toggle();
+    	$(this).next(".approved_pop").toggle();
 	});
     $("html").click(function() {
         $(".approved_pop").slideUp();
     });
     $(".approved_pop, #category").click(function(e) {
         e.stopPropagation();
-    });	
+    });
+    
+    $("#workingStatus").click(function(){
+		$(this).next(".approved_pop").toggle();
+	});
+    $("html").click(function() {
+        $(".approved_pop").slideUp();
+    });
+    $(".approved_pop, #workingStatus").click(function(e) {
+        e.stopPropagation();
+    });
+    
+    
 
 // Export Popup
     $("#export-pop").click(function(){

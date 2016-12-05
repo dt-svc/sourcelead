@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -90,11 +91,15 @@ public class AssetDaoImpl implements AssetDao{
 	 */
 	@Override
 	@Transactional
-	public List<Asset> getAssetFilterListByLocationId(Long orgLocationId, String categoryIds) throws Exception {
+	public List<Asset> getAssetFilterListByLocationId(Long orgLocationId, String categoryIds,String workingStatus) throws Exception {
 		logger.debug("In AssetDaoImpl getAssetFilterListByLocationId method");
 		Session session =  this.sessionFactory.getCurrentSession();
 		String[] category = null;
 		String subquery1 = "";
+		
+		String[] status = workingStatus.split(",");
+		String subquery2 = "";
+		
 		if(categoryIds != null){
 			category = categoryIds.split(",");
 		}
@@ -107,7 +112,19 @@ public class AssetDaoImpl implements AssetDao{
 				subquery1 = " and " +subquery1;
 			}
 		}
-		String query = "from Asset asset left join fetch asset.shiftAEmployee.user left join fetch asset.shiftBEmployee.user  where asset.orgLocations.id = :orgLocationId and asset.status = '1' "+subquery1+" "; 
+		
+		if (Arrays.asList(status).contains("Working")) {
+			subquery2 = subquery2 + "asset.workingStatus = 'Working' OR ";
+		}
+		if (Arrays.asList(status).contains("Out Of Service")) {
+			subquery2 = subquery2 + "asset.workingStatus = 'Out Of Service' OR ";
+		}
+		if(!subquery2.equalsIgnoreCase("")){
+			subquery2 = " (" + subquery2.substring(0, subquery2.length() - 4) + ")";
+			subquery2 = " and " +subquery2;
+		}
+		
+		String query = "from Asset asset left join fetch asset.shiftAEmployee.user left join fetch asset.shiftBEmployee.user  where asset.orgLocations.id = :orgLocationId and asset.status = '1' "+subquery1+" "+subquery2+" "; 
 		List<Asset> assetList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return assetList;
 	}

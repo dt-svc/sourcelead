@@ -367,15 +367,23 @@ public class BackOfficeRestController {
 	
 	
 	
-	
+	/**
+	 * @author Prasad Salina
+	 * @param request
+	 * @param categoryIds
+	 * @param workingStatus
+	 * @return
+	 * @throws Exception
+	 * To get the Asset Management List by using filters
+	 */
 	@RequestMapping(value = "/getAssetList")
 	@ResponseBody
-	public String getAssetList(HttpServletRequest request,@RequestParam(value="categoryIds", required=false) String categoryIds) throws Exception {
+	public String getAssetList(HttpServletRequest request,@RequestParam(value="categoryIds", required=false) String categoryIds,@RequestParam(value="workingStatus", required=false) String workingStatus) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson = null;
 		
-		List<Asset> assetList = assetService.getAssetFilterListByLocationId(orgLocations.getId(),categoryIds);
+		List<Asset> assetList = assetService.getAssetFilterListByLocationId(orgLocations.getId(),categoryIds,workingStatus);
 		ArrayList<Asset> assetsList = new ArrayList<Asset>();
 		for(Asset asset : assetList){
 			asset.setCategoryName(asset.getAssetCategory().getCategoryName());
@@ -385,6 +393,41 @@ public class BackOfficeRestController {
 		resultJson = toJSON(assetsList);
 		return resultJson;
 	}
+	
+	/**
+	 * @author Prasad Salina
+	 * @param assetId
+	 * @param workingStatus
+	 * @return
+	 * @throws Exception
+	 * To update working status of Asset Management
+	 */
+	 @RequestMapping(value = "/updateAssetWorkingStatus", method = RequestMethod.POST)
+	 @ResponseBody String updateAssetWorkingStatus(@RequestParam(value = "assetId", required = false) Long assetId,@RequestParam(value="workingStatus", required=false) String workingStatus) throws Exception {
+	       Asset asset = assetService.getAssetById(assetId);
+           if(asset != null){
+				asset.setWorkingStatus(workingStatus);
+				assetService.saveAsset(asset);
+			}
+			return "success";
+	 }
+	 
+	 /**
+	  * @author Prasad Salina
+	  * @param assetId
+	  * @return
+	  * @throws Exception
+	  * To remove Asset Management
+	  */
+	 @RequestMapping(value = "/removeAssetManagement", method = RequestMethod.POST)
+	 @ResponseBody String removeAssetManagement(@RequestParam(value = "assetId", required = false) Long assetId) throws Exception {
+	       Asset asset = assetService.getAssetById(assetId);
+           if(asset != null){
+				asset.setStatus(Constants.RECORD_INACTIVE);
+				assetService.saveAsset(asset);
+			}
+			return "success";
+	 }
 	
 	/**
 	 * @author Prasad Salina
