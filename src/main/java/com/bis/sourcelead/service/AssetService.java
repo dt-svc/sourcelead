@@ -27,12 +27,13 @@ public interface AssetService {
 	 * 
 	 * @param orgLocationId
 	 * @param categoryIds
+	 * @param workingStatus 
 	 * @return
 	 * @throws Exception
 	 * To get the asset list with filters.
 	 * This method used in BackOfficeRestController
 	 */
-	List<Asset> getAssetFilterListByLocationId(Long orgLocationId, String categoryIds) throws Exception;
+	List<Asset> getAssetFilterListByLocationId(Long orgLocationId, String categoryIds, String workingStatus) throws Exception;
 	
 	List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception;
 	

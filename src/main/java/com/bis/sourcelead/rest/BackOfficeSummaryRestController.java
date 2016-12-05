@@ -207,8 +207,7 @@ public class BackOfficeSummaryRestController {
 		        BoUploadedFiles boUploadedFiles =  boUploadedFilesService.getBoUploadedFileById(Long.parseLong(fileId));
 			    
 			    response.setContentType("application/octet-stream");
-		        response.setHeader("Content-Disposition",
-		                "attachment;filename="+boUploadedFiles.getFileName());
+		        response.setHeader("content-disposition", "attachment; filename=\"" + boUploadedFiles.getFileName() + "\"");
 			    
 				InputStream inputStream = new ByteArrayInputStream(boUploadedFiles.getDocFile());
 				try {
