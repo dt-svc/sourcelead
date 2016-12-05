@@ -28,7 +28,7 @@ $(document).ready(function(){
   <div class="pull-left">
     <h2>Asset Management</h2>
   </div>
-  <div class="pull-right brud-crum">Home &raquo; Back Office &raquo; Assetmanagement</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Assetmanagement</div>
 </section>
 <div class="timesheet_out">
   <div class="vendor_wrap">
@@ -676,7 +676,7 @@ var validationSettings = {
 							selected2 = 'selected';
 						} 
 
-						result = result+'<tr id="'+report.id+'">';
+						result = result+'<tr id="asset'+report.id+'">';
 			   	        result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot-sm">';
 					   	result = result+'<div class="proj_show" onclick="assetSideBar('+report.id+');"> <span class="tbldata-dotdot-100">'+report.slno+'</span> <i class="fa fa-binoculars"></i> </div>';
 					   	result = result+'</a></td>';
@@ -692,7 +692,7 @@ var validationSettings = {
 						result = result + ' </select>';
 						result = result + ' </div></td>';
 					   	
-					   	result = result+'<td><div class="tblminwidth-50"><i class="fa fa-trash-o text-danger"></i></div></td>';
+					   	result = result+'<td><div class="tblminwidth-50"><i class="fa fa-trash-o text-danger" onClick="deleteAsset(\''+report.id+'\')";></i></div></td>';
 			   	        result = result +'</tr>';
 	   				}
 		   	     	
@@ -729,17 +729,17 @@ function pagination1(){
 function updateWorkingStatus(assetId){
     var workingStatus = $('#workingStatus'+assetId).val();
 	var sourceleadUrl = '${sourceleadUrl}';
-	var rowHtmlContent =  $("#"+assetId).html();
+	var rowHtmlContent =  $("#asset"+assetId).html();
 	
-	 $("#"+assetId).empty();
-	 $("#"+assetId).html("<td colspan='7'  id='loading"+assetId+"'></td>");
+	 $("#asset"+assetId).empty();
+	 $("#asset"+assetId).html("<td colspan='7'  id='loading"+assetId+"'></td>");
 	 $("#loading"+assetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/updateAssetWorkingStatus?${_csrf.parameterName}=${_csrf.token}&assetId="+assetId+"&workingStatus="+workingStatus,	    	   
 	    success: function(data) {
-	    	$("#"+assetId).empty();
-	    	$("#"+assetId).html(rowHtmlContent);
+	    	$("#asset"+assetId).empty();
+	    	$("#asset"+assetId).html(rowHtmlContent);
 	        $("#workingStatus"+assetId).val(workingStatus);
 	    	
 	    }
@@ -747,20 +747,47 @@ function updateWorkingStatus(assetId){
 }
 </script>
 
+<script type="text/javascript">
+function deleteAsset(assetId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removeAssetManagement("+assetId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<div id="popUp"></div>
+
 <script>
 function removeAssetManagement(assetId){
-	var sourceleadUrl = '${sourceleadUrl}';
-	var rowHtmlContent =  $("#"+assetId).html();
+	 var sourceleadUrl = '${sourceleadUrl}';
 	
-	 $("#"+assetId).empty();
-	 $("#"+assetId).html("<td colspan='7'  id='loading"+assetId+"'></td>");
+	 $("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+	
+	 $("#asset"+assetId).empty();
+	 $("#asset"+assetId).html("<td colspan='7'  id='loading"+assetId+"'></td>");
 	 $("#loading"+assetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
-	$.ajax({
+	
+	 $.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/removeAssetManagement?${_csrf.parameterName}=${_csrf.token}&assetId="+assetId,	    	   
 	    success: function(data) {
-	    	 var table = $('#example').DataTable();
-  		     table.row("#"+assetId).remove().draw( false );
+	    	 var table = $('#assetManagementList').DataTable();
+  		     table.row("#asset"+assetId).remove().draw( false );
 	    }
    });
 }
@@ -1053,13 +1080,13 @@ $(document).ready(function(){
                 });
             });
         </script>
-  <div class="theme-color"> <span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
+  <!-- <div class="theme-color"> <span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
     <ul class="list-unstyled">
       <li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>
       <li><a href="#" class="" id="btn2"><span class="flat-green"></span><span class="dark-purle"></span></a></li>
       <li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
     </ul>
-  </div>
+  </div> -->
 </div>
 <script>
 $(".addcon-pop").click(function(){
