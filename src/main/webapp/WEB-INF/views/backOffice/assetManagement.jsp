@@ -63,16 +63,17 @@ $(document).ready(function(){
           <form:form id="addAsset_form"  name="addAsset_form" enctype='multipart/form-data'> 
            <i class="fa fa-close close-div" onclick="flushAsset();"></i>
 			  <div class="clearfix">
-            <div class="clearfix assetaddpop-ul col-md-6">
-				<select class="chosen-select" id="category" name="category" onChange="assetCategory(this)">
-					<c:forEach var="option" items="${categoryList}">
-							<option value="${option.categoryName},${option.id}" ${option.categoryName  == 'Laptop' ? 'selected' : ''}>${option.categoryName}</option>
+            <div class="clearfix assetaddpop-ul col-md-6" id="categoryDiv">
+				<select class="chosen-select" id="category" name="category" onChange="assetCategory(this);" data-validation="required" field-name="Asset Category">
+				<option selected value="">-Select Category-</option>
+					<c:forEach var="option" items="${assetCategoriesList}">
+							<option value="${option.categoryName},${option.id}">${option.categoryName}</option>
 					</c:forEach>
 				</select>	
             </div>
-            <div class="clearfix assetaddpop-ul col-md-6">
+            <div class="clearfix assetaddpop-ul col-md-6" id="workingStatusDiv">
 				<select class="chosen-select" id="workingStatus" name="workingStatus" data-validation="required" field-name="Working Status">
-					<option selected disabled>-Selct Working Status-</option>
+					<option selected value="">-Select Working Status-</option>
 					<option value="Working">Working</option>
 					<option value="Out Of Service">Out Of Service</option>
 				</select>	
@@ -83,47 +84,47 @@ $(document).ready(function(){
             <div class="clearfix">
               <div class="form-horizontal clearfix">
                 <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="sno" name="sno" placeholder="Serial Number *" field-name="Sl No" data-validation="required">
+                  <div class="col-md-6" id="snoDiv">
+                    <input type="text" class="form-control input-sm" id="sno" name="sno" placeholder="Serial Number *" field-name="Sl No" data-validation="required validate_Space validate_length length2-200">
                   </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="make" name="make" placeholder="Make">
+                  <div class="col-md-6" id="makeDiv">
+                    <input type="text" class="form-control input-sm" id="make" name="make" placeholder="Make" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
                 </div>
                 <div class="clearfix mb10">
-                  <div class="col-md-4">
-                    <input type="text" class="form-control input-sm" id="model" name="model" placeholder="Model">
+                  <div class="col-md-4" id="modelDiv">
+                    <input type="text" class="form-control input-sm" id="model" name="model" placeholder="Model"  data-validation-optional="true" data-validation="validate_Space validate_length length2-100" >
                   </div>
-                  <div class="col-md-4">
-                    <input type="text" class="form-control input-sm" name="name" id="name" placeholder="Name" style="display: none;">
+                  <div class="col-md-4" id="nameDiv">
+                    <input type="text" class="form-control input-sm" name="name" id="name" placeholder="Name" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
-                  <div class="col-md-4">
-                    <input type="text" class="form-control input-sm" name="memory" id="memory" placeholder="Memory" style="display: none;">
+                  <div class="col-md-4" id="memoryDiv">
+                    <input type="text" class="form-control input-sm" name="memory" id="memory" placeholder="Memory" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-50">
                   </div>
                   
                 </div>
                 <div class="clearfix mb10">
-                  <div class="col-md-4">
-                    <input type="text" class="form-control input-sm" name="cpu" id="cpu" placeholder="CPU" style="display: none;">
+                  <div class="col-md-4" id="cpuDiv">
+                    <input type="text" class="form-control input-sm" name="cpu" id="cpu" placeholder="CPU" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
-                  <div class="col-md-4">
-                    <input type="text" class="form-control input-sm" name="harddisk" id="harddisk" placeholder="Hard Disk" style="display: none;">
+                  <div class="col-md-4" id="harddiskDiv">
+                    <input type="text" class="form-control input-sm" name="harddisk" id="harddisk" placeholder="Hard Disk" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
-                  <div class="col-md-4">
-                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor" style="display: none;">
+                  <div class="col-md-4" id="monitorDiv">
+                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
                 </div>
                 <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <div class="input-group">
+                  <div class="col-md-6" id="attachmentDiv">
+                    <div class="input-group" >
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                         <input type="file" name="attachment" id="attachment"  class="hidden upload">
                         </b> </label>
                       <input type="text" class="form-control" name="attachment" readonly id="uploadFileAttachment" placeholder="Files are not selected...">
                     </div>
                   </div>
-                  <div class="col-md-6">
-                    <textarea class="form-control" rows="2" name="description" id="description" placeholder="Description"></textarea>
+                  <div class="col-md-6" id="descriptionDiv">
+                    <textarea class="form-control" rows="2" name="description" id="description" placeholder="Description" data-validation-optional="true" data-validation="validate_Space"></textarea>
                   </div>
                 </div>
                 <!-- Shift A Fields -->
@@ -132,7 +133,7 @@ $(document).ready(function(){
                   <h4 class="col-md-12">Shift A</h4>
                 </div>
                 <div class="clearfix mb10">
-                  <div class="col-md-6">
+                  <div class="col-md-6" id="uploadFile-dskADiv">
                     <select class="form-control chosen-select" id="shiftAEmp" name="shiftAEmp">
                       <option selected value="">-Select Employee-</option>
                       <c:forEach var="option" items="${employeesList}">
@@ -140,7 +141,7 @@ $(document).ready(function(){
 					  </c:forEach>
                     </select>
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-6" id="uploadFile-dskBDiv">
                     <div class="input-group">
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                         <input type="file" name="uploadBtn-dskA" id="uploadBtn-dskA"  class="hidden upload">
@@ -180,7 +181,7 @@ $(document).ready(function(){
                 <!-- Shift A Fields -->
                 <div class="clearfix mr">
                   <div class="pull-right">
-                   <button type="submit" id="add_asset" class="btn btn-sm btn-primary">Add</button>
+                   <button type="submit" id="add_asset" onclick="checkAttachment();checkShiftAAttachment();checkShiftBAttachment();" class="btn btn-sm btn-primary">Add</button>
                   </div>
                 </div>
               </div>
@@ -563,6 +564,22 @@ var validationSettings = {
   
   <script>
   function flushAsset(){
+	  
+	    $('#snoDiv').find('p.jquery_form_error_message').remove();
+		$('#modelDiv').find('p.jquery_form_error_message').remove();
+		$("#monitorDiv").find('p.jquery_form_error_message').remove();
+	    $("#nameDiv").find('p.jquery_form_error_message').remove();
+	    $("#makeDiv").find('p.jquery_form_error_message').remove();
+	    $("#memoryDiv").find('p.jquery_form_error_message').remove();
+	    $("#descriptionDiv").find('p.jquery_form_error_message').remove();
+	    $("#cpuDiv").find('p.jquery_form_error_message').remove();
+	    $("#harddiskDiv").find('p.jquery_form_error_message').remove();
+	    $('#categoryDiv').find('p.jquery_form_error_message').remove();
+		$('#workingStatusDiv').find('p.jquery_form_error_message').remove();
+		$("#attachmentDiv").find('p.jquery_form_error_message').remove();
+	    $("#uploadFile-dskADiv").find('p.jquery_form_error_message').remove();
+	    $("#uploadFile-dskDiv").find('p.jquery_form_error_message').remove();
+	    
 	  $("#sno").val('');
 	  $("#model").val('');
 	  $("#monitor").val('');
@@ -574,6 +591,8 @@ var validationSettings = {
 	  $("#harddisk").val('');
 	  $("#uploadFile-dskA").val('');
 	  $("#uploadFile-dskB").val('');
+	  
+        
 	  
   }
   
@@ -684,43 +703,44 @@ function pagination1(){
    <script>
   function assetCategory(category){
 	  var selectedCategory = category.value;
-	  var  assestCategory = selectedCategory.split(",");
-	
-	   if(assestCategory[0] == 'Desktop'){
-		  document.getElementById("monitor").style.display="";
-		  document.getElementById("name").style.display="";
-		  document.getElementById("memory").style.display="";
-		  document.getElementById("cpu").style.display="";
-		  document.getElementById("harddisk").style.display="";
-		  document.getElementById("shiftADetails").style.display="";
-		  document.getElementById("shiftBDetails").style.display="";
-		  
-	  }else if((assestCategory[0] != 'Desktop' && assestCategory[0] == 'Laptop') || category == 'Laptop'){
-		  document.getElementById("monitor").style.display="none";
-		  document.getElementById("name").style.display="";
-		  document.getElementById("memory").style.display="";
-		  document.getElementById("cpu").style.display="";
-		  document.getElementById("harddisk").style.display="";
-		  document.getElementById("shiftADetails").style.display="";
-		  document.getElementById("shiftBDetails").style.display="";
-		  
-		  $("#monitor").val('');
-	  }else{
-		  document.getElementById("monitor").style.display="none";
-		  document.getElementById("memory").style.display="none";
-		  document.getElementById("cpu").style.display="none";
-		  document.getElementById("harddisk").style.display="none";
-		  document.getElementById("shiftADetails").style.display="none";
-		  document.getElementById("shiftBDetails").style.display="none";
-		  $("#monitor").val('');
-		  $("#name").val('');
-		  $("#memory").val('');
-		  $("#cpu").val('');
-		  $("#harddisk").val('');
-		  $("#uploadFile-dskA").val('');
-		  $("#uploadFile-dskB").val('');
-	  } 
-	 
+	  if(selectedCategory){
+		  var  assestCategory = selectedCategory.split(",");
+		
+		   if(assestCategory[0] == 'Desktop'){
+			  document.getElementById("monitor").style.display="";
+			  document.getElementById("name").style.display="";
+			  document.getElementById("memory").style.display="";
+			  document.getElementById("cpu").style.display="";
+			  document.getElementById("harddisk").style.display="";
+			  document.getElementById("shiftADetails").style.display="";
+			  document.getElementById("shiftBDetails").style.display="";
+			  
+		  }else if((assestCategory[0] != 'Desktop' && assestCategory[0] == 'Laptop') || category == 'Laptop'){
+			  document.getElementById("monitor").style.display="none";
+			  document.getElementById("name").style.display="";
+			  document.getElementById("memory").style.display="";
+			  document.getElementById("cpu").style.display="";
+			  document.getElementById("harddisk").style.display="";
+			  document.getElementById("shiftADetails").style.display="";
+			  document.getElementById("shiftBDetails").style.display="";
+			  
+			  $("#monitor").val('');
+		  }else{
+			  document.getElementById("monitor").style.display="none";
+			  document.getElementById("memory").style.display="none";
+			  document.getElementById("cpu").style.display="none";
+			  document.getElementById("harddisk").style.display="none";
+			  document.getElementById("shiftADetails").style.display="none";
+			  document.getElementById("shiftBDetails").style.display="none";
+			  $("#monitor").val('');
+			  $("#name").val('');
+			  $("#memory").val('');
+			  $("#cpu").val('');
+			  $("#harddisk").val('');
+			  $("#uploadFile-dskA").val('');
+			  $("#uploadFile-dskB").val('');
+		  } 
+	  }
   }
   </script>
   
@@ -981,16 +1001,135 @@ $(".addcon-pop").click(function(){
   };
 	
 	</script>
-<div class="clearfix mb10 hidden">
-  <div class="col-md-7">
-    <input type="text" class="form-control input-sm" value="" placeholder="Amount *">
-  </div>
-  <div class="col-md-5 select-field">
-    <select class="form-control input-sm">
-      <option>Debit</option>
-      <option>Credit</option>
-    </select>
-  </div>
-</div>
+
+
+
+<script type="text/javascript">
+  function checkAttachment() {
+    
+    var uploadedFile = document.getElementById('attachment').value;
+    if(uploadedFile){
+    	var sizeinbytes = document.getElementById('attachment').files[0].size;
+        
+        var extension = uploadedFile.substring(uploadedFile.lastIndexOf(".")+1).toLowerCase();
+        if(extension != 'pdf'){
+     		
+           $("input#attachment").after("<p class='jquery_form_error_message'>");
+       	   document.getElementById("attachment").setAttribute('record-exist', 'yes');
+       	   document.getElementById("attachment").setAttribute('record-exist-errorMsg',"Invalid file Format. Only pdf are allowed.");
+       	   $("#addAsset_form").click(function() {
+     		if ($(this).validate(false, validationSettings)) {
+     		}
+     	});
+        	
+        }else if(sizeinbytes > 500000){
+        	 $("input#attachment").after("<p class='jquery_form_error_message'>");
+         	   document.getElementById("attachment").setAttribute('record-exist', 'yes');
+         	   document.getElementById("attachment").setAttribute('record-exist-errorMsg',"Invalid file size. Should less than 500 kb.");
+     	  	 $("#addAsset_form").click(function() {
+     	 		if ($(this).validate(false, validationSettings)) {
+     	 		}
+     	 	});
+        	
+        }else{
+        	$('#attachment').find('p.jquery_form_error_message').remove();
+        	$('input#attachment').removeAttr( "class record-exist record-exist-errormsg");
+        	$('input#attachment').attr('class','hidden upload');
+        }
+    }
+    
+   
+  };
+</script>
+
+
+<script type="text/javascript">
+  function checkShiftAAttachment() {
+    
+    var uploadedFile = document.getElementById('uploadBtn-dskA').value;
+    if(uploadedFile){
+    var sizeinbytes = document.getElementById('uploadBtn-dskA').files[0].size;
+    
+    var extension = uploadedFile.substring(uploadedFile.lastIndexOf(".")+1).toLowerCase();
+    if(extension != 'pdf'){
+ 		
+       $("input#uploadBtn-dskA").after("<p class='jquery_form_error_message'>");
+   	   document.getElementById("uploadBtn-dskA").setAttribute('record-exist', 'yes');
+   	   document.getElementById("uploadBtn-dskA").setAttribute('record-exist-errorMsg',"Invalid file Format. Only pdf are allowed.");
+   	   $("#addAsset_form").click(function() {
+ 		if ($(this).validate(false, validationSettings)) {
+ 		}
+ 	});
+    	
+    }else if(sizeinbytes > 500000){
+    	 $("input#uploadBtn-dskA").after("<p class='jquery_form_error_message'>");
+     	   document.getElementById("uploadBtn-dskA").setAttribute('record-exist', 'yes');
+     	   document.getElementById("uploadBtn-dskA").setAttribute('record-exist-errorMsg',"Invalid file size. Should less than 500 kb.");
+ 	  	 $("#addAsset_form").click(function() {
+ 	 		if ($(this).validate(false, validationSettings)) {
+ 	 		}
+ 	 	});
+    	
+    }else{
+    	$('#uploadBtn-dskA').find('p.jquery_form_error_message').remove();
+    	$('input#uploadBtn-dskA').removeAttr( "class record-exist record-exist-errormsg");
+    	$('input#uploadBtn-dskA').attr('class','hidden upload');
+    }
+    }
+   
+  };
+</script>
+
+
+<script type="text/javascript">
+  function checkShiftBAttachment() {
+    
+    var uploadedFile = document.getElementById('uploadBtn-dskB').value;
+    if(uploadedFile){
+    var sizeinbytes = document.getElementById('uploadBtn-dskB').files[0].size;
+    
+    var extension = uploadedFile.substring(uploadedFile.lastIndexOf(".")+1).toLowerCase();
+    if(extension != 'pdf'){
+ 		
+       $("input#uploadBtn-dskB").after("<p class='jquery_form_error_message'>");
+   	   document.getElementById("uploadBtn-dskB").setAttribute('record-exist', 'yes');
+   	   document.getElementById("uploadBtn-dskB").setAttribute('record-exist-errorMsg',"Invalid file Format. Only pdf are allowed.");
+   	   $("#addAsset_form").click(function() {
+ 		if ($(this).validate(false, validationSettings)) {
+ 		}
+ 	});
+    	
+    }else if(sizeinbytes > 500000){
+    	 $("input#uploadBtn-dskB").after("<p class='jquery_form_error_message'>");
+     	   document.getElementById("uploadBtn-dskB").setAttribute('record-exist', 'yes');
+     	   document.getElementById("uploadBtn-dskB").setAttribute('record-exist-errorMsg',"Invalid file size. Should less than 500 kb.");
+ 	  	 $("#addAsset_form").click(function() {
+ 	 		if ($(this).validate(false, validationSettings)) {
+ 	 		}
+ 	 	});
+    	
+    }else{
+    	$('#uploadBtn-dskB').find('p.jquery_form_error_message').remove();
+    	$('input#uploadBtn-dskB').removeAttr( "class record-exist record-exist-errormsg");
+    	$('input#uploadBtn-dskB').attr('class','hidden upload');
+    }
+    }
+   
+  };
+</script>
+
+
+
+
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
+
+
 <jsp:include page="assetManagementDetails.jsp" />
 <jsp:include page="../masterFooter.jsp" />
