@@ -43,6 +43,17 @@ $(document).ready(function(){
             </ul>
           </div>
         </li>
+        
+         <li><i class="fa fa-filter"></i><span>Working Status</span><i class="glyphicon glyphicon-play" id="workingStatus"></i>|
+          <div class="approved_pop">
+            <ul>
+                   <c:forEach var="report" items="${assetCategoriesList}">  
+		               <li><input  id="category${report.id}" name="categoryId" value ="${report.id}"  onclick="getAssetList();"  type="checkbox"><label>${report.categoryName}</label></li>
+				   </c:forEach>
+            </ul>
+          </div>
+        </li>
+        
          <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
           <div class="export_pop">
             <ul>

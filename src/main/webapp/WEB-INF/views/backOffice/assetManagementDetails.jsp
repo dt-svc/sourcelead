@@ -38,9 +38,9 @@ function assetDetails(assetId) {
 						model = json.model;
 					} 
 					
-					/* if (json.name != null && json.name != '' && json.name != 'undefined') {
+					if (json.name != null && json.name != '' && json.name != 'undefined') {
 						name = json.name;
-					}  */
+					}  
 					
 					if (json.memory != null && json.memory != '' && json.memory != 'undefined') {
 						memory = json.memory;
@@ -95,51 +95,70 @@ function assetDetails(assetId) {
 					result = result + '  <div class="clearfix"></div>';
 					result = result + ' </div>';
 					
-					/* result = result + ' <div class="require_wrap_details_cta"> <b>Name:</b> <span>'+name+'</span>';
+					result = result + ' <div class="require_wrap_details_cta"> <b>Name:</b> <span>'+name+'</span>';
 					result = result + '  <div class="clearfix"></div>';
-					result = result + ' </div>'; */
+					result = result + ' </div>'; 
 					
-					result = result + '<div class="require_wrap_details_cta"> <b>Memory:</b> <span>'+memory+'</span>';
-					result = result + ' <div class="clearfix"></div>';
-					result = result + '</div>';
-					
-					result = result + '<div class="require_wrap_details_cta"> <b>CPU:</b> <span>'+cpu+'</span>';
-					result = result + ' <div class="clearfix"></div>';
-					result = result + ' </div>';
-					
-					result = result + '<div class="require_wrap_details_cta"> <b>Working Status:</b> <span>'+workingStatus+'</span>';
-					result = result + ' <div class="clearfix"></div>';
-					result = result + ' </div>';
-					
-					result = result + ' <div class="require_wrap_details_cta"> <b>Hard Disk:</b> <span>'+hardDisk+'</span>';
-					result = result + ' <div class="clearfix"></div>';
-					result = result + ' </div>';
-					
-					if (json.assetCategory != null && json.assetCategory != '' && json.assetCategory != 'undefined' && json.assetCategory.id == 2) {
-						result = result + ' <div class="require_wrap_details_cta"> <b>Monitor:</b> <span>'+monitor+'</span>';
+					if (json.fileName != null && json.fileName != '' && json.fileName != 'undefined') {
+						result = result + ' <div class="require_wrap_details_cta"> <b>Attched File:</b> <span>'+json.fileName+'<a href=\"'+sourceleadUrl+'/downloadAssetFile?fileType=file&assetId='+json.id+'\"><i class="fa fa-download"></i></a></span>';
 						result = result + ' <div class="clearfix"></div>';
-						result = result + ' </div>';
+						result = result + '</div>';
+					}else{
+						result = result + ' <div class="require_wrap_details_cta"> <b>Attched File:</b> <span>NO DATA</span>';
+						result = result + ' <div class="clearfix"></div>';
+						result = result + '</div>';
 					}
 					
 					result = result + ' <div class="require_wrap_details_cta"> <b>Description:</b> <span>'+description+'</span>';
 					result = result + ' <div class="clearfix"></div>';
 					result = result + '</div>';
 					
-					result = result + ' <div class="require_wrap_details_cta"> <b>Shfit A:</b> <span>'+shiftAEmpName+'</span>';
-					result = result + '  <div class="clearfix"></div>';
-					result = result + '</div>';
+					result = result + '<div class="require_wrap_details_cta"> <b>Working Status:</b> <span>'+workingStatus+'</span>';
+					result = result + ' <div class="clearfix"></div>';
+					result = result + ' </div>';
 					
-					result = result + ' <div class="require_wrap_details_cta"> <b>Attched File:</b> <span>Attched File</span>';
-					result = result + '   <div class="clearfix"></div>';
-					result = result + '  </div>';
+					//this block not visible to others category assets
+					if (json.assetCategory != null && json.assetCategory != '' && json.assetCategory != 'undefined' && json.assetCategory.id != 3) {
+						result = result + '<div class="require_wrap_details_cta"> <b>Memory:</b> <span>'+memory+'</span>';
+						result = result + ' <div class="clearfix"></div>';
+						result = result + '</div>';
+						
+						result = result + '<div class="require_wrap_details_cta"> <b>CPU:</b> <span>'+cpu+'</span>';
+						result = result + ' <div class="clearfix"></div>';
+						result = result + ' </div>';
+						
+						result = result + ' <div class="require_wrap_details_cta"> <b>Hard Disk:</b> <span>'+hardDisk+'</span>';
+						result = result + ' <div class="clearfix"></div>';
+						result = result + ' </div>';
+						
+						if (json.assetCategory != null && json.assetCategory != '' && json.assetCategory != 'undefined' && json.assetCategory.id == 2) {
+							result = result + ' <div class="require_wrap_details_cta"> <b>Monitor:</b> <span>'+monitor+'</span>';
+							result = result + ' <div class="clearfix"></div>';
+							result = result + ' </div>';
+						}
+						
+						result = result + ' <div class="require_wrap_details_cta"> <b>Shfit A:</b> <span>'+shiftAEmpName+'</span>';
+						result = result + '  <div class="clearfix"></div>';
+						result = result + '</div>';
+						
+						if (json.shiftAFileName != null && json.shiftAFileName != '' && json.shiftAFileName != 'undefined') {
+							result = result + ' <div class="require_wrap_details_cta"> <b>Shfit A Attched File:</b> <span>'+json.shiftAFileName+'<a href=\"'+sourceleadUrl+'/downloadAssetFile?fileType=shiftAfile&assetId='+json.id+'\"><i class="fa fa-download"></i></a></span>';
+							result = result + '   <div class="clearfix"></div>';
+							result = result + '  </div>';
+						}
+						
+						result = result + '  <div class="require_wrap_details_cta"> <b>Shfit B:</b> <span>'+shiftBEmpName+'</span>';
+						result = result + '   <div class="clearfix"></div>';
+						result = result + '  </div>';
+						
+						if (json.shiftBFileName != null && json.shiftBFileName != '' && json.shiftBFileName != 'undefined') {
+							result = result + ' <div class="require_wrap_details_cta"> <b>Shfit B Attched File:</b> <span>'+json.shiftBFileName+'<a href=\"'+sourceleadUrl+'/downloadAssetFile?fileType=shiftBfile&assetId='+json.id+'\"><i class="fa fa-download"></i></a></span>';
+							result = result + '   <div class="clearfix"></div>';
+							result = result + '  </div>';
+						}
+					}
+					//this block not visible to others category assets
 					
-					result = result + '  <div class="require_wrap_details_cta"> <b>Shfit B:</b> <span>'+shiftBEmpName+'</span>';
-					result = result + '   <div class="clearfix"></div>';
-					result = result + '  </div>';
-					
-					result = result + '  <div class="require_wrap_details_cta"> <b>Attched File:</b> <span>Attched File</span>';
-					result = result + '   <div class="clearfix"></div>';
-					result = result + '  </div>';
 					
 					result = result + '  <div class="clearfix"></div>';
 					result = result + '  </div>';
