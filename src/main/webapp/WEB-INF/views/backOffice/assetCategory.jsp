@@ -439,7 +439,8 @@ function deleteCategory(categoryId){
 function terminateCategory(categoryId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	if (categoryId != null && categoryId != '') {
-		$("#category"+categoryId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+		$("#category"+categoryId).html("<td colspan='5'  id='loading"+categoryId+"'></td>");
+		$("#loading"+categoryId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/terminateCategory?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId,
