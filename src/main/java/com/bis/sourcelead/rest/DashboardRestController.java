@@ -282,6 +282,50 @@ public class DashboardRestController {
 		resultJson = commonUtil.toJSON(requirementList);
 		return resultJson;
 	 }
+	 
+	 /**
+	   * @author sarath kumar
+	   * @since  oct 26 2016
+	   * @version 0.0.1
+	   * 
+	   *  
+	   * @return string 
+	   * 
+	   * @throws NullPointer
+	   */
+	 
+	 @RequestMapping(value = "/getApproverRequirementApproverListByOrgLocationIDAndUserId")
+	 public String getApproverRequirementApproverListByOrgLocationIDAndUserId(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
+
+		String resultJson;
+		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		
+		String userCode = user.getUserCode();
+		String userType = null;
+		List<Requirement>   requirementList = null;
+		
+		if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
+			userType = "ADMIN";
+			requirementList = requirementService.getApproverRequirementApproverListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
+		}else{
+			requirementList = requirementService.getApproverRequirementApproverListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
+		}
+		
+		//List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(),user.getId());
+		for(Requirement requirement : requirementList){
+			// to get the RequirementApproverHierarchy to set the Status
+			RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), user.getId());
+			if(requirementApproverHierarchy!=null){
+				requirement.setRequirementApproverHierarchyStatus(requirementApproverHierarchy.getRequirementApproverStatus().toString());
+			}
+		}	
+		resultJson = commonUtil.toJSON(requirementList);
+		return resultJson;
+	 }
+	 
 	
 	 /**
 		 * 
