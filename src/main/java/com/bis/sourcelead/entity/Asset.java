@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -32,7 +33,11 @@ public class Asset implements Serializable{
 	
 	
 	@Column(name = "SL_NO")
-	private Integer slno;
+	private String slno;
+	
+	
+	@Column(name = "NAME")
+	private String name;
 	
 	
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -123,6 +128,15 @@ public class Asset implements Serializable{
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	private String shiftAEmpName;
+	
+	@Transient 
+	private String shiftBEmpName;
+	
+	@Transient 
+	private String categoryName;
 
 	public Long getId() {
 		return id;
@@ -132,12 +146,22 @@ public class Asset implements Serializable{
 		this.id = id;
 	}
 
-	public Integer getSlno() {
+	
+
+	public String getSlno() {
 		return slno;
 	}
 
-	public void setSlno(Integer slno) {
+	public void setSlno(String slno) {
 		this.slno = slno;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public AssetCategory getAssetCategory() {
@@ -325,6 +349,22 @@ public class Asset implements Serializable{
 		this.updatedBy = updatedBy;
 	}
 
+	public String getShiftAEmpName() {
+		return shiftAEmpName;
+	}
+
+	public void setShiftAEmpName(String shiftAEmpName) {
+		this.shiftAEmpName = shiftAEmpName;
+	}
+
+	public String getShiftBEmpName() {
+		return shiftBEmpName;
+	}
+
+	public void setShiftBEmpName(String shiftBEmpName) {
+		this.shiftBEmpName = shiftBEmpName;
+	}
+
 	public byte[] getDocFile() {
 		return docFile;
 	}
@@ -347,6 +387,14 @@ public class Asset implements Serializable{
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
 
 }

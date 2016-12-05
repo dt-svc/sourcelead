@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Asset;
@@ -325,14 +326,36 @@ public class BackOfficeRestController {
 	
 	@RequestMapping(value = "/getAssetList")
 	@ResponseBody
-	public String getAssetList(HttpServletRequest request) throws Exception {
+	public String getAssetList(HttpServletRequest request,@RequestParam(value="categoryIds", required=false) String categoryIds) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson = null;
 		
-		List<Asset> assetList = assetService.getAssetListByLocationId(orgLocations.getId());
-		
-		resultJson = toJSON(assetList);
+		List<Asset> assetList = assetService.getAssetFilterListByLocationId(orgLocations.getId(),categoryIds);
+		ArrayList<Asset> assetsList = new ArrayList<Asset>();
+		for(Asset asset : assetList){
+			asset.setCategoryName(asset.getAssetCategory().getCategoryName());
+			assetsList.add(asset);
+			
+		}
+		resultJson = toJSON(assetsList);
+		return resultJson;
+	}
+	
+	/**
+	 * @author Prasad Salina
+	 * @param request
+	 * @param assetId
+	 * @return
+	 * @throws Exception
+	 * To get asset by Id
+	 */
+	@RequestMapping(value = "/getAssetById")
+	@ResponseBody
+	public String getAssetById(HttpServletRequest request,@RequestParam(value="assetId", required=false) Long assetId) throws Exception {
+		String resultJson = null;
+		Asset asset = assetService.getAssetById(assetId);
+		resultJson = toJSON(asset);
 		return resultJson;
 	}
 	
@@ -360,6 +383,7 @@ public class BackOfficeRestController {
 	}
 	
 	
+
 	@RequestMapping(value = "/saveCategory", method = RequestMethod.POST)
 	 @ResponseBody String saveCategory(@RequestParam(value = "json", required = false) String json,
 			 @RequestParam(value = "categoryId", required = false) Long categoryId,
@@ -388,6 +412,24 @@ public class BackOfficeRestController {
 	         
 		 return commonUtil.toJSON(assetCategory);
 		}
+
+	@RequestMapping(value = "/addCategoryAssets" , method = RequestMethod.POST)
+	   public String addCategoryAssets(@RequestParam(value="json", required=false) String json,MultipartHttpServletRequest request) throws Exception {
+			
+		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    
+		    String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+			
+			assetService.saveAssetDetails(jsonObj, user, orgLocations, request);
+			
+		
+		   return "home";
+	    
+	   }
+	
 	
 	
 	private String toJSON(Object obj){

@@ -19,6 +19,7 @@
 <script>
 $(document).ready(function(){
 	getAssetList();
+	loadCategory();
 });
 </script> 
 
@@ -33,296 +34,159 @@ $(document).ready(function(){
   <div class="vendor_wrap">
     <div class="timesheet_head">
       <ul>
-        
-        <li><i class="fa fa-filter"></i><span>Category</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+        <li><i class="fa fa-filter"></i><span>Category</span><i class="glyphicon glyphicon-play" id="category"></i>|
           <div class="approved_pop">
             <ul>
-              <li>
-                <input type="checkbox">
-                &nbsp;&nbsp;Desktop</li>
-              <li>
-                <input type="checkbox">
-                &nbsp;&nbsp;Laptop</li>
-              <li>
-                <input type="checkbox">
-                &nbsp;&nbsp;Other</li>
+                   <c:forEach var="report" items="${assetCategoriesList}">  
+		               <li><input  id="category${report.id}" name="categoryId" value ="${report.id}"  onclick="getAssetList();"  type="checkbox"><label>${report.categoryName}</label></li>
+				   </c:forEach>
             </ul>
           </div>
         </li>
-        <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
+         <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
           <div class="export_pop">
             <ul>
-              <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-              <li>Excel<i class="fa fa-file-excel-o"></i></li>
-              <li>Word<i class="fa fa-file-word-o"></i></li>
+              <li><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
+              <li><i class="fa fa-file-excel-o"></i>&nbsp;Excel</li>
+              <li><i class="fa fa-file-word-o"></i>&nbsp;Word</li>
             </ul>
           </div>
         </li>
-        <li><i class="glyphicon glyphicon-export"></i><span>Import</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
-          <div class="export_pop">
-            <ul>
-              <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-              <li>Excel<i class="fa fa-file-excel-o"></i></li>
-              <li>Word<i class="fa fa-file-word-o"></i></li>
-            </ul>
-          </div>
-        </li>
+       <!--  <li><i class="glyphicon glyphicon-save"></i><span>Import</span>|</li> -->
+            
+              
         <li>
           <a href="javascript:void(0)" class="addcon-pop"><i class="fa fa-plus"></i>Add Asset</a> 
           <!-- Add Asset Popup -->
           <div class="collapse-div-adduser pop-div col-md-12 assetaddpop">
-           <i class="fa fa-close close-div"></i>
+          <div id="loading"></div>
+          <form:form id="addAsset_form"  name="addAsset_form" enctype='multipart/form-data'> 
+           <i class="fa fa-close close-div" onclick="flushAsset();"></i>
 			  <div class="clearfix">
             <div class="clearfix assetaddpop-ul col-md-6">
-				<select class="chosen-select" id="assetmn" name="assetmn" onChange="myFunction(this)">
-					<option selected disabled>-Selct Category-</option>
-					<option value="laptop">Laptop</option>
-					<option value="desktop">Desktop</option>
-					<option value="others">Others..</option>
+				<select class="chosen-select" id="category" name="category" onChange="assetCategory(this)">
+					<c:forEach var="option" items="${categoryList}">
+							<option value="${option.categoryName},${option.id}" ${option.categoryName  == 'Laptop' ? 'selected' : ''}>${option.categoryName}</option>
+					</c:forEach>
 				</select>	
             </div>
             <div class="clearfix assetaddpop-ul col-md-6">
-				<select class="chosen-select" id="assetmn" name="assetmn">
+				<select class="chosen-select" id="workingStatus" name="workingStatus" data-validation="required" field-name="Working Status">
 					<option selected disabled>-Selct Working Status-</option>
-					<option value="laptop">Working</option>
-					<option value="desktop">Desktop</option>
-					<option value="others">Others..</option>
+					<option value="Working">Working</option>
+					<option value="Out Of Service">Out Of Service</option>
 				</select>	
             </div>
             </div>
 			  <div class="clearfix mb10"></div>
-            <!-- Laptop popup div -->
-            <div class="clearfix" id="laptop">
+         
+            <div class="clearfix">
               <div class="form-horizontal clearfix">
                 <div class="clearfix mb10">
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Serial Number *">
+                    <input type="text" class="form-control input-sm" id="sno" name="sno" placeholder="Serial Number *" field-name="Sl No" data-validation="required">
                   </div>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Make">
+                    <input type="text" class="form-control input-sm" id="make" name="make" placeholder="Make">
+                  </div>
+                </div>
+                <div class="clearfix mb10">
+                  <div class="col-md-4">
+                    <input type="text" class="form-control input-sm" id="model" name="model" placeholder="Model">
+                  </div>
+                  <div class="col-md-4">
+                    <input type="text" class="form-control input-sm" name="name" id="name" placeholder="Name" style="display: none;">
+                  </div>
+                  <div class="col-md-4">
+                    <input type="text" class="form-control input-sm" name="memory" id="memory" placeholder="Memory" style="display: none;">
+                  </div>
+                  
+                </div>
+                <div class="clearfix mb10">
+                  <div class="col-md-4">
+                    <input type="text" class="form-control input-sm" name="cpu" id="cpu" placeholder="CPU" style="display: none;">
+                  </div>
+                  <div class="col-md-4">
+                    <input type="text" class="form-control input-sm" name="harddisk" id="harddisk" placeholder="Hard Disk" style="display: none;">
+                  </div>
+                  <div class="col-md-4">
+                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor" style="display: none;">
                   </div>
                 </div>
                 <div class="clearfix mb10">
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Model *">
+                    <div class="input-group">
+                      <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                        <input type="file" name="attachment" id="attachment"  class="hidden upload">
+                        </b> </label>
+                      <input type="text" class="form-control" name="attachment" readonly id="uploadFileAttachment" placeholder="Files are not selected...">
+                    </div>
                   </div>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Memory *">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="CPU *">
-                  </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Hard Disk *">
-                    <textarea class="form-control hidden" rows="2" placeholder="Description"></textarea>
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <textarea class="form-control" rows="2" placeholder="Description"></textarea>
+                    <textarea class="form-control" rows="2" name="description" id="description" placeholder="Description"></textarea>
                   </div>
                 </div>
                 <!-- Shift A Fields -->
+                <div class="clearfix" id="shiftADetails" style="display: none;">
                 <div class="clearfix">
                   <h4 class="col-md-12">Shift A</h4>
                 </div>
                 <div class="clearfix mb10">
                   <div class="col-md-6">
-                    <select class="form-control chosen-select">
-                      <option selected>-Select Employee-</option>
-                      <option>Employee1</option>
-                      <option>Employee2</option>
-                      <option>Employee3</option>
+                    <select class="form-control chosen-select" id="shiftAEmp" name="shiftAEmp">
+                      <option selected value="">-Select Employee-</option>
+                      <c:forEach var="option" items="${employeesList}">
+					     <option value="${option.id}">${option.user.firstName} ${option.user.lastName}</option>
+					  </c:forEach>
                     </select>
                   </div>
                   <div class="col-md-6">
                     <div class="input-group">
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" style="display: none;" multiple id="uploadBtn-lapA" class="upload">
+                        <input type="file" name="uploadBtn-dskA" id="uploadBtn-dskA"  class="hidden upload">
                         </b> </label>
-                      <input type="text" class="form-control" readonly id="uploadFile-lapA" placeholder="Files are not selected...">
+                      <input type="text"  class="form-control" name="shiftAAttachment" readonly id="uploadFileShiftA" placeholder="Files are not selected...">
                     </div>
                   </div>
                 </div>
+                </div>
                 <!-- Shift A Fields --> 
+                
                 <!-- Shift B Fields -->
+               <div class="clearfix" id="shiftBDetails" style="display: none;">
                 <div class="clearfix">
                   <h4 class="col-md-12">Shift B</h4>
                 </div>
                 <div class="clearfix mb10">
                   <div class="col-md-6">
-                    <select class="form-control chosen-select">
-                      <option selected>-Select Employee-</option>
-                      <option>Employee1</option>
-                      <option>Employee2</option>
-                      <option>Employee3</option>
+                    <select class="form-control chosen-select" id="shiftBEmp" name="shiftBEmp">
+                      <option selected value="">-Select Employee-</option>
+                      <c:forEach var="option" items="${employeesList}">
+					     <option value="${option.id}">${option.user.firstName} ${option.user.lastName}</option>
+					  </c:forEach>
                     </select>
                   </div>
                   <div class="col-md-6">
                     <div class="input-group">
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" style="display: none;" multiple id="uploadBtn-lapB" class="upload">
+                         <input type="file" name="uploadBtn-dskB" id="uploadBtn-dskB"  class="hidden upload">
                         </b> </label>
-                      <input type="text" class="form-control" readonly id="uploadFile-lapB" placeholder="Files are not selected...">
+                      <input type="text"  class="form-control"  name="shiftBAttachment" readonly id="uploadFileShiftB" placeholder="Files are not selected...">
                     </div>
                   </div>
                 </div>
+                </div>
+                
                 <!-- Shift A Fields -->
                 <div class="clearfix mr">
                   <div class="pull-right">
-                    <button type="submit" class="btn btn-sm btn-primary">Add</button>
-                    <button type="submit" class="btn btn-sm btn-default ml10">Cancel</button>
+                   <button type="submit" id="add_asset" class="btn btn-sm btn-primary">Add</button>
                   </div>
                 </div>
               </div>
             </div>
-            <!-- Laptop popup div --> 
-            <!-- Desktop popup div -->
-            <div class="clearfix" id="desktop">
-              <div class="form-horizontal clearfix">
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Serial Number *">
-                  </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Make *">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Model *">
-                  </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Memory *">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-4">
-                    <input type="text" class="form-control input-sm" value="" placeholder="CPU *">
-                  </div>
-                  <div class="col-md-4">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Hard Disk *">
-                  </div>
-                  <div class="col-md-4">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Monitor *">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <select class="form-control chosen-select">
-                      <option selected>-Select Location-</option>
-                      <option>India</option>
-                      <option>USA</option>
-                    </select>
-                  </div>
-                  <div class="col-md-6">
-                    <textarea class="form-control" rows="2" placeholder="Description"></textarea>
-                  </div>
-                </div>
-                <!-- Shift A Fields -->
-                <div class="clearfix">
-                  <h4 class="col-md-12">Shift A</h4>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <select class="form-control chosen-select">
-                      <option selected>-Select Employee-</option>
-                      <option>Employee1</option>
-                      <option>Employee2</option>
-                      <option>Employee3</option>
-                    </select>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="input-group">
-                      <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" style="display: none;" multiple id="uploadBtn-dskA" class="upload">
-                        </b> </label>
-                      <input type="text" class="form-control" readonly id="uploadFile-dskA" placeholder="Files are not selected...">
-                    </div>
-                  </div>
-                </div>
-                <!-- Shift A Fields --> 
-                <!-- Shift B Fields -->
-                <div class="clearfix">
-                  <h4 class="col-md-12">Shift B</h4>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <select class="form-control chosen-select">
-                      <option selected>-Select Employee-</option>
-                      <option>Employee1</option>
-                      <option>Employee2</option>
-                      <option>Employee3</option>
-                    </select>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="input-group">
-                      <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" style="display: none;" multiple id="uploadBtn-dskB" class="upload">
-                        </b> </label>
-                      <input type="text" class="form-control" readonly id="uploadFile-dskB" placeholder="Files are not selected...">
-                    </div>
-                  </div>
-                </div>
-                <!-- Shift A Fields -->
-                <div class="clearfix mr">
-                  <div class="pull-right">
-                    <button type="submit" class="btn btn-sm btn-primary">Add</button>
-                    <button type="submit" class="btn btn-sm btn-default ml10">Cancel</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Desktop popup div --> 
-            <!-- Others popup div -->
-            <div class="clearfix" id="others">
-              <div class="form-horizontal clearfix">
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Serial Number *">
-                  </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Name *">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Make *">
-                  </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Model *">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Memory *">
-                  </div>
-                  <div class="col-md-6">
-                    <select class="form-control chosen-select">
-                      <option selected>-Select Location-</option>
-                      <option>India</option>
-                      <option>USA</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-12">
-                    <textarea class="form-control" rows="2" placeholder="Description"></textarea>
-                  </div>
-                </div>
-                <div class="clearfix mr">
-                  <div class="pull-right">
-                    <button type="submit" class="btn btn-sm btn-primary">Add</button>
-                    <button type="submit" class="btn btn-sm btn-default ml10">Cancel</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Others popup div --> 
+            </form:form>
           </div>
-          <!-- Add Asset Popup --> 
         </li>
         <li>
         <a href="<c:url value='/assetCategory'/>" class=""><i class="fa fa-plus"></i>Categories</a>
@@ -330,29 +194,15 @@ $(document).ready(function(){
         <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>
-      <div class="remove_search">
-        <input type="text" placeholder="search" />
-      </div>
-    </div>
+      
     <!-- list Table -->
     <div class="require_wrap_table table-wrap">
     <table id="assetManagementList" class="display" cellspacing="0" width="100%"> </table>
       
     </div>
-    <nav>
-      <ul id="paging" class="pagination">
-        <li><a href="#">Previous</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li class="disabled"><a href="#">6</a></li>
-        <li data-page="last"><a href="#">Next</a></li>
-      </ul>
-      <div class="clearfix"></div>
-    </nav>
+    
     <!-- list Table -->
-  </div>
+  </div></div>
   <div class="side_mask">
     <div class="proj_close"></div>
   </div>
@@ -360,49 +210,11 @@ $(document).ready(function(){
     <div class="clients_side_wrap_inn">
       <h1>Asset Management Details</h1>
       <div class="project_side_wrap_inn_tabs">
+      <div id="projectSideDiv">
+		     </div> 
         <div class="project_tabs">
           <div id="tab-1" class="project_tabs_inn" style="display: block;">
-            <div class="require_wrap_details">
-              <h1>Asset Management details: <a id="edit-user" href="javascript:void(0)">Edit<i class="glyphicon glyphicon-pencil"></i></a></h1>
-              <div class="require_one">
-                <div class="require_wrap_details_cta"> <b>S. No.:</b> <span>00012..</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Make:</b> <span>Make text here..</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Model:</b> <span>Model text here..</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Memory:</b> <span>Memory text here...</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>CPU:</b> <span>CPU</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Hard Disk:</b> <span>HardDisk here..</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Location:</b> <span>Hyderabad, Telangana, India</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Description:</b> <span>Description here..</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Shfit A:</b> <span>Sudhakar Reddy</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Attched File:</b> <span>Attched File</span>
-                  <div class="clearfix"></div>
-                </div>
-                                <div class="require_wrap_details_cta"> <b>Shfit B:</b> <span>Sudhakar Reddy</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="require_wrap_details_cta"> <b>Attched File:</b> <span>Attched File</span>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="user_summary_edit client_summary_edit" style="display: none;">
+              <div class="user_summary_edit client_summary_edit" style="display: none;">
                   <div class="form-horizontal req-dtls myForm row">
                   
                             <!-- Add Asset Popup -->
@@ -650,7 +462,7 @@ $(document).ready(function(){
                 </div>
                 <div class="clearfix mr">
                   <div class="pull-right">
-                    <button type="submit" class="btn btn-sm btn-primary">Add</button>
+                     <button type="submit" class="btn btn-sm btn-primary">Add</button>
                     <button type="submit" class="btn btn-sm btn-default ml10">Cancel</button>
                   </div>
                 </div>
@@ -673,14 +485,113 @@ $(document).ready(function(){
   
   
   
+  <script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#addAsset_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		    e.preventDefault(); 
+	          		
+        		    var frm = $('#addAsset_form').serializeFormJSON();
+        	        var con = JSON.stringify(frm);
+        	        con = con.replace(/[{}]/g, "");
+        	        
+        	        //It will escape all the special characters
+        	        var jsonData = encodeURIComponent(con);
+        	        var form = $('#addAsset_form')[0];
+	           		var formData = new FormData(form);
+	          		var sourceleadUrl ='${sourceleadUrl}';
+	          		
+	          		
+	          		 $("#add_asset").attr("disabled", "disabled");
+	          		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	          		
+	          	      $.ajax({
+	     		    	type: "POST",
+	     		    	data: formData,
+              	        contentType : 'application/json; charset=utf-8',
+              	        enctype: 'multipart/form-data',
+          	            processData: false,
+          	            contentType:false,
+              	        dataType : 'json',
+	     		    	 url: sourceleadUrl+"/addCategoryAssets?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+	     		        success: function(result) {
+	     		        	if(result == 'home'){
+	     	   	        	    location.replace(sourceleadUrl+ "/assetManagement");
+	     		        	}
+	     			        
+	     		        },
+	     		    }); 
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+         $('#addAsset_form').showHelpOnFocus();
+         $('#addAsset_form').validateOnBlur(false, validationSettings); 
+            
+     
+</script> 
+
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
+  
+  <script>
+  function flushAsset(){
+	  $("#sno").val('');
+	  $("#model").val('');
+	  $("#monitor").val('');
+	  $("#name").val('');
+	  $("#make").val('');
+	  $("#memory").val('');
+	  $("#description").val('');
+	  $("#cpu").val('');
+	  $("#harddisk").val('');
+	  $("#uploadFile-dskA").val('');
+	  $("#uploadFile-dskB").val('');
+	  
+  }
+  
+  </script>
+  
   <script>
 	function getAssetList(){
 		
 		var sourceleadUrl ='${sourceleadUrl}';
 		
+		var categoryIds = [];
+		$('input:checkbox[name=categoryId]:checked').each(function() 
+	    {
+			categoryIds.push($(this).val());
+	    });
 		  $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/getAssetList?${_csrf.parameterName}=${_csrf.token}", 	   
+			    url: sourceleadUrl+"/getAssetList?${_csrf.parameterName}=${_csrf.token}&categoryIds="+categoryIds, 	   
 	   		    success: function(data) {
 	   		    	
 	   		    	
@@ -701,36 +612,135 @@ $(document).ready(function(){
 	   	        	
 		   	     	for (var i=0; i<json.length; i++)
 	   				{  
-		   	     	    var report = json[i];
-		   	     	    
-		   	     	    result = result+'<tr>';
-			   	        result = result+'<td><div class="tbldata-dotdot-100" title="'+report.slno+'">'+report.slno+'</div></td>';
-				   	    result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot">';
-					   	result = result+'<div class="proj_show"> <span class="tbldata-dotdot-sm">'+report.assetCategory.categoryName+'</span> <i class="fa fa-binoculars"></i> </div>';
+		   	     	    var shiftAEmpName = "--- ";
+					    var shiftBEmpName = "--- ";
+					    var model = "---";
+					    var report = json[i];
+					    
+					    if (report.shiftAEmpName != null && report.shiftAEmpName != '' && report.shiftAEmpName != 'undefined') {
+							shiftAEmpName = report.shiftAEmpName;
+						}
+						
+						if (report.shiftBEmpName != null && report.shiftBEmpName != '' && report.shiftBEmpName != 'undefined') {
+							shiftBEmpName = report.shiftBEmpName;
+						}
+						
+						if (report.model != null && report.model != '' && report.model != 'undefined') {
+							model = report.model;
+						}
+
+						result = result+'<tr>';
+			   	        result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot-sm">';
+					   	result = result+'<div class="proj_show" onclick="assetSideBar('+report.id+');"> <span class="tbldata-dotdot-100">'+report.slno+'</span> <i class="fa fa-binoculars"></i> </div>';
 					   	result = result+'</a></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm">'+report.model+'</div></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.shiftAEmployee.user.firstName+' '+report.shiftAEmployee.user.lastName+'">'+report.shiftAEmployee.user.firstName+' '+report.shiftAEmployee.user.lastName+'</div></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.shiftBEmployee.user.firstName+' '+report.shiftBEmployee.user.lastName+'">'+report.shiftBEmployee.user.firstName+' '+report.shiftBEmployee.user.lastName+'</div></td>';
+					   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.categoryName+'">'+report.categoryName+'</div></td>';
+						result = result+'<td><div class="tbldata-dotdot-vsm">'+model+'</div></td>';
+					   	result = result+'<td><div class="tbldata-dotdot-vsm" >'+shiftAEmpName+'</div></td>';
+					   	result = result+'<td><div class="tbldata-dotdot-vsm" >'+shiftBEmpName+'</div></td>';
 					   	result = result+'<td><div class="tbldata-dotdot-100">'+report.workingStatus+'</div></td>';
 					   	result = result+'<td><div class="tblminwidth-50"><i class="fa fa-trash-o text-danger"></i></div></td>';
 			   	        result = result +'</tr>';
 	   				}
 		   	     	
-	   	        	
 	   	        	result = result +'</tbody>';
 	   	    	    $("#assetManagementList").empty();  
 	   	    	    $("#assetManagementList").append(result)
-	   	    	   
+	   	    	    pagination1();
+	   	    	     
 	   	    	    
 	   		    	
 	   		    }
 		  });
 	}
 </script>
+
+
+<script>
+function pagination1(){ 
+    $('#assetManagementList').DataTable( { 
+    	"scrollCollapse": false,
+    	"chosen-select": true,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    })
+}
+</script>
+
+<script>
+ function assetSideBar(assetId){ 
+		    $(".clients_side_wrap").addClass("clients_side_wrap_active");
+		    $(".side_mask").fadeIn(200);
+			$("body").css('overflow-y', 'hidden');
+			assetDetails(assetId);
+ }
+</script> 
+  
+  
+   <script>
+  function assetCategory(category){
+	  var selectedCategory = category.value;
+	  var  assestCategory = selectedCategory.split(",");
+	
+	   if(assestCategory[0] == 'Desktop'){
+		  document.getElementById("monitor").style.display="";
+		  document.getElementById("name").style.display="";
+		  document.getElementById("memory").style.display="";
+		  document.getElementById("cpu").style.display="";
+		  document.getElementById("harddisk").style.display="";
+		  document.getElementById("shiftADetails").style.display="";
+		  document.getElementById("shiftBDetails").style.display="";
+		  
+	  }else if((assestCategory[0] != 'Desktop' && assestCategory[0] == 'Laptop') || category == 'Laptop'){
+		  document.getElementById("monitor").style.display="none";
+		  document.getElementById("name").style.display="";
+		  document.getElementById("memory").style.display="";
+		  document.getElementById("cpu").style.display="";
+		  document.getElementById("harddisk").style.display="";
+		  document.getElementById("shiftADetails").style.display="";
+		  document.getElementById("shiftBDetails").style.display="";
+		  
+		  $("#monitor").val('');
+	  }else{
+		  document.getElementById("monitor").style.display="none";
+		  document.getElementById("memory").style.display="none";
+		  document.getElementById("cpu").style.display="none";
+		  document.getElementById("harddisk").style.display="none";
+		  document.getElementById("shiftADetails").style.display="none";
+		  document.getElementById("shiftBDetails").style.display="none";
+		  $("#monitor").val('');
+		  $("#name").val('');
+		  $("#memory").val('');
+		  $("#cpu").val('');
+		  $("#harddisk").val('');
+		  $("#uploadFile-dskA").val('');
+		  $("#uploadFile-dskB").val('');
+	  } 
+	 
+  }
+  </script>
+  
+  
+  <script>
+  function loadCategory(){
+	  document.getElementById("monitor").style.display="none";
+	  document.getElementById("name").style.display="";
+	  document.getElementById("memory").style.display="";
+	  document.getElementById("cpu").style.display="";
+	  document.getElementById("harddisk").style.display="";
+	  document.getElementById("harddisk").style.display="";
+	  document.getElementById("shiftADetails").style.display="";
+	  document.getElementById("shiftBDetails").style.display="";
+  }
+  </script>
   
   
   
-   <script> 
+   <!-- <script> 
 	   $('#laptop, #desktop, #others').addClass('asstmake');
 		  $('#laptop').removeClass('asstmake');
 	 function myFunction(local){
@@ -747,7 +757,7 @@ $(document).ready(function(){
 			$('#desktop, #others').addClass('asstmake');
 		 }
 	 };    
-   </script>
+   </script> -->
   <script>
 	  $('#laptop-edit, #desktop-edit, #others-edit').addClass('asstmake');
 		  $('#laptop-edit').removeClass('asstmake');
@@ -766,19 +776,11 @@ $(document).ready(function(){
 		 }
 	 };  
     </script> 
-  <script>
-// Edit pop
-$(document).ready(function() {	
-	$("#edit-user").click(function(){
-		$(".user_summary_edit").slideToggle(100);
-	});
-    $("html, #canBTN, .us-btn_a").click(function() {
-        $(".user_summary_edit").slideUp(100);
-    });
-    $("#edit-user, .user_summary_edit").click(function(e) {
-        e.stopPropagation();
-    });		
-});
+ 
+ 
+ 
+ <script>
+
 </script> 
   <script type="text/javascript">
             $(function () {
@@ -807,45 +809,31 @@ $(document).ready(function() {
   <script>
 
 // Error pop
-$(document).ready(function() {
-    $(".glyphicon-trash").click(function(){
-		$(".vendor_error").slideToggle(200);
-		$(".vendor_wrap_mask").fadeIn(200);
-	});
-	$(".vendor_error a").click(function(){
-		$(".vendor_error").slideUp(200);
-		$(".vendor_wrap_mask").fadeOut(200);
-	});
-});	
+
 
 // Approved Popup
-$(document).ready(function() {
-    $("#appro-pop").click(function(){
-		$(".approved_pop").slideToggle(200);
+    $("#category").click(function(){
+		$(".approved_pop").toggle();
 	});
     $("html").click(function() {
-        $(".approved_pop").slideUp(200);
+        $(".approved_pop").slideUp();
     });
-    $(".approved_pop, #appro-pop").click(function(e) {
+    $(".approved_pop, #category").click(function(e) {
         e.stopPropagation();
     });	
-});
 
 // Export Popup
-$(document).ready(function() {
     $("#export-pop").click(function(){
-		$(".export_pop").slideToggle(200);
+		$(".export_pop").toggle();
 	});
     $("html").click(function() {
-        $(".export_pop").slideUp(200);
+        $(".export_pop").slideUp();
     });
     $(".export_pop, #export-pop").click(function(e) {
         e.stopPropagation();
     });	
-});	
 	
 // project side bar
-$(document).ready(function() {
     $(".proj_show").click(function(){
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
@@ -856,7 +844,6 @@ $(document).ready(function() {
 		$(".side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
 	});
-});
 
 // project side bar tabs
 $(document).ready(function() {
@@ -886,36 +873,15 @@ $(document).ready(function() {
 
 // script for scroll Popups:: Add or Edit details
 $(document).ready(function(event) {	
-$(".addUser-org").click(function(){
-	 $(".edit-details").toggleClass("edit-details-active");
-	 $(".collapse-div").removeClass("edit-details-active");
- });
- $(".close-div").click(function(){
-	 $(this).closest(".edit-details").toggleClass("edit-details-active");
-	 });
- $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+ $(".collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 	 e.stopPropagation();
  });
- $('html').click(function(){
-	$(".edit-details").removeClass("edit-details-active");
-   });	
-   $("#endDate").click(function(){
-	   $(".endDate").toggle(200);
-   });
    event.preventDefault();
 });
 
-$(".addSkills").click(function(){
-	$(".add-skills").toggleClass('add-skills-active');
-	});
 $(".close-div").click(function(){
-	$(".add-skills").removeClass('add-skills-active');
-	});
-$(".add-skills").click(function(e){
-	 e.stopPropagation();
- });
-
-
+	 $(this).parents().toggleClass("show-div");
+});
 // Bar chat pop
 $(document).ready(function() {
     $(".graf_icon").click(function(){
@@ -944,24 +910,6 @@ $( "#pri-ch li").click(function(){
   <script>
 $(document).ready(function(){
 	// Levels adding script
-$(".add-offer").click(function(){
-	 $(".addOffer-Req").toggleClass("show-div");
-	 $(".addInterview-Re").removeClass("show-div");
-	 $(".addApplicant-Re").removeClass("show-div");
- });
-$(".add-interview").click(function(){
-	 $(".addInterview-Re").toggleClass("show-div");
-	 $(".addOffer-Req").removeClass("show-div");
-	 $(".addApplicant-Re").removeClass("show-div");
- });
-$(".add-applicant").click(function(){
-	 $(".addApplicant-Re").toggleClass("show-div");
-	 $(".addOffer-Req").removeClass("show-div");
-	 $(".addInterview-Re").removeClass("show-div");
- });
-$(".reminder").click(function(){
-	 $(".reminder-div").toggleClass("reminder-div-active");
- });
 
  $(".close-div").click(function(){
 	 $(this).parent().toggleClass("show-div");
@@ -1016,29 +964,21 @@ $(".addcon-pop").click(function(){
  $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
 	 e.stopPropagation();
  });
- $('html').click(function(){
-    $(".collapse-div-adduser").removeClass("show-div");
-	$(".collapse-div").removeClass("show-div");
-   });
-    //upload file script -laptop-shiftA
-     document.getElementById("uploadBtn-lapA").onchange = function () {
-     $('#uploadFile-lapA').val($(this).val().replace(/C:\\fakepath\\/i, ''))
-     };
-	
-	//upload file script -laptop-shiftB
-     document.getElementById("uploadBtn-lapB").onchange = function () {
-     $('#uploadFile-lapB').val($(this).val().replace(/C:\\fakepath\\/i, ''))
-     };
-    //upload file script -Desktop-shiftA
-     document.getElementById("uploadBtn-dskA").onchange = function () {
-     $('#uploadFile-dskA').val($(this).val().replace(/C:\\fakepath\\/i, ''))
-     };
-	
-	//upload file script -Desktop-shiftB
-     document.getElementById("uploadBtn-dskB").onchange = function () {
-     $('#uploadFile-dskB').val($(this).val().replace(/C:\\fakepath\\/i, ''))
-     };
 
+ 
+//upload file script -Desktop-shiftA
+ document.getElementById("uploadBtn-dskA").onchange = function () {
+ $('#uploadFileShiftA').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+ };
+
+//upload file script -Desktop-shiftB
+ document.getElementById("uploadBtn-dskB").onchange = function () {
+ $('#uploadFileShiftB').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+ };
+ 
+ document.getElementById("attachment").onchange = function () {
+	 $('#uploadFileAttachment').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+  };
 	
 	</script>
 <div class="clearfix mb10 hidden">
@@ -1052,5 +992,5 @@ $(".addcon-pop").click(function(){
     </select>
   </div>
 </div>
- 
+<jsp:include page="assetManagementDetails.jsp" />
 <jsp:include page="../masterFooter.jsp" />
