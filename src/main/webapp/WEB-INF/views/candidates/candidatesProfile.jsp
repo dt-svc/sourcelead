@@ -1,8 +1,9 @@
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script src="resources/js/bootstrap-select.min.js"></script>
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -10,6 +11,8 @@
 
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/chosen.jquery.min.js"></script> 
+
+
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%-- 
@@ -19,7 +22,47 @@
      2.parameter : csrf token .
      3.ajax url implementation in CandidateListRestController.
 --%>
-
+<style>
+	.er .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn){
+	width:100px;
+	}
+	.er .btn-default{
+	background:#337ab7;
+	border:1px solid #ccc;
+	color:#fff;
+	text-shadow: none;
+	}
+	.clsDatePicker {
+		z-index: 100000 !important;
+	}
+	#uploadFileGroup p.jquery_form_error_message{
+	position: absolute;
+	left:0;
+	bottom:-16px;
+	}
+	.selp-custom-min .btn-default{
+	/* z-index: -55 !important; */
+	-webkit-border-radius:0 3px 3px 0;
+	-moz-border-radius:0 3px 3px 0;
+	-ms-border-radius:0 3px 3px 0;
+	border-radius:0 3px 3px 0;
+	}
+	.selp-custom-min .open {
+	z-index: 999999999 !important;
+	}
+	.ratetype p {
+	bottom: -14px;
+	left:0px !important;
+	position: absolute;
+	}
+	
+	.pras.req-title p{
+	bottom:-14px;
+	}
+	.exprience .select-field select{
+	background-position: 96% center !important;
+	}
+	</style>
 
 <style type="text/css">
 .require_wrap_details{
@@ -138,24 +181,89 @@ function editCandidate(candidateId){
 							
 							
 							result = result + '<div class="clearfix mb10">';
+							
 							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="currentRate"  value="'+currentRate+'" placeholder="Current Rate">';
+							
+							result = result + '<div class="input-group er ratetype">';
+							
+							result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
+			                  
+							result = result + ' <select class="selct-picker" id="currentRateCurrency" name="currentRateCurrency">';
+							result = result + ' <option '+(json.currencyCode == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
+							result = result + '<option   '+(json.currencyCode == "AUD" ? "selected" : '') +'><a href="#">AUD</a></option>';
+							result = result + ' <option  '+(json.currencyCode == "USD" ? "selected" : '') +'><a href="#">USD</a></option>';
+							result = result + '  <option '+(json.currencyCode == "GPB" ? "selected" : '') +'><a href="#">GPB</a></option>';
+							result = result + '  <option '+(json.currencyCode == "SGD" ? "selected" : '') +'><a href="#">SGD</a></option>';
+							result = result + '<option   '+(json.currencyCode == "EUR" ? "selected" : '') +'><a href="#">EUR</a></option>'; 
+			                result = result + ' </select>';
+			                
+			                result = result + '</div>';
+							
+			                result = result + '<input type="text" class="form-control input-sm" name="currentRate"  value="'+currentRate+'" placeholder="Current Rate">';
+							
+							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
+							result = result + '<select class="selct-picker" id="currentRateType" name="currentRateType" field-name="Rate Type">';
+							result = result + '<option value="">Rate Per</option>';
+							result = result + ' <option '+(json.currentRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
+							result = result + '<option  '+ (json.currentRateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
+							result = result + '<option  '+(json.currentRateType == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
+							result = result + '<option  '+(json.currentRateType == "SemiMonthly" ? "selected" : '') +'>Semi-Monthly</option>';
+							result = result + '<option  '+(json.currentRateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
+							result = result + '<option  '+(json.currentRateType == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
+							result = result + '<option '+(json.currentRateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
+							result = result + ' </select>';
 							result = result + '</div>';
 							
+							result = result + '</div>';
+							result = result + '</div>';
 							
-							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
+							
+							result = result + '<div class="input-group er ratetype">';
+							result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
+			                  
+							result = result + ' <select class="selct-picker" id="expectedRateCurrencey" name="expectedRateCurrencey">';
+							result = result + ' <option '+(json.currencyCode == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
+							result = result + '<option   '+(json.currencyCode == "AUD" ? "selected" : '') +'><a href="#">AUD</a></option>';
+							result = result + ' <option  '+(json.currencyCode == "USD" ? "selected" : '') +'><a href="#">USD</a></option>';
+							result = result + '  <option '+(json.currencyCode == "GPB" ? "selected" : '') +'><a href="#">GPB</a></option>';
+							result = result + '  <option '+(json.currencyCode == "SGD" ? "selected" : '') +'><a href="#">SGD</a></option>';
+							result = result + '<option   '+(json.currencyCode == "EUR" ? "selected" : '') +'><a href="#">EUR</a></option>'; 
+			                result = result + ' </select>';
+			                
+			                result = result + '</div>';
+							
 							result = result + '<input type="text" class="form-control input-sm" name="expectedRate"  value="'+expectedRate+'" placeholder="Expected Rate">';
+							
+							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
+							result = result + '<select class="selct-picker" id="rateType" name="rateType" field-name="Rate Type">';
+							result = result + '<option value="">Rate Per</option>';
+							result = result + ' <option '+(json.rateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
+							result = result + '<option  '+ (json.rateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
+							result = result + '<option  '+(json.rateType == "Biweekly" ? "selected" : '') +'>Bi-weekly</option>';
+							result = result + '<option  '+(json.rateType == "SemiMonthly" ? "selected" : '') +'>Semi-Monthly</option>';
+							result = result + '<option  '+(json.rateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
+							result = result + '<option  '+(json.rateType == "BiMonthly" ? "selected" : '') +'>Bi-Monthly</option>';
+							result = result + '<option '+(json.rateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
+							result = result + ' </select>';
+							result = result + '</div>';
+							
+							
+							result = result + '</div>';
+							result = result + '</div>';
 							result = result + '</div>';
 							result = result + '</div>';
 							
-							result = result + '<div class="clearfix mb10">';
+							
+							result = result + '<div class="clearfix mb10 exprience">';
 							result = result + '<div class="col-md-6">';
+							result = result + '<div class="row">';
+							result = result + '<div class="col-md-7">';
 							result = result + '<input type="text" class="form-control input-sm" name="experienceYears"  value="'+experienceYears+'" placeholder=" Experience Years">';
 							result = result + '</div>';
 							
-							result = result + '<div class="col-md-6 custom-fields select-arrow">';
-							result = result + '<select  class="chosen-select form-control select-bg" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths">';
+							result = result + '<div class="col-md-5 custom-fields select-arrow select-field">';
+							result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths">';
 							result = result + '<option value="">Select Months</option>';
 							result = result  +'<option value="1" '  + (json.experienceMonths == 1 ? "selected" : '') +  '>1</option>';
 							result = result  +'<option value="2"  '+ (json.experienceMonths == 2 ? "selected" : '') +' >2</option>';
@@ -172,13 +280,13 @@ function editCandidate(candidateId){
 							result = result + '</select>';
 							result = result + '</div>';
 							result = result + '</div>';
-												
+							result = result + '</div>';
+							
 							result = result + '<div class="col-md-6">';
 							result = result + '<textarea class="form-control input-sm" placeholder = "Summary"  name="summary" rows="2" cols="0" > '+summary+'</textarea>';
 							//result = result + ''+json.summary+'</textarea>';
 							result = result + ' </div>';
 							result = result + '</div>';
-							 
 							result = result + '<div class="clearfix mr">';
 							result = result + '<div class="pull-right">';
 							result = result + '<button type="button"  onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
@@ -1370,6 +1478,9 @@ function certificationSubmissionProfile(candidateId){
           
      }); 
 }
+</script>
+<script>
+$('.selectpicker').selectpicker('refresh');
 </script>
            
   
