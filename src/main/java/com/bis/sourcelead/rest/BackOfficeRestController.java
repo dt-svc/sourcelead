@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.BoJmpcTrans;
 import com.bis.sourcelead.entity.BoUploadedFiles;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetService;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.service.BoComericaTransService;
 import com.bis.sourcelead.service.BoJmpcTransService;
 import com.bis.sourcelead.service.BoUploadedFilesService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -51,6 +53,9 @@ public class BackOfficeRestController {
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	@Autowired
 	BoAmexTransService boAmexTransService;
@@ -367,7 +372,7 @@ public class BackOfficeRestController {
 		for(AssetCategory assetCategory : assetCategoryList){
 			User user = userService.getUserByUserCode(assetCategory.getCreatedBy());
 			assetCategory.setCreatedUser(user.getFirstName()+" "+user.getLastName());
-			
+			assetCategory.setOrgLocationId(assetCategory.getOrgLocations().getId());
 			 if(assetCategory.getUpdatedDate() != null){
 				 assetCategory.setDateStr(Constants.DF_DMY.format(assetCategory.getUpdatedDate()));
 			    }
@@ -378,6 +383,36 @@ public class BackOfficeRestController {
 	}
 	
 	
+
+	@RequestMapping(value = "/saveCategory", method = RequestMethod.POST)
+	 @ResponseBody String saveCategory(@RequestParam(value = "json", required = false) String json,
+			 @RequestParam(value = "categoryId", required = false) String categoryId,
+			 @RequestParam(value = "catLocationId", required = false) String catLocationId,
+			HttpServletRequest request) throws Exception {
+
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		assetCategoryService.addAssetCategory(jsonObj,orgLocation,user,categoryId,catLocationId);
+			return "success";
+		
+		
+	} 
+	
+	@RequestMapping(value = "/getCategoryById")
+	 @ResponseBody String getCategoryById(@RequestParam(value = "categoryId", required = false) Long categoryId,
+			 @RequestParam(value = "catLocationId", required = false) Long catLocationId,
+			 HttpServletRequest request) throws Exception{
+		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	         OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 
+	       AssetCategory assetCategory = assetCategoryService.getAssetCategoryListByLocationIdAndCatId(catLocationId,categoryId);
+	         
+		 return commonUtil.toJSON(assetCategory);
+		}
+
 	@RequestMapping(value = "/addCategoryAssets" , method = RequestMethod.POST)
 	   public String addCategoryAssets(@RequestParam(value="json", required=false) String json,MultipartHttpServletRequest request) throws Exception {
 			
@@ -395,7 +430,35 @@ public class BackOfficeRestController {
 	    
 	   }
 	
+	@RequestMapping(value = "/validateCategoryName" , method = RequestMethod.GET)
+	   public Boolean validateCategoryName(@RequestParam(value="categoryName", required=false) String categoryName,HttpServletRequest request) throws Exception {
+			
+		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    
+			
+			Boolean flag = assetCategoryService.validateCategoryName(categoryName,orgLocations.getId());
+			
+		
+		   return flag;
+	    
+	   }
 	
+	
+	@RequestMapping(value = "/terminateCategory", method = RequestMethod.GET)
+	 @ResponseBody String terminateCategory(@RequestParam(value = "categoryId", required = false) String categoryId,
+			HttpServletRequest request) throws Exception {
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		AssetCategory assetCategory = assetCategoryService.getAssetCategoryListByLocationIdAndCatId(orgLocation.getId(),Long.parseLong(categoryId));
+		assetCategory.setId(Long.parseLong(categoryId));
+		assetCategory.setStatus(Integer.parseInt(Constants.MEMBER_IN_ACTIVE));
+		assetCategoryService.addAssetCategory(assetCategory);
+		return "success";
+	} 
 	
 	
 	private String toJSON(Object obj){
