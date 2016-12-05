@@ -146,7 +146,6 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
         },
           
      }); 
-	 alert("changedd");
 }
 </script>
 <div id="deleteDocpopUp"></div>

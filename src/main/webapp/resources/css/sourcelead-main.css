@@ -4245,11 +4245,11 @@ inst-search .col-md-9{
        margin-top: 5px;
 }
 .assetaddpop {
-right: 20px !important;
-    top: 25px !important;
-    width: 650px !important;
-    position: absolute !important;
-	}
+right: 20px  !important
+top: 25px  !important
+width: 650px  !important
+position: absolute !important;
+}
 .assetaddpop-ul ul{
 	float:left !important;
 	padding:0 !important;
@@ -4259,7 +4259,7 @@ right: 20px !important;
 	margin-bottom: 5px !important;
     margin-left: 5px !important;
     padding: 5px !important;
-	float: noe;
+	float: none;
 	clear: both;
 	width: 100%;
 }
@@ -4678,6 +4678,29 @@ import-tranhd  [class*="col-md-"]{
 	right:0px;top: 0px;
 	position: absolute;
 }
+/*clients tab header custom 2nd dec */
+.customtimesheet-head ul{
+       padding: 2px 225px 2px 0px !important;
+}
+.customtimesheet-head .fa-filter {
+   padding: 0px 5px 0px 0px !important;
+}
+.customtimesheet-head ul ul{
+       width: 150px !important;
+}
+.customtimesheet-head ul ul li {
+           text-overflow: ellipsis;
+           overflow: hidden;
+           width: 150px;
+}
+.customtimesheet-head ul ul li label{
+       top:0;
+}
+.customtimesheet-head ul li span{
+       padding: 0px 30px 0px 0px !important;
+}
+/*clients tab header custom 2nd dec */
+
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {
