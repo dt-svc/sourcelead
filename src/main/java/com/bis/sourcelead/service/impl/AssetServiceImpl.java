@@ -60,8 +60,8 @@ public class AssetServiceImpl implements AssetService{
 	 * This method used in BackOfficeRestController
 	 */
 	@Override
-	public List<Asset> getAssetFilterListByLocationId(Long orgLocationId, String categoryIds) throws Exception {
-		List<Asset> assetsList =  assetDao.getAssetFilterListByLocationId(orgLocationId, categoryIds);
+	public List<Asset> getAssetFilterListByLocationId(Long orgLocationId, String categoryIds, String workingStatus) throws Exception {
+		List<Asset> assetsList =  assetDao.getAssetFilterListByLocationId(orgLocationId, categoryIds,workingStatus);
 		if(assetsList != null && !assetsList.isEmpty()){
 			for (Asset asset : assetsList) {
 				asset = getEmpNames(asset);
