@@ -860,13 +860,11 @@ function removeSkillPopUp(candidateId){
 						type : "POST",
 						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(result) {
-<<<<<<< HEAD
-							location.replace(sourceleadUrl+"/candidatesList"); 
-							/* clientSideBar(candidateId); */
-=======
-							/* location.replace(sourceleadUrl+"/candidatesList");  */
-							candidateSideBar(candidateId);
->>>>>>> 13ae9f51e5e91e792d86803ac1e989eba13192fe
+
+						
+							 location.replace(sourceleadUrl+"/candidatesList");  
+							//candidateSideBar(candidateId);
+
 						},
 					});
 			return true;
