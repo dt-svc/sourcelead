@@ -257,11 +257,13 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="clearfix mb10 exprience">';
 							result = result + '<div class="col-md-6">';
+							result = result + '<div class="row">';
+							result = result + '<div class="col-md-7">';
 							result = result + '<input type="text" class="form-control input-sm" name="experienceYears"  value="'+experienceYears+'" placeholder=" Experience Years">';
 							result = result + '</div>';
 							
-							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-							result = result + '<select  class="form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths">';
+							result = result + '<div class="col-md-5 custom-fields select-arrow select-field">';
+							result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths">';
 							result = result + '<option value="">Select Months</option>';
 							result = result  +'<option value="1" '  + (json.experienceMonths == 1 ? "selected" : '') +  '>1</option>';
 							result = result  +'<option value="2"  '+ (json.experienceMonths == 2 ? "selected" : '') +' >2</option>';
@@ -278,8 +280,8 @@ function editCandidate(candidateId){
 							result = result + '</select>';
 							result = result + '</div>';
 							result = result + '</div>';
+							result = result + '</div>';
 							
-							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
 							result = result + '<textarea class="form-control input-sm" placeholder = "Summary"  name="summary" rows="2" cols="0" > '+summary+'</textarea>';
 							//result = result + ''+json.summary+'</textarea>';
