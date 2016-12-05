@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -25,8 +26,10 @@ import com.bis.sourcelead.enums.SubmissionRateStatus;
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementSubmission")
-public class RequirementSubmission {
+public class RequirementSubmission implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
@@ -142,6 +145,24 @@ public class RequirementSubmission {
     
 	@Transient
    	private String score;
+	
+	@Transient
+	private int numOfSubmissions;
+	
+	@Transient
+	private int numOfShortList;
+	
+	@Transient
+	private int numOfInterview;
+	
+	@Transient
+	private int numOfSubmitToClient;
+	
+	@Transient
+	private int numOfOffers;
+	
+	@Transient
+	private int numOfRejected;
 
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -423,6 +444,54 @@ public class RequirementSubmission {
 
 	public void setResumeId(Long resumeId) {
 		this.resumeId = resumeId;
+	}
+
+	public int getNumOfSubmissions() {
+		return numOfSubmissions;
+	}
+
+	public void setNumOfSubmissions(int numOfSubmissions) {
+		this.numOfSubmissions = numOfSubmissions;
+	}
+
+	public int getNumOfShortList() {
+		return numOfShortList;
+	}
+
+	public void setNumOfShortList(int numOfShortList) {
+		this.numOfShortList = numOfShortList;
+	}
+
+	public int getNumOfInterview() {
+		return numOfInterview;
+	}
+
+	public void setNumOfInterview(int numOfInterview) {
+		this.numOfInterview = numOfInterview;
+	}
+
+	public int getNumOfSubmitToClient() {
+		return numOfSubmitToClient;
+	}
+
+	public void setNumOfSubmitToClient(int numOfSubmitToClient) {
+		this.numOfSubmitToClient = numOfSubmitToClient;
+	}
+
+	public int getNumOfOffers() {
+		return numOfOffers;
+	}
+
+	public void setNumOfOffers(int numOfOffers) {
+		this.numOfOffers = numOfOffers;
+	}
+
+	public int getNumOfRejected() {
+		return numOfRejected;
+	}
+
+	public void setNumOfRejected(int numOfRejected) {
+		this.numOfRejected = numOfRejected;
 	}
 
 }

@@ -1186,4 +1186,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public RequirementRateSubmissionNegotiation getRequirementRateBySubmissionById(Long submissionId) {
 		return requirementSubmissionDao.getRequirementRateBySubmissionById(submissionId);
 	}
+
+	@Override
+	public List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long requirementId, User user,
+			OrgLocations loginOrgLocation, String submissionType) throws Exception {
+		return requirementSubmissionDao.getSubmissionsByRequirementIdandStatus(requirementId,user,loginOrgLocation,submissionType);
+	}
 }

@@ -4,6 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+ <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
  
  <style type="text/css">
@@ -89,7 +90,6 @@ float: left !important;
 }
 .require_wrap_details_cta.require_uploadfile .glyphicon-download-alt {
 color:blue;
-
 }
 </style>
  
@@ -112,14 +112,16 @@ $(document).ready(function() {
     
     
      <div class="clients_side_wrap_inn no_pad">
+
         <div id="requirementSideDiv"> </div>
           <div id="loading"></div>
+
       </div>   
       
       <!-- Addede by Rajashekar -->
-      <div id="tab-3" class="project_wrap_table project_tabs project_tabs_inn">
+      <!-- <div id="tab-3" class="project_wrap_table project_tabs project_tabs_inn">
           <div id="recommendationsList"></div>
-       </div>            
+       </div>  -->           
             
           </div>
     
@@ -423,29 +425,29 @@ function sideBar(requirementId){
 				        
 				        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '')
 				    	   {
-				        result = result+'                  <li><i class="fa fa-rupee"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+				        result = result+' <li><i class="fa fa-rupee"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
 				    	   }
 				       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '' ){
-					   result = result+'                  <li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
    
 				       }
 				       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != '' ){
-					   result = result+'                  <li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
 				       }
 				       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
-					   result = result+'                  <li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
    
 				       }
 				       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
-					   result = result+'                  <li><i class="fa fa-eur"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+					   result = result+'<li><i class="fa fa-eur"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
    
 				       }
 				       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rateType != ''){
-					   result = result+'                  <li><i class="fa fa-gbp"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
+					   result = result+'<li><i class="fa fa-gbp"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
   
 				       }
 				       else{
-					   result = result+'                  <li><i class="fa fa-money"></i><span> --- </span></li>';
+					   result = result+'<li><i class="fa fa-money"></i><span> --- </span></li>';
   
 				       }
 				       
@@ -455,6 +457,7 @@ function sideBar(requirementId){
 				        	}
 				        else if(json.state !='' && json.state != 'undefined')
 				        	{
+
 					    result = result+' <li><i class="fa fa-map-marker"></i><span title="'+json.country+', '+json.state+'">'+json.country+', '+json.state+'</span></li>';
 
 				        	}
@@ -462,12 +465,12 @@ function sideBar(requirementId){
 					     result = result+' <li><i class="fa fa-map-marker"></i><span title="'+json.country+'">'+json.country+'</span></li>';
 
 				        }
-				        result = result+'                </ul>';
-				        result = result+'              </div>';
-				        result = result+'              <div class="col-md-6">';
-				        result = result+'                <ul class="list-unstyled can-perdt">';
+				        result = result+'</ul>';
+				        result = result+'</div>';
+				        result = result+'<div class="col-md-6">';
+				        result = result+'<ul class="list-unstyled can-perdt">';
 				        if(json.manager != null && json.manager != '' && json.manager != 'undefined'){
-				        result = result+'<li> <i class="fa fa-user"></i><span id="canName">'+json.manager+'</span></li>';
+				        result = result+'<li> <i class="fa fa-user" ></i><span id="canName">'+json.manager+'</span></li>';
 				        }
 				        else{
 				        	 result = result+'<li> <i class="fa fa-user"></i><span id="canName"> --- </span></li>';	
@@ -491,7 +494,7 @@ function sideBar(requirementId){
 			           if(skills != null && skills != '' && skills != 'undefined'){
 			        	   skills = json.skiills.split(",");
 					        result = result+'                <li>'+skills[0]+'</li>';
-					        result = result+'                <li>'+skills[1]+'</li>';
+					        result = result+'                <li>'+skills[1]+'</liall>';
 					        result = result+'                <li>'+skills[2]+'</li>';
 					        result = result+'                <li>'+skills[3]+'</li>';
 					        result = result+'                <li>'+skills[4]+'</li>';
@@ -521,8 +524,11 @@ function sideBar(requirementId){
 					    result = result+'      <li class="current"><a href="#tab-1" onclick="requirementDetails('+requirementId+');">Details</a></li>';
 					   
 					    if(json.requirementSubmissionStatus != 'SUBMITTED' && json.requirementSubmissionStatus != 'CANCEL' && json.requirementSubmissionStatus != 'DRAFT' && json.requirementSubmissionStatus != 'ONHOLD' && json.requirementSubmissionStatus != 'FILLEDCLOSED'){
-                            result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+');">Pipeline</a></li>';
+                            var all = 'all';
+					    	result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');">Pipeline</a></li>';
+					    	'<sec:authorize access="hasAnyRole(\'ROLE_RECOMMENDATIONS\')">'; 
                              result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
+                             '</sec:authorize>';
                         }
 					   
 					    result = result+'      <div class="clearfix"></div>';
@@ -532,6 +538,11 @@ function sideBar(requirementId){
 						    result = result+'</div>';
 						    result = result+' <div id="tab-2" class="project_tabs_inn">';
 						    result = result+'</div>';
+						    result = result +'<div id="status-div"></div>';
+							result = result +'<div id="status-data"></div>';
+						   
+						    result = result+'<div id="tab-3" class="project_tabs_inn">';
+						    result = result+'</div> ';
 					    result = result+'</div>';
 					    result = result+'</div>';
 					    
@@ -624,7 +635,9 @@ function requirementDetails(requirementId){
 				             */
 				             
 				            if( (json.requirementSubmissionStatus =='NEW'  || json.requirementSubmissionStatus =='DRAFT' || json.requirementSubmissionStatus =='SUBMITTED'  || json.requirementSubmissionStatus  == "APPROVED"  || json.requirementSubmissionStatus =='REJECTED'  ||  json.requirementSubmissionStatus  == "OPEN" ||  json.requirementSubmissionStatus  == "ONHOLD" ) && ( json.isLoginUserAsTeamMember == "false" || ( json.isLoginUserAsTeamMember == "true" && json.isLoginUserAsApprover  == "true") || ( json.isLoginUserAsTeamMember == "true" && json.isLoginUserAsManager  == "true") ) ){ 
-				            	 result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
+				            	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
+				            		result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
+				            	'</sec:authorize>';
 				            }
 				            
 				            var APPROVED = "APPROVED";     
@@ -642,6 +655,8 @@ function requirementDetails(requirementId){
 				             
 				             result = result +'     </div>';
 				             result = result +'     </div>';
+				            
+				             result = result +'     <div class="clearfix">';
 				             
 				            result = result +'     <div class="clearfix row">';
 					        result = result +'     <div class="col-md-10 divskill divsAssigned">';
@@ -846,7 +861,10 @@ function requirementDetails(requirementId){
 				            result = result +'   </div>';
 				            result = result +' </div>';
 							$("#tab-1").empty();
-							$("#tab-2").empty(); 
+							$("#tab-2").empty();
+							$("#tab-3").empty();
+							$("#status-div").empty();
+						    $("#status-data").empty();
 							$("#tab-1").append(result); 
 							
 							assignedMemberList(requirementId);
@@ -978,14 +996,17 @@ function cancelAlert(){
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script>  
-function requirementPipeline(requirementId){
+function requirementPipeline(requirementId,submissionType){
+	
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
+         url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
          success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
+        	requirementSubmissionCount(requirementId);
+        	 var result =""; 
+        	 if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
             		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
@@ -994,16 +1015,13 @@ function requirementPipeline(requirementId){
             			 location.replace(sourceleadUrl+"/errorPage");
             		 }
             		 else{ 
-            			 
-            			 var result ="";
-            			
             			 var submitToClient = '';
             			 if(clientSubmissions == 'Y'){
             				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
             			 }
-							
+            			   
 							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-							 
+							
 							//For Add Applicant div
 							result = result + '<div class="new_side_wrap">';
 							result = result + '<div class="new_side_wrap_inn">';
@@ -1044,7 +1062,7 @@ function requirementPipeline(requirementId){
 							
 							result = result +'<div class="shortlist-wrap">';
 							result = result +'<div class="new_side_wrap_inn">';
-							result = result +'<div class="add_inter">';
+							result = result +'<divsubStatus class="add_inter">';
 							result = result + '<div id="shortlistDiv"></div>';
 							result = result +'</div>';
 							result = result +'</div>';
@@ -1058,8 +1076,6 @@ function requirementPipeline(requirementId){
 							 result = result +'</div>';
 							 result = result +'</div>';
 							 result = result +'</div>';
-
-							 
 							
 				           // result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
 				            result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
@@ -1086,15 +1102,24 @@ function requirementPipeline(requirementId){
 				            result = result +' <li><a href="javascript:void(0)" class="action"> Action <i onclick="getActions();" class="fa fa-caret-down"></i></a>';
 				            result = result +'<div class="action-pop">';
 				            result = result +'	<span>';
-				            result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
-				            result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
-				            result = result + submitToClient
-				            result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
-				            result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SHORTLIST\')">';
+				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
+				            	result = result + submitToClient
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
+				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
+				            '</sec:authorize>';
+				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
+				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            '</sec:authorize>';
 				            result = result +'    </span>';
 				            result = result +' </div>';	
 				            result = result +' </li>';
-				            
 				            
 				            
 				            result = result +'    <div class="clearfix"></div>';
@@ -1119,10 +1144,14 @@ function requirementPipeline(requirementId){
 				           result = result + '       <tbody>';
 				           for (var i=0; i<json.length; i++)
 			   				{  
-			   	        		
 			   	        		var report = json[i];
 						           result = result + '       <tr>';
-						           result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           '</sec:authorize>';
+						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
+						           '</sec:authorize>';
 						           
 						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.candidateEmail+'</span></div></td>';
@@ -1192,11 +1221,14 @@ function requirementPipeline(requirementId){
 				           result = result + '     </table>';
 				           result = result + '   </div>';
 				           result = result + '   </div>';
-				            
-				            
+				           
+				           
 							$("#tab-1").empty();
-							$("#tab-2").empty(); 
-							$("#tab-2").append(result);  
+							$("#tab-3").empty();
+							$("#status-data").empty();
+							$("#status-data").append(result);
+							$("#tab-2").append(status-data);
+							
 							documentpagination();
 							$("#tab-2").show();
 							$(".project-tabs-menu a").click(function(event) {
@@ -1207,10 +1239,10 @@ function requirementPipeline(requirementId){
 							     $(".project_tabs_inn").not(tab).css("display", "none");
 							     $(tab).fadeIn();
 							 });
+							
             		 }
               }else{
                      	 $("#requirementSideDiv").removeAttr("style");
-       	    	         var result ="";
       		    	     result = result+"   <div class='row'>"; 
       					 result = result+"	<div class='col-lg-12'>"; 
       					 result = result+"		<div class='content-area clearfix'>"; 
@@ -1242,6 +1274,34 @@ function documentpagination(){
      		"sSearch": ""
      	}
     } );
+}
+</script>
+
+<script>
+function requirementSubmissionCount(requirementId){  
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
+         success :function(data) { 
+        	 var json = JSON.parse(data);
+        	 var report1 = json[0];
+        	 
+        	 $("#applicantsCount").html(report1.numOfSubmissions);
+        	 $("#shortlistCount").html(report1.numOfShortList);
+        	 $("#submitToClientCount").html(report1.numOfSubmitToClient);
+        	 $("#interviewCount").html(report1.numOfInterview);
+        	 $("#offersCount").html(report1.numOfOffers);
+        	 $("#rejectedCount").html(report1.numOfRejected);
+         },
+	  });
+}
+</script>
+
+
+<script>
+function filterReq(requirementId,submissionType){
+	requirementPipeline(requirementId,submissionType);
 }
 </script>
 
@@ -1422,9 +1482,22 @@ function requirementRecommendations(requirementId){
     	    result = result +'</tbody>';
 		    result = result +' </table>';
 		    result = result +'</div>';
-		    $("#recommendationsList").empty();
-			$("#recommendationsList").append(result); 
+		    $("#tab-1").empty();
+			$("#tab-2").empty(); 
+		    $("#tab-3").empty();
+		    $("#status-div").empty();
+		    $("#status-data").empty();
+			$("#tab-3").append(result); 
 			recommendationpagination();
+			$("#tab-3").show();
+			$(".project-tabs-menu a").click(function(event) {
+			     event.preventDefault();
+			     $(this).parent().addClass("current");
+			     $(this).parent().siblings().removeClass("current");
+			     var tab = $(this).attr("href");
+			     $(".project_tabs_inn").not(tab).css("display", "none");
+			     $(tab).fadeIn();
+			 });
            },
              
         }); 
@@ -1674,6 +1747,58 @@ function hilightTab(){
     });	
 }
 </script>
+
+
+<script>
+function requirementStatusBar(requirementId){
+	    var result = "";
+	    var all = 'all';
+       var shortList = 'SHORTLIST';
+  	   var interview = 'INTERVIEW';
+  	   var rejected = 'REJECTED';
+       var submitToClient = 'SUBMIT_TO_CLIENT';
+       var offerMade = 'OFFERMADE';
+	     result = result + '  <div class="clearfix pipeline-count">';
+		 result = result + '    <ul class="list-unstyled list-inline">';
+		 result = result + '     <li id="applicantli" class="pipeline-active tabActivation" onclick="filterReq('+requirementId+',\''+all+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Applicants">';
+		 result = result + '       <label><strong>Applicants</strong></label>';
+		 result = result + '       </a> <span class="label label-default" id="applicantsCount">0</span> </li>';
+		 result = result + '      <li id="shortListli" class="tabActivation" onclick="filterReq('+requirementId+',\''+shortList+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Shortlisted">';
+		 result = result + '       <label><strong>Shortlisted</strong></label>';
+		 result = result + '     </a> <span class="label label-warning" id="shortlistCount">0</span></li>';
+		 result = result + '    <li id="submitToClientli" class="tabActivation" onclick="filterReq('+requirementId+',\''+submitToClient+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Submit to Client">';
+		 result = result + '       <label><strong>Submit to Client</strong></label>';
+		 result = result + '       </a> <span class="label label-info" id="submitToClientCount">0</span> </li>';
+		 result = result + '    <li id="interviewli" class="tabActivation" onclick="filterReq('+requirementId+',\''+interview+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Interviews">';
+		 result = result + '      <label><strong>Interviews</strong></label>';
+		 result = result + '      </a><span class="label label-primary" id="interviewCount">0</span></li>';
+		 result = result + '     <li id="offerMadeli" class="tabActivation" onclick="filterReq('+requirementId+',\''+offerMade+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Offers">';
+		 result = result + '      <label><strong>Offers</strong></label>';
+       result = result + '      </a><span class="label label-success" id="offersCount">0</span> </li>';
+       result = result + '   <li id="rejectedli" class="tabActivation" onclick="filterReq('+requirementId+',\''+rejected+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Rejected">';
+       result = result + '     <label><strong>Rejected</strong></label>';
+       result = result + '      </a><span class="label label-warning" id="rejectedCount">0</span></li>';
+       result = result + '   </ul>';
+       result = result + ' </div>';
+      $("#status-div").prepend(result);
+      $("#tab-2").prepend(status-div);
+	
+}
+</script>
+
+<script>
+function tabEnable(local){
+	$('.tabActivation').each(function() {
+		 var localId = this.id;
+		 $("#"+localId).removeClass("pipeline-active");
+    });
+	var tabId = local.id;
+	$("#"+tabId).addClass("pipeline-active");
+}
+
+</script>
+
+
 
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />

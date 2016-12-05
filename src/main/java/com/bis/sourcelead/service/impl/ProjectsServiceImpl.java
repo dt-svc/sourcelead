@@ -332,7 +332,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		/**
 		 * this block is for submissions for project member
 		*/
-		if (jsonObj.has("employeeMaxCount")){
+		/*if (jsonObj.has("employeeMaxCount")){
 		String employeeMaxCount = jsonObj.getString("employeeMaxCount");
 		if(StringUtils.isNotEmpty(employeeMaxCount)){
 		int empMaxCount = Integer.parseInt(employeeMaxCount);
@@ -340,7 +340,21 @@ public class ProjectsServiceImpl implements ProjectsService{
 			Employees emp = employeesService.getEmployee(jsonObj.getString("employeeId"+c));
 			commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
 			}
-		}
+		 }
+		}*/
+		
+		
+		/**
+		 * this block is for submissions for project member
+		*/
+		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(updatedProjects.getId());
+		if (projectMembersList != null && !projectMembersList.isEmpty()){
+			for (ProjectMembers pm : projectMembersList) {
+				if(pm.getEmployee() != null){
+					commonUtil.storeTimesheetSubmissionRecords(pm.getEmployee().getUser());
+				}
+		  	  
+			}
 		}
 		
 		/*
@@ -585,7 +599,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    if(projectApproverHierarchies.size()==1){
 	    	
 	    	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
-		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2){
+		    	if(approverHierarchy.getLevel() != null){
 		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
 		    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
 		    	}
@@ -662,7 +676,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 Date currentDate = new Date();
 		 Date previousEndDate = null;
          Projects projects = getProjectById(projectId);
-		 
+         HashSet<ProjectApproverHierarchy> projectMemberList = new HashSet<ProjectApproverHierarchy>();
 		
 	     
 		        if(jsonObj.has("ProjectSequeneNumber")){
@@ -694,13 +708,41 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    		}
 			    		
 			    	}
-		    	
-		    	
+		    		
+		    		
 		    	if(jsonObj.has("level1Manager") || jsonObj.has("level2Manager") ){
-			    		Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
 			    		HashSet<Long> oldlist = new HashSet<>();
 			    		HashSet<Long> freshlist = new HashSet<>();
 			    		HashSet<Long> templist = null;
+			    		Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
+			    		
+			    		/*// if   we  are adding new  level 2 manager while editing
+			    		if(jsonObj.has("level2Manager") && projectApproverHierarchies.size() == 1){ 	
+							if(!jsonObj.getString("level2Manager").isEmpty()){
+								Long[] ids = new Long[1000];
+								User approverUserId2 = new User();
+								ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
+								pah2.setProjectId(projects);
+								approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
+								pah2.setApproverUserId(approverUserId2);
+								pah2.setLevel(2);
+								ids[1] = approverUserId2.getId();
+								projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
+								
+							}
+						 }
+			    		*//**
+						 * this block is for submissions for project member
+						*//*
+						Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
+						if (projectMembersList != null && !projectMembersList.isEmpty()){
+							for (ProjectMembers pm : projectMembersList) {
+								if(pm.getEmployee() != null){
+									commonUtil.storeTimesheetSubmissionRecords(pm.getEmployee().getUser());
+								}
+						  	  
+							}
+						}*/
 			    		for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
 								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
 								 Long fieldValuelong = null;
@@ -969,16 +1011,17 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		ProjectMembers myPM =  new ProjectMembers();
 		
-		 Projects project = projectsDao.getProjectById(projectId) ;
-		
 		
 		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
 		Projects pr = projectsDao.getProjectById(projectId);
 		
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
 		 for(ProjectMembers pm : projectMembersList){
-			 pm.setEmpName(pm.getEmployee().getUser().getFirstName()+" "+pm.getEmployee().getUser().getLastName());
-			 pm.setProjectStatus(pr.getStatus());
+			 if(pm.getEmployee() != null){
+				 pm.setEmpName(pm.getEmployee().getUser().getFirstName()+" "+pm.getEmployee().getUser().getLastName());	 
+				 pm.setEmpEmail(pm.getEmployee().getUser().getEmail());	 
+			 }
+			 pm.setProjectStatus(pr.getProjectStatus().getValue());
 			 
 			 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
 			 if(pmh == null){
@@ -997,6 +1040,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	       	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
 	          		pm.setUserId(pm.getEmployee().getUser().getId().toString());
 	          	 }
+		      if(pm.getTerminateReason() != null){
+		    	  pm.setTerminateReason(pm.getTerminateReason());
+		      }
 	       	 
 	       	 if(pm.getEmployee()!=null){
 	
@@ -1029,7 +1075,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 
 		 
 		 myPM.setProjectMembersList(projectMembersArrList);
-		 myPM.setStatus(project.getProjectStatus().getValue());
+		 if(pr.getProjectStatus() != null){
+			 myPM.setStatus(pr.getProjectStatus().getValue());	 
+		 }
+		 
 		 
 		 return myPM;
 	}

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,6 +30,8 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+
+import opennlp.tools.parser.Cons;
 /**
  * Handles requests for the Client service.
  * 
@@ -73,13 +76,14 @@ public class ClientController {
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT')")
 	 @RequestMapping(value = "/client")
 		public ModelAndView client(HttpServletRequest request) throws Exception {
 		 	logger.debug("Display the client page");
 			ModelAndView model = new ModelAndView();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
-			List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
 			model.addObject("userList", userList);
 			model.setViewName("client/client");
 			model.addObject("sourceleadUrl", sourceleadUrl);
@@ -93,6 +97,8 @@ public class ClientController {
 	  * @return ModelAndView
 	  * @throws Exception
 	  */
+	
+	/* This method is used for landing page of clients tab. So, who has client tab access they can see clients list. No preAuthorize for this method */
 	 @RequestMapping(value = "/clientDashboard")
 		public ModelAndView clientDashboard(HttpServletRequest request) throws Exception {
 		 
@@ -149,13 +155,14 @@ public class ClientController {
 		 * @return ModelAndView
 		 * @throws Exception
 		 */
+	 @PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')")
 		 @RequestMapping(value = "/addClientContact")
 		 public ModelAndView addClientContact(HttpServletRequest request) throws Exception {
 			 ModelAndView model = new ModelAndView();
 				try{
 					
 					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-					List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+					List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
 					model.addObject("userList", userList);
 					model.setViewName("client/addClientContact");
 					model.addObject("sourceleadUrl", sourceleadUrl);
@@ -179,6 +186,7 @@ public class ClientController {
 		    }
 		
 //		 /uploadClientForm
+	 @PreAuthorize("hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')")
 		 @RequestMapping(value = "/uploadClientForm")
 			public ModelAndView uploadClientForm(HttpServletRequest request) {
 			 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");

@@ -1,6 +1,7 @@
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%-- 
      @author : David Sammeta.
      this script is for upDate Candidate Details .
@@ -14,9 +15,13 @@
 		result = result	+ '    <div class="project_tabs_inn_head addUser-org">  ';
 		result =result +'<div id = "msgDiv2"></div>';
 		if(window.candidateStatusGlobal == '0'){
-		result = result	+ '   	<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a>                                                            ';
+		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\')">'; 	
+		result = result	+ '<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a>';
+		'</sec:authorize>';
 		}else{
-			result = result	+ '   	<span class="pad-sea"><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a> </span> ';	
+			'<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\')">';
+			result = result	+ '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a> </span> ';
+			'</sec:authorize>';
 		}
 		result = result	+ '     <div id="popUpDivEmp" class="edit-details col-md-4"> ';
 		result = result + '     </div>  ';
@@ -143,14 +148,14 @@ function closeCertificatePopup(){
 		result = result + '	               <div class="clearfix mb10">';
 		result = result + '	                 <p class="ml">Start Date</p>';
 		result = result + '	                   <div class="col-md-6" id="startYearDiv">';
-		result = result	+ '	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear"  placeholder="Enter Year"  field-name="Start Date" >';
+		result = result	+ '	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear"  placeholder="Select Start Date"  field-name="Start Date" >';
 		result = result + '	                 </div>';
 		result = result + '	                 </div>';
 		result = result + '	                 <div id="endDateDiv">';
 		result = result + '	                 <div class="clearfix mb10 endDate">';
 		result = result + '	                 <p class="ml">End Date</p>';
 		result = result + '	                   <div class="col-md-6" >';
-		result = result	+ '	                   <input type="text" max class="form-control" id="endYear" name="endYear" field-name="End Year"  placeholder="Enter Year" >';
+		result = result	+ '	                   <input type="text" max class="form-control" id="endYear" name="endYear" field-name="End Year"  placeholder="Select End Date" >';
 		result = result + '	                 </div>';
 		result = result + '	                 </div> ';
 		result = result + '	                 </div> ';
@@ -279,9 +284,9 @@ function closeCertificatePopup(){
 								
 								result = result	+ '<div class="col-md-6">';
 								if (json.startYear != null && json.startYear != '' && json.startYear != 'undefined') {
-									result = result	+ '<input type="text" max class="form-control" value="'+ json.startYear+ '" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Enter Year"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text" max class="form-control" value="'+ json.startYear+ '" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Select Start Date"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
 								}else{
-									result = result	+ '<input type="text" max class="form-control" value="" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Enter Year"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text" max class="form-control" value="" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Select End Date"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
 								}
 								result = result + '</div>';
 								result = result + '</div>';
@@ -474,11 +479,11 @@ function closeCertificatePopup(){
 									if(window.candidateStatusGlobal == '0'){
 				                   result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 									}else{
-										result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');"></a>';	
+										result = result+'<td><div class="tblicons"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEER\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');"></a></sec:authorize>';	
 									}if(window.candidateStatusGlobal == '0'){
 										result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
 									}else{
-										result = result+'<i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></div></td>';
+										result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\')"><i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></sec:authorize></div></td>';
 									}
 									result = result + '</tr>';
 								}

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -95,6 +96,7 @@ public class RequirementInterviewRestController {
 	 * @return
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasRole('ROLE_ADD_INTERVIEW')")
 	@RequestMapping(value = "/saveInterview" , method = RequestMethod.POST)
 	   public String saveInterview(@RequestParam(value="jsonData", required=false) String json, HttpServletRequest request) throws Exception {
 			
@@ -112,7 +114,7 @@ public class RequirementInterviewRestController {
 
   }
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW')")
 	@RequestMapping(value = "/getAllInternalInterviews" , method = RequestMethod.POST)
 	 public @ResponseBody  String getAllInternalInterviews(@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
 		
@@ -124,7 +126,7 @@ public class RequirementInterviewRestController {
 		 return resultJson;
 	   }
 	  
-	
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW')")
 	@RequestMapping(value = "/getAllCustomerInterviews" , method = RequestMethod.POST)
 	 public @ResponseBody  String getAllCustomerInterviews(@RequestParam(value="submissionId", required=false) Long submissionId,
 			 @RequestParam(value = "requirementId", required = false) Long requirementId,

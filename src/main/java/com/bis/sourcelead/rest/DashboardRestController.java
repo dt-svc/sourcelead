@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -87,8 +88,9 @@ public class DashboardRestController {
 	 * @author: Sammeta David
 	 */
 	
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/getTimeSheetSubmissionStatus")
-	public String getTimeSheetSubmissionStatus(HttpServletRequest request) throws Exception {
+	public String getTimeSheetSubmissionStatus(@RequestParam(value="timesheetType", required=false) String timesheetType,HttpServletRequest request) throws Exception {
 
 		String resultJson;
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
@@ -96,10 +98,9 @@ public class DashboardRestController {
 	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
-		
-		if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_APPROVER".equalsIgnoreCase(userRole)  ||  "ROLE_TEAM_LEAD".equalsIgnoreCase(userRole)  ){
+		if("employes".equalsIgnoreCase(timesheetType)){
 			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId());
-		}else if("ROLE_USER".equalsIgnoreCase(userRole)){
+		}else if("myTimesheets".equalsIgnoreCase(timesheetType)){
 			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(user.getId(), loginOrgLocations.getId());
 		}
 		resultJson = commonUtil.toJSON(timeSheetSubmissionCount);
@@ -149,6 +150,7 @@ public class DashboardRestController {
 	   * @throws NullPointer
 	   */
 	 
+	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
 	 @RequestMapping(value = "/getAssignedRequirementListByOrgLocationIDAndUserId")
 	 public String getAssignedRequirementListByOrgLocationIDAndUserId(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
 
@@ -280,12 +282,57 @@ public class DashboardRestController {
 		resultJson = commonUtil.toJSON(requirementList);
 		return resultJson;
 	 }
+	 
+	 /**
+	   * @author sarath kumar
+	   * @since  oct 26 2016
+	   * @version 0.0.1
+	   * 
+	   *  
+	   * @return string 
+	   * 
+	   * @throws NullPointer
+	   */
+	 
+	 @RequestMapping(value = "/getApproverRequirementApproverListByOrgLocationIDAndUserId")
+	 public String getApproverRequirementApproverListByOrgLocationIDAndUserId(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
+
+		String resultJson;
+		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		
+		String userCode = user.getUserCode();
+		String userType = null;
+		List<Requirement>   requirementList = null;
+		
+		if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
+			userType = "ADMIN";
+			requirementList = requirementService.getApproverRequirementApproverListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
+		}else{
+			requirementList = requirementService.getApproverRequirementApproverListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
+		}
+		
+		//List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(),user.getId());
+		for(Requirement requirement : requirementList){
+			// to get the RequirementApproverHierarchy to set the Status
+			RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), user.getId());
+			if(requirementApproverHierarchy!=null){
+				requirement.setRequirementApproverHierarchyStatus(requirementApproverHierarchy.getRequirementApproverStatus().toString());
+			}
+		}	
+		resultJson = commonUtil.toJSON(requirementList);
+		return resultJson;
+	 }
+	 
 	
 	 /**
 		 * 
 		 * @author: Venkat Kesav
 		 * This  controller method is  to get Interviews list 
 		 */
+		@PreAuthorize("hasRole('ROLE_VIEW_INTERVIEW')")
 		@RequestMapping(value = "/getInterviews")
 		public String getInterviews(String dateRange, HttpServletRequest request) throws Exception {
 			

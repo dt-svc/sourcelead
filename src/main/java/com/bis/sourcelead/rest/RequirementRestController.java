@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,13 +20,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -316,6 +320,7 @@ public class RequirementRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasRole('ROLE_CREATE_CLIENT_CONTACT')")
 	@RequestMapping(value = "/saveClientContact", method = RequestMethod.POST)
 	@ResponseBody
 	public String saveClientContact(@RequestParam(value = "json", required = false) String json, @RequestParam(value="orgRelationId", required=false) String orgRelationId,
@@ -359,12 +364,24 @@ public class RequirementRestController {
 	*/
 	@RequestMapping(value = "/getTeamsList", method = RequestMethod.POST)
 	public @ResponseBody String getTeamsList(HttpServletRequest request) throws Exception {
-		
 		String resultJson;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocation.getId());
+		CombinedList combinedList = new CombinedList();
 		
-		resultJson = commonUtil.toJSON(teamsList);
+		Boolean isTeamViewAccess = commonUtil.hasRole("ROLE_VIEW_TEAM");
+		if(isTeamViewAccess){
+			List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocation.getId());
+			if(teamsList != null){
+				combinedList.setTeams(teamsList);
+			}
+		}
+		
+		List<Roles> usersList = userService.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_REQUIREMENT));
+		if(usersList != null){
+			combinedList.setRoles(usersList);
+		}
+		
+		resultJson = commonUtil.toJSON(combinedList);
 		return resultJson;
 	}
 	/**
@@ -375,6 +392,7 @@ public class RequirementRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_RECOMMENDATIONS')")
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/getRequirementRecommendationsByRequirementId", method = RequestMethod.POST)
 	public @ResponseBody String getRequirementRecommendationsByRequirementId(@RequestParam(value="requirementId",required = false) Long requirementId,HttpServletRequest request) throws Exception {
@@ -404,6 +422,7 @@ public class RequirementRestController {
 	 * @return
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasRole('ROLE_CREAE_OFFER')")
 	@RequestMapping(value = "/getRequirementWhichIsReleasedOrNot", method = RequestMethod.POST)
 	public @ResponseBody String getRequirementWhichIsReleasedOrNot(@RequestParam(value = "requirementId", required = false)  Long requirementId,
 		HttpServletRequest request) throws Exception {
@@ -428,7 +447,7 @@ public class RequirementRestController {
 	 * @throws Exception
 	 */
 	 @RequestMapping(value = "/validateJobId",  method = RequestMethod.POST)
-	    public @ResponseBody String validateJobId(@RequestParam(value="jobId", required=false) Long jobId,HttpServletRequest request) throws Exception {
+	    public @ResponseBody String validateJobId(@RequestParam(value="jobId", required=false) String jobId,HttpServletRequest request) throws Exception {
 		    	String result;
 				String resultJson;
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

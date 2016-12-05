@@ -46,5 +46,10 @@ public interface RequirementSubmissionDao {
  
 	RequirementSubmission getVendorSubmissionByClientSubmissionIdAndCLientLocationId(Long clientSubmissionId,Long clientOrgLocationId);
 
+
 	RequirementRateSubmissionNegotiation getRequirementRateBySubmissionById(Long submissionId);
+
+	List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long requirementId, User user,
+			OrgLocations loginOrgLocation, String submissionType)throws Exception;
+
 }

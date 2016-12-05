@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="resources/css/style.css" />
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link rel="stylesheet" href="resources/css/jquery-ui.css" type="text/css" >
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
 
@@ -64,16 +64,7 @@ function getAddApplicant(requirementId){
 	
                         
 	result = result + '</div>';
-	
-	result = result + '	 <div class="form-group">';
-	result = result + '    <label class="col-md-3">Need Applicant Permit</label>';
-	result = result + '     <div class="col-md-9">';
-	result = result + '        <input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onclick="needApplicantPermitFunction();" value=""   >';
-	result = result + '	    </div>';
-	result = result + '</div>';
-	
-	
-	result = result + '<div class="form-footer clearfix">';
+	 result = result + '<div class="form-footer clearfix">';
 	result = result + '<div class="pull-right mr">';
 	result = result + '<button type="submit" id="save_button"  class="btn btn-sm btn-primary ">SUBMIT</button>';
 	result = result + '</div>';
@@ -93,16 +84,6 @@ function getAddApplicant(requirementId){
 }
 </script>
 
-<script>
-function needApplicantPermitFunction(){ 
-    if(document.getElementById('needApplicantPermit').checked) {
-        $("#needApplicantPermit").val('Y');
-    }else{
-        $("#needApplicantPermit").val('N');
-    }
-}
-
-</script>
 
 
 <script type="text/javascript">
@@ -237,7 +218,8 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	        	 $(".new_side_wrap").removeClass("new_side_wrap_active");
 	    		$(".side_mask").fadeOut(200);
 	    		$("body").css('overflow-y', 'auto');
-	    		requirementPipeline(requirementId); 
+	    		var allApplicants = 'all';
+	    		requirementPipeline(requirementId,allApplicants); 
 	        	
 	        },
 	    }); 

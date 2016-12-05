@@ -94,7 +94,7 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao{
 	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception{
 		 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateEducation ce where ce.orglocationId =:orgLocationId and ce.candidateId.id =:candidateId and ce.status ='1'";  
+		String query = "from CandidateEducation ce where ce.orglocationId =:orgLocationId and ce.candidateId.id =:candidateId and ce.status ='1' ORDER BY ce.id DESC";  
 		List<CandidateEducation> candidateEducation = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return candidateEducation;	
 		

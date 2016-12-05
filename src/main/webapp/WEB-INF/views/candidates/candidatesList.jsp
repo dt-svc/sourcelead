@@ -4,10 +4,38 @@
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 
 <script src="resources/js/formvalidator.js"></script>
 
+
+
+<%-- 
+     @author : p.sarath kumar
+     this script is for candidate Activation
+--%>
+<script>
+  function noAccess(id){ 	
+	 
+	    var result = "";
+		result = result + '	  <div class="blank-pages-tech">';
+		result = result + '   <p class="text-center text-danger permissondenied mb">';
+		result = result + '       <img src="resources/images/sourcelead-load.png" alt="Source Lead" title="Source Lead">';
+		result = result + '   </p>';
+		result = result + '   <p class="big-txt mt">PERMISSION DENIED</p>';
+		result = result + '   <p class="text-muted">You dont have permission to access this page.</p>';
+		result = result + '   <p class="positionRelative move-btn btn-group mt">';
+		result = result + '   <i class="fa fa-home btn btn-primary"></i>';
+		result = result + '   <a href="<c:url value='/dashboard'/>" type="button" class="btn btn-primary">Take me home<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>';
+		result = result + '   </span></a>';
+		result = result + '   </p>';
+		result = result + ' </div>';
+		    
+	   $("#tab-"+id).empty();
+	   $("#tab-"+id).append(result);
+  }
+</script>
 
 <jsp:include page="candidatesProfile.jsp"></jsp:include>
 <jsp:include page="candidatesResumes.jsp"></jsp:include>
@@ -15,14 +43,17 @@
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="candidatesActivities.jsp"></jsp:include>
-<jsp:include page="candidatesCommentsList.jsp"></jsp:include>
 
+ <sec:authorize access="hasRole(\'ROLE_POST_COMMENTS\')">
+<jsp:include page="candidatesCommentsList.jsp"></jsp:include>
+ </sec:authorize>
 <script>
  window.onload = function() {
  	 candidateList();
  	 $("#upcandidateStatus").val('');
 };
 </script>
+
 <style type="text/css">
 .candidate_wrap_table table tr td:first-child {
     padding: 0;
@@ -31,6 +62,8 @@
     padding-right: 5px;
 }
 </style>
+
+
 
 <%-- 
      @author : sarath kumar.
@@ -81,13 +114,13 @@
 	                	 result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                   /*   result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";  */
+	                    /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
 	                     result = result +"    <th>Name</th>"; 
 	                     result = result +"    <th>Designation</th>"; 
 	                     result = result +"    <th>Position type</th>"; 
 	                     result = result +"    <th>Email</th>"; 
 	                     result = result +"    <th>Mobile</th>"; 
-	                     result = result +"    <th>Address</th>"; 
+	                     result = result +"    <th>Location</th>"; 
 	                     result = result +"    <th>Last Update</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -119,8 +152,17 @@
 				            		candidateUpdateDateToString = "---";
 				            	}
 		                     result = result +"<tr>";
-			               /*   result = result +"  <td><input type='checkbox' id='checkbox12'/></td>"; */
-			                 result = result +"  <td><div class='proj_show' onclick='clientSideBar("+opt.id+");'><span title='"+opt.firstName+" "+opt.lastName+"'>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+
+			                 /* result = result +"  <td><input type='checkbox' id='checkbox12'/></td>"; */
+			                
+			                 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
+			                   result = result +"  <td><div class='proj_show' onclick='candidateSideBar("+opt.id+");'><span title='"+opt.firstName+" "+opt.lastName+"'>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+			                 '</sec:authorize>';
+			                 
+			                 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
+			                  result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+opt.lastName+"'>"+opt.firstName+" "+opt.lastName+"</span></div></td>";
+			                 '</sec:authorize>';
+
 			                 result = result +"  <td><div><span>"+designation+"</span></div></td>";
 			                 if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
 			                	 {
@@ -215,8 +257,9 @@ function cpagination(){
 
 <script>
 var candidateStatusGlobal ="";
-function clientSideBar(candidateId){
+function candidateSideBar(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var loginUserId = '${SourceLeadWeb_userId}';
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -309,15 +352,15 @@ function clientSideBar(candidateId){
 			             
 			             result = result+'</ul>';
 			             
-			             result = result+'                 </div>';
-			             result = result+'                 <div class="socialnetwork-details">';
-			             result = result+'                 <ul class="list-inline list-unstyled">';
-			             result = result+'                                 <li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>';
-			             result = result+'                                 <li class="bg-twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square"></i></a></li>';
-			             result = result+'                                 <li class="bg-google "><a href="javascript:void(0)"> <i class="fa fa-google-plus-square"></i></a></li>';
-			             result = result+'                                 <li class="bg-linked"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square"></i></a></li>';
-			             result = result+'                                 <li class="bg-web"><a href="javascript:void(0)"> <i class="fa fa-globe"></i></a></li>';
-			             result = result+'                               </ul>';
+			             result = result+'</div>';
+			             result = result+'<div class="socialnetwork-details">';
+			             result = result+'<ul class="list-inline list-unstyled">';
+			             result = result+'<li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>';
+			             result = result+'<li class="bg-twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square"></i></a></li>';
+			             result = result+'<li class="bg-google "><a href="javascript:void(0)"> <i class="fa fa-google-plus-square"></i></a></li>';
+			             result = result+'<li class="bg-linked"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square"></i></a></li>';
+			             result = result+'<li class="bg-web"><a href="javascript:void(0)"> <i class="fa fa-globe"></i></a></li>';
+			             result = result+'</ul>';
 			             result = result+'                 </div>';
 			             result = result+'                 </div>';
 			             result = result+'               </div>';
@@ -330,37 +373,38 @@ function clientSideBar(candidateId){
 			             result = result+'                   <li><i class="fa fa-phone"></i>+'+json.mobilePhone+'</li>';
 			                                                  }else{
 			                                                	  
-			             result = result+'                   <li><i class="fa fa-phone"></i>----</li>';         	  
+			             result = result+'<li><i class="fa fa-phone"></i>----</li>';         	  
 			                                                  }
 			                                                  if(json.address != null && json.address != '' && json.address != 'undefined'){
-			             result = result+'                   <li><i class="fa fa-location-arrow"></i>'+json.address+'</li>';
+			             result = result+' <li><i class="fa fa-location-arrow"></i>'+json.address+'</li>';
 			                                                  }else{
-			             result = result+'                   <li><i class="fa fa-location-arrow"></i>----</li>';                                  	  
+			             result = result+'<li><i class="fa fa-location-arrow"></i>----</li>';                                  	  
 			                                                  }
-			             result = result+'                   <li><i class="fa fa-rupee"></i><b>Current Rate:</b>  ';
+			             result = result+'<li><i class="fa fa-rupee"></i><b>Current Rate:</b>  ';
 			             
 		             	 if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
-			             	result = result+'                    '+json.currentRate+'/Per Hour';
+			             	result = result+''+json.currentRate+' '+json.currentRateType+'';
 			             }else{
-			             	result = result+'                     ---- ';                                    
+			             	result = result+'---- ';                                    
 			             }
 		             	 result = result+'				     <b>Expected:</b> ';
 			             if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
-			             	result = result+'                    '+json.expectedRate+'/Per Hour';
+			             	result = result+''+json.expectedRate+' '+json.rateType+'';
 			             }else{
-			             	result = result+'                     ----';                                  	  
+			             	result = result+'----';                                  	  
 			             }
-			             result = result+'					 </li>'; 
-			             
+			             result = result+'</li>'; 
 			             result = result+'                 </ul>';
-			            /* New comments div creation Nov 8th, 2016 */
-			            
+			             
+			            /* New comments div creation Nov 8th, 2016 */ 
+			            if(json.status == '1' ){
+			            '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\')">'; 
 			            result = result+'<div class="comments-div clearfix" id="latestMessage">';
 			            result = result+'    <div class="commentsimg">';
 			            result = result+'    <i class="fa fa-comments"></i>';
 			            result = result+'        <div class="commentsimg-inner">';
 			            
-			            result = result+'        	<img src="resources/images/userprofile-img.png" alt="User Comment" title="User Comment">';
+			            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
 			            result = result+'        </div>';
 			            result = result+'    </div>';
 			            result = result+'     <div class="comments-content">';
@@ -381,6 +425,8 @@ function clientSideBar(candidateId){
 			 			result = result+'		</div>';
 			            result = result+'     </div>';
 			            result = result+'</div>';
+			            '</sec:authorize>';
+			            }
 			 		    /* New comments div creation Nov 8th, 2016 */
 			             
 			             
@@ -390,12 +436,31 @@ function clientSideBar(candidateId){
 			             result = result+'   <div class="proj_close"></div>';
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
 			             result = result+'     <ul class="project-tabs-menu">'; 
-			             result = result+'       <li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
-			             result = result+'       <li id="candidateResumeTab"><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');" >Resume</a></li>';
-			             result = result+'       <li id="candidateEmployersTab"><a href="#tab-3" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
-			             result = result+'       <li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
-			             result = result+'       <li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
-			             result = result+'       <li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
+			             
+			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">';
+			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
+			             '</sec:authorize>';
+			             
+			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\',\'ROLE_VIEW_CANDIDATE_RESUMES\',\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\')">';
+			               result = result+'<li id="candidateResumeTab"><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+','+json.status+');" >Resume</a></li>';
+			             '</sec:authorize>';
+			             
+			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\',\'ROLE_VIEW_EMPLOYEER\',\'ROLE_VIEW_EDIT_EMPLOYEER\',\'ROLE_VIEW_DELETE_EMPLOYEER\')">';
+			               result = result+'<li id="candidateEmployersTab"><a href="#tab-3" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
+			             '</sec:authorize>';
+			             
+			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_VIEW_CANDIDATE_EDUCATION\',\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_DELETE_CANDIDATE_EDUCATION\')">';
+			              result = result+'<li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
+			             '</sec:authorize>';
+			             
+			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\')">';
+			               result = result+'<li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
+			             '</sec:authorize>';
+			             
+			             '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\')">';
+			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
+			              '</sec:authorize>';
+			              
 			             /* result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; */
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
@@ -517,7 +582,7 @@ $(document).ready(function() {
 <%-- 
      @author : sarath kumar.
      this script is for load predefined image for candidate.
-     1.usage     : called at clientSideBar() function. line number 166.
+     1.usage     : called at candidateSideBar() function. line number 166.
 --%>
 
 <script>
@@ -627,7 +692,7 @@ function refreshImageBlock(candidateId){
 <%-- 
      @author : sarath kumar.
      this script is for validate image for candidate.
-     1.usage     : used in clientSideBar() function line number :171.
+     1.usage     : used in candidateSideBar() function line number :171.
 --%>
 <script type="text/javascript">
 function loadFile(event,candidateId){
@@ -763,7 +828,10 @@ function cancel(candidateId){
                   </div>                	
           </li>  
           
-          <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
+          
+           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
+              <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
+           </sec:authorize>
          
           <div class="clearfix"></div>
         </ul>
@@ -943,7 +1011,7 @@ function exportToPdf(){
         $("#canDiv").removeAttr("onClick");
     }
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&exportType=pdf";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf";	
 	  }
 }
 
@@ -965,7 +1033,7 @@ function exportToExcel(){
          $("#canDiv").removeAttr("onClick");
      }
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&exportType=xls";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls";	
 	  }
 }
 </script>
@@ -1081,7 +1149,7 @@ function savedCommentAndCount(candidateId){
 				            result = result+'    <i class="fa fa-comments"></i>';
 				            result = result+'        <div class="commentsimg-inner">';
 				            
-				            result = result+'        	<img src="resources/images/userprofile-img.png" alt="User Comment" title="User Comment">';
+				            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
 				            result = result+'        </div>';
 				            result = result+'    </div>';
 				            result = result+'     <div class="comments-content">';

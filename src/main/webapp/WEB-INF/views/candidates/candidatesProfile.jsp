@@ -4,7 +4,7 @@
 <script src="resources/js/bootstrap-select.min.js"></script>
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 
@@ -41,6 +41,8 @@ function editCandidate(candidateId){
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
+		
+		
  if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
 	  
 	  $.ajax({
@@ -184,7 +186,7 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mr">';
 							result = result + '<div class="pull-right">';
 							result = result + '<button type="button"  onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
-							result = result + '		            <button type="button" class="btn btn-sm btn-danger" onClick ="cancelEdit();">Cancel</button>';
+							result = result + '<button type="button" class="btn btn-sm btn-danger" onClick ="cancelEdit();">Cancel</button>';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							result = result + '		      </div>';
@@ -558,11 +560,12 @@ function candidateProfile(candidateId){
 							var result ="";
 							
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
-							if(json.status == 0){
+							if(json.status == '0'){
+								'<sec:authorize access="hasAnyRole(\'ROLE_REACTIVATE_CANDIDATE\')">'; 
 								result = result + '<div class="project_tabs_inn_head"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> ';
+								'</sec:authorize>';
 							}else{
-								result = result + '<div class="project_tabs_inn_head "> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
-
+								   result = result + '<div class="project_tabs_inn_head "> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\')">  <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a></sec:authorize> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\')"><a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> </sec:authorize>';
 							}
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details candidate_wrap_details">';	 
@@ -590,8 +593,18 @@ function candidateProfile(candidateId){
 							result = result +'		          <div class="select-skills">                                                                                                         ';
 							result = result +'		            <div class="divskill col-md-12">                                                                                                  ';
 							result = result +'		              <!-- Add skills div -->                                                                                                         ';
-							result = result +'		              <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="getAllSkills('+candidateId+'); removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
+
+							/*result = result +'		              <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="getAllSkills('+candidateId+'); removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';*/
+
+							
+							if(window.candidateStatusGlobal == '0'){
+								result = result +'		              <div class="addSkills"> <a href="#" class="btn btn-primary" title="Add Skills"> <i class="fa fa-code"></i>Add Skills</a>         ';
+								result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div"></i>                                                       ';
+
+							}else{
+								result = result +'		              <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';
 							result = result +'		                <div class="col-md-7 add-skills"> <i class="fa fa-close close-div" onClick="removeSkillPopUp('+candidateId+');"></i>                                                       ';
+							}
 							result = result +'		                  <div class="form-horizontal clearfix">                                                                                      ';
 							result = result +'		                    <div class="clearfix div-padding">                                                                                        ';
 							result = result +'		                      <div class="col-md-10">                                                                                                 ';
@@ -830,21 +843,30 @@ function removeSkillPopUp(candidateId){
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
+		
+		
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-			
+			 
 			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
 			
 			 var con = JSON.stringify(frm);
 				 con = con.replace(/[{}]/g, "");
 				var jsonData = encodeURIComponent(con);
+				
+				
 			  //It will escape all the special characters
 			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
 						type : "POST",
 						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(result) {
+<<<<<<< HEAD
 							location.replace(sourceleadUrl+"/candidatesList"); 
 							/* clientSideBar(candidateId); */
+=======
+							/* location.replace(sourceleadUrl+"/candidatesList");  */
+							candidateSideBar(candidateId);
+>>>>>>> 13ae9f51e5e91e792d86803ac1e989eba13192fe
 						},
 					});
 			return true;
@@ -906,8 +928,18 @@ function candidateSkillsList(candidateId){
 	                    	 var opt = json[i];   
 	                    	    result = result + '          <tr>';
 		                		result = result + '            <td><p class="form-control-static">'+opt.name+'</p></td>';
+		                		
+		                		if(window.candidateStatusGlobal == '0'){
+		                			result = result + '            <td><select id="scale" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);" >';
+		                			if(opt.scale == 'undefined'|| opt.scale==null || opt.scale== 0){
+			                			 result = result + '                <option selected=""disabled="">select</option>'; 
+				                	 }else{
+		                			result = result + '                <option selected="" value="'+opt.scale+'" disabled="">'+opt.scale+'</option>';
+				                	 }
+		                		}else{
+		                		
 		                		result = result + '            <td><select id="scale" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);" >';
-		                		result = result + '                <option selected="" disabled="">Select</option>';
+		                		result = result + '                <option selected="" value="'+opt.scale+'" disabled="">Select</option>';
 		                		
 		                		if(opt.scale == "Beginner"){
 		                			result = result + '<option selected>Beginner</option>';
@@ -934,7 +966,17 @@ function candidateSkillsList(candidateId){
 		                		}else{
 		                			result = result + '  <option>Master</option>';
 		                		}
+		                		}
 		                		result = result + '              </select></td>';
+		                		
+		                		 if(window.candidateStatusGlobal == '0'){ 
+		                			 result = result + '            <td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
+				                	 if(opt.totalExperience == 'undefined'|| opt.totalExperience==null || opt.totalExperience== 0){
+			                			 result = result + '                <option selected=""disabled="">select</option>'; 
+				                	 }else{
+		                			 result = result + '                <option selected="" value="'+opt.totalExperience+'" disabled="">'+opt.totalExperience+'</option>'; 
+		                		 }
+				                }else{
 		                		result = result + '            <td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
 		                		result = result + '                <option selected="" disabled="">Select</option>';
 		                		if(opt.totalExperience == "0"){
@@ -972,8 +1014,14 @@ function candidateSkillsList(candidateId){
 		                		}else{
 		                			result = result + '<option>6</option>';
 		                		}
+		                		}
 		                		result = result + '              </select></td>';
+		                		
+		                		 if(window.candidateStatusGlobal == '0'){ 
+				                result = result + '            <td><div class="text-center"><a href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
+		                		 }else{
 		                		result = result + '            <td><div class="text-center"><a onclick="removeSkillById('+candidateId+', '+opt.id+');" href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
+		                		 }
 		                		result = result + '          </tr>';
 	                      } 
 	                     result = result +" </tbody>";

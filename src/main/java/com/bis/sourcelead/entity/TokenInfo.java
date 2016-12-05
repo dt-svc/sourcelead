@@ -1,12 +1,14 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
 /** Contains information about a token. */
-public final class TokenInfo {
+public final class TokenInfo implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	private final long created = System.currentTimeMillis();
 	private final String token;
 	private final UserDetails userDetails;

@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -85,7 +86,7 @@ public class RequirementOfferRestController {
 	
 	
 	
-	
+	@PreAuthorize("hasRole('ROLE_CREAE_OFFER')")
 	@RequestMapping(value = "/saveOffer" , method = RequestMethod.POST)
 	public String saveOffer(@RequestParam(value="jsonData", required=false) String json,MultipartHttpServletRequest request) throws Exception {
 			   					 
@@ -181,6 +182,7 @@ public class RequirementOfferRestController {
 	* 
 	* @throws Exception
 	*/
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_OFFER','ROLE_VIEW_ACCEPT_OFFER','ROLE_VIEW_REJECT_OFFER')")
 	@RequestMapping(value = "/getOfferDetails")
 	public @ResponseBody String getOfferDetails(@RequestParam(value="submissionId", required=false) Long submissionId,
 			                                             
@@ -235,6 +237,7 @@ public class RequirementOfferRestController {
 	* 
 	* @throws Exception
 	*/
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_ACCEPT_OFFER','ROLE_VIEW_REJECT_OFFER')")
 	@RequestMapping(value = "/acceptingOffer")
 	public @ResponseBody String acceptingOffer(@RequestParam(value="submissionId", required=false) Long submissionId,
 			                                   @RequestParam(value="offerStatus", required=false) String offerStatus,

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 
@@ -26,6 +27,8 @@ public interface UserDao {
 	User findByEmail(String email);
 	
 	public User findByEmailAndOrgLocationsId(String email, Long orgLocationsId)  throws Exception;
+	
+	public List<User> getReoprtingManagersByOrgLocationId(Long orgLocationsId) throws Exception;
 	
 	/**
 	 * This method to fetch only Admin role users
@@ -59,10 +62,10 @@ public interface UserDao {
 	public List<User> getOwnersByOrgLocationId(Long orgLocationsId) throws Exception;
 	
 	//Prasad Salina to get managers list baded on role type
-	List<User> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception;
+	List<User> getManagersByUserRolesAndOrgLocationId(Long roleId , Long orgLocationsId,Long tabId) throws Exception;
 			
 	//Prasad Salina to get managers list baded on role type and except current user
-	List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,String roleType , Long orgLocationsId) throws Exception;
+	List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,Long roleId , Long orgLocationsId) throws Exception;
 	
 	public List<User>  getUserListExceptExistedUsersList(List<Long> userIds,Long orgLocationId)throws Exception;
 
@@ -91,4 +94,9 @@ public interface UserDao {
 	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId,Long orgLocationsId);
 
 	public List<User>  getUserListExceptExistedTeamMembersList(List<Long> teamMembersId,Long orgLocationId)throws Exception;
+	
+	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
+	
+	public List<Roles> getTabAccessRolesListByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
+	
 }

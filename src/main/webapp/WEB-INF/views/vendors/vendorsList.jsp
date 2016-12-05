@@ -2,7 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
@@ -24,6 +24,11 @@ overflow-x: auto;
     <!-- Content Area -->
       <section class="content-wraper">
         <section class="content-header clearfix">
+        <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
           <div class="pull-left">
             <h2>Vendors<span class="select-fild">
                 	<select id="listOfVendors" onchange="listChange(this);">
@@ -43,14 +48,14 @@ overflow-x: auto;
 <div class="timesheet_out">
 
 <div class="vendor_wrap">
-	<div class="timesheet_head datatbl-filters">
+	<div class="timesheet_head datatbl-filters customtimesheet-head">
         	<ul>
         	
         	<li id="vendorsList" ><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
 		                	<div id="filter1ApprovedPop" class="approved_pop">
 		                    	<ul>
 		                    	  <c:forEach var="report" items="${vendor_list}">  
-		                        	<li><input  id="vendorName${report.id}" name="vendorNameById" value ="${report.id}"  onclick="getVendorContactLists();"  type="checkbox"><label>${report.clientName}</label></li>
+		                        	<li><input  id="vendorName${report.id}" name="vendorNameById" value ="${report.id}"  onclick="getVendorContactLists();"  type="checkbox"><label title="${report.clientName}">${report.clientName}</label></li>
 								  </c:forEach>
 		                        </ul>
 		                    </div>                	
@@ -90,9 +95,41 @@ overflow-x: auto;
 		                        </ul>
 		                    </div>                	
 		                </li>          
-				<li><a href="<c:url value='/addVendorContact'/>"><i class="fa fa-plus"></i>Contact</a></li>	
+		          <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')">
+				       <li><a href="<c:url value='/addVendorContact'/>"><i class="fa fa-plus"></i>Contact</a></li>
+					</sec:authorize>
+					
+				<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
                        <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Vendor</a></li>	
-                       <li><a href="<c:url value='/uploadVendorForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>	
+                       </sec:authorize>
+                        <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
+                       <li><a href="<c:url value='/uploadVendorForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
+                 </sec:authorize> 
+                 
+                 <sec:authorize access="hasRole('ROLE_EXPORT_VENDORS')"> 
+                       	 <li id="vendorImports" style="display:none">
+		                     <a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportVendor</a>
+			                    <div class="export_pop">
+				                <ul>
+				                <li onclick="exportVendorToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>
+				                <li onclick="exportVendorToExcel();">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>
+				       </ul>
+				    </div>
+		            </li> 
+		          </sec:authorize>
+		           
+		          <sec:authorize access="hasRole('ROLE_EXPORT_VENDOR_CONTACTS')"> 
+		            <li id="VendorContactImports">
+		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportContact</a>
+			                    <div class="export_pop">
+				                <ul>
+				                <li onclick="exportVendorContactToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>
+				                <li onclick="exportVendorContactToExcel();">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>
+				       </ul>
+				    </div>
+		            </li> 
+		          </sec:authorize>
+		            
             </ul>
             <div class="clearfix"></div>
         </div>
@@ -171,12 +208,21 @@ function getVendorLists(){
    	        		}
    	        		
    	        		result = result +'<tr>';
-   	        			
+   	        		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
    	        			result = result +'<td>';
    	        			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.vendorlocationId+'\',\''+report.id+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
    	        			result = result +'</div>';
    	        			result = result +'</td>';
+   	        		'</sec:authorize>';
    	        		
+   	        		'<sec:authorize access="!hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
+	        			result = result +'<td>';
+	        			result = result +'<div class="proj_show" ><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}">'+report.orgName+'</span>';
+	        			result = result +'</div>';
+	        			result = result +'</td>';
+	        		'</sec:authorize>';
+	        		
+	        		
    	        		if( report.webSite != null && report.webSite != '' && report.webSite != 'undefined'){
    	        			result = result +'<td>';
    	        			result = result +'<div>';
@@ -308,7 +354,18 @@ function getVendorContactLists(){
 					} 
    	        		
    	        		result = result +'<tr>';
-   	        		result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        		
+   	        		
+   	        		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
+   	        				result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   	        		'</sec:authorize>';
+   	        		
+   	        		'<sec:authorize access="!hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
+   	        				result = result +'<td><div class="proj_show" ><span>'+report.spocName+'</span></div></td>';
+	        		'</sec:authorize>';
+   	        		
+   	        		
+   	        		
    	        		result = result +'<td><div><span title='+report.spocEmail+'>'+report.spocEmail+'</span></div></td>';
    	        		if(report.spocMobilePhone != null && report.spocMobilePhone  != '' && report.spocMobilePhone  != 'undefined'){
    	        			result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
@@ -363,7 +420,13 @@ function getVendorContactLists(){
    	        		
    	        		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
    	        		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
+   	        		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
    	        	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
+   	        	 '</sec:authorize>';
+   	        	 
+   	        	'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
+	        	    result = result + '<td><div>---</div></td>';
+	        	 '</sec:authorize>';
    	        		
    	        		
    	        		result = result +'</tr>';
@@ -631,8 +694,13 @@ function pagination1(){
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
-		result = result	+ '<li class="current"><a href="#tab-1" id="spocDetailsId" onClick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+');">Details</a></li>';
-		result = result + '<li><a href="#tab-2" onClick="vendorSpocDocuments('+orgRelationId+','+spocLocationId+',\''+spocName+'\','+userId+');">Documents</a></li>'; 
+		
+		  '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
+		   			result = result	+ '<li class="current"><a href="#tab-1" id="spocDetailsId" onClick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+');">Details</a></li>';
+		   '</sec:authorize>';
+		 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_DOCUMENT\")">';
+		  result = result + '<li><a href="#tab-2" onClick="vendorSpocDocuments('+orgRelationId+','+spocLocationId+',\''+spocName+'\','+userId+');">Documents</a></li>';
+		'</sec:authorize>';
 		/* result = result + '<li><a href="#tab-3">Activity</a></li>';  */
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
@@ -668,11 +736,15 @@ function pagination1(){
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
-		result = result
-				+ '<li class="current"><a href="#tab-1" onClick="vendorDetailsbyLocationId('
-				+ vendorLocationId + ','+ orgRelationId + ');">Details</a></li>';
+		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
+		result = result + '<li class="current"><a href="#tab-1" onClick="vendorDetailsbyLocationId(' + vendorLocationId + ','+ orgRelationId + ');">Details</a></li>';
+		'</sec:authorize>';
+		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
 		result = result + '<li><a href="#tab-2" onclick="vendorContacts('+ orgRelationId + ','+vendorLocationId+');">Contacts</a></li>'; 
+		'</sec:authorize>';
+		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_DOCUMENT\")">';
 		result = result + '<li><a href="#tab-3" onclick="vendorDocuments('+orgRelationId+','+vendorLocationId+');">Documents</a></li>'; 
+		'</sec:authorize>';
 		/* result = result + '<li><a href="#tab-4">Activity</a></li>';  */
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
@@ -722,8 +794,10 @@ function pagination1(){
 						result = result+ '<div class="project_tabs_inn_table">';
 						result = result + '<div class="project_details">';
 							result = result + ' <div class="useredit useredit_a">';
+							'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_EDIT_VENDOR\")">';
 								result = result + '<a id="edit-client" href="javascript:editVendorDetails('+vendorLocationId+','+orgRelationId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
-							result = result + ' </div>'; 
+							'</sec:authorize>';
+								result = result + ' </div>'; 
 							result = result + '<div class="project_details_cta">';
 								result = result + '<strong>Name:</strong>';
 								if(json.orgName !=null && json.orgName !='' && json.orgName !='undefined'){
@@ -740,7 +814,7 @@ function pagination1(){
 							result = result + '</div>';
 							
 							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>Client City:</strong>';
+							result = result + '<strong>Vendor City:</strong>';
 							if(json.city != null && json.city !='' && json.city !='undefined'){
 								result = result + '<span>'+json.city+'</span><div class="clearfix"></div>';
 							}else{
@@ -749,7 +823,7 @@ function pagination1(){
 							result = result + '</div>';
 							
 							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>Client State:</strong>';
+							result = result + '<strong>Vendor State:</strong>';
 							if(json.state != null && json.state !='' && json.state !='undefined'){
 								result = result + '<span>'+json.state+'</span><div class="clearfix"></div>';
 							}else{
@@ -758,7 +832,7 @@ function pagination1(){
 							result = result + '</div>';
 							
 							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>Client Country:</strong>';
+							result = result + '<strong>Vendor Country:</strong>';
 							if(json.country != null && json.country !='' && json.country !='undefined'){
 								result = result + '<span>'+json.country+'</span><div class="clearfix"></div>';
 							}else{
@@ -833,7 +907,12 @@ function listChange(sel){
 		 document.getElementById("vendorsList").style.display="none";
 		 document.getElementById("vendorSatatus").style.display="none";
 		 document.getElementById("vendorInvitation").style.display="none";
-		 
+         '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDORS\')">'; 
+		 document.getElementById("vendorImports").style.display="block";
+		 '</sec:authorize> ';
+		'<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDOR_CONTACTS\')">'; 
+		 document.getElementById("VendorContactImports").style.display="none";
+		 '</sec:authorize> ';
 		 getVendorLists();
 	 }
 	 if(sel.value=="listbyContact"){
@@ -846,7 +925,12 @@ function listChange(sel){
 		 document.getElementById("vendorsList").style.display="block";
 		 document.getElementById("vendorSatatus").style.display="block";
 		 document.getElementById("vendorInvitation").style.display="block";
-		 
+		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDORS\')">'; 
+		 document.getElementById("vendorImports").style.display="none";
+		 '</sec:authorize> ';
+		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDOR_CONTACTS\')">'; 
+		 document.getElementById("VendorContactImports").style.display="block";
+		 '</sec:authorize> ';
 		 getVendorContactLists();
 	 }
 	 
@@ -1024,5 +1108,94 @@ function rejectInvitation(spocId){
 	   });
 }
 </script>
-<!-- Scripts for invitations  -->	
+<!-- Scripts for invitations  -->
 
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+  $(document).ready(function() {
+	   $("#export-popcon").click(function(){
+	               $(".export_pop").slideToggle(200);
+	       });
+	   $("html").click(function() {
+	       $(".export_pop").slideUp(200);
+	   });
+	   $(".export_pop, #export-popcon").click(function(e) {
+	       e.stopPropagation();
+	   });        
+	});  
+</script> 	
+
+
+<script>
+function exportVendorToPdf(){
+	var values = [];
+	$('input:checkbox[name=clinetLevel]:checked').each(function() 
+    {
+			values.push($(this).val());
+    });
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.location.href = sourceleadUrl+"/exportVendorDetails?${_csrf.parameterName}=${_csrf.token}&values="+values+"&exportType=pdf";
+}
+</script>
+
+<script>
+function exportVendorToExcel(){
+	var values = [];
+	$('input:checkbox[name=clinetLevel]:checked').each(function() 
+    {
+			values.push($(this).val());
+    });
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.location.href = sourceleadUrl+"/exportVendorDetails?${_csrf.parameterName}=${_csrf.token}&values="+values+"&exportType=xls";
+}
+</script>
+
+<script>
+function exportVendorContactToPdf(){
+	var vendorId = [];
+	$('input:checkbox[name=vendorNameById]:checked').each(function() 
+    {
+		vendorId.push($(this).val());
+    });
+	var vendorStatus = [];
+	$('input:checkbox[name=vendorStatus]:checked').each(function() 
+    {
+		vendorStatus.push($(this).val());
+    });
+	
+	var invitationStatus = [];
+	$('input:checkbox[name=vendorInvitationStatus]:checked').each(function() 
+    {
+		invitationStatus.push($(this).val());
+    });
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	window.location.href = sourceleadUrl+"/exportVendorContactLists?${_csrf.parameterName}=${_csrf.token}&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus+"&exportType=pdf";
+}
+</script>
+
+<script>
+function exportVendorContactToExcel(){
+	var vendorId = [];
+	$('input:checkbox[name=vendorNameById]:checked').each(function() 
+    {
+		vendorId.push($(this).val());
+    });
+	var vendorStatus = [];
+	$('input:checkbox[name=vendorStatus]:checked').each(function() 
+    {
+		vendorStatus.push($(this).val());
+    });
+	
+	var invitationStatus = [];
+	$('input:checkbox[name=vendorInvitationStatus]:checked').each(function() 
+    {
+		invitationStatus.push($(this).val());
+    });
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	window.location.href = sourceleadUrl+"/exportVendorContactLists?${_csrf.parameterName}=${_csrf.token}&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus+"&exportType=xls";
+}
+</script>

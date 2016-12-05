@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -31,7 +32,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Entity
 	@Table(name = "REQUIREMENT", catalog = "sourcelead")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement")
-	public class Requirement {
+	public class Requirement implements Serializable{
+
+	
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,7 +58,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "POSITIONS")
 	private String positions;
 	
-	@Column(name = "EDUCATION")
+	@Column(name = "EDUCATION", columnDefinition = "TEXT default NULL")
 	private String education;
 	
 	@Column(name = "MIN_EXP")
@@ -81,7 +85,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "CITY")
 	private String city;
 	
-	@Column(name = "SKILLS")
+	@Column(name = "SKILLS", columnDefinition = "TEXT default NULL")
 	private String skills;
 	
 	@Column(name = "DESCRIPTION" , columnDefinition = "TEXT default NULL")

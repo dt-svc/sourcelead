@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,13 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
-import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
-import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TimesheetSubmissionsService;
 
 @Service
 public class SubmissionApproverHierarchyServiceImpl implements SubmissionApproverHierarchyService {
@@ -27,7 +30,13 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	@Autowired
     ProjectApproverHierarchyDao projectApproverHierarchyDao;
 	
-
+	@Autowired
+	TimesheetSubmissionsService timesheetSubmissionsService;
+	
+	
+	@Autowired
+    EmployeesDao  employeesDao;
+	
 	@Override
 	public SubmissionApproverHierarchy addSubmissionApproverHierarchy(
 			SubmissionApproverHierarchy submissionApproverHierarchy) throws Exception {
@@ -162,7 +171,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 			Long userId, Long orgLocationId, String submissionStatus) {
 		// TODO Auto-generated method stub
 		
-		return submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,submissionStatus);
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,submissionStatus);
 
 	}
 
@@ -170,105 +179,57 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	public List<SubmissionApproverHierarchy> getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(
 			Long userId, Long orgLocationId, String submissionStatus) {
 		
-		return submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,submissionStatus);
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,submissionStatus);
 
 	}
 
 	@Override
 	public List<SubmissionApproverHierarchy> getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(
-			Long userId, Long orgLocationId, String status,String userRole) {
+			Long userId, Long orgLocationId, String status,String userRole) throws Exception {
 	
 		
 		
 		List<SubmissionApproverHierarchy> list = new ArrayList<SubmissionApproverHierarchy>();
 		
          if(status != null){
- 			if("ROLE_ADMIN".equalsIgnoreCase(userRole)){
+ 			//if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_APPROVER".equalsIgnoreCase(userRole)   ||  "ROLE_TEAM_LEAD".equalsIgnoreCase(userRole)){
+ 				/*
+ 				 *  New  Timesheet List  as  per new User Story 
+ 				 */
+ 				 if("APPROVED".equalsIgnoreCase(status)){
+     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,  status);
+  				}
+                 if("REJECTED".equalsIgnoreCase(status)){
+     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId, status);
+  				}
+                 if("SUBMITTED".equalsIgnoreCase(status)){
+     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId, status);
+  				}
+                 if("DRAFT".equalsIgnoreCase(status)){
+     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId, status);
+  				}
  				
- 				if( "APPROVED".equalsIgnoreCase(status) || "REJECTED".equalsIgnoreCase(status)){
- 					
- 					  list = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId, status);
- 				}else if("SUBMITTED".equalsIgnoreCase(status)){
- 					
- 					  list = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  status);
- 				}else if("NEW".equalsIgnoreCase(status)){
- 					
- 					  // List<SubmissionApproverHierarchy> newlist = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  "NEW");
-					   List<SubmissionApproverHierarchy> draft = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  "DRAFT");
-					//.addAll(newlist);
-					   list.addAll(draft);
+                 /*}else if("ROLE_USER".equalsIgnoreCase(userRole)  ){
+ 				
+ 				
+ 				if("APPROVED".equalsIgnoreCase(status)){
+    				list = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId,  status);
  				}
- 				
- 			}else if("ROLE_USER".equalsIgnoreCase(userRole)  ){
- 				
- 				if( "APPROVED".equalsIgnoreCase(status) || "REJECTED".equalsIgnoreCase(status)){
- 					
- 					list = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId, status);
- 				}else if("SUBMITTED".equalsIgnoreCase(status)){
- 					
- 					list = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId,  status);
+                if("REJECTED".equalsIgnoreCase(status)){
+    				list = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, status);
  				}
- 				else if("NEW".equalsIgnoreCase(status)){
- 				        //List<SubmissionApproverHierarchy> newlist   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId,  "NEW");
-					    List<SubmissionApproverHierarchy> draft  = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId,orgLocationId,   "DRAFT");
-					   
-					 //   list.addAll(newlist);
-					    list.addAll(draft);
- 			  }
- 				
- 			}else if( "ROLE_APPROVER".equalsIgnoreCase(userRole)   ||  "ROLE_TEAM_LEAD".equalsIgnoreCase(userRole)){
- 				
- 				if( "APPROVED".equalsIgnoreCase(status) || "REJECTED".equalsIgnoreCase(status)){
- 					
- 					list = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId, status);
- 				}else if("SUBMITTED".equalsIgnoreCase(status)){
- 					
- 					list = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  status);
- 				}else if("NEW".equalsIgnoreCase(status)){
- 					
- 				    //List<SubmissionApproverHierarchy> newlist = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  "NEW");
- 				    List<SubmissionApproverHierarchy> draft  =  submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId,orgLocationId,  "DRAFT");
- 				   
- 				   // list.addAll(newlist);
-				    list.addAll(draft);
+                if("SUBMITTED".equalsIgnoreCase(status)){
+    				list = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, status);
  				}
- 			}
- 			
+                if("DRAFT".equalsIgnoreCase(status)){
+    				list = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, status);
+ 				}
+
+ 				
+ 			}*/
+
  		}
-        
-         if(list!=null && !list.isEmpty()){
-				for(SubmissionApproverHierarchy submissionApproverHierarchy:list){
-			       
-					submissionApproverHierarchy.setProjectName(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getProjects().getProjectName());
-					
-					 String pattern = "yyyy-MM-dd";
-		    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
-					 submissionApproverHierarchy.setStartDate( Constants.DF_DMY.format(submissionApproverHierarchy.getSubmissionId().getStartDate()));
-					 submissionApproverHierarchy.setEndDate(Constants.DF_DMY.format(submissionApproverHierarchy.getSubmissionId().getEndDate()));
-					 if(!submissionApproverHierarchy.getSubmissionId().getProjectMembers().getEmployee().getUser().getUserType().equalsIgnoreCase("Admin")){
- 
-						 submissionApproverHierarchy.setEmployeeName(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getEmployee().getUser().getFirstName()+""+submissionApproverHierarchy.getSubmissionId().getProjectMembers().getEmployee().getUser().getLastName());
-					 }
-					if(submissionApproverHierarchy.getSubmissionId().getTotalHours() != null){
-						 submissionApproverHierarchy.setTotalHours(Float.valueOf(submissionApproverHierarchy.getSubmissionId().getTotalHours()));
-					}
-					 
-					Collection<ProjectApproverHierarchy> projectApproverHierarchies = null;
-					try {
-						projectApproverHierarchies = projectApproverHierarchyDao.getApproverUsersByProjectId(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getProjects().getId());
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					for(ProjectApproverHierarchy pah : projectApproverHierarchies){
-						if(pah.getLevel() == 1){
-							submissionApproverHierarchy.setManagerLevel1(pah.getApproverUserId().getFirstName()+""+pah.getApproverUserId().getLastName());
-						}else if(pah.getLevel() == 2){
-							submissionApproverHierarchy.setManagerLevel2(pah.getApproverUserId().getFirstName()+""+pah.getApproverUserId().getLastName());
-						}
-					}
-				}
-			}
-         
+     	
          
          return list;
 	}

@@ -13,12 +13,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -53,6 +52,7 @@ import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Team;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.HIERARCHY_TYPE;
@@ -123,6 +123,7 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	private UserRoleService userRoleService;
+	
 	
 	
 	 @Autowired
@@ -450,37 +451,7 @@ public class RequirementServiceImpl implements RequirementService {
 								rah.setUpdatedDate(commonUtil.currentDate());
 					    }
 						  requirementApproverHierarchyList.add(rah);
-						  approverEmailScenario(user,approverUser,requirement,location,orgLocations);
-
 				  }
-
-
-			     
-			     
-				  /*for(String approver : approvers){
-					    
-					    RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
-					    User approverUser = userService.getUserById(Long.parseLong(approver));
-						User approverUserId = new User();
-						approverUserId.setId(Long.parseLong(approver));
-						rah.setApproverUserId(approverUserId);
-						  
-						rah.setRequirementId(requirement);
-						
-						rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
-						rah.setLevel(1);
-						  
-						rah.setHierarchyType(HIERARCHY_TYPE.PARALLEL);
-						rah.setCreatedDate(commonUtil.currentDate());
-						rah.setCreatedBy(user.getUserCode());
-						rah.setUpdatedBy(user.getUserCode());
-						rah.setUpdatedDate(commonUtil.currentDate());
-						  
-						
-						requirementApproverHierarchyList.add(rah);
-						  approverEmailScenario(user,approverUser,requirement,location);
-
-				  }*/
 				 
 			} 
 			//approval saving for parallel
@@ -509,8 +480,6 @@ public class RequirementServiceImpl implements RequirementService {
 					  rah.setUpdatedDate(commonUtil.currentDate());
 					  
 					  requirementApproverHierarchyList.add(rah);
-						
-
 				  }
 				  
 				  if(jsonObj.has("sequentialApprover2") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover2"))){
@@ -591,7 +560,6 @@ public class RequirementServiceImpl implements RequirementService {
 								UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
 								requirementAssignTo.setRoleId(userRole.getRoles());
 								requirementAssignToList.add(requirementAssignTo);
-								AssignToTeamMembersEmail(user, assUser, requirement,location,orgLocations);
 		
 							}
 						}
@@ -606,6 +574,55 @@ public class RequirementServiceImpl implements RequirementService {
 			  User approverUser = userService.getUserById(Long.parseLong(approverNames));
 			  approverEmailScenario(user, approverUser ,savedRequirement,location,orgLocations);
 		  }
+
+		
+		//send mail to sequential approver1 
+		if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
+			  String approverNames = jsonObj.getString("sequentialApprover1");
+			  User approverUser = userService.getUserById(Long.parseLong(approverNames));
+			  approverEmailScenario(user, approverUser ,savedRequirement,location,orgLocations);
+		}
+		
+		//send mail to parallel approver
+		  if(jsonObj.has("parallelApprover")){
+				
+				String parallelApprovers =null;
+				try{
+					JSONArray jsonArray = jsonObj.getJSONArray("parallelApprover");
+					parallelApprovers = jsonArray.toString();
+				}
+				catch(JSONException e){
+					parallelApprovers =jsonObj.getString("parallelApprover");
+				}
+				parallelApprovers = parallelApprovers.replaceAll("\\[", "").replaceAll("\\]","");
+				parallelApprovers = parallelApprovers.replaceAll("\"", "");
+				
+			    String[] approvers = parallelApprovers.split(",");
+			    for(String approver : approvers){
+			    	User approverUser = userService.getUserById(Long.parseLong(approver));
+			    	approverEmailScenario(user,approverUser,requirement,location,orgLocations);
+			    }
+		 }
+		
+		//send mail to Assigned Team 
+		//condition : if login user as team member then mail not send
+		Set<RequirementAssignTo> updatedRequirementAssignToList = requirement.getRequirementAssignTo();
+		if(updatedRequirementAssignToList != null  ){
+			for(RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList ){
+				if(!user.getId().equals(requirementAssignTo.getAssignUserId().getId())){
+					AssignToTeamMembersEmail(user, requirementAssignTo.getAssignUserId(), savedRequirement,location,orgLocations);
+				}
+				
+			}
+		}
+		
+		
+		//send mail to manger 
+		//condition : login user as manager then  mail shoul not forwared
+		if(!user.getId().equals(requirement.getManagerUserId().getId())){
+			mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
+		}
+		
 		return savedRequirement;
 	}
 
@@ -1535,6 +1552,15 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 	
 	@Override
+	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode)
+			throws Exception {
+		
+			return requirementDao.getApproverRequirementApproverListByOrgLocationIDAndUserId(orgLocationId, userType, userId, userCode);
+		
+	}
+	
+	
+	@Override
 	public List<Requirement> getAssignedRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, Long userId)
 			throws Exception {
 		
@@ -1548,13 +1574,13 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public Integer validateJobId(Long id,Long orgLocation) throws Exception {
+	public Integer validateJobId(String id,Long orgLocation) throws Exception {
 		return requirementDao.validateJobId(id,orgLocation);
 	}
 
 
 	@Override
-	public File getExportRequirementFile(List<Requirement> requirementList, String orgName,String exportType) throws Exception {
+	public File getExportRequirementFile(List<Requirement> requirementList, String orgName,String exportType,TimeSheetSubmissionCount requirementSubCount) throws Exception {
 		
 		File file = null;
 		if (!"pdf".equalsIgnoreCase(exportType)) {
@@ -1562,7 +1588,7 @@ public class RequirementServiceImpl implements RequirementService {
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + dateFormat.format(new Date()));
 			Row writeRow = null;
-			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook);
+			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,requirementSubCount);
 			int column = 0;
 			for (Requirement requirement : requirementList) {
 				writeRow = createExcelsheet.createRow(column + 9);
@@ -1578,7 +1604,7 @@ public class RequirementServiceImpl implements RequirementService {
 				e.printStackTrace();
 			}
 		}else{
-			file = pdfUtil.getRequirementPdf(requirementList,orgName);
+			file = pdfUtil.getRequirementPdf(requirementList,orgName,requirementSubCount);
 		}
 			return file;	 
 	}
@@ -1629,14 +1655,9 @@ public class RequirementServiceImpl implements RequirementService {
 		return createExcelsheet;
 	}
 
-	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook) {
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, TimeSheetSubmissionCount requirementSubCount) {
 		
-		CellStyle style = createExcelworkbook.createCellStyle();
-		style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
-		Font font = createExcelworkbook.createFont();
-		font.setColor(IndexedColors.BLACK.getIndex());
-		style.setFont(font);
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 
 		writeRow = createExcelsheet.createRow(1);
 		createExcelsheet.setColumnWidth(0, 10000);
@@ -1646,7 +1667,7 @@ public class RequirementServiceImpl implements RequirementService {
 		cell1.setCellValue("Draft :");
 		cell1.setCellStyle(style);
 		Cell cell2 = writeRow.createCell(1);
-	    cell2.setCellValue("6");
+	    cell2.setCellValue(requirementSubCount.getDraftRequirementCount());
 		cell2.setCellStyle(style);
 
 		writeRow = createExcelsheet.createRow(2);
@@ -1658,7 +1679,7 @@ public class RequirementServiceImpl implements RequirementService {
 		cell3.setCellStyle(style);
 
 		Cell cell4 = writeRow.createCell(1);
-		cell4.setCellValue("8");
+		cell4.setCellValue(requirementSubCount.getOpenRequirementCount());
 		cell4.setCellStyle(style);
 
 		writeRow = createExcelsheet.createRow(3);
@@ -1670,7 +1691,7 @@ public class RequirementServiceImpl implements RequirementService {
 		cell5.setCellStyle(style);
 
 		Cell cell6 = writeRow.createCell(1);
-		cell6.setCellValue("8");
+		cell6.setCellValue(requirementSubCount.getNewRequirementCount());
 		cell6.setCellStyle(style);
 		
 		
@@ -1683,7 +1704,7 @@ public class RequirementServiceImpl implements RequirementService {
 		cell7.setCellStyle(style);
 
 		Cell cell8 = writeRow.createCell(1);
-		cell8.setCellValue("9");
+		cell8.setCellValue(requirementSubCount.getSubmittedRequirementCount());
 		cell8.setCellStyle(style);
 		
 		writeRow = createExcelsheet.createRow(5);
@@ -1695,7 +1716,7 @@ public class RequirementServiceImpl implements RequirementService {
 		cell9.setCellStyle(style);
 
 		Cell cell10 = writeRow.createCell(1);
-		cell10.setCellValue("4");
+		cell10.setCellValue(requirementSubCount.getOnHoldRequirementCount());
 		cell10.setCellStyle(style);
 		
 		writeRow = createExcelsheet.createRow(6);
@@ -1707,24 +1728,14 @@ public class RequirementServiceImpl implements RequirementService {
 		cell11.setCellStyle(style);
 
 		Cell cell12 = writeRow.createCell(1);
-		cell12.setCellValue("4");
+		cell12.setCellValue(requirementSubCount.getCancelRequirementCount());
 		cell12.setCellStyle(style);
-		createExcelsheet = setExcelHeader(createExcelsheet, style);
-
-		return createExcelsheet;
-	}
-
-	private Sheet setExcelHeader(Sheet createExcelsheet, CellStyle style) {
 		String headers [] = Constants.REQUIREMENT_EXCEL_HEADERS;
-		Row excelHeader = createExcelsheet.createRow(8);
-		 for (int i=0; i<headers.length;i++){
-		         Cell cell = excelHeader.createCell(i);
-		         cell.setCellValue(headers[i]);
-		         cell.setCellStyle(style);
-		     }
-		return createExcelsheet;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,8);
 
+		return createExcelsheet;
 	}
+
 	@Override
 	public Boolean checkRequirementIsReleasedOrNot(Long requirementId,Long orgLocationId) throws Exception {
 		   

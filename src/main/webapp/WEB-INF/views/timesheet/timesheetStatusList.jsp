@@ -1,6 +1,7 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet">
+<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
 
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 
@@ -24,25 +25,45 @@
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<div class="wraper">
+
+<style type="text/css">
+.glyphicon-none:before {
+    content: "\2122";
+    color: transparent !important;
+}
+.timesheet-content {
+background: #fff;
+min-height: 100px;
+clear:both;
+display: inline-block;
+width:100%;
+}
+.timesheet-content #example_filter {
+position: relative !important;
+top:0px !important;
+}
+</style>
+<%-- <div class="wraper">
 	<!-- Content Area -->
 	<section class="content-wraper">
 		<section class="content-header clearfix">
 			<div class="pull-left">
-				<h2>Timesheet Submissions List</h2>
+				<h2>${status} List</h2>
 			</div>
+							    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; ${status} List</div>
+			
 		</section>
 
 		
 		
 		  <div id="projectFilterList"></div>
 		    <div class="timesheet_appr_table">
-		    				<table id="example" class="display" cellspacing="0" width="100%">
+		    				<table id="timesheetApprList" class="display" cellspacing="0" width="100%">
 							</table>
 			</div>	  
 
 </section>
-</div>
+</div> --%>
 <div id="TimeshgeetStatusListId"></div>
 <script type="text/javascript">
 window.onload = function () {
@@ -50,7 +71,20 @@ window.onload = function () {
  };
 </script>
 
-
+<script>
+function pagination(){ 
+    $('#example').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+    		"sSearch": ""
+    	}
+    } );
+}
+</script>
 
  <script type="text/javascript">
 function filter(){
@@ -60,81 +94,121 @@ function filter(){
 		    	type: "POST",
 		        url: sourceleadUrl+"/getTimesheetListByStatus?${_csrf.parameterName}=${_csrf.token}&status="+status,
 		        success: function(data) {
-		        
-		        	var json = JSON.parse(data);
-		         	var result = "";
-		         	
-		         	result = result +'<thead>';
-	            	result = result +'<tr>';
-	                result = result +'<th>Project name</th>';
-	                result = result +'<th>Frequency</th>';
-	                result = result +'<th>Employee</th>';
-	                result = result +'<th>Appprovers</th>';
-	                result = result +'<th>Total Hours</th>';
-	                result = result +'<th>Status</th>';
-	                result = result +'</tr>';
-				    result = result +'</thead>';
-				    
-			         	for (var i=0; i<json.length; i++){
-			         		var report = json[i];
-			         					result = result +'<tr>';
-			         					result = result +'<td><div>'+report.projectName+'</div></td>';
-			         					result = result +'<td data-title="Date"><div>'+report.startDate+' ';
-			           	   		    	result = result +'- '+report.endDate+' </div></td>';
-				           	   		 	if(report.employeeName != null && report.employeeName !=''){
-				           	   			result = result +'<td><div>'+report.employeeName+'</div></td>';
-			         					}else{
-			         						result = result +'<td><div>---</div></td>';
-			         					}
-				           	   		 	
-			         					result = result +'<td><div>';
-			         					if(report.managerLevel1 != null && report.managerLevel1 !=''){
-		         	                    	result = result + ''+report.managerLevel1+'';
-			         					}
-			         					if(report.managerLevel2 != null && report.managerLevel2 !='' && report.managerLevel1 != null && report.managerLevel1 !=''){
-			         						result = result + ',';
-			         					}
-			         					if(report.managerLevel2 != null && report.managerLevel2 !=''){
-		         	                    	result = result +''+report.managerLevel2+'';
-			         					}
-			         					result = result +'</div></td>';
-			         					if(report.totalHours != null && report.totalHours !=''){
-			         						result = result +'<td><div>'+report.totalHours+'</div></td>';
-			         					}else{
-			         						
-			         						result = result +'<td><div>'+0.0+'</div></td>';
-			         					}
-			         					if(report.submissionApprovalStatus == 'APPROVED' || report.submissionApprovalStatus == 'REJECTED' ){
-			         						 result = result +'<td><div><h3>'+report.submissionApprovalStatus+'</h3></div>';
-			         					}
-			         					if(report.submissionStatus == 'NEW' || report.submissionStatus == 'SUBMITTED' || report.submissionStatus == 'DRAFT'){
-			         					   result = result +'<td><div><h3>'+report.submissionStatus+'</h3></div>';
-			         					}
-			         					 result = result +'</td>';
-			         					 result = result +' </tr>';
-			         	                   
-			         					}
-		         	                result = result +' </tbody>';
-		         	                result = result +'</table>';
-
-		        $("#example").empty();  
-		   	    $("#example").append(result);
-		    	 pagination()
+		     /*    $("#timesheetApprList").empty();  
+		   	    $("#timesheetApprList").append(data);
+		    	pagination(); */
+		        	  if(data != null && data != 'undefined' && data != ""){
+		               		if( data.indexOf('Sign In') >= 0){
+					    		location.replace(sourceleadUrl);
+					    	}
+		               		else if (data.indexOf('exception') >= 0) {
+		               			 location.replace(sourceleadUrl+"/errorPage");
+		               		}
+		               		else{
+					    		 $("#timesheetApprList").removeAttr("style");
+			                	 $("#timesheetApprList").empty();
+			                     $("#timesheetApprList").append(data); 
+			                     pagination();
+					    	}
+		                 }else{
+		                	 $("#timesheetApprList").removeAttr("style");
+		  	    	         var result ="";
+				    	     result = result+"   <div class='row'>"; 
+							 result = result+"	<div class='col-lg-12'>"; 
+							 result = result+"		<div class='content-area clearfix'>"; 
+							 result = result+"			<div class='blank-pages'>";
+							 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+							 result = result+"			        <p>No Timesheets Found</p>";
+							 result = result+"			 </div>";
+							 result = result+"		</div>"; 
+							 result = result+"	</div>"; 
+							 result = result+"  </div> "; 
+							$("#timesheetApprList").empty();
+						    $("#timesheetApprList").append(result);
+		                 }
+		                
 		        },
 		    });
 } 
 </script>
- 
- <script>
-function pagination(){  
-    $('#example').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	 "ordering": false
-		
-    } );
+<!-- for dynamic timesheets copied from timesheetapproval.jsp -->
+<script type="text/javascript">
+function dynamicTimesheet(navigation ,startDate,projectMemberUserId,memberId,employeeId){ 
+	      
+			var sourceleadUrl ='${sourceleadUrl}';  
+			$("#dynamic").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/dynamicTimesheet?${_csrf.parameterName}=${_csrf.token}&navigation="+navigation+"&startDate="+startDate+"&memberId="+memberId+"&projectMemberUserId="+projectMemberUserId+"&employeeId="+employeeId, 	   
+				    success: function(data) {
+				    	if( data.indexOf('Sign In') >= 0){
+				    		location.replace(sourceleadUrl);
+				    	}
+	               		else if (data.indexOf('exception') >= 0) {
+	               			 location.replace(sourceleadUrl+"/errorPage");
+	               		}else{
+	               			var uniqueSepartor = startDate.replace('-','').replace('-','');
+	               			if('${param.status}' != 'REJECTED' && '${param.status}' != 'DRAFT'){
+		               		    var dateFrequencyTdContent =  $("#datefrequency"+projectMemberUserId+uniqueSepartor).html();
+					    		$("#row"+projectMemberUserId+uniqueSepartor).empty();
+						        $("#row"+projectMemberUserId+uniqueSepartor).append(data);
+						        $("#datefrequency"+projectMemberUserId+uniqueSepartor).html(dateFrequencyTdContent);
+	               			}
+	               			else{
+	               			   var table = $('#example').DataTable();
+	   	        		       table.row('#row'+projectMemberUserId+uniqueSepartor+'').remove().draw( false );
+	               			}
+	               			
+				    	}
+				        
+				    }
+		    });
 }
-</script> -->
+</script>	
+
+
+<!-- Common Scripts for approval timesheets and dashboard count links separated in to timesheetApprovalCommonScripts.jsp   -->
+<jsp:include page="timesheetApprovalCommonScripts.jsp" />
+
+<section class="content-wraper">
+        <section class="content-header clearfix">
+          <div class="pull-left">
+            <h2>
+              ${status == 'SUBMITTED' ? 'Waiting For Approval' : (status == 'DRAFT') ? 'Draft Timesheets' :(status == 'APPROVED') ? 'Approved Timesheets' : (status == 'REJECTED') ? 'Rejected Timesheets'  : ''} 
+             </h2>
+          </div>
+            <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  ${status == 'SUBMITTED' ? 'Waiting For Approval' : (status == 'DRAFT') ? 'Draft Timesheets' :(status == 'APPROVED') ? 'Approved Timesheets' : (status == 'REJECTED') ? 'Rejected Timesheets'  : ''}</div>
+        </section>
+        
+<div class="timesheet-content">
+<div class="timesheet_out">
+	<div class="timesheet_appr_wrap" >
+		<div class="timesheet_appr_wrap">
+		<div class="timesheet_head">
+        	 <ul>
+            </ul> 
+            <div class="clearfix"></div>
+        </div> 
+		
+		<div class="timesheet_appr_table">
+				<div id="timesheetApprList">   </div>
+	    </div>
+	</div>
+	
+</div>
+</div></div>
+		
+</section>
+</body>
+<!-- this script is for dynamicTimesheetpopUp when click on count -->	
+
+
+
+
+
+
+
+
+
+
  

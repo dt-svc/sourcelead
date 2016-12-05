@@ -1,12 +1,13 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@ page trimDirectiveWhitespaces="true" %>
-<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
-<script src="resources/js/jquery-fun.js"></script>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
 <style type="text/css">
 .table-top{
     position: relative;
@@ -23,6 +24,12 @@ background:#375d81;
 color:#fff;
 }
 </style>
+
+<script type="text/javascript">
+window.onload = function () {
+	getNotificationtLists();
+ };
+</script>
 
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -78,60 +85,7 @@ color:#fff;
               </div>
               <div class="clearfix"></div>
 			<div class="notification-table mt" id="notificationListDiv">
-                <%-- <table class="table table-borderd table-hover table-striped">
-                  <tbody>
-                  <c:if test="${empty notificationsList}">
-                   <tr>
-                   <td>
-						<div class="mailbox-subject">
-						<b>Empty Inbox</b>
-						</div>
-                    </td>
-                   </tr>
-                  </c:if>
-                  
-                <c:if test="${!empty notificationsList}">
-                <c:forEach var="report" items="${notificationsList}">
-                 <tr>
-				  <td class="noti-checkbox">
-						<label>
-						   <input type="checkbox" class="checkbox1 left" name="check[]" value="${report.id}" />
-						  <span></span>
-						</label>
-					</td>
-                    <td>
-					<div class="notifi-image pull-left">
-						<img class="img-responsive img-circle" title="${report.notificationFrom.firstName} ${report.notificationFrom.lastName}" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${report.notificationFrom.id}'/>">
-					</div>
-					</td>
-					<td>
-					<div class="mailbox-name">
-						${report.notificationFrom.firstName}
-					</div>
-					</td>
-                    <td>
-						<div class="mailbox-subject">
-							<a href="#"><b>${report.body}</b></a>
-						</div>
-                    </td>
-                    <td><div class="mailbox-date">${report.calDays} days ago</div></td>
-                    <c:if test="${report.userNotificationStatus != 'Accepted'}">
-                    <td><div class="mailbox-trash"><a href="${report.actionLink}" title="Accept"><i class="text-muted fa fa-check-circle"></i></a></div></td>
-					</c:if>
-					
-					<c:if test="${report.userNotificationStatus == 'Accepted'}">
-                    <td><div class="mailbox-trash"><font color="green">Accepted</font></div></td>
-					</c:if>
-					
-					<td><div class="mailbox-trash"><a href="javascript:void(0);"  onclick="deleteNotification('+${report.id}+');"><i class="text-danger fa fa-trash-o"></i></a></div></td>
-                  </tr>
-                </c:forEach>
-                </c:if>
-                  
-                 
-
-                  </tbody>
-                </table> --%>
+                
               </div>
 			</div>
 			</div>
@@ -140,11 +94,7 @@ color:#fff;
 		</div>
   </section>
   <!-- Content Area Ends-->
-<script type="text/javascript">
-window.onload = function () {
-	getNotificationtLists();
- };
-</script>
+
 
 <script>
 function getNotificationtLists(){   
@@ -159,19 +109,6 @@ function getNotificationtLists(){
         	result = result +'<thead>';
 	        	result = result +'<tr>';
 	        	result = result +'	<th>';
-					    /*  result = result +'	<div class="mailbox-controls clearfix">';
-						result = result +'	<div class="pull-left">';
-						result = result +'		 <div class="notifica-checkbox noti-checkbox">';
-						result = result +'		<a href="#">';
-						result = result +'			<label>';
-						result = result +'				  <input type="checkbox" name="list" id = "selectall"/>';
-						result = result +'				  <span></span>';
-						result = result +'				</label>';
-						result = result +'		</a>';
-						result = result +'		<a href="#" onclick="deleleteAll();"><i class="fa fa-trash-o"></i></a>';
-						result = result +'		</div>';
-					     result = result +'     </div>';
-					     result = result +'   </div>'; */
 	        	
 	        	result = result +'</th>';
 	        	result = result +'	<th></th>';

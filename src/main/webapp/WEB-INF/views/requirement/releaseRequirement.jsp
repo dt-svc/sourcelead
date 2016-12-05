@@ -8,7 +8,7 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
 
@@ -176,7 +176,9 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <span class="jquery_form_error_message" style="display:none;">Vendor/Contact selection is mandatory</span>
-            <input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
+            <sec:authorize access="hasAnyRole('ROLE_RELEASE_REQUIREMENT')">
+            	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
+			</sec:authorize>
             <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:location.href = '<c:url value='requirementList'/>'">
           </div>
         </div>
@@ -306,7 +308,12 @@ function getContactsLists(){
 					        			result = result +'<div><b class="proj_active">Released</b></div>';
 					        		}
 									if(report.releasedRequirement =="false"){
-										result = result +'<div><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneContact('+report.id+');"></i></a></div>';
+										'<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+											result = result +'<div><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneContact('+report.id+');"></i></a></div>';
+										'</sec:authorize>';
+										'<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+											result = result +'<div class="fa fa-bullhorn"></div>';
+										'</sec:authorize>';
 					        		}
 					        			result = result +'</td>';
 				   	        		    result = result +'</tr>';
@@ -330,6 +337,7 @@ function getContactsLists(){
 					 result = result+"		<p><i class='fa fa-5x fa-bar-chart'></i></p>";
 					 result = result+"		<p>No Contacts Found</p>";
 					 result = result+"	</div>";
+					$("#vendorStatus").hide();
 					$("#vendorContacts").empty();
 				    $("#vendorContacts").append(result); 
 	            }
@@ -473,8 +481,10 @@ function getVendorLists(){
 					 result = result+"		<p><i class='fa fa-5x fa-bar-chart'></i></p>";
 					 result = result+"		<p>No Vendors Found</p>";
 					 result = result+"	</div>";
-					$("#vendor").empty();
-				    $("#vendor").append(result); 
+					 $("#vendorSelected").hide();
+					 $("#vendorStatus").hide();
+					 $("#vendor").empty();
+				     $("#vendor").append(result); 
 	            }
    		    },
 	 });
@@ -529,7 +539,7 @@ $(document).ready(function(){
  function listChange(sel) {
 	
     	if(sel.value=="releaseByVendors"){
-			document.getElementById("vendor").style.display="block";
+    		document.getElementById("vendor").style.display="block";
 			document.getElementById("vendorContacts").style.display="none";
 			getVendorLists();
 			$('span.jquery_form_error_message').hide();

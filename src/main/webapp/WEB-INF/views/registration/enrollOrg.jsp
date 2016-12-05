@@ -65,35 +65,27 @@
           <div class="form-group">
             <label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>
             <div class="col-md-9 checkbox">
-             <ul class="list-unstyled pull-left">
-            	<li>
-                <label class="mr pull-left">
-                <input type="checkbox" id="isRecruiting" onclick="getRecruitmentTypes()" onblur="moduleCheckValidation(this)">
-                Recruitment &nbsp;
-                </label>
-                	<ul class="list-unstyled pull-left tree-checkbox" id="recrutmentTypes" style="display: none;">
+	            <c:forEach var="module" items="${modulesList}">
+	            <ul class="list-unstyled pull-left">
+	                <li>
+	                 <label class="mr pull-left">
+						<input type="checkbox" id="isRecruiting" value="${module.id}" onclick="getRecruitmentTypes(this)" name="modulesList[]" onblur="moduleCheckValidation(this)">${module.moduleName}
+					  </label>
+					   <ul class="list-unstyled pull-left tree-checkbox" id="recrutmentTypes" style="display: none;">
                     	<li>
-                            <label>
-                            <input type="checkbox" id="ats" onblur="subModuleCheckValidation(this)">
-                            ATS
-                            </label>
+                    	 <c:forEach var="submodules" items="${requirementSubModulesList}">
+                    	  <label>
+                    		 <input type="checkbox" class="allsubmodules" id="submodules" value="${submodules.id}" name="submodulesList[]" >
+                              ${submodules.moduleName}
+                         </label><br/>
+                    	 </c:forEach>
 		                </li>
-                        
-                    	<li>
-                            <label class="mr">
-                                <input type="checkbox" id="vms" onblur="subModuleCheckValidation(this)">
-                                VMS
-                            </label>
-		                </li>
-                    </ul>
-                </li>
-                <p id="subModule" style="display: none;"><font color="red">Sub Modules Required</font></p>
-            </ul> 
-              <label class="mr">
-                <input type="checkbox" id="isTimeSheet" onblur="moduleCheckValidation(this)">
-                Timesheet</label>
+                    </ul> 
+					 </li>
+				</ul>
+			    </c:forEach>
             </div>
-            
+            <p id="subModule" style="display: none;"><font color="red">Sub Modules Required</font></p>
             <input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/> 
           </div> 
           
@@ -153,7 +145,13 @@
       
   <script type="text/javascript">
 	function moduleCheckValidation(id){
-		if (document.getElementById('isRecruiting').checked || document.getElementById('isTimeSheet').checked) { 
+		
+		 var modulesList = [];
+ 		 $("input[name='modulesList[]']:checked").each( function (i) {
+ 			modulesList[i] = $(this).val();
+ 		});
+ 		 
+		if (modulesList.length > 0) { 
 		document.getElementById("moduleValue").value = id.value;
 		}else{
 			$('#moduleValue').val(''); 
@@ -162,25 +160,16 @@
 </script>
 
 
-<script type="text/javascript">
-	function subModuleCheckValidation(id){
-		if (document.getElementById('ats').checked || document.getElementById('vms').checked) {
-		    document.getElementById("subModule").style.display="none";
-		}else{
-			document.getElementById("subModule").style.display=""; 
-		}
-	} 
-</script>
 
  <script type="text/javascript">
-function getRecruitmentTypes(){
+function getRecruitmentTypes(id){
 		if (document.getElementById('isRecruiting').checked) {
 		 document.getElementById("recrutmentTypes").style.display="";
 		}else{
 			document.getElementById("recrutmentTypes").style.display="none";
-			document.getElementById("subModule").style.display="none";
-			document.getElementById("ats").checked = false;
-			document.getElementById("vms").checked = false;
+			 $('.allsubmodules').each(function() {
+	                this.checked = false;      
+	            }); 
 		}
 	} 
 </script>
@@ -204,30 +193,23 @@ var validationSettings = {
 			    var jsonData = encodeURIComponent(con);
          		var sourceleadUrl ='${sourceleadUrl}';
          		
-         		var modules = "";
-            	if (document.getElementById('isRecruiting').checked) {
-         			modules = modules + "Recruiting"+","
-                } 
+         		 var modulesList = [];
+         		 $("input[name='modulesList[]']:checked").each( function (i) {
+         			modulesList[i] = $(this).val();
+         		});
+         		 
          		
-         		if (document.getElementById('isTimeSheet').checked) {
-         			modules = modules + "TimeSheet"+","
-                }
-         		
-         		 var subModules = "";
-         		 if (document.getElementById('ats').checked) {
-         			subModules = subModules + "ATS"+","
-                }
-         		
-         		if (document.getElementById('vms').checked) {
-         			subModules = subModules + "VMS"+","
-                }  
+         		 var submodulesList = [];
+         		 $("input[name='submodulesList[]']:checked").each( function (i) {
+         			submodulesList[i] = $(this).val();
+         		});
          		
          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
          		 	$.ajax({
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
           	      dataType : 'json',
-                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modules="+modules+"&subModules="+subModules+"&json="+jsonData,
+                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&json="+jsonData,
                 			  
                 			  
                   	success: function(result) {
@@ -240,7 +222,7 @@ var validationSettings = {
 			        	}
 			        	
 			        },  
-              }); 
+               });  
                 
             	    return true;
             }
@@ -305,7 +287,7 @@ function validateCompanyName(){
 </script>
 
 <script type="text/javascript">
-function validateWebsite(){
+function validateWebsite (){
       var website = document.getElementById("companyWebsite").value; 
      var sourceleadUrl ='${sourceleadUrl}';
      var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}';

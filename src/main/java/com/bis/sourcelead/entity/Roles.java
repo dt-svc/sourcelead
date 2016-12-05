@@ -1,23 +1,30 @@
 package com.bis.sourcelead.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "ROLES", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="roles")
-public class Roles {
-	
+public class Roles implements Serializable{
+ 
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
@@ -28,6 +35,26 @@ public class Roles {
 	
 	@Column(name = "DISPLAY_NAME")
 	private String displayName;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "ORG_LOCATION_ID")
+	private OrgLocations orgLocations;
+	
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "ORG_ID")
+	private Org org;
+	
+	@Column(name = "ACTION_ID")
+	@Type(type="text")
+	private String actionId;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "HIERARCHY_ID")
+	private RoleHierarchy roleHierarchy;
+	
+	@Column(name = "DEFAULT_ROLE")
+	private Integer defaultRole;
 	
 	@Column(name = "STATUS")
 	private String status;
@@ -46,6 +73,12 @@ public class Roles {
 	
 	@Transient
 	private Integer rolesCount;
+	
+	@Transient
+	private String hierarchyName;
+	
+	@Transient
+	private Integer actionsCount;
 	
 	
 	
@@ -124,7 +157,61 @@ public class Roles {
 		this.rolesCount = rolesCount;
 	}
 
-	
-	
+	public OrgLocations getOrgLocations() {
+		return orgLocations;
+	}
+
+	public void setOrgLocations(OrgLocations orgLocations) {
+		this.orgLocations = orgLocations;
+	}
+
+	public Org getOrg() {
+		return org;
+	}
+
+	public void setOrg(Org org) {
+		this.org = org;
+	}
+
+	public String getActionId() {
+		return actionId;
+	}
+
+	public void setActionId(String actionId) {
+		this.actionId = actionId;
+	}
+
+	public RoleHierarchy getRoleHierarchy() {
+		return roleHierarchy;
+	}
+
+	public void setRoleHierarchy(RoleHierarchy roleHierarchy) {
+		this.roleHierarchy = roleHierarchy;
+	}
+
+	public String getHierarchyName() {
+		return hierarchyName;
+	}
+
+	public void setHierarchyName(String hierarchyName) {
+		this.hierarchyName = hierarchyName;
+	}
+
+	public Integer getActionsCount() {
+		return actionsCount;
+	}
+
+	public void setActionsCount(Integer actionsCount) {
+		this.actionsCount = actionsCount;
+	}
+
+	public Integer getDefaultRole() {
+		return defaultRole;
+	}
+
+	public void setDefaultRole(Integer defaultRole) {
+		this.defaultRole = defaultRole;
+	}
+
 
 }

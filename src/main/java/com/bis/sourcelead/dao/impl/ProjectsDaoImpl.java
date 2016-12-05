@@ -55,7 +55,6 @@ public class ProjectsDaoImpl implements ProjectsDao{
     private EmailScenarioService emailScenarioService;
     
     @Autowired
-    
     private EmailScenerioUtil emailScenerioUtil;
     
     @Autowired

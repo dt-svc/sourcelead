@@ -160,7 +160,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id and pm.status ='1' "
 				+ "and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.userType = 'Employee')) ");*/
 
-		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id and pm.status ='1'");
+		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id");
 
 		projectsMembersList=projectsMembersListQuery.setLong("id", id).setCacheable(true).list();
 		return projectsMembersList;

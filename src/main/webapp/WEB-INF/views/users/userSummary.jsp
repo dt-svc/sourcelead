@@ -2,6 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link rel="icon" type="resources/image/png"
 	href="resources/images/fav.png" />
 <link
@@ -111,12 +112,18 @@ $(document).ready(function(){
 
 		<script>
  function userDetails(userId){    
+	
+	 var isTimeSheetEnrolled = '${SourceLeadWeb_timesheet}';
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 var projectsCount = '${assignedProjectsCount}';
-	 var totalOpenTimeSheetCount = '${totalOpenTimeSheetCount}';
-	 var approvedTimeSheetsCount = '${approvedTimeSheetsCount}';
-	 var rejectedTimeSheetsCount = '${rejectedTimeSheetsCount}';
-	 var waitingTimeSheetsCount = '${waitingTimeSheetsCount}';
+	 
+	 if(isTimeSheetEnrolled == 'Y'){
+		 var projectsCount = '${assignedProjectsCount}';
+		 var totalOpenTimeSheetCount = '${totalOpenTimeSheetCount}';
+		 var approvedTimeSheetsCount = '${approvedTimeSheetsCount}';
+		 var rejectedTimeSheetsCount = '${rejectedTimeSheetsCount}';
+		 var waitingTimeSheetsCount = '${waitingTimeSheetsCount}';
+	 }
+	
 	 
 	 $.ajax({
 	    	type: "POST",
@@ -128,31 +135,43 @@ $(document).ready(function(){
 			    var result = "";
 			    var submissionCountsResult = "";
 			    
-			    submissionCountsResult = '<p>Projects<strong class="label label-default">'+projectsCount+'</strong></p>';
-            	submissionCountsResult = submissionCountsResult +'<p>Approved Timesheets<strong class="label label-success">'+approvedTimeSheetsCount+'</strong></p>';
-            	submissionCountsResult = submissionCountsResult +'<p>Rejected Timesheets<strong class="label label-warning">'+rejectedTimeSheetsCount+'</strong></p>';
-            	submissionCountsResult = submissionCountsResult +'<p>Waiting for Timesheets<strong class="label label-primary">'+waitingTimeSheetsCount+'</strong></p>';
-            	submissionCountsResult = submissionCountsResult +'<p>Open Timesheets<strong class="label label-info">'+totalOpenTimeSheetCount+'</strong></p>';
-			    
+			    if(isTimeSheetEnrolled == 'Y'){
+			    	
+			    	    submissionCountsResult = '<p>Projects<strong class="label label-default">'+projectsCount+'</strong></p>';
+		            	submissionCountsResult = submissionCountsResult +'<p>Approved Timesheets<strong class="label label-success">'+approvedTimeSheetsCount+'</strong></p>';
+		            	submissionCountsResult = submissionCountsResult +'<p>Rejected Timesheets<strong class="label label-warning">'+rejectedTimeSheetsCount+'</strong></p>';
+		            	submissionCountsResult = submissionCountsResult +'<p>Waiting for Timesheets<strong class="label label-primary">'+waitingTimeSheetsCount+'</strong></p>';
+		            	submissionCountsResult = submissionCountsResult +'<p>Open Timesheets<strong class="label label-info">'+totalOpenTimeSheetCount+'</strong></p>';
+					    
+			    }
+			   
 				result = result + '<div class="project_tabs_inn_table">';
 				firstname(json.user.firstName);
 				
 				result = result + '  <div class="project_details">';
 				if(json.userState != null && json.userState != "" && json.userState != 'INACTIVE'){
 				    result = result + ' <div class="useredit">';
-						result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+						
+				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_USER\')">'
+				        result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+				    '</sec:authorize>';
+				      
+				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\')">'
 						result = result + ' <a id="remove-user" href="javascript:removeUser();"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
 							result = result + ' <div id="remove_user_id" class="remove_user_pop" >';
 									result = result +'<textarea placeholder="Comments here" id="reason" name="reason"/></textarea>';
 									result = result + ' <div id="reasonDiv"/>';
 									result = result + ' <b><input id="save_reason" value="Submit" onClick="terminateUser('+userId+');" type="button"/><input class="u_can_color" onclick="cancelUser();" value="Cancel" type="button"></b>';
 						     result = result + ' </div>';
+				    '</sec:authorize>';	     
 				     result = result + ' </div>';
 				}
 				
 				else{
-                    result = result + '<i class="glyphicon glyphicon-user"></i><a id="edit-user" href="javascript:reActiveUser('+userId+');">&nbsp;Re-Active</a>';
-                }
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\',\'ROLE_CREATE_USER\')">'
+                         result = result + '<i class="glyphicon glyphicon-user"></i><a id="edit-user" href="javascript:reActiveUser('+userId+');">&nbsp;Re-Active</a>';
+                    '</sec:authorize>';	 
+				}
 				
 				result = result + '	 <div class="user_details_cta_img">';
 				result = result + '		       <div class="user_change_img">';
@@ -882,7 +901,7 @@ function editUserDetails(userId){
 						result = result + ' <div class="user_summary_edit_cta">';
 						result = result + ' <label>Manager</label>';
 						result = result + '  <select id="reportingManager" name="reportingManager" >'+
-			 	     	"<option value=''>-Select-</option>";    
+			 	     	"<option value=''>-Select Manager-</option>";    
 			 	     	 for (var i=0; i<json.allReportingManagers.length; i++)
 	    					{
 	    		 	    	   manager = json.allReportingManagers[i];

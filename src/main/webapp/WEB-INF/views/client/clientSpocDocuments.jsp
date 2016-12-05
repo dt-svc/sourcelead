@@ -3,14 +3,16 @@
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script>
 function clientSpocDocuments(orgRelationId,clientLocationId,spocName,userId){
 	var result = "";
 	result = result  +'<div class="timesheet_head">';
 	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
 	    result = result + '<ul>';
+	    '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_CLIENT_DOCUMENT\')">';
 		result = result  +'    	<a href="javascript:void(0)" onClick="addDocumentForSpoc('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+'); getSpocsList('+orgRelationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Documents</a>                                                            ';
+		'</sec:authorize>';
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result = result  +'  <div class="clearfix"></div> ';
@@ -108,8 +110,15 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                    	 }
 	                    	 result = result+'	 <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
+	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\')">'; 
 	                    		 result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocumentForSpoc('+clientLocationId+',\''+spocName+'\','+userId+');  getClientSpocDocument('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+opt.id+');"></a>';
-					           	 result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteDocument(\''+clientLocationId+'\',\''+orgRelationId+'\',\''+spocName+'\',\''+userId+'\',\''+opt.id+'\');"></i>';
+	                    		 '</sec:authorize>';
+	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_DOCUMENT\')">'; 
+	                    		 result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteDocument(\''+clientLocationId+'\',\''+orgRelationId+'\',\''+spocName+'\',\''+userId+'\',\''+opt.id+'\');"></i>';
+	                    		 '</sec:authorize>';
+	                    		 '<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\',\'ROLE_DELETE_CLIENT_DOCUMENT\')">';
+                    			 result = result+'--';
+                    		 '</sec:authorize>';
 	                    	 }
 	                    	 result = result+'	            </div></td>';
 	                    	 result  = result + '</tr>';
@@ -192,7 +201,7 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'	                            <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'	                            </span> </label>';
-	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="File not selected..." field-name="Document" data-validation="required validate_Space validatedoc">';
+	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Document" data-validation="required validate_Space validatedoc">';
 	result = result+'	                        </div>';
 	result = result+'	                    </div>  ';  
 	result = result+'	                  </div>   ';  

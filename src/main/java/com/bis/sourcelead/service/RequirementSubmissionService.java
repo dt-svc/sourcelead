@@ -74,4 +74,7 @@ public interface RequirementSubmissionService {
 
 	RequirementRateSubmissionNegotiation getRequirementRateBySubmissionById(Long submissionId);
 
+	List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long valueOf, User user,
+			OrgLocations loginOrgLocation, String submissionType)throws Exception;
+
 }

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -74,7 +75,7 @@ public class CandidateEducationRestController {
 	 * 
 	 * @throws NullPointer
 	 */
-	
+	@PreAuthorize("hasRole('ROLE_ADD_CANDIDATE_EDUCATION')")
 	@RequestMapping(value = "/storeCandidateEducation", method = RequestMethod.POST)
 	public @ResponseBody String storeCandidateEducation(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
 
@@ -144,6 +145,8 @@ public class CandidateEducationRestController {
 	 * 
 	 * @throws Exception
 	 */
+	
+	@PreAuthorize("hasRole('ROLE_DELETE_CANDIDATE_EDUCATION')")
 	@RequestMapping(value = "/removeCandidateEducationBycandidateIdandcandidateEducationId")
 	public String removeCandidateEducationBycandidateIdandcandidateEducationId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEducationId", required = false) Long candidateEducationId,HttpServletRequest request) throws Exception {
 		String resultJson;
@@ -154,7 +157,7 @@ public class CandidateEducationRestController {
 		 return resultJson;
 	}
 
-
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_CANDIDATE_EDUCATION')")
 	@RequestMapping(value = "/getCandidateEducationBycandidateIdandEducationId")
 	public String getCandidateEducationBycandidateIdandEducationId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEducationId", required = false) Long candidateEducationId,HttpServletRequest request) throws Exception {
 		String resultJson;

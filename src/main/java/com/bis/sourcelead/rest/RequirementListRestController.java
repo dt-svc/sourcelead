@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -39,6 +39,7 @@ import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
@@ -127,10 +128,10 @@ public class RequirementListRestController {
 	   * 
 	   * @throws NullPointer
 	   */
-	 
+	 @PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT')")
 	 @RequestMapping(value = "/getRequirementListByOrgLocationID")
 	 public String getRequirementListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
-		String msg = "";
+
 		String resultJson;
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -156,13 +157,6 @@ public class RequirementListRestController {
 				}
 				requirement.setManager(managerFirstName+" "+managerLastName);
 			}
-			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqstatusMsg");
-			 
-			if(msg !=null && msg != ""){
-				requirement.setMsg(msg);
-			}
-			 	SourceLeadSessionManager.removeSessionAttribute(request, "reqstatusMsg");
-			  
 		}
 		
 		ArrayList<Requirement>  requirementList1 = new ArrayList<Requirement>();
@@ -196,7 +190,6 @@ public class RequirementListRestController {
 				}
 				
 			}
-			 
 			resultJson = commonUtil.toJSON(requirementList1);
 		}else{
 			
@@ -347,34 +340,38 @@ public class RequirementListRestController {
 		  */
 		 
 		 @RequestMapping(value = "/getSubmissionsByRequirementId" , method = RequestMethod.POST)
-		 @ResponseBody  String getSubmissionsByRequirementId(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
+		 @ResponseBody  String getSubmissionsByRequirementId(@RequestParam(value="requirementId", required=false) String  requirementId,@RequestParam(value="submissionType", required=false) String  submissionType,HttpServletRequest request) throws Exception {
 				String resultJson = null;
-				 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 					if(requirementId !=null && !requirementId.isEmpty()){
-						List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
-						if(requirementSubmissions != null){
-							for (RequirementSubmission requirementSubmission : requirementSubmissions) {
+						List<RequirementSubmission> requirementStatusList = null;
+						if(!"all".equalsIgnoreCase(submissionType)){
+							 requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);	
+						}else{
+							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
+						}
+						if(requirementStatusList != null){
+							for (RequirementSubmission requirementSubmission : requirementStatusList) {
 								if(requirementSubmission.getCandidateResumes() != null){
 									CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
 									RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
-									if(requirementSubmissionTemplateFields != null){
-										String candidateName = requirementSubmissionTemplateFields.getFirstName();
-										if(requirementSubmissionTemplateFields.getLastName()!=null){
-											candidateName = candidateName+" "+requirementSubmissionTemplateFields.getLastName();
-										}
-										requirementSubmission.setCandidateName(candidateName);
-										requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
-										requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
-										requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
-										requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
-										requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+									String candidateName = requirementSubmissionTemplateFields.getFirstName();
+									if(requirementSubmissionTemplateFields.getLastName()!=null){
+										candidateName = candidateName+" "+requirementSubmissionTemplateFields.getLastName();
 									}
-							
+									requirementSubmission.setCandidateName(candidateName);
+									requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
+									requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
+									requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
+									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
+									requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 									requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
 									if(requirementSubmission.getCreatedDate() != null){
 										requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 									}
+									
 									User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 									requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
 									requirementSubmission.setResumeName(candidateResumes.getFileName());
@@ -392,7 +389,7 @@ public class RequirementListRestController {
 							}
 						}
 						
-						resultJson = commonUtil.toJSON(requirementSubmissions);
+						resultJson = commonUtil.toJSON(requirementStatusList);
 					}
 				return resultJson;
 		 }
@@ -414,9 +411,6 @@ public class RequirementListRestController {
 			 requirement.setUpdatedBy(loginUser.getUserCode());
 			 requirement.setUpdatedDate(commonUtil.currentDate());
 			 requirementService.addRequirement(requirement); 
-			SourceLeadSessionManager.setSessionAttribute(request, "reqstatusMsg", " "+requirement.getJobTitle()+" status changed from "+requirement.getRequirementSubmissionPreviousStatus()+" to "+requirement.getRequirementSubmissionStatus()+" " );
-
-			 
 			return "success";
 		 }
 		 
@@ -431,6 +425,7 @@ public class RequirementListRestController {
 		  * @return void
 		  * @throws Exception
 		  */
+		 @PreAuthorize("hasAnyRole('ROLE_EXPORT_REQUIREMENTS')")
 		 @RequestMapping(value = "/getRequirementExportListByOrgLocationID")
 		 public void getRequirementExportListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 
@@ -439,7 +434,10 @@ public class RequirementListRestController {
 			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			File file =null;
+			
+			TimeSheetSubmissionCount requirementSubCount = getRequirementCount(org,userRole,user);
 			for(Requirement requirement : requirementList){
 				if(requirement.getClientId() != null){
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
@@ -501,9 +499,9 @@ public class RequirementListRestController {
 					}
 					
 				}
-				 file = requirementService.getExportRequirementFile(requirementList1,org.getOrgName(),exportType);
+				 file = requirementService.getExportRequirementFile(requirementList1,org.getOrgName(),exportType,requirementSubCount);
 			}else{
-				 file = requirementService.getExportRequirementFile(requirementList,org.getOrgName(),exportType);
+				 file = requirementService.getExportRequirementFile(requirementList,org.getOrgName(),exportType,requirementSubCount);
 			}
 			 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 				if (mimeType == null) {
@@ -520,8 +518,62 @@ public class RequirementListRestController {
 			
 		 }
 		 
-		 
-		 /**
+		/**
+		 * @author Rajashekar
+		 * Returns requirements count 
+		 * @param loginOrgLocations
+		 * @param userRole
+		 * @param user
+		 * @return TimeSheetSubmissionCount pojo
+		 * @throws Exception
+		 */
+		 private TimeSheetSubmissionCount getRequirementCount(Org loginOrgLocations, String userRole, User user) throws Exception {
+			 TimeSheetSubmissionCount  timeSheetSubmissionCount = new TimeSheetSubmissionCount();
+				
+				Integer newCount = 0;
+				Integer draftCount = 0;
+				Integer submittedCount = 0;
+				Integer openCount = 0;
+				Integer onholdCount = 0;
+				Integer cancelCount = 0;
+				
+				List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocations.getId(),null,null,user.getId());
+		        	
+		        		  for(Requirement req :requirementList){
+		        			  if("NEW".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+		        				   newCount ++;
+		        			  }
+		        			  if("Draft".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+		        				  draftCount ++;
+		       			      }
+		        			  if("submitted".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+		        				  submittedCount ++;
+		       			      }
+		        			  if("open".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+		        				  openCount ++;
+		       			      }
+		        			  if("onhold".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+		        				  onholdCount ++;
+		       				     
+		       			      }
+		        			  if("CANCEL".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+		        				    cancelCount ++;
+		          				   
+		        			  }
+		        			  
+		        		  }
+		        		  
+		        		  timeSheetSubmissionCount.setNewRequirementCount(newCount);
+		        		  timeSheetSubmissionCount.setDraftRequirementCount(draftCount);
+	   				      timeSheetSubmissionCount.setSubmittedRequirementCount(submittedCount);
+	   				      timeSheetSubmissionCount.setOpenRequirementCount(openCount);
+	   				      timeSheetSubmissionCount.setOnHoldRequirementCount(onholdCount);
+	   				      timeSheetSubmissionCount.setCancelRequirementCount(cancelCount);
+						return timeSheetSubmissionCount;
+		}
+
+
+		/**
 		* @author sarath kumar
 		* 
 		* This method is used to download attachment of requirement
@@ -560,4 +612,121 @@ public class RequirementListRestController {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				} 
      }
+		
+		
+		
+		
+		 /**
+		* @author Sammeta David Raju
+		* 
+		* This method is used get RequirementListCount Based On Status
+		* 
+		* @param requirementId
+		* @param request
+		* 
+		* @return resultJson
+		* 
+		* @throws Exception
+		*/
+		@RequestMapping(value = "/getRequirementListCountBasedOnStatus", method = RequestMethod.GET)
+		@ResponseBody
+		public String getRequirementByListCountBasedOnStatus(HttpServletRequest request) throws Exception {
+
+			String resultJson;
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			TimeSheetSubmissionCount  timeSheetSubmissionCount = new TimeSheetSubmissionCount();
+			
+			Integer newCount = 0;
+			Integer draftCount = 0;
+			Integer submittedCount = 0;
+			Integer openCount = 0;
+			Integer onholdCount = 0;
+			Integer cancelCount = 0;
+			
+			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocations.getId(),null,null,user.getId());
+	        	
+	        		  for(Requirement req :requirementList){
+	        			  if("NEW".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+	        				   newCount ++;
+	        			  }
+	        			  if("Draft".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+	        				  draftCount ++;
+	       			      }
+	        			  if("submitted".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+	        				  submittedCount ++;
+	       			      }
+	        			  if("open".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+	        				  openCount ++;
+	       			      }
+	        			  if("onhold".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+	        				  onholdCount ++;
+	       				     
+	       			      }
+	        			  if("CANCEL".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){
+	        				    cancelCount ++;
+	          				   
+	        			  }
+	        			  
+	        		  }
+	        		  timeSheetSubmissionCount.setNewRequirementCount(newCount);
+	        		  timeSheetSubmissionCount.setDraftRequirementCount(draftCount);
+   				      timeSheetSubmissionCount.setSubmittedRequirementCount(submittedCount);
+   				      timeSheetSubmissionCount.setOpenRequirementCount(openCount);
+   				      timeSheetSubmissionCount.setOnHoldRequirementCount(onholdCount);
+   				      timeSheetSubmissionCount.setCancelRequirementCount(cancelCount);
+
+			
+			resultJson = commonUtil.toJSON(timeSheetSubmissionCount);
+			return resultJson;
+		}
+		
+		@RequestMapping(value = "/getSubmissionsCountBySubmissionStatus" , method = RequestMethod.POST)
+		 @ResponseBody  String getSubmissionsCountBySubmissionStatus(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
+				String resultJson = null;
+				int numOfShortList = 0;
+				int numOfInterview = 0;
+				int numOfSubmitToClient = 0;
+				int numOfOffers = 0;
+				int numOfRejected = 0;
+				
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				
+				if(requirementId !=null && !requirementId.isEmpty()){
+					List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+					
+					for(RequirementSubmission rmentSubmission :requirementSubmissions){
+						
+						if("SHORTLIST".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+							numOfShortList++;
+						}
+						else if("INTERVIEW".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+							numOfInterview++;
+						}
+						else if("SUBMIT_TO_CLIENT".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+							numOfSubmitToClient++;
+						}
+						else if("OFFERMADE".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+							numOfOffers++;
+						}else if("REJECTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+							numOfRejected++;
+						}
+						
+						
+					}
+					for(RequirementSubmission rmentSubmission :requirementSubmissions){
+						rmentSubmission.setNumOfSubmissions(requirementSubmissions.size());
+						rmentSubmission.setNumOfShortList(numOfShortList);
+						rmentSubmission.setNumOfInterview(numOfInterview);
+						rmentSubmission.setNumOfSubmitToClient(numOfSubmitToClient);
+						rmentSubmission.setNumOfOffers(numOfOffers);
+						rmentSubmission.setNumOfRejected(numOfRejected);
+						}
+					resultJson = commonUtil.toJSON(requirementSubmissions);
+				}
+				return resultJson;
+		}
 }

@@ -1,12 +1,9 @@
 package com.bis.sourcelead.entity;
 
 
+import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,28 +12,21 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
-
-import com.bis.sourcelead.enums.Submission_ApprovalStatus;
-import com.bis.sourcelead.enums.Submission_Status;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "TIMESHEET_SUBMISSIONS_DOCUMENTS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheetSubmissionsDocuments")
-public class TimesheetSubmissionsDocuments {
+public class TimesheetSubmissionsDocuments implements Serializable{
 	
 	 
+	private static final long serialVersionUID = 1L;
+
 	@Id
     @Column(name = "ID", nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
