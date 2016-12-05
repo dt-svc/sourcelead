@@ -168,8 +168,19 @@ $(document).ready(function(){
 					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+report.description+'</div></td>';
 					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+report.createdUser+'</div></td>';
 					   	result = result +'<td><div class="tbldata-dotdot-vsm" title="'+report.dateStr+'">'+report.dateStr+'</div></td>';
-					   	result = result +'<td><div ><a href="javascript:void(0)" class="addcon-pop1" onClick="addCategoryDoc();editCategory('+report.orgLocationId+','+report.id+');"><i class="glyphicon glyphicon-pencil" ></i></div></td>';
-			   	        result = result +'</tr>';
+					   	result = result +'<td><div>';
+					   	if(report.defaultCategory !=1){
+					   		if(report.status == 0){
+					   			result = result +'In-Active';
+					   		}
+					   		else{
+					   		result = result +'<a href="javascript:void(0)" class="addcon-pop1" onClick="terminateCategory('+report.id+');"><i class="fa fa-trash removeIcon"></i>';
+					   		}
+					   	}
+					   		
+					   	result = result +'<a href="javascript:void(0)" class="addcon-pop1" onClick="addCategoryDoc();editCategory('+report.orgLocationId+','+report.id+');"><i class="glyphicon glyphicon-pencil" ></i></div>';
+					   	result = result +'</div></td>';
+					   	result = result +'</tr>';
 	   				}
 		   	     	
 	   	        	
@@ -242,22 +253,21 @@ $(".addcon-pop").click(function(){
 				$( "#save_button" ).addClass('button').val('Processing..');
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#addCategory_form").attr("disabled", "disabled");
-				
 				//It will escape all the special characters
 				$.ajax({
 						type : "POST",
 						url : sourceleadUrl+"/saveCategory?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&categoryId="+categoryId+"&catLocationId="+catLocationId,
 						success : function(result) {
-							 if( result.indexOf('Sign In') >= 0){
+							 if(result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
 					    	 }
 		            		 else if (result.indexOf('exception') >= 0) {
 		            			 location.replace(sourceleadUrl+"/errorPage");
 		            		 }
-		            		 else{
-		            			 document.getElementById("popUpDiv").style.display="none";
+		            		 else{ 
+		            			  document.getElementById("popUpDiv").style.display="none"; 
 		            			 getAssetCategoryList();
-		            		 }
+		            		  } 
 						},
 					});
 					return true;
@@ -275,6 +285,13 @@ function closePopup(){
 	document.getElementById("popUpDiv").style.display="none";
 }
 </script>
+
+<script>
+function closePopupDemo(){
+	$("#popUpDiv").hide();
+}
+</script>
+
 <script>
 function editCategory(catLocationId,categoryId){
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -290,8 +307,8 @@ function editCategory(catLocationId,categoryId){
     			 location.replace(sourceleadUrl+"/errorPage");
     		 }
     		 else{
-    			 $("#save_button").hide();
     			 $("#update_button").show(); 
+    			 $("#save_button").hide();
     			 
     			 
     			 if(json.categoryName != null && json.categoryName != "undefined" && json.categoryName != ""){
@@ -321,21 +338,21 @@ function addCategoryDoc(){
 	result = result  +'	            <div class="clearfix">';
 	result = result  +'              <div class="form-horizontal clearfix">';
 	result = result  +'	                <div class="clearfix mb10">';
-	result = result  +'	                  <div class="col-md-12">';
-	result = result  +'	                    <input type="text" class="form-control input-sm" field-name="Category name" id="categoryName" data-validation="required validate_Space validate_length length2-100" name="categoryName" placeholder="Category Name *">';
+	result = result  +'	                  <div class="col-md-12" id="categoryNameDiv">';
+	result = result  +'	                    <input type="text" class="form-control input-sm" field-name="Category name" id="categoryName" data-validation="required validate_Space validate_length length2-100" name="categoryName" onkeyup = "validateCategoryName();" placeholder="Category Name *">';
 	result = result  +'	                  </div>';
 	result = result  +'	                </div>';
 	result = result  +'	                <div class="clearfix mb10">';
 	result = result  +'	                  <div class="col-md-12">';
-	result = result  +'	                    <textarea class="form-control" rows="2" placeholder="Description"  data-validation="validate_Space validate_length length5-500" id="description" name="description"></textarea>';
+	result = result  +'	                    <textarea class="form-control" rows="2" data-validation-optional="true" placeholder="Description"  data-validation="validate_length length5-500" id="description" name="description"></textarea>';
 	result = result  +'	                  </div>';
 	result = result  +'	                </div>';
 		
 	result = result  +'	                <div class="clearfix mr">';
 	result = result  +'	                  <div class="pull-right">';
-	result = result  +'		                 <button type="button" id="update_button" style="display: none;" class="btn btn-sm btn-primary pull-right">Update</button>';
-	result = result  +'	                    <button type="submit" class="btn btn-sm btn-primary" value="Add" name="btnAddPr" id="save_button" onclick="addCategory(null,null);">Add</button>';
-	result = result  +'	                    <button type="submit" class="btn btn-sm btn-default ml10" onclick="closePopup();">Cancel</button>';
+	result = result  +'		                 <button type="button" id="update_button" style="display: none;" class="btn btn-sm btn-primary ">Update</button>';
+	result = result  +'	                    <button type="button" class="btn btn-sm btn-primary" value="Add" name="btnAddPr" id="save_button" onclick="addCategory(null,null);">Add</button>';
+	result = result  +'	                    <button type="button" class="btn btn-sm btn-default ml10" onclick="closePopupDemo();">Cancel</button>';
 	result = result  +'	                  </div>';
 	result = result  +'	                </div>';
 	result = result  +'	              </div>';
@@ -347,6 +364,65 @@ function addCategoryDoc(){
 	 document.getElementById("popUpDiv").style.display="block";
 }
 </script>
+<script type="text/javascript">
+function validateCategoryName(){
+	var categoryName = document.getElementById("categoryName").value;
+	$("#save_button").removeAttr("disabled");
+	$('input#categoryName').removeAttr("class record-exist record-exist-errormsg");
+	$('input#categoryName').attr('class','valid form-control');
+	$('#categoryNameDiv').find('p.jquery_form_error_message').remove();
+	var sourceleadUrl = '${sourceleadUrl}';
+	if (categoryName != null && categoryName != '') {
+		//$("#save_client").attr("disabled", "disabled");
+		// $( "#save_client" ).addClass('button').val('Processing..');
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/validateCategoryName?${_csrf.parameterName}=${_csrf.token}&categoryName="+categoryName,
+			success : function(data) {
+				var result = data;
+				if (result == true) {
+					//duplicate client
+					$("#save_button").removeAttr("disabled");
+			        $("#save_button").attr("disabled", "disabled");
+					$("input#categoryName").after( "<p class='jquery_form_error_message'>" + categoryName + " is already existed </span>");
+					document.getElementById("categoryName").setAttribute( 'record-exist', 'yes');
+					document.getElementById("categoryName").setAttribute( 'record-exist-errorMsg', categoryName +"  already existed ");
+					$('input#categoryName').removeAttr( "record-exist record-exist-errorMsg");
+					
+				}else {
+					//New WebSite class="form-control"
+					//$("#save_client").removeAttr("disabled");
+					$("#save_button").removeAttr("disabled");
+					$('input#categoryName').removeAttr("class record-exist record-exist-errormsg");
+					$('input#categoryName').attr('class','valid form-control');
+					$('#categoryNameDiv').find('p.jquery_form_error_message').remove();
+					$("#save_button").click(function() {
+						
+					});
+				}
+			},
 
+		});
+	}
+  }
+</script>  
+
+ 
+<script type="text/javascript">
+function terminateCategory(categoryId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	if (categoryId != null && categoryId != '') {
+		//$("#save_client").attr("disabled", "disabled");
+		// $( "#save_client" ).addClass('button').val('Processing..');
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/terminateCategory?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId,
+			success : function(data) {
+				 getAssetCategoryList();
+				},
+		});
+	}
+  }
+</script>  
 </body>
 </html>

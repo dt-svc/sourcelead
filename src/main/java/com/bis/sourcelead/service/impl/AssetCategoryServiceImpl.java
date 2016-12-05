@@ -21,12 +21,12 @@ public class AssetCategoryServiceImpl implements AssetCategoryService{
 	AssetCategoryDao assetCategoryDao;
 	
 	@Override
-	public AssetCategory addAssetCategory(JSONObject jsonObj,OrgLocations orgLocation,User user,Long categoryId,Long catLocationId) throws Exception {
+	public AssetCategory addAssetCategory(JSONObject jsonObj,OrgLocations orgLocation,User user,String categoryId,String catLocationId) throws Exception {
 		AssetCategory assetCategory=null;
 		
-		if(categoryId !=null){
-			 assetCategory = assetCategoryDao.getAssetCategoryListByLocationIdAndCatId(catLocationId, categoryId);
-			 assetCategory.setId(categoryId);
+		if(!categoryId.equalsIgnoreCase("null")){
+			 assetCategory = assetCategoryDao.getAssetCategoryListByLocationIdAndCatId(Long.parseLong(catLocationId), Long.parseLong(categoryId));
+			 assetCategory.setId(Long.parseLong(categoryId));
 		}
 		else{
 			assetCategory = new AssetCategory();
@@ -38,7 +38,9 @@ public class AssetCategoryServiceImpl implements AssetCategoryService{
 			assetCategory.setDescription(jsonObj.getString("description"));
 		}
 		assetCategory.setStatus(Constants.RECORD_ACTIVE);
-		assetCategory.setDefaultCategory(Constants.DEFAULT_CATEGORY);
+		if(assetCategory !=null && assetCategory.getDefaultCategory()!=Constants.RECORD_ACTIVE){
+			assetCategory.setDefaultCategory(Constants.DEFAULT_CATEGORY);
+		}
 		assetCategory.setOrgLocations(orgLocation);
 		assetCategory.setUpdatedBy(user.getUserCode());
 		assetCategory.setUpdatedDate(new Date());
@@ -63,6 +65,17 @@ public class AssetCategoryServiceImpl implements AssetCategoryService{
 	@Override
 	public AssetCategory getAssetCategoryListByLocationIdAndCatId(Long catLocationId, Long categoryId) {
 		return assetCategoryDao.getAssetCategoryListByLocationIdAndCatId(catLocationId,categoryId);
+	}
+
+	@Override
+	public Boolean validateCategoryName(String categoryName, Long orgLocationId) {
+		return assetCategoryDao.validateCategoryName(categoryName, orgLocationId);
+	}
+
+	@Override
+	public AssetCategory addAssetCategory(AssetCategory assetCategory) throws Exception {
+		return assetCategoryDao.addAssetCategory(assetCategory);
+		
 	}
 
 }

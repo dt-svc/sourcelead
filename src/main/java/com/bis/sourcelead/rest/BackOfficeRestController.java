@@ -386,8 +386,8 @@ public class BackOfficeRestController {
 
 	@RequestMapping(value = "/saveCategory", method = RequestMethod.POST)
 	 @ResponseBody String saveCategory(@RequestParam(value = "json", required = false) String json,
-			 @RequestParam(value = "categoryId", required = false) Long categoryId,
-			 @RequestParam(value = "catLocationId", required = false) Long catLocationId,
+			 @RequestParam(value = "categoryId", required = false) String categoryId,
+			 @RequestParam(value = "catLocationId", required = false) String catLocationId,
 			HttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
@@ -430,6 +430,35 @@ public class BackOfficeRestController {
 	    
 	   }
 	
+	@RequestMapping(value = "/validateCategoryName" , method = RequestMethod.GET)
+	   public Boolean validateCategoryName(@RequestParam(value="categoryName", required=false) String categoryName,HttpServletRequest request) throws Exception {
+			
+		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    
+			
+			Boolean flag = assetCategoryService.validateCategoryName(categoryName,orgLocations.getId());
+			
+		
+		   return flag;
+	    
+	   }
+	
+	
+	@RequestMapping(value = "/terminateCategory", method = RequestMethod.GET)
+	 @ResponseBody String terminateCategory(@RequestParam(value = "categoryId", required = false) String categoryId,
+			HttpServletRequest request) throws Exception {
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		AssetCategory assetCategory = assetCategoryService.getAssetCategoryListByLocationIdAndCatId(orgLocation.getId(),Long.parseLong(categoryId));
+		assetCategory.setId(Long.parseLong(categoryId));
+		assetCategory.setStatus(Integer.parseInt(Constants.MEMBER_IN_ACTIVE));
+		assetCategoryService.addAssetCategory(assetCategory);
+		return "success";
+	} 
 	
 	
 	private String toJSON(Object obj){
