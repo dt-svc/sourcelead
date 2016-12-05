@@ -703,7 +703,7 @@ function listChange(sel){
 		 document.getElementById("clientList").style.display="block";
 		 document.getElementById("clientList").style.display="table";
 		 document.getElementById("vendorContactList").style.display="none";
-// 		 document.getElementById("vendorContactList_wrapper").style.display="none";
+		 document.getElementById("vendorContactList_wrapper").style.display="none";
 		 document.getElementById("contactLevel").style.display="block";
 		 document.getElementById("clientsList").style.display="none";
 		 document.getElementById("clientSatatus").style.display="none";
@@ -714,9 +714,9 @@ function listChange(sel){
 		'<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENT_CONTACTS\')">'; 
 		 document.getElementById("ContactImports").style.display="none";
 		'</sec:authorize> ';	 
-		 /* document.getElementById("vendorContactList_paginate").style.display="none";
+		 document.getElementById("vendorContactList_paginate").style.display="none";
 		 document.getElementById("vendorContactList_info").style.display="none";
-		 document.getElementById("vendorContactList_filter").style.display="none"; */
+		 document.getElementById("vendorContactList_filter").style.display="none";
 		 
 		 getClientDetails();
 	 }

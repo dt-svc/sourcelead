@@ -51,7 +51,9 @@ function clientDocuments(orgRelationId,clientLocationId){
 	
 	var result = "";
 	result = result  +'<div class="timesheet_head">';
-	result  = result + '   <div id="msgDiv" ></div>';
+	result  = result + '<div class="success_pop" id="clientDocSelector" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="clientDococMsgDiv"></span>';
+    result  = result + '</div>';
 	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
 	    result = result + '<ul>';
 	    '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_CLIENT_DOCUMENT\')">';
@@ -94,7 +96,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
              		 }
              		 else{
              			var json = JSON.parse(data);
-             			for (var i = 0; i < 1; i++) { 
+             			/* for (var i = 0; i < 1; i++) { 
              				var val= json[i];
              				var opt = "";
              					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
@@ -104,7 +106,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
              						}
              					$("#msgDiv").empty();
              					$("#msgDiv").append(opt);
-             				}
+             				} */
 	                	 $("#clientDocumentsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='clientDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -174,7 +176,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    		 	result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+clientLocationId+','+orgRelationId+'); getSpocsList('+orgRelationId+'); getClientDocument('+clientLocationId+','+orgRelationId+', '+opt.id+');"></a>';
 	                    		 '</sec:authorize>';
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_DOCUMENT\')">'; 
-	                    		 	result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteClientDocument('+clientLocationId+','+orgRelationId+','+opt.id+');"></i>';
+	                    		 	result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteClientDocument('+clientLocationId+','+orgRelationId+','+opt.id+',\''+opt.docName+'\');"></i>';
 	                    		 '</sec:authorize>';
 	                    		 
 	                    		 '<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\',\'ROLE_DELETE_CLIENT_DOCUMENT\')">';
@@ -191,7 +193,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    
 	                     $("#clientDocumentsList").append(result); 
 	                     documentpagination(); 
-	                     msgFadein();
+	                     //msgFadein();
 			    	} 
                }else{
             	   
@@ -449,7 +451,15 @@ function closePopup(){
 		            		 }
 		            		 else{
 		            			$("#popUpDiv").removeClass("edit-details-active");
+		            			$("#clientDocSelector").removeAttr("style");
+		            			$("#clientDocSelector").css({ display: "block" });
+		            			if(docId != null){
+		            				$("#clientDococMsgDiv").html("Success!! Document details updated");
+		            			}else{
+		            				$("#clientDococMsgDiv").html("Success!! New document added");
+		            			}
 		            			clientDocumentsList(clientLocationId,orgRelationId);
+		            			clientDocMsgFadein();
 		            		 }
 						},
 					});
@@ -635,14 +645,14 @@ function removeResumeNameDiv(){
 </script>
 
 <script>
-function deleteClientDocument(clientLocationId,orgRelationId,docId){
+function deleteClientDocument(clientLocationId,orgRelationId,docId,docName){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>User delete message here</p>";
 	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="terminateReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForDoc("+clientLocationId+","+orgRelationId+","+docId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForDoc("+clientLocationId+","+orgRelationId+","+docId+",\""+docName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
 	result = result +"	</div>";
 	$("#deleteDocpopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -658,7 +668,7 @@ $(".project_inn_mask").fadeOut(200);
 </script>
 
 <script>
-function saveReasonForDoc(clientLocationId,orgRelationId,docId){
+function saveReasonForDoc(clientLocationId,orgRelationId,docId,docName){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var terminateReason = document.getElementById("terminateReason").value;
 	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
@@ -676,7 +686,11 @@ function saveReasonForDoc(clientLocationId,orgRelationId,docId){
         		 else{
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);
+        			 $("#clientDocSelector").removeAttr("style");
+         			 $("#clientDocSelector").css({ display: "block" });
+         			 $("#clientDococMsgDiv").html(""+docName+" Removed");
         			 clientDocumentsList(clientLocationId,orgRelationId);
+        			 clientDocMsgFadein();
         		 }
    		    }
 	     });
@@ -692,9 +706,9 @@ function saveReasonForDoc(clientLocationId,orgRelationId,docId){
 
 <!-- Show success message after form submission script -->
 <script>
-	function msgFadein() {
-	    setTimeout(function(){ 
-	    	$('#selector1').fadeOut('slow'); }, 300);
+	function clientDocMsgFadein() {
+		$("#clientDocSelector").fadeIn(200);
+        $('#clientDocSelector').delay(2000).fadeOut('slow');
 	}
 </script> 
 <!-- End -->

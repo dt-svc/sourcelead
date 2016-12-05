@@ -139,7 +139,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                    		 '</sec:authorize>';
 	                    				 
 	                    		'<sec:authorize access="hasAnyRole(\"ROLE_DELETE_VENDOR_DOCUMENT\")">';
-	                    				 result = result+'	 <i class="glyphicon glyphicon-trash" onclick="deleteDocument(\''+clientLocationId+'\',\''+orgRelationId+'\',\''+spocName+'\',\''+userId+'\',\''+opt.id+'\');"></i>';
+	                    				 result = result+'	 <i class="glyphicon glyphicon-trash" onclick="deleteDocument(\''+clientLocationId+'\',\''+orgRelationId+'\',\''+spocName+'\',\''+userId+'\',\''+opt.id+'\',\''+opt.docName+'\');"></i>';
 	                    		 '</sec:authorize>'; 
 	                    		 result = result+'	 </div></td>';
 	                    	 }
@@ -395,9 +395,13 @@ function closePopup(){
 	            			$("#popUpDiv").removeClass("edit-details-active");
 	            			$("#selector2").removeAttr("style");
 	            			$("#selector2").css({ display: "block" });
-	            			$("#docMsgDiv").html("document Removed");
+	            			if(docId != null){
+	            				$("#docMsgDiv").html("Success!! Document details updated");
+	            			}else{
+	            				$("#docMsgDiv").html("Success!! New document added");
+	            			}
 	            			spocDocumentsList(clientLocationId,orgRelationId,userId,spocName);
-	            			 spocDocMsgFadein();
+	            			spocDocMsgFadein();
 	            		 }
 					},
 				});
@@ -437,14 +441,14 @@ function getSpocsList(orgRelationId){
 
 </script> -->
 <script>
-function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId){
+function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId,docName){
 	 var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>User delete message here</p>";
 	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="terminateReasonDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Submit" onclick="saveReason('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+docId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelDocTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Submit" onclick="saveReason('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+docId+',\''+docName+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelDocTermination();"></b>';
 	result = result +"	</div>";
 	$("#deleteDocpopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -453,7 +457,7 @@ function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId){
 </script>
 
 <script>
-function saveReason(clientLocationId,orgRelationId,spocName,userId,docId){
+function saveReason(clientLocationId,orgRelationId,spocName,userId,docId,docName){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var terminateReason = document.getElementById("terminateReason").value;
 	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
@@ -471,7 +475,11 @@ function saveReason(clientLocationId,orgRelationId,spocName,userId,docId){
         		 else{
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);
+        			 $("#selector2").removeAttr("style");
+         			 $("#selector2").css({ display: "block" });
+         			 $("#docMsgDiv").html(""+docName+" Removed");
         			 spocDocumentsList(clientLocationId,orgRelationId,userId,spocName);
+        			 spocDocMsgFadein();
         		 }
    		    }
 	     });
