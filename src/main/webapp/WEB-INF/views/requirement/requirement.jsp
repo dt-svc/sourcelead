@@ -386,6 +386,8 @@ $(document).ready(function () {
                 </select>
               </div>
             </div>
+            
+            
          
           <div class="form-group">
             <input type="hidden" name="templateId" id="templateId" value="" />
@@ -424,7 +426,7 @@ $(document).ready(function () {
       </div>
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
-	        <c:if test="${(SourceLeadWeb_org.vms == 'Y' && SourceLeadWeb_org.ats == 'Y') || (SourceLeadWeb_org.vms != 'Y')}">
+	        <c:if test="${(SourceLeadWeb_vms == 'Y' && SourceLeadWeb_ats == 'Y') || (SourceLeadWeb_vms != 'Y')}">
 	        	<div class="ml">
 		            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 		            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
@@ -1822,6 +1824,8 @@ function getTeamMembers(){
 
 <script>
 function getIsClientVal(){
+$("#selectContact").empty().trigger('chosen:updated');
+$("#clientSubmissionForm").empty().trigger('chosen:updated');
 var existingValue = document.getElementById('isClientJob').value;
 
 	if (document.getElementById('isClientJob').checked){
@@ -1830,10 +1834,10 @@ var existingValue = document.getElementById('isClientJob').value;
 		 $("#addClientId").val('');
 		 $('#addClientId').trigger("chosen:updated");
 		 
-		 $("#selectContact").val('');
-		 $('#selectContact').trigger("chosen:updated");
+		 $("#selectContact").find('.chosen-results').val('').trigger('chosen:updated');
+		
 		 
-		 $('select[name=clientCurrencyCode]').val(1);
+		 $('select[name=clientCurrencyCodgetIsClientVale]').val(1);
 		 $('.selectpicker').selectpicker('refresh');
 		 
 		 $('#clientRate').val('');
@@ -1846,6 +1850,24 @@ var existingValue = document.getElementById('isClientJob').value;
 		 existingValue = document.getElementById('isClientJob').value;
 	}else {
 		 $("#isClientJob").val('N');
+		 
+		 $("#addClientId").val('');
+		 $('#addClientId').trigger("chosen:updated");
+		 
+		 $("#selectContact").find('.chosen-results').val('').trigger('chosen:updated');
+		
+		 
+		 $('select[name=clientCurrencyCodgetIsClientVale]').val(1);
+		 $('.selectpicker').selectpicker('refresh');
+		 
+		 $('#clientRate').val('');
+		 
+		 $('select[name=clientRateType]').val(1);
+		 $('.selectpicker').selectpicker('refresh');
+		 
+		 $("#clientSubmissionForm").val('');
+		 $('#clientSubmissionForm').trigger("chosen:updated");
+		 
 		 existingValue = document.getElementById('isClientJob').value;
 		 
     // Adding the Internal  Submission Form  as we are Unselecting the Client
