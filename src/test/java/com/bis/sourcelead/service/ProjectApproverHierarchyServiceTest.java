@@ -2,7 +2,11 @@ package com.bis.sourcelead.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -13,8 +17,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.SecurityConfig;
+import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
@@ -32,8 +37,12 @@ public class ProjectApproverHierarchyServiceTest {
 	@Test
 	public void saveProjectApproverHierarchy() throws Exception {
 		ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+		pah.setId(1l);
 		Projects projects = new Projects();
 		projects.setId(1L);
+		OrgRelations orgRelationId= new OrgRelations();
+		orgRelationId.setId(1l);
+		projects.setOrgRelationId(orgRelationId);
 		pah.setProjectId(projects);
 		User user = new User();
 		user.setId(1L);
@@ -55,7 +64,7 @@ public class ProjectApproverHierarchyServiceTest {
 		projects.setId(1L);
 		pah.setProjectId(projects);
 		pah = approverHierarchyService.getLevelOneProjectApproverByProjectId(pah.getProjectId().getId());
-		logger.info("Retrieved Successfully..."+pah.getApproverUserId().getFirstName());
+		logger.info("Retrieved Successfully...");
 	}
 	
 	@Test
@@ -86,5 +95,48 @@ public class ProjectApproverHierarchyServiceTest {
 		pah.setApproverUserId(user);
 		List<Long> pahlist = approverHierarchyService.getProjectIdsByLoginUserId(pah.getApproverUserId().getId());
 		logger.info("Retrieved Successfully..."+pahlist.size());
+	}
+	
+	
+	@Test
+	public void updateProjectApproverHierarchy() throws Exception {
+		ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+		pah.setId(1l);
+		User user = new User();
+		user.setId(1L);
+		pah.setApproverUserId(user);
+		Projects projectId= new Projects();
+		projectId.setId(1l);
+		pah.setProjectId(projectId);
+		@SuppressWarnings("unchecked")
+		List<Long> pahlist = (List<Long>) approverHierarchyService.updateProjectApproverHierarchy(pah);
+		logger.info("Retrieved Successfully..."+pahlist.size());
+	}
+	
+	@Test
+	public void getAllProjectApproverHierarchyByProjectId() throws Exception {
+		long projectId=1l;
+		long userId=1l;
+		List<ProjectApproverHierarchy> pahlist = approverHierarchyService.getAllProjectApproverHierarchyByProjectId(projectId, userId);
+		for(ProjectApproverHierarchy PAHierarchy:pahlist){
+			PAHierarchy.getId();
+		}
+		logger.info("Retrieved Successfully..."+pahlist.size());
+	}
+	
+	
+	@Test
+	public void prepareProjectApproverHierarchyListByJson() throws Exception {
+		JSONObject jsonObj= new JSONObject();
+		jsonObj.put("level1Manager", "suhas");
+		jsonObj.put("level2Manager", "suhas");
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		Projects projects= new Projects();
+		projects.setId(1l);
+		Set<ProjectApproverHierarchy> pahlist = approverHierarchyService.prepareProjectApproverHierarchyListByJson(jsonObj, request, projects);
+		for(ProjectApproverHierarchy PAHierarchy:pahlist){
+			PAHierarchy.getId();
+		}
+		logger.info("Retrieved Successfully...");
 	}
 }
