@@ -182,12 +182,12 @@ function getVendorLists(){
    	        	
    	        	result = result +'<thead>';
    	        	result = result +'<tr>';
-   	        	result = result +' <th>Name</th>';
+   	        	result = result +' <th>Vendor Name</th>';
    	        	result = result +' <th>Website</th>';
    	        	result = result +'<th>Location</th>';
-   	        	result = result +'<th>No.of Contacts</th>';
-   	        	result = result +'<th>Released jobs</th>';
    	        	result = result +'<th>Tier</th>';
+   	        	result = result +'<th>Released jobs</th>';
+   	        	result = result +'<th>No.of Contacts</th>';
    	        	/* result = result +'<th>Actions</th>'; */
    	        	result = result +'</tr>';
    	        	result = result +'</thead>';
@@ -243,9 +243,9 @@ function getVendorLists(){
    	        			result = result +'<td><div>--</div></td>';
    	        		}
 	       		
-	       		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
+   	        	result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.level+'">'+report.level+'</span>';
 	       		result = result +' <td><div>'+report.noOfReleasedJobs+'</div></td>';
-	       		result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.level+'">'+report.level+'</span>';
+	       		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
 	       		/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
    	        		result = result +'</tr>';
    				}

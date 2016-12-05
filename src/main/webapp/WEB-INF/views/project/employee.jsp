@@ -174,7 +174,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
            	}
     		result = result	+ '</span>';
     		result = result + '		</div>';
-    		result = result + '        <div class="project_tabs_inn_table">';
+    		result = result + '        <div class="project_tabs_inn_table mt">';
     	    result = result + '        <div id="employeesLoadingImg"></div>';
     		if(json.projectMembersList.length!=null && json.projectMembersList.length!=''){
     	    result = result + '	<table id="projectEmployeePagination" class="display" cellspacing="0" width="100%">';
