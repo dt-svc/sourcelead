@@ -61,13 +61,22 @@ public class AssetCategory implements Serializable{
 	private String updatedBy;
 	
 	@Transient
+	private Long orgLocationId;
+	
+	@Transient
 	private String createdUser;
 	
 	@Transient
 	private String dateStr;
 	
-	
-	
+
+	public Long getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
 
 	public Long getId() {
 		return id;

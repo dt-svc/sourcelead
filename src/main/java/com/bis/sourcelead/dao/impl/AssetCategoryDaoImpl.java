@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.AssetCategoryDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.AssetCategory;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -73,6 +74,32 @@ public class AssetCategoryDaoImpl implements AssetCategoryDao{
 		String query = "from AssetCategory ac where ac.orgLocations.id = :orgLocationId and ac.status = '1' "; 
 		List<AssetCategory> assetCategoryList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return assetCategoryList;
+	}
+
+
+
+	@Override
+	@Transactional
+	public AssetCategory getAssetCategoryListByLocationIdAndCatId(Long catLocationId, Long categoryId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from AssetCategory ac where ac.orgLocations.id = :orgLocationId and ac.status = '1' and ac.id = :categoryId"; 
+		List<AssetCategory> assetCategoryList = session.createQuery(query.toString()).setLong("orgLocationId", catLocationId).setLong("categoryId", categoryId).setCacheable(true).list();
+		return assetCategoryList.get(0);
+	}
+
+
+
+	@Override
+	@Transactional
+	public Boolean validateCategoryName(String categoryName, Long orgLocationId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from AssetCategory ac where ac.orgLocations.id = :orgLocationId and ac.status = '1' and ac.categoryName = :categoryName"; 
+		List<AssetCategory> assetCategoryList = session.createQuery(query.toString()).setString("categoryName", categoryName).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+         boolean isCategoryFound = false;
+		if (assetCategoryList != null && !assetCategoryList.isEmpty()) {
+         	isCategoryFound = true;
+         }
+         return isCategoryFound;
 	}
 
 
