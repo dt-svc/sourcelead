@@ -29,6 +29,7 @@ overflow-x: auto;
 	<!-- Content Area -->
 	<section class="content-wraper">
 		<section class="content-header clearfix">
+
 		<div id="msgDiv" ></div>
 		<c:if test="${!empty msg}">
 	        <div class="success_pop" id="selector" style="display: block;">

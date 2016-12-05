@@ -327,7 +327,7 @@ public class ClientRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_VENDOR_CONTACT','ROLE_VIEW_EDIT_VENDOR_CONTACT')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_VENDOR_CONTACT','ROLE_VIEW_EDIT_VENDOR_CONTACT','ROLE_CREATE_REQUIREMENT')")
 	@RequestMapping(value = "/getOrgSpocsList", method = RequestMethod.POST)
 	@ResponseBody String getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 		String msg = "";
