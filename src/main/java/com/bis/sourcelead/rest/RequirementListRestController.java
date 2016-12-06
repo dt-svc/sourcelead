@@ -371,6 +371,7 @@ public class RequirementListRestController {
 									List<RequirementOffers> requirementOffersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(requirementSubmission.getId(),loginOrgLocation.getId());
 									if(requirementOffersList.size() > 0){
 										RequirementOffers requirementOffers = requirementOffersList.get(0);
+										requirementSubmission.setOfferId(requirementOffers.getId());
 										if(requirementOffers.getDateOfJoining() != null){
 											requirementSubmission.setOfferJoinDate(Constants.DMY.format(requirementOffers.getDateOfJoining()));
 										}
@@ -759,4 +760,38 @@ public class RequirementListRestController {
 				}
 				return resultJson;
 		}
+		
+		/**
+		 * @author Rajashekar
+		 * It downloads the attachment of offer based on offer id
+		 * @param offerId
+		 * @param response
+		 * @throws Exception
+		 * @returns void
+		 */
+		@RequestMapping(value = "/downloadOfferAttachment")
+	    public void downloadOfferAttachment(@RequestParam(value="offerId", required=false) Long offerId ,HttpServletResponse response) throws Exception {
+			
+				RequirementOffers offer = requirementOffersService.getRequirementOfferId(offerId);
+			    response.setContentType("application/octet-stream");
+		        response.setHeader("Content-Disposition",
+		                "attachment;filename="+offer.getFileName());
+				InputStream inputStream = new ByteArrayInputStream(offer.getDocFile());
+				try {
+					OutputStream outStream = response.getOutputStream();
+
+					byte[] buffer = new byte[4096];
+					int bytesRead = -1;
+
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						outStream.write(buffer, 0, bytesRead);
+					}
+
+					inputStream.close();
+					outStream.close();
+
+				} catch (FileNotFoundException e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				} 
+     }
 }

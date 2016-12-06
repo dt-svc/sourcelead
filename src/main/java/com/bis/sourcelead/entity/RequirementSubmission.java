@@ -161,7 +161,8 @@ public class RequirementSubmission implements Serializable{
 	@Transient
 	private String attachment;
 	
-	
+	@Transient
+	private Long offerId;
 
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -491,6 +492,14 @@ public class RequirementSubmission implements Serializable{
 
 	public void setAttachment(String attachment) {
 		this.attachment = attachment;
+	}
+
+	public Long getOfferId() {
+		return offerId;
+	}
+
+	public void setOfferId(Long offerId) {
+		this.offerId = offerId;
 	}
 
 }
