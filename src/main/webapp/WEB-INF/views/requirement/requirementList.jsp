@@ -1145,7 +1145,7 @@ function requirementPipeline(requirementId){
 <section class="content-wraper">
   <section class="content-header clearfix">
    <c:if test="${!empty msg}">
-	        <div class="success_pop" id="selector"  style="display: block;">
+	        <div class="success_pop" id="selector2"  style="display: block;">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
@@ -1471,12 +1471,7 @@ function exportToExcel(){
 }
 
 </script>
-  <script>
-       function msgFadein1() {
-           setTimeout(function(){
-                   $('#selector2').fadeOut('slow'); }, 1000);
-       }
-</script>  
+  
 <script>
        function msgFadein1() {
            setTimeout(function(){

@@ -131,7 +131,7 @@ public class RequirementListRestController {
 	 @PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT')")
 	 @RequestMapping(value = "/getRequirementListByOrgLocationID")
 	 public String getRequirementListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
-
+		 String msg = "";
 		String resultJson;
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -157,6 +157,12 @@ public class RequirementListRestController {
 				}
 				requirement.setManager(managerFirstName+" "+managerLastName);
 			}
+			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqStatusChange");
+			if(msg != null && msg != ""){
+				requirement.setMsg(msg);
+			}
+				 SourceLeadSessionManager.removeSessionAttribute(request, "reqStatusChange");
+			
 		}
 		
 		ArrayList<Requirement>  requirementList1 = new ArrayList<Requirement>();
@@ -411,6 +417,8 @@ public class RequirementListRestController {
 			 requirement.setUpdatedBy(loginUser.getUserCode());
 			 requirement.setUpdatedDate(commonUtil.currentDate());
 			 requirementService.addRequirement(requirement); 
+			SourceLeadSessionManager.setSessionAttribute(request, "reqStatusChange", " "+requirement.getJobTitle()+" Status changed "+requirement.getRequirementSubmissionPreviousStatus()+" to "+requirement.getRequirementSubmissionStatus()+" ");
+
 			return "success";
 		 }
 		 
