@@ -4709,14 +4709,91 @@ import-tranhd  [class*="col-md-"]{
        background-color:#337ab7;
        background-size:8px;
        }
-
 .cand-advsrch {
 	margin:15px;
+	position: relative;
 }
 .cand-advsrch .fa-search{
-	color: #fff;
-	padding: 0;
-	font-size: 14px;
+	color: #fff !important;
+	padding: 0 !important;
+	font-size: 14px !important;
+	top: 0 !important;
+	padding-left: 10px !important;
+}
+.cand-advsrch-popup{
+	border: 1px solid #ccc;
+	background: #eee;
+	padding: 10px 15px;
+	border-radius: 5px;
+	width: 800px;
+	position: absolute;
+	top: 30px;
+	left: 0;
+	display: none;
+	z-index: 999;
+}
+.cand-advsrch-popup .close-div{
+	right: 0;
+	left: auto;
+}
+.cand-advsrch-popup .col-md-4{
+	margin-bottom: 10px;
+}
+.cand-advsrch-popup .fa-info-circle{
+	padding-left: 15px;
+	color: #217da8;
+}
+.hdr-styles ul li input[type="checkbox"], .hdr-styles ul li input[type="radio"] {
+	margin: 0;
+}
+.hdr-styles ul li label {
+	top:0 !important;
+}
+.inter_feedback_wrap {
+    width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
+    transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
+    z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
+    }
+.inter_feedback_wrap.add_inter_wrap_active {
+    right:0px;
+    }
+.block-with-text {
+  overflow: hidden;
+  position: relative; 
+  line-height: 1.2em;
+  max-height: 3.6em; 
+  text-align: justify;
+  margin-right: -1em;
+  padding-right: 1em;
+}
+.block-with-text:before {
+  content: '...';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+.block-with-text:after {
+  content: '';
+  position: absolute;
+  right: 0;
+  width: 1em;
+  height: 1em;
+  margin-top: 0.2em;
+  background: white;
+}
+
+/*browser file error paragraph styles*/
+.attachfile-error p{
+ position: absolute;
+   bottom: -15px;
+   left: 0;
+   padding: 0 !important;
+   text-align: left;
+   font-size: 10px;
+}
+/*browser file error paragraph styles*/
+.edit-amd .col-md-6{
+    margin-bottom: 15px;
 }
 /* media 320px */
 @media (max-width: 320px) {

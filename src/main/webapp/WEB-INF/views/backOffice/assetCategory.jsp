@@ -42,7 +42,7 @@ $(document).ready(function(){
   <div class="pull-left">
     <h2>Category</h2>
   </div>
-  <div class="pull-right brud-crum">Home &raquo; Back Office &raquo; Category</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/assetManagement'/>">Asset Management</a> &raquo; Category</div>
 </section>
 <div class="timesheet_out">
   <div class="vendor_wrap">
@@ -108,9 +108,7 @@ $(document).ready(function(){
 		   	     	    
 			    	    result = result+'<tr id="category'+report.id+'">';
 			   	     	result = result +'<td>';
-			   	        result = result +'<a href="javascript:void(0)" class="tbldata-dotdot">';
-				   	    result = result +'<div class="proj_show"> <span class="tbldata-dotdot-sm">'+report.categoryName+'</span> <i class="fa fa-binoculars"></i> </div>';
-					   	result = result +'</a>';
+				   	    result = result +'<div class="proj_show"> <span class="tbldata-dotdot-sm">'+report.categoryName+'</span></div>';
 					   	result = result +'</td>';
 					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+description+'</div></td>';
 					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+report.createdUser+'</div></td>';

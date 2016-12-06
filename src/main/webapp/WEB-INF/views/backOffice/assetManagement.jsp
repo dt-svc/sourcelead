@@ -28,7 +28,7 @@ $(document).ready(function(){
   <div class="pull-left">
     <h2>Asset Management</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Assetmanagement</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Asset Management</div>
 </section>
 <div class="timesheet_out">
   <div class="vendor_wrap">
@@ -53,7 +53,7 @@ $(document).ready(function(){
           </div>
         </li>
         
-         <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
+         <!-- <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
           <div class="export_pop">
             <ul>
               <li><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
@@ -61,7 +61,7 @@ $(document).ready(function(){
               <li><i class="fa fa-file-word-o"></i>&nbsp;Word</li>
             </ul>
           </div>
-        </li>
+        </li> -->
        <!--  <li><i class="glyphicon glyphicon-save"></i><span>Import</span>|</li> -->
             
               
@@ -126,11 +126,11 @@ $(document).ready(function(){
                 </div>
                 <div class="clearfix mb10">
                   <div class="col-md-6" id="attachmentDiv">
-                    <div class="input-group" >
+                    <div class="input-group attachfile-error" >
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                         <input type="file" name="attachment" id="attachment"  class="hidden upload">
                         </b> </label>
-                      <input type="text" class="form-control" name="attachment" readonly id="uploadFileAttachment" placeholder="Files are not selected...">
+                      <input type="text" class="form-control" name="attachment" data-validation-optional="true" data-validation="validatedoc" readonly id="uploadFileAttachment" placeholder="Files are not selected...">
                     </div>
                   </div>
                   <div class="col-md-6" id="descriptionDiv">
@@ -152,11 +152,11 @@ $(document).ready(function(){
                     </select>
                   </div>
                   <div class="col-md-6" id="uploadFile-dskBDiv">
-                    <div class="input-group">
+                    <div class="input-group attachfile-error">
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                         <input type="file" name="uploadBtn-dskA" id="uploadBtn-dskA"  class="hidden upload">
                         </b> </label>
-                      <input type="text"  class="form-control" name="shiftAAttachment" readonly id="uploadFileShiftA" placeholder="Files are not selected...">
+                      <input type="text"  class="form-control" data-validation-optional="true" data-validation="validatedoc" name="shiftAAttachment" readonly id="uploadFileShiftA" placeholder="Files are not selected...">
                     </div>
                   </div>
                 </div>
@@ -178,11 +178,11 @@ $(document).ready(function(){
                     </select>
                   </div>
                   <div class="col-md-6">
-                    <div class="input-group">
+                    <div class="input-group attachfile-error">
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                          <input type="file" name="uploadBtn-dskB" id="uploadBtn-dskB"  class="hidden upload">
                         </b> </label>
-                      <input type="text"  class="form-control"  name="shiftBAttachment" readonly id="uploadFileShiftB" placeholder="Files are not selected...">
+                      <input type="text"  class="form-control" data-validation-optional="true" data-validation="validatedoc" name="shiftBAttachment" readonly id="uploadFileShiftB" placeholder="Files are not selected...">
                     </div>
                   </div>
                 </div>
@@ -224,266 +224,8 @@ $(document).ready(function(){
       <div id="projectSideDiv">
 		     </div> 
         <div class="project_tabs">
-          <div id="tab-1" class="project_tabs_inn" style="display: block;">
-              <div class="user_summary_edit client_summary_edit" style="display: none;">
-                  <div class="form-horizontal req-dtls myForm row">
-                  
-                            <!-- Add Asset Popup -->
-          <div class="col-md-12 edit-category">
-            <div class="clearfix assetaddpop-ul col-md-6 category">
-				<div class="row">
-				<label class="col-md-4">Select Category</label>
-				<div class="col-md-8">
-					<select class="chosen-select" onChange="myasetEdit(this)">
-					<option value="laptop-edit" selected>Laptop</option>
-					<option value="desktop-edit">Desktop</option>
-					<option value="others-edit">Others..</option>
-				</select>
-          </div>
-           </div>
-            </div>
-			  <div class="clearfix mb10"></div>
-            <!-- Laption popup div -->
-            <div class="clearfix" id="laptop-edit">
-              <div class="form-horizontal clearfix">
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Serial Number *">
-                  </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Make">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Model *">
-                  </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Memory *">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="CPU *">
-                  </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Hard Disk *">
-                    <textarea class="form-control hidden" rows="2" placeholder="Description"></textarea>
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <select class="form-control chosen-select">
-                      <option selected>-Select Location-</option>
-                      <option>India</option>
-                      <option>USA</option>
-                    </select>
-                  </div>
-                  <div class="col-md-6">
-                    <textarea class="form-control" rows="2" placeholder="Description"></textarea>
-                  </div>
-                </div>
-                <!-- Shift A Fields -->
-                <div class="clearfix">
-                  <h4 class="col-md-12">Shift A</h4>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <select class="form-control chosen-select">
-                      <option selected>-Select Employee-</option>
-                      <option>Employee1</option>
-                      <option>Employee2</option>
-                      <option>Employee3</option>
-                    </select>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="input-group">
-                      <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" style="display: none;" multiple id="uploadBtn-lapA" class="upload">
-                        </b> </label>
-                      <input type="text" class="form-control" readonly id="uploadFile-lapA" placeholder="Files are not selected...">
-                    </div>
-                  </div>
-                </div>
-                <!-- Shift A Fields --> 
-                <!-- Shift B Fields -->
-                <div class="clearfix">
-                  <h4 class="col-md-12">Shift B</h4>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <select class="form-control chosen-select">
-                      <option selected>-Select Employee-</option>
-                      <option>Employee1</option>
-                      <option>Employee2</option>
-                      <option>Employee3</option>
-                    </select>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="input-group">
-                      <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" style="display: none;" multiple id="uploadBtn-lapB" class="upload">
-                        </b> </label>
-                      <input type="text" class="form-control" readonly id="uploadFile-lapB" placeholder="Files are not selected...">
-                    </div>
-                  </div>
-                </div>
-                <!-- Shift A Fields -->
-                <div class="clearfix mr">
-                  <div class="pull-right">
-                    <button type="submit" class="btn btn-sm btn-primary">Add</button>
-                    <button type="submit" class="btn btn-sm btn-default ml10">Cancel</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Laption popup div --> 
-            <!-- Desktop popup div -->
-            <div class="clearfix" id="desktop-edit">
-              <div class="form-horizontal clearfix">
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Serial Number *">
-                  </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Make *">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Model *">
-                  </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Memory *">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-4">
-                    <input type="text" class="form-control input-sm" value="" placeholder="CPU *">
-                  </div>
-                  <div class="col-md-4">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Hard Disk *">
-                  </div>
-                  <div class="col-md-4">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Monitor *">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <select class="form-control chosen-select">
-                      <option selected>-Select Location-</option>
-                      <option>India</option>
-                      <option>USA</option>
-                    </select>
-                  </div>
-                  <div class="col-md-6">
-                    <textarea class="form-control" rows="2" placeholder="Description"></textarea>
-                  </div>
-                </div>
-                <!-- Shift A Fields -->
-                <div class="clearfix">
-                  <h4 class="col-md-12">Shift A</h4>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <select class="form-control chosen-select">
-                      <option selected>-Select Employee-</option>
-                      <option>Employee1</option>
-                      <option>Employee2</option>
-                      <option>Employee3</option>
-                    </select>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="input-group">
-                      <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" style="display: none;" multiple id="uploadBtn-dskA" class="upload">
-                        </b> </label>
-                      <input type="text" class="form-control" readonly id="uploadFile-dskA" placeholder="Files are not selected...">
-                    </div>
-                  </div>
-                </div>
-                <!-- Shift A Fields --> 
-                <!-- Shift B Fields -->
-                <div class="clearfix">
-                  <h4 class="col-md-12">Shift B</h4>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <select class="form-control chosen-select">
-                      <option selected>-Select Employee-</option>
-                      <option>Employee1</option>
-                      <option>Employee2</option>
-                      <option>Employee3</option>
-                    </select>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="input-group">
-                      <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" style="display: none;" multiple id="uploadBtn-dskB" class="upload">
-                        </b> </label>
-                      <input type="text" class="form-control" readonly id="uploadFile-dskB" placeholder="Files are not selected...">
-                    </div>
-                  </div>
-                </div>
-                <!-- Shift A Fields -->
-                <div class="clearfix mr">
-                  <div class="pull-right">
-                    <button type="submit" class="btn btn-sm btn-primary">Add</button>
-                    <button type="submit" class="btn btn-sm btn-default ml10">Cancel</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Desktop popup div --> 
-            <!-- Others popup div -->
-            <div class="clearfix" id="others-edit">
-              <div class="form-horizontal clearfix">
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Serial Number *">
-                  </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Name *">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Make *">
-                  </div>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Model *">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="" placeholder="Memory *">
-                  </div>
-                  <div class="col-md-6">
-                    <select class="form-control chosen-select">
-                      <option selected>-Select Location-</option>
-                      <option>India</option>
-                      <option>USA</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-12">
-                    <textarea class="form-control" rows="2" placeholder="Description"></textarea>
-                  </div>
-                </div>
-                <div class="clearfix mr">
-                  <div class="pull-right">
-                     <button type="submit" class="btn btn-sm btn-primary">Add</button>
-                    <button type="submit" class="btn btn-sm btn-default ml10">Cancel</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Others popup div --> 
-          </div>
-					  
-                  </div>
-                </div>
+          <div id="tab-1" class="project_tabs_inn" >
+              
               </div>
             </div>
           </div>
@@ -601,7 +343,9 @@ var validationSettings = {
 	  $("#harddisk").val('');
 	  $("#uploadFile-dskA").val('');
 	  $("#uploadFile-dskB").val('');
-	  
+	  $("#uploadFileAttachment").val('');
+	  $("#shiftAAttachment").val('');
+	  $("#shiftBAttachment").val('');
         
 	  
   }
@@ -678,12 +422,12 @@ var validationSettings = {
 
 						result = result+'<tr id="asset'+report.id+'">';
 			   	        result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot-sm">';
-					   	result = result+'<div class="proj_show" onclick="assetSideBar('+report.id+');"> <span class="tbldata-dotdot-100">'+report.slno+'</span> <i class="fa fa-binoculars"></i> </div>';
+					   	result = result+'<div class="proj_show" onclick="assetSideBar('+report.id+');" title="'+report.slno+'"> <span class="tbldata-dotdot-100">'+report.slno+'</span> <i class="fa fa-binoculars"></i> </div>';
 					   	result = result+'</a></td>';
 					   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.categoryName+'">'+report.categoryName+'</div></td>';
-						result = result+'<td><div class="tbldata-dotdot-vsm">'+model+'</div></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm" >'+shiftAEmpName+'</div></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm" >'+shiftBEmpName+'</div></td>';
+						result = result+'<td><div class="tbldata-dotdot-vsm" title="'+model+'">'+model+'</div></td>';
+					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+shiftAEmpName+'" >'+shiftAEmpName+'</div></td>';
+					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+shiftBEmpName+'">'+shiftBEmpName+'</div></td>';
 					   	
 					   	result = result + ' <td><div class="tbldata-dotdot-100">';
 						result = result + ' <select id="workingStatus'+report.id+'" name="workingStatus" onChange="updateWorkingStatus(\''+report.id+'\');">';
@@ -1127,17 +871,7 @@ $(".addcon-pop").click(function(){
     	var sizeinbytes = document.getElementById('attachment').files[0].size;
         
         var extension = uploadedFile.substring(uploadedFile.lastIndexOf(".")+1).toLowerCase();
-        if(extension != 'pdf'){
-     		
-           $("input#attachment").after("<p class='jquery_form_error_message'>");
-       	   document.getElementById("attachment").setAttribute('record-exist', 'yes');
-       	   document.getElementById("attachment").setAttribute('record-exist-errorMsg',"Invalid file Format. Only pdf are allowed.");
-       	   $("#addAsset_form").click(function() {
-     		if ($(this).validate(false, validationSettings)) {
-     		}
-     	});
-        	
-        }else if(sizeinbytes > 500000){
+       if(sizeinbytes > 500000){
         	 $("input#attachment").after("<p class='jquery_form_error_message'>");
          	   document.getElementById("attachment").setAttribute('record-exist', 'yes');
          	   document.getElementById("attachment").setAttribute('record-exist-errorMsg',"Invalid file size. Should less than 500 kb.");
@@ -1165,18 +899,7 @@ $(".addcon-pop").click(function(){
     if(uploadedFile){
     var sizeinbytes = document.getElementById('uploadBtn-dskA').files[0].size;
     
-    var extension = uploadedFile.substring(uploadedFile.lastIndexOf(".")+1).toLowerCase();
-    if(extension != 'pdf'){
- 		
-       $("input#uploadBtn-dskA").after("<p class='jquery_form_error_message'>");
-   	   document.getElementById("uploadBtn-dskA").setAttribute('record-exist', 'yes');
-   	   document.getElementById("uploadBtn-dskA").setAttribute('record-exist-errorMsg',"Invalid file Format. Only pdf are allowed.");
-   	   $("#addAsset_form").click(function() {
- 		if ($(this).validate(false, validationSettings)) {
- 		}
- 	});
-    	
-    }else if(sizeinbytes > 500000){
+    if(sizeinbytes > 500000){
     	 $("input#uploadBtn-dskA").after("<p class='jquery_form_error_message'>");
      	   document.getElementById("uploadBtn-dskA").setAttribute('record-exist', 'yes');
      	   document.getElementById("uploadBtn-dskA").setAttribute('record-exist-errorMsg',"Invalid file size. Should less than 500 kb.");
@@ -1203,18 +926,7 @@ $(".addcon-pop").click(function(){
     if(uploadedFile){
     var sizeinbytes = document.getElementById('uploadBtn-dskB').files[0].size;
     
-    var extension = uploadedFile.substring(uploadedFile.lastIndexOf(".")+1).toLowerCase();
-    if(extension != 'pdf'){
- 		
-       $("input#uploadBtn-dskB").after("<p class='jquery_form_error_message'>");
-   	   document.getElementById("uploadBtn-dskB").setAttribute('record-exist', 'yes');
-   	   document.getElementById("uploadBtn-dskB").setAttribute('record-exist-errorMsg',"Invalid file Format. Only pdf are allowed.");
-   	   $("#addAsset_form").click(function() {
- 		if ($(this).validate(false, validationSettings)) {
- 		}
- 	});
-    	
-    }else if(sizeinbytes > 500000){
+     if(sizeinbytes > 500000){
     	 $("input#uploadBtn-dskB").after("<p class='jquery_form_error_message'>");
      	   document.getElementById("uploadBtn-dskB").setAttribute('record-exist', 'yes');
      	   document.getElementById("uploadBtn-dskB").setAttribute('record-exist-errorMsg',"Invalid file size. Should less than 500 kb.");
