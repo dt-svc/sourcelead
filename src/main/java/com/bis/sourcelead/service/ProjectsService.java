@@ -72,7 +72,7 @@ public interface ProjectsService {
 		
 		String saveProjectByUserOrgLocationsJson(User user,OrgLocations loginOrgLocation,String loginOrgCode,JSONObject jsonObj) throws Exception ;
         
-		String  storeProject(JSONObject jsonObj) throws Exception;
+		String  storeProject(JSONObject jsonObj,User user,OrgLocations loginOrgLocation,String loginOrgCode) throws Exception;
 		
 		//HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() throws Exception;
 		

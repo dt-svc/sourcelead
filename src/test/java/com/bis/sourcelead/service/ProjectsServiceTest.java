@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
@@ -201,7 +203,7 @@ public class ProjectsServiceTest {
 	 * test case Weekly base Emails and Notification
 	 * @throws Exception
 	 */
-	@Test
+	//@Test
 	public void getAllUserTimeSheetSubmissionStatus() throws Exception{
 		HashSet<UserRole> usrRoleList = userRoleService.getAllUserTimeSheetSubmissionStatusCurrentWeek();
 		for(UserRole userRole : usrRoleList){
@@ -220,6 +222,40 @@ public class ProjectsServiceTest {
 		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+usrList.size());
 		
 	}
+	@Test
+	public void saveAllProjects() throws Exception{
+		List<Projects> projectsList=new ArrayList<>();
+		Projects pro = new Projects();
+		pro.setProjectName("java");
+		pro.setCreatedBy("shivayogi");
+		Projects pro1 = new Projects();
+		pro1.setProjectName("java");
+		pro1.setCreatedBy("shivayogi");
+		projectsList.addAll(projectsList);
+		projectsService.saveAllProjects(projectsList);
+		logger.info("getDeleteProject ");
+	}
+	
+	@Test
+	public void storeProject() throws Exception{
+			JSONObject jsonObj= new JSONObject();
+			User user= new User();
+			user.setId(1l);
+			user.setUserCode("JAN2009");
+			jsonObj.put("ProjectSequeneNumber", "1");
+			jsonObj.put("ProjectName", "SQLLite");
+			jsonObj.put("ProjectDescription", "Hi hello whats up");
+			jsonObj.put("StartDate", "2006-02-09");
+			jsonObj.put("EndDate", "2006-05-09");
+			OrgLocations loginOrgLocation=new OrgLocations();
+			loginOrgLocation.setId(1l);
+			String loginOrgCode="2oo6IND";
+			projectsService.storeProject(jsonObj, user, loginOrgLocation, loginOrgCode);
+			logger.info("Project saved ");
+		}
+	
+		
+	
 	/**
 	 * this method for delete project by id
 	 * @return
@@ -231,5 +267,5 @@ public class ProjectsServiceTest {
 		logger.info("getDeleteProject "+isDeleted.booleanValue());
 	}
 	
-
+	
 }

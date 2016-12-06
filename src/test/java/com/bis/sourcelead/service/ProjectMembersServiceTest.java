@@ -4,7 +4,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -15,13 +17,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.SecurityConfig;
+import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Primary;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -200,5 +204,39 @@ public class ProjectMembersServiceTest {
 	public void getEmployeeAssignedProjectsCount() throws Exception{
 		Integer getEmployeeAssignedCount = projectMembersService.getEmployeeAssignedProjectsCount(1l,1l,1l);
 		logger.info("getEmployeeAssignedProjectsCount added successfully"+getEmployeeAssignedCount);
+	}
+	@Test
+	public void storeAssignEmployeeByProjectIdEmployeeIdStartDateEndaDate() throws Exception{
+		Long projectId=1l;
+		Long employeeId=1l;
+		String startDate="1991-02-02";
+		String endDate="1991-10-02";
+		String mailtoMembers="N";
+		String loginOrgCode="SLADMIN";
+		User user=new User();
+		user.setId(1l);
+		OrgLocations loginOrgLocation= new OrgLocations();
+		projectMembersService.storeAssignEmployeeByProjectIdEmployeeIdStartDateEndaDate(projectId, employeeId, startDate, endDate, mailtoMembers, loginOrgCode, user, loginOrgLocation);
+		logger.info("getEmployeeAssignedProjectsCount added successfully");
+	}
+		
+	@Test
+	public void prepareProjectMembersListByJson() throws Exception{
+		JSONObject jsonObj= new JSONObject();
+		jsonObj.put("employeeMaxCount", 10);
+		for(int i=1;i<=10;i++){
+		jsonObj.put("employeeId"+i,"1");
+		}
+		jsonObj.put("employeestartDate"+1,"1991-02-02");
+		jsonObj.put("employeeendDate"+1,"1991-10-02");
+		User user= new User();
+		user.setId(1l);
+		Projects projects= new Projects();
+		projects.setId(1l);
+		Set<ProjectMembers> prepareProjectMember = projectMembersService.prepareProjectMembersListByJson(jsonObj, user, projects);
+		for(ProjectMembers pm:prepareProjectMember){
+			pm.getId();
+		}
+		logger.info("getEmployeeAssignedProjectsCount added successfully");
 	}
 }

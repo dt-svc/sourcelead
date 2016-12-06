@@ -31,6 +31,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -494,7 +495,7 @@ public class RequirementServiceTest {
 		@Test
 		public void validateJobId() throws Exception{
 			Long orgLocation=1l;
-			Long id=1l;
+			String id="1";
 			requirementService.validateJobId(id, orgLocation);
 		}
 		
@@ -506,7 +507,9 @@ public class RequirementServiceTest {
 			}
 			String orgName="TCS";
 			String exportType="xls";
-			requirementService.getExportRequirementFile(requirementList, orgName, exportType);
+			TimeSheetSubmissionCount requirementSubCount= new TimeSheetSubmissionCount();
+			requirementSubCount.setSavedTimesheetSubmissionCount(1f);
+			requirementService.getExportRequirementFile(requirementList, orgName, exportType, requirementSubCount);
 		}
 		
 		@Test
