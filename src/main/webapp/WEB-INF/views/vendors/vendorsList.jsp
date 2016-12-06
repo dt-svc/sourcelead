@@ -108,7 +108,7 @@ overflow-x: auto;
                  
                  <sec:authorize access="hasRole('ROLE_EXPORT_VENDORS')"> 
                        	 <li id="vendorImports" style="display:none">
-		                     <a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportVendor</a>
+		                     <a  id="vendor-imports"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportVendor</a>
 			                    <div class="export_pop">
 				                <ul>
 				                <li onclick="exportVendorToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp; PDF </li>
@@ -1119,17 +1119,30 @@ function rejectInvitation(spocId){
   $('#selector').delay(2000).fadeOut('slow');
   $(document).ready(function() {
 	   $("#export-popcon").click(function(){
-	               $(".export_pop").slideToggle(200);
+	               $(".export_pop").toggle();
 	       });
 	   $("html").click(function() {
-	       $(".export_pop").slideUp(200);
+	       $(".export_pop").hide();
 	   });
 	   $(".export_pop, #export-popcon").click(function(e) {
 	       e.stopPropagation();
 	   });        
 	});  
 </script> 	
-
+<script>
+  $('#selector').delay(2000).fadeOut('slow');
+  $(document).ready(function() {
+	   $("#vendor-imports").click(function(){
+	    $(".export_pop").toggle();
+	       });
+	   $("html").click(function() {
+	       $(".export_pop").hide();
+	   });
+	   $(".export_pop, #vendor-imports").click(function(e) {
+	       e.stopPropagation();
+	   });        
+	});  
+</script> 	
 
 <script>
 function exportVendorToPdf(){

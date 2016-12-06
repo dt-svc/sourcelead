@@ -79,8 +79,8 @@ window.onload = function () {
 		   <li><a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
 			    <div class="export_pop">
 				   <ul>
-				   <li onclick="exportToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>
-				   <li onclick="exportUserData();">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>
+				   <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
+				   <li onclick="exportUserData();"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
 				   </ul>
 				</div>
 		   </li>
