@@ -173,10 +173,24 @@ function editCandidate(candidateId){
 							result = result + '</select>';
 							result = result + '</div>';
 							
-							
 							result = result + '<div class="col-md-6 custom-fields">';
+							
+							result = result + '<div class="input-group">';
 							result = result + '<input type="text" class="form-control input-sm" name="designation"  value="'+designation+'" placeholder="Designation">';
+							
+							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
+							result = result + '<select class="selct-picker" id="designationType" name="designationType" field-name="Designation Type">';
+							result = result + '<option value="">Designation Type</option>';
+							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'><a href="#">C2C</a></option>';
+							result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'><a href="#">W-2</a></option>';
+							result = result + '<option  '+(json.designationType == "Part Time" ? "selected" : '') +'><a href="#">Part Time</a></option>';
+							result = result + '<option  '+(json.designationType == "Full Time" ? "selected" : '') +'><a href="#">Full Time</a></option>';
+							result = result + '<option  '+(json.designationType == "Other" ? "selected" : '') +'<a href="#">Other</a></option>';
+							result = result + ' </select>';
 							result = result + '</div>';
+							result = result + '</div>';
+							result = result + '</div>';
+							
 							result = result + '</div>';
 							
 							
