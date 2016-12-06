@@ -37,5 +37,5 @@ public interface AssetService {
 	
 	List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception;
 	
-	public void saveAssetDetails(JSONObject jsonObj,User user,OrgLocations orgLocations,MultipartHttpServletRequest request) throws Exception;
+	public void saveAssetDetails(JSONObject jsonObj,String assetId, User user,OrgLocations orgLocations,MultipartHttpServletRequest request) throws Exception;
 }

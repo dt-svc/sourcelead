@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssetDao;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
@@ -108,10 +109,17 @@ public class AssetServiceImpl implements AssetService{
 	
 	
 	@Override
-	public void saveAssetDetails(JSONObject jsonObj, User user, OrgLocations orgLocations,
+	public void saveAssetDetails(JSONObject jsonObj,String assetId, User user, OrgLocations orgLocations,
 			MultipartHttpServletRequest request) throws Exception {
 		
-		Asset asset = new Asset();
+		Asset asset ;
+		if(assetId != null && !"".equals(assetId)){
+			asset = assetDao.getAssetById(Long.parseLong(assetId));
+		}else{
+			asset = new Asset();
+			asset.setCreatedBy(user.getUserCode());
+			asset.setCreatedDate(new Date());
+		}
 		
 		 if(jsonObj.has("sno") && !isNullOrEmpty(jsonObj.getString("sno"))){
 			 asset.setSlno(jsonObj.getString("sno"));
@@ -186,7 +194,11 @@ public class AssetServiceImpl implements AssetService{
 		 	       }catch (Exception e) {
 		     	      	 e.printStackTrace();
 		 			    }
-		         }
+	         }else if(jsonObj.has("generalExisitingFile") && jsonObj.getString("generalExisitingFile").equalsIgnoreCase("")){
+	        	 asset.setFileContentType(null);
+	     		 asset.setDocFile(null);
+	     		 asset.setFileName(null);
+	         }
 	       
 	       
 	        MultipartFile multiFile1 = (MultipartFile)files.get("uploadBtn-dskA");
@@ -199,7 +211,11 @@ public class AssetServiceImpl implements AssetService{
 		 	       }catch (Exception e) {
 		     	      	 e.printStackTrace();
 		 			    }
-		         }
+		     }else if(jsonObj.has("shiftAExisitngFile") && jsonObj.getString("shiftAExisitngFile").equalsIgnoreCase("")){
+	        	 asset.setShiftAFileContentType(null);
+	     		 asset.setShiftADocFile(null);
+	     		 asset.setShiftAFileName(null);
+	         }
 	       
 	        
 	        MultipartFile multiFile2 = (MultipartFile)files.get("uploadBtn-dskB");
@@ -212,15 +228,17 @@ public class AssetServiceImpl implements AssetService{
 			 	       }catch (Exception e) {
 			     	      	 e.printStackTrace();
 			 			    }
-			         }
+			    }else if(jsonObj.has("shiftBExisitngFile") && jsonObj.getString("shiftBExisitngFile").equalsIgnoreCase("")){
+		        	 asset.setShiftBFileContentType(null);
+		     		 asset.setShiftBDocFile(null);
+		     		 asset.setShiftBFileName(null);
+		         }
 	       
 		 
 		 asset.setOrgLocations(orgLocations);
-		 asset.setCreatedBy(user.getUserCode());
-		 asset.setCreatedDate(new Date());
 		 asset.setUpdatedBy(user.getUserCode());
 		 asset.setUpdatedDate(new Date());
-		 asset.setStatus(1);
+		 asset.setStatus(Constants.RECORD_ACTIVE);
 		 
 		 assetDao.saveAsset(asset);		 
 	}
