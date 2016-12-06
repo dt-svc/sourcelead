@@ -102,11 +102,11 @@ public class ProjectsRestController {
 		   
 		    String json1 = "{"+json+"}";
 		    JSONObject jsonObj = new JSONObject(json1);
-		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	/*OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-		    String outPut =  projectsService.storeProject(jsonObj,user,loginOrgLocation,loginOrgCode);
-		    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Successfully you have created a project");
+		 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");*/
+		    String outPut =  projectsService.storeProject(jsonObj);
+/*		    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Successfully you have created a project");*/
 		    return outPut;		
 			 
 	   }

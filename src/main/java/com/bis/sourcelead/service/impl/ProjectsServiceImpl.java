@@ -251,13 +251,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 */
 	
 	@Override
-	public String storeProject(JSONObject jsonObj,User user,OrgLocations loginOrgLocation,String loginOrgCode) throws Exception {
+	public String storeProject(JSONObject jsonObj) throws Exception {
 		    
 		  
 		String resultJson = null;
-	 	/*OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");*/
+	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 	 	String pattern = "yyyy-MM-dd";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
 	 	
@@ -320,12 +320,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		//prepare project task set...
 		/*tasksService.*/
-    	User user1 =  user;
-		Set<ProjectTasks>  projectTasksList = projectTasksService.prepareProjectTasksListByJson(jsonObj, user1, projects);
+    	/*User user1 = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");*/
+    	
+		Set<ProjectTasks>  projectTasksList = projectTasksService.prepareProjectTasksListByJson(jsonObj, request, projects);
 		projects.setProjectTasks(projectTasksList);
 		//prepare projectmembers list...
 		
-		Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,user, projects);
+		Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
 		projects.setProjectMembers(projectMemberList);
 		
 		Projects updatedProjects = saveProject(projects);
@@ -402,6 +403,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 				}
 			}
 		}
+		 
+	  SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Successfully you have created a project");
 	  return "projectDashboard";
 		 
 		
@@ -1090,11 +1093,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 	  * @return value is Project pojo
 	  * @throws Exception
 	  */
-	
-	/**
-	 * @author shivayogi. 
-	 * @Description : this is duplicate method, this method is not used anywhere.This method is same as storeProject() .
-	 */
 	@Override
 	public String saveProjectByUserOrgLocationsJson(User user, OrgLocations loginOrgLocation, String loginOrgCode,
 			JSONObject jsonObj) throws Exception {

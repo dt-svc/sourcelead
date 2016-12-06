@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -117,7 +118,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	}
 
 	@Override
-	public Set<ProjectTasks> prepareProjectTasksListByJson(JSONObject jsonObj, HttpServletRequest request,
+	public Set<ProjectTasks> prepareProjectTasksListByJson(JSONObject jsonObj,  HttpServletRequest request,
 			Projects projects) throws Exception {
 		 
 		    HashSet<ProjectTasks> projectTasksList = new HashSet<ProjectTasks>(); 
@@ -143,7 +144,5 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		    		  
 		
 	}
-
-	
 
 }
