@@ -61,6 +61,7 @@
            <div role="dialog" id="addTeam" class="modal fade">
              <div class="modal-dialog">
                <div class="modal-content" id="newEmployee">
+						
                 <form name="employee_form" id="employee_form" method="post">
                   <div class="modal-header">
                     <button data-dismiss="modal" class="close" type="button">X</button>
@@ -175,6 +176,9 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     		result = result	+ '</span>';
     		result = result + '		</div>';
     		result = result + '        <div class="project_tabs_inn_table">';
+    		result = result + ' <div class="success_pop" id="selector3" style="display: none;">';
+    		result = result + ' <i class="fa fa-check-circle"></i><span id="docMsgDiv3"></span>';
+    		result = result + ' </div>';
     	    result = result + '        <div id="employeesLoadingImg"></div>';
     		if(json.projectMembersList.length!=null && json.projectMembersList.length!=''){
     	    result = result + '	<table id="projectEmployeePagination" class="display" cellspacing="0" width="100%">';
@@ -406,7 +410,11 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
    		    success: function(data) {
    		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
+   				$("#selector3").removeAttr("style");
+ 				$("#selector3").css({ display: "block" });
+ 				$("#docMsgDiv3").html("Project deleted");
    			 	projectEmployee(projectId,startDateStr,endDateStr,status);
+   			 docMsgFadein3();
    		    }
 	     }); 
 		}
@@ -844,3 +852,9 @@ function flushReProject(){
 	$('#assignProjectDiv').find('p.jquery_form_error_message').remove();
 }
 </script>
+<script>
+	function docMsgFadein3() {
+		$("#selector3").fadeIn(200);
+        $('#selector3').delay(2000).fadeOut('slow');
+	}
+</script> 
