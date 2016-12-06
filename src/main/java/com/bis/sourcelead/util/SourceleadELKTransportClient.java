@@ -3,30 +3,27 @@ package com.bis.sourcelead.util;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
-
-import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.springframework.stereotype.Component;
 
 /**
  * @purpose:Elastic Search Transport Client Configuration
  * @author: Naresh Bolisetty
  * @date: 06-December-2016
  */
-@Configuration
-@PropertySource("${propertyLocation:app.properties}")
-public class SourceleadESTransportClient {
-
+@Component
+public class SourceleadELKTransportClient {
+    private static final Logger logger = LoggerFactory.getLogger(SourceleadELKTransportClient.class);
+   
     private TransportClient client;
-	@Autowired
-	private Environment env;
+   
     
     @Value("${elk.cluster}")
 	private String cluster;
@@ -44,19 +41,17 @@ public class SourceleadESTransportClient {
      * Default constructor, initializing the transport client.
      * @throws UnknownHostException 
      */
-    public SourceleadESTransportClient() {
-	  final  Settings settings = Settings.settingsBuilder()
-              .put("cluster.name", "sourcelead")
-              .put("node.name", "sourcelead_node")
-      		  .put("path.home", "/home/sourcelead_es")
-		    /* .put("cluster.name", cluster)
-              .put("node.name", node)
-      		  .put("path.home", path)*/
-              .build();
-	       try {
+    public SourceleadELKTransportClient() {
+	     try {
+	    	 final  Settings settings = Settings.settingsBuilder()
+	    			  .put("cluster.name", "sourcelead")
+	                  .put("node.name", "sourcelead_node")
+	         		  .put("path.home", "/home/sourcelead_es")
+	                  .build();
 			client = TransportClient.builder().settings(settings).build().
 			      addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300));
-		} catch (UnknownHostException e) {
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}
     }
 
@@ -72,8 +67,4 @@ public class SourceleadESTransportClient {
 	client.close();
 	client = null;
     }
-
-	public void setEnv(Environment env) {
-		this.env = env;
-	}
 }

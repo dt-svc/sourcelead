@@ -17,19 +17,19 @@ public  class SourceleadELKBaseIndexer<T> {
 	private static final Logger logger = LoggerFactory.getLogger(SourceleadELKBaseIndexer.class);
 	
 	@Autowired
-	SourceleadESTransportClient sourceleadESTransportClient;
+	SourceleadELKTransportClient sourceleadELKTransportClient;
 	
 	public void saveElkDocument(T entityClass,String index,String type) {
 		String candidateJson = null;
 		try {
 			candidateJson = toJSON(entityClass);
-		    sourceleadESTransportClient.getClient().prepareIndex(index, type)
+			sourceleadELKTransportClient.getClient().prepareIndex(index, type)
 			    .setSource(candidateJson).execute().actionGet();
 		    logger.info(type+" has been indexed.");
 		} catch (Exception e) {
 			logger.error(type+" could not be serialized. ");
 		}
-		sourceleadESTransportClient.shutdown();
+		sourceleadELKTransportClient.shutdown();
     }
 	
 	 public String toJSON(Object obj){
