@@ -111,8 +111,8 @@ overflow-x: auto;
 		                     <a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportVendor</a>
 			                    <div class="export_pop">
 				                <ul>
-				                <li onclick="exportVendorToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>
-				                <li onclick="exportVendorToExcel();">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>
+				                <li onclick="exportVendorToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp; PDF </li>
+				                <li onclick="exportVendorToExcel();"><i class="fa fa-file-excel-o"></i> &nbsp;&nbsp; Excel</li>
 				       </ul>
 				    </div>
 		            </li> 
@@ -123,8 +123,8 @@ overflow-x: auto;
 		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportContact</a>
 			                    <div class="export_pop">
 				                <ul>
-				                <li onclick="exportVendorContactToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>
-				                <li onclick="exportVendorContactToExcel();">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>
+				                <li onclick="exportVendorContactToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp; PDF</li>
+				                <li onclick="exportVendorContactToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp; Excel</li>
 				       </ul>
 				    </div>
 		            </li> 
@@ -134,6 +134,9 @@ overflow-x: auto;
             <div class="clearfix"></div>
         </div>
     <div class="clients_wrap_table">
+	    <input type="hidden" name="emptyVendorcontactList" id="emptyVendorcontactList">
+	    <input type="hidden" name="emptyVendorList" id="emptyVendorList">
+    
     	<table id="vendorList" class="display" cellspacing="0" width="100%"> </table>
     	<table id="vendorContactList" class="display" cellspacing="0" width="100%"> </table> 
    </div>	
@@ -253,6 +256,7 @@ function getVendorLists(){
    	        	result = result +'</tbody>';
    	    	    $("#vendorList").empty();  
    	    	    $("#vendorList").append(result)
+   	    	    $("#emptyVendorList").val(json.length)
    	    	    pagination1();
    	    	    
    		    }
@@ -435,6 +439,7 @@ function getVendorContactLists(){
    	        	result = result +'</tbody>';
    	    	    $("#vendorContactList").empty();  
    	    	    $("#vendorContactList").append(result)
+   	    	    $("#emptyVendorcontactList").val(json.length);
    	    	    pagination(); 
    	    	    
    		    }
@@ -1134,7 +1139,22 @@ function exportVendorToPdf(){
 			values.push($(this).val());
     });
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/exportVendorDetails?${_csrf.parameterName}=${_csrf.token}&values="+values+"&exportType=pdf";
+	var emptyVendorList  = $("#emptyVendorList").val()
+	if(emptyVendorList > 0 ){
+		window.location.href = sourceleadUrl+"/exportVendorDetails?${_csrf.parameterName}=${_csrf.token}&values="+values+"&exportType=pdf";	
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Vendor List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#client_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+	
 }
 </script>
 
@@ -1146,7 +1166,21 @@ function exportVendorToExcel(){
 			values.push($(this).val());
     });
 	var sourceleadUrl ='${sourceleadUrl}';
+	var emptyVendorList  = $("#emptyVendorList").val()
+	if(emptyVendorList > 0 ){
 	window.location.href = sourceleadUrl+"/exportVendorDetails?${_csrf.parameterName}=${_csrf.token}&values="+values+"&exportType=xls";
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Vendor List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#client_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
 }
 </script>
 
@@ -1170,8 +1204,21 @@ function exportVendorContactToPdf(){
     });
 	
 	var sourceleadUrl ='${sourceleadUrl}';
-	
+	var emptyVendorcontactList = $("#emptyVendorcontactList").val();
+	if(emptyVendorcontactList  > 0 ){
 	window.location.href = sourceleadUrl+"/exportVendorContactLists?${_csrf.parameterName}=${_csrf.token}&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus+"&exportType=pdf";
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Vendor Contacts List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#client_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
 }
 </script>
 
@@ -1193,9 +1240,21 @@ function exportVendorContactToExcel(){
     {
 		invitationStatus.push($(this).val());
     });
-	
+	var emptyVendorcontactList = $("#emptyVendorcontactList").val();
 	var sourceleadUrl ='${sourceleadUrl}';
-	
-	window.location.href = sourceleadUrl+"/exportVendorContactLists?${_csrf.parameterName}=${_csrf.token}&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus+"&exportType=xls";
+	if(emptyVendorcontactList  > 0 ){
+		window.location.href = sourceleadUrl+"/exportVendorContactLists?${_csrf.parameterName}=${_csrf.token}&vendorId="+vendorId+"&vendorStatus="+vendorStatus+"&invitationStatus="+invitationStatus+"&exportType=xls";	
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Vendor Contacts List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#client_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
 }
 </script>
