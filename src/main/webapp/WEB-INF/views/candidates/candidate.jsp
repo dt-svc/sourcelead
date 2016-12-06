@@ -414,6 +414,17 @@
 		 $('#rateType').attr("data-validation-optional","true"); 
 		 }
 		 
+		 
+		 var currentRate = document.getElementById("currentRate").value; 
+			 if(currentRate != null && currentRate != ""){
+				
+				 $('#currentRateType').removeAttr('data-validation-optional');
+				 $('#currentRateType').attr("data-validation","required"); 
+			 }else{
+			 $('#currentRateType').removeAttr('data-validation');
+			 $('#currentRateType').attr("data-validation-optional","true"); 
+			 }
+		 
 		
 		var validationSettings = {
 				errorMessagePosition : 'element',

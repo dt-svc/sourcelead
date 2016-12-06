@@ -4701,6 +4701,16 @@ import-tranhd  [class*="col-md-"]{
 }
 /*clients tab header custom 2nd dec */
 
+.select-field .selct-picker {
+	width:80px;
+	color:#fff;
+	background-image:url("../images/arrow-w.png");
+	background-repeat:no-repeat;
+	background-position:90% center;
+	background-color:#337ab7;
+	background-size:8px;
+	}
+
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {
