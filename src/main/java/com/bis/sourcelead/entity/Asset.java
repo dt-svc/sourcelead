@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -137,6 +138,9 @@ public class Asset implements Serializable{
 	
 	@Transient 
 	private String categoryName;
+	
+	@Transient 
+	private List<Employees> employeesList;
 
 	public Long getId() {
 		return id;
@@ -397,4 +401,11 @@ public class Asset implements Serializable{
 		this.categoryName = categoryName;
 	}
 
+	public List<Employees> getEmployeesList() {
+		return employeesList;
+	}
+
+	public void setEmployeesList(List<Employees> employeesList) {
+		this.employeesList = employeesList;
+	}
 }
