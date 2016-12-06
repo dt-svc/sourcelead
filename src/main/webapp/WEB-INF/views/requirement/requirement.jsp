@@ -127,6 +127,34 @@ $(document).ready(function() {
 		$(document).ready(function() {
 			document.getElementById("requirement_form").reset();
 			getIsClientVal();
+			var requirementStatus = '${requirement.requirementSubmissionStatus}';
+			if(requirementStatus == "OPEN" ||  requirementStatus == "ONHOLD"){
+				$(function() {
+				    enable_cb();
+				    $("#apprverReq").click(enable_cb);
+				    $("#parallelapprovers").click(enable_cb);
+				    $("#seqentialApprovers").click(enable_cb);
+				});
+				function enable_cb() {
+					$("#parallelApprover").prop('disabled', true).trigger('chosen:updated');
+				    $("#parallelApprover").off('click');
+				    
+					$('#apprverReq').prop("disabled", !this.checked);
+					$('#parallelapprovers').prop("disabled", !this.checked);
+					$('#seqentialApprovers').prop("disabled", !this.checked);
+					$('#sequentialApprover1').attr("data-validation-optional","true"); 
+					$('#sequentialApprover2').attr("data-validation-optional","true"); 
+					$('#parallelApprover').attr("data-validation-optional","true"); 
+					
+				}
+				
+			}else{
+				$('#apprverReq').removeAttr("disabled");
+				$('#parallelapprovers').removeAttr("disabled")
+				$('#seqentialApprovers').removeAttr("disabled")
+				
+				
+			}
 		});
 </script>
 
@@ -386,6 +414,8 @@ $(document).ready(function () {
                 </select>
               </div>
             </div>
+            
+            
          
           <div class="form-group">
             <input type="hidden" name="templateId" id="templateId" value="" />
@@ -424,7 +454,7 @@ $(document).ready(function () {
       </div>
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
-	        <c:if test="${(SourceLeadWeb_org.vms == 'Y' && SourceLeadWeb_org.ats == 'Y') || (SourceLeadWeb_org.vms != 'Y')}">
+	        <c:if test="${(SourceLeadWeb_vms == 'Y' && SourceLeadWeb_ats == 'Y') || (SourceLeadWeb_vms != 'Y')}">
 	        	<div class="ml">
 		            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 		            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
@@ -578,18 +608,25 @@ $(document).ready(function () {
                 <div class="ml">
                 
                 <div class="pull-left">
-                <input type="checkbox" name="cd" id="apprverReq" onClick="approvalType('Default');" checked>
-                <label>&nbsp;&nbsp;<strong>Approver required</strong></label>
+                
+                <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
+                	<input type="checkbox"    name="cd" id="apprverReq"   readonly checked >
+                </c:if>
+                	
+                <c:if test="${requirement.requirementSubmissionStatus != 'OPEN'  &&  requirement.requirementSubmissionStatus != 'ONHOLD'}">
+                	<input type="checkbox" name="cd" id="apprverReq"  onClick="approvalType('Default');removeApprovers();" checked >
+                </c:if>
+               		 <label>&nbsp;&nbsp;<strong>Approver required</strong></label>
                 </div>
                 
                 <!-- Radio buttons for Sequential or Parallel function -->
                 <div  class="ml pull-left apprverReq" style="display:none;">
                 <label class="rad" id="parallel">
-                <input type="radio" name="approver"  checked="checked" onClick="approvalType('Parallel');">
+                <input type="radio" name="approver" id="parallelapprovers" checked="checked" onClick="approvalType('Parallel');">
                 <i class="fa fa-align-center" data-placement="top" data-toggle="tooltip"  title="Parallel"></i>
                 </label>
                 <label class="rad" id="sequential">
-                <input type="radio" name="approver" onClick="approvalType('Sequential');">
+                <input type="radio" name="approver" id="seqentialApprovers"  onClick="approvalType('Sequential');">
                 <i class="fa fa-retweet" data-placement="top" data-toggle="tooltip" title="Sequential"></i>
                 </label>
                 
@@ -618,10 +655,18 @@ $(document).ready(function () {
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
                     <select multiple class="chosen-select form-control" id="parallelApprover" name="parallelApprover" field-name="Approver" data-validation="required" data-validation-optional="true">
+                       <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
                        <option disabled>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
-		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+		                    <option value="${report.id}" disabled="disabled"  >${report.firstName}&nbsp;${report.lastName}</option>
 		               </c:forEach>
+		               </c:if>
+		               <c:if test="${requirement.requirementSubmissionStatus != 'OPEN' &&  requirement.requirementSubmissionStatus != 'ONHOLD'}">
+                       <option disabled>Select Approver</option>
+                       <c:forEach var="report" items="${approverList}">
+		                    <option value="${report.id}"   >${report.firstName}&nbsp;${report.lastName}</option>
+		               </c:forEach>
+		               </c:if>
                     </select>
                 </div>
          </div>
@@ -631,10 +676,18 @@ $(document).ready(function () {
                 <label class="col-md-3">Approver1<span class="text-danger">*</span></label>
                 <div class="col-md-9">   
                     <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required" data-validation-optional="true" onchange="getLevel2Approvers();">
-                       <option value="">Select Approver</option>
-                       <c:forEach var="report" items="${approverList}">
-		                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
-		               </c:forEach>
+                        <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
+	                       <option disabled>Select Approver</option>
+	                       <c:forEach var="report" items="${approverList}">
+			                    <option value="${report.id}"    disabled="disabled">${report.firstName}&nbsp;${report.lastName}</option>
+			               </c:forEach>
+		               </c:if>
+		               <c:if test="${requirement.requirementSubmissionStatus != 'OPEN' &&  requirement.requirementSubmissionStatus != 'ONHOLD'}">
+	                       <option disabled>Select Approver</option>
+	                       <c:forEach var="report" items="${approverList}">
+			                    <option value="${report.id}"    >${report.firstName}&nbsp;${report.lastName}</option>
+			               </c:forEach>
+		               </c:if>
                     </select>
                     <!-- <span onClick="addLvl();"><i class="fa fa-level-down btn btn-default formic1" data-toggle="tooltip" data-placement="left" title="Add Level"></i></span> -->
                 </div>
@@ -642,10 +695,18 @@ $(document).ready(function () {
 	            <label class="col-md-3 mt">Approver2<span class="text-danger">*</span></label>
 	            <div class="col-md-9 mt">
 	              		<select   class="chosen-select form-control" id="sequentialApprover2" name="sequentialApprover2" field-name="Approver 2" data-validation="required" data-validation-optional="true">
-	                       <option value="">Select Approver</option>
+                       <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
+	                       <option disabled>Select Approver</option>
 	                       <c:forEach var="report" items="${approverList}">
-			                    <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>
+			                    <option value="${report.id}" disabled="disabled"   >${report.firstName}&nbsp;${report.lastName}</option>
 			               </c:forEach>
+		               </c:if>
+		               <c:if test="${requirement.requirementSubmissionStatus != 'OPEN' &&  requirement.requirementSubmissionStatus != 'ONHOLD'}">
+	                       <option disabled>Select Approver</option>
+	                       <c:forEach var="report" items="${approverList}">
+			                    <option value="${report.id}"    >${report.firstName}&nbsp;${report.lastName}</option>
+			               </c:forEach>
+		               </c:if>
 	                    </select>
 	              </div>
               
@@ -1424,8 +1485,29 @@ function addLvl(){
 
 </script> 
 
+
+<!-- This Method used to remove the  selected Approvers values  when  the approval mechanism is unchecked-->
+
+<script>
+function removeApprovers(){
+	
+	$('#parallelApprover').val('');
+	$('#parallelApprover').trigger('chosen:updated');
+	
+	$('#sequentialApprover1').val('');
+	$('#sequentialApprover1').trigger('chosen:updated');
+	
+	$('#sequentialApprover2').val('');
+	$('#sequentialApprover2').trigger('chosen:updated');
+	
+	
+	
+}
+</script> 
+
 <script>
 function approvalType(type){
+	
 	    if($("#apprverReq").is(':checked')){
 	    	
 	    	$("#parallelApprover").val('');
@@ -1822,6 +1904,8 @@ function getTeamMembers(){
 
 <script>
 function getIsClientVal(){
+$("#selectContact").empty().trigger('chosen:updated');
+$("#clientSubmissionForm").empty().trigger('chosen:updated');
 var existingValue = document.getElementById('isClientJob').value;
 
 	if (document.getElementById('isClientJob').checked){
@@ -1830,10 +1914,10 @@ var existingValue = document.getElementById('isClientJob').value;
 		 $("#addClientId").val('');
 		 $('#addClientId').trigger("chosen:updated");
 		 
-		 $("#selectContact").val('');
-		 $('#selectContact').trigger("chosen:updated");
+		 $("#selectContact").find('.chosen-results').val('').trigger('chosen:updated');
+		
 		 
-		 $('select[name=clientCurrencyCode]').val(1);
+		 $('select[name=clientCurrencyCodgetIsClientVale]').val(1);
 		 $('.selectpicker').selectpicker('refresh');
 		 
 		 $('#clientRate').val('');
@@ -1846,6 +1930,24 @@ var existingValue = document.getElementById('isClientJob').value;
 		 existingValue = document.getElementById('isClientJob').value;
 	}else {
 		 $("#isClientJob").val('N');
+		 
+		 $("#addClientId").val('');
+		 $('#addClientId').trigger("chosen:updated");
+		 
+		 $("#selectContact").find('.chosen-results').val('').trigger('chosen:updated');
+		
+		 
+		 $('select[name=clientCurrencyCodgetIsClientVale]').val(1);
+		 $('.selectpicker').selectpicker('refresh');
+		 
+		 $('#clientRate').val('');
+		 
+		 $('select[name=clientRateType]').val(1);
+		 $('.selectpicker').selectpicker('refresh');
+		 
+		 $("#clientSubmissionForm").val('');
+		 $('#clientSubmissionForm').trigger("chosen:updated");
+		 
 		 existingValue = document.getElementById('isClientJob').value;
 		 
     // Adding the Internal  Submission Form  as we are Unselecting the Client

@@ -28,7 +28,7 @@ $(document).ready(function(){
   <div class="pull-left">
     <h2>Asset Management</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Assetmanagement</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Asset Management</div>
 </section>
 <div class="timesheet_out">
   <div class="vendor_wrap">
@@ -126,11 +126,11 @@ $(document).ready(function(){
                 </div>
                 <div class="clearfix mb10">
                   <div class="col-md-6" id="attachmentDiv">
-                    <div class="input-group" >
+                    <div class="input-group attachfile-error" >
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                         <input type="file" name="attachment" id="attachment"  class="hidden upload">
                         </b> </label>
-                      <input type="text" class="form-control" name="attachment" readonly id="uploadFileAttachment" placeholder="Files are not selected...">
+                      <input type="text" class="form-control" name="attachment" data-validation-optional="true" data-validation="validatedoc" readonly id="uploadFileAttachment" placeholder="Files are not selected...">
                     </div>
                   </div>
                   <div class="col-md-6" id="descriptionDiv">
@@ -152,11 +152,11 @@ $(document).ready(function(){
                     </select>
                   </div>
                   <div class="col-md-6" id="uploadFile-dskBDiv">
-                    <div class="input-group">
+                    <div class="input-group attachfile-error">
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                         <input type="file" name="uploadBtn-dskA" id="uploadBtn-dskA"  class="hidden upload">
                         </b> </label>
-                      <input type="text"  class="form-control" name="shiftAAttachment" readonly id="uploadFileShiftA" placeholder="Files are not selected...">
+                      <input type="text"  class="form-control" data-validation-optional="true" data-validation="validatedoc" name="shiftAAttachment" readonly id="uploadFileShiftA" placeholder="Files are not selected...">
                     </div>
                   </div>
                 </div>
@@ -178,11 +178,11 @@ $(document).ready(function(){
                     </select>
                   </div>
                   <div class="col-md-6">
-                    <div class="input-group">
+                    <div class="input-group attachfile-error">
                       <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                          <input type="file" name="uploadBtn-dskB" id="uploadBtn-dskB"  class="hidden upload">
                         </b> </label>
-                      <input type="text"  class="form-control"  name="shiftBAttachment" readonly id="uploadFileShiftB" placeholder="Files are not selected...">
+                      <input type="text"  class="form-control" data-validation-optional="true" data-validation="validatedoc" name="shiftBAttachment" readonly id="uploadFileShiftB" placeholder="Files are not selected...">
                     </div>
                   </div>
                 </div>
@@ -869,17 +869,7 @@ $(".addcon-pop").click(function(){
     	var sizeinbytes = document.getElementById('attachment').files[0].size;
         
         var extension = uploadedFile.substring(uploadedFile.lastIndexOf(".")+1).toLowerCase();
-        if(extension != 'pdf'){
-     		
-           $("input#attachment").after("<p class='jquery_form_error_message'>");
-       	   document.getElementById("attachment").setAttribute('record-exist', 'yes');
-       	   document.getElementById("attachment").setAttribute('record-exist-errorMsg',"Invalid file Format. Only pdf are allowed.");
-       	   $("#addAsset_form").click(function() {
-     		if ($(this).validate(false, validationSettings)) {
-     		}
-     	});
-        	
-        }else if(sizeinbytes > 500000){
+       if(sizeinbytes > 500000){
         	 $("input#attachment").after("<p class='jquery_form_error_message'>");
          	   document.getElementById("attachment").setAttribute('record-exist', 'yes');
          	   document.getElementById("attachment").setAttribute('record-exist-errorMsg',"Invalid file size. Should less than 500 kb.");
@@ -907,18 +897,7 @@ $(".addcon-pop").click(function(){
     if(uploadedFile){
     var sizeinbytes = document.getElementById('uploadBtn-dskA').files[0].size;
     
-    var extension = uploadedFile.substring(uploadedFile.lastIndexOf(".")+1).toLowerCase();
-    if(extension != 'pdf'){
- 		
-       $("input#uploadBtn-dskA").after("<p class='jquery_form_error_message'>");
-   	   document.getElementById("uploadBtn-dskA").setAttribute('record-exist', 'yes');
-   	   document.getElementById("uploadBtn-dskA").setAttribute('record-exist-errorMsg',"Invalid file Format. Only pdf are allowed.");
-   	   $("#addAsset_form").click(function() {
- 		if ($(this).validate(false, validationSettings)) {
- 		}
- 	});
-    	
-    }else if(sizeinbytes > 500000){
+    if(sizeinbytes > 500000){
     	 $("input#uploadBtn-dskA").after("<p class='jquery_form_error_message'>");
      	   document.getElementById("uploadBtn-dskA").setAttribute('record-exist', 'yes');
      	   document.getElementById("uploadBtn-dskA").setAttribute('record-exist-errorMsg',"Invalid file size. Should less than 500 kb.");
@@ -945,18 +924,7 @@ $(".addcon-pop").click(function(){
     if(uploadedFile){
     var sizeinbytes = document.getElementById('uploadBtn-dskB').files[0].size;
     
-    var extension = uploadedFile.substring(uploadedFile.lastIndexOf(".")+1).toLowerCase();
-    if(extension != 'pdf'){
- 		
-       $("input#uploadBtn-dskB").after("<p class='jquery_form_error_message'>");
-   	   document.getElementById("uploadBtn-dskB").setAttribute('record-exist', 'yes');
-   	   document.getElementById("uploadBtn-dskB").setAttribute('record-exist-errorMsg',"Invalid file Format. Only pdf are allowed.");
-   	   $("#addAsset_form").click(function() {
- 		if ($(this).validate(false, validationSettings)) {
- 		}
- 	});
-    	
-    }else if(sizeinbytes > 500000){
+     if(sizeinbytes > 500000){
     	 $("input#uploadBtn-dskB").after("<p class='jquery_form_error_message'>");
      	   document.getElementById("uploadBtn-dskB").setAttribute('record-exist', 'yes');
      	   document.getElementById("uploadBtn-dskB").setAttribute('record-exist-errorMsg',"Invalid file size. Should less than 500 kb.");

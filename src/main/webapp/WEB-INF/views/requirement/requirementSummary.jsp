@@ -821,14 +821,14 @@ function requirementDetails(requirementId){
 				            }else{
 				            	for (var i=0; i<json.approverNames.length; i++)
 				   				{
-				            		var level = 1;
+				            		var level = 2;
 					            	for (var i=0; i<json.approverNames.length; i++)
 					   				{
 					            		result = result +'<div class="require_wrap_details_cta"> <b>Approvers '+level+':</b> <span>'; 
 					            		result = result +json.approverNames[i];
 					            		result = result +'</span>';
 					            		result = result +'</div>';
-					            		level = level+1;
+					            		level = level-1;
 					   				}
 					            	
 				   				}
@@ -861,6 +861,8 @@ function requirementDetails(requirementId){
 							$("#tab-1").empty();
 							$("#tab-2").empty();
 							$("#tab-3").empty();
+							$("#status-div").empty();
+						    $("#status-data").empty();
 							$("#tab-1").append(result); 
 							
 							assignedMemberList(requirementId);
@@ -1479,6 +1481,8 @@ function requirementRecommendations(requirementId){
 		    $("#tab-1").empty();
 			$("#tab-2").empty(); 
 		    $("#tab-3").empty();
+		    $("#status-div").empty();
+		    $("#status-data").empty();
 			$("#tab-3").append(result); 
 			recommendationpagination();
 			$("#tab-3").show();

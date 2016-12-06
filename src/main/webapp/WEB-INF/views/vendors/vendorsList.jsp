@@ -24,6 +24,11 @@ overflow-x: auto;
     <!-- Content Area -->
       <section class="content-wraper">
         <section class="content-header clearfix">
+        <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
           <div class="pull-left">
             <h2>Vendors<span class="select-fild">
                 	<select id="listOfVendors" onchange="listChange(this);">
@@ -43,14 +48,14 @@ overflow-x: auto;
 <div class="timesheet_out">
 
 <div class="vendor_wrap">
-	<div class="timesheet_head datatbl-filters">
+	<div class="timesheet_head datatbl-filters customtimesheet-head">
         	<ul>
         	
         	<li id="vendorsList" ><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
 		                	<div id="filter1ApprovedPop" class="approved_pop">
 		                    	<ul>
 		                    	  <c:forEach var="report" items="${vendor_list}">  
-		                        	<li><input  id="vendorName${report.id}" name="vendorNameById" value ="${report.id}"  onclick="getVendorContactLists();"  type="checkbox"><label>${report.clientName}</label></li>
+		                        	<li><input  id="vendorName${report.id}" name="vendorNameById" value ="${report.id}"  onclick="getVendorContactLists();"  type="checkbox"><label title="${report.clientName}">${report.clientName}</label></li>
 								  </c:forEach>
 		                        </ul>
 		                    </div>                	
@@ -693,7 +698,7 @@ function pagination1(){
 		  '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
 		   			result = result	+ '<li class="current"><a href="#tab-1" id="spocDetailsId" onClick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+');">Details</a></li>';
 		   '</sec:authorize>';
-		 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT_DOCUMENT\")">';
+		 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_DOCUMENT\")">';
 		  result = result + '<li><a href="#tab-2" onClick="vendorSpocDocuments('+orgRelationId+','+spocLocationId+',\''+spocName+'\','+userId+');">Documents</a></li>';
 		'</sec:authorize>';
 		/* result = result + '<li><a href="#tab-3">Activity</a></li>';  */

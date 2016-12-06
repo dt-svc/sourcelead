@@ -12,8 +12,6 @@
 <script>
 	function projectDetails(projectId) {
 		var sourceleadUrl = '${sourceleadUrl}';
-	
-
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+ projectId,
@@ -91,8 +89,7 @@
 						result = result	+ '</span><div class="clearfix"></div>';
 						result = result + '	</div>';
 
-						if (json.manager2 != null && json.manager2 != ""
-								&& json.manager2 != "undefined") {
+						if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") {
 							result = result	+ '<div class="project_details_cta">';
 							result = result	+ '	<strong>Manager 2:</strong><span>';
 
@@ -245,6 +242,12 @@
 						result = result + '</div>';
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '	<label>Manager 1</label>';
+						result = result + '<div class="row">';
+						/* if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") {  */
+							result = result + '<div class="col-md-12" id="levelone-select">';
+						/* }else{
+							result = result + '<div class="col-md-9" id="levelone-select">';	
+						} */
 						result = result	+ '<select onchange="getLevel2Approvers('+json.manager2+ ');" id="level1Manager" name="level1Manager" >';
 						for (var j = 0; j < json.managersList.length; j++) {
 							var manager = json.managersList[j];
@@ -257,10 +260,20 @@
 						}
 						result = result + '</select>';
 						result = result + '</div>';
+					/* 	if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
+						result = result + '<div class="col-md-2" id="leveltwo-btn" style="display:none">';
+						result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();">Add Level-II</span>';
+						result = result + '</div>';
+						}else{
+							result = result + '<div class="col-md-2" id="leveltwo-btn" style="display:block">';
+							result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();">Add Level-II</span>';
+							result = result + '</div>';
+						} */
+						result = result + '</div>';
+						
+						result = result + '</div>';
 
-						if (json.manager2 != null && json.manager2 != ""
-								&& json.manager2 != "undefined") {
-
+						 if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
 							result = result+ '<div class="user_summary_edit_cta">';
 							result = result + '<label> Manager 2: </label>';
 							result = result	+ '<select id="level2Manager" name="level2Manager">';
@@ -277,7 +290,24 @@
 							result = result + '</select>';
 							result = result + '</div>';
 
-						}
+						}/* else{
+							result = result+ '<div class="user_summary_edit_cta" style="display:none;" id="demo">';
+							result = result + '<label> Manager 2: </label>';
+							result = result	+ '<select id="level2Manager" name="level2Manager">';
+							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
+								var manager = json.managersListwithoutManager1[j];
+								if (json.manager2 == manager.id) {
+									selected = 'selected';
+									result = result	+ "<option value="+manager.id+" "+selected+" >"+ manager.firstName + " "+ manager.lastName + "</option>";
+								} else {
+
+									result = result	+ "<option value="+manager.id+" >"+ manager.firstName + " "+ manager.lastName + "</option>";
+								}
+							}
+							result = result + '</select>';
+							result = result + '</div>';
+
+						} */
 
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '	<label>Client</label>';
@@ -542,6 +572,7 @@
 
 <script type="text/javascript">
 	function getLevel2Approvers(manager2) {
+		//$("#demo").toggle();
 		var currentApproverId = document.getElementById("level1Manager").value;
 		getChildLevel1Approvers(currentApproverId, manager2);
 	}
@@ -555,9 +586,7 @@
 				$
 						.ajax({
 							type : "POST",
-							url : sourceleadUrl
-									+ "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="
-									+ currentApproverId,
+							url : sourceleadUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId=" + currentApproverId,
 							success : function(data) {
 								var json = JSON.parse(data);
 								var output = "";
