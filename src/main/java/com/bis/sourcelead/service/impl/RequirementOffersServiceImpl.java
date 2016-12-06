@@ -877,6 +877,13 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	}
 
 
+	@Override
+	public List<RequirementOffers> getRequirementOfferSubmissionByIdAndOrgLocationId(Long submissionId, Long orgLocationId)
+			throws Exception {
+		return requirementOffersDao.getRequirementOfferSubmissionByIdAndOrgLocationId(submissionId,orgLocationId);
+	}
+
+
 
 
 }

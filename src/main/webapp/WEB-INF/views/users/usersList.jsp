@@ -20,7 +20,7 @@ window.onload = function () {
 		$(imageId).attr('src','resources/images/userprofileImg.jpg');
 	}
 </script>
-
+<input type="hidden" id="noUsers" name="noUsers"/>
 <div class="success_pop" id="mailMsg" style="display: none;">
 	<i class="fa fa-check-circle"></i><span>Invitation sent successfully</span>
 </div>
@@ -96,6 +96,7 @@ window.onload = function () {
           <div id="usersListBody"></div> 
       </div>
       <div id="usersListEmptyBody"></div>
+      <div id="popUp"></div>
       </div>
       </div>
   </section>
@@ -109,28 +110,63 @@ window.onload = function () {
   SCript is used to export user data as xls format -->    
 <script>
 function exportUserData(){
+	var userListEmpty = $("#noUsers").val();
 	var exportType = "xls";
 	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     var userRole = document.getElementById("userRole").value;
 	var searchByName = document.getElementById("searchByName").value;
 	var userState = document.getElementById("userState").value;
-	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=xls";
+	if(userListEmpty != 'nousers'){
+		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=xls";
+	}else{
+		 var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='empty_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Users List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#empty_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	}
+	
 
 }
-</script>   
+</script> 
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+  
  <!--  Rajashkar
   SCript is used to export user data as pdf format --> 
 <script>
 function exportToPdf(){
+	var userListEmpty = $("#noUsers").val();
 	var exportType = "pdf";
 	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     var userRole = document.getElementById("userRole").value;
 	var searchByName = document.getElementById("searchByName").value;
 	var userState = document.getElementById("userState").value;
+	if(userListEmpty != 'nousers'){
 	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=pdf";
-
+	}else{
+		 var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='empty_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Users List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#empty_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	}
 	
 }
 </script>
@@ -219,6 +255,7 @@ function exportToPdf(){
 				   }
 	   		    }
 	    	else{
+	    		$("#noUsers").val("nousers");
 	    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Users List is Empty</h3></div>";
 	    		$('#usersListBody').empty();
 	    		$("#loading").removeAttr("style");
