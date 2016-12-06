@@ -53,7 +53,7 @@ $(document).ready(function(){
           </div>
         </li>
         
-         <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
+         <!-- <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
           <div class="export_pop">
             <ul>
               <li><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
@@ -61,7 +61,7 @@ $(document).ready(function(){
               <li><i class="fa fa-file-word-o"></i>&nbsp;Word</li>
             </ul>
           </div>
-        </li>
+        </li> -->
        <!--  <li><i class="glyphicon glyphicon-save"></i><span>Import</span>|</li> -->
             
               
@@ -343,7 +343,9 @@ var validationSettings = {
 	  $("#harddisk").val('');
 	  $("#uploadFile-dskA").val('');
 	  $("#uploadFile-dskB").val('');
-	  
+	  $("#uploadFileAttachment").val('');
+	  $("#shiftAAttachment").val('');
+	  $("#shiftBAttachment").val('');
         
 	  
   }
