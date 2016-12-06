@@ -39,7 +39,7 @@ public class Constants {
 	public static final String STATUS = "Status";
 	public static final String OWNER = "Owner";
 	public static final String WEBSITE = "Website";
-	public static final String COUNTRY = "Country";
+	public static final String COUNTRY = "Country*";
 	public static final String SATATE = "State";
 	public static final String CITY = "City";
 	public static final String LEVEL = "Tier";
@@ -238,11 +238,15 @@ public class Constants {
 	public static String MAIL_RESEND = "Resend";
 	public static String MAIL_ACCEPTED = "Accepted";
 	public static String MAIL_REJECTED = "Rejected";
+	public static String OFFERMADE = "OFFERMADE";
+	
 	
 	public static String REQUIREMENT_STATUS = "Draft";
 	
 	public static String TEAM_ACTIVE = "1";
 	public static String TEAM_IN_ACTIVE = "0";
+	
+	public static Integer DEFAULT_CATEGORY = 0;
 
 	public static String BI_WEEKLY = "Bi-Weekly";
 	public static String SEMI_MONTHLY = "Semi-Monthly";
@@ -276,4 +280,10 @@ public class Constants {
     public static String CLIENT = "Client";
     
     public static String[] PROJECT_ASSIGNED_EMPLOYEES = {"Employee","Email id","Project Start Date","Project End Date","Approved Hours","Rejected Hours","Wiating for Approval","Saved Hours"};	
+
+    public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
+    public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
+    
+    public static String[] VENDOR_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};
+    public static String[] CLIENT_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};
 }

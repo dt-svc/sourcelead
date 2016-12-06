@@ -5,15 +5,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.net.URLConnection;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,27 +26,34 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.AmexUploadFile;
+import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.BoPaymentTypes;
+import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.UploadedFile;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AmexFileUploadService;
+import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.BoComericaTransService;
 import com.bis.sourcelead.service.BoPaymentTypesService;
 import com.bis.sourcelead.service.BoUploadedFilesService;
 import com.bis.sourcelead.service.ChaseUploadFileService;
 import com.bis.sourcelead.service.ComericaFileUploadService;
+
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UploadFileService;
+
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.validation.FileValidator;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
 public class BackOfficeController {
@@ -74,6 +80,12 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	
 	@Autowired
 	BoPaymentTypesService boPaymentTypesService;
+	
+	@Autowired
+	EmployeesService employeesService;
+	
+	@Autowired
+	AssetCategoryService assetCategoryService;
 	
 	@RequestMapping(value = "/finance")
 	public ModelAndView finance(HttpServletRequest request) throws Exception {
@@ -185,10 +197,64 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	
 	
 	@RequestMapping(value = "/assetManagement")
-	public ModelAndView assetManagement(HttpServletRequest request) {
-		
+	public ModelAndView assetManagement(HttpServletRequest request) throws Exception {
+	
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
 		ModelAndView model = new ModelAndView();
 		model.setViewName("backOffice/assetManagement");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		List<AssetCategory> assetCategoriesList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId());
+		model.addObject("assetCategoriesList", assetCategoriesList);
+		
+		List<Employees> employeesList = employeesService.getEmployeesByLocationId(orgLocations.getId());
+		model.addObject("employeesList", employeesList);
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.AssetManagement);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		
+		return model;
+		
+	}
+	
+	
+	  @RequestMapping(value = "/getAssetCategories")
+	    public String getAssetCategories(HttpServletRequest request) throws Exception {
+	    	
+	    	String resultJson = null;
+	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<AssetCategory> categoryList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId());
+	    	resultJson = toJSON(categoryList);
+			return resultJson;
+			
+		}
+	  
+	  @RequestMapping(value = "/getAssetEmployeesList")
+	    public String getAssetEmployeesList(HttpServletRequest request) throws Exception {
+	    	
+	    	String resultJson = null;
+	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    	List<Employees> employeesList = employeesService.getEmployeesByLocationId(orgLocations.getId());
+	    	resultJson = toJSON(employeesList);
+			return resultJson;
+			
+		}
+	    
+	
+	
+
+	@RequestMapping(value = "/assetCategory")
+	public ModelAndView assetCategory(HttpServletRequest request) {
+		
+		ModelAndView model = new ModelAndView();
+		model.setViewName("backOffice/assetCategory");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -228,5 +294,15 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 			response.getOutputStream().close();
 			response.getOutputStream().flush();	
 	}
+	
+	
+	private String toJSON(Object obj){
+        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+            public HierarchicalStreamWriter createWriter(Writer writer) {
+                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+            }
+        });
+        return xstream.toXML(obj);
+    }
 
 }

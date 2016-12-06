@@ -196,21 +196,25 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	                    
 	                  
 	                  result = result + '<div class="col-md-6">';
-	                  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTERVIEW\')">';
+	                  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
 	                  result  = result + '   <div id="internalInterviewsList" ></div>';
 	                  '</sec:authorize>';
 	     			  
 	     			  //Customer Interviews List
+	     			 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
 	     			  result  = result + '   <div id="customerInterviewsList" ></div>';
-	     			  
+	     			 '</sec:authorize>';
+	     			 
 	     			 //Reject Offer Popup
 	     			  result = result+'<div id="rejectOfferAlert" ></div>  ';
 	     			  
 	     			 // Offer Details
+	     			 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_OFFER\',\'ROLE_VIEW_ACCEPT_OFFER\',\'ROLE_VIEW_REJECT_OFFER\')">';
 	     			  result = result+'<div id="offerDetailsByClient" ></div>  ';
+	     			 '</sec:authorize>';
 	     			 
 	     			 //Internal Offer List
-	     			 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_OFFER\')">';
+	     			 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_OFFER\',\'ROLE_VIEW_ACCEPT_OFFER\',\'ROLE_VIEW_REJECT_OFFER\')">';
 	     			  result  = result + '   <div id="offerDetails" ></div>';
 	     			 '</sec:authorize>';
 	     			  
@@ -354,7 +358,9 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '<span id="'+report.id+'actionDiv">';
 		                    	 if(report.interviewStatus == null || report.interviewStatus == '' || report.interviewStatus =='undefined'){
 		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
+		                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Not Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
+			                    	 '</sec:authorize>';
 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Maybe\');" title="Maybe"  class="brder-int"><i class="fa fa-question-circle text-muted"></i></a>';
 		                    	 }
 	                    	 result = result + '</span>';
@@ -592,7 +598,9 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                    	 result = result + '<span id="'+report.id+'actionDiv">';
 		                    	 if(report.interviewStatus == null || report.interviewStatus == '' || report.interviewStatus =='undefined'){
 		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
+		                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Not Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
+			                    	 '</sec:authorize>';
 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Maybe\');" title="Maybe"><i class="fa fa-question-circle text-muted"></i></a>';
 		                    	 }
 	                    	 result = result + '</span>';
@@ -713,7 +721,7 @@ function getOfferDetails(submissionId){
 	                     var json = JSON.parse(data);
 	                  
    					     result = result + '<div id="accordion-sl" class="release-jobs">';
-                    	 result = result + '<h2  class="active">Offer</h2>';
+                    	 result = result + '<h2  class="active">Offer: <span>'+json.offerStatus+'</span></h2>';
                     	 result = result + '<div class="content clearfix">';
                     	 result = result + '<div class="interview-type">';
 
@@ -725,10 +733,10 @@ function getOfferDetails(submissionId){
                     	 result = result + '<div class="action-nav">';
                     	 result = result + '<span id="'+submissionId+'actionDiv">';
                     	 if(json.offerStatus != "OFFERACCEPTED"  && json.offerStatus != "OFFERREJECTED" ){
-                    		 '<sec:authorize access="hasAnyRole(\'ROLE_ACCEPT_OFFER\')">';
+                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ACCEPT_OFFER\')">';
                     		 	result = result + '<a  href="javascript:void(0)" title="Accept" onClick="acceptingOffer(\''+accept+'\' ,\''+submissionId+'\');"   ><i class="fa fa-check text-success"></i></a>';
                     		 '</sec:authorize>';
-                    		 '<sec:authorize access="hasAnyRole(\'ROLE_REJECT_OFFER\')">';
+                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REJECT_OFFER\')">';
                         	 	result = result + '<a  href="javascript:void(0)"  title="Reject"  onClick="rejectOffer( \''+reject+'\' ,\''+submissionId+'\');"  ><i class="fa fa-close text-danger"></i></a>';
                         	 '</sec:authorize>';
                         	 result = result + '<a  href="javascript:void(0)"  onClick="acceptingOffer(\''+mybe+'\',\''+submissionId+'\');"   ><i class="fa fa-question-circle text-muted"></i></a>';

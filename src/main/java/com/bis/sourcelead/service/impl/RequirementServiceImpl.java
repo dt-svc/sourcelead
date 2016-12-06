@@ -13,12 +13,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -378,7 +377,15 @@ public class RequirementServiceImpl implements RequirementService {
 					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
 				}
 				if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval")){
-					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED);
+					
+					if(requirement.getId() != null){
+							if(requirement.getRequirementSubmissionStatus().equals("OPEN")){
+								requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+							}
+					}else{
+						requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED);
+					}
+					
 				}
 				
 			}
@@ -452,37 +459,7 @@ public class RequirementServiceImpl implements RequirementService {
 								rah.setUpdatedDate(commonUtil.currentDate());
 					    }
 						  requirementApproverHierarchyList.add(rah);
-						  approverEmailScenario(user,approverUser,requirement,location,orgLocations);
-
 				  }
-
-
-			     
-			     
-				  /*for(String approver : approvers){
-					    
-					    RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
-					    User approverUser = userService.getUserById(Long.parseLong(approver));
-						User approverUserId = new User();
-						approverUserId.setId(Long.parseLong(approver));
-						rah.setApproverUserId(approverUserId);
-						  
-						rah.setRequirementId(requirement);
-						
-						rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
-						rah.setLevel(1);
-						  
-						rah.setHierarchyType(HIERARCHY_TYPE.PARALLEL);
-						rah.setCreatedDate(commonUtil.currentDate());
-						rah.setCreatedBy(user.getUserCode());
-						rah.setUpdatedBy(user.getUserCode());
-						rah.setUpdatedDate(commonUtil.currentDate());
-						  
-						
-						requirementApproverHierarchyList.add(rah);
-						  approverEmailScenario(user,approverUser,requirement,location);
-
-				  }*/
 				 
 			} 
 			//approval saving for parallel
@@ -511,7 +488,6 @@ public class RequirementServiceImpl implements RequirementService {
 					  rah.setUpdatedDate(commonUtil.currentDate());
 					  
 					  requirementApproverHierarchyList.add(rah);
-						approverEmailScenario(user, approverUser ,requirement,location,orgLocations);
 
 				  }
 				  
@@ -593,7 +569,6 @@ public class RequirementServiceImpl implements RequirementService {
 								UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
 								requirementAssignTo.setRoleId(userRole.getRoles());
 								requirementAssignToList.add(requirementAssignTo);
-								AssignToTeamMembersEmail(user, assUser, requirement,location,orgLocations);
 		
 							}
 						}
@@ -602,7 +577,54 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
-		mailRequirementtoManager(user,user,requirement,location,orgLocations);
+		
+		//send mail to sequential approver1 
+		if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
+			  String approverNames = jsonObj.getString("sequentialApprover1");
+			  User approverUser = userService.getUserById(Long.parseLong(approverNames));
+			  approverEmailScenario(user, approverUser ,savedRequirement,location,orgLocations);
+		}
+		
+		//send mail to parallel approver
+		  if(jsonObj.has("parallelApprover")){
+				
+				String parallelApprovers =null;
+				try{
+					JSONArray jsonArray = jsonObj.getJSONArray("parallelApprover");
+					parallelApprovers = jsonArray.toString();
+				}
+				catch(JSONException e){
+					parallelApprovers =jsonObj.getString("parallelApprover");
+				}
+				parallelApprovers = parallelApprovers.replaceAll("\\[", "").replaceAll("\\]","");
+				parallelApprovers = parallelApprovers.replaceAll("\"", "");
+				
+			    String[] approvers = parallelApprovers.split(",");
+			    for(String approver : approvers){
+			    	User approverUser = userService.getUserById(Long.parseLong(approver));
+			    	approverEmailScenario(user,approverUser,requirement,location,orgLocations);
+			    }
+		 }
+		
+		//send mail to Assigned Team 
+		//condition : if login user as team member then mail not send
+		Set<RequirementAssignTo> updatedRequirementAssignToList = requirement.getRequirementAssignTo();
+		if(updatedRequirementAssignToList != null  ){
+			for(RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList ){
+				if(!user.getId().equals(requirementAssignTo.getAssignUserId().getId())){
+					AssignToTeamMembersEmail(user, requirementAssignTo.getAssignUserId(), savedRequirement,location,orgLocations);
+				}
+				
+			}
+		}
+		
+		
+		//send mail to manger 
+		//condition : login user as manager then  mail shoul not forwared
+		if(!user.getId().equals(requirement.getManagerUserId().getId())){
+			mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
+		}
+		
 		return savedRequirement;
 	}
 
@@ -1517,6 +1539,15 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 	
 	@Override
+	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode)
+			throws Exception {
+		
+			return requirementDao.getApproverRequirementApproverListByOrgLocationIDAndUserId(orgLocationId, userType, userId, userCode);
+		
+	}
+	
+	
+	@Override
 	public List<Requirement> getAssignedRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, Long userId)
 			throws Exception {
 		
@@ -1530,7 +1561,7 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public Integer validateJobId(Long id,Long orgLocation) throws Exception {
+	public Integer validateJobId(String id,Long orgLocation) throws Exception {
 		return requirementDao.validateJobId(id,orgLocation);
 	}
 

@@ -524,7 +524,9 @@ function sideBar(requirementId){
 					    if(json.requirementSubmissionStatus != 'SUBMITTED' && json.requirementSubmissionStatus != 'CANCEL' && json.requirementSubmissionStatus != 'DRAFT' && json.requirementSubmissionStatus != 'ONHOLD' && json.requirementSubmissionStatus != 'FILLEDCLOSED'){
                             var all = 'all';
 					    	result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');">Pipeline</a></li>';
+					    	'<sec:authorize access="hasAnyRole(\'ROLE_RECOMMENDATIONS\')">'; 
                              result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
+                             '</sec:authorize>';
                         }
 					   
 					    result = result+'      <div class="clearfix"></div>';
@@ -631,7 +633,7 @@ function requirementDetails(requirementId){
 				             */
 				             
 				            if( (json.requirementSubmissionStatus =='NEW'  || json.requirementSubmissionStatus =='DRAFT' || json.requirementSubmissionStatus =='SUBMITTED'  || json.requirementSubmissionStatus  == "APPROVED"  || json.requirementSubmissionStatus =='REJECTED'  ||  json.requirementSubmissionStatus  == "OPEN" ||  json.requirementSubmissionStatus  == "ONHOLD" ) && ( json.isLoginUserAsTeamMember == "false" || ( json.isLoginUserAsTeamMember == "true" && json.isLoginUserAsApprover  == "true") || ( json.isLoginUserAsTeamMember == "true" && json.isLoginUserAsManager  == "true") ) ){ 
-				            	'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_REQUIREMENT\')">'; 
+				            	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
 				            		result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
 				            	'</sec:authorize>';
 				            }
@@ -650,6 +652,9 @@ function requirementDetails(requirementId){
 				             
 				             
 				             result = result +'     </div>';
+				             result = result +'     </div>';
+				            
+				             result = result +'     <div class="clearfix">';
 				             
 				            result = result +'     <div class="clearfix row">';
 					        result = result +'     <div class="col-md-10 divskill divsAssigned">';
@@ -816,14 +821,14 @@ function requirementDetails(requirementId){
 				            }else{
 				            	for (var i=0; i<json.approverNames.length; i++)
 				   				{
-				            		var level = 1;
+				            		var level = 2;
 					            	for (var i=0; i<json.approverNames.length; i++)
 					   				{
 					            		result = result +'<div class="require_wrap_details_cta"> <b>Approvers '+level+':</b> <span>'; 
 					            		result = result +json.approverNames[i];
 					            		result = result +'</span>';
 					            		result = result +'</div>';
-					            		level = level+1;
+					            		level = level-1;
 					   				}
 					            	
 				   				}
@@ -856,6 +861,8 @@ function requirementDetails(requirementId){
 							$("#tab-1").empty();
 							$("#tab-2").empty();
 							$("#tab-3").empty();
+							$("#status-div").empty();
+						    $("#status-data").empty();
 							$("#tab-1").append(result); 
 							
 							assignedMemberList(requirementId);
@@ -1474,6 +1481,8 @@ function requirementRecommendations(requirementId){
 		    $("#tab-1").empty();
 			$("#tab-2").empty(); 
 		    $("#tab-3").empty();
+		    $("#status-div").empty();
+		    $("#status-data").empty();
 			$("#tab-3").append(result); 
 			recommendationpagination();
 			$("#tab-3").show();
