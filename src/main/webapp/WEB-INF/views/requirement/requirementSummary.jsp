@@ -26,6 +26,20 @@
 	z-index:999;
 	transition: all 0.5s ease;
 }
+.show-tooltip .tooltipint_detilas {
+	color:#333;
+	background: #e1e6fa;
+    border-radius: 3px;
+    display: none;
+    padding:5px;
+    position: absolute;
+    top: 20px;
+	right:0;
+    width: auto;
+	box-sizing:border-box;
+	z-index:999;
+	transition: all 0.5s ease;
+}
 .show-tooltip .tooltip_div:after{
 	bottom: 100%;
 	left: 15%;
@@ -40,7 +54,24 @@
 	border-width: 10px;
 	margin-left: -20px;
 }
+.show-tooltip .tooltipint_detilas:after{
+	bottom: 100%;
+	right: 5%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(136, 183, 213, 0);
+	border-bottom-color: #e1e6fa;
+	border-width: 10px;
+	margin-left: -20px;
+}
 .show-tooltip:hover .tooltip_div{
+	display:block;
+}
+.show-tooltip:hover .tooltipint_detilas{
 	display:block;
 }
 .tooltip_div table {
@@ -1116,25 +1147,42 @@ function requirementPipeline(requirementId,submissionType){
 				            result = result +'    </span>';
 				            result = result +' </div>';	
 				            result = result +' </li>';
+				            /* var shortList = 'SHORTLIST';
+				       	   var interview = 'INTERVIEW';
+				       	   var rejected = 'REJECTED';
+				            var submitToClient = 'SUBMIT_TO_CLIENT'; */
 				            
-				            
-				            result = result +'    <div class="clearfix"></div>';
-				           result = result + '   </div>';
-				           result = result + '   <div class="require_wrap_table overflow-data">';
-				           result = result + '   <div class="table-overflow-hide">';
-				           result = result + '     <table id="requirementsPagination" class="display" cellspacing="0" width="100%"">';
-				           result = result + '       <thead>';
-				           result = result + '         <tr>';
-				           result = result + '           <th>Name</th>';
-				           result = result + '           <th>Email</th>';
-				           result = result + '           <th>Ph. No</th>';
-				           result = result + '           <th>Resume</th>';
-				           result = result + '           <th>Applied on</th>';
-				           result = result + '           <th>Rate</th>';
-				           result = result + '           <th>Source</th>';
-				           result = result + '           <th>Score</th>';
-				           result = result + '           <th>Experience</th>';
-				           result = result + '           <th>Status</th>';
+				           result = result + '<div class="clearfix"></div>';
+				           result = result + '</div>';
+				           result = result + '<div class="require_wrap_table overflow-data">';
+				           result = result + '<div class="table-overflow-hide">';
+				           result = result + '<table id="requirementsPagination" class="display" cellspacing="0" width="100%"">';
+				           result = result + '<thead>';
+				           result = result + '<tr>';
+				           result = result + '<th>Name</th>';
+				           result = result + '<th>Email</th>';
+				           result = result + '<th>Ph. No</th>';
+				           result = result + '<th>Resume</th>';
+				           if(submissionType == 'all' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
+				        	   result = result + '<th>Applied on</th>';
+					           result = result + '<th>Rate</th>';
+					           result = result + '<th>Source</th>';
+				            }
+						  
+				           if(submissionType == 'INTERVIEW'){
+						   result = result + '<th>No.of Interviews</th>'; 
+				           }
+				           if(submissionType == 'OFFERMADE'){
+							   result = result + '<th>Offer Join Date</th>'; 
+							   result = result + '<th>Position Type</th>'; 
+							   result = result + '<th>Offer Rate</th>'; 
+							   result = result + '<th>Attachment</th>'; 
+					           }
+				           if(submissionType == 'all' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
+				        	   result = result + '<th>Score</th>';
+					           result = result + '<th>Exp</th>';
+					           result = result + '<th>Status</th>';
+				           }
 				           result = result + '         </tr>';
 				           result = result + '       </thead>';
 				           result = result + '       <tbody>';
@@ -1165,49 +1213,120 @@ function requirementPipeline(requirementId,submissionType){
 						    	     }
 						           
 						           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
-						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a>&nbsp;&nbsp;'+report.resumeName+'</span></div></td>';
+						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
+						        	  /*  result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a>&nbsp;&nbsp;'+report.resumeName+'</span></div></td>'; */
 							           }
 							       else{
 							    	   result = result + '         <td><div>--</div></td>';
 						    	     }
 						           
-						           if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
+						           if(submissionType == 'all' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
+						        	   
+						        	   if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
+							        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     }
+							           
+							           if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+							        	   result = result + '         <td><div><span>'+report.expectedCTC+'</span></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     }
+							           
+							           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
+							        	   result = result + '         <td><div><span>'+report.userName+'</span></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     } 
+						           }
+						           
+						           if(submissionType == 'INTERVIEW'){
+						        	   
+						        	   if(report.totalNoOfInterviews != null && report.totalNoOfInterviews != '' && report.totalNoOfInterviews != 'undefined'){
+						        		   /* ------tooltip---- */
+						        		   result = result +'<td><div class="show-tooltip"><span>'+report.totalNoOfInterviews+'</span>';
+						       		   if(report.requirementInterviewList.length > 0){
+						       		        result = result +'<div class="tooltipint_detilas">';
+						       			    result = result +'<table class="table-bordered table-hover table-striped table-responsive" width="100%;">';
+						       			    result = result +' <thead><tr>';
+						       			 	result = result +'<th>Interview Type</th>';
+						       			    result = result +'<th>Interview Date</th>';
+						       			    result = result +'<th>Start Time</th>';
+						       			    result = result +'<th>End Time</th>';
+						       			    result = result +'<th>Location</th>';
+						       			    result = result +'<th>Feedback</th>';
+						       			    result = result +'</tr></thead>';
+						       			    result = result +'<tbody>';
+						       			    for(var j=0;j<report.requirementInterviewList.length;j++){
+						       			    	 var sub = report.requirementInterviewList[j];
+						       			    	result = result +'<tr>';
+						       			    	result = result +'<td><span>'+sub.interviewType+'</span></td>';
+						       			    	result = result +'<td><span>'+sub.dateOfInterviewStr+'</span></td>';
+						       			    	result = result +'<td><span>'+sub.startTimeStr+'</span></td>';
+						       			    	result = result +'<td><span>'+sub.endTimeStr+'</span></td>';
+						       			    	result = result +'<td><span>'+sub.location+'</span></td>';
+						       			    	result = result +'<td><span>cxmbnv mnbbvnvnbv nbvnbvxnbv nbvcxnbvbnv bnvcxzbvnb  nbxzcvnbz nb vbnxcnbzxcv</span></td>';
+						       			    	result = result +'</tr>';
+						       			    } 
+						       			    result = result +'</tbody>';
+						       			    result = result +' </table>';
+						       			    result = result +' </div>'; 
+						       		    } 
+						       		    result = result +' </div></td>';
+						        		   /* ----------tooltip end------------- */
+						        		   
+								           }else{
+								        	   result = result + '<td><div><span>--</span></div></td>'; 
+								           }
 							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-						           
-						           if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.expectedCTC+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-						           
-						           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.userName+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-						           
-						           if(report.score != null && report.score != '' && report.score != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.score+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-						           
-						           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
-							           }
-							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
-						           
-						           result = result + '<td><div><span>'+report.submissionStatus+'</span></div></td>';
-						           
+						           if(submissionType == 'OFFERMADE'){
+						        	   if(report.offerJoinDate != null && report.offerJoinDate != '' && report.offerJoinDate != 'undefined'){
+							        	   result = result + '         <td><div><span>'+report.offerJoinDate+'</span></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     } 
+						        	   if(report.positionType != null && report.positionType != '' && report.positionType != 'undefined'){
+							        	   result = result + '         <td><div><span>'+report.positionType+'</span></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     } 
+						        	   if(report.offerRate != null && report.offerRate != '' && report.offerRate != 'undefined'){
+							        	   result = result + '         <td><div><span>'+report.offerRate+'</span></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     } 
+						        	   if(report.attachment != null && report.attachment != '' && report.attachment != 'undefined'){
+						        		   result = result + '         <td><div><span><a href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId+'\">'+report.attachment+'</a></span></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     } 
+						           }
+						           if(submissionType == 'all' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
+						        	   
+						        	   if(report.score != null && report.score != '' && report.score != 'undefined'){
+							        	   result = result + '         <td><div><span>'+report.score+'</span></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     }
+							           
+							           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
+							        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     }
+							           
+							           result = result + '<td><div><span>'+report.submissionStatus+'</span></div></td>';
+						           }
 						           
 						           result = result + '       </tr>';
 			   				}
@@ -1776,6 +1895,7 @@ function requirementStatusBar(requirementId){
        result = result + '      </a><span class="label label-warning" id="rejectedCount">0</span></li>';
        result = result + '   </ul>';
        result = result + ' </div>';
+       $("#status-div").empty();
       $("#status-div").prepend(result);
       $("#tab-2").prepend(status-div);
 	

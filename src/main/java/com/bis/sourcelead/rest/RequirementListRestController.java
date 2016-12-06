@@ -37,6 +37,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
@@ -49,6 +51,8 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
@@ -109,6 +113,12 @@ public class RequirementListRestController {
 	 
 	 @Autowired
 	 private CandidateService candidateService;
+	 
+	 @Autowired
+	 private RequirementInterviewService requirementInterviewService;
+	 
+	 @Autowired
+	 private RequirementOffersService requirementOffersService;
 	 
 	 
 	 
@@ -357,6 +367,25 @@ public class RequirementListRestController {
 								if(requirementSubmission.getCandidateResumes() != null){
 									CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
 									RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+									List<RequirementInterview> numberOfInterviews = requirementInterviewService.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(requirementSubmission.getId(),loginOrgLocation.getId());
+									List<RequirementOffers> requirementOffersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(requirementSubmission.getId(),loginOrgLocation.getId());
+									if(requirementOffersList.size() > 0){
+										RequirementOffers requirementOffers = requirementOffersList.get(0);
+										requirementSubmission.setOfferId(requirementOffers.getId());
+										if(requirementOffers.getDateOfJoining() != null){
+											requirementSubmission.setOfferJoinDate(Constants.DMY.format(requirementOffers.getDateOfJoining()));
+										}
+										if(requirementOffers.getPaymentType() != null){
+											requirementSubmission.setPositionType(requirementOffers.getPaymentType());
+										}
+										if(requirementOffers.getAmount() != null){
+											requirementSubmission.setOfferRate(requirementOffers.getAmount());
+										}
+										if(requirementOffers.getFileName() != null){
+											requirementSubmission.setAttachment(requirementOffers.getFileName());
+										}
+										
+									}
 									String candidateName = requirementSubmissionTemplateFields.getFirstName();
 									if(requirementSubmissionTemplateFields.getLastName()!=null){
 										candidateName = candidateName+" "+requirementSubmissionTemplateFields.getLastName();
@@ -368,6 +397,8 @@ public class RequirementListRestController {
 									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 									requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 									requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
+									requirementSubmission.setTotalNoOfInterviews(numberOfInterviews.size());
+									requirementSubmission.setRequirementInterviewList(numberOfInterviews);
 									if(requirementSubmission.getCreatedDate() != null){
 										requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 									}
@@ -729,4 +760,38 @@ public class RequirementListRestController {
 				}
 				return resultJson;
 		}
+		
+		/**
+		 * @author Rajashekar
+		 * It downloads the attachment of offer based on offer id
+		 * @param offerId
+		 * @param response
+		 * @throws Exception
+		 * @returns void
+		 */
+		@RequestMapping(value = "/downloadOfferAttachment")
+	    public void downloadOfferAttachment(@RequestParam(value="offerId", required=false) Long offerId ,HttpServletResponse response) throws Exception {
+			
+				RequirementOffers offer = requirementOffersService.getRequirementOfferId(offerId);
+			    response.setContentType("application/octet-stream");
+		        response.setHeader("Content-Disposition",
+		                "attachment;filename="+offer.getFileName());
+				InputStream inputStream = new ByteArrayInputStream(offer.getDocFile());
+				try {
+					OutputStream outStream = response.getOutputStream();
+
+					byte[] buffer = new byte[4096];
+					int bytesRead = -1;
+
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						outStream.write(buffer, 0, bytesRead);
+					}
+
+					inputStream.close();
+					outStream.close();
+
+				} catch (FileNotFoundException e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				} 
+     }
 }
