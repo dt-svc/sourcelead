@@ -114,10 +114,6 @@ public class ProjectsRestController {
 	 
 	 /**
 	 * @author shivayogi. 
-	 * @param json
-	 * @param request
-	 * @return
-	 * @throws Exception
 	 * @Description : this is duplicate method, this method is not used anywhere.This method is same as storeProject() .
 	 */
 	@RequestMapping(value = "/saveProject" , method = RequestMethod.POST)

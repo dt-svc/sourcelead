@@ -77,8 +77,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
-	/*@Autowired
-	HttpServletRequest request;*/
+	@Autowired
+	HttpServletRequest request;
 	
 	@Autowired
 	private ProjectsDao projectsDao;
@@ -315,7 +315,7 @@ public class ProjectsServiceImpl implements ProjectsService{
     	
 
     	//prepare ProjectApproverHierarchy
-    	Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(jsonObj, projects);
+    	Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(jsonObj,request,projects);
     	projects.setProjectApprovers(projectApproverHierarchyList);
 		
 		//prepare project task set...
