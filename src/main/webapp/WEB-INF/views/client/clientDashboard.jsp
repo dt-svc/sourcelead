@@ -110,7 +110,7 @@ overflow-x: auto;
 						
 						 <sec:authorize access="hasRole('ROLE_EXPORT_CLIENTS')"> 
 						   <li id="clientImports" style="display:none">
-		                      <a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportClient</a>
+		                      <a  id="client-imports"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportClient</a>
 			                    <div class="export_pop">
 				                   <ul>
 				                     <li onclick="exportClientToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
@@ -1193,33 +1193,31 @@ $(document).ready(function() {
 </script> 
 
 <script>
-  $('#selector').delay(2000).fadeOut('slow');
-  $(document).ready(function() {
-	   $("#export-pop").click(function(){
-	               $(".export_pop").slideToggle(200);
+ $('#selector').delay(2000).fadeOut('slow');
+	   $("#client-imports").click(function(){
+	       $(".export_pop").toggle();
 	       });
 	   $("html").click(function() {
-	       $(".export_pop").slideUp(200);
+	       $(".export_pop").hide();
 	   });
-	   $(".export_pop, #export-pop").click(function(e) {
+	   $(".export_pop, #client-imports").click(function(e) {
 	       e.stopPropagation();
 	   });        
-	});  
 </script> 
 
 <script>
-  $('#selector').delay(2000).fadeOut('slow');
+$('#selector').delay(2000).fadeOut('slow');
   $(document).ready(function() {
 	   $("#export-popcon").click(function(){
-	               $(".export_pop").slideToggle(200);
+		   $(".export_pop").toggle();
 	       });
 	   $("html").click(function() {
-	       $(".export_pop").slideUp(200);
+	       $(".export_pop").hide(200);
 	   });
 	   $(".export_pop, #export-popcon").click(function(e) {
 	       e.stopPropagation();
 	   });        
-	});  
+	});
 </script> 
 
 
