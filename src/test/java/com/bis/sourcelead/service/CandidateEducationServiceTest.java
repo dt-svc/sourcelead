@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.json.JSONObject;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class CandidateEducationServiceTest {
 	@Autowired
 	CandidateEducationService candidateEducationService;
 	
-	@Test
+	//@Test
 	public void storeCandidateEducation() throws Exception{
 		CandidateEducation candidateEducation = new CandidateEducation();
 		
@@ -63,7 +64,7 @@ public class CandidateEducationServiceTest {
 		candidateEducationService.storeCandidateEducation(jsonObject, 1l, 1l,user);
 		logger.info("candidateEducationTest added successfully");
 	}
-	@Test	
+	//@Test	
 	public void getCandidateEducationListByCandidateIdAndOrgLocationID() throws Exception{
 			Long candidateId = 1l;
 			Long orgLocationId =1l;
@@ -73,7 +74,7 @@ public class CandidateEducationServiceTest {
 			}
 		}
 	
-	@Test
+	//@Test
 	public void getCandidateEducationDetails() throws Exception{
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("candidateEducation", "NEWHORIZON");
@@ -88,23 +89,39 @@ public class CandidateEducationServiceTest {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void removeCandidateEducationBycandidateIdandcandidateEducationId() throws Exception{
 		Long candidateId = 1l;
 		Long candidateEducationId = 1l;
 		CandidateEducation candidateEducation = candidateEducationService.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateId, candidateEducationId);
 		logger.info("removeCandidateEducationBycandidateIdandcandidateEducationId"+candidateEducation);
 	}
-	@Test
+	//@Test
 	public void getCandidateEducationBycandidateIdandEducationId() throws Exception{
 		Long candidateId = 1l;
 		Long candidateEducationId = 1l;
 		CandidateEducation candidateEducation = candidateEducationService.getCandidateEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
 		logger.info("getCandidateEducationBycandidateIdandEducationId"+candidateEducation);
 	}
+	
+	@Test   
+	public void validateEducationName() throws Exception{
+		
+		
+		Candidate can = new Candidate();
+		Long candidateId = 1l;
+		can.setId(candidateId);
+		Set<CandidateEducation> candidateEducation= new HashSet<>();
+		CandidateEducation canEdu = new CandidateEducation();
+		canEdu.setName("Associate of Arts and Sciences (A.A.S)");
+		candidateEducation.add(canEdu);
+		can.setCandidateEducation(candidateEducation);
+		Boolean bool = candidateEducationService.validateEducationName(can.getId(), can.getCandidateEducation().iterator().next().getName());
+		System.out.println("education name"+" "+bool.booleanValue());
 	}
+	
 
-
+}
 
 
 

@@ -236,7 +236,7 @@ public class ProjectsServiceTest {
 		logger.info("getDeleteProject ");
 	}
 	
-	@Test
+	/*@Test
 	public void storeProject() throws Exception{
 			JSONObject jsonObj= new JSONObject();
 			User user= new User();
@@ -252,7 +252,7 @@ public class ProjectsServiceTest {
 			String loginOrgCode="2oo6IND";
 			projectsService.storeProject(jsonObj, user, loginOrgLocation, loginOrgCode);
 			logger.info("Project saved ");
-		}
+		}*/
 	
 		
 	

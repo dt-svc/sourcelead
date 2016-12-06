@@ -220,7 +220,7 @@ public class ProjectMembersServiceTest {
 		logger.info("getEmployeeAssignedProjectsCount added successfully");
 	}
 		
-	@Test
+	/*@Test
 	public void prepareProjectMembersListByJson() throws Exception{
 		JSONObject jsonObj= new JSONObject();
 		jsonObj.put("employeeMaxCount", 10);
@@ -238,5 +238,5 @@ public class ProjectMembersServiceTest {
 			pm.getId();
 		}
 		logger.info("getEmployeeAssignedProjectsCount added successfully");
-	}
+	}*/
 }

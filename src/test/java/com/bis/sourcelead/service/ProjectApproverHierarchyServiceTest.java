@@ -125,7 +125,7 @@ public class ProjectApproverHierarchyServiceTest {
 	}
 	
 	
-	@Test
+	/*@Test
 	public void prepareProjectApproverHierarchyListByJson() throws Exception {
 		JSONObject jsonObj= new JSONObject();
 		jsonObj.put("level1Manager", "suhas");
@@ -138,5 +138,5 @@ public class ProjectApproverHierarchyServiceTest {
 			PAHierarchy.getId();
 		}
 		logger.info("Retrieved Successfully...");
-	}
+	}*/
 }
