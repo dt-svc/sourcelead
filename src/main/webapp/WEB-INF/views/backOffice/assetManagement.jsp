@@ -420,12 +420,12 @@ var validationSettings = {
 
 						result = result+'<tr id="asset'+report.id+'">';
 			   	        result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot-sm">';
-					   	result = result+'<div class="proj_show" onclick="assetSideBar('+report.id+');"> <span class="tbldata-dotdot-100">'+report.slno+'</span> <i class="fa fa-binoculars"></i> </div>';
+					   	result = result+'<div class="proj_show" onclick="assetSideBar('+report.id+');" title="'+report.slno+'"> <span class="tbldata-dotdot-100">'+report.slno+'</span> <i class="fa fa-binoculars"></i> </div>';
 					   	result = result+'</a></td>';
 					   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.categoryName+'">'+report.categoryName+'</div></td>';
-						result = result+'<td><div class="tbldata-dotdot-vsm">'+model+'</div></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm" >'+shiftAEmpName+'</div></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm" >'+shiftBEmpName+'</div></td>';
+						result = result+'<td><div class="tbldata-dotdot-vsm" title="'+model+'">'+model+'</div></td>';
+					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+shiftAEmpName+'" >'+shiftAEmpName+'</div></td>';
+					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+shiftBEmpName+'">'+shiftBEmpName+'</div></td>';
 					   	
 					   	result = result + ' <td><div class="tbldata-dotdot-100">';
 						result = result + ' <select id="workingStatus'+report.id+'" name="workingStatus" onChange="updateWorkingStatus(\''+report.id+'\');">';

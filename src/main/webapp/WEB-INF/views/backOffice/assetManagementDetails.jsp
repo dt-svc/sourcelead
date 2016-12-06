@@ -342,7 +342,7 @@ function editAssetManagement(assetId){
 				result = result + ' </div>';
 				
 				 result = result + '<div class="col-md-6" id="shiftAFileAttachmentDiv">';
-				 result = result + ' <div class="input-group">';
+				 result = result + ' <div class="input-group attachfile-error">';
 				 result = result + '   <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 				 result = result + '     <input type="file" style="display: none;" multiple name="uploadBtn-dskA" id="uploadBtnShiftA" class="upload">';
 				 result = result + '          </b> </label>';
@@ -375,7 +375,7 @@ function editAssetManagement(assetId){
 				result = result + '</div>';
 				
 				result = result + '<div class="col-md-6" id="shiftBFileAttachmentDiv">';
-				result = result + ' <div class="input-group">';
+				result = result + ' <div class="input-group attachfile-error">';
 				result = result + '   <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 				result = result + '     <input type="file" style="display: none;" multiple name="uploadBtn-dskB" id="uploadBtnShiftB" class="upload">';
 				result = result + '    </b> </label>';
@@ -395,7 +395,7 @@ function editAssetManagement(assetId){
 			result = result + ' </div>';
 			
 			result = result + ' <div class="col-md-6" id="fileAttachmentDiv">';
-			result = result + '<div class="input-group" >';
+			result = result + '<div class="input-group attachfile-error" >';
 			result = result + '<label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 			result = result + ' <input type="file" name="attachment" id="fileAttachment"  class="hidden upload">';
 			result = result + '</b> </label>';
@@ -650,6 +650,7 @@ var validationSettings = {
 	     		        success: function(result) {
 	     		        	if(result == 'home'){
 	     		        		assetDetails(assetId);
+	     		        		getAssetList();
 	     		        	}
 	     			        
 	     		        },
