@@ -202,7 +202,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
-		String query = "from  TimesheetSubmissions ts   left join fetch ts.projectMembers pm   left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and  ts.submissionApprovalStatus = :approvalStatus)" ;
+		String query = "from  TimesheetSubmissions ts   left join fetch ts.projectMembers pm   left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and ts.id IN(select sah.submissionId.id from SubmissionApproverHierarchy sah where sah.hierarchyId.approverUserId.id = :userId and sah.submissionApprovalStatus = :approvalStatus)" ;
 		List<TimesheetSubmissions> tslist =session.createQuery(query.toString()).setLong("userId", userId).setString("approvalStatus", approvalStatus).list(); 
 		      
 		
@@ -210,6 +210,23 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		  
 		
 	}
+   
+   /*@Override
+   @Transactional(rollbackFor = { Exception.class })
+   public Integer getUsersTimeSheetSubmissionsCountBasedOnStatus(Long userId, String approvalStatus,Long orgLocationId) throws Exception {
+   
+   Session session = this.sessionFactory.getCurrentSession();
+   
+   String query = "from TimesheetSubmissions ts left join fetch ts.projectMembers pm left join fetch pm.employee emp left join fetch emp.orgLocations "
+           + "where (emp.id IN(select emp.id from Employees emp where emp.user.id = :userId and emp.orgLocations.id = :orgLocationId ))"
+           + " and ts.id IN(select sah.submissionId.id SubmissionApproverHierarchy sah where sah.hierarchyId.approverUserId = :userId and sah.submissionApprovalStatus = :approvalStatus))" ;
+   List<TimesheetSubmissions> tslist =session.createQuery(query.toString()).setLong("userId", userId)
+           .setString("approvalStatus", approvalStatus).setLong("orgLocationId", orgLocationId).list(); 
+         
+   return tslist.size();
+     
+
+}*/
 
 
 	

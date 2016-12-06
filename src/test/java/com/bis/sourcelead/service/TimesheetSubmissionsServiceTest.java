@@ -32,6 +32,9 @@ import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.impl.TimesheetSubmissionsServiceImpl;
+import com.bis.sourcelead.util.CommonUtil;
+
+import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -309,8 +312,130 @@ public class TimesheetSubmissionsServiceTest {
 	
 	@Test 
 	public void getWeekFrequencyTest() throws Exception{
-	      HashSet<TimesheetSubmissions> tms = timesheetSubmissionsService.getWeekFrequency(32l,1l);
+	      HashSet<TimesheetSubmissions> tms = timesheetSubmissionsService.getWeekFrequency(1l,1l);
 		assertNotNull(tms);
 	}
+	
+	
+	
+	@Test 
+	public void getTimesheetSubmissionsByMemberIdAndStartDate() throws Exception{
+	    Long memberId=1l;
+		Date startDate=CommonUtil.currentDate();
+		TimesheetSubmissions tms = timesheetSubmissionsService.getTimesheetSubmissionsByMemberIdAndStartDate(memberId, startDate);
+		if(tms!= null){
+			tms.getId();
+			assertNotNull(tms);	
+		}
+		logger.info("no timesheets");
+		
+	}
+
+	@Test 
+	public void getLeftNavStartDateForEmployeeBasedOnCurrentStartDate() throws Exception{
+		Long userId=1l;
+		Date currentStartDate=CommonUtil.currentDate();
+		Date tms = timesheetSubmissionsService.getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(userId, currentStartDate);
+		tms.getTime();
+		assertNotNull(tms);
+		
+	}
+	
+	@Test 
+	public void getRightNavStartDateForEmployeeBasedOnCurrentStartDate() throws Exception{
+		Long userId=1l;
+		Date currentStartDate=CommonUtil.currentDate();
+		Date tms = timesheetSubmissionsService.getRightNavStartDateForEmployeeBasedOnCurrentStartDate(userId, currentStartDate);
+		tms.getTime();
+		assertNotNull(tms);
+		
+	}
+	
+	@Test 
+	public void getLeftNavStartDateForApproverBasedOnCurrentStartDate() throws Exception{
+		Long empUserId=1l;
+		Date currentStartDate=CommonUtil.currentDate();
+		Long approverUserId=1l;
+		Date tms = timesheetSubmissionsService.getLeftNavStartDateForApproverBasedOnCurrentStartDate(approverUserId, empUserId, currentStartDate);
+		tms.getTime();
+		assertNotNull(tms);
+		
+	}
+	
+	@Test 
+	public void getRightNavStartDateForApproverBasedOnCurrentStartDate() throws Exception{
+		Long empUserId=1l;
+		Date currentStartDate=CommonUtil.currentDate();
+		Long approverUserId=1l;
+		Date tms = timesheetSubmissionsService.getLeftNavStartDateForApproverBasedOnCurrentStartDate(approverUserId, empUserId, currentStartDate);
+		tms.getTime();
+		assertNotNull(tms);
+		
+	}
+	
+	@Test 
+	public void getTimeSheetSubmissionsCountBasedOnStatus() throws Exception{
+		Long userId=1l;
+		String approvalStatus="SUBMISSION";
+		TimesheetSubmissions ts= new TimesheetSubmissions();
+		ts.setId(1l);
+		Integer tms = timesheetSubmissionsService.getTimeSheetSubmissionsCountBasedOnStatus(userId, approvalStatus);
+		if(tms != null && tms !=0){
+		assertNotNull(tms);
+		}
+		logger.info("no count");
+	}
+	
+	
+	@Test 
+	public void getTimeSheetSubmissionsCountByUserIdAndOrgLocationId() throws Exception{
+		Long userId=1l;
+		Long orgLocationId=1l;
+		TimeSheetSubmissionCount tms = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(userId, orgLocationId);
+		tms.getApprovalTimesheetsSubmissionsHoursCount();
+		assertNotNull(tms);
+		
+	}
+	
+	
+	@Test 
+	public void getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId() throws Exception{
+		Long memberId=1l;
+		Date terminatedDate=CommonUtil.currentDate();
+		List<TimesheetSubmissions> tms = timesheetSubmissionsService.getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId(memberId, terminatedDate);
+		for(TimesheetSubmissions timesheetSubmissions:tms){
+			timesheetSubmissions.getId();
+		}
+		assertNotNull(tms);
+		
+	}
+	
+	//@Test 
+	public void getArrovalSubmissions() throws Exception{
+		String employeeId="1";
+		User user= new User();
+		user.setId(1l);
+		Long locationsId=1l;
+		String tms = timesheetSubmissionsService.getArrovalSubmissions(employeeId, user, locationsId);
+		assertNotNull(tms);
+		
+	}
+	
+	
+	//@Test 
+	public void dynamicTimesheet() throws Exception{
+		Long employeeId=1l;
+		User user= new User();
+		user.setId(1l);
+		Long locationsId=1l;
+		String navigation="LEFT";
+		String startDate="1994-03-03";
+		Long memberId=1l;
+		Long projectMemberUserId=1l;
+		String tms = timesheetSubmissionsService.dynamicTimesheet(user, navigation, startDate, memberId, projectMemberUserId, employeeId, locationsId);
+		assertNotNull(tms);
+	}
+	
+	
 	
 }
