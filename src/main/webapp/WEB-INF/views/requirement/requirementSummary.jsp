@@ -1153,7 +1153,7 @@ function requirementPipeline(requirementId,submissionType){
 				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
 				            result = result +'<div class="export_pipline" style="display:none">';
 				            result = result +'<ul>';
-				            result = result +'<li onclick="exportPipelineToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
 				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
 				            result = result +' </ul>';
 				            result = result +'</div>';
@@ -1948,12 +1948,27 @@ $(".export_pipline").click(function(e){
 function exportPipelineToExcel(requirementId,submissionType){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
+	  var sourceleadUrl ='${sourceleadUrl}';
 	  alert(" requirementId "+requirementId);
 	  alert(" submissionType "+submissionType);
-    // window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
+	  
+      window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
 }
 
 </script>
+
+
+<!-- script>
+function exportPipelineToPdf(requirementId,submissionType){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  var clientSubmissions = '${clientSubmissions}';
+	  alert(" requirementId "+requirementId);
+	  alert(" submissionType "+submissionType);
+      window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=pdf";
+}
+
+</script> -->
+
 
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />
