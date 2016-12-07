@@ -49,11 +49,13 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionXls;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionXlsService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -107,6 +109,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
 	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
 		return requirementSubmissionDao.getRequirementSubmissionById(submissionId);
@@ -135,7 +140,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 
 
 	@Override
-	public void saveRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,MultipartFile multiFile) throws Exception {
+	public RequirementSubmission saveRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,MultipartFile multiFile) throws Exception {
 		
 		 Requirement requirement = null;;
 		 RequirementSubmission requirementSubmission = new RequirementSubmission();
@@ -344,6 +349,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 templateFields.setCreatedDate(new Date());
 		 
 		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(templateFields);
+		return requirementSubmission;
 		
 	}
 
@@ -549,13 +555,14 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 clientSubmissionFields.setCreatedBy(user.getUserCode());
     		 clientSubmissionFields.setCreatedDate(new Date());
     		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(clientSubmissionFields);
-    		 
+    		 RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+    		 requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
     		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT);
     		 submission.setUpdatedBy(user.getUserCode());
     		 submission.setUpdatedDate(new Date());
     		 requirementSubmissionDao.storeRequirementSubmission(submission);
     		 
-    		 
+    		 requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory);
     		 String data = clientSubmission.getSubmissionTemplateJsonStringValue();
     		 try {
     		     // create the json array from String rules

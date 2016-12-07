@@ -29,8 +29,10 @@ overflow-x: auto;
 	<!-- Content Area -->
 	<section class="content-wraper">
 		<section class="content-header clearfix">
-		  <c:if test="${!empty msg}">
-	        <div class="success_pop" id="selector"  style="display: none;">
+
+		<div id="msgDiv" ></div>
+		<c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector" style="display: block;">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
@@ -198,6 +200,7 @@ function getClientDetails(){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getClientDetails?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
    		    success: function(data) {
+   		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
    		    	var json = JSON.parse(data);
    	        	var result = "";
    	        	/* if(json.length != null && json.length != ''){ */
@@ -295,7 +298,21 @@ function getClientDetails(){
    	    	    $("#clientList").append(result)
    	    	    $("#emptyClientList").val(json.length);
    	    	    pagination();
-   	    	    
+   		    }else{
+  		    	 var result ="";
+	   		    	result = result+"   <div class='row'>"; 
+					 result = result+"	<div class='col-lg-12'>"; 
+					 result = result+"		<div class='content-area clearfix'>"; 
+					 result = result+"			<div class='blank-pages'>";
+					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 result = result+"			        <p>No Clients Found</p>";
+					 result = result+"			 </div>";
+					 result = result+"		</div>"; 
+					 result = result+"	</div>"; 
+					 result = result+"  </div> ";  
+	        	     $("#clientList").empty();  
+ 	    	         $("#clientList").append(result)
+	        	}   
    		    }
 	 }); 
 	
@@ -408,7 +425,20 @@ function getVendorContactLists(){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getClientContactLists?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus, 	   
    		    success: function(data) {
+   		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
    		    	var json = JSON.parse(data);
+   		    	for (var i = 0; i < 1; i++) { 
+     				var val= json[i];
+     				var opt = "";
+     					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+         					opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
+         					opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+         					opt  = opt + '</div>';
+     						}
+     					$("#msgDiv").empty();
+     					$("#msgDiv").append(opt);
+     				} 
+   		    	
    	        	var result = "";
    	        	/* if(json.length != null && json.length != ''){ */
    	        	result = result +'<thead>';
@@ -534,6 +564,7 @@ function getVendorContactLists(){
    	    	    $("#vendorContactList").append(result)
    	    	    $("#clientContactLength").val(json.length);
    	    	    pagination1(); 
+   	    	    msgFadein();
    	        	/* }else{
    	        		result = result +'<div class="row">';
    	        		result = result +'<div class="col-lg-12">';
@@ -551,7 +582,21 @@ function getVendorContactLists(){
     	    	    $("#vendorContactList").append(result)
    	        	} */
    	        	
-   	    	    
+   		    }else{
+	   		    	 var result ="";
+	   		    	result = result+"   <div class='row'>"; 
+ 					 result = result+"	<div class='col-lg-12'>"; 
+ 					 result = result+"		<div class='content-area clearfix'>"; 
+ 					 result = result+"			<div class='blank-pages'>";
+ 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+ 					 result = result+"			        <p>No Contacts Found</p>";
+ 					 result = result+"			 </div>";
+ 					 result = result+"		</div>"; 
+ 					 result = result+"	</div>"; 
+ 					 result = result+"  </div> ";  
+   	        	     $("#vendorContactList").empty();  
+    	    	     $("#vendorContactList").append(result)
+   	        	}  
    		    }
 	 });
 	
@@ -1219,6 +1264,15 @@ $('#selector').delay(2000).fadeOut('slow');
 	   });        
 	});
 </script> 
+
+<!-- Show success message after form submission script -->
+<script>
+	function msgFadein() {
+	    setTimeout(function(){ 
+	    	$('#selector1').fadeOut('slow'); }, 300);
+	}
+</script> 
+<!-- End -->
 
 
 <jsp:include page="editClientSpocDetails.jsp" />
