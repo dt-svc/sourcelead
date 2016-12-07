@@ -35,6 +35,7 @@ import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -85,6 +87,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	private CandidateService candidateService;
 	@Autowired
 	private RequirementService requirementService;
+	
+	@Autowired
+	private RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
 	@Override
 	public void saveRequirementOffers(JSONObject jsonObj, User loginUser, OrgLocations orgLocations,MultipartHttpServletRequest request) throws Exception {
@@ -162,33 +167,32 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 							   requirementOffers.setFileContentType(multiFile.getContentType());
 							  
 								requirementOffers.setStatus(Constants.RECORD_ACTIVE);
+								requirementOffers.setOfferStatus(Constants.OFFERMADE);
 								requirementOffers.setCreatedDate(new Date());
 								requirementOffers.setCreatedBy(loginUser.getUserCode());
 								requirementOffers.setUpdatedDate(new Date());
 								requirementOffers.setUpdatedBy(loginUser.getUserCode());
 					            requirementOffersDao.storeRequirementOffers(requirementOffers);
-					           
+					           RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 					           RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
+					           requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
 					           requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
 					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					           
 					           if(requirementSubmission.getSourceSubmission() !=null){
 					        	   RequirementSubmission sourcesubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
 					        	   if(sourcesubmission !=null ){
+					        		    requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
 	                                	sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
 	                                	requirementSubmissionService.storeRequirementSubmission(sourcesubmission);
 	                                }
-					        	   
 					        	   // This is to  notify  the Vendor
 						            if(jsonObj.has("notifyToVendor")  && !jsonObj.getString("notifyToVendor").isEmpty()){
 										Requirement vendorRequirement= requirementService.getRequirementByRequirementId(sourcesubmission.getRequirement().getId());
 										offerMailToVendors(loginUser,orgLocations,vendorRequirement);
 						            }
-					        	   
-					        	   
 					           }
-								
-					       
+					           requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser, requirementSubmissionHistory);
 					            
 					            // This is to  notify  the Applicant
 					            if(jsonObj.has("notifyToApplicant")  && !jsonObj.getString("notifyToApplicant").isEmpty()){

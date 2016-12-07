@@ -234,7 +234,7 @@ $(document).ready(function() {
         e.stopPropagation();
     });	
 });	
-	
+
 // project side bar
 $(document).ready(function() {
     $(".`	").click(function(){
@@ -319,6 +319,9 @@ $( "ul#canName-ch li").click(function(){
 });
 });
 </script> 
+
+
+
 <script>
 $( "#pri-ch li").click(function(){
    var m = $(this).text();
@@ -852,14 +855,14 @@ function requirementDetails(requirementId){
 				            }else{
 				            	for (var i=0; i<json.approverNames.length; i++)
 				   				{
-				            		var level = 1;
+				            		var level = 2;
 					            	for (var i=0; i<json.approverNames.length; i++)
 					   				{
 					            		result = result +'<div class="require_wrap_details_cta"> <b>Approvers '+level+':</b> <span>'; 
 					            		result = result +json.approverNames[i];
 					            		result = result +'</span>';
 					            		result = result +'</div>';
-					            		level = level+1;
+					            		level = level-1;
 					   				}
 					            	
 				   				}
@@ -1147,10 +1150,14 @@ function requirementPipeline(requirementId,submissionType){
 				            result = result +'    </span>';
 				            result = result +' </div>';	
 				            result = result +' </li>';
-				            /* var shortList = 'SHORTLIST';
-				       	   var interview = 'INTERVIEW';
-				       	   var rejected = 'REJECTED';
-				            var submitToClient = 'SUBMIT_TO_CLIENT'; */
+				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+				            result = result +'<div class="export_pipline" style="display:none">';
+				            result = result +'<ul>';
+				            result = result +'<li onclick="exportPipelineToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +' </ul>';
+				            result = result +'</div>';
+				            result = result +'</li>';
 				            
 				           result = result + '<div class="clearfix"></div>';
 				           result = result + '</div>';
@@ -1171,6 +1178,9 @@ function requirementPipeline(requirementId,submissionType){
 						  
 				           if(submissionType == 'INTERVIEW'){
 						   result = result + '<th>No.of Interviews</th>'; 
+				           }
+				           if(submissionType == 'SHORTLIST'){
+				        	   result = result + '<th>shortlisted By</th>'; 
 				           }
 				           if(submissionType == 'OFFERMADE'){
 							   result = result + '<th>Offer Join Date</th>'; 
@@ -1283,6 +1293,13 @@ function requirementPipeline(requirementId,submissionType){
 								        	   result = result + '<td><div><span>--</span></div></td>'; 
 								           }
 							           }
+						           if(submissionType == 'SHORTLIST'){
+						        	   if(report.submittedBy != null && report.submittedBy != '' && report.submittedBy != 'undefined'){ 
+						        	   result = result + '<td><div><span>'+report.submittedBy+'</span></div></td>';
+						        	   }else{
+						        		   result = result + '<td><div><span>--</span></div></td>';
+						        	   }
+						           }
 						           if(submissionType == 'OFFERMADE'){
 						        	   if(report.offerJoinDate != null && report.offerJoinDate != '' && report.offerJoinDate != 'undefined'){
 							        	   result = result + '         <td><div><span>'+report.offerJoinDate+'</span></div></td>';
@@ -1529,7 +1546,7 @@ function requirementRecommendations(requirementId){
     	    result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
 		    result = result +'<div class="rec_head"></div>';
 		    result = result +'</div>';
-		    result = result +'<div class="project_tabs_inn_table">';
+		    result = result +'<div class="project_tabs_inn_table  clients_wrap_table">';
 		    result = result +'<table id="recommendationTable" class="display" cellspacing="0" width="100%"">';
 		    result = result +'<thead>';
 		    result = result +'<tr>';
@@ -1914,7 +1931,29 @@ function tabEnable(local){
 
 </script>
 
+<script>
+//piplineexportpop 
+function piplineexport(){
+	$(".export_pipline").toggle();
+};
+/* $("#pipline-exportpop").click(function(){
+	$("#export_pipline").show();
+	});*/
+$(".export_pipline").click(function(e){
+ 	e.stopPropagation();
+	});
+</script>
 
+<script>
+function exportPipelineToExcel(requirementId,submissionType){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  var clientSubmissions = '${clientSubmissions}';
+	  alert(" requirementId "+requirementId);
+	  alert(" submissionType "+submissionType);
+    // window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
+}
+
+</script>
 
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />
