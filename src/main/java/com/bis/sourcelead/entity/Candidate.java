@@ -41,6 +41,14 @@ public class Candidate implements Serializable{
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="CONSULTANT_USER_ID")        
+    private User consultantUser;
+	
+	
+	@Column(name = "CANDIDATE_TYPE")
+	private String candidateType;
+	
 	@Column(name = "FIRST_NAME")
 	private String firstName;
 	
@@ -637,6 +645,26 @@ public class Candidate implements Serializable{
 
 	public void setCurrentRateType(String currentRateType) {
 		this.currentRateType = currentRateType;
+	}
+
+
+	public User getConsultantUser() {
+		return consultantUser;
+	}
+
+
+	public void setConsultantUser(User consultantUser) {
+		this.consultantUser = consultantUser;
+	}
+
+
+	public String getCandidateType() {
+		return candidateType;
+	}
+
+
+	public void setCandidateType(String candidateType) {
+		this.candidateType = candidateType;
 	}
 	
 	
