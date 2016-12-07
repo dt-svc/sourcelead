@@ -4700,7 +4700,12 @@ import-tranhd  [class*="col-md-"]{
        padding: 0px 30px 0px 0px !important;
 }
 /*clients tab header custom 2nd dec */
-
+.hdr-styles ul li input[type="checkbox"], .hdr-styles ul li input[type="radio"] {
+	margin: 0;
+}
+.hdr-styles ul li label {
+	top:0 !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {

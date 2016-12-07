@@ -789,9 +789,9 @@ function cancel(candidateId){
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
-      <div class="timesheet_head">
+      <div class="timesheet_head hdr-styles">
         <ul>
-          <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
+          <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="candidate-export"></i>
             <div class="export_pop">
               <ul>
                 <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
@@ -876,34 +876,26 @@ $(document).ready(function() {
 });	
 
 // Approved Popup
-$(document).ready(function() {
-	
-	
     $("#appro-pop").click(function(){
-		$(".approved_pop").slideToggle(200);
+		$(".approved_pop").toggle(200);
 	});
     $("html").click(function() {
-        $(".approved_pop").slideUp(200);
+        $(".approved_pop").hide(200);
     });
     $(".approved_pop, #appro-pop").click(function(e) {
         e.stopPropagation();
     });	
-    
-});
 
 // Export Popup
-$(document).ready(function() {
-    $("#export-pop").click(function(){
-		$(this).next(".export_pop").toggle();
+    $("#candidate-export").click(function(){
+		$(".export_pop").toggle();
 	});
     $("html").click(function() {
-        $(".export_pop").slideUp(200);
+        $(".export_pop").hide(200);
     });
-    $(".export_pop, #export-pop").click(function(e) {
+    $(".export_pop, #candidate-export").click(function(e) {
         e.stopPropagation();
     });	
-});	
-	
 
 // project side bar tabs
 $(document).ready(function() {
