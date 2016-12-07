@@ -40,6 +40,7 @@ import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
@@ -54,6 +55,7 @@ import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.UserService;
@@ -120,7 +122,8 @@ public class RequirementListRestController {
 	 @Autowired
 	 private RequirementOffersService requirementOffersService;
 	 
-	 
+	 @Autowired
+	 private RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	 
 	 /**
 	   * @author sarath kumar
@@ -369,6 +372,16 @@ public class RequirementListRestController {
 									RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 									List<RequirementInterview> numberOfInterviews = requirementInterviewService.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(requirementSubmission.getId(),loginOrgLocation.getId());
 									List<RequirementOffers> requirementOffersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(requirementSubmission.getId(),loginOrgLocation.getId());
+									List<RequirementSubmissionHistory> requirementSubmissionHistoryServiceList = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndStage(loginOrgLocation.getId(),submissionType,requirementSubmission.getId());
+									if(requirementSubmissionHistoryServiceList !=null && requirementSubmissionHistoryServiceList.size() >0){
+										RequirementSubmissionHistory requirementSubmissionHistory = requirementSubmissionHistoryServiceList.get(0); 								
+										User usr = userService.getUserByUserCode(requirementSubmissionHistory.getCreatedBy());
+										if(usr.getFirstName() != null && usr.getLastName() !=null){
+											requirementSubmission.setSubmittedBy(usr.getFirstName()+" "+usr.getLastName());
+										}else{
+											requirementSubmission.setSubmittedBy(usr.getFirstName());
+										}
+									}
 									if(requirementOffersList.size() > 0){
 										RequirementOffers requirementOffers = requirementOffersList.get(0);
 										requirementSubmission.setOfferId(requirementOffers.getId());
