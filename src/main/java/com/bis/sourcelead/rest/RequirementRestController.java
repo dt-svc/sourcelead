@@ -40,6 +40,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -91,6 +92,9 @@ public class RequirementRestController {
 	 
 	 @Autowired
 	 private RecommendationsService recommendationsService;
+	 
+	 @Autowired
+	 private RolesService roleService;
 	 
 	 
 	 
@@ -355,9 +359,9 @@ public class RequirementRestController {
 			}
 		}
 		
-		List<Roles> usersList = userService.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_REQUIREMENT));
-		if(usersList != null){
-			combinedList.setRoles(usersList);
+		List<Roles> rolesList = roleService.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_REQUIREMENT));
+		if(rolesList != null){
+			combinedList.setRoles(rolesList);
 		}
 		
 		resultJson = commonUtil.toJSON(combinedList);

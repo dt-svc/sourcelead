@@ -120,6 +120,7 @@
 	                     result = result +"    <th>Position type</th>"; 
 	                     result = result +"    <th>Email</th>"; 
 	                     result = result +"    <th>Mobile</th>"; 
+	                     result = result +"    <th>Type</th>"; 
 	                     result = result +"    <th>Location</th>"; 
 	                     result = result +"    <th>Last Update</th>"; 
 	                     result = result +"  </tr>"; 
@@ -172,6 +173,7 @@
 			                	 }
 			                 result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 			                 result = result +"  <td><div>"+mobilePhone+"</div></td>";
+			                 result = result +"  <td><div>"+opt.candidateType+"</div></td>";
 			                 if(opt.state !='' && opt.state != 'undefined' && opt.city !='' && opt.city != 'undefined'){
 	                             result = result +"  <td><div><span title='"+opt.country+", "+opt.state+", "+opt.city+"'>"+opt.country+", "+opt.state+", "+opt.city+"</span></div></td>";
 	                              } else if(opt.state !='' && opt.state != 'undefined')
@@ -785,7 +787,7 @@ function cancel(candidateId){
     <div class="pull-left">
       <h2>Candidate List</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo;Candidate List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -826,6 +828,10 @@ function cancel(candidateId){
           
            <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
               <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
+           </sec:authorize>
+           
+           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
+              <li><a href="<c:url value='/addConsultant'/>" title=""><i class="fa fa-plus"></i>Add Consultant</a></li>
            </sec:authorize>
          
           <div class="clearfix"></div>
