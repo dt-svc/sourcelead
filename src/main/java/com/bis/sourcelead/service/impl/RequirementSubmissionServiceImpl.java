@@ -118,8 +118,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	@Override
-	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId,Long requirementId, List<Long> existingApplicantsIds) throws Exception {
-		return requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocationsId,requirementId,existingApplicantsIds);
+	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId,Long requirementId, List<Long> existingApplicantsIds, String isClientInterview) throws Exception {
+		return requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocationsId,requirementId,existingApplicantsIds,isClientInterview);
 	}
 	
 	@Override
@@ -462,12 +462,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
         	 }
     		 else if(requirement.getParentRequirement() == null && requirement.getIsClientJob() != null &&  requirement.getIsClientJob().equalsIgnoreCase("Y")){
     			 clientSubmission.setRequirement(requirement);
-    			 if("sladmin".equalsIgnoreCase(user.getUserCode())){
-                     clientSubmission.setOrgLocations(requirement.getClientId().getResponderLocationId());
-                 }else{
-                     clientSubmission.setOrgLocations(requirement.getClientId().getLocationId());    
-                 }
-    			 
+    			 clientSubmission.setOrgLocations(requirement.getClientId().getResponderLocationId());
         	 }
     		 
     		 clientSubmission.setCandidate(submission.getCandidate());
@@ -668,6 +663,13 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		return requirementSubmissionDao.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(orgLocationsId,submissionStatus,dateRange,userType,user);
 	}
 
+	//to get candidates for submit to client
+	@Override
+	public List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(Long orgLocationsId,
+			Long requirementId) throws Exception {
+		return requirementSubmissionDao.getAllShortLitstedCandidatesForClientSubmissionByRequirementId(orgLocationsId, requirementId);
+	}
+	
 	@Override
 	public List<RequirementSubmission> getRequirementPerCandidate(Long candudateId) throws Exception {
 		return requirementSubmissionDao.getRequirementPerCandidate(candudateId);
