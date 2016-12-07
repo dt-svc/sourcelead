@@ -789,13 +789,13 @@ function cancel(candidateId){
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
-      <div class="timesheet_head">
+      <div class="timesheet_head hdr-styles">
         <ul>
-          <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
+          <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="candidate-export"></i>
             <div class="export_pop">
               <ul>
-                <li onclick="exportToPdf();">PDF<i class="fa fa-file-pdf-o"></i></li>
-                <li onclick="exportToExcel();">Excel<i class="fa fa-file-excel-o"></i></li>
+                <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
+                <li onclick="exportToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
               </ul>
             </div>
           </li>
@@ -835,6 +835,7 @@ function cancel(candidateId){
       </div>
       <div class="candidate_wrap_table">
         <div id="candidateList"></div>
+        <div id="emptyPopup"></div>
       </div>
     </div>
     
@@ -875,34 +876,26 @@ $(document).ready(function() {
 });	
 
 // Approved Popup
-$(document).ready(function() {
-	
-	
     $("#appro-pop").click(function(){
-		$(".approved_pop").slideToggle(200);
+		$(".approved_pop").toggle(200);
 	});
     $("html").click(function() {
-        $(".approved_pop").slideUp(200);
+        $(".approved_pop").hide(200);
     });
     $(".approved_pop, #appro-pop").click(function(e) {
         e.stopPropagation();
     });	
-    
-});
 
 // Export Popup
-$(document).ready(function() {
-    $("#export-pop").click(function(){
-		$(".export_pop").slideToggle(200);
+    $("#candidate-export").click(function(){
+		$(".export_pop").toggle();
 	});
     $("html").click(function() {
-        $(".export_pop").slideUp(200);
+        $(".export_pop").hide(200);
     });
-    $(".export_pop, #export-pop").click(function(e) {
+    $(".export_pop, #candidate-export").click(function(e) {
         e.stopPropagation();
     });	
-});	
-	
 
 // project side bar tabs
 $(document).ready(function() {
@@ -1006,11 +999,27 @@ function exportToPdf(){
     }
 	  if(isCandidatesAvailable == ''){
 	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf";	
+	  }else{
+		  var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Candidate List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+			result = result +"	</div>";
+			$("#emptyPopup").append(result);
+			$("#candidate_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
 	  }
 }
 
 </script>
-
+<script type="text/javascript">
+function candidtaeCancel(){
+	$("#emptyPopup").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 <script>
 function exportToExcel(){
 	var isCandidatesAvailable= $("#noCandidates").val();
@@ -1028,6 +1037,17 @@ function exportToExcel(){
      }
 	  if(isCandidatesAvailable == ''){
 	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls";	
+	  }else{
+		  var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Candidate List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+			result = result +"	</div>";
+			$("#emptyPopup").append(result);
+			$("#candidate_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
 	  }
 }
 </script>

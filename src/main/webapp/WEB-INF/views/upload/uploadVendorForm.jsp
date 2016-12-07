@@ -1,4 +1,4 @@
-<jsp:include page="../masterHeader.jsp" />
+<%-- <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -9,6 +9,17 @@
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <script src="resources/js/formvalidator.js"></script>
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> --%>
+
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="resources/js/jquery-fun.js"></script> 
+<script src="resources/js/formvalidator.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <style type="text/css">
@@ -29,7 +40,7 @@ margin:10px 220px 0;
       <div class="pull-left">
         <h2>Import Vendor & Contacts</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="vendorsList">Vendor & Contact List</a> &raquo; Vendor & Contact Import </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="vendorsList">Vendor & Contact List</a> &raquo; Vendor & Contact Import </div>
     </section>
     <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="vendorFileUpload?${_csrf.parameterName}=${_csrf.token}&type=Vendor">
     <div class="content-area clearfix">
@@ -226,7 +237,7 @@ function uploadSave() {
      $('#clientNameDiv').find('p.jquery_form_error_message').remove();
      var res_field = document.upload_form.elements["uploadFile"].value;   
      var extension = res_field.substr(res_field.lastIndexOf('.') + 1).toLowerCase();
-     var allowedExtensions = ['xls', 'xlsx', 'csv'];
+     var allowedExtensions = ['xls', 'xlsx'];
      if (res_field.length > 0)
         {
              if (allowedExtensions.indexOf(extension) === -1) 

@@ -56,6 +56,9 @@ public class Projects implements Serializable{
     @Column(name = "END_DATE")
     private Date endDate;
     
+    @Column(name="INVOICE_FREQUENCY")
+	private String invoiceFrequency;
+    
     @Column(name = "TIMESHEET_FREQUENCY")
     private String timesheetFrequency;
     
@@ -234,6 +237,15 @@ public class Projects implements Serializable{
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+	
+
+	public String getInvoiceFrequency() {
+		return invoiceFrequency;
+	}
+
+	public void setInvoiceFrequency(String invoiceFrequency) {
+		this.invoiceFrequency = invoiceFrequency;
 	}
 
 	public String getTimesheetFrequency() {

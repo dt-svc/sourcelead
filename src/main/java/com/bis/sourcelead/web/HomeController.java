@@ -86,13 +86,14 @@ public class HomeController {
 	@RequestMapping(value = { "/**"},  method = { RequestMethod.GET, RequestMethod.POST })
 	public String defaultPage() {
 		 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		 if(auth != null && auth.getPrincipal() != null){
+ 		 if(auth != null && auth.getPrincipal() != null){
 				return "redirect:/dashboard";
 		 }
 		 else{
 				return "redirect:/login";
-		 }
+		 } 
 	}
+	
 	
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	public String customExceptionPage(HttpRequestMethodNotSupportedException exception){

@@ -136,6 +136,8 @@ padding: 1px 280px 2px 0;
      3.ajax url implementation in requirementListRestController.
 --%>
 <input type="hidden" name="noReq" id="noReq"/>
+<input type="hidden" id="requirementEmptyListMessage" name="requirementEmptyListMessage"/>
+<div id="popUp"></div>
 <script>
 function requirementList(){  
 	
@@ -349,6 +351,7 @@ function requirementList(){
                  }else{
                 	 $("#requirementList").empty();
                 	 $("#requirementList").removeAttr("style");
+                	 $("#requirementEmptyListMessage").val("noRequirement");
   	    	         var result ="";
 		    	    
 					 result = result+"			<div class='blank-pages'>";
@@ -1159,8 +1162,8 @@ function requirementPipeline(requirementId){
            <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop" onClick="mypop();"></i>
             <div class="export_pop">
               <ul>
-                <li onclick="exportToPdf();">PDF<i class="fa fa-file-pdf-o"></i></li>
-                <li onclick="exportToExcel();">Excel<i class="fa fa-file-excel-o"></i></li>
+                <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
+                <li onclick="exportToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp;Excel</li>
               </ul>
             </div>
           </li>
@@ -1407,6 +1410,7 @@ function changeStatus(requirementId){
 function exportToPdf(){
 	var req = $("#noReq").val();
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
 	  var status = [];
 		$('input:checkbox[name=requirementStatus]:checked').each(function() 
 	    {
@@ -1417,21 +1421,27 @@ function exportToPdf(){
 	    {
 			clients.push($(this).val());
 	    });
+		if(requirementEmptyMessage != 'noRequirement'){
 		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=pdf";
+		}else{
+			 var result = "";
+				result = result +"	<div class='project_inn_mask'></div>";
+				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
+				result = result +"		<p>Requirement List is Empty</p>";
+				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+				result = result +"	</div>";
+				$("#popUp").append(result);
+				$("#empty_requirement_pop").slideDown(200);
+				$(".project_inn_mask").fadeIn(200);
+		}
 }
 </script>
-
-
-
-
-
-
-
 
 <script>
 function exportToExcel(){
 	var req = $("#noReq").val();
-	
+	var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	  var status = [];
 		$('input:checkbox[name=requirementStatus]:checked').each(function() 
@@ -1443,9 +1453,29 @@ function exportToExcel(){
 	    {
 			clients.push($(this).val());
 	    });
-		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=xls";
+		if(requirementEmptyMessage != 'noRequirement'){
+			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=xls";	
+		}else{
+			 var result = "";
+				result = result +"	<div class='project_inn_mask'></div>";
+				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
+				result = result +"		<p>Requirement List is Empty</p>";
+				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+				result = result +"	</div>";
+				$("#popUp").append(result);
+				$("#empty_requirement_pop").slideDown(200);
+				$(".project_inn_mask").fadeIn(200);
+		}
+		
 }
 
 </script>
-  
+  </script> 
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 <jsp:include page="../masterFooter.jsp" />

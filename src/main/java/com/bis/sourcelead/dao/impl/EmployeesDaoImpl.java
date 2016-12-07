@@ -340,4 +340,14 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		return employee;
 	}
 
+	@Override
+	@Transactional
+	public List<Employees> getEmployeesByLocationId(Long orgLocationsId) throws Exception {
+		logger.debug("In Employee getEmployeesByLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		Query employeesListQuery= session.createQuery("from Employees employees left join fetch employees.user left join fetch employees.orgLocations orgloc where orgloc.id = :orgLocationsId ");
+		List<Employees> employeesList = employeesListQuery.setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		return employeesList;
+	}
+
 }

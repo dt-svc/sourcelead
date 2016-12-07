@@ -113,5 +113,10 @@ public class EmployeesServiceImpl implements EmployeesService {
 		return  employeesDao.getEmployeeByUserIdAndOrgLocationsId(userId,orgLocationsId);
 	}
 
+	@Override
+	public List<Employees> getEmployeesByLocationId(Long orgLocationsId) throws Exception {
+		return employeesDao.getEmployeesByLocationId(orgLocationsId);
+	}
+
 	
 }

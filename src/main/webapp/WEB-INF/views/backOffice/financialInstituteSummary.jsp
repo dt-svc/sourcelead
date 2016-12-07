@@ -122,7 +122,7 @@ overflow: visible;
                     <div class="vendor_wrap">
                       <div class="timesheet_head">
                         <ul>
-                          <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
+                          <li><i class="glyphicon glyphicon-export" style="display: none"></i><span style="display: none">Export</span><i class="glyphicon glyphicon-play" style="display: none" id="export-pop"></i>&nbsp;
                             <div class="export_pop">
                               <ul>
                                 <li><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
@@ -131,7 +131,7 @@ overflow: visible;
                               </ul>
                             </div>
                           </li>
-                          <li> <a href="javascript:void(0)" class="addcon-pop"><i class="fa fa-plus"></i>Add Transcation</a>
+                          <li> <a href="javascript:void(0)" style="display: none" class="addcon-pop"><i class="fa fa-plus"></i>Add Transcation</a> 
                             <div class="collapse-div-adduser pop-div col-md-4 transaction-div">
                              <i class="fa fa-close close-div"></i>
                               <div class="form-horizontal clearfix">
@@ -193,57 +193,6 @@ overflow: visible;
                       <div class="require_wrap_table table-wrap chosen-table">
                       <div id="loading"></div> 
                          <table id="financialTransactionsList" class="display" cellspacing="0" width="100%"> </table>
-						<!--<td>
-                            <div class="editdiv-summary">
-                             <i class="fa fa-close close-div"></i>
-							   <p class="ml"><strong>Edit Transaction</strong></p>
-                              <div class="form-horizontal clearfix">
-                                <div class="clearfix mb10">
-                                  <div class="col-md-6">
-                                    <input type="text" class="form-control input-sm" value="" placeholder="Id">
-                                  </div>
-                                  <div class="col-md-6">
-                                    <input type="text" class="form-control input-sm calendar" value="" placeholder="Date *" id="transaction-date">
-                                  </div>
-                                </div>
-                                <div class="clearfix mb10">
-                                  <div class="col-md-6">
-                                    <input type="text" class="form-control input-sm" value="" placeholder="Amount *">
-                                  </div>
-                                  <div class="col-md-6 select-field">
-                                    <select class="form-control">
-                                      <option>Debit</option>
-                                      <option>Credit</option>
-                                    </select>
-                                  </div>
-                                </div>
-                                <div class="clearfix mb10">
-                                  <div class="col-md-12">
-                                    <textarea class="form-control" rows="2" placeholder="Description"></textarea>
-                                  </div>
-                                </div>
-                                <div class="clearfix mb10">
-                                  <div class="col-md-6 chosen-a">
-                                    <select class="form-control chosen-select">
-                                      <option selected>-Select Type-</option>
-                                      <option>Payroll Expense</option>
-                                      <option>Payroll Net Payment</option>
-                                      <option>Payroll Tax Withholding</option>
-                                    </select>
-                                  </div>
-                                  <div class="col-md-6">
-                                    <input type="text" class="form-control input-sm" value="" placeholder="Cheque / Slip">
-                                  </div>
-                                </div>
-                                <div class="clearfix mr">
-                                  <div class="pull-right">
-                                    <button type="submit" class="btn btn-sm btn-primary">Add</button>
-                                    <button type="submit" class="btn btn-sm btn-default ml10">Cancel</button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div> 
-                           </td>-->
                       </div>
                     </div>
                   </div>

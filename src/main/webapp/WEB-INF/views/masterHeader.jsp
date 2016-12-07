@@ -68,7 +68,7 @@
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">
-  <span class="logo"> <a href="dashboard" title="Source Lead">
+  <span class="logo"> <a href="dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead">
   <i>
  <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     <h1>Source Lead</h1>
