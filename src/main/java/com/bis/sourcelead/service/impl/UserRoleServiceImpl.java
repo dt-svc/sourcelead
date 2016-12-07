@@ -239,7 +239,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 				 writeRow.createCell(0).setCellValue(emp.getEmployeeId()); 
 			 }
 			 if(emp.getHireDate() !=null){
-				 writeRow.createCell(5).setCellValue(emp.getHireDateStr()); 
+				 String dateOfJoin = Constants.DF_YMD.format(emp.getHireDate());
+				 writeRow.createCell(5).setCellValue(dateOfJoin); 
 			 }
 			 if(emp.getRate() !=null && !"".equalsIgnoreCase(emp.getRate())){
 				 writeRow.createCell(6).setCellValue(emp.getRate()+"/"+emp.getRatePer());
@@ -257,7 +258,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 		   if(userRoles.getUser().getMobilePhone() != null){
 			   writeRow.createCell(4).setCellValue(userRoles.getUser().getMobilePhone());
 		   }
-		   if(userRoles.getUser().getUserType() != null){
+		   if(userRoles.getUserType() != null){
 			   writeRow.createCell(8).setCellValue(userRoles.getUserType());
 		   }
 		   if(userRoles.getUser().getLocation() !=null){
@@ -266,9 +267,17 @@ public class UserRoleServiceImpl implements UserRoleService{
 		   if(userRoles.getReportingManager() !=null){
 			   writeRow.createCell(9).setCellValue(userRoles.getReportingManager().getFirstName());
 		   }
-		   if(userRoles.getUser().getStatus() !=null){
-			   writeRow.createCell(10).setCellValue(userRoles.getUserState().toString());
-		   }
+		   
+		   if(userRoles.getUser().getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString()) && "N".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
+			   writeRow.createCell(10).setCellValue("Invite");
+	   		   }else if((userRoles.getUser().getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString()) && "Y".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString())) &&  (userRoles.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRoles.getUserState().toString()))){
+	   			writeRow.createCell(10).setCellValue("Resend");
+	   		   }else if(userRoles.getUserState() !=null && "ACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
+	   			writeRow.createCell(10).setCellValue("Active");
+	   		   }else if(userRoles.getUserState() !=null && "INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
+	   			writeRow.createCell(10).setCellValue("In-active");
+	   		   }
+		   
 		return createExcelsheet;
 		
 	}
