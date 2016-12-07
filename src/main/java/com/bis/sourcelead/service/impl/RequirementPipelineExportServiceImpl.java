@@ -68,6 +68,16 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 					column++;
 				}
 			}
+			else if(submissionType.equals("OFFERMADE")){
+				createExcelsheet = getExcelSheetWithHeaderOfferMade(createExcelsheet, writeRow, createExcelworkbook,requirementId);
+				int column = 0;
+				for (RequirementSubmission requirementsub : requirementStatusList) {
+					writeRow = createExcelsheet.createRow(column + 8);
+					createExcelsheet = createXlsSheetOfferMade(createExcelsheet, writeRow, requirementsub);
+					column++;
+				}
+			}
+			
 			else{
 			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,requirementId);
 			int column = 0;
@@ -99,6 +109,121 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 	 * @param writeRow
 	 * @param requirementsub
 	 * @return
+	 * @description : export for offer candidate
+	 */
+	private Sheet createXlsSheetOfferMade(Sheet createExcelsheet, Row writeRow, RequirementSubmission requirementsub) {
+		if(requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())){
+			 writeRow.createCell(0).setCellValue(requirementsub.getCandidateName()); 
+		}
+		
+		if(requirementsub.getCandidateEmail() != null && !"".equalsIgnoreCase(requirementsub.getCandidateEmail())){
+			 writeRow.createCell(1).setCellValue(requirementsub.getCandidateEmail()); 
+		}
+		if(requirementsub.getPhoneNumber() != null && !"".equalsIgnoreCase(requirementsub.getPhoneNumber())){
+			 writeRow.createCell(2).setCellValue(requirementsub.getPhoneNumber()); 
+		}
+		if(requirementsub.getWorkExperience()!= null&& !"".equalsIgnoreCase(requirementsub.getWorkExperience())){
+			 writeRow.createCell(3).setCellValue(requirementsub.getWorkExperience()); 
+		}
+		if(requirementsub.getOfferJoinDate()!= null&& !"".equalsIgnoreCase(requirementsub.getOfferJoinDate())){
+			 writeRow.createCell(4).setCellValue(requirementsub.getOfferJoinDate()); 
+		}
+		
+		if(requirementsub.getPositionType()!= null&& !"".equalsIgnoreCase(requirementsub.getPositionType())){
+			 writeRow.createCell(5).setCellValue(requirementsub.getPositionType()); 
+		}
+		if(requirementsub.getOfferRate()!= null&& !"".equalsIgnoreCase(requirementsub.getOfferRate())){
+			 writeRow.createCell(6).setCellValue(requirementsub.getOfferRate()); 
+		}
+		String offerDate="--";
+		if(offerDate!= null){
+			 writeRow.createCell(7).setCellValue(offerDate); 
+		}
+		if(requirementsub.getAttachment()!= null&& !"".equalsIgnoreCase(requirementsub.getAttachment())){
+			 writeRow.createCell(8).setCellValue(requirementsub.getAttachment()); 
+		}
+		
+		
+		return createExcelsheet;
+	}
+
+
+	/**
+	 * @author shivayogi
+	 * @param createExcelsheet
+	 * @param writeRow
+	 * @param requirementsub
+	 * @return
+	 * @description : export for offer candidate
+	 */
+	private Sheet getExcelSheetWithHeaderOfferMade(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,
+			String requirementId) throws NumberFormatException, Exception {
+		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId)); 
+		
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+
+		writeRow = createExcelsheet.createRow(1);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell1 = writeRow.createCell(0);
+		cell1.setCellValue("Requirement Name :");
+		cell1.setCellStyle(style);
+		Cell cell2 = writeRow.createCell(1);
+	    cell2.setCellValue(requirement.getJobTitle());
+		cell2.setCellStyle(style);
+
+		writeRow = createExcelsheet.createRow(2);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell3 = writeRow.createCell(0);
+		cell3.setCellValue("Location :");
+		cell3.setCellStyle(style);
+
+		Cell cell4 = writeRow.createCell(1);
+		cell4.setCellValue(requirement.getCountry()+" "+requirement.getState());
+		cell4.setCellStyle(style);
+
+		writeRow = createExcelsheet.createRow(3);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell5 = writeRow.createCell(0);
+		cell5.setCellValue("Experience : ");
+		cell5.setCellStyle(style);
+
+		Cell cell6 = writeRow.createCell(1);
+		cell6.setCellValue(requirement.getMaxExp()+" "+requirement.getMinExp());
+		cell6.setCellStyle(style);
+		
+		
+		writeRow = createExcelsheet.createRow(4);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell7 = writeRow.createCell(0);
+		cell7.setCellValue("Shortlisted Applicants : ");
+		cell7.setCellStyle(style);
+			
+
+		Cell cell12 = writeRow.createCell(1);
+		cell12.setCellValue("6-static");
+		cell12.setCellStyle(style);
+		String headers [] = Constants.REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,7);
+
+		return createExcelsheet;
+	}
+
+
+
+	/**
+	 * @author shivayogi
+	 * @param createExcelsheet
+	 * @param writeRow
+	 * @param requirementsub
+	 * @return
 	 * @Description : for interview candidates 
 	 */
 	private Sheet createXlsSheetInterview(Sheet createExcelsheet, Row writeRow, RequirementSubmission requirementsub) {
@@ -109,11 +234,11 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		if(requirementsub.getCandidateEmail() != null && !"".equalsIgnoreCase(requirementsub.getCandidateEmail())){
 			 writeRow.createCell(1).setCellValue(requirementsub.getCandidateEmail()); 
 		}
-		if(requirementsub.getResumeName() != null && !"".equalsIgnoreCase(requirementsub.getResumeName())){
-			 writeRow.createCell(3).setCellValue(requirementsub.getResumeName()); 
+		if(requirementsub.getPhoneNumber() != null && !"".equalsIgnoreCase(requirementsub.getPhoneNumber())){
+			 writeRow.createCell(2).setCellValue(requirementsub.getPhoneNumber()); 
 		}
-		if(requirementsub.getNumOfInterview() != 0){
-			 writeRow.createCell(4).setCellValue(requirementsub.getNumOfInterview()); 
+		if(requirementsub.getWorkExperience()!= null&& !"".equalsIgnoreCase(requirementsub.getWorkExperience())){
+			 writeRow.createCell(3).setCellValue(requirementsub.getWorkExperience()); 
 		}
 		return createExcelsheet;
 	
@@ -134,7 +259,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 	 */
 	private Sheet getExcelSheetWithHeaderInterview(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,
 			String requirementId) throws NumberFormatException, Exception {
-Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId)); 
+		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId)); 
 		
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 

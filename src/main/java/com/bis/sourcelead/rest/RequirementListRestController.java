@@ -847,7 +847,7 @@ public class RequirementListRestController {
 								}else{
 									requirementSubmission.setSubmittedBy(usr.getFirstName());
 								}
-								requirementSubmissionHistory.getCreatedDate();
+								requirementSubmission.setSubmittedOn(Constants.DMY.format(requirementSubmissionHistory.getCreatedDate()));
 							}
 							if(requirementOffersList.size() > 0){
 								RequirementOffers requirementOffers = requirementOffersList.get(0);
