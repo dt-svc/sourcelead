@@ -336,12 +336,16 @@ function candidateSideBar(candidateId){
 			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+json.lastName+'</h4>';
 			            
 			             result = result+'                       <ul class="list-unstyled">';
+			             
+			             result = result+'                        <li>Type - '+json.candidateType+'</li>';  
+			             
 			                                                       if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
 			             result = result+'                         <li>Experience - '+json.experienceYears+' years '+json.experienceMonths+' months </li>';
               		                                                  }else{
               		                                                	  
               		     result = result+'                          <li>Experience - ----</li>';  
               		                                                  }
+                         
 			             result = result+'                       </ul>';
 			             
 			             
