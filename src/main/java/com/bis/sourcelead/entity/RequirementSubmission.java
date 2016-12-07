@@ -166,6 +166,9 @@ public class RequirementSubmission implements Serializable{
 	
 	@Transient
 	private String submittedBy;
+	
+	@Transient
+	private Date submittedOn;
 
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -512,5 +515,14 @@ public class RequirementSubmission implements Serializable{
 	public void setSubmittedBy(String submittedBy) {
 		this.submittedBy = submittedBy;
 	}
+
+	public Date getSubmittedOn() {
+		return submittedOn;
+	}
+
+	public void setSubmittedOn(Date submittedOn) {
+		this.submittedOn = submittedOn;
+	}
+	
 
 }

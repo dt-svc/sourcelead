@@ -847,6 +847,7 @@ public class RequirementListRestController {
 								}else{
 									requirementSubmission.setSubmittedBy(usr.getFirstName());
 								}
+								requirementSubmissionHistory.getCreatedDate();
 							}
 							if(requirementOffersList.size() > 0){
 								RequirementOffers requirementOffers = requirementOffersList.get(0);
@@ -897,9 +898,9 @@ public class RequirementListRestController {
 							}
 							}
 
-					}file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrg().getOrgName(),exportType,requirementId);
+					}file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrg().getOrgName(),exportType,requirementId,submissionType);
 				}else{
-					 file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrg().getOrgName(),exportType,requirementId);
+					 file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrg().getOrgName(),exportType,requirementId,submissionType);
 				}
 				 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 					if (mimeType == null) {

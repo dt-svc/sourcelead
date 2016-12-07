@@ -8,6 +8,6 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 
 public interface RequirementPipelineExportService {
 
-	File getExportRequirementFile(List<RequirementSubmission> requirementStatusList, String orgName, String exportType,String requirementId)throws FileNotFoundException, NumberFormatException, Exception;
+	File getExportRequirementFile(List<RequirementSubmission> requirementStatusList, String orgName, String exportType,String requirementId, String submissionType)throws FileNotFoundException, NumberFormatException, Exception;
 
 }
