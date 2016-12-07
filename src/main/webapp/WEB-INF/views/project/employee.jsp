@@ -61,7 +61,6 @@
            <div role="dialog" id="addTeam" class="modal fade">
              <div class="modal-dialog">
                <div class="modal-content" id="newEmployee">
-						
                 <form name="employee_form" id="employee_form" method="post">
                   <div class="modal-header">
                     <button data-dismiss="modal" class="close" type="button">X</button>
@@ -124,7 +123,8 @@
            <!-- Add Team modal popup ends --> 
  
  
- 
+ <input type="hidden" id="employeeEmptyListMessage"  name="employeeEmptyListMessage">
+ <div id="popUp"></div>
  
  <!-- this script is for Emplyee Listfunctionality at Projects screen -->
 <script>
@@ -164,8 +164,8 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     		result = result +' <a id="export-pop" onClick="exportFun()"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
     		result = result +'<div class="export_pop">';
     		result = result +'<ul>';
-    		result = result +'<li onclick="exportToPdf(\''+projectId+'\',\''+projectName+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-    		result = result +'<li onclick="exportToExcel(\''+projectId+'\',\''+projectName+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+    		result = result +'<li onclick="exportToPdf(\''+projectId+'\',\''+projectName+'\');"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>';
+    		result = result +'<li onclick="exportToExcel(\''+projectId+'\',\''+projectName+'\');"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Excel</li>';
     		result = result +'</ul>';
     		result = result +'</div>';
     		result = result +'</li> ';
@@ -175,10 +175,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
            	}
     		result = result	+ '</span>';
     		result = result + '		</div>';
-    		result = result + '        <div class="project_tabs_inn_table">';
-    		result = result + ' <div class="success_pop" id="selector3" style="display: none;">';
-    		result = result + ' <i class="fa fa-check-circle"></i><span id="docMsgDiv3"></span>';
-    		result = result + ' </div>';
+    		result = result + '        <div class="project_tabs_inn_table mt">';
     	    result = result + '        <div id="employeesLoadingImg"></div>';
     		if(json.projectMembersList.length!=null && json.projectMembersList.length!=''){
     	    result = result + '	<table id="projectEmployeePagination" class="display" cellspacing="0" width="100%">';
@@ -276,7 +273,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
         	result = result + '	     </tbody>';
     	    result = result + '	 </table>   ';
     		 }else{
-    		
+    			 $("#employeeEmptyListMessage").val("noEmployee");
     			 result = result + '<div class="table_nodata">';
     			 result = result + '<div class="table_nodata_inn">';
     			 result = result + '<img src="resources/images/no-data.png" />';
@@ -410,11 +407,7 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
    		    success: function(data) {
    		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
-   				$("#selector3").removeAttr("style");
- 				$("#selector3").css({ display: "block" });
- 				$("#docMsgDiv3").html("Project deleted");
    			 	projectEmployee(projectId,startDateStr,endDateStr,status);
-   			 docMsgFadein3();
    		    }
 	     }); 
 		}
@@ -666,19 +659,53 @@ function flushEmployee(){
 
 <script>
 function exportToPdf(projectId,projectName){
+	var employeeEmptyMessage = $("#employeeEmptyListMessage").val();
 	var sourceleadUrl ='${sourceleadUrl}';
+	if(employeeEmptyMessage != 'noEmployee'){
 	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&projectName="+projectName+"&exportType=pdf";
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='empty_employee_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Employee List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#empty_employee_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
 }
 </script>
 
 <script>
 function exportToExcel(projectId,projectName){
+	var employeeEmptyMessage = $("#employeeEmptyListMessage").val();
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&projectName="+projectName+"&exportType=xls";
+	if(employeeEmptyMessage != 'noEmployee'){
+		window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&projectName="+projectName+"&exportType=xls";	
+	}else{
+		 var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='empty_employee_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Employee List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#empty_employee_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	}
+	
 }
 </script>
 
-
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 <!-- Modal content Re-Asign Project-->
 <div role="dialog" id="Re-AssignProject" class="modal fade">
@@ -852,9 +879,3 @@ function flushReProject(){
 	$('#assignProjectDiv').find('p.jquery_form_error_message').remove();
 }
 </script>
-<script>
-	function docMsgFadein3() {
-		$("#selector3").fadeIn(200);
-        $('#selector3').delay(2000).fadeOut('slow');
-	}
-</script> 

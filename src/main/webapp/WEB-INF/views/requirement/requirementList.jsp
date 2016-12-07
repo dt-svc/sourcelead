@@ -96,13 +96,10 @@ function requirementListIndividualStatusCounts(){
 
 
 <style>
-
-/* .tbldata-dotdot span{
+/*.tbldata-dotdot span{
 max-width:220px;
-} */ 
-
-
-.clsDatePicker {
+} */
+ .clsDatePicker {
    z-index: 100000 !important;
 }
 .side-bar .side-nav ul li span{
@@ -117,9 +114,6 @@ overflow: visible;
 }
 .timesheet_head ul {
 padding: 1px 280px 2px 0;
-}
-.require_wrap_table select {
-width:100% !important;
 }
  </style>
  
@@ -142,6 +136,8 @@ width:100% !important;
      3.ajax url implementation in requirementListRestController.
 --%>
 <input type="hidden" name="noReq" id="noReq"/>
+<input type="hidden" id="requirementEmptyListMessage" name="requirementEmptyListMessage"/>
+<div id="popUp"></div>
 <script>
 function requirementList(){  
 	
@@ -190,17 +186,6 @@ function requirementList(){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     var json = JSON.parse(data);
-	                     for (var i = 0; i < 1; i++) {
-	                            var val= json[i];
-	                            var opt = "";
-	                                    if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-	                                            opt  = opt + '<div class="success_pop" id="selector2" style="display: block;">';
-	                                            opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-	                                            opt  = opt + '</div>';
-	                                            }
-	                                    $("#msgDiv").empty();
-	                                    $("#msgDiv").append(opt);
-	                            }
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
@@ -220,7 +205,7 @@ function requirementList(){
 			                     '</sec:authorize>';
 	                    	 }
 		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-		                    	 result = result +"<td><div><span>"+opt.clientName+"</span></div></td>";
+		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
@@ -362,11 +347,11 @@ function requirementList(){
 	                     $("#noReq").val('');
 	                     $("#requirementList").append(result); 
 	                     pagination(); 
-	                     msgFadein1(); 
 			    	} 
                  }else{
                 	 $("#requirementList").empty();
                 	 $("#requirementList").removeAttr("style");
+                	 $("#requirementEmptyListMessage").val("noRequirement");
   	    	         var result ="";
 		    	    
 					 result = result+"			<div class='blank-pages'>";
@@ -1144,11 +1129,6 @@ function requirementPipeline(requirementId){
 
 <section class="content-wraper">
   <section class="content-header clearfix">
-   <c:if test="${!empty msg}">
-	        <div class="success_pop" id="selector2"  style="display: block;">
-		         <i class="fa fa-check-circle"></i><span>${msg}</span>
-			</div>
-	     </c:if>
     <div class="pull-left">
       <h2>Requirement List</h2>
     </div>
@@ -1182,8 +1162,8 @@ function requirementPipeline(requirementId){
            <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop" onClick="mypop();"></i>
             <div class="export_pop">
               <ul>
-                <li onclick="exportToPdf();">PDF<i class="fa fa-file-pdf-o"></i></li>
-                <li onclick="exportToExcel();">Excel<i class="fa fa-file-excel-o"></i></li>
+                <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
+                <li onclick="exportToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp;Excel</li>
               </ul>
             </div>
           </li>
@@ -1206,7 +1186,6 @@ function requirementPipeline(requirementId){
       				<div id="requirementSideDiv">
 				     </div>  
       </div>
-      <div id ="msgDiv"></div>
     </div>
     <!-- Project --> 
   </div>
@@ -1244,7 +1223,7 @@ function requirementPipeline(requirementId){
 });
  		</script> 
 <script>
-$('#selector').delay(2000).fadeOut('slow');
+
 // Error pop
 $(document).ready(function() {
     $(".glyphicon-trash").click(function(){
@@ -1431,6 +1410,7 @@ function changeStatus(requirementId){
 function exportToPdf(){
 	var req = $("#noReq").val();
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
 	  var status = [];
 		$('input:checkbox[name=requirementStatus]:checked').each(function() 
 	    {
@@ -1441,21 +1421,27 @@ function exportToPdf(){
 	    {
 			clients.push($(this).val());
 	    });
+		if(requirementEmptyMessage != 'noRequirement'){
 		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=pdf";
+		}else{
+			 var result = "";
+				result = result +"	<div class='project_inn_mask'></div>";
+				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
+				result = result +"		<p>Requirement List is Empty</p>";
+				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+				result = result +"	</div>";
+				$("#popUp").append(result);
+				$("#empty_requirement_pop").slideDown(200);
+				$(".project_inn_mask").fadeIn(200);
+		}
 }
 </script>
-
-
-
-
-
-
-
 
 <script>
 function exportToExcel(){
 	var req = $("#noReq").val();
-	
+	var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	  var status = [];
 		$('input:checkbox[name=requirementStatus]:checked').each(function() 
@@ -1467,15 +1453,29 @@ function exportToExcel(){
 	    {
 			clients.push($(this).val());
 	    });
-		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=xls";
+		if(requirementEmptyMessage != 'noRequirement'){
+			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=xls";	
+		}else{
+			 var result = "";
+				result = result +"	<div class='project_inn_mask'></div>";
+				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
+				result = result +"		<p>Requirement List is Empty</p>";
+				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+				result = result +"	</div>";
+				$("#popUp").append(result);
+				$("#empty_requirement_pop").slideDown(200);
+				$(".project_inn_mask").fadeIn(200);
+		}
+		
 }
 
 </script>
-  
-<script>
-       function msgFadein1() {
-           setTimeout(function(){
-                   $('#selector2').fadeOut('slow'); }, 1000);
-       }
-</script>  
+  </script> 
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 <jsp:include page="../masterFooter.jsp" />
