@@ -95,7 +95,18 @@ public class VendorController {
 		}
 		model.addObject("vendor_list", vendorsList);
         model.addObject(vendorsList);
-		
+        
+        //this block is for success messages -@pavanjampana
+        String msg = "";
+		msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "vendorCreateMsg");
+		if(msg != null && !"".equals(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "vendorCreateMsg");
+		}else{
+			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "vendorContactCreateMsg");
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "vendorContactCreateMsg");
+		}
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{

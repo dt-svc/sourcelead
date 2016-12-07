@@ -37,6 +37,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
@@ -45,6 +46,7 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
@@ -89,6 +91,9 @@ public class SubmissionsRestController {
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -144,9 +149,11 @@ public class SubmissionsRestController {
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			requirementSubmissionService.saveRequirementSubmission(jsonObj, user, orgLocations,con,multiFile);
-    	    
-    	    
+			RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj, user, orgLocations,con,multiFile);
+			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+			requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
+			requirementSubmissionHistory.setFromStage("NEW");
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission,user,requirementSubmissionHistory);
 			return "success";
 	    
  }
@@ -263,11 +270,14 @@ public class SubmissionsRestController {
  	 String[] submissionId = submissionsList.split(",");
  	 
  	 for(int i=0; i < submissionId.length; i++){
+ 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
  		 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
+ 		requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
  		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST);
  		 submission.setUpdatedBy(user.getUserCode());
  		 submission.setUpdatedDate(new Date());
- 		 requirementSubmissionService.storeRequirementSubmission(submission);
+ 		RequirementSubmission requirementSubmission = requirementSubmissionService.storeRequirementSubmission(submission);
+ 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
  		
  		}
  	 int shotListCount = submissionId.length;
