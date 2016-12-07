@@ -1958,7 +1958,7 @@ function exportPipelineToExcel(requirementId,submissionType){
 </script>
 
 
-<!-- script>
+ <script>
 function exportPipelineToPdf(requirementId,submissionType){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
@@ -1967,7 +1967,7 @@ function exportPipelineToPdf(requirementId,submissionType){
       window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=pdf";
 }
 
-</script> -->
+</script> 
 
 
 <jsp:include page="addApplicant.jsp" />
