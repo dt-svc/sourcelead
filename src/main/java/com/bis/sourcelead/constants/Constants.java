@@ -255,6 +255,8 @@ public class Constants {
 	
 	public static String TEAM_ACTIVE = "1";
 	public static String TEAM_IN_ACTIVE = "0";
+	
+	public static Integer DEFAULT_CATEGORY = 0;
 
 	public static String BI_WEEKLY = "Bi-Weekly";
 	public static String SEMI_MONTHLY = "Semi-Monthly";

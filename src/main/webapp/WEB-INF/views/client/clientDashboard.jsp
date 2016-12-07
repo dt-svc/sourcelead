@@ -29,8 +29,10 @@ overflow-x: auto;
 	<!-- Content Area -->
 	<section class="content-wraper">
 		<section class="content-header clearfix">
-		  <c:if test="${!empty msg}">
-	        <div class="success_pop" id="selector"  style="display: none;">
+
+		<div id="msgDiv" ></div>
+		<c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector" style="display: block;">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
@@ -110,11 +112,11 @@ overflow-x: auto;
 						
 						 <sec:authorize access="hasRole('ROLE_EXPORT_CLIENTS')"> 
 						   <li id="clientImports" style="display:none">
-		                      <a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportClient</a>
+		                      <a  id="client-imports"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportClient</a>
 			                    <div class="export_pop">
 				                   <ul>
-				                     <li onclick="exportClientToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>
-				                     <li onclick="exportClientToExcel();">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>
+				                     <li onclick="exportClientToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+				                     <li onclick="exportClientToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Excel </li>
 				                   </ul>
 				              </div>
 		                  </li> 
@@ -125,8 +127,8 @@ overflow-x: auto;
 		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportContact</a>
 			                    <div class="export_pop">
 				                <ul>
-				                <li onclick="exportContactToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>
-				                <li onclick="exportContactToExcel();">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>
+				                <li onclick="exportContactToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp; PDF</li>
+				                <li onclick="exportContactToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp; Excel</li>
 				       </ul>
 				    </div>
 		            </li> 
@@ -138,11 +140,13 @@ overflow-x: auto;
 				</div>
 				
 				<div class="clients_wrap_table " id ="vendorListFilter">
-			
-		     	<table id="clientList" class="display" cellspacing="0" width="100%"> </table>
+			      <input type="hidden" name="clientContactLength" id="clientContactLength" >
+			      <input type="hidden" name="emptyClientList" id="emptyClientList" >
+			      
+		     	  <table id="clientList" class="display" cellspacing="0" width="100%"> </table>
 		     	 <table id="vendorContactList" class="display" cellspacing="0" width="100%"> </table> 
 				</div>
-				
+				<div id="popUp"></div>
 			</div>
 			<%-- <c:if test="${empty clientsList}">
 				<div class="row mt">
@@ -196,6 +200,7 @@ function getClientDetails(){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getClientDetails?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
    		    success: function(data) {
+   		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
    		    	var json = JSON.parse(data);
    	        	var result = "";
    	        	/* if(json.length != null && json.length != ''){ */
@@ -291,8 +296,23 @@ function getClientDetails(){
    	        	} */
    	    	    $("#clientList").empty();  
    	    	    $("#clientList").append(result)
+   	    	    $("#emptyClientList").val(json.length);
    	    	    pagination();
-   	    	    
+   		    }else{
+  		    	 var result ="";
+	   		    	result = result+"   <div class='row'>"; 
+					 result = result+"	<div class='col-lg-12'>"; 
+					 result = result+"		<div class='content-area clearfix'>"; 
+					 result = result+"			<div class='blank-pages'>";
+					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 result = result+"			        <p>No Clients Found</p>";
+					 result = result+"			 </div>";
+					 result = result+"		</div>"; 
+					 result = result+"	</div>"; 
+					 result = result+"  </div> ";  
+	        	     $("#clientList").empty();  
+ 	    	         $("#clientList").append(result)
+	        	}   
    		    }
 	 }); 
 	
@@ -405,12 +425,25 @@ function getVendorContactLists(){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getClientContactLists?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus, 	   
    		    success: function(data) {
+   		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
    		    	var json = JSON.parse(data);
+   		    	for (var i = 0; i < 1; i++) { 
+     				var val= json[i];
+     				var opt = "";
+     					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+         					opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
+         					opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+         					opt  = opt + '</div>';
+     						}
+     					$("#msgDiv").empty();
+     					$("#msgDiv").append(opt);
+     				} 
+   		    	
    	        	var result = "";
    	        	/* if(json.length != null && json.length != ''){ */
    	        	result = result +'<thead>';
    	        	result = result +'<tr>';
-   	        	result = result +'	<th>Name</th>';
+   	        	result = result +'	<th>Name </th>';
    	        	result = result +'  <th>Email</th>';
    	        	result = result +'  <th>Ph. No</th>';
    	        	result = result +' <th>Owner</th>';
@@ -420,7 +453,6 @@ function getVendorContactLists(){
    	        	result = result +'<th>Action</th>';
    	        	result = result +'</tr>';
    	        	result = result +'	</thead>';
-   	        	
    	        	result = result +'<tbody>';
    	        	
    	        	for (var i=0; i<json.length; i++)
@@ -530,7 +562,9 @@ function getVendorContactLists(){
    	        	result = result +'</tbody>';
    	    	    $("#vendorContactList").empty();  
    	    	    $("#vendorContactList").append(result)
+   	    	    $("#clientContactLength").val(json.length);
    	    	    pagination1(); 
+   	    	    msgFadein();
    	        	/* }else{
    	        		result = result +'<div class="row">';
    	        		result = result +'<div class="col-lg-12">';
@@ -548,7 +582,21 @@ function getVendorContactLists(){
     	    	    $("#vendorContactList").append(result)
    	        	} */
    	        	
-   	    	    
+   		    }else{
+	   		    	 var result ="";
+	   		    	result = result+"   <div class='row'>"; 
+ 					 result = result+"	<div class='col-lg-12'>"; 
+ 					 result = result+"		<div class='content-area clearfix'>"; 
+ 					 result = result+"			<div class='blank-pages'>";
+ 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+ 					 result = result+"			        <p>No Contacts Found</p>";
+ 					 result = result+"			 </div>";
+ 					 result = result+"		</div>"; 
+ 					 result = result+"	</div>"; 
+ 					 result = result+"  </div> ";  
+   	        	     $("#vendorContactList").empty();  
+    	    	     $("#vendorContactList").append(result)
+   	        	}  
    		    }
 	 });
 	
@@ -1055,9 +1103,24 @@ function exportClientToPdf(){
     {
 			values.push($(this).val());
     });
-	
+	emptyClientList
+	var emptyClientList = $("#emptyClientList").val();
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/exportClientDetails?${_csrf.parameterName}=${_csrf.token}&values="+values+"&exportType=pdf";
+	if(emptyClientList > 0){
+		window.location.href = sourceleadUrl+"/exportClientDetails?${_csrf.parameterName}=${_csrf.token}&values="+values+"&exportType=pdf";	
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Clients List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#client_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+	
 }
 </script>
 
@@ -1068,9 +1131,24 @@ function exportClientToExcel(){
     {
 			values.push($(this).val());
     });
-	
+	var emptyClientList = $("#emptyClientList").val();
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/exportClientDetails?${_csrf.parameterName}=${_csrf.token}&values="+values+"&exportType=xls";
+	if(emptyClientList > 0){
+		window.location.href = sourceleadUrl+"/exportClientDetails?${_csrf.parameterName}=${_csrf.token}&values="+values+"&exportType=xls";
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Clients List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#client_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+	
+	
 }
 </script>
 
@@ -1092,10 +1170,22 @@ function exportContactToPdf(){
     {
 		invitationStatus.push($(this).val());
     });
-	
+	var vendorContactListEmpty = $("#clientContactLength").val();
 	var sourceleadUrl ='${sourceleadUrl}';
-	
+	if(vendorContactListEmpty > 0){
 	window.location.href = sourceleadUrl+"/exportClientContactDetails?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus+"&exportType=pdf";
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Client Contacts List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#client_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
 }
 </script>
 
@@ -1117,13 +1207,25 @@ function exportContactToExcel(){
     {
 		invitationStatus.push($(this).val());
     });
-	
+	var vendorContactListEmpty = $("#clientContactLength").val();
 	var sourceleadUrl ='${sourceleadUrl}';
+	if(vendorContactListEmpty > 0){
+		window.location.href = sourceleadUrl+"/exportClientContactDetails?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus+"&exportType=xls";	
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Client Contacts List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#client_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
 	
-	window.location.href = sourceleadUrl+"/exportClientContactDetails?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus+"&exportType=xls";
 }
 </script>
-
 <script>
 // Edit pop
 $(document).ready(function() {	
@@ -1136,34 +1238,41 @@ $(document).ready(function() {
 </script> 
 
 <script>
-  $('#selector').delay(2000).fadeOut('slow');
-  $(document).ready(function() {
-	   $("#export-pop").click(function(){
-	               $(".export_pop").slideToggle(200);
+ $('#selector').delay(2000).fadeOut('slow');
+	   $("#client-imports").click(function(){
+	       $(".export_pop").toggle();
 	       });
 	   $("html").click(function() {
-	       $(".export_pop").slideUp(200);
+	       $(".export_pop").hide();
 	   });
-	   $(".export_pop, #export-pop").click(function(e) {
+	   $(".export_pop, #client-imports").click(function(e) {
 	       e.stopPropagation();
 	   });        
-	});  
 </script> 
 
 <script>
-  $('#selector').delay(2000).fadeOut('slow');
+$('#selector').delay(2000).fadeOut('slow');
   $(document).ready(function() {
 	   $("#export-popcon").click(function(){
-	               $(".export_pop").slideToggle(200);
+		   $(".export_pop").toggle();
 	       });
 	   $("html").click(function() {
-	       $(".export_pop").slideUp(200);
+	       $(".export_pop").hide(200);
 	   });
 	   $(".export_pop, #export-popcon").click(function(e) {
 	       e.stopPropagation();
 	   });        
-	});  
+	});
 </script> 
+
+<!-- Show success message after form submission script -->
+<script>
+	function msgFadein() {
+	    setTimeout(function(){ 
+	    	$('#selector1').fadeOut('slow'); }, 300);
+	}
+</script> 
+<!-- End -->
 
 
 <jsp:include page="editClientSpocDetails.jsp" />

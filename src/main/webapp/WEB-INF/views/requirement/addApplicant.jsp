@@ -345,6 +345,9 @@ function getCandidateDetails(){
 		        	 $("input[name=LastName]").val(json['lastName']);
 		        	 $("input[name=EmailId]").val(json['email']);
 		        	 $("input[name=PhoneNumber]").val(json['mobilePhone']);
+		        	 if(json['designation'] != null && json['designation'] != "" && json['designation'] != 'undefined'){
+		        		 $("input[name=Designation]").val(json['designation']);
+		        	 }
 		        },
 		    });
 	 }else{

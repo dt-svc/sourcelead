@@ -2,8 +2,12 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -27,6 +31,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.RequirementAssignToService;
 
@@ -206,23 +211,87 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus, String dateRange) {
+	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus, String dateRange,String userType,User user) {
 		
         Session session = this.sessionFactory.getCurrentSession();
         
-        String query = "";
-		if(dateRange != null && "today".equals(dateRange)){
-           query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId and rs.submissionStatus = :submissionStatus and rs.status = 1  and DATE(rs.createdDate) = CURDATE()";
-		}else if(dateRange != null && "previous".equals(dateRange)){
-			query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId and rs.submissionStatus = :submissionStatus and rs.status = 1  and DATE(rs.createdDate) < CURDATE()";
-		}
-		
-		List<Long> reqSubmsCount =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("submissionStatus", submissionStatus).list();
+        if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
+        	Map<String, Object> params = new HashMap<String,Object>();
+    		
+    		String from = "select count(*) from RequirementSubmission rs";
+    		
+    		//login user as created by
+    		String subQuery1 = "rs.requirement.id IN (select req.id from Requirement req where req.createdBy =:loginUserCode)";
+    		params.put("loginUserCode",user.getUserCode());
+    		
+    		//login user as a approver for this requirement  or  assigned to.
+    		String subQuery2 = "rs.requirement.id IN (select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId )  or (rs.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) ) ";
+    		params.put("approverUserId",user.getId());
+    		params.put("userId",user.getId());
+    		
+    		
+    		//login user as a  manager for this job.
+    		String subQuery3 = "rs.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId )  ";
+    		params.put("managerUserId",user.getId());
+    		
+    		
+    		String subQuery = "";
+    		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
+    			if(dateRange != null && "today".equals(dateRange)){
+    				subQuery = "where rs.orgLocations.id = :orgLocationsId and rs.submissionStatus = :submissionStatus and  rs.status = 1 and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+    			}else if(dateRange != null && "previous".equals(dateRange)){
+    			    subQuery = "where rs.orgLocations.id = :orgLocationsId and rs.submissionStatus = :submissionStatus and rs.status = 1  and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+    			}
+    			params.put("orgLocationsId",orgLocationsId);
+    			params.put("submissionStatus",submissionStatus);
+    		}
+    		String whereCondition = subQuery;
+    		Query query =  session.createQuery(from+" "+whereCondition+" ");
+    		
+    		for (String str : query.getNamedParameters())
+            {
+    			if(str.equalsIgnoreCase("orgLocationsId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId") || str.equalsIgnoreCase("managerUserId")){
+    				query.setLong(str, (long) params.get( str ));
+    			}
+    			if(str.equalsIgnoreCase("level") || str.equalsIgnoreCase("level1") || str.equalsIgnoreCase("level2")){
+    				query.setInteger(str, (int) params.get( str ));
+    			}
+    			if(str.equalsIgnoreCase("submissionStatus") ){
+    				query.setParameter(str,ApplicantSubmissionStatus.getNameByValue(submissionStatus));
+    			}
+    			else{
+    				query.setParameter( str, params.get( str ) );
+    			}
+            	
+            }
+    		
+    		List<Long> reqSubmsCount  = query.list();
+    		Integer count = 0;
+			if(reqSubmsCount != null && !reqSubmsCount.isEmpty()){
+					count = reqSubmsCount.get(0).intValue();
+			}
+			return count;
+			
+        }else{
+        	
+        	String query = "";
+        	if(dateRange != null && "today".equals(dateRange)){
+                query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId and rs.submissionStatus = :submissionStatus and rs.status = 1  and DATE(rs.createdDate) = CURDATE()";
+     		}else if(dateRange != null && "previous".equals(dateRange)){
+     			query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId and rs.submissionStatus = :submissionStatus and rs.status = 1  and DATE(rs.createdDate) < CURDATE()";
+     		}
+        	
+        	List<Long> reqSubmsCount =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("submissionStatus", submissionStatus).list();
 			Integer count = 0;
 			if(reqSubmsCount != null && !reqSubmsCount.isEmpty()){
 					count = reqSubmsCount.get(0).intValue();
 			}
 			return count;
+        	
+        }
+		
+		
+		    
 	}
 	
 	@Override
