@@ -125,6 +125,9 @@ public class OrgSpoc implements Serializable{
 	
 	@Transient
 	private String releasedRequirement;
+	
+	@Transient
+	private String msg;
 
 	public Long getSpocLocationId() {
 		return spocLocationId;
@@ -371,5 +374,13 @@ public class OrgSpoc implements Serializable{
 
 	public void setReleasedRequirement(String releasedRequirement) {
 		this.releasedRequirement = releasedRequirement;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 }
