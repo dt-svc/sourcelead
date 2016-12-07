@@ -103,7 +103,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			@RequestParam(value="userRole", required=false) String userRole,
 			@RequestParam(value="searchByName", required=false) String searchByName,
 			@RequestParam(value="userState", required=false) String userState,
-			@RequestParam(value="loginUserRole", required=false) String loginUserRole) {
+			@RequestParam(value="loginUserRole", required=false) String loginUserRole) throws Exception {
 		
 	 	String resultJson = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -111,50 +111,23 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
 		List<UserRole> rolesList = new ArrayList<UserRole>();
 		
-		
-		try {
+			Long userRoleType ;
 			
-			if(!isNullOrEmpty(userState) && isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)){
-				rolesList = userRoleService.getUsersListByUserStateAndLocationId(userState, orgLocations.getId(),user.getId(),loginUserRole,user.getUserCode());
+			if(!"".equalsIgnoreCase(userRole)){
+				 userRoleType = Long.parseLong(userRole);
+			}else{
+				 userRoleType = null;
 			}
-			else if((isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)) || (userRole.equalsIgnoreCase("All") && isNullOrEmpty(searchByName))){
-				rolesList = userRoleService.getUsersListByLocationId(orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode());
-			}
-			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && isNullOrEmpty(searchByName)){
-				rolesList = userRoleService.getUsersListByRoleAndLocationId(Long.parseLong(userRole), orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode());
-			}
-			else if((!isNullOrEmpty(searchByName) && isNullOrEmpty(userRole)) || ("All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName))){
-				rolesList = userRoleService.getUsersListByUserNameAndLocationId(searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode());
-			}
-			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName)){
-				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(Long.parseLong(userRole), searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode());
-			}
-		
+			
+			rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode());
+	
 			if(null != rolesList){
 				for(UserRole role : rolesList){
 					role.setUserRoleName(role.getRoles().getDisplayName());
 					userRolesList.add(role);
 				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	
-	/*else if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_APPROVER")){
-		List<Long> projectIdsList  = null;
-		try {
-			 projectIdsList = projectsService.getApprovarAssignedProjects(user.getId(), orgLocations.getId());
-			 rolesList = userRoleService.getApproverAssignedUsers(projectIdsList, userState, searchByName);
-			 for(UserRole role : rolesList){
-					role.setUserRoleName(role.getRoles().getDisplayName());
-					userRolesList.add(role);
-				}
-			 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-	}*/
+			
+			}	
 		 resultJson = toJSON(userRolesList);
 		 return resultJson;
 

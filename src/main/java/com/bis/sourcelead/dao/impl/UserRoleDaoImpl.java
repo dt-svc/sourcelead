@@ -4,9 +4,11 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-
+import java.util.Map;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -15,10 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -224,24 +224,76 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<UserRole> getUsersListByRoleAndNameAndLocationId(Long roleId, String userName, Long locationId,
 			String userState, Long userId,String loginUserRole,String userCode) throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
 
-		String subQuery = "";
-		if (!isNullOrEmpty(userState)) {
-			subQuery = "and userRole.userState = '" + userState + "'";
+		Session session = this.sessionFactory.getCurrentSession();
+        Map<String, Object> params = new HashMap<String,Object>();
+		
+        ArrayList<String> subquerys = new ArrayList<String>();
+       
+		String from = "from UserRole userRole where "; 
+		
+		String subQuery = "userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' " ;
+		params.put("locationId",locationId);
+		params.put("userId",userId);
+		subquerys.add(subQuery);
+		
+		String subQuery3 = "";
+		String subQuery4 = "";
+		String subQuery5 = ""; 
+		
+		 /*
+		  *  to check the if the search  parameter is given or not
+		 */
+		 if(!"".equalsIgnoreCase(userName)){
+			 subQuery3 = " and ( (userRole.user.firstName LIKE '" + userName + "%') OR (userRole.user.lastName LIKE '"+ userName + "%') OR (userRole.user.email LIKE '" + userName + "') )";
+			 subquerys.add(subQuery3);
+		 }else{
+			 subQuery3 =""; 
+		 }
+		
+		 
+		 /*
+		  *  to check the if the UserState i,e Active,In Active or Not LoggedInn   parameter is given or not
+		 */
+		if(!"".equalsIgnoreCase(userState)){
+			subQuery4 = " and userRole.userState = '" + userState + "'";
+			 subquerys.add(subQuery4);
+		}else{
+			 subQuery4 ="";
 		}
 		
-		/*String subQuery1 = "";
-		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
-			subQuery1 = "and userRole.createdBy = '" + userCode + "' ";
-		}*/
-
-		return session
-				.createQuery("Select userRole from UserRole userRole where userRole.roles.id = :roleId and "
-						+ "((userRole.user.firstName LIKE '" + userName + "%') OR (userRole.user.lastName LIKE '"
-						+ userName + "%') OR (userRole.user.email LIKE '" + userName + "')) "
-						+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' " + subQuery + " ")
-				.setLong("roleId", roleId).setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
+		
+		 /*
+		  *  to check the if the Role Search id Given Or Not
+		 */
+		if(roleId != null){
+			subQuery5 = " and userRole.roles.id = :roleId";
+			params.put("roleId",roleId);
+			subquerys.add(subQuery5);
+		}else{
+			 subQuery5 ="";
+		}
+		
+		
+		/*
+		 * appending   each and every subquery  to where Condition  
+		 */
+		StringBuilder whereCondition = new StringBuilder();
+		for (String s : subquerys){
+			whereCondition.append(s);
+	       }
+		
+		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY userRole.id DESC");
+		for (String str : query.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("locationId") || str.equalsIgnoreCase("userId")){
+				query.setLong(str, (long) params.get( str ));
+			}else{
+				query.setParameter( str, params.get( str ) );
+			}
+        	
+        }
+	 	return  query.setCacheable(true).list();
 	}
 
 	@Override
