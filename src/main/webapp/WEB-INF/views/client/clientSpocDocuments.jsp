@@ -8,6 +8,9 @@
 function clientSpocDocuments(orgRelationId,clientLocationId,spocName,userId){
 	var result = "";
 	result = result  +'<div class="timesheet_head">';
+	result  = result + '<div class="success_pop" id="selector2" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="docMsgDiv"></span>';
+    result  = result + '</div>';
 	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
 	    result = result + '<ul>';
 	    '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_CLIENT_DOCUMENT\')">';
@@ -48,6 +51,18 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
              			 location.replace(sourceleadUrl+"/errorPage");
              		 }
              		 else{
+             			 var json = JSON.parse(data);
+             			/* for (var i = 0; i < 1; i++) { 
+             				var val= json[i];
+             				var opt = "";
+             					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+	             					opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
+	             					opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+	             					opt  = opt + '</div>';
+             						}
+             					$("#docMsgDiv").empty();
+             					$("#docMsgDiv").append(opt);
+             				} */
 	                	 $("#spocDocumentsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='clientSpocDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -64,7 +79,6 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
@@ -114,7 +128,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                    		 result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocumentForSpoc('+clientLocationId+',\''+spocName+'\','+userId+');  getClientSpocDocument('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+opt.id+');"></a>';
 	                    		 '</sec:authorize>';
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_DOCUMENT\')">'; 
-	                    		 result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteDocument(\''+clientLocationId+'\',\''+orgRelationId+'\',\''+spocName+'\',\''+userId+'\',\''+opt.id+'\');"></i>';
+	                    		 result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteDocument(\''+clientLocationId+'\',\''+orgRelationId+'\',\''+spocName+'\',\''+userId+'\',\''+opt.id+'\',\''+opt.docName+'\');"></i>';
 	                    		 '</sec:authorize>';
 	                    		 '<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\',\'ROLE_DELETE_CLIENT_DOCUMENT\')">';
                     			 result = result+'--';
@@ -369,7 +383,15 @@ function closePopup(){
 	            		 }
 	            		 else{
 	            			$("#popUpDiv").removeClass("edit-details-active");
+	            			$("#selector2").removeAttr("style");
+	            			$("#selector2").css({ display: "block" });
+	            			if(docId != null){
+	            				$("#docMsgDiv").html("Success!! Document details updated");
+	            			}else{
+	            				$("#docMsgDiv").html("Success!! New document added");
+	            			}
 	            			spocDocumentsList(clientLocationId,orgRelationId,userId,spocName);
+	            			docMsgFadein();
 	            		 }
 					},
 				});
@@ -409,14 +431,14 @@ function getSpocsList(orgRelationId){
 
 </script> -->
 <script>
-function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId){
+function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId,docName){
 	 var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>User delete message here</p>";
 	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="terminateReasonDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Submit" onclick="saveReason('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+docId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelDocTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Submit" onclick="saveReason('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+docId+',\''+docName+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelDocTermination();"></b>';
 	result = result +"	</div>";
 	$("#deleteDocpopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -425,7 +447,7 @@ function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId){
 </script>
 
 <script>
-function saveReason(clientLocationId,orgRelationId,spocName,userId,docId){
+function saveReason(clientLocationId,orgRelationId,spocName,userId,docId,docName){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var terminateReason = document.getElementById("terminateReason").value;
 	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
@@ -443,7 +465,11 @@ function saveReason(clientLocationId,orgRelationId,spocName,userId,docId){
         		 else{
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);
+        			 $("#selector2").removeAttr("style");
+         			 $("#selector2").css({ display: "block" });
+         			 $("#docMsgDiv").html(""+docName+" Removed");
         			 spocDocumentsList(clientLocationId,orgRelationId,userId,spocName);
+        			 docMsgFadein();
         		 }
    		    }
 	     });
@@ -584,3 +610,12 @@ function manageDates() {
 	  }
   } 
 </script>
+
+<!-- Show success message after form submission script -->
+<script>
+	function docMsgFadein() {
+		$("#selector2").fadeIn(200);
+        $('#selector2').delay(2000).fadeOut('slow');
+	}
+</script> 
+<!-- End -->
