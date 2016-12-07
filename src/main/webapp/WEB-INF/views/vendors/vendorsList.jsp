@@ -24,8 +24,9 @@ overflow-x: auto;
     <!-- Content Area -->
       <section class="content-wraper">
         <section class="content-header clearfix">
-        <c:if test="${!empty msg}">
-	        <div class="success_pop" id="selector"  style="display: block;">
+        <div id="msgDiv" ></div>
+		<c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector" style="display: block;">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
@@ -798,6 +799,14 @@ function pagination1(){
 						var country = "";
 						result = result+ '<div class="project_tabs_inn_table">';
 						result = result + '<div class="project_details">';
+// 						result  = result + '<div class="success_pop" id="editVendorMsgDiv"></div>';
+						
+	 					if(json.msg != null && json.msg != '' && json.msg != 'undefined'){
+	 						result  = result + '<div class="success_pop" id="editVendorMsg" style="display: block;">';
+	 						result  = result + '<i class="fa fa-check-circle"></i><span>'+json.msg+'</span>';
+	 						result  = result + '</div>';
+	 						}
+	 					
 							result = result + ' <div class="useredit useredit_a">';
 							'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_EDIT_VENDOR\")">';
 								result = result + '<a id="edit-client" href="javascript:editVendorDetails('+vendorLocationId+','+orgRelationId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
@@ -884,6 +893,7 @@ function pagination1(){
 						$("#tab-1").empty();
 						$("#tab-1").append(result);
 						$("#tab-1").show();
+						editVendorMsgMsgFadein();
 						$(".project-tabs-menu a").click(
 								function(event) {
 									event.preventDefault();
@@ -1271,3 +1281,18 @@ function exportVendorContactToExcel(){
 	}
 }
 </script>
+
+<!-- Show success message after form submission script -->
+<script>
+	function msgFadein() {
+	    setTimeout(function(){ 
+	    	$('#selector1').fadeOut('slow'); }, 300);
+	}
+</script> 
+<!-- End -->
+<script>
+	function editVendorMsgMsgFadein() {
+		$("#editVendorMsg").fadeIn(200);
+        $('#editVendorMsg').delay(2000).fadeOut('slow');
+	}
+</script> 

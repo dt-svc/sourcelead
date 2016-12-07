@@ -32,6 +32,10 @@ function vendorContacts(orgRelationID,clientLocationId){
 	
 	var result = "";
 	result = result  +'<div class="timesheet_head">';
+	result  = result + '<div id="vendorConactMsgDiv" ></div>';
+	result  = result + '<div class="success_pop" id="vendorConactTerminateMsgDiv" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="vendorConactTerminateMsg"></span>';
+    result  = result + '</div>';
 	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
 	    result = result + '<ul>';
 	    
@@ -70,6 +74,19 @@ function vendorContacts(orgRelationID,clientLocationId){
 	        success: function(data) {
 	        	
 	        	var json = JSON.parse(data);
+	        	
+	        	for (var i = 0; i < 1; i++) { 
+	 				var val= json[i];
+	 				var opt = "";
+	 					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+	     					opt  = opt + '<div class="success_pop" id="vendorConactMsgSelector" style="display: block;">';
+	     					opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+	     					opt  = opt + '</div>';
+	 						}
+	 					$("#vendorConactMsgDiv").empty();
+	 					$("#vendorConactMsgDiv").append(opt);
+	 				}
+	        	
 	        	$("#vendorContactListDiv").empty();
 	    		if(json.length != null && json.length != ''){
 	    			var result = "";
@@ -175,7 +192,7 @@ function vendorContacts(orgRelationID,clientLocationId){
 				                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
 				                result = result + '	    <td><div>';
                                        '<sec:authorize access="hasAnyRole(\"ROLE_DELETE_VENDOR_CONTACT\")">';
-                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateVendorSpoc('+json[i].id+'\,\''+orgRelationID+'\','+vendorLocationId+')";></i>';
+                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateVendorSpoc(\''+json[i].id+'\',\''+orgRelationID+'\',\''+vendorLocationId+'\',\''+opt.spocName+'\');"></i>';
                                         '</sec:authorize>';
                 	                    result = result +'</div></td>';
 			                     }
@@ -194,6 +211,7 @@ function vendorContacts(orgRelationID,clientLocationId){
 					    result = result + '</div>';
 					    $("#vendorContactListDiv").append(result);
 			    	    contactPagination();
+			    	    vendorContactMsgFadein();
 			    	    
 	        }else{
 	        	var result ="";
@@ -229,14 +247,14 @@ function changeSpocStatus(spocId,vendorLocationId){
 }
 </script>
 <script>
-function terminateVendorSpoc(spocId, orgRelationID,vendorLocationId){
+function terminateVendorSpoc(spocId, orgRelationID,vendorLocationId,spocName){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>User delete message here</p>";
 	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForVendorSpocTermination("+spocId+","+orgRelationID+","+vendorLocationId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForVendorSpocTermination("+spocId+","+orgRelationID+","+vendorLocationId+",\""+spocName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -245,7 +263,7 @@ function terminateVendorSpoc(spocId, orgRelationID,vendorLocationId){
 </script>
 
 <script>
-function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocationId){
+function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocationId,spocName){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	if(reason.match(/^[^\s-](.*)*$/) != null){
@@ -256,7 +274,11 @@ function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocation
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
+   			    $("#vendorConactTerminateMsgDiv").removeAttr("style");
+	 			$("#vendorConactTerminateMsgDiv").css({ display: "block" });
+	 			$("#vendorConactTerminateMsg").html(""+spocName+" Removed");
    			    vendorContactList(orgRelationID,vendorLocationId);
+   			    vendorConactTerminateMsgFadein();
 		    }
 	   });
 	}else{
@@ -608,7 +630,11 @@ function acceptSpocInvitation(spocId,orgRelationId,clientLocationId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Accepted",	    	   
 		    success: function(data) {
-		    	vendorContactList(orgRelationId,vendorLocationId);
+		    	$("#vendorConactTerminateMsgDiv").removeAttr("style");
+	 			$("#vendorConactTerminateMsgDiv").css({ display: "block" });
+	 			$("#vendorConactTerminateMsg").html("Invitation Accepted");
+	 			vendorContactList(orgRelationId,vendorLocationId);
+   			    vendorConactTerminateMsgFadein();
 		    }
 	   });
 }
@@ -621,7 +647,11 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Rejected",
 		    success: function(data) {
-		    	vendorContactList(orgRelationId,vendorLocationId);
+		    	$("#vendorConactTerminateMsgDiv").removeAttr("style");
+	 			$("#vendorConactTerminateMsgDiv").css({ display: "block" });
+	 			$("#vendorConactTerminateMsg").html("Invitation Rejected");
+	 			vendorContactList(orgRelationId,vendorLocationId);
+   			    vendorConactTerminateMsgFadein();
 		    }
 	   });
 }
@@ -688,3 +718,18 @@ function validateEmail(orgRelationID){
 	}
 }
 </script>
+
+<!-- Show success message after form submission script -->
+<script>
+	function vendorContactMsgFadein() {
+		$("#vendorConactMsgSelector").fadeIn(200);
+        $('#vendorConactMsgSelector').delay(2000).fadeOut('slow');
+	}
+</script> 
+<script>
+	function vendorConactTerminateMsgFadein() {
+		$("#vendorConactTerminateMsgDiv").fadeIn(200);
+        $('#vendorConactTerminateMsgDiv').delay(2000).fadeOut('slow');
+	}
+</script> 
+<!-- End -->

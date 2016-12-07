@@ -163,6 +163,9 @@ public class RequirementSubmission implements Serializable{
 	
 	@Transient
 	private Long offerId;
+	
+	@Transient
+	private String submittedBy;
 
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -500,6 +503,14 @@ public class RequirementSubmission implements Serializable{
 
 	public void setOfferId(Long offerId) {
 		this.offerId = offerId;
+	}
+
+	public String getSubmittedBy() {
+		return submittedBy;
+	}
+
+	public void setSubmittedBy(String submittedBy) {
+		this.submittedBy = submittedBy;
 	}
 
 }
