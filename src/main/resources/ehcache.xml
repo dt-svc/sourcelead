@@ -554,7 +554,16 @@
             	replicateUpdates=true, replicateUpdatesViaCopy=false,
             	replicateRemovals=true" />
     </cache>
-    
+ 
+ <cache name="requirementSubmissionHistory"
+        maxEntriesLocalHeap="5000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true,
+            	replicateUpdates=true, replicateUpdatesViaCopy=false,
+            	replicateRemovals=true" />
+    </cache>   
     
     <!-- 21600 seconds is 6 hours (6 * 60 * 60) -->
     <cache name="AuthenticateUserCache"
