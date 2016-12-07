@@ -238,11 +238,15 @@ public class Constants {
 	public static String MAIL_RESEND = "Resend";
 	public static String MAIL_ACCEPTED = "Accepted";
 	public static String MAIL_REJECTED = "Rejected";
+	public static String OFFERMADE = "OFFERMADE";
+	
 	
 	public static String REQUIREMENT_STATUS = "Draft";
 	
 	public static String TEAM_ACTIVE = "1";
 	public static String TEAM_IN_ACTIVE = "0";
+	
+	public static Integer DEFAULT_CATEGORY = 0;
 
 	public static String BI_WEEKLY = "Bi-Weekly";
 	public static String SEMI_MONTHLY = "Semi-Monthly";

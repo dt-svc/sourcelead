@@ -38,7 +38,7 @@ public class RecommendationsDaoImpl implements RecommendationsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId";  
+		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.status =1";
         return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
 }

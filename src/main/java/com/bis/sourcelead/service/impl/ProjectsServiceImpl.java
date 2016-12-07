@@ -676,9 +676,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 Date currentDate = new Date();
 		 Date previousEndDate = null;
          Projects projects = getProjectById(projectId);
-         HashSet<ProjectApproverHierarchy> projectMemberList = new HashSet<ProjectApproverHierarchy>();
-		
-	     
+         //HashSet<ProjectApproverHierarchy> projectMemberList = new HashSet<ProjectApproverHierarchy>();
 		        if(jsonObj.has("ProjectSequeneNumber")){
 	        	  if(jsonObj.getString("ProjectSequeneNumber") != null){
 			    	 projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber"));
@@ -716,7 +714,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    		HashSet<Long> templist = null;
 			    		Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
 			    		
-			    		/*// if   we  are adding new  level 2 manager while editing
+			    		// if   we  are adding new  level 2 manager while editing
 			    		if(jsonObj.has("level2Manager") && projectApproverHierarchies.size() == 1){ 	
 							if(!jsonObj.getString("level2Manager").isEmpty()){
 								Long[] ids = new Long[1000];
@@ -731,9 +729,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 								
 							}
 						 }
-			    		*//**
+			    		/**
 						 * this block is for submissions for project member
-						*//*
+						*/
 						Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
 						if (projectMembersList != null && !projectMembersList.isEmpty()){
 							for (ProjectMembers pm : projectMembersList) {
@@ -742,7 +740,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 								}
 						  	  
 							}
-						}*/
+						}
 			    		for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
 								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
 								 Long fieldValuelong = null;
