@@ -259,6 +259,8 @@ $(document).ready(function () {
 	             <select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
 	                 <option  ${requirement.jobType  == 'c2c' ? 'selected' : ''}><a href="#">C2C</a></option>
 	                 <option  ${requirement.jobType  == 'W-2' ? 'selected' : ''}><a href="#">W-2</a></option>
+	                 <option  ${requirement.jobType  == 'C2H' ? 'selected' : ''}><a href="#">C2H</a></option>
+	                 <option  ${requirement.jobType  == 'Contract' ? 'selected' : ''}><a href="#">Contract</a></option>
 	                 <option  ${requirement.jobType  == 'Part Time' ? 'selected' : ''}><a href="#">Part Time</a></option>
 	                 <option  ${requirement.jobType  == 'Full Time' ? 'selected' : ''}><a href="#">Full Time</a></option>
 	                 <option  ${requirement.jobType  == 'Other' ? 'selected' : ''}><a href="#">Other</a></option>
@@ -279,7 +281,7 @@ $(document).ready(function () {
           <div class="form-group" id="jobTypeDiv" style="display: none">
             <label class="col-md-3">Job Type</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.jobType}"  field-name="Job Type"  value="">
+              <input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}"  field-name="Job Type" value="">
             </div>
           </div>
           
@@ -2163,6 +2165,7 @@ function getJobType(jobType){
 		document.getElementById("jobTypeDiv").style.display="none";
 		  $("#jobOtherType").attr("data-validation-optional", "true");
 		  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
+		  $("#jobOtherType").val('');
 	}
 }
 </script>
