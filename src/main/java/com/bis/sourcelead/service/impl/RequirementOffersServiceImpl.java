@@ -162,6 +162,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 							   requirementOffers.setFileContentType(multiFile.getContentType());
 							  
 								requirementOffers.setStatus(Constants.RECORD_ACTIVE);
+								requirementOffers.setOfferStatus(Constants.OFFERMADE);
 								requirementOffers.setCreatedDate(new Date());
 								requirementOffers.setCreatedBy(loginUser.getUserCode());
 								requirementOffers.setUpdatedDate(new Date());
