@@ -1154,7 +1154,7 @@ function requirementPipeline(requirementId,submissionType){
 				            result = result +'<div class="export_pipline" style="display:none">';
 				            result = result +'<ul>';
 				            result = result +'<li onclick="exportPipelineToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +' <li onclick="exportPipelineToExcel();">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
 				            result = result +' </ul>';
 				            result = result +'</div>';
 				            result = result +'</li>';
@@ -1942,6 +1942,17 @@ function piplineexport(){
 $(".export_pipline").click(function(e){
  	e.stopPropagation();
 	});
+</script>
+
+<script>
+function exportPipelineToExcel(requirementId,submissionType){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  var clientSubmissions = '${clientSubmissions}';
+	  alert(" requirementId "+requirementId);
+	  alert(" submissionType "+submissionType);
+    // window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
+}
+
 </script>
 
 <jsp:include page="addApplicant.jsp" />
