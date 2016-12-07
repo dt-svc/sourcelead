@@ -330,18 +330,23 @@ function candidateSideBar(candidateId){
 			             
 			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+json.lastName+'</h4>';
 			            
-			             result = result+'                       <ul class="list-unstyled">';
-			                                                       if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
-			             result = result+'                         <li>Experience - '+json.experienceYears+' years '+json.experienceMonths+' months </li>';
-              		                                                  }else{
-              		                                                	  
-              		     result = result+'                          <li>Experience - ----</li>';  
-              		                                                  }
-			             result = result+'                       </ul>';
 			             
+			             result = result+' <ul class="list-unstyled">';
+                          if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
+						 result = result+'<li>Designation -'+json.designation+' -Designation Type '+json.designationType+'</li>';
+						                              }else{
+						  result = result+'<li>Designation - ----</li>';  
+						  result = result+'</ul>';
 			             
-			             result = result+'                 <div class="clearfix">';
-			             result = result+'                 <div class="professinal-details">';
+			             result = result+'<ul class="list-unstyled">';
+			                     if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
+			             result = result+'<li>Experience -'+json.experienceYears+' years '+json.experienceMonths+' months </li>';
+              		                               }else{
+              		     result = result+'<li>Experience - ----</li>';  
+              		                              }
+			             result = result+'</ul>';
+			             result = result+'<div class="clearfix">';
+			             result = result+'<div class="professinal-details">';
 			             
 			            
 			             result = result+'<ul class="list-inline list-unstyled">';
