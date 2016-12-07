@@ -296,6 +296,37 @@ public class RolesDaoImpl implements RolesDao{
 			return null;
 		}
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Roles> getTabAccessRolesListByOrgLocationIdAndTabId(Long orgLocationsId, Long tabId) throws Exception {
+		
+	  Session session = this.sessionFactory.getCurrentSession();
+		
+	 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
+     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).setCacheable(true).list();
+     
+     String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
+     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+     List<Roles> ownerRolesList = new ArrayList<Roles>();
+     
+     for(Roles roles : rolesList){
+    	 if(null != roles.getActionId()){
+    		 List<Long> roleActionsList = new ArrayList<Long>();
+    		 for (String s : roles.getActionId().split(",")){
+        		 roleActionsList.add(Long.parseLong(s));
+        	 }
+        	 
+        	 roleActionsList.retainAll(tabActionsIds);
+        	 if(roleActionsList.size() > 0){
+        		 ownerRolesList.add(roles);
+        	 }
+    	 }
+    	 
+     }
+     return ownerRolesList;
+        
+	}
 
 
 }

@@ -32,5 +32,7 @@ public interface RolesService {
 	Roles getRolesByIdAndOrgLocationId(Long id,Long orgLocationId) throws Exception;
 	
 	public Roles getRolesByRoleDisplayNameAndOrgLocationId(String roleName,Long orgLocationId) throws Exception;
+	
+	public List<Roles> getTabAccessRolesListByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
 
 }

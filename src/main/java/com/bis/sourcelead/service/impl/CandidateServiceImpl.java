@@ -176,6 +176,16 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setAddress(jsonObj.getString("address"));
 		}
 		
+		if(jsonObj.has("consultantUser") && jsonObj.getString("consultantUser") !=null){
+			User consultantUser = new User();
+			consultantUser.setId(Long.valueOf(jsonObj.getString("consultantUser")));
+			candidate.setConsultantUser(consultantUser);
+			
+			candidate.setCandidateType("Consultant");
+		}else{
+			candidate.setCandidateType("Candidate");
+		}
+		
 		
 		
 		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
