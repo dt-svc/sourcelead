@@ -231,8 +231,8 @@ public class CandidateServiceImpl implements CandidateService {
 	 * @throws Exception
     */
 	@Override
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange) throws Exception {
-		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange);
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType) throws Exception {
+		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType);
 		for(Candidate can :candidateList){
 			if(can.getUpdatedDate() != null){
 			 can.setCandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));
