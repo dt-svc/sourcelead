@@ -432,7 +432,7 @@ function sideBar(requirementId){
               			}
 				        result = result+'<div class="hide-row">';
 				        
-				       /*  result = result+'    <div class="profile_details requirement_details clearfix">'; */
+				       /*result = result+'    <div class="profile_details requirement_details clearfix">'; */
 				        result = result+'<div class="col-md-9">';
 				        result = result+'<div class="row">';
 				        result = result+'<div class="col-md-3">';
