@@ -49,4 +49,9 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 		return requirementSubmissionHistoryDao.getRequirementHistoryByLocationIdAndStage(orgLocationID,submissionType,submissionId);
 	}
 
+	@Override
+	public RequirementSubmissionHistory getRequirementSubmissionHistoryBySubmissionId(Long submissionId) {
+		return requirementSubmissionHistoryDao.getRequirementSubmissionHistoryBySubmissionId(submissionId);
+	}
+
 }

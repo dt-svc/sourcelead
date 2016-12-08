@@ -176,6 +176,16 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setAddress(jsonObj.getString("address"));
 		}
 		
+		if(jsonObj.has("consultantUser") && jsonObj.getString("consultantUser") !=null){
+			User consultantUser = new User();
+			consultantUser.setId(Long.valueOf(jsonObj.getString("consultantUser")));
+			candidate.setConsultantUser(consultantUser);
+			
+			candidate.setCandidateType("Consultant");
+		}else{
+			candidate.setCandidateType("Candidate");
+		}
+		
 		
 		
 		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
@@ -221,8 +231,8 @@ public class CandidateServiceImpl implements CandidateService {
 	 * @throws Exception
     */
 	@Override
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange) throws Exception {
-		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange);
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType) throws Exception {
+		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType);
 		for(Candidate can :candidateList){
 			if(can.getUpdatedDate() != null){
 			 can.setCandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));

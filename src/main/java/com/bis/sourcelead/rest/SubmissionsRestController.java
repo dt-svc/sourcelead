@@ -161,7 +161,7 @@ public class SubmissionsRestController {
     @RequestMapping(value = "/getOrgSubmissionTemplatesList", method = RequestMethod.POST)
 	@ResponseBody String getOrgSubmissionTemplatesList(HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationId(orgLocations.getId());
+		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationIdAndTemplateType(orgLocations.getId(),"Submission");
 		
 		return commonUtil.toJSON(submissiontTemplateList);
 	}
@@ -192,9 +192,12 @@ public class SubmissionsRestController {
 			   submissionTemplate.setDescription(jsonObj.getString("description"));
 			   submissionTemplate.setOrgLocationId(orgLocations);
 			   submissionTemplate.setJsonString(jsonStringData);
+			   submissionTemplate.setTemplateType("Submission");
 			   submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
 			   submissionTemplate.setCreatedBy(user.getUserCode());
 			   submissionTemplate.setCreatedDate(new Date());
+			   submissionTemplate.setUpdatedBy(user.getUserCode());
+			   submissionTemplate.setUpdatedDate(new Date());
 			   submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 				
 			} catch (Exception e) {
@@ -314,7 +317,27 @@ public class SubmissionsRestController {
     	
     }
     
-    
+    @RequestMapping(value = "/rejectApplicant")
+	public @ResponseBody String rejectApplicant(@RequestParam(value="requirementId", required=false) Long requirementId,@RequestParam(value="submissionId", required=false) Long submissionId,
+			                                              @RequestParam(value="reason", required=false) String reason,
+			                                              HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+		requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
+		requirementSubmission.setRejectedReason(reason);
+		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+		requirementSubmission.setUpdatedBy(user.getUserCode());
+		requirementSubmission.setUpdatedDate(new Date());
+		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+		
+		RequirementSubmissionHistory requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementSubmissionHistoryBySubmissionId(submissionId);
+		requirementSubmissionHistory.setFromStage(requirementSubmissionHistory.getToStage());
+		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+		
+		return "success";
+	}
     
     
     
