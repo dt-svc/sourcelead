@@ -447,14 +447,14 @@ public class PdfUtilPipelineHelper  {
 			requirementArray[9] = "--";
 		}
 		if(requirementsub.getSubmittedBy() != null){
-			requirementArray[9] = requirementsub.getSubmittedBy();
+			requirementArray[10] = requirementsub.getSubmittedBy();
 		}else{
-			requirementArray[9] = "--";
+			requirementArray[10] = "--";
 		}
 		if(requirementsub.getSubmittedOn() != null){
-			requirementArray[9] = requirementsub.getSubmittedOn().toString();
+			requirementArray[11] = requirementsub.getSubmittedOn();
 		}else{
-			requirementArray[9] = "--";
+			requirementArray[11] = "--";
 		}
 		
 		return requirementArray;
