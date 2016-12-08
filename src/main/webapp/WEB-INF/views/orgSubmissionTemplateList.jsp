@@ -17,6 +17,10 @@
 <script src="resources/js/jquery-ui.min.js" ></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
+
+<script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+
 <script type="text/javascript">
 //On document ready
 $(function(){
