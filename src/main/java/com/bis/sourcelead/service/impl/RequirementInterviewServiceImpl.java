@@ -213,6 +213,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 							             interviewer.setUpdatedBy(user.getUserCode());
 							            /* sendEmailToInterviewrs(candidate,interviewerUser,requirementSubmission, user, jsonObj.getString(c+"startTime"), jsonObj.getString(c+"endTime"), loginOrg, jsonObj.getString(c+"dateOfInterview"), jsonObj.getString(c+"location"),jsonObj.getString(c+"interviewType"),orgLocations);*/
 							             sendEmailToInterviewrs(candidate,interviewerUser,requirementSubmission, user, loginOrg,requirementInterview,orgLocations);
+							             if(jsonObj.has("interviewSubmissionTemplate") && !jsonObj.getString("interviewSubmissionTemplate").isEmpty()){
+							            	 interViewerFeedbackTemplateSendEmailToInterviewrs(candidate,interviewerUser,requirementSubmission, user, loginOrg,requirementInterview,orgLocations); 
+							             }
 								         requirementInterviewerDao.storeRequirementInterviewer(interviewer);
 									}
 					           }
@@ -561,6 +564,120 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 
 	}
 
+	/**
+	 * author Laxman
+	 * @param candidate
+	 * @param interviewerUser
+	 * @param requirementSubmission
+	 * @param loginUser
+	 * @param org
+	 * @param requirementInterview
+	 * @param orgLocations
+	 * @throws Exception
+	 * This method is send email from Interviewrs
+	 */
+	public void interViewerFeedbackTemplateSendEmailToInterviewrs(Candidate candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser,Org org,RequirementInterview requirementInterview,OrgLocations orgLocations)	throws Exception {
+		 
+		EmailMessage emailMessage = new EmailMessage();
+		
+		if(interviewerUser.getFirstName()!=null){
+			 emailMessage.setFirstName(interviewerUser.getFirstName());
+		}
+		else{
+			 emailMessage.setFirstName("");
+		}
+		if(interviewerUser.getLastName()!=null){
+			 emailMessage.setLastName(interviewerUser.getLastName());
+		}
+		else{
+			 emailMessage.setLastName("");
+		}
+		 emailMessage.setToEmail(interviewerUser.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 
+		 String candidateName = candidate.getFirstName();
+		 if(candidate.getLastName()!=null){
+			 candidateName=candidateName+" "+candidate.getLastName();
+		 }
+		 
+		 String dateOfInterviewValue ="";
+		 if(requirementInterview.getDateOfInterview()!=null){
+			 dateOfInterviewValue = Constants.DMY.format(requirementInterview.getDateOfInterview());
+		 }
+		 String interviewTypeValue="--";
+		 if(requirementInterview.getInterviewType() !=null){
+			 interviewTypeValue = requirementInterview.getInterviewType();
+		 }
+	 
+		 String time = "";
+		 String endTime = ""; 
+		 if(requirementInterview.getStartTime() != null){
+	    	 String hours = requirementInterview.getStartTime().getHours()+"";
+	    	 String minutes = requirementInterview.getStartTime().getMinutes()+"";
+	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
+	    }
+	    
+	    if(requirementInterview.getEndTime() != null){
+	    	 String hours = requirementInterview.getEndTime().getHours()+"";
+	    	 String minutes = requirementInterview.getEndTime().getMinutes()+"";
+	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
+	    }
+		 
+		 if(endTime!=null){
+			  time=time+" - "+endTime;
+		 }
+		 dateOfInterviewValue = dateOfInterviewValue +" "+time;
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("interviewerFirstName", emailMessage.getFirstName());
+			 globalVarsMap.put("interviewerLastName",emailMessage.getLastName());
+			 globalVarsMap.put("loginUser", emailMessage.getFromName());
+			 globalVarsMap.put("requirementTitle", requirementSubmission.getRequirement().getJobTitle());
+			 globalVarsMap.put("interviewDate", dateOfInterviewValue);
+			 globalVarsMap.put("interviewType",interviewTypeValue);
+			 globalVarsMap.put("applicantName",candidateName);
+			 globalVarsMap.put("Location",requirementInterview.getLocation());
+			 
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = null;
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.INTERVIEWER_INVITATION,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+
+		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.INTERVIEWER_INVITATION,Constants.ENTITY_TYPE_NOTIFICATION); 
+		 String actionLink = "";
+		 
+		 if(interviewerUser.getFirstName()!=null){
+		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
+		 noificationEmailScenario.setBody(notificationbody);
+		 
+		 emailScenerioUtil.sendNotification(actionLink, loginUser, interviewerUser, orgLocations, noificationEmailScenario);
+		 }
+	}
+	
+	
 	
 	@Override
 	public List<RequirementInterview> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)

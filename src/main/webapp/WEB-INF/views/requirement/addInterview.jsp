@@ -35,10 +35,10 @@ padding:0!important;
 
 <script>
 function addInterview(requirementId){
-	
+	interviewTemplate();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var parentRequirement = '${parentRequirement}';
-	 
+	
 	var result = "";
 	result = result + '<div class="add_inter">';
 	result = result + '<form id="addInterview_form" name="addInterview_form" >';
@@ -82,6 +82,16 @@ function addInterview(requirementId){
 	result = result + '</div>';
 	
 	result = result + '<div class="mb10 mt clearfix">';
+	
+	result = result + '<div id="emptyTemplate" style="dispaly:none">';
+	result = result + '<strong class="clearfix col-md-12">InterView Submission Template</strong>';
+	result = result + '<div class="col-md-3">';
+	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	
 	result = result + '<strong class="clearfix col-md-12 mb">Reminder Before</strong>';
 	result = result + '<div class="col-md-3">';
 	result = result + '<span>Hours</span>';
@@ -599,4 +609,29 @@ $(function(){
 });
 </script>
 
-
+<script>
+function interviewTemplate(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?${_csrf.parameterName}=${_csrf.token}", 
+	        success: function(data) {
+	        var json = JSON.parse(data);
+	        var output = "";
+	        if(json.length > 0){
+	        	 output = output + "<option value=''>-Select Template-</option>"; 
+	         	for (var i=0; i<json.length; i++)
+	 			{
+	 	        		var opt = json[i];
+	 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+	 			}
+	         	$("#interviewSubmissionTemplate").empty();
+	 	        $("#interviewSubmissionTemplate").append(output);
+	        }else{
+	        	$("#emptyTemplate").empty();
+	        }
+	       
+	        },
+	    });
+}
+</script>

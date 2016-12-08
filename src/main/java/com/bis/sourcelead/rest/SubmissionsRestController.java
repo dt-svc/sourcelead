@@ -166,6 +166,14 @@ public class SubmissionsRestController {
 		return commonUtil.toJSON(submissiontTemplateList);
 	}
     
+    @RequestMapping(value = "/getInterviewFeedbackTemplatesList", method = RequestMethod.POST)
+	@ResponseBody String getInterviewFeedbackTemplatesList(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getInterviewFeedbackTemplatesByOrgLocationId(orgLocations.getId());
+		
+		return commonUtil.toJSON(submissiontTemplateList);
+	}
+    
 
 
     @RequestMapping(value = "/saveOrgSubmissionTemplate" , method = RequestMethod.POST)
@@ -203,6 +211,43 @@ public class SubmissionsRestController {
 			   return "home";
 	    
 	   }
+    
+    @RequestMapping(value = "/saveInterviewFeedBackTemplate" , method = RequestMethod.POST)
+	   public String saveInterviewFeedBackTemplate(@RequestParam(value="jsonData", required=false) String json,
+			   @RequestParam(value="templateId", required=false) String templateId,
+			   @RequestParam(value="jsonStringData", required=false) String jsonStringData,HttpServletRequest request) throws Exception {
+			
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
+		    
+		    String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+			
+			
+		   try {
+			   SubmissionTemplate submissionTemplate = null;
+			   if(!isNullOrEmpty(templateId)){
+				   submissionTemplate = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
+				}else{
+					submissionTemplate = new SubmissionTemplate();
+				}
+			   //submissionTemplate.setTemplateType("Feedback");
+			   submissionTemplate.setTemplateName(jsonObj.getString("templateName"));
+			   submissionTemplate.setDescription(jsonObj.getString("description"));
+			   submissionTemplate.setOrgLocationId(orgLocations);
+			   submissionTemplate.setJsonString(jsonStringData);
+			   submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+			   submissionTemplate.setCreatedBy(user.getUserCode());
+			   submissionTemplate.setCreatedDate(new Date());
+			   submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+				
+			} catch (Exception e) {
+				e.printStackTrace(); 
+			}
+			   return "interViewFeedBackTemplate";
+	    
+	   }
+    
     
     
     @PreAuthorize("hasAnyRole('ROLE_SHORTLIST','ROLE_SUBMIT_TO_CLIENT')")

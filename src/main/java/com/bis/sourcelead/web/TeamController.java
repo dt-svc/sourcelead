@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
@@ -54,4 +55,20 @@ public class TeamController {
 
 	}
 
+	/**
+	 * author Laxman
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/interViewFeedBackTemplate")
+	public ModelAndView interViewFeedBackTemplate(HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("requirement/interViewFeedBackTemplate");
+		return model;
+
+	}
+	
+	
 }

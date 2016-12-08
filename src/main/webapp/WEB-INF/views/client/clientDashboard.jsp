@@ -200,7 +200,6 @@ function getClientDetails(){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getClientDetails?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
    		    success: function(data) {
-   		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
    		    	var json = JSON.parse(data);
    	        	var result = "";
    	        	/* if(json.length != null && json.length != ''){ */
@@ -298,21 +297,6 @@ function getClientDetails(){
    	    	    $("#clientList").append(result)
    	    	    $("#emptyClientList").val(json.length);
    	    	    pagination();
-   		    }else{
-  		    	 var result ="";
-	   		    	result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Clients Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> ";  
-	        	     $("#clientList").empty();  
- 	    	         $("#clientList").append(result)
-	        	}   
    		    }
 	 }); 
 	
@@ -1103,7 +1087,6 @@ function exportClientToPdf(){
     {
 			values.push($(this).val());
     });
-	emptyClientList
 	var emptyClientList = $("#emptyClientList").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(emptyClientList > 0){
