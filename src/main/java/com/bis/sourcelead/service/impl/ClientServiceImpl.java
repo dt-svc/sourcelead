@@ -258,6 +258,7 @@ public class ClientServiceImpl implements ClientService{
 				submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 				submissionTemplate.setOrgLocationId(clientOrgLocations);
 				submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+				submissionTemplate.setTemplateType("Submission");
 				submissionTemplate.setCreatedBy(user.getUserCode());
 				submissionTemplate.setUpdatedBy(user.getUserCode());
 				submissionTemplate.setCreatedDate(new Date());
@@ -281,6 +282,7 @@ public class ClientServiceImpl implements ClientService{
 					submissionTemplate.setOrgLocationId(clientOrgLocations);
 				}
 				submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+				submissionTemplate.setTemplateType("Submission");
 				submissionTemplate.setCreatedBy(user.getUserCode());
 				submissionTemplate.setCreatedDate(new Date());
 				submissionTemplate.setUpdatedBy(user.getUserCode());
