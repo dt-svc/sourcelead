@@ -56,6 +56,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 /**
  * 
  * @author Rajashekar
@@ -85,6 +86,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	
 	@Autowired
 	private UserRoleService userRoleService;
+	
 	
 	@Override
 	public String clientBulkSaving(MultipartFile multipartFile,User user,OrgLocations orgLocation,Org  org,String isMailSent,String responderType) throws Exception {
@@ -177,7 +179,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 										OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(row.getCell(3).toString(), orgRelationId, ownerUser.getId(),Constants.RECORD_ACTIVE);
 										 if(orgSpoc == null){
 											 if(ownerUser.getId() != null){
-												 client.setOwnerUserId(ownerUser.getId());
+												 client.setOwnerUserId(ownerUser.getUser().getId());
 												 JSONObject jsonObj = populateJsonObject(client,isMailSent,vandorsListByOrgLocationId,orgLocation);
 												 try {
 														//clientService.storeClient(jsonObj, user, orgLocation,responderType,org);

@@ -297,7 +297,7 @@ public class RequirementReleaseRestController {
 					List<OrgSpoc> orgSpocList = orgSpocService.getAllContactsbyOrgRelationIdAndLocationId(Long.parseLong(vendor), locationId, orgRelations.getInitiatorType());*/
 					
 					
-					 List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(loginUser.getId(),loginOrgLocation.getId(), "Client","",vendor,"");
+					 List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(loginUser.getId(),loginOrgLocation.getId(), "Client","Active",vendor,"Accepted");
 					
 					for(OrgSpoc orgSpoc : vandorsContactListByOrgLocationId){
 						

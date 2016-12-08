@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -66,6 +67,13 @@ public class RequirementSubmission implements Serializable{
 	@Column(name = "SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
 	private ApplicantSubmissionStatus submissionStatus;
+	
+	@Column(name = "PREVIOUS_SUBMISSION_STATUS")
+	@Enumerated(EnumType.STRING)
+    private ApplicantSubmissionStatus previousSubmissionStatus;
+	
+	@Column(name = "REJECTED_REASON", columnDefinition = "TEXT default NULL")
+    private String rejectedReason;
 	
 	@Column(name = "STATUS")
     private Integer status;
@@ -141,6 +149,33 @@ public class RequirementSubmission implements Serializable{
 	
 	@Transient
 	private int numOfRejected;
+	
+	@Transient
+	private int totalNoOfInterviews;
+	
+	@Transient
+	List<RequirementInterview> requirementInterviewList;
+	
+	@Transient
+	private String offerJoinDate;
+	
+	@Transient
+	private String positionType;
+	
+	@Transient
+	private String offerRate;
+	
+	@Transient
+	private String attachment;
+	
+	@Transient
+	private Long offerId;
+	
+	@Transient
+	private String submittedBy;
+	
+	@Transient
+	private String submittedOn;
 
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -422,6 +457,95 @@ public class RequirementSubmission implements Serializable{
 
 	public void setNumOfRejected(int numOfRejected) {
 		this.numOfRejected = numOfRejected;
+	}
+
+	public int getTotalNoOfInterviews() {
+		return totalNoOfInterviews;
+	}
+
+	public void setTotalNoOfInterviews(int totalNoOfInterviews) {
+		this.totalNoOfInterviews = totalNoOfInterviews;
+	}
+
+	public List<RequirementInterview> getRequirementInterviewList() {
+		return requirementInterviewList;
+	}
+
+	public void setRequirementInterviewList(List<RequirementInterview> requirementInterviewList) {
+		this.requirementInterviewList = requirementInterviewList;
+	}
+
+	public String getOfferJoinDate() {
+		return offerJoinDate;
+	}
+
+	public void setOfferJoinDate(String offerJoinDate) {
+		this.offerJoinDate = offerJoinDate;
+	}
+
+	public String getPositionType() {
+		return positionType;
+	}
+
+	public void setPositionType(String positionType) {
+		this.positionType = positionType;
+	}
+
+	public String getOfferRate() {
+		return offerRate;
+	}
+
+	public void setOfferRate(String offerRate) {
+		this.offerRate = offerRate;
+	}
+
+	public String getAttachment() {
+		return attachment;
+	}
+
+	public void setAttachment(String attachment) {
+		this.attachment = attachment;
+	}
+
+	public Long getOfferId() {
+		return offerId;
+	}
+
+	public void setOfferId(Long offerId) {
+		this.offerId = offerId;
+	}
+
+	public String getSubmittedBy() {
+		return submittedBy;
+	}
+
+	public void setSubmittedBy(String submittedBy) {
+		this.submittedBy = submittedBy;
+	}
+
+	public String getSubmittedOn() {
+		return submittedOn;
+	}
+
+	public void setSubmittedOn(String submittedOn) {
+		this.submittedOn = submittedOn;
+	}
+	
+
+	public String getRejectedReason() {
+		return rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
+	}
+
+	public ApplicantSubmissionStatus getPreviousSubmissionStatus() {
+		return previousSubmissionStatus;
+	}
+
+	public void setPreviousSubmissionStatus(ApplicantSubmissionStatus previousSubmissionStatus) {
+		this.previousSubmissionStatus = previousSubmissionStatus;
 	}
 
 }

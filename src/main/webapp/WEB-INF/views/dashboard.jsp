@@ -221,6 +221,10 @@ float: none !important;
  .dashboard-datepkr{
        position:relative;
 }
+.main-header span.logo i{
+position: relative;
+top:10px;
+}
 /* .dashboard-datepkr input[type="text"]{
        width:115px;
        border:1px solid #ccc;

@@ -122,6 +122,10 @@ public class OrgDocuments implements Serializable{
 	
 	@Transient
 	private List<User> ownersList;
+	
+	@Transient
+	private String msg;
+
 
 	public Long getId() {
 		return id;
@@ -345,5 +349,13 @@ public class OrgDocuments implements Serializable{
 
 	public void setOwnersList(List<User> ownersList) {
 		this.ownersList = ownersList;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 }

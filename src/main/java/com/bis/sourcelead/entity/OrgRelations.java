@@ -138,6 +138,9 @@ public class OrgRelations implements Serializable{
 	@Transient
 	private String level;
 	
+	@Transient
+	private String msg;
+	
 	public String getLevel() {
 		return level;
 	}
@@ -435,6 +438,12 @@ public class OrgRelations implements Serializable{
 	public void setNoOfReleasedJobs(Integer noOfReleasedJobs) {
 		this.noOfReleasedJobs = noOfReleasedJobs;
 	}
-	
-	
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
 }

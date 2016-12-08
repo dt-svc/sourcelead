@@ -172,7 +172,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				userRole.setEmployeeId(employee.getEmployeeId());
 				userRole.setRate(employee.getRate());
 				userRole.setRatePer(employee.getRatePer());
-				userRole.setInvoiceFrequency(employee.getInvoiceFrequency());
+				/*userRole.setInvoiceFrequency(employee.getInvoiceFrequency());*/
 				if(employee.getHireDate() != null){
 					userRole.setHireDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(employee.getHireDate())); 
 				 }else{
@@ -290,7 +290,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					employees.setRate(jsonObj.getString("Rate"));
 					employees.setRatePer(jsonObj.getString("RatePer"));
 					employees.setDailyHours(jsonObj.getString("DayHours"));
-					employees.setInvoiceFrequency(jsonObj.getString("InvoiceFrequency"));
+					/*employees.setInvoiceFrequency(jsonObj.getString("InvoiceFrequency"));*/
 					if(jsonObj.has("DateofJoin") && !isNullOrEmpty(jsonObj.getString("DateofJoin"))){
 						try {
 							   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

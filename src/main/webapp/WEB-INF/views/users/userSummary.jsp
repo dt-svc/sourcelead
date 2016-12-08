@@ -28,7 +28,7 @@
 			<div class="pull-left">
 				<h2>User Summary</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="usersList">Users List</a> &raquo; <span id = "fname"></a> </div>				
+			<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="usersList">Users List</a> &raquo; <span id = "fname"></a> </div>				
 		</section>
 
 		<!-- Timesheet -->
@@ -230,7 +230,7 @@ $(document).ready(function(){
 				}
 				
 				result = result + '			<div class="project_details_cta">';
-				result = result + '					<strong>Role:</strong><span class="fix">'+json.userType+'</span><div class="clearfix"></div>';
+				result = result + '					<strong>Role:</strong><span class="fix">'+json.roles.displayName+'</span><div class="clearfix"></div>';
 				result = result + '			</div>';
 				
 				if(json.reportingManager != null && json.reportingManager != "" && json.reportingManager != 'undefined' && json.reportingManager.firstName != null && json.reportingManager.firstName != "" && json.reportingManager.firstName != 'undefined'){

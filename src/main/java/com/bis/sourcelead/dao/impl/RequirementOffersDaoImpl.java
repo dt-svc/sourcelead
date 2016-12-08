@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementOffersDao;
+import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 
@@ -86,5 +87,17 @@ public class RequirementOffersDaoImpl implements RequirementOffersDao{
 		}
 		return requirementOffers;
 		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementOffers> getRequirementOfferSubmissionByIdAndOrgLocationId(Long submissionId, Long orgLocationId)
+			throws Exception {
+		logger.debug("In RequirementInterviewDaoImpl class getRequirementInterviewsBySubmissionIdAndOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementOffers requirementOffer where requirementOffer.submissionId.id = :submissionId and requirementOffer.submissionId.orgLocations.id = :orgLocationId ";
+		List<RequirementOffers> requirementOffersList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+		return requirementOffersList;
 	}
 }

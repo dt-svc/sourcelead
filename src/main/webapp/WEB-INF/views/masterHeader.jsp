@@ -15,8 +15,7 @@
 <link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+
 
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -68,7 +67,7 @@
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">
-  <span class="logo"> <a href="dashboard" title="Source Lead">
+  <span class="logo"> <a href="dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead">
   <i>
  <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     <h1>Source Lead</h1>

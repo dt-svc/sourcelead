@@ -37,6 +37,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
@@ -45,6 +46,7 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
@@ -89,6 +91,9 @@ public class SubmissionsRestController {
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -144,9 +149,11 @@ public class SubmissionsRestController {
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			requirementSubmissionService.saveRequirementSubmission(jsonObj, user, orgLocations,con,multiFile);
-    	    
-    	    
+			RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj, user, orgLocations,con,multiFile);
+			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+			requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
+			requirementSubmissionHistory.setFromStage("NEW");
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission,user,requirementSubmissionHistory);
 			return "success";
 	    
  }
@@ -154,7 +161,7 @@ public class SubmissionsRestController {
     @RequestMapping(value = "/getOrgSubmissionTemplatesList", method = RequestMethod.POST)
 	@ResponseBody String getOrgSubmissionTemplatesList(HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationId(orgLocations.getId());
+		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationIdAndTemplateType(orgLocations.getId(),"Submission");
 		
 		return commonUtil.toJSON(submissiontTemplateList);
 	}
@@ -185,9 +192,12 @@ public class SubmissionsRestController {
 			   submissionTemplate.setDescription(jsonObj.getString("description"));
 			   submissionTemplate.setOrgLocationId(orgLocations);
 			   submissionTemplate.setJsonString(jsonStringData);
+			   submissionTemplate.setTemplateType("Submission");
 			   submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
 			   submissionTemplate.setCreatedBy(user.getUserCode());
 			   submissionTemplate.setCreatedDate(new Date());
+			   submissionTemplate.setUpdatedBy(user.getUserCode());
+			   submissionTemplate.setUpdatedDate(new Date());
 			   submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 				
 			} catch (Exception e) {
@@ -263,11 +273,14 @@ public class SubmissionsRestController {
  	 String[] submissionId = submissionsList.split(",");
  	 
  	 for(int i=0; i < submissionId.length; i++){
+ 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
  		 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
+ 		requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
  		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST);
  		 submission.setUpdatedBy(user.getUserCode());
  		 submission.setUpdatedDate(new Date());
- 		 requirementSubmissionService.storeRequirementSubmission(submission);
+ 		RequirementSubmission requirementSubmission = requirementSubmissionService.storeRequirementSubmission(submission);
+ 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
  		
  		}
  	 int shotListCount = submissionId.length;
@@ -304,7 +317,27 @@ public class SubmissionsRestController {
     	
     }
     
-    
+    @RequestMapping(value = "/rejectApplicant")
+	public @ResponseBody String rejectApplicant(@RequestParam(value="requirementId", required=false) Long requirementId,@RequestParam(value="submissionId", required=false) Long submissionId,
+			                                              @RequestParam(value="reason", required=false) String reason,
+			                                              HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+		requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
+		requirementSubmission.setRejectedReason(reason);
+		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+		requirementSubmission.setUpdatedBy(user.getUserCode());
+		requirementSubmission.setUpdatedDate(new Date());
+		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+		
+		RequirementSubmissionHistory requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementSubmissionHistoryBySubmissionId(submissionId);
+		requirementSubmissionHistory.setFromStage(requirementSubmissionHistory.getToStage());
+		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+		
+		return "success";
+	}
     
     
     
