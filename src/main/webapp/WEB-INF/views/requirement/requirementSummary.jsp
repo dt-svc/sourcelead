@@ -1168,7 +1168,9 @@ function requirementPipeline(requirementId,submissionType){
 				           result = result + '<tr>';
 				           result = result + '<th>Name</th>';
 				           result = result + '<th>Email</th>';
+				           if(submissionType != 'REJECTED'){
 				           result = result + '<th>Ph. No</th>';
+				           }
 				           result = result + '<th>Resume</th>';
 				           if(submissionType == 'all' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
 				        	   result = result + '<th>Applied on</th>';
@@ -1188,9 +1190,15 @@ function requirementPipeline(requirementId,submissionType){
 							   result = result + '<th>Offer Rate</th>'; 
 							   result = result + '<th>Attachment</th>'; 
 					           }
-				           if(submissionType == 'all' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
+				           if(submissionType == 'all' || submissionType == 'SHORTLIST' || submissionType == 'SUBMIT_TO_CLIENT'){
 				        	   result = result + '<th>Score</th>';
 					           result = result + '<th>Exp</th>';
+					           result = result + '<th>Status</th>';
+				           }
+				           if(submissionType == 'REJECTED'){
+				        	   result = result + '<th>Rejected On</th>';
+				        	   result = result + '<th>Rejected By</th>';
+					           result = result + '<th>Rejected Stage</th>';
 					           result = result + '<th>Status</th>';
 				           }
 				           result = result + '         </tr>';
@@ -1214,13 +1222,15 @@ function requirementPipeline(requirementId,submissionType){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
 						           
-						           
+						           if(submissionType != 'REJECTED'){
 						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.phoneNumber+'</span></div></td>';
 							           }
+						           
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
+						           }
 						           
 						           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
 						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
@@ -1327,20 +1337,29 @@ function requirementPipeline(requirementId,submissionType){
 							    	     } 
 						           }
 						           if(submissionType == 'all' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
-						        	   
+						        	   if(submissionType != 'REJECTED'){
 						        	   if(report.score != null && report.score != '' && report.score != 'undefined'){
 							        	   result = result + '         <td><div><span>'+report.score+'</span></div></td>';
 								           }
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
 							    	     }
-							           
+						        	   }
+							           if(submissionType != 'REJECTED'){
 							           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
 							        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
 								           }
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
 							    	     }
+							           }
+							           
+							           if(submissionType == 'REJECTED'){
+							           result = result + '<td><div class="tblwidth-150"><span>'+report.upDatedStr+'</span>';
+						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submittedBy+'</span>';
+						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>';
+							           
+							           }
 							           
 							           if(report.submissionStatus == 'REJECTED'){
 							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
