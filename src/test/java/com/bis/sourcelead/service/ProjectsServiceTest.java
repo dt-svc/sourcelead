@@ -3,8 +3,10 @@ package com.bis.sourcelead.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
@@ -21,6 +23,7 @@ import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
@@ -211,29 +214,56 @@ public class ProjectsServiceTest {
 		for(UserRole userRole : usrRoleList){
 			if("Admin".equalsIgnoreCase(userRole.getUserType()))
 				continue;
-			HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(userRole.getUser().getId(),userRole.getOrgLocations().getId());
+//			HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(userRole.getUser().getId(),userRole.getOrgLocations().getId());
 			//projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
 			logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+usrRoleList.size());
 			
 		}
 	}
 
-	@Test
+	//@Test
 	public void getPreviousWeekTimeShhetSubmissionStatus() throws Exception{
 		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY);
 		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+ProjectMembersList.size());
-		for(ProjectMembers projectMember : ProjectMembersList){
-			User usr = projectMember.getEmployee().getUser();
-			HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),3L);
-			logger.info("=============== " +usr.getFirstName()+""+usr.getLastName());
-			logger.info("=============== " +projectMember.getProjects().getProjectName());
-			logger.info("====================================================");
-			for(TimesheetSubmissions tm :timesheetSubmissions){
-				logger.info("**************************************************"+tm.getProjectMembers().getProjects().getProjectName() +"--------"+Constants.DMY.format(tm.getStartDate())+" To "+Constants.DMY.format(tm.getEndDate()));
+		Map<UserRole,HashSet<TimesheetSubmissions>> timesheetSubmissionsMap = new HashMap<>();
+		if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
+			for(ProjectMembers projectMember : ProjectMembersList){
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
+				if("Admin".equalsIgnoreCase(userRole.getUserType()))
+					continue;
+				HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),userRole.getOrgLocations().getId(),userRole.getUser().getId());
+				timesheetSubmissionsMap.put(userRole, timesheetSubmissions);
+				//projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions);
+				logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
 			}
+			int level =1;
+			projectsService.userEmailNotificationForTimeSheetSubmissionToManagers(timesheetSubmissionsMap,level);
 		}
 		
 	}
+	
+	
+	@Test
+	public void getPreviousWeekTimeShhetSubmissionStatusToLevel2() throws Exception{
+		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY);
+		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+ProjectMembersList.size());
+		Map<UserRole,HashSet<TimesheetSubmissions>> timesheetSubmissionsMap = new HashMap<>();
+		if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
+			for(ProjectMembers projectMember : ProjectMembersList){
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
+				if("Admin".equalsIgnoreCase(userRole.getUserType()))
+					continue;
+				HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),userRole.getOrgLocations().getId(),userRole.getUser().getId());
+				timesheetSubmissionsMap.put(userRole, timesheetSubmissions);
+				//projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions);
+				logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
+			}
+			int level = 2;
+			projectsService.userEmailNotificationForTimeSheetSubmissionToManagers(timesheetSubmissionsMap,level);
+		}
+	}
+	
+	
 	/**
 	 * this method for delete project by id
 	 * @return

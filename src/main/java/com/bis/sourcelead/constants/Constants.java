@@ -287,4 +287,7 @@ public class Constants {
     
     public static String[] VENDOR_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};
     public static String[] CLIENT_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};
+    
+    public static int level1 =1;
+    public static int level2 =2;
 }

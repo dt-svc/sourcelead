@@ -733,7 +733,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId,Long locationsId) throws Exception {
+	public HashSet<TimesheetSubmissions> getWeekFrequency(Long projectId,Long locationsId,Long userId) throws Exception {
 		
 		Date currentWeekStartDate = CalendarUtil.getCurrentWeekDay("MON");
 		java.sql.Date  currentWeekStartDayDate = new java.sql.Date(currentWeekStartDate.getTime());
@@ -750,9 +750,9 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from TimesheetSubmissions tss left join fetch tss.projectMembers tm left join fetch tm.projects projects left join fetch projects.orgLocationsId locations left join fetch tm.employee emp left join fetch emp.user usr where  tss.projectMembers.id = :userID and locations.id = :locationsId and tss.startDate >= :frmDate and tss.endDate < :endsDate order by tss.startDate desc";
+		String query = "from TimesheetSubmissions tss left join fetch tss.projectMembers tm left join fetch tm.projects projects left join fetch projects.orgLocationsId locations left join fetch tm.employee emp left join fetch emp.user usr where  usr.id =:userId and tss.projectMembers.id = :projectId and locations.id = :locationsId and tss.startDate >= :frmDate and tss.endDate < :endsDate order by tss.startDate desc";
 		//String query = "from TimesheetSubmissions tss left join fetch tss.projectMembers tm left join fetch tm.employee emp left join fetch emp.user usr where  usr.id = :userID and  tss.startDate BETWEEN :frmDate AND :endDate";
-		List<TimesheetSubmissions> timeSheetSubmissions  = session.createQuery(query).setLong("userID",userId ).setDate("frmDate", previousWeekStartDayDate).setDate("endsDate", currentWeekStartDayDate).setLong("locationsId", locationsId).setCacheable(true).list();
+		List<TimesheetSubmissions> timeSheetSubmissions  = session.createQuery(query).setLong("userId",userId).setLong("projectId",projectId ).setDate("frmDate", previousWeekStartDayDate).setDate("endsDate", currentWeekStartDayDate).setLong("locationsId", locationsId).setCacheable(true).list();
 		HashSet<TimesheetSubmissions> tsSet = null;
 		if(timeSheetSubmissions != null && !timeSheetSubmissions.isEmpty()){
 			tsSet = new HashSet<>(timeSheetSubmissions);

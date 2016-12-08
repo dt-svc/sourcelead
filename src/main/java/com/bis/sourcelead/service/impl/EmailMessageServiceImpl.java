@@ -96,7 +96,6 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	private String defaultFromEmailAddressPwd;
 
 	@Override
-	@Async
 	public void sendEmail(EmailMessage emailMessage, Long locationsId, ArrayList<EmailRecipient> emailRecipientList,
 			List<EmailAttachment> attachmentList) throws Exception {
 
@@ -211,7 +210,6 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				message.setContent(multipart);
 				Transport.send(message);
 			}
-
 		} catch (MessagingException e) {
 			throw new RuntimeException(e);
 		} catch (UnsupportedEncodingException e) {

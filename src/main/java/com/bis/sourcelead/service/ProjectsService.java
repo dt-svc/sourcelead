@@ -3,6 +3,7 @@ package com.bis.sourcelead.service;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONObject;
 
@@ -11,6 +12,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 
 public interface ProjectsService {
 
@@ -58,7 +60,7 @@ public interface ProjectsService {
 		
 		//HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
 		
-		void  userEmailNotificationForTimeSheetSubmission(User user,Long locationsId, HashSet<TimesheetSubmissions> timesheetSubmissions) throws Exception;
+		void  userEmailNotificationForTimeSheetSubmission(User user,Long locationsId, HashSet<TimesheetSubmissions> timesheetSubmissions,String level) throws Exception;
 		
 		//HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 		
@@ -73,7 +75,9 @@ public interface ProjectsService {
 		String saveProjectByUserOrgLocationsJson(User user,OrgLocations loginOrgLocation,String loginOrgCode,JSONObject jsonObj) throws Exception ;
         
 		String  storeProject(JSONObject jsonObj) throws Exception;
-		
+
+		void userEmailNotificationForTimeSheetSubmissionToManagers(Map<UserRole, HashSet<TimesheetSubmissions>> timesheetSubmissionsMap, int level)throws Exception;
+
 		//HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() throws Exception;
 		
 		

@@ -64,6 +64,6 @@ public interface TimesheetSubmissionsDao {
 
 	public List<TimesheetSubmissions>  getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,String status,Long orgLocationId) throws Exception ;
  
-	public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId,Long locationsId) throws Exception;
+	public HashSet<TimesheetSubmissions> getWeekFrequency(Long projectId,Long locationsId, Long userId) throws Exception;
 
 }
