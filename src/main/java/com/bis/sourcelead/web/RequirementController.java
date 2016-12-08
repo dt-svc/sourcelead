@@ -215,13 +215,13 @@ public class RequirementController {
 		model.addObject("approverList", approverList);
 		
 		//approver list
-		List<SubmissionTemplate>   submissionTempletesList = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationId(orgLocations.getId());
+		List<SubmissionTemplate>   submissionTempletesList = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationIdAndTemplateType(orgLocations.getId(),"Submission");
 		model.addObject("submissionTempletesList", submissionTempletesList);
 		
 		
 		//client submission template 
 		if(requirement.getClientId() != null){
-			List<SubmissionTemplate>   clientSubmissionTempletesList = submissionTemplateService.getSubmissionTemplateByClientLocationIdAndOrgLocationId(requirement.getClientId().getResponderLocationId().getId(), orgLocations.getId());
+			List<SubmissionTemplate>   clientSubmissionTempletesList = submissionTemplateService.getSubmissionTemplateByClientLocationIdAndOrgLocationIdAndTemplateType(requirement.getClientId().getResponderLocationId().getId(), orgLocations.getId(),"Submission");
 			model.addObject("clientSubmissionTempletesList", clientSubmissionTempletesList);
 		}
 		

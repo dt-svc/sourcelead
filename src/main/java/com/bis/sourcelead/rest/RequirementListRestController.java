@@ -44,6 +44,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -419,7 +420,9 @@ public class RequirementListRestController {
 									if(requirementSubmission.getCreatedDate() != null){
 										requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 									}
-									
+									if(requirementSubmission.getUpdatedDate() != null){
+										requirementSubmission.setUpDatedStr(Constants.DF_YMD.format(requirementSubmission.getUpdatedDate()));
+									}
 									User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 									requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
 									requirementSubmission.setResumeName(candidateResumes.getFileName());
@@ -882,10 +885,13 @@ public class RequirementListRestController {
 							if(requirementSubmission.getCreatedDate() != null){
 								requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 							}
-							
+							if(requirementSubmission.getUpdatedDate() != null){
+								requirementSubmission.setUpDatedStr(Constants.DF_YMD.format(requirementSubmission.getUpdatedDate()));
+							}
 							User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 							requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
 							requirementSubmission.setResumeName(candidateResumes.getFileName());
+							requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getPreviousSubmissionStatus());
 							Candidate candidate = candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
 							List<Candidate> candidateList = new ArrayList<>();
 							candidateList.add(candidate);
