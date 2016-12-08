@@ -52,6 +52,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "JOB_TYPE")
 	private String jobType;
 	
+	@Column(name = "OTHER_JOBTYPE")
+	private String otherJobType;
+		
 	@Column(name = "JOB_ID")
 	private String jobId;
 	
@@ -811,4 +814,11 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.requirementSubmissionPreviousStatus = requirementSubmissionPreviousStatus;
 	}
 
+	public String getOtherJobType() {
+		return otherJobType;
+	}
+
+	public void setOtherJobType(String otherJobType) {
+		this.otherJobType = otherJobType;
+	}
 }

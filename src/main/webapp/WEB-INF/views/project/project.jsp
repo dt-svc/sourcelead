@@ -304,6 +304,21 @@
 							</div>
 						</div>
 						
+						
+						<div class="form-group">
+		                  <label class="col-md-3">Invoice Frequency</label>
+		                  <div class="col-md-9">
+		                         <select class="form-control chosen-select" id="invoiceFrequency" name="invoiceFrequency" field-name="Invoice Frequency">
+				                        <option value="">-Invoice Frequency-</option>
+						                <option value="Weekly">Weekly</option>
+						        	    <option value="Bi-Weekly">Bi-Weekly</option>
+						         		<option value="Semi-Monthly">Semi-Monthly</option>
+						         		<option value="Monthly">Monthly</option>
+					              </select>
+		                  </div>
+		                </div>
+						
+						
 					 <sec:authorize access="hasAnyRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')"> 		
 						<div class="form-group">
 							<label class="col-md-3"></label>
