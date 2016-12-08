@@ -15,6 +15,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
@@ -22,6 +24,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.JobSchedulerTestService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
@@ -79,33 +82,37 @@ public class EMailJobScheduler {
 	@Autowired
 	RequirementInterviewerService requirementInterviewerService;
 	
+	@Autowired
+	ProjectApproverHierarchyService projectApproverHierarchyService;
+	
 	private static final Logger logger = LoggerFactory.getLogger(EMailJobScheduler.class);
 	
 /**
  * Fires at 7:00 PM Every Day	
  */
 //	@Scheduled(cron = "${emailJobScheduler.job.cron.expression}")
-	@Scheduled(cron = "0 30 4 * * ?")
-	public void runEMailJobScheduler() {
-		logger.info("##########  E-Mail Job Scheduler started..! ##########----");
-		String invoiceFrequency = "";
-		try {
-			//HashSet<User> usrList = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency);
-			HashSet<UserRole> usrRoleList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency);
-			if(usrRoleList !=null && usrRoleList.size() > 0){
-				for(UserRole userRole : usrRoleList){
-					if("Admin".equalsIgnoreCase(userRole.getUserType()))
-						continue;
-					HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(userRole.getUser().getId(),userRole.getOrgLocations().getId());
-				//	projectsService.userEmailNotificationForTimeSheetSubmission(user,timesheetSubmissions);
-					logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
-				}	
-			}
-		} catch (Exception e) {
-			logger.error("ERROR in " + e.getMessage());
-		}
-        
-    }
+//	@Scheduled(cron = "0 30 4 * * ?")
+//	public void runEMailJobScheduler() {
+//		logger.info("##########  E-Mail Job Scheduler started..! ##########----");
+//		String invoiceFrequency = "";
+//		try {
+//			//HashSet<User> usrList = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency);
+//			HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency);
+//			if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
+//				for(ProjectMembers projectMember : ProjectMembersList){
+//					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
+//					if("Admin".equalsIgnoreCase(userRole.getUserType()))
+//						continue;
+//					HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(userRole.getUser().getId(),userRole.getOrgLocations().getId());
+//					projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions);
+//					logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
+//				}	
+//			}
+//		} catch (Exception e) {
+//			logger.error("ERROR in " + e.getMessage());
+//		}
+//        
+//    }
 	
 	/**
 	 * Fires on first Friday on every month emailJobScheduler.job.cron.everyfriday.expression
@@ -115,17 +122,18 @@ public class EMailJobScheduler {
 		logger.info("******************  Notification Job Scheduler started..! **********");
 		try {
 			//HashSet<User> usrList = projectsService.getAllUserTimeSheetSubmissionStatusCurrentWeek();
-			HashSet<UserRole> usrRoleList = userRoleService.getAllUserTimeSheetSubmissionStatusCurrentWeek();
-			if(usrRoleList != null && usrRoleList.size() > 0){
-				for(UserRole userRole : usrRoleList){
+			HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY);
+			if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
+				for(ProjectMembers projectMember : ProjectMembersList){
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
 					if("Admin".equalsIgnoreCase(userRole.getUserType()))
 						continue;
-					HashSet<TimesheetSubmissions>  timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(userRole.getUser().getId(),userRole.getOrgLocations().getId());
-					for(TimesheetSubmissions ft :timesheetSubmissions){
-						logger.info("****************************************"+ft.getStartDate());
+					HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),userRole.getOrgLocations().getId());
+					List<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.getAllProjectApproverHierarchyByProjectId(projectMember.getProjects().getId(), userRole.getUser().getId());
+					if(projectApproverHierarchyList.size() == 0){
+						projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions);	
+						logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
 					}
-					projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions);
-					logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
 				}
 			}
 			
@@ -205,15 +213,20 @@ public class EMailJobScheduler {
 	public void runJobSchedulerByBi_Weekly() {
 		logger.info("******************  Notification Job Scheduler Every two weeks started..! **********");
 		try {
-			//HashSet<User> usrList = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.BI_WEEKLY);
-			HashSet<UserRole> usrRoleList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.BI_WEEKLY);
-			if(usrRoleList != null && usrRoleList.size() >0){
-				for(UserRole userRole : usrRoleList){
+			
+			//HashSet<User> usrList = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency);
+			HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.BI_WEEKLY);
+			if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
+				for(ProjectMembers projectMember : ProjectMembersList){
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
 					if("Admin".equalsIgnoreCase(userRole.getUserType()))
 						continue;
-					HashSet<TimesheetSubmissions>  timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(userRole.getUser().getId(),userRole.getOrgLocations().getId());
-					projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions);
-					logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
+					HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),userRole.getOrgLocations().getId());
+					List<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.getAllProjectApproverHierarchyByProjectId(projectMember.getProjects().getId(), userRole.getUser().getId());
+					if(projectApproverHierarchyList.size() == 0){
+						projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions);	
+						logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
+					}
 				}
 			}
 			
@@ -229,15 +242,18 @@ public class EMailJobScheduler {
 	public void runJobSchedulerBySemi_Monthly() {
 		logger.info("******************  Notification Job Scheduler Every 15 days in a month started..! **********");
 		try {
-			//HashSet<User> usrList = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.SEMI_MONTHLY);
-			HashSet<UserRole> usrRoleList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.SEMI_MONTHLY);
-			if(usrRoleList != null && usrRoleList.size() >0){
-				for(UserRole userRole : usrRoleList){
-					if("Admin".equalsIgnoreCase(userRole.getUserType()))
-						continue;
-					HashSet<TimesheetSubmissions>  timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(userRole.getUser().getId(),userRole.getOrgLocations().getId());
-					projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions);
-					logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
+				HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.SEMI_MONTHLY);
+				if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
+					for(ProjectMembers projectMember : ProjectMembersList){
+						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
+						if("Admin".equalsIgnoreCase(userRole.getUserType()))
+							continue;
+						HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),userRole.getOrgLocations().getId());
+						List<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.getAllProjectApproverHierarchyByProjectId(projectMember.getProjects().getId(), userRole.getUser().getId());
+						if(projectApproverHierarchyList.size() == 0){
+							projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions);	
+							logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
+						}
 				}
 			}
 			
@@ -254,21 +270,84 @@ public class EMailJobScheduler {
 		logger.info("******************  Notification Job Scheduler  Every month 30th started..! **********");
 		try {
 			//HashSet<User> usrList = projectsService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.MONTHLY);
-			HashSet<UserRole> usrRoleList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.MONTHLY);
-			if(usrRoleList != null && usrRoleList.size() >0){
-				for(UserRole userRole : usrRoleList){
+			HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.MONTHLY);
+			if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
+				for(ProjectMembers projectMember : ProjectMembersList){
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
 					if("Admin".equalsIgnoreCase(userRole.getUserType()))
 						continue;
-					HashSet<TimesheetSubmissions>  timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(userRole.getUser().getId(),userRole.getOrgLocations().getId());
-				    projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions);
-					logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
+					HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),userRole.getOrgLocations().getId());
+					List<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.getAllProjectApproverHierarchyByProjectId(projectMember.getProjects().getId(), userRole.getUser().getId());
+					if(projectApproverHierarchyList.size() == 0){
+						projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions);	
+						logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
+					}
+					
 				}
 			}
-			
-			
 		} catch (Exception e) {
 			logger.error("ERROR in " + e.getMessage());
 		}
     }
 	//======================================================End
+ 	
+ 			
+ 			
+	/**
+	 * Prasanna vadla
+	 * 
+	 * Fires on Monday of every week of the month emailJobScheduler.job.cron.everyfriday.expression
+	 */
+	@Scheduled(cron = "0 0 12 ? * MON")
+	public void runJobSchedulerByMonday() {
+		logger.info("******************  Notification Job Scheduler Monday of every week of the month started..! **********");
+		try {
+			HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus("");
+			if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
+				for(ProjectMembers projectMember : ProjectMembersList){
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
+					if("Admin".equalsIgnoreCase(userRole.getUserType()))
+						continue;
+					HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),userRole.getOrgLocations().getId());
+				    
+					// modify to check timesub proj date 
+					
+					projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions);
+					logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
+				}
+			}
+		} catch (Exception e) {
+			logger.error("ERROR in " + e.getMessage());
+		}
+    }
+	
+	
+	
+	
+	/**
+	 * Prasanna vadla
+	 * this is for level for level 2
+	 * Fires on Monday of every week of the month emailJobScheduler.job.cron.everyfriday.expression
+	 */
+	@Scheduled(cron = "0 1 0 ? * WED")
+	public void runJobSchedulerByWedDay() {
+		logger.info("******************  Notification Job Scheduler WednesDay of every week of the month started..! **********");
+		try {
+			HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus("");
+			if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
+				for(ProjectMembers projectMember : ProjectMembersList){
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
+					if("Admin".equalsIgnoreCase(userRole.getUserType()))
+						continue;
+					HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),userRole.getOrgLocations().getId());
+				    projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions);
+					logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
+				}
+			}
+		} catch (Exception e) {
+			logger.error("ERROR in " + e.getMessage());
+		}
+    }
+	
+	
 }

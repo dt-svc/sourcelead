@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +19,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
@@ -201,7 +205,7 @@ public class ProjectsServiceTest {
 	 * test case Weekly base Emails and Notification
 	 * @throws Exception
 	 */
-	@Test
+	//@Test
 	public void getAllUserTimeSheetSubmissionStatus() throws Exception{
 		HashSet<UserRole> usrRoleList = userRoleService.getAllUserTimeSheetSubmissionStatusCurrentWeek();
 		for(UserRole userRole : usrRoleList){
@@ -214,10 +218,20 @@ public class ProjectsServiceTest {
 		}
 	}
 
-	//@Test
+	@Test
 	public void getPreviousWeekTimeShhetSubmissionStatus() throws Exception{
-		HashSet<UserRole> usrList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus("Weekly");
-		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+usrList.size());
+		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY);
+		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+ProjectMembersList.size());
+		for(ProjectMembers projectMember : ProjectMembersList){
+			User usr = projectMember.getEmployee().getUser();
+			HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),3L);
+			logger.info("=============== " +usr.getFirstName()+""+usr.getLastName());
+			logger.info("=============== " +projectMember.getProjects().getProjectName());
+			logger.info("====================================================");
+			for(TimesheetSubmissions tm :timesheetSubmissions){
+				logger.info("**************************************************"+tm.getProjectMembers().getProjects().getProjectName() +"--------"+Constants.DMY.format(tm.getStartDate())+" To "+Constants.DMY.format(tm.getEndDate()));
+			}
+		}
 		
 	}
 	/**
