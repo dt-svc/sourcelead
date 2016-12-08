@@ -936,19 +936,8 @@ function acceptingOffer(offerStatus,submissionId){
          type : "POST",
          url: sourceleadUrl+"/acceptingOffer?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason,        
          success :function(data) {
-        	 
-        	 var json = JSON.parse(data);
-        	 jQuery("#"+(submissionId)+"actionDiv").css("display","none");
-	    	 if(offerStatus == "accept"){
-       		    $("#"+(submissionId)+"showStatus").html("<font color='green'>Accept</font>");
-           	 }
-           	 if(offerStatus == "reject"){
-           		$("#"+(submissionId)+"showStatus").html("<font color='red'>Reject</font>");
-           	 }
-           	 if(offerStatus == "mybe"){
-           		$("#"+(submissionId)+"showStatus").html("<font color='orange'>Maybe</font>");
-           	 }
-           	getOfferDetails(submissionId);
+        	 $("#rejectOfferAlert").empty();
+           	 getOfferDetails(submissionId);
        },
          
     }); 
