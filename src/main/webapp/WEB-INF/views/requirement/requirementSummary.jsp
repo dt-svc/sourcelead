@@ -1108,7 +1108,7 @@ function requirementPipeline(requirementId,submissionType){
 							 result = result +'</div>';
 							
 				           // result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
-				            result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
+				            //result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
 				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary">';
 				            result = result +'  <ul>';
 				            result = result +'    <li class="li-vendor">';
@@ -1188,9 +1188,11 @@ function requirementPipeline(requirementId,submissionType){
 							   result = result + '<th>Offer Rate</th>'; 
 							   result = result + '<th>Attachment</th>'; 
 					           }
-				           if(submissionType == 'all' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
-				        	   result = result + '<th>Score</th>';
-					           result = result + '<th>Exp</th>';
+				           if(submissionType == 'all' || submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
+				        	   if(submissionType != 'INTERVIEW'){
+				        		   result = result + '<th>Score</th>';
+						           result = result + '<th>Exp</th>';
+				        	   }
 					           result = result + '<th>Status</th>';
 				           }
 				           result = result + '         </tr>';
@@ -1269,17 +1271,23 @@ function requirementPipeline(requirementId,submissionType){
 						       			    result = result +'<th>End Time</th>';
 						       			    result = result +'<th>Location</th>';
 						       			    result = result +'<th>Feedback</th>';
+						       			    result = result +'<th>Interview</th>';
 						       			    result = result +'</tr></thead>';
 						       			    result = result +'<tbody>';
 						       			    for(var j=0;j<report.requirementInterviewList.length;j++){
 						       			    	 var sub = report.requirementInterviewList[j];
+						       			    	 var location = "---";
+						       			    	 if(sub.location != null && sub.location != "" && sub.location !="undefined"){
+						       			    		location = sub.location;
+						       			    	 }
 						       			    	result = result +'<tr>';
 						       			    	result = result +'<td><span>'+sub.interviewType+'</span></td>';
 						       			    	result = result +'<td><span>'+sub.dateOfInterviewStr+'</span></td>';
 						       			    	result = result +'<td><span>'+sub.startTimeStr+'</span></td>';
 						       			    	result = result +'<td><span>'+sub.endTimeStr+'</span></td>';
-						       			    	result = result +'<td><span>'+sub.location+'</span></td>';
+						       			    	result = result +'<td><span>'+location+'</span></td>';
 						       			    	result = result +'<td><span>cxmbnv mnbbvnvnbv nbvnbvxnbv nbvcxnbvbnv bnvcxzbvnb  nbxzcvnbz nb vbnxcnbzxcv</span></td>';
+						       			    	result = result +'<td><span title="'+sub.interviewSubmissionType+'">'+sub.interviewSubmissionType+'</span></td>';
 						       			    	result = result +'</tr>';
 						       			    } 
 						       			    result = result +'</tbody>';
@@ -1326,22 +1334,24 @@ function requirementPipeline(requirementId,submissionType){
 								        	result = result + '         <td><div><span>--</span></div></td>';
 							    	     } 
 						           }
-						           if(submissionType == 'all' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
+						           if(submissionType == 'all' || submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
 						        	   
-						        	   if(report.score != null && report.score != '' && report.score != 'undefined'){
-							        	   result = result + '         <td><div><span>'+report.score+'</span></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     }
-							           
-							           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
-							        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
-								           }
-								       else{
-								        	result = result + '         <td><div><span>--</span></div></td>';
-							    	     }
-							           
+						        	   if(submissionType != 'INTERVIEW'){
+						        		   if(report.score != null && report.score != '' && report.score != 'undefined'){
+								        	   result = result + '         <td><div><span>'+report.score+'</span></div></td>';
+									           }
+									       else{
+									        	result = result + '         <td><div><span>--</span></div></td>';
+								    	     }
+								           
+								           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
+								        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
+									           }
+									       else{
+									        	result = result + '         <td><div><span>--</span></div></td>';
+								    	     }
+						        	   }
+						        	   
 							           if(report.submissionStatus == 'REJECTED'){
 							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 							        	   result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';

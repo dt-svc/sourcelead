@@ -445,18 +445,25 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	public List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long requirementId, User user,
 			OrgLocations loginOrgLocation, String submissionType) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		if(submissionType != null && "INTERVIEW".equalsIgnoreCase(submissionType)){
+			subQuery = " and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CUSTOMER_INTERVIEW') "; 
+		}else{
+			subQuery = " and reqSub.submissionStatus = "+submissionType+" ";
+		}
+		
 		Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
 		List<RequirementAssignTo> requirementAssignToList =  requirementAssignToService.getRequirementAssignToListByRequirementId(requirementId);
 		List<RequirementSubmission>  requirementSubmission = null;
 		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(user.getId(),loginOrgLocation.getId());
 		if (isadmin && requirement.getManagerUserId().getId()!=user.getId()) {
-			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId and reqSub.submissionStatus = :submissionType";
-			 requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).setString("submissionType", submissionType).list();
+			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId "+subQuery+" ";
+			 requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
 		}
 		
 		if(requirement.getManagerUserId().getId()== user.getId()){
-			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId and reqSub.submissionStatus = :submissionType";
-			requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).setString("submissionType", submissionType).list();
+			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId "+subQuery+" ";
+			requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
 		}
 		
 		Boolean teamFlag = teamDao.getTeamOwnersListByUserId(user,loginOrgLocation.getId());
@@ -474,8 +481,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 								userCodes.add(usercode.getUserCode());
 							}
 							
-							String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.createdBy IN (:usercode) and reqSub.requirement.id =:requirementId and reqSub.submissionStatus = :submissionType";
-							  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setParameterList("usercode", userCodes).setLong("requirementId", requirementId).setString("submissionType", submissionType).list();
+							String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.createdBy IN (:usercode) and reqSub.requirement.id =:requirementId "+subQuery+" ";
+							  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setParameterList("usercode", userCodes).setLong("requirementId", requirementId).list();
 						}
 				}
 			}
@@ -489,13 +496,13 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		}
 		
 		if(requirement.getManagerUserId().getId()!=user.getId()&& flag && !teamFlag ){
-			String query = "from RequirementSubmission reqSub where (reqSub.orgLocations.id =:loginOrgLocation or reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId and reqSub.submissionStatus = :submissionType";
-		  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).setString("submissionType", submissionType).list();
+			String query = "from RequirementSubmission reqSub where (reqSub.orgLocations.id =:loginOrgLocation or reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId "+subQuery+" ";
+		  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).list();
 		}
 		
 		if(requirement.getManagerUserId().getId()!=user.getId()&& !flag && !teamFlag && !isadmin){
-			String query = "from RequirementSubmission reqSub where (reqSub.orgLocations.id =:loginOrgLocation or reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId and reqSub.submissionStatus = :submissionType";
-		  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).setString("submissionType", submissionType).list();
+			String query = "from RequirementSubmission reqSub where (reqSub.orgLocations.id =:loginOrgLocation or reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId "+subQuery+" ";
+		  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).list();
 		}
 		return requirementSubmission;
 	}

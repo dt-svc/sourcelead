@@ -122,7 +122,7 @@ public class RequirementInterviewRestController {
 	     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 String resultJson = null;
 			
-		 List<RequirementInterview> interviewsList = requirementInterviewService.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(submissionId, orgLocations.getId());
+		 List<RequirementInterview> interviewsList = requirementInterviewService.getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(submissionId, orgLocations.getId());
 		 resultJson = commonUtil.toJSON(interviewsList);
 		 return resultJson;
 	   }

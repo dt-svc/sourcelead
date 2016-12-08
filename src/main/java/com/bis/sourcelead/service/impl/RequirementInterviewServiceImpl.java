@@ -154,7 +154,13 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 									
 									requirementInterview.setRemainedBefore(remainedBefore.toString());
 								}
-								
+								 
+								if(jsonObj.has("isClientInterview")){
+									requirementInterview.setInterviewSubmissionType(Constants.CUSTOMER_INTERVIEW);
+								}else{
+									requirementInterview.setInterviewSubmissionType(Constants.INTERVIEW);
+								}
+							   	
 							   requirementInterview.setStatus(Constants.RECORD_ACTIVE);
 					           requirementInterview.setCreatedDate(new Date());
 					           requirementInterview.setCreatedBy(user.getUserCode());
@@ -164,9 +170,19 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					           RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 					           RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
 					           requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
-					           requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW);
+					           if(jsonObj.has("isClientInterview")){
+					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CUSTOMER_INTERVIEW);
+					           }else{
+					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW);
+					           }
 					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					           requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+					           
+					           RequirementSubmission parentSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
+					           if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty() && parentSubmission != null){
+					        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CUSTOMER_INTERVIEW);
+					        	   requirementSubmissionService.storeRequirementSubmission(parentSubmission);
+					           }
 					           
 					           
 					          Candidate candidate = candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
@@ -467,7 +483,62 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	}
 
 	
-	
+	@Override
+	public List<RequirementInterview> getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception {
+		logger.debug("In RequirementInterviewServiceImpl class getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId method...");
+		
+		List<RequirementInterview> interviewslist = null;
+		interviewslist = requirementInterviewDao.getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
+		if (interviewslist != null && !interviewslist.isEmpty() ) {
+			for (RequirementInterview requirementInterview : interviewslist) {
+				if(requirementInterview.getRemainedBefore() != null && !requirementInterview.getRemainedBefore().isEmpty()){
+					Integer hours = (Integer.parseInt(requirementInterview.getRemainedBefore()) / 60);
+					Integer minutes = (Integer.parseInt(requirementInterview.getRemainedBefore()) % 60);
+				    requirementInterview.setRemainderTime(hours + " : " + minutes + " minutes");
+				}
+				
+			    if(requirementInterview.getDateOfInterview() != null){
+			    	requirementInterview.setDateOfInterviewStr(Constants.DMY.format(requirementInterview.getDateOfInterview()));
+			    }
+			    
+			    if(requirementInterview.getStartTime() != null){
+			    	 String hours = requirementInterview.getStartTime().getHours()+"";
+			    	 String minutes = requirementInterview.getStartTime().getMinutes()+"";
+			    	 requirementInterview.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
+			    }
+			    
+			    if(requirementInterview.getEndTime() != null){
+			    	 String hours = requirementInterview.getEndTime().getHours()+"";
+			    	 String minutes = requirementInterview.getEndTime().getMinutes()+"";
+			    	 requirementInterview.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
+			    }
+			    
+			    if(requirementInterview.getSubmissionId().getRequirement().getClientId() != null){
+					if(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
+						requirementInterview.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
+					}
+					if(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+						requirementInterview.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getLocationId().getOrg().getOrgName());
+					}
+				}
+			    
+			    String InterviewersList = "";
+				Set<RequirementInterviewer> Interviewers = requirementInterview.getRequirementInterviewers();
+				int i = 0;
+				for(RequirementInterviewer interviewer: Interviewers){
+					if(i <= 50){
+						InterviewersList = InterviewersList+interviewer.getInterviewerUser().getFirstName()+" "+interviewer.getInterviewerUser().getLastName();
+						if(i != Interviewers.size()-1){
+							InterviewersList = InterviewersList+",";
+						}
+					}
+					i++;
+				}
+				requirementInterview.setInterviewersList(InterviewersList);
+			}
+		}
+		return interviewslist;
+	}
 	
 	
 	
@@ -594,8 +665,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			    }
 			    
 			    RequirementSubmission requirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(requirementInterview.getSubmissionId().getId(),orgLocationsId);
-			   OrgLocations orgLocations = orgLocationService.getOrgLocations(requirementSubmission.getOrgLocations().getId());
-			   requirementInterview.setClientName(orgLocations.getOrg().getOrgName());
+			    if(requirementSubmission != null){
+				   OrgLocations orgLocations = orgLocationService.getOrgLocations(requirementSubmission.getOrgLocations().getId());
+				   requirementInterview.setClientName(orgLocations.getOrg().getOrgName());
+			    }
 			    
 		}
 		}
