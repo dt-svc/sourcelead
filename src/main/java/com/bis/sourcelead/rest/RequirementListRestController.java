@@ -40,6 +40,7 @@ import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionCounts;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
@@ -825,7 +826,7 @@ public class RequirementListRestController {
 		
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			File file =null;
-			//TimeSheetSubmissionCount requirementSubCount= null;
+			RequirementSubmissionCounts requirementSubmissionCounts = getRequirementSubmissionsCount(Long.valueOf(requirementId),user,loginOrgLocation);
 			if(requirementId !=null && !requirementId.isEmpty()){
 				List<RequirementSubmission> requirementStatusList = null;
 				if(!"all".equalsIgnoreCase(submissionType)){
@@ -904,10 +905,11 @@ public class RequirementListRestController {
 							}
 							}
 
-					}file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrg().getOrgName(),exportType,requirementId,submissionType);
-				}else{
-					 file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrg().getOrgName(),exportType,requirementId,submissionType);
+					}
+					//file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrg().getOrgName(),exportType,requirementId,submissionType, requirementSubmissionCounts);
 				}
+					 file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrg().getOrgName(),exportType,requirementId,submissionType,requirementSubmissionCounts);
+				
 				 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 					if (mimeType == null) {
 						mimeType = "application/octet-stream";
@@ -922,6 +924,48 @@ public class RequirementListRestController {
 					response.getOutputStream().flush();	
 				
 				
+			
+}
+}
+
+
+private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirementId, User user, OrgLocations loginOrgLocation) throws Exception {
+	int numOfShortList = 0;
+	int numOfInterview = 0;
+	int numOfSubmitToClient = 0;
+	int numOfOffers = 0;
+	int numOfRejected = 0;
+	RequirementSubmissionCounts requirementSubmissionCounts = new RequirementSubmissionCounts();
+	if(requirementId !=null){
+		List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+		
+		for(RequirementSubmission rmentSubmission :requirementSubmissions){
+			
+			if("SHORTLIST".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+				numOfShortList++;
 			}
+			else if("INTERVIEW".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+				numOfInterview++;
+			}
+			else if("SUBMIT_TO_CLIENT".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+				numOfSubmitToClient++;
+			}
+			else if("OFFERMADE".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+				numOfOffers++;
+			}else if("REJECTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+				numOfRejected++;
+			}
+		}
+		requirementSubmissionCounts.setNumOfShortList(numOfShortList);
+		requirementSubmissionCounts.setNumOfInterview(numOfInterview);
+		requirementSubmissionCounts.setNumOfSubmitToClient(numOfSubmitToClient);
+		requirementSubmissionCounts.setNumOfOffers(numOfOffers);
+		requirementSubmissionCounts.setNumOfRejected(numOfRejected);
+		requirementSubmissionCounts.setSubmittedCount(requirementSubmissions.size());
+		
+
+	}
+	return requirementSubmissionCounts;
+	
 }
 }
