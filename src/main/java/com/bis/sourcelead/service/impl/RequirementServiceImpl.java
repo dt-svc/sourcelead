@@ -197,10 +197,13 @@ public class RequirementServiceImpl implements RequirementService {
 			if(jsonObj.has("jobType") ){				
 				requirement.setJobType(jsonObj.getString("jobType"));
 			   }
-			}						
-				if(jsonObj.has("jobOtherType")){
+			}	
+			
+			if(jsonObj.has("jobOtherType") && jsonObj.has("jobType") && "Other".equalsIgnoreCase(jsonObj.getString("jobType"))){
 					requirement.setOtherJobType(jsonObj.getString("jobOtherType"));
-				}
+			}else{
+					requirement.setOtherJobType(null);
+			}
 						
 			if(jsonObj.has("jobId")){
 			requirement.setJobId(jsonObj.getString("jobId"));
