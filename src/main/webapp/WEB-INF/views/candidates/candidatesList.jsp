@@ -90,6 +90,11 @@
       }else{
           $("#canDiv").removeAttr("onClick");
       }
+	  
+	  
+	  var candTypeRadio = $('input[name=candidateType]');
+	  var candidateType = candTypeRadio.filter(':checked').val();
+	  
 
 	var upcandidateStatus =   $('input[name=upcandidateStatus]:checked').val();
 	  
@@ -98,7 +103,7 @@
 	 
 	  $.ajax({
            type : "POST",
-            url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&updatedDateRange="+upcandidateStatus,       
+            url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&updatedDateRange="+upcandidateStatus+"&candidateType="+candidateType,       
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
@@ -120,6 +125,7 @@
 	                     result = result +"    <th>Position type</th>"; 
 	                     result = result +"    <th>Email</th>"; 
 	                     result = result +"    <th>Mobile</th>"; 
+	                     result = result +"    <th>Type</th>"; 
 	                     result = result +"    <th>Location</th>"; 
 	                     result = result +"    <th>Last Update</th>"; 
 	                     result = result +"  </tr>"; 
@@ -172,6 +178,7 @@
 			                	 }
 			                 result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 			                 result = result +"  <td><div>"+mobilePhone+"</div></td>";
+			                 result = result +"  <td><div>"+opt.candidateType+"</div></td>";
 			                 if(opt.state !='' && opt.state != 'undefined' && opt.city !='' && opt.city != 'undefined'){
 	                             result = result +"  <td><div><span title='"+opt.country+", "+opt.state+", "+opt.city+"'>"+opt.country+", "+opt.state+", "+opt.city+"</span></div></td>";
 	                              } else if(opt.state !='' && opt.state != 'undefined')
@@ -329,17 +336,37 @@ function candidateSideBar(candidateId){
 			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+json.lastName+'</h4>';
 			            
 			             result = result+'                       <ul class="list-unstyled">';
+			             
+			             result = result+'                        <li>Type - '+json.candidateType+'</li>';  
+			             
 			                                                       if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
 			             result = result+'                         <li>Experience - '+json.experienceYears+' years '+json.experienceMonths+' months </li>';
               		                                                  }else{
               		                                                	  
               		     result = result+'                          <li>Experience - ----</li>';  
               		                                                  }
+                         
 			             result = result+'                       </ul>';
+
 			             
+			             result = result+' <ul class="list-unstyled">';
+                          if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
+						 result = result+'<li>Designation -'+json.designation+' -Designation Type '+json.designationType+'</li>';
+						                              }else{
+						  result = result+'<li>Designation - ----</li>';  
+						                              }
+						  result = result+'</ul>';
 			             
-			             result = result+'                 <div class="clearfix">';
-			             result = result+'                 <div class="professinal-details">';
+			             result = result+'<ul class="list-unstyled">';
+			                     if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
+			             result = result+'<li>Experience -'+json.experienceYears+' years '+json.experienceMonths+' months </li>';
+              		                               }else{
+              		                                                	  
+              		     result = result+'<li>Experience - ----</li>';  
+              		                              }
+			             result = result+'</ul>';
+			             result = result+'<div class="clearfix">';
+			             result = result+'<div class="professinal-details">';
 			             
 			            
 			             result = result+'<ul class="list-inline list-unstyled">';
@@ -785,7 +812,7 @@ function cancel(candidateId){
     <div class="pull-left">
       <h2>Candidate List</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo;Candidate List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -810,7 +837,17 @@ function cancel(candidateId){
                   </div>                	
           </li>
           
-            <li><i class="fa fa-filter"></i><span id="candidateUpdiv"> UpDated Candidates </span><i class="glyphicon glyphicon-play" id="filter1ApprovePop"></i>|
+          <li><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
+              	<div id="filter3ApprovedPop" class="approved_pop">
+                  	<ul>
+	                    <li><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" onclick="candidateList();"  ><label for="c5">All</label></li>
+						<li><input id="onlycandidate" type="radio" name="candidateType" value ="Candidate"  onclick="candidateList();"><label for="c6">Candidates</label></li>
+						<li><input id="consultant" type="radio"  name="candidateType" value ="Consultant"  onclick="candidateList();"><label for="c7">Consultants</label></li>
+                    </ul>
+                  </div>                	
+          </li>
+          
+            <li><i class="fa fa-filter"></i><span id="candidateUpdiv">Updated</span><i class="glyphicon glyphicon-play" id="filter1ApprovePop"></i>|
               	<div id="filter1ApprovedPop" class="approved_pop">
                   	<ul>
 	                    <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="c5">1 Day ago</label></li>
@@ -822,11 +859,21 @@ function cancel(candidateId){
                     </ul>
                   </div>                	
           </li>  
-          
-          
-           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
+          <li><i class="fa fa-plus"></i>&nbsp;<span>Add</span><i class="glyphicon glyphicon-play" id="addmore"></i>
+          <div id="addmorepop" class="approved_pop">
+           <ul>
+             <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
               <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
            </sec:authorize>
+           
+           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
+              <li><a href="<c:url value='/addConsultant'/>" title=""><i class="fa fa-plus"></i>Add Consultant</a></li>
+           </sec:authorize>
+           </ul>
+           </div>
+          </li>
+          
+          
          
           <div class="clearfix"></div>
         </ul>
@@ -896,7 +943,19 @@ $(document).ready(function() {
     $(".export_pop, #candidate-export").click(function(e) {
         e.stopPropagation();
     });	
+//add more popu
 
+$("#addmore").click(function(){
+	$(this).next(".approved_pop").toggle();
+		//$(".approved_pop").toggle(200);
+	});
+$("html").click(function() {
+    $(".approved_pop").hide(200);
+});
+$(".approved_pop, #addmore").click(function(e) {
+    e.stopPropagation();
+});	
+    
 // project side bar tabs
 $(document).ready(function() {
 	$("#tab-1").show()
@@ -960,6 +1019,16 @@ $(document).ready(function() {
         e.stopPropagation();
     });	
     
+    $("#filter3ApprovePop").click(function(){
+		$("#filter3ApprovedPop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $("#filter3ApprovedPop").slideUp(200);
+    });
+    $("#filter3ApprovedPop, #filter3ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });	
+    
   
     
 }); 
@@ -997,8 +1066,12 @@ function exportToPdf(){
     }else{
         $("#canDiv").removeAttr("onClick");
     }
+	  
+	  var candTypeRadio = $('input[name=candidateType]');
+	  var candidateType = candTypeRadio.filter(':checked').val();
+	  
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType;	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
