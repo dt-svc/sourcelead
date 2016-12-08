@@ -109,6 +109,130 @@ public class PdfUtilPipelineHelper  {
 		        document.close();
 		    }
 			return file;
+		}else if(submissionType.equals("INTERVIEW")){
+			Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId)); 
+			String[] headers = Constants.REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS;
+		    Document document = new Document(PageSize.LETTER.rotate());
+		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		    File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");
+		    try {
+		        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+		        PdfWriter.getInstance(document, new FileOutputStream(file));
+		        document.open();
+		        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+		        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
+		        boldFont.setColor(myColor1);
+	            Paragraph para = new Paragraph(orgName+" Requirements.",boldFont);
+	            para.setAlignment(Element.ALIGN_CENTER);
+	            document.add(para);
+		        // Create an instance of PdfPTable. After that we transform the header and
+	            List orderedList = new List(List.ORDERED);
+		        orderedList.add(new ListItem("Requirement Name :"+requirement.getJobTitle()));
+		        orderedList.add(new ListItem("Location :"+requirement.getCountry()));
+		        orderedList.add(new ListItem("Experience :"+requirement.getMaxExp()+"-"+requirement.getMinExp()));
+		        document.add(orderedList);
+	            PdfPTable table = new PdfPTable(headers.length);
+		        table.setWidthPercentage(100);
+	            table.setWidths(new int[]{3,5, 3,5});
+		        for (int i = 0; i < headers.length; i++) {
+		            String header = headers[i];
+		            PdfPCell cell = new PdfPCell();
+		            cell.setGrayFill(0.9f);
+		            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+		            BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
+		            cell.setBackgroundColor(myColor);
+		            table.addCell(cell);
+		        }
+		        table.completeRow();
+		        java.util.List<String[]> requirements = new ArrayList<>();
+		        for(RequirementSubmission requirementsub : requirementStatusList){
+		        	requirements.add(prepareRequirementPipelineToArrayInterview(requirementsub));
+		        }
+		        
+		        for (String[] reqArray: requirements) {
+	                for (int i = 0; i < reqArray.length; i++) {
+	                    String datum = reqArray[i];
+	                    PdfPCell cell = new PdfPCell();
+	                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+	                    table.addCell(cell);
+	                }
+	                table.completeRow();
+	            }
+		        
+		        document.addTitle("Candiate List Table");
+		        table.setSpacingBefore(15f);
+		        document.add(table);
+		        logger.info("Pdf table created !!");
+		    } catch (DocumentException e) {
+		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+		    } catch (FileNotFoundException e) {
+		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+		    } finally {
+		        document.close();
+		    }
+			return file;
+		}else if(submissionType.equals("OFFER")){
+			Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId)); 
+			String[] headers = Constants.REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS;
+		    Document document = new Document(PageSize.LETTER.rotate());
+		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		    File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");
+		    try {
+		        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+		        PdfWriter.getInstance(document, new FileOutputStream(file));
+		        document.open();
+		        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+		        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
+		        boldFont.setColor(myColor1);
+	            Paragraph para = new Paragraph(orgName+" Requirements.",boldFont);
+	            para.setAlignment(Element.ALIGN_CENTER);
+	            document.add(para);
+		        // Create an instance of PdfPTable. After that we transform the header and
+	            List orderedList = new List(List.ORDERED);
+		        orderedList.add(new ListItem("Requirement Name :"+requirement.getJobTitle()));
+		        orderedList.add(new ListItem("Location :"+requirement.getCountry()));
+		        orderedList.add(new ListItem("Experience :"+requirement.getMaxExp()+"-"+requirement.getMinExp()));
+		        document.add(orderedList);
+	            PdfPTable table = new PdfPTable(headers.length);
+		        table.setWidthPercentage(100);
+	            table.setWidths(new int[]{3,5, 3,5, 5, 3,5,3,5});
+		        for (int i = 0; i < headers.length; i++) {
+		            String header = headers[i];
+		            PdfPCell cell = new PdfPCell();
+		            cell.setGrayFill(0.9f);
+		            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+		            BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
+		            cell.setBackgroundColor(myColor);
+		            table.addCell(cell);
+		        }
+		        table.completeRow();
+		        java.util.List<String[]> requirements = new ArrayList<>();
+		        for(RequirementSubmission requirementsub : requirementStatusList){
+		        	requirements.add(prepareRequirementPipelineToArrayOffer(requirementsub));
+		        }
+		        
+		        for (String[] reqArray: requirements) {
+	                for (int i = 0; i < reqArray.length; i++) {
+	                    String datum = reqArray[i];
+	                    PdfPCell cell = new PdfPCell();
+	                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+	                    table.addCell(cell);
+	                }
+	                table.completeRow();
+	            }
+		        
+		        document.addTitle("Candiate List Table");
+		        table.setSpacingBefore(15f);
+		        document.add(table);
+		        logger.info("Pdf table created !!");
+		    } catch (DocumentException e) {
+		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+		    } catch (FileNotFoundException e) {
+		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+		    } finally {
+		        document.close();
+		    }
+			return file;
 		}else{
 			Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId)); 
 			String[] headers = Constants.REQUIREMENT_PIPELINE_EXCEL_HEADERS;
@@ -172,9 +296,92 @@ public class PdfUtilPipelineHelper  {
 		    }
 			return file;
 		}
+		}
 		
-	}
 	
+	
+	private String[] prepareRequirementPipelineToArrayOffer(RequirementSubmission requirementsub) {
+		String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS.length];
+		if(requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())){
+			requirementArray[0] = requirementsub.getCandidateName();
+		}else{
+			requirementArray[0] = "--";
+		}
+		
+		if(requirementsub.getCandidateEmail() != null && !"".equalsIgnoreCase(requirementsub.getCandidateEmail())){
+			requirementArray[1] = requirementsub.getCandidateEmail();
+		}else{
+			requirementArray[1] = "--";
+		}
+		if(requirementsub.getPhoneNumber() != null && !"".equalsIgnoreCase(requirementsub.getPhoneNumber())){
+			requirementArray[2] = requirementsub.getPhoneNumber();
+
+		}else{
+			requirementArray[2] = "--";
+		}
+		
+		if(requirementsub.getWorkExperience() != null && !"".equalsIgnoreCase(requirementsub.getWorkExperience())){
+			requirementArray[3] = requirementsub.getWorkExperience();
+		}else{
+			requirementArray[3] = "--";
+		}
+		if(requirementsub.getOfferJoinDate() != null && !"".equalsIgnoreCase(requirementsub.getOfferJoinDate())){
+			requirementArray[4] = requirementsub.getOfferJoinDate();
+		}else{
+			requirementArray[4] = "--";
+		}
+		if(requirementsub.getPositionType() != null && !"".equalsIgnoreCase(requirementsub.getPositionType())){
+			requirementArray[5] = requirementsub.getPositionType();
+		}else{
+			requirementArray[5] = "--";
+		}
+		if(requirementsub.getOfferRate() != null && !"".equalsIgnoreCase(requirementsub.getOfferRate())){
+			requirementArray[6] = requirementsub.getOfferRate();
+		}else{
+			requirementArray[6] = "--";
+		}
+		if(requirementsub.getAttachment() != null && !"".equalsIgnoreCase(requirementsub.getAttachment())){
+			requirementArray[7] = requirementsub.getAttachment();
+		}else{
+			requirementArray[7] = "--";
+		}
+		return requirementArray;
+	}
+
+
+
+	private String[] prepareRequirementPipelineToArrayInterview(RequirementSubmission requirementsub) {
+		String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS.length];
+		
+		
+		if(requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())){
+			requirementArray[0] = requirementsub.getCandidateName();
+		}else{
+			requirementArray[0] = "--";
+		}
+		
+		if(requirementsub.getCandidateEmail() != null && !"".equalsIgnoreCase(requirementsub.getCandidateEmail())){
+			requirementArray[1] = requirementsub.getCandidateEmail();
+		}else{
+			requirementArray[1] = "--";
+		}
+		if(requirementsub.getPhoneNumber() != null && !"".equalsIgnoreCase(requirementsub.getPhoneNumber())){
+			requirementArray[2] = requirementsub.getPhoneNumber();
+
+		}else{
+			requirementArray[2] = "--";
+		}
+		
+		if(requirementsub.getWorkExperience() != null && !"".equalsIgnoreCase(requirementsub.getWorkExperience())){
+			requirementArray[3] = requirementsub.getWorkExperience();
+		}else{
+			requirementArray[3] = "--";
+		}
+		return requirementArray;
+	}
+
+
+
 	/**
 	 * @param requirementsub
 	 * @return
