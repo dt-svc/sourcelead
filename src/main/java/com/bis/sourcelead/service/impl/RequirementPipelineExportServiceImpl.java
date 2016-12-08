@@ -463,8 +463,8 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		if(requirementsub.getResumeName() != null && !"".equalsIgnoreCase(requirementsub.getResumeName())){
 			 writeRow.createCell(3).setCellValue(requirementsub.getResumeName()); 
 		}
-		if(requirementsub.getCreatedDate() != null && !"".equalsIgnoreCase(requirementsub.getCreatedDate().toString())){
-			 writeRow.createCell(4).setCellValue(requirementsub.getCreatedDate()); 
+		if(requirementsub.getCreatedDate() != null){
+			 writeRow.createCell(4).setCellValue(requirementsub.getCreatedDate().toString()); 
 		}
 		if(requirementsub.getExpectedCTC() != null && !"".equalsIgnoreCase(requirementsub.getExpectedCTC())){
 			 writeRow.createCell(5).setCellValue(requirementsub.getExpectedCTC()); 
