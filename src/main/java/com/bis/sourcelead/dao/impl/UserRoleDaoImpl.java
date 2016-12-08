@@ -460,5 +460,15 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getAllAssignedUsersIdsByReportingManagerId(Long reportingManagerId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select userRole.user.id from UserRole userRole where userRole.reportingManager.id = :reportingManagerId  " ;
+	    List<Long> userIds = session.createQuery(query).setLong( "reportingManagerId", reportingManagerId).setCacheable(true).list();
+        return userIds;
+        
+	}
+
 	
 }

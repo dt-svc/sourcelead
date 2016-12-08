@@ -189,6 +189,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		 String resultJson = null;   
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 
+		 List<User> reportManagerUsersList = null;
+		 
 		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
 		 
 		 Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocations.getId());
@@ -218,6 +220,16 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		  }
 		 
 		 userRole.setAllReportingManagers(userList);
+		 
+		 List<Long> userIds = userRoleService.getAllAssignedUsersIdsByReportingManagerId(userId);
+		 if(userIds.size() > 0){
+			 userIds.add(userId);
+			 reportManagerUsersList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(orgLocations.getId(), userIds, Long.valueOf(Constants.TAB_USER));
+		 }
+		 
+		 userRole.setAssignedUsersCountToReportingManager(userIds.size());
+		 userRole.setReportingManagers(reportManagerUsersList);
+		 
 		 
 		 resultJson = toJSON(userRole);
 		 return resultJson;

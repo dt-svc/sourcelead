@@ -125,8 +125,15 @@ public class UserRole implements Serializable{
 	@Transient
 	List<User> allReportingManagers;
 	
+	
 	@Transient
 	private String userName;
+	
+	@Transient
+	List<User> reportingManagers;
+	
+	@Transient
+	private Integer assignedUsersCountToReportingManager;
 	
 	
 	public String getUserName() {
@@ -366,6 +373,23 @@ public class UserRole implements Serializable{
 		this.employeeId = employeeId;
 	}
 
+	public List<User> getReportingManagers() {
+		return reportingManagers;
+	}
+
+	public void setReportingManagers(List<User> reportingManagers) {
+		this.reportingManagers = reportingManagers;
+	}
+
+	public Integer getAssignedUsersCountToReportingManager() {
+		return assignedUsersCountToReportingManager;
+	}
+
+	public void setAssignedUsersCountToReportingManager(Integer assignedUsersCountToReportingManager) {
+		this.assignedUsersCountToReportingManager = assignedUsersCountToReportingManager;
+	}
+
+	
 	
 	
 

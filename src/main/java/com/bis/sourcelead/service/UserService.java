@@ -145,6 +145,8 @@ public interface UserService  {
 	
 	public List<User> getUsersForConsultantsByUserRoleIdAndOrgLocationId(Long roleId,Long orgLocationsId) throws Exception;
 	
+	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(Long orgLocationsId,List<Long> userIds,Long tabId) throws Exception;
+	
 }	
 		
 	

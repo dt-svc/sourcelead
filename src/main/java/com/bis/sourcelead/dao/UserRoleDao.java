@@ -73,6 +73,8 @@ public interface UserRoleDao {
 	public HashSet<UserRole> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 	
 	public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek();
+	
+	List<Long> getAllAssignedUsersIdsByReportingManagerId(Long reportingManagerId);
 
 
 }
