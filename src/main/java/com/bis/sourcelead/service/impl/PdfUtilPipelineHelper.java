@@ -171,7 +171,7 @@ public class PdfUtilPipelineHelper  {
 		        document.close();
 		    }
 			return file;
-		}else if(submissionType.equals("OFFER")){
+		}else if(submissionType.equals("OFFERMADE")){
 			Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId)); 
 			String[] headers = Constants.REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS;
 		    Document document = new Document(PageSize.LETTER.rotate());
@@ -257,7 +257,7 @@ public class PdfUtilPipelineHelper  {
 		        document.add(orderedList);
 	            PdfPTable table = new PdfPTable(headers.length);
 		        table.setWidthPercentage(100);
-	            table.setWidths(new int[]{3,5, 3,5, 5, 3,5,3,5,5});
+	            table.setWidths(new int[]{3,5, 3,5, 5, 3,5,3,5,5,5,5});
 		        for (int i = 0; i < headers.length; i++) {
 		            String header = headers[i];
 		            PdfPCell cell = new PdfPCell();
@@ -340,10 +340,15 @@ public class PdfUtilPipelineHelper  {
 		}else{
 			requirementArray[6] = "--";
 		}
-		if(requirementsub.getAttachment() != null && !"".equalsIgnoreCase(requirementsub.getAttachment())){
-			requirementArray[7] = requirementsub.getAttachment();
+		if(requirementsub.getSubmittedOn() != null && !"".equalsIgnoreCase(requirementsub.getSubmittedOn())){
+			requirementArray[7] = requirementsub.getSubmittedOn();
 		}else{
 			requirementArray[7] = "--";
+		}
+		if(requirementsub.getAttachment() != null && !"".equalsIgnoreCase(requirementsub.getAttachment())){
+			requirementArray[8] = requirementsub.getAttachment();
+		}else{
+			requirementArray[8] = "--";
 		}
 		return requirementArray;
 	}
@@ -520,6 +525,17 @@ public class PdfUtilPipelineHelper  {
 			}else{
 				requirementArray[9] = "--";
 			}
+			if(requirementsub.getSubmittedOn() != null){
+				requirementArray[10] = requirementsub.getSubmittedOn();
+			}else{
+				requirementArray[10] = "--";
+			}
+			if(requirementsub.getSubmittedBy() != null){
+				requirementArray[11] = requirementsub.getSubmittedBy();
+			}else{
+				requirementArray[11] = "--";
+			}
+			
 			
 			return requirementArray;
 		}
