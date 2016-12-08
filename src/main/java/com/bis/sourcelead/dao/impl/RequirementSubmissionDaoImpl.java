@@ -449,7 +449,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		if(submissionType != null && "INTERVIEW".equalsIgnoreCase(submissionType)){
 			subQuery = " and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CUSTOMER_INTERVIEW') "; 
 		}else{
-			subQuery = " and reqSub.submissionStatus = "+submissionType+" ";
+			subQuery = " and reqSub.submissionStatus = '"+submissionType+"' ";
 		}
 		
 		Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
