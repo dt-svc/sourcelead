@@ -3794,7 +3794,10 @@ ul.addTasUl li .fa{
 	text-wrap:none;
 	font-style:normal;
 	display:none;
-	box-shadow: 0 0 10px rgba(0,0,0,0.6); -moz-box-shadow: 0 0 10px rgba(0,0,0,0.6); -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.6); -o-box-shadow: 0 0 10px rgba(0,0,0,0.6) - See more at: http://www.corelangs.com/css/box/shadow.html#sthash.guUWDf7m.dpuf
+	box-shadow: 0 0 10px rgba(0,0,0,0.6);
+	-moz-box-shadow: 0 0 10px rgba(0,0,0,0.6);
+	-webkit-box-shadow: 0 0 10px rgba(0,0,0,0.6);
+	-o-box-shadow: 0 0 10px rgba(0,0,0,0.6);
 }
 .ratepop section.tbl-scroll{
 	margin-bottom:15px;
@@ -3808,8 +3811,8 @@ ul.addTasUl li .fa{
   overflow-y:visible !important;
 }
 .ratepop:after{
-	bottom: 100%;
-	right:20px;
+	bottom:10%;
+	left:100%;
 	border: solid transparent;
 	content: " ";
 	height: 0;
@@ -3817,9 +3820,9 @@ ul.addTasUl li .fa{
 	position: absolute;
 	pointer-events: none;
 	border-color: rgba(255, 255, 255, 0);
-	border-bottom-color: #ccc;
 	border-width: 15px;
-	margin-left: -20px;
+	margin-top: -20px;
+	border-left-color:#ccc;
 }
 .ratepop table tr th{
 height:35px !important;
@@ -4737,7 +4740,8 @@ import-tranhd  [class*="col-md-"]{
 	left: auto;
 }
 .cand-advsrch-popup .col-md-4{
-	margin-bottom: 10px;
+	/*margin-bottom: 10px;*/
+	min-height: 65px;
 }
 .cand-advsrch-popup .fa-info-circle{
 	padding-left: 15px;
@@ -4794,6 +4798,115 @@ import-tranhd  [class*="col-md-"]{
 /*browser file error paragraph styles*/
 .edit-amd .col-md-6{
     margin-bottom: 15px;
+}
+a.add-user{
+	padding: 2px 3px;
+	border-radius:0 3px 0 3px;
+	margin: 5px;
+	position: absolute;
+	top: -15px;
+	font-size: 12px;
+	font-weight: normal;
+	border: 1px solid rgba(203,203,203,0.3);
+	right: -5px;
+}
+a.add-user span {
+	padding-right: 5px;
+}
+.active-user{
+	color:#aaa;	
+}
+a.active-user:hover{
+	color:#1565C0;
+}
+.deactive-user{
+	color:#5cb85c;	
+}
+edit-status {
+       position:absolute !important;
+       top:25px;
+       right: 5px;
+       border:1px solid #ccc;
+       background-color:#fff;
+       padding:5px 10px;
+       border-radius:5px;
+       display:none;
+       z-index: 9999 !important;
+       width:175px;
+       text-align: left;
+       word-wrap: break-word;
+}
+.edit-reason:hover .edit-status {
+       display: block;
+}
+.edit-status p{
+       color:#333;
+       
+       margin-bottom: 0;
+}
+.tblwidth-150 {
+       width: 150px !important;
+}
+.int-feedback{
+	position: absolute;
+	width: 90%;
+	padding:10px 15px;
+	border: 1px solid #ccc;
+	top: 10%;
+	left: 2%;
+	margin: 0 20px;
+	background: #ccc;
+	z-index: 9999;
+	border-radius: 5px;
+	box-shadow: 0 0 10px rgba(0,0,0,0.6); -moz-box-shadow: 0 0 10px rgba(0,0,0,0.6); -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.6); -o-box-shadow: 0 0 10px rgba(0,0,0,0.6);
+	display: none;
+}
+.int-feedback .close-feedback{
+	background-color: #d94747;
+    color: #fff;
+    left: -10px;
+    padding: 4px 5px;
+    position: absolute;
+    top: -5px;
+	border-radius:3px;
+	cursor:pointer;
+}
+.int-feedback .col-md-4{
+	margin-bottom: 10px;
+}
+.int-feedback .chosen-container-single .chosen-single{
+	height: 30px !important;
+	line-height: 30px !important;
+}
+.assignroles .chosen-container-single .chosen-drop {
+	width: 94.8%;
+	margin-left: 15px;
+}
+.assignroles {
+    position:absolute;
+    text-align:left;
+	width:650px;
+	height:350px;
+	overflow-y: auto;
+	background-color:#FFF;
+	box-sizing:border-box;
+	right:35px;
+	top:0px;
+    padding:10px 10px; 
+	display:block; box-shadow:0px 0px 3px rgba(0,0,0,0.3);
+}
+.assignroles .user_badg p {
+    padding: 0px 0px !important;
+	color: #333;
+}
+.assignroles textarea{
+	width: 100% !important;
+    border: 1px solid #ccc !important;
+    height: auto !important;
+    margin: 0px !important;
+}
+.mailBtn .dropdown-menu {
+	min-width: 100%;
 }
 /* media 320px */
 @media (max-width: 320px) {

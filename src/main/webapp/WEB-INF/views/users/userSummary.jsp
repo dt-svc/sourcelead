@@ -21,6 +21,10 @@
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/chosen.jquery.min.js"></script> 
+
 <div class="wraper">
 	<!-- Content Area -->
 	<section class="content-wraper">
@@ -159,10 +163,77 @@ $(document).ready(function(){
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\')">'
 						result = result + ' <a id="remove-user" href="javascript:removeUser();"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
 							result = result + ' <div id="remove_user_id" class="remove_user_pop" >';
-									result = result +'<textarea placeholder="Comments here" id="reason" name="reason"/></textarea>';
+									/* result = result +'<textarea placeholder="Comments here" id="reason" name="reason"/></textarea>';
 									result = result + ' <div id="reasonDiv"/>';
-									result = result + ' <b><input id="save_reason" value="Submit" onClick="terminateUser('+userId+');" type="button"/><input class="u_can_color" onclick="cancelUser();" value="Cancel" type="button"></b>';
-						     result = result + ' </div>';
+									result = result + ' <b><input id="save_reason" value="Submit" onClick="terminateUser('+userId+');" type="button"/><input class="u_can_color" onclick="cancelUser();" value="Cancel" type="button"></b>'; */
+						     
+									result = result + '<div class="clearfix assignroles">';
+									result = result + '<div class="clearfix mb10">';
+									result = result + '<div class="col-md-6">';
+									    result = result + '<div class="user_badg">';
+										    result = result + '<p>Assign To<strong class="label label-default">20</strong></p>';
+												result = result + '</div>';
+								            result = result + '</div>';
+										result = result + '<div class="col-md-6">';
+										result = result + '<select class="chosen-select" data-placeholder="Assign To">';
+											result = result + '<option selected>Assign to</option>';
+												result = result + '<option>Muralikrishna Ravva</option>';
+												result = result + '<option>Muralikrishna Ravva</option>';
+												result = result + '<option>Muralikrishna Ravva</option>';
+												result = result + '<option>Muralikrishna Ravva</option>';
+												result = result + '</select>';
+											result = result + '</div>';
+										result = result + '</div>';	
+										result = result + '<div class="clearfix mb10">';
+								    result = result + '<div class="col-md-6">';
+									    result = result + '<div class="user_badg">';
+										    result = result + '<p>User 1<strong class="label label-success">20</strong></p>';
+												result = result + '</div>';
+								            result = result + '</div>';
+										result = result + '<div class="col-md-6">';
+										result = result + '<select class="chosen-select" data-placeholder="Assign To">';
+											result = result + '<option selected>Assign to</option>';
+												result = result + '<option>Muralikrishna Ravva</option>';
+												result = result + '<option>Muralikrishna Ravva</option>';
+												result = result + '<option>Muralikrishna Ravva</option>';
+												result = result + '<option>Muralikrishna Ravva</option>';
+												result = result + '</select>';
+											result = result + '</div>';
+										result = result + '</div>';	
+										result = result + '<div class="clearfix mb10">';
+									result = result + '<div class="col-md-6">';
+									    result = result + '<div class="user_badg">';
+										    result = result + '<p>User 2<strong class="label label-warning">20</strong></p>';
+												result = result + '</div>';
+								            result = result + '</div>';
+										result = result + '<div class="col-md-6">';
+										result = result + '<select class="chosen-select" data-placeholder="Assign To">';
+											result = result + '<option selected>Assign to</option>';
+												result = result + '<option>Muralikrishna Ravva</option>';
+												result = result + '<option>Muralikrishna Ravva</option>';
+												result = result + '<option>Muralikrishna Ravva</option>';
+												result = result + '<option>Muralikrishna Ravva</option>';
+												result = result + '</select>';
+											result = result + '</div>';
+										result = result + '</div>';	
+								result = result + '<div class="clearfix mb10 mt">';
+								  result = result + '<div class="col-md-12">';
+									  result = result + '<textarea rows="3" class="form-control input-sm" placeholder="Description"></textarea>';
+									  	result = result + '</div>';
+									  result = result + '</div>';
+								  result = result + '<div class="clearfix"></div>';
+										result = result + '<div class="user_summary_edit_cta">';
+										result = result + '<input class="us-btn us-btn_a " type="button" value="Delete" />';
+											result = result + '&nbsp;<input class="us-btn" onclick="cancelUser();" type="button" value="Cancel"/>';
+											result = result + '</div>';
+												
+										result = result + '<div class="clearfix"></div>';
+													
+									result = result + '</div>';		
+									
+									result = result + ' </div>';
+									
+									
 				    '</sec:authorize>';	     
 				     result = result + ' </div>';
 				}
@@ -275,6 +346,22 @@ $(document).ready(function(){
 				
 				$("#tab-1").empty(); 
 			    $("#tab-1").append(result);  
+			    
+			    var config = {
+			  		  '.chosen-select'           : {},
+			  		  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  		  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  		  '.chosen-select-width'     : {width:"95%"}
+			  		}
+			  		for (var selector in config) {
+			  		  $(selector).chosen(config[selector]);
+			  		}
+			  		$('.chosen-select').each(function() {
+			  			var $this = $(this);
+			  			$this.next().css({'width': '100%'});
+
+			           });
 	    
 	      },
 	});
@@ -991,6 +1078,8 @@ function removeUser(){
 	$("#reasonDiv").empty();
 	$("#remove_user_id").slideToggle(100);
 	$(".user_summary_edit").slideUp(100);
+	
+	
 }
 </script>
 <script>
@@ -1563,5 +1652,7 @@ function flushReProject(){
 	$('#assignProjectDiv').find('p.jquery_form_error_message').remove();
 }
 </script>
+
+<
 
 <!-- () -->
