@@ -173,6 +173,9 @@ public class RequirementSubmission implements Serializable{
 	
 	@Transient
 	private String submittedBy;
+	
+	@Transient
+	private String submittedOn;
 
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -520,6 +523,15 @@ public class RequirementSubmission implements Serializable{
 		this.submittedBy = submittedBy;
 	}
 
+	public String getSubmittedOn() {
+		return submittedOn;
+	}
+
+	public void setSubmittedOn(String submittedOn) {
+		this.submittedOn = submittedOn;
+	}
+	
+
 	public String getRejectedReason() {
 		return rejectedReason;
 	}
@@ -535,4 +547,5 @@ public class RequirementSubmission implements Serializable{
 	public void setPreviousSubmissionStatus(ApplicantSubmissionStatus previousSubmissionStatus) {
 		this.previousSubmissionStatus = previousSubmissionStatus;
 	}
+
 }
