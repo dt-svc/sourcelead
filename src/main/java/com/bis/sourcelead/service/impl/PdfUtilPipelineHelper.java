@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionCounts;
 import com.bis.sourcelead.service.RequirementService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -45,7 +46,7 @@ public class PdfUtilPipelineHelper  {
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtilPipelineHelper.class);
 	
 	public File getRequirementPipelenePdf(java.util.List<RequirementSubmission> requirementStatusList, String orgName,
-			String requirementId,String submissionType) throws NumberFormatException, Exception {
+			String requirementId,String submissionType,RequirementSubmissionCounts requirementSubmissionCounts) throws NumberFormatException, Exception {
 		
 		if(submissionType.equals("SHORTLIST")){
 			Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId)); 
@@ -68,6 +69,8 @@ public class PdfUtilPipelineHelper  {
 		        orderedList.add(new ListItem("Requirement Name :"+requirement.getJobTitle()));
 		        orderedList.add(new ListItem("Location :"+requirement.getCountry()));
 		        orderedList.add(new ListItem("Experience :"+requirement.getMaxExp()+"-"+requirement.getMinExp()));
+		        orderedList.add(new ListItem("Shortlisted Applicants :"+requirementSubmissionCounts.getNumOfShortList()));
+
 		        document.add(orderedList);
 	            PdfPTable table = new PdfPTable(headers.length);
 		        table.setWidthPercentage(100);
@@ -130,6 +133,8 @@ public class PdfUtilPipelineHelper  {
 		        orderedList.add(new ListItem("Requirement Name :"+requirement.getJobTitle()));
 		        orderedList.add(new ListItem("Location :"+requirement.getCountry()));
 		        orderedList.add(new ListItem("Experience :"+requirement.getMaxExp()+"-"+requirement.getMinExp()));
+		        orderedList.add(new ListItem("Interview Applicants :"+requirementSubmissionCounts.getNumOfInterview()));
+
 		        document.add(orderedList);
 	            PdfPTable table = new PdfPTable(headers.length);
 		        table.setWidthPercentage(100);
@@ -192,6 +197,8 @@ public class PdfUtilPipelineHelper  {
 		        orderedList.add(new ListItem("Requirement Name :"+requirement.getJobTitle()));
 		        orderedList.add(new ListItem("Location :"+requirement.getCountry()));
 		        orderedList.add(new ListItem("Experience :"+requirement.getMaxExp()+"-"+requirement.getMinExp()));
+		        orderedList.add(new ListItem("Offered Applicants :"+requirementSubmissionCounts.getNumOfOffers()));
+
 		        document.add(orderedList);
 	            PdfPTable table = new PdfPTable(headers.length);
 		        table.setWidthPercentage(100);
@@ -254,6 +261,8 @@ public class PdfUtilPipelineHelper  {
 		        orderedList.add(new ListItem("Requirement Name :"+requirement.getJobTitle()));
 		        orderedList.add(new ListItem("Location :"+requirement.getCountry()));
 		        orderedList.add(new ListItem("Experience :"+requirement.getMaxExp()+"-"+requirement.getMinExp()));
+		        orderedList.add(new ListItem("Rejected Applicants :"+requirementSubmissionCounts.getNumOfRejected()));
+
 		        document.add(orderedList);
 	            PdfPTable table = new PdfPTable(headers.length);
 		        table.setWidthPercentage(100);
@@ -316,6 +325,8 @@ public class PdfUtilPipelineHelper  {
 		        orderedList.add(new ListItem("Requirement Name :"+requirement.getJobTitle()));
 		        orderedList.add(new ListItem("Location :"+requirement.getCountry()));
 		        orderedList.add(new ListItem("Experience :"+requirement.getMaxExp()+"-"+requirement.getMinExp()));
+		        orderedList.add(new ListItem("Submitted Applicants :"+requirementSubmissionCounts.getSubmittedCount()));
+
 		        document.add(orderedList);
 	            PdfPTable table = new PdfPTable(headers.length);
 		        table.setWidthPercentage(100);

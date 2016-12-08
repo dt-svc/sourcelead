@@ -144,6 +144,7 @@ $(document).ready(function() {
     
      <div class="clients_side_wrap_inn no_pad">
         <div id="requirementSideDiv"> </div> 
+        <input type="hidden" id="emptyPipelinelist" name="emptyPipelinelist">
        <!--  <div id="requirementStatusDiv"> </div>  -->
       </div>   
       
@@ -1390,6 +1391,7 @@ function requirementPipeline(requirementId,submissionType){
 							$("#status-data").empty();
 							$("#status-data").append(result);
 							$("#tab-2").append(status-data);
+							$("#emptyPipelinelist").val(json.length);
 							
 							documentpagination();
 							$("#tab-2").show();
@@ -2026,11 +2028,22 @@ $('.edit-status').toggle();
 function exportPipelineToExcel(requirementId,submissionType){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  alert(" requirementId "+requirementId);
-	  alert(" submissionType "+submissionType);
-	  
-      window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
+	  var emptypilpeline = $("#emptyPipelinelist").val();
+      if(emptypilpeline > 0 ){
+          window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
+	  }else{
+		  var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#pipeline_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	  }
+
 }
 
 </script>
@@ -2040,14 +2053,32 @@ function exportPipelineToExcel(requirementId,submissionType){
 function exportPipelineToPdf(requirementId,submissionType){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
-	  alert(" requirementId "+requirementId);
-	  alert(" submissionType "+submissionType);
-      window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=pdf";
+	  var emptypilpeline = $("#emptyPipelinelist").val();
+	  if(emptypilpeline > 0 ){
+		  window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=pdf";
+	  }else{
+		  var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#pipeline_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	  }
+      
 }
 
 </script> 
 
-
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />
 <jsp:include page="submitToClient.jsp" />
