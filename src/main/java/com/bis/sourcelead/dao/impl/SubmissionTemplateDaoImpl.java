@@ -59,12 +59,12 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
 
 	@Override
 	@Transactional
-	public List<SubmissionTemplate> getSubmissionTemplateByClientLocationIdAndOrgLocationId(Long clientLocationId, Long orgLocationId)
+	public List<SubmissionTemplate> getSubmissionTemplateByClientLocationIdAndOrgLocationIdAndTemplateType(Long clientLocationId, Long orgLocationId,String templateType)
 			throws Exception {
 		logger.debug("getSubmissionTemplateByClientLocationIdAndOrgLocationId start");
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from SubmissionTemplate st where st.clientLocationId.id = :clientLocationId and st.orgLocationId.id = :orgLocationId";
-	    List<SubmissionTemplate> submissionTemplateList = session.createQuery(query).setLong( "clientLocationId", clientLocationId ).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+	    String query = "from SubmissionTemplate st where st.clientLocationId.id = :clientLocationId and st.orgLocationId.id = :orgLocationId and st.templateType = :templateType";
+	    List<SubmissionTemplate> submissionTemplateList = session.createQuery(query).setLong( "clientLocationId", clientLocationId ).setLong( "orgLocationId", orgLocationId ).setString("templateType", templateType).setCacheable(true).list();
         return submissionTemplateList;
         
 	}
@@ -144,11 +144,11 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
 
 	@Override
 	@Transactional
-	public List<SubmissionTemplate> getOrgSubmissionTemplatesByOrgLocationId(Long orgLocationId) throws Exception {
+	public List<SubmissionTemplate> getOrgSubmissionTemplatesByOrgLocationIdAndTemplateType(Long orgLocationId,String templateType) throws Exception {
 		logger.debug("getOrgSubmissionTemplatesByOrgLocationId start");
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from SubmissionTemplate st where st.orgLocationId.id = :orgLocationId and st.clientLocationId IS NULL";
-	    List<SubmissionTemplate> submissionTemplateList = session.createQuery(query).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+	    String query = "from SubmissionTemplate st where st.orgLocationId.id = :orgLocationId and st.templateType = :templateType and st.clientLocationId IS NULL";
+	    List<SubmissionTemplate> submissionTemplateList = session.createQuery(query).setLong( "orgLocationId", orgLocationId ).setString("templateType", templateType).setCacheable(true).list();
         return submissionTemplateList;
         
 	}
