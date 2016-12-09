@@ -39,6 +39,7 @@ function submitToClient(requirementId){
 	           result = result + '           <th>Resume</th>';
 	           result = result + '           <th>Applied on</th>';
 	           result = result + '           <th>Rate</th>';
+	           result = result + '           <th>Submission Rate</th>';
 	           result = result + '           <th>Source</th>';
 	           result = result + '           <th>Experince</th>';
 	           result = result + '         </tr>';
@@ -88,6 +89,13 @@ function submitToClient(requirementId){
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
+			    	     }
+			           
+			           if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+			        	   result = result + '<td><div><input type="text" class="form-control" id="submissionRate" name="submissionRate" value="'+report.expectedCTC+'"></div></td>';
+				           }
+				       else{
+				    	   result = result + '<td><div><input type="text" class="form-control" id="submissionRate" name="submissionRate" value=""></div></td>';
 			    	     }
 			           
 			           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
@@ -185,6 +193,12 @@ function clientSubmissions(requirementId){
 	 $("input[name='shortlist[]']:checked").each( function (i) {
 		 selectedShortlists[i] = $(this).val();
 	});
+	 
+	 
+	 var arr = $("input[name='submissionRate[]']").each( function (i) {
+		 selectedShortlists[i] = $(this).val();
+		});
+	 alert(arr);
 	 
 	 if(selectedShortlists.length > 0){
 		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');

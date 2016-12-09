@@ -97,7 +97,7 @@
 								   <div class="col-md-12 mb10">
 								  <div class="row">
 								  <div class="col-md-7">
-								  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="rate" id="applicantRate" name="applicantRate" data-validation="required validate_Space validate_float validate_length length1-8">
+								  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="rate" id="rateProposal" name="rateProposal" data-validation="required validate_Space validate_float validate_length length1-8">
 								  </div> 
 								  
 								  <div class="col-md-5 select-field">
@@ -185,7 +185,7 @@
 						type : "POST",
 						url : sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&submissionId="+submissionId,
 						success : function(result) {
-							$('#applicantRate').val('');
+							$('#rateProposal').val('');
 							$('#rateType').val('');
 							$('#negotiationButtonId').addClass('button').val('submit').removeAttr("disabled");
 							$('#negotiationDivId').append("<span><center>Rate submitted successfully !!</center></span>");

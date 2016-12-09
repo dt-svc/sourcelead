@@ -2,6 +2,11 @@ package com.bis.sourcelead.enums;
 
 public enum SubmissionRateStatus {
 
+	CLIENT("client"),
+	VENDOR("vendor"),
+	CANDIDATE("candidate"),
+	ORG("org"),
+	NEWRATE("newRate"),
 	REJECTED("rejected"),
     ACCEPTED("accepted");
 	

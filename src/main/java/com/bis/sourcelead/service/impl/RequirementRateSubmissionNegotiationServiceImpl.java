@@ -15,10 +15,10 @@ public class RequirementRateSubmissionNegotiationServiceImpl implements Requirem
 	@Autowired
 	RequirementRateSubmissionNegotiationDao requirementRateSubmissionNegotiationDao;
 	
-	@Override
+	/*@Override
 	public void saveRateNegotiation(RequirementRateSubmissionNegotiation rateNegotiation) {
 		requirementRateSubmissionNegotiationDao.saveRateNegotiation(rateNegotiation);		
-	}
+	}*/
 
 	@Override
 	public RequirementRateSubmissionNegotiation getRequirementRateSubmissionById(Long ratesubmissionId) {
@@ -29,6 +29,22 @@ public class RequirementRateSubmissionNegotiationServiceImpl implements Requirem
 	public List<RequirementRateSubmissionNegotiation> getRequirementRateSubmissionByOrgLocationsId(Long orgLocationsId)
 			throws Exception {
 		return requirementRateSubmissionNegotiationDao.getRequirementRateSubmissionByOrgLocationsId(orgLocationsId);
+	}
+	
+	
+	@Override
+	public void saveRateNegotiation(RequirementRateSubmissionNegotiation rateNegotiation) {
+		requirementRateSubmissionNegotiationDao.saveRateNegotiation(rateNegotiation);		
+	}
+	
+	@Override
+	public RequirementRateSubmissionNegotiation getLatestRequirementRateSubmissionNegotiationBySubmissionId(Long submissionId) {
+		return requirementRateSubmissionNegotiationDao.getLatestRequirementRateSubmissionNegotiationBySubmissionId(submissionId);
+	}
+	
+	@Override
+	public List<RequirementRateSubmissionNegotiation> getAllRateHistoryBySubmissionIdAndCandidateId(Long submissionId, Long candidateId) throws Exception {
+		return requirementRateSubmissionNegotiationDao.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId, candidateId) ;
 	}
 
 }

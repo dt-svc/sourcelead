@@ -97,6 +97,12 @@ public class RequirementSubmission implements Serializable{
 	@Column(name = "REJECTED_REASON", columnDefinition = "TEXT default NULL")
     private String rejectedReason;
 	
+	@Column(name = "FINALIZED_RATE")
+	private String finalizedRate;
+	
+	@Column(name = "FINALIZED_RATE_TYPE")
+	private String finalizedRateType;
+		
 	@Column(name = "STATUS")
     private Integer status;
 	
@@ -387,6 +393,22 @@ public class RequirementSubmission implements Serializable{
 
 	public void setSubmissionRateFileName(String submissionRateFileName) {
 		this.submissionRateFileName = submissionRateFileName;
+	}
+
+	public String getFinalizedRate() {
+		return finalizedRate;
+	}
+
+	public void setFinalizedRate(String finalizedRate) {
+		this.finalizedRate = finalizedRate;
+	}
+
+	public String getFinalizedRateType() {
+		return finalizedRateType;
+	}
+
+	public void setFinalizedRateType(String finalizedRateType) {
+		this.finalizedRateType = finalizedRateType;
 	}
 
 	public Integer getStatus() {
