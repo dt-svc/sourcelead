@@ -1805,5 +1805,15 @@ public class RequirementServiceImpl implements RequirementService {
 public List<Requirement> getAllReleasedJobsForVendor(Long orgLocationId, Long orgRelationId, User user,OrgLocations orgLocations) throws Exception{
 	return requirementDao.getAllReleasedJobsForVendor(orgLocationId, orgRelationId, user,orgLocations);
 }
+
+@Override
+public Integer getManagerAssignedRequirementsCount(Long userId, Long orgLocationId) throws Exception {
+	return requirementDao.getManagerAssignedRequirementsCount(userId, orgLocationId);
+}
+
+@Override
+public Integer getRequirementsCountAsApprover(Long userId,Long orgLocationId) throws Exception {
+	return requirementDao.getRequirementsCountAsApprover(userId,orgLocationId);
+}
 }
 

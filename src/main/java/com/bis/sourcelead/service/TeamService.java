@@ -21,4 +21,6 @@ public interface TeamService {
 	
 	public Team deleteTeamById(Long teamId) throws Exception;
 	
+	public Integer getTeamCountByTeamOwner(Long userId,Long orgLocationId) throws Exception;
+	
 }

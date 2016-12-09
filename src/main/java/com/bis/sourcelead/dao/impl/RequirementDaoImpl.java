@@ -567,6 +567,40 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 	
 	}
+
+	@Override
+	@Transactional
+	public Integer getManagerAssignedRequirementsCount(Long userId, Long orgLocationId) throws Exception {
+		logger.debug("getManagerAssignedRequirementsCount start");
+		Session session = this.sessionFactory.getCurrentSession();
+			String query = "select count(requirement.id) from Requirement requirement "
+					+ "where requirement.managerUserId.id = :userId and requirement.orgLocationId.id = :orgLocationId ";
+			
+			List<Long> jobCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			Integer count = 0;
+			if(jobCount != null && !jobCount.isEmpty()){
+					count = jobCount.get(0).intValue();
+			}
+			return count;
+        
+	}
+
+	@Override
+	@Transactional
+	public Integer getRequirementsCountAsApprover(Long userId,Long orgLocationId) throws Exception {
+		logger.debug("getRequirementsCountAsApprover start");
+		Session session = this.sessionFactory.getCurrentSession();
+			String query = "select count(requirement.id) from Requirement requirement "
+					+ "where requirement.id IN (select hierarchy.requirementId.id from RequirementApproverHierarchy hierarchy where hierarchy.approverUserId.id = :userId) and requirement.orgLocationId.id = :orgLocationId ";
+			
+			List<Long> jobCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			Integer count = 0;
+			if(jobCount != null && !jobCount.isEmpty()){
+					count = jobCount.get(0).intValue();
+			}
+			return count;
+        
+	}
 	
 
 	

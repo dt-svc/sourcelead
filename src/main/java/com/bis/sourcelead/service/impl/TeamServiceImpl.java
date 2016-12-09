@@ -141,6 +141,11 @@ public class TeamServiceImpl implements TeamService {
 		team.setStatus(Constants.TEAM_IN_ACTIVE);
 		return teamDao.storeTeam(team);
 	}
+
+	@Override
+	public Integer getTeamCountByTeamOwner(Long userId, Long orgLocationId) throws Exception {
+		return teamDao.getTeamCountByTeamOwner(userId, orgLocationId);
+	}
 	
 }
 	 

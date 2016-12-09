@@ -46,4 +46,8 @@ public interface RequirementDao {
 	
 	Boolean checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long requirementId,Long userId)  throws Exception;
 	
+	Integer getManagerAssignedRequirementsCount(Long userId,Long orgLocationId) throws Exception;
+	
+	public Integer getRequirementsCountAsApprover(Long userId,Long orgLocationId) throws Exception;
+	
 }

@@ -827,6 +827,12 @@ public class UserServiceImpl implements UserService {
 			Long tabId) throws Exception {
 		return userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(orgLocationsId, userIds, tabId);
 	}
+
+	@Override
+	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(Long orgLocationsId, Long userId, Long tabId)
+			throws Exception {
+		return userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocationsId, userId, tabId);
+	}
 	
 	
 	

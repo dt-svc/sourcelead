@@ -4908,6 +4908,9 @@ edit-status {
 .mailBtn .dropdown-menu {
 	min-width: 100%;
 }
+.remove_user_pop  p.jquery_form_error_message{
+	color:#ff4b4b;
+}
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {

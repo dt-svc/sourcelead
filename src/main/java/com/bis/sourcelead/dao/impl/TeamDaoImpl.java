@@ -134,6 +134,23 @@ public class TeamDaoImpl  implements TeamDao{
 		
 	}
 
+	@Override
+	@Transactional
+	public Integer getTeamCountByTeamOwner(Long userId, Long orgLocationId) throws Exception {
+		logger.debug("getTeamCountByTeamOwner start");
+		Session session = this.sessionFactory.getCurrentSession();
+			String query = "select count(team.id) from Team team "
+					+ "where team.ownerUserId.id = :userId and team.orgLocationsId.id = :orgLocationId ";
+			
+			List<Long> teamCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			Integer count = 0;
+			if(teamCount != null && !teamCount.isEmpty()){
+					count = teamCount.get(0).intValue();
+			}
+			return count;
+        
+	}
+
 
 	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
