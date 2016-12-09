@@ -258,8 +258,11 @@ public class ClientServiceImpl implements ClientService{
 				submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 				submissionTemplate.setOrgLocationId(clientOrgLocations);
 				submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+				submissionTemplate.setTemplateType("Submission");
 				submissionTemplate.setCreatedBy(user.getUserCode());
+				submissionTemplate.setUpdatedBy(user.getUserCode());
 				submissionTemplate.setCreatedDate(new Date());
+				submissionTemplate.setUpdatedDate(new Date());
 				submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 			}
 			
@@ -278,8 +281,12 @@ public class ClientServiceImpl implements ClientService{
 					submissionTemplate.setClientLocationId(orgLocations);
 					submissionTemplate.setOrgLocationId(clientOrgLocations);
 				}
+				submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+				submissionTemplate.setTemplateType("Submission");
 				submissionTemplate.setCreatedBy(user.getUserCode());
 				submissionTemplate.setCreatedDate(new Date());
+				submissionTemplate.setUpdatedBy(user.getUserCode());
+				submissionTemplate.setUpdatedDate(new Date());
 				submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 			}
 		}
@@ -644,7 +651,7 @@ public class ClientServiceImpl implements ClientService{
 		}
 		
 		@Override
-		public void updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId, User loginUser ,Long ownerId, Long spocUserId,OrgLocations orgLocation) throws Exception {
+		public OrgSpoc updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId, User loginUser ,Long ownerId, Long spocUserId,OrgLocations orgLocation) throws Exception {
 			
 			//OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(vendorLocationId,orgRelationId);
 			
@@ -739,6 +746,7 @@ public class ClientServiceImpl implements ClientService{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
 				throw new SourceLeadObjectNotFoundException(message.toString());
 			}
+			return orgSpoc;
 
 		}
 

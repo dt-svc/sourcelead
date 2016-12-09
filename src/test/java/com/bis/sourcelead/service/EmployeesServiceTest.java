@@ -49,7 +49,7 @@ public class EmployeesServiceTest {
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(3L);
 		employee.setOrgLocations(orgLocations);
-		employee.setInvoiceFrequency("Weekly");
+		/*employee.setInvoiceFrequency("Weekly");*/
 		employee.setStatus("Active");
 		employee.setCreatedDate(new Date());
 		employee.setCreatedBy("source");
@@ -80,7 +80,7 @@ public class EmployeesServiceTest {
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(3L);
 		employee.setOrgLocations(orgLocations);
-		employee.setInvoiceFrequency("Weekly");
+		/*employee.setInvoiceFrequency("Weekly");*/
 		employee.setStatus("ACTIVE");
 		employee.setCreatedDate(new Date());
 		employee.setCreatedBy("SOURCE");

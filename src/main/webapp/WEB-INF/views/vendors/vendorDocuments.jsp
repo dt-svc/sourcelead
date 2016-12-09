@@ -52,7 +52,10 @@ function vendorDocuments(orgRelationId,vendorLocationId){
 	
 	var result = "";
 	result = result  +'<div class="timesheet_head">';
-	result = result  +'    <div class="project_tabs_inn_head addUser-org"> ';  
+	result = result  +'    <div class="project_tabs_inn_head addUser-org"> '; 
+	result  = result + '<div class="success_pop" id="vendorDocSelector" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="vendorDocMsgDiv"></span>';
+    result  = result + '</div>';
 	    result = result + '<ul>';
 	    
 	    '<sec:authorize access="hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
@@ -169,7 +172,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                    		 '</sec:authorize>';
 	                    		 
 	                    		 '<sec:authorize access="hasAnyRole(\"ROLE_DELETE_VENDOR_DOCUMENT\")">';
-					           	 		result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteVendorDocument('+vendorLocationId+','+orgRelationId+','+opt.id+');"></i>';
+					           	 		result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteVendorDocument('+vendorLocationId+','+orgRelationId+','+opt.id+',\''+opt.docName+'\');"></i>';
 					           	 '</sec:authorize>';
 	                    	 }
 	                    	 result = result+'	            </div></td>';
@@ -422,7 +425,15 @@ function closePopup(){
 		            		 }
 		            		 else{
 		            			$("#popUpDiv").removeClass("edit-details-active");
+		            			$("#vendorDocSelector").removeAttr("style");
+		            			$("#vendorDocSelector").css({ display: "block" });
+		            			if(docId != null){
+		            				$("#vendorDocMsgDiv").html("Success!! Document details updated");
+		            			}else{
+		            				$("#vendorDocMsgDiv").html("Success!! New document added");
+		            			}
 		            			vendorDocumentsList(vendorLocationId,orgRelationId);
+		            			vendorDocMsgFadein();
 		            		 }
 						},
 					});
@@ -607,14 +618,14 @@ function removeResumeNameDiv(){
 </script>
 
 <script>
-function deleteVendorDocument(vendorLocationId,orgRelationId,docId){
+function deleteVendorDocument(vendorLocationId,orgRelationId,docId,docName){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>User delete message here</p>";
 	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="terminateReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForVendorDoc("+vendorLocationId+","+orgRelationId+","+docId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForVendorDoc("+vendorLocationId+","+orgRelationId+","+docId+",\""+docName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
 	result = result +"	</div>";
 	$("#deleteDocpopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -630,7 +641,7 @@ $(".project_inn_mask").fadeOut(200);
 </script>
 
 <script>
-function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId){
+function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId,docName){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var terminateReason = document.getElementById("terminateReason").value;
 	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
@@ -648,7 +659,11 @@ function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId){
         		 else{
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);
+        			 $("#vendorDocSelector").removeAttr("style");
+         			 $("#vendorDocSelector").css({ display: "block" });
+         			 $("#vendorDocMsgDiv").html(""+docName+" Removed");
         			 vendorDocumentsList(vendorLocationId,orgRelationId);
+        			 vendorDocMsgFadein();
         		 }
    		    }
 	     });
@@ -661,3 +676,11 @@ function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId){
 	}
 }
 </script>
+<!-- Show success message after form submission script -->
+<script>
+	function vendorDocMsgFadein() {
+	        $("#vendorDocSelector").fadeIn(200);
+	        $('#vendorDocSelector').delay(2000).fadeOut('slow');
+	}
+</script> 
+<!-- End -->

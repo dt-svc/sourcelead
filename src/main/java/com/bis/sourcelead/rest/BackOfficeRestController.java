@@ -34,6 +34,7 @@ import com.bis.sourcelead.entity.BoAmexTrans;
 import com.bis.sourcelead.entity.BoComericaTrans;
 import com.bis.sourcelead.entity.BoJmpcTrans;
 import com.bis.sourcelead.entity.BoUploadedFiles;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -44,6 +45,7 @@ import com.bis.sourcelead.service.BoAmexTransService;
 import com.bis.sourcelead.service.BoComericaTransService;
 import com.bis.sourcelead.service.BoJmpcTransService;
 import com.bis.sourcelead.service.BoUploadedFilesService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -80,6 +82,9 @@ public class BackOfficeRestController {
 	
 	@Autowired
 	AssetCategoryService assetCategoryService;
+	
+	@Autowired
+	EmployeesService employeesService;
 	
 	@Autowired
 	UserService userService;
@@ -445,8 +450,14 @@ public class BackOfficeRestController {
 	@RequestMapping(value = "/getAssetById")
 	@ResponseBody
 	public String getAssetById(HttpServletRequest request,@RequestParam(value="assetId", required=false) Long assetId) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
 		String resultJson = null;
 		Asset asset = assetService.getAssetById(assetId);
+		
+		List<Employees> employeesList = employeesService.getEmployeesByLocationId(orgLocations.getId());
+		asset.setEmployeesList(employeesList);
 		resultJson = toJSON(asset);
 		return resultJson;
 	}
@@ -506,7 +517,7 @@ public class BackOfficeRestController {
 		}
 
 	@RequestMapping(value = "/addCategoryAssets" , method = RequestMethod.POST)
-	   public String addCategoryAssets(@RequestParam(value="json", required=false) String json,MultipartHttpServletRequest request) throws Exception {
+	   public String addCategoryAssets(@RequestParam(value="json", required=false) String json,@RequestParam(value="assetId", required=false) String assetId,MultipartHttpServletRequest request) throws Exception {
 			
 		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -515,7 +526,7 @@ public class BackOfficeRestController {
 		    String json1 = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(json1);
 			
-			assetService.saveAssetDetails(jsonObj, user, orgLocations, request);
+			assetService.saveAssetDetails(jsonObj, assetId, user, orgLocations, request);
 			
 		
 		   return "home";

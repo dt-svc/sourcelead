@@ -138,11 +138,23 @@ public class ClientController {
 			}
 		
 			commonUtil.highLightMenu(Constants.Clients, request);
+			String msg = "";
+			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientCreateMsg");
 			
-			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientCreateMsg");
 			if(msg != null && !"".equals(msg)){
 				model.addObject("msg", msg);
 				SourceLeadSessionManager.removeSessionAttribute(request, "clientCreateMsg");
+			}else{
+				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientContactCreateMsg");
+				if(msg != null){
+					model.addObject("msg", msg);
+					SourceLeadSessionManager.removeSessionAttribute(request, "clientContactCreateMsg");
+				}
+			}
+			if(msg == null){
+				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientImport");
+				model.addObject("msg", msg);
+				SourceLeadSessionManager.removeSessionAttribute(request, "clientImport");
 			}
 			
 			model.addObject("sourceleadUrl", sourceleadUrl);

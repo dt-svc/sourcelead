@@ -371,14 +371,14 @@ public class UserServiceImpl implements UserService {
 		if(jsonObj.has("dayHours")){
 			employees.setDailyHours(jsonObj.getString("dayHours"));
 		}
-		if(jsonObj.has("invoiceFrequency")){
+		/*if(jsonObj.has("invoiceFrequency")){
 			if(jsonObj.getString("invoiceFrequency") != null && !"".equalsIgnoreCase(jsonObj.getString("invoiceFrequency"))){
 				employees.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
 			}else{
 				employees.setInvoiceFrequency("Weekly");
 			}
 			
-		}
+		}*/
 		
 		if(jsonObj.has("dateofJoin") && !isNullOrEmpty(jsonObj.getString("dateofJoin"))){
 			try {
@@ -811,10 +811,15 @@ public class UserServiceImpl implements UserService {
 	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId, Long tabId) throws Exception {
 		return userDao.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationsId, tabId);
 	}
-	
+
 	@Override
-	public List<Roles> getTabAccessRolesListByOrgLocationIdAndTabId(Long orgLocationsId, Long tabId) throws Exception {
-		return userDao.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocationsId, tabId);
+	public List<User> getUsersForAddAsConsultant(Org org,Long orgLocationsId) throws Exception {
+		return userDao.getUsersForAddAsConsultant(org,orgLocationsId);
+	}
+
+	@Override
+	public List<User> getUsersForConsultantsByUserRoleIdAndOrgLocationId(Long roleId, Long orgLocationsId) throws Exception {
+		return userDao.getUsersForConsultantsByUserRoleIdAndOrgLocationId(roleId, orgLocationsId);
 	}
 	
 	
