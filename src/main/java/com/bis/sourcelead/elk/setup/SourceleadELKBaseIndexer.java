@@ -1,23 +1,22 @@
-package com.bis.sourcelead.util;
+package com.bis.sourcelead.elk.setup;
 
 import java.io.Writer;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
-@Component
+@Configuration
 public  class SourceleadELKBaseIndexer<T> {
 	private static final Logger logger = LoggerFactory.getLogger(SourceleadELKBaseIndexer.class);
 	
-	@Autowired
-	SourceleadELKTransportClient sourceleadELKTransportClient;
+	SourceleadELKTransportClient sourceleadELKTransportClient = new SourceleadELKTransportClient();
 	
 	public void saveElkDocument(T entityClass,String index,String type) {
 		String candidateJson = null;
@@ -25,11 +24,12 @@ public  class SourceleadELKBaseIndexer<T> {
 			candidateJson = toJSON(entityClass);
 			sourceleadELKTransportClient.getClient().prepareIndex(index, type)
 			    .setSource(candidateJson).execute().actionGet();
+			sourceleadELKTransportClient.shutdown();
 		    logger.info(type+" has been indexed.");
 		} catch (Exception e) {
-			logger.error(type+" could not be serialized. ");
+			logger.error(type+" could not be serialized. "+ExceptionUtils.getFullStackTrace(e));
 		}
-		sourceleadELKTransportClient.shutdown();
+		
     }
 	
 	 public String toJSON(Object obj){

@@ -24,6 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -210,6 +213,11 @@ public class CandidateServiceImpl implements CandidateService {
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 		
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
+		
+	    //Elastic Search Document Saving
+		SourceleadELKBaseIndexer<CandidateIndex> candidateIndexer = new SourceleadELKBaseIndexer<CandidateIndex>();
+		CandidateIndex candidateIndex = CandidateIndexHelper.getCandidateIndexFromCandidate(savedCandidate);
+		candidateIndexer.saveElkDocument(candidateIndex, "candidates", "candidate");
 		return savedCandidate;
 	}
 
