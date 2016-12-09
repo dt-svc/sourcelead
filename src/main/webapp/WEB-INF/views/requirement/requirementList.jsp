@@ -205,7 +205,7 @@ function requirementList(){
 			                     '</sec:authorize>';
 	                    	 }
 		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
+		                    	 result = result +"<td><div title="+opt.clientName+"><span>"+opt.clientName+"</span></div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
