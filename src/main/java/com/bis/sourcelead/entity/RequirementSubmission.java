@@ -89,6 +89,13 @@ public class RequirementSubmission implements Serializable{
 	
 	@Column(name = "SUBMISSION_RATE_FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String submissionRateFileName;
+
+	@Column(name = "PREVIOUS_SUBMISSION_STATUS")
+	@Enumerated(EnumType.STRING)
+    private ApplicantSubmissionStatus previousSubmissionStatus;
+	
+	@Column(name = "REJECTED_REASON", columnDefinition = "TEXT default NULL")
+    private String rejectedReason;
 	
 	@Column(name = "STATUS")
     private Integer status;
@@ -583,4 +590,19 @@ public class RequirementSubmission implements Serializable{
 		this.submittedBy = submittedBy;
 	}
 
+	public String getRejectedReason() {
+		return rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
+	}
+
+	public ApplicantSubmissionStatus getPreviousSubmissionStatus() {
+		return previousSubmissionStatus;
+	}
+
+	public void setPreviousSubmissionStatus(ApplicantSubmissionStatus previousSubmissionStatus) {
+		this.previousSubmissionStatus = previousSubmissionStatus;
+	}
 }

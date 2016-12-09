@@ -89,6 +89,10 @@ public class Constants {
 	public static String ENTITY_TYPE_EMAIL = "Email";
 	public static String ENTITY_TYPE_NOTIFICATION = "Notification";
 	
+	public static String CUSTOMER_INTERVIEW = "CUSTOMER_INTERVIEW";
+	public static String INTERVIEW = "INTERVIEW";
+	
+	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
 	public static String loginUserAsAdmin =":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = ts.projectMembers.projects.orgLocationsId.id)";

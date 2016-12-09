@@ -449,6 +449,15 @@ function getInternalInterviewsList(submissionId){
 	                         result = result + '</label>';
 	                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span id="'+report.id+'notifiedDiv">'+notifiedDetails+'<span></p>';
 	                         result = result + '</div>';
+	                        
+                             if(report.interviewSubmissionType != null && report.interviewSubmissionType != "" && report.interviewSubmissionType != 'undefined' && report.interviewSubmissionType !="INTERVIEW"){
+	                        	 result = result + '<div class="row clearfix">';
+		                    	 result = result + '<label class="col-md-5">';
+		                    	 result = result + '<strong>Client Name:</strong>';
+		                    	 result = result + '</label>';
+		                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.clientName+'</p>';
+		                    	 result = result + '</div>';
+	                         }
 	                         
 	                         result = result + '</div>';
 	                         result = result + '</div>';
@@ -936,19 +945,8 @@ function acceptingOffer(offerStatus,submissionId){
          type : "POST",
          url: sourceleadUrl+"/acceptingOffer?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason,        
          success :function(data) {
-        	 
-        	 var json = JSON.parse(data);
-        	 jQuery("#"+(submissionId)+"actionDiv").css("display","none");
-	    	 if(offerStatus == "accept"){
-       		    $("#"+(submissionId)+"showStatus").html("<font color='green'>Accept</font>");
-           	 }
-           	 if(offerStatus == "reject"){
-           		$("#"+(submissionId)+"showStatus").html("<font color='red'>Reject</font>");
-           	 }
-           	 if(offerStatus == "mybe"){
-           		$("#"+(submissionId)+"showStatus").html("<font color='orange'>Maybe</font>");
-           	 }
-           	getOfferDetails(submissionId);
+        	 $("#rejectOfferAlert").empty();
+           	 getOfferDetails(submissionId);
        },
          
     }); 

@@ -362,6 +362,7 @@ function filter(){
    		    	result = result +'	<th>Id</th>';
    		    	result = result +'    <th>Name</th>'; 
    		    	result = result +'     <th>Manager</th>';
+   		    	result = result +'     <th>Invoice Frequency</th>';
    		    	result = result +'     <th>Date</th>';
    		    	result = result +'      <th>Client</th>';
    		    	result = result +'       <th>Status</th>';
@@ -404,6 +405,17 @@ function filter(){
    		    		} 
    		    		result = result +'</span></div>';
    		    		result = result +'</td>';
+   		    		
+   		    		
+   		    		result = result +'<td data-title="Invoice Frequency">';
+   		    		result = result +'<div><span>';
+   		    		if(report.invoiceFrequency !=null && report.invoiceFrequency !='' && report.invoiceFrequency !='undefined'){
+   		    			result = result +report.invoiceFrequency;
+   		    		}
+   		    		
+   		    		result = result +'</span></div>';
+   		    		result = result +'</td>';
+   		    		
    		    		result = result +'<td data-title="Date"><div>'+report.startDateStr+' ';
    		    		if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
    	   		    		result = result +'- '+report.endDateStr+' </div></td>';

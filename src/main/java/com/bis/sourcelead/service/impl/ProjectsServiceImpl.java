@@ -276,6 +276,13 @@ public class ProjectsServiceImpl implements ProjectsService{
     		Date endDate = format.parse(jsonObj.getString("EndDate"));
 	    	projects.setEndDate(endDate);
     	}
+    	
+    	if(jsonObj.has("invoiceFrequency")){
+			if(jsonObj.getString("invoiceFrequency") != null && !"".equalsIgnoreCase(jsonObj.getString("invoiceFrequency"))){
+				projects.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+		}
+    	}
+    	
     	if((jsonObj.has("Satatus"))){
     	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));
     	}
@@ -684,6 +691,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	 projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber"));
 			     }
 		        }
+		        
+		        
 		    	projects.setProjectName(jsonObj.getString("projectName"));
 		    	if(jsonObj.getString("description") != null){
 		    		projects.setDescription(jsonObj.getString("description"));
@@ -709,6 +718,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    		
 			    	}
 		    		
+		    		if(jsonObj.has("invoiceFrequency")){
+			        	  if(jsonObj.getString("invoiceFrequency") != null){
+					    	 projects.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+					     }
+				        }
 		    		
 		    	if(jsonObj.has("level1Manager") || jsonObj.has("level2Manager") ){
 			    		HashSet<Long> oldlist = new HashSet<>();
@@ -957,9 +971,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	private Employees populateEMployee(User user, OrgLocations loginOrgLocation, JSONObject jsonObj, User users) throws JSONException {
 		Employees employee  = new Employees();
 		employee.setUser(user);
-		if(!jsonObj.getString("invoiceFrequency").isEmpty()){
+		/*if(!jsonObj.getString("invoiceFrequency").isEmpty()){
 			employee.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
-		}
+		}*/
 		employee.setOrgLocations(loginOrgLocation);
 		employee.setCreatedBy(users.getUserCode());
 		employee.setStatus("ACTIVE");

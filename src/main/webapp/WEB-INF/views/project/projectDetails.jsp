@@ -21,6 +21,8 @@
 						var description = "";
 						var clientName = "";
 						var projectSequeneNumber = "";
+						var invoiceFrequency = "";
+						
 						if (json.endDateStr != null && json.endDateStr != ''
 								&& json.endDateStr != 'undefined') {
 							endDateStr = json.endDateStr;
@@ -31,8 +33,15 @@
 								&& json.description != 'undefined') {
 							description = json.description;
 						} else {
-							description = "NO DATA";
+							description = "----";
 						}
+						
+						if (json.invoiceFrequency != null && json.invoiceFrequency != '' && json.invoiceFrequency != 'undefined') {
+							invoiceFrequency = json.invoiceFrequency;
+					     } else {
+					    	 invoiceFrequency = "----";
+					    }
+						
 						if (json.projectSequeneNumber != null
 								&& json.projectSequeneNumber != ''
 								&& json.projectSequeneNumber != 'undefiend') {
@@ -112,6 +121,8 @@
 						result = result + '<span>'+clientName+'</span><div class="clearfix"></div>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
+						
+						
 						result = result	+ '<div class="project_details_cta">';
 						result = result	+ '<strong>Team members:</strong><span>'+ json.projectMembersCount+ '</span><div class="clearfix"></div>';
 						result = result + '</div>';
@@ -140,6 +151,13 @@
 							result = result	+ '<strong>Last Updated:</strong><span>'+json.updatedDateStr+'</span><div class="clearfix"></div>';
 							result = result + '</div>';
 						}
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Invoice Frequencey:</strong>';
+						result = result + '<span>'+invoiceFrequency+'</span><div class="clearfix"></div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+						
 						result = result + '<div class="clearfix"></div>';
 						result = result	+ '<p><strong>Description:</strong></p>'+ description + '<div class="clearfix"></div>';
 						result = result	+ '<div class="user_summary_edit user_summary_edit_a" id="editProjectDetailsDiv"></div>';
@@ -182,6 +200,8 @@
 
 						var endDateStr = "";
 						var description = "";
+						var invoiceFrequency = "";
+						
 						var projectSequeneNumber = "";
 						if (json.endDateStr != null && json.endDateStr != ''
 								&& json.endDateStr != 'undefined') {
@@ -195,6 +215,13 @@
 						} else {
 							description = "";
 						}
+						
+						if (json.invoiceFrequency != null && json.invoiceFrequency != '' && json.invoiceFrequency != 'undefined') {
+							invoiceFrequency = json.invoiceFrequency;
+					     } else {
+					    	 invoiceFrequency = "----";
+					    }
+						
 						if (json.projectSequeneNumber != null
 								&& json.projectSequeneNumber != ''
 								&& json.projectSequeneNumber != 'undefiend') {
@@ -352,12 +379,29 @@
 						result = result
 								+ '	<input class="calendar" value='+json.startDateStr+' type="text" disabled="disabled">';
 						result = result + '</div>	';
+						
+						
+						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<label>Invoice Frequency</label>';
+						result = result  +'	<select   name="invoiceFrequency" id="invoiceFrequency" class="input-sm form-control">';
+							
+						result = result  +' <option '+(json.invoiceFrequency == "Weekly" ? "selected" : '') +'>Weekly</option>';
+						result = result  +'	 <option '+(json.invoiceFrequency == "Bi-Weekly" ? "selected" : '') +'>Bi-Weekly</option>';
+						result = result  +'	 <option '+(json.invoiceFrequency == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
+						result = result  +'	<option '+(json.invoiceFrequency == "Monthly" ? "selected" : '') +'>Monthly</option>';
+						result = result  +'	</select>';
+											
+						result = result + '</div>';
+						result = result + '<div class="clearfix"></div>';
 
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>End date</label>';
 						result = result
 								+ '	<input class="calendar" type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" id="endDateStr1" name="endDateStr1" >';
 						result = result + '</div>';
+						
+						
+						
 
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>Description </label>';
@@ -366,6 +410,8 @@
 								+ description + '</textarea>';
 						result = result + '</div>       ';
 						result = result + '<div class="clearfix"></div>';
+						
+						
 						result = result + '<div class="user_summary_edit_cta">';
 						
 						result = result	+ '	<input class="us-btn" value="Save" onclick = "updateProjectDetails('+projectId+ ');"type="button"> <input id="btnClose" class="us-btn us-btn_a" value="Cancel" onClick="editProjectDetails('+ projectId + ');" type="button">';

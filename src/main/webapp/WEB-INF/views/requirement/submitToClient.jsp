@@ -13,14 +13,14 @@ function submitToClient(requirementId){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var result = "";
-	var status = "SHORTLIST";
+	//var status = "SHORTLIST";
 	result = result + '<div class="add_inter_head"> <span>Submissions</span><a href="javascript:void(0)" onclick="clientSubmissions('+requirementId+');" class="sub-btn1">Submit to client</a>';
 	result = result + ' <div class="clearfix"></div>';
 	result = result + ' </div>';
 	
 	 $.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getSubmissionCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,
+	    	url: sourceleadUrl+"/getShortListedCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,
 	    			
 	    	success: function(data) {
 		       

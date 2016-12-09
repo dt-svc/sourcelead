@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,11 +31,16 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParser;
 import com.thoughtworks.xstream.XStream;
@@ -64,8 +70,16 @@ public class CandidateRestController {
 	private CandidateResumesService  candidateResumesService;
 	
 	@Autowired
-	
 	private CandidateSkillsService candidateSkillsService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private UserRoleService userRoleService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	/**
 	 * @author prasad k
@@ -263,6 +277,64 @@ public class CandidateRestController {
 			}*/
 	   }
 	 
+	 
+	 
+	 
+	 @RequestMapping(value = "/getUserByRoleId", method = RequestMethod.POST)
+		public @ResponseBody String getUserByRoleId(
+				@RequestParam(value = "roleId", required = false) Long roleId, HttpServletRequest request) throws Exception {
+			String resultJson = null;
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			List<User> userList = userService.getUsersForConsultantsByUserRoleIdAndOrgLocationId(roleId, orgLocations.getId());
+			
+			resultJson = toJSON(userList);
+			return resultJson;
+		}
+	 
+	 
+	 @RequestMapping(value = "/getAllRoleUsers", method = RequestMethod.POST)
+		public @ResponseBody String getAllRoleUsers(HttpServletRequest request) throws Exception {
+			String resultJson = null;
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
+			
+			List<User> userList = userService.getUsersForAddAsConsultant(org,orgLocations.getId());
+			for (User user : userList) {
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if(userRole != null){
+					user.setUserType(userRole.getRoles().getDisplayName());
+				}
+			}
+			resultJson = toJSON(userList);
+			return resultJson;
+		}
+	 
+	 
+	 @RequestMapping(value = "/getConsultantUserDetailsById",  method = RequestMethod.POST)
+	    public @ResponseBody String getConsultantUserDetailsById(@RequestParam(value="userId", required=false) Long userId) {
+			
+		   ArrayList<String> userList = new ArrayList<String>();
+		   UserRole userRole = null;
+		   User user = null;
+			try {
+				user = userService.getUserById(userId);
+			} catch (Exception e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+			
+			if(null != user)
+			{
+				userList.add(user.getFirstName());
+				userList.add(user.getLastName());
+				userList.add(user.getEmail());
+				userList.add(user.getMobilePhone());
+				
+			}
+			
+			return commonUtil.toJSON(userList);
+			
+		}
 	 
 	 public String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

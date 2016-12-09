@@ -111,7 +111,7 @@ public class CandidateDaoImpl implements CandidateDao {
     */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState, String updatedDateRange ) throws Exception {
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState, String updatedDateRange,String candidateType) throws Exception {
 
 		
 		String subQuery = null;
@@ -137,6 +137,14 @@ public class CandidateDaoImpl implements CandidateDao {
 		}else{
 			 subQuery ="(cnadidate.status = 0)";
 		}
+		
+		
+		String candidateTypeSubQuery = "";
+		if(candidateType.equalsIgnoreCase("All")){
+			candidateTypeSubQuery = " and (cnadidate.candidateType = 'Candidate' OR cnadidate.candidateType = 'Consultant')";
+		}else{
+			candidateTypeSubQuery = " and cnadidate.candidateType = '"+candidateType+"' ";
+		}
     	
 			
 		if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)   && !updatedDateRange.equalsIgnoreCase("undefined")){
@@ -152,7 +160,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	         java.sql.Date endDate = new java.sql.Date(parsed.getTime());
 	         
 			
-   	    	 String query = "from Candidate cnadidate left join fetch cnadidate.orgLocationId orglocation where  cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" and ( cnadidate.updatedDate >= :endDate) ORDER BY cnadidate.id DESC ";  
+   	    	 String query = "from Candidate cnadidate left join fetch cnadidate.orgLocationId orglocation where  cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" and ( cnadidate.updatedDate >= :endDate) ORDER BY cnadidate.id DESC ";  
 		     candidateList = session.createQuery(query)
 				                    .setDate("endDate", endDate)
 				                    .setLong("orgLocationId", orgLocationId)
@@ -161,7 +169,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				                    .list();
 		}else{
 			
-			String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" ORDER BY cnadidate.id DESC";  
+			String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" ORDER BY cnadidate.id DESC";  
 		    candidateList = session.createQuery(query)
 					               .setLong("orgLocationId", orgLocationId)
 					               .setLong("orgId", orgId).setCacheable(true).list();

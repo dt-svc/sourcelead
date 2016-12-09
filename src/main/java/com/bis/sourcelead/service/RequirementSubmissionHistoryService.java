@@ -20,4 +20,6 @@ public interface RequirementSubmissionHistoryService {
 
 	List<RequirementSubmissionHistory> getRequirementHistoryByLocationIdAndStage(Long orgLocationID,String submissionType, Long submissionId)throws Exception;
 
+	RequirementSubmissionHistory getRequirementSubmissionHistoryBySubmissionId(Long submissionId);
+
 }

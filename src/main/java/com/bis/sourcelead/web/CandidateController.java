@@ -17,13 +17,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.BoPaymentTypes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -41,6 +46,12 @@ public class CandidateController {
 	
 	@Autowired
 	LookUpDataService lookUpDataService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private RolesService roleService;
 	
 	/**
 	 * Handles to display candidate jsp
@@ -116,6 +127,38 @@ public class CandidateController {
 		return model;
 
 	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE')")
+	@RequestMapping(value = "/addConsultant")
+	public ModelAndView addConsultant(HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+		
+		ModelAndView model = new ModelAndView();
+		
+		List<Roles> rolesList = roleService.getOrgEnrolledRolesByOrgLocationId(org, orgLocations.getId());
+		model.addObject("rolesList", rolesList);
+		
+		model.setViewName("candidates/addConsultant");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+        model.addObject("loginCountryName", countries.getName());
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Candidates);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		
+		return model;
+		
+	}
+	
 
 	private boolean isNullOrEmpty(String msg) {
 		// TODO Auto-generated method stub

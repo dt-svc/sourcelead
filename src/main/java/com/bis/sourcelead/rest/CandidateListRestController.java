@@ -105,12 +105,14 @@ public class CandidateListRestController {
 	   */
 	 
 	 @RequestMapping(value = "/getCandidatesListByOrgLocationID")
-	 public String getCandidatesListByOrgLocationID(@RequestParam(value="candidateStatus", required=false) Integer  candidateStatus,@RequestParam(value="updatedDateRange", required=false) String  updatedDateRange,HttpServletRequest request) throws Exception {
+	 public String getCandidatesListByOrgLocationID(@RequestParam(value="candidateStatus", required=false) Integer  candidateStatus,@RequestParam(value="updatedDateRange", required=false) String  updatedDateRange,
+			 @RequestParam(value="candidateType", required=false) String  candidateType,
+			 HttpServletRequest request) throws Exception {
 
 		String resultJson;
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange);
+		List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType);
 		resultJson = commonUtil.toJSON(candidatesList);
 		return resultJson;
 	 }
@@ -504,11 +506,12 @@ public class CandidateListRestController {
 	 	 @RequestMapping(value = "/getCandidatesExportList")
 		 public void getCandidatesExportList(@RequestParam(value="candidateStatus", required=false) Integer  candidateStatus,
 				                             @RequestParam(value="updatedDateRange", required=false) String  updatedDateRange,
-				                             @RequestParam(value="exportType", required=false) String  exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+				                             @RequestParam(value="exportType", required=false) String  exportType,
+				                             @RequestParam(value="candidateType", required=false) String  candidateType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 
 	 		 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange);
+			List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType);
 			File file = null;
 			if(!"pdf".equalsIgnoreCase(exportType)){
 			file = candidateService.getCandidateExcelFile(candidatesList,org.getOrgName());
