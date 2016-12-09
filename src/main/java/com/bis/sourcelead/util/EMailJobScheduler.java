@@ -270,7 +270,7 @@ public class EMailJobScheduler {
     }
 	/**
 	 * Fires Every month 30th
-	 */
+	 *//*
 	@Scheduled(cron = "0 30 19 30 1/1 ?")
 	public void runJobSchedulerByMonthly() {
 		logger.info("******************  Notification Job Scheduler  Every month 30th started..! **********");
@@ -295,7 +295,7 @@ public class EMailJobScheduler {
 		} catch (Exception e) {
 			logger.error("ERROR in " + e.getMessage());
 		}
-    }
+    }*/
 	//======================================================End
  	
  			
@@ -349,7 +349,6 @@ public class EMailJobScheduler {
 						continue;
 					HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),userRole.getOrgLocations().getId(),userRole.getUser().getId());
 					timesheetSubmissionsMap.put(userRole, timesheetSubmissions);
-					//projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions);
 					logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
 				}
 				projectsService.userEmailNotificationForTimeSheetSubmissionToManagers(timesheetSubmissionsMap,Constants.level2);
@@ -359,5 +358,32 @@ public class EMailJobScheduler {
 		}
     }
 	
+	
+	/**
+	 * Prasanna vadla
+	 * this is for level for level 2
+	 * Fires on Monday of every week of the month emailJobScheduler.job.cron.everyfriday.expression
+	 */
+	@Scheduled(cron = "0 1 0 ? * FRI")
+	public void runJobSchedulerByFRIDay() {
+		logger.info("******************  Notification Job Scheduler WednesDay of every week of the month started..! **********");
+		try {
+			HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus("");
+			Map<UserRole,HashSet<TimesheetSubmissions>> timesheetSubmissionsMap = new HashMap<>();
+			if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
+				for(ProjectMembers projectMember : ProjectMembersList){
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
+					if("Admin".equalsIgnoreCase(userRole.getUserType()))
+						continue;
+					HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),userRole.getOrgLocations().getId(),userRole.getUser().getId());
+					timesheetSubmissionsMap.put(userRole, timesheetSubmissions);
+					logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
+				}
+				projectsService.userEmailNotificationForTimeSheetSubmissionToManagers(timesheetSubmissionsMap,Constants.level2);
+			}
+		} catch (Exception e) {
+			logger.error("ERROR in " + e.getMessage());
+		}
+    }
 	
 }

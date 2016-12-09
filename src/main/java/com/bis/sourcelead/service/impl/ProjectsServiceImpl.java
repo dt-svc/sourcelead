@@ -1566,7 +1566,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 					UserRole userRole = entry.getKey();
 					HashSet<TimesheetSubmissions> timesheetSubmissions = entry.getValue();
 					TimesheetSubmissions ts = timesheetSubmissions.iterator().next();
-					List<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.getAllProjectApproverHierarchyByProjectIdForManager(ts.getProjectMembers().getProjects().getId(), userRole.getUser().getId());
+					List<ProjectApproverHierarchy> projectApproverHierarchyList = null;
+					if(level == 1){
+						projectApproverHierarchyList = projectApproverHierarchyService.getAllProjectApproverHierarchyByProjectIdForManager(ts.getProjectMembers().getProjects().getId(), userRole.getUser().getId());	
+					}else{
+						projectApproverHierarchyList = projectApproverHierarchyService.getAllProjectApproverHierarchyByProjectIdlevel2Manager(ts.getProjectMembers().getProjects().getId(), userRole.getUser().getId());	
+					}
 					if(projectApproverHierarchyList.size() >0){
 						for(ProjectApproverHierarchy par :projectApproverHierarchyList){
 							if(par.getLevel() == level){

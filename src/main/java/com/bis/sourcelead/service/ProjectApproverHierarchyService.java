@@ -33,6 +33,8 @@ public interface ProjectApproverHierarchyService {
 	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectIdForManager(Long projectId, Long userId) throws Exception;
 
 	public ProjectApproverHierarchy getApproverUsersByProjectIdLevel1(Long projectId, Long userId);
+
+	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectIdlevel2Manager(Long projectId, Long userId)throws Exception;
 	
 
 }
