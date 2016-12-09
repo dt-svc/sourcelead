@@ -5,9 +5,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +26,8 @@ import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
@@ -46,6 +51,18 @@ public class ProjectsServiceTest {
 	
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
+	
+	@Autowired
+	ProjectApproverHierarchyService projectApproverHierarchyService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
+	@Autowired
+	OrgService orgService;
+	
+	@Autowired
+	ProjectMembersService projectMembersService;
 	/**
 	 * line 205 commented
 	 */
@@ -243,7 +260,7 @@ public class ProjectsServiceTest {
 	}
 	
 	
-	@Test
+	//@Test
 	public void getPreviousWeekTimeShhetSubmissionStatusToLevel2() throws Exception{
 		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY);
 		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+ProjectMembersList.size());
@@ -262,8 +279,88 @@ public class ProjectsServiceTest {
 			projectsService.userEmailNotificationForTimeSheetSubmissionToManagers(timesheetSubmissionsMap,level);
 		}
 	}
-	
-	
+
+	@Test
+	public void getPreviousWeekTimeShhetSubmissionStatusToadmin() throws Exception{
+		logger.info("******************  Notification Job Scheduler WednesDay of every week of the month started..! **********");
+		try {
+//			HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus("");
+			
+			// get all orgs
+			
+			// get all projects of the every org
+			
+			// get list of project member of the project
+			
+			// get project super admin
+			
+			// get time sheet of the particular porg
+			
+			
+			List<Org> orgList = orgService.getOrgs();
+			
+			for (Org org : orgList) {
+				ProjectApproverHierarchy projectApproverHierarchy = null;
+				User user = null;
+				StringBuilder tempHTML = new StringBuilder();
+				int count=0;
+				tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
+				
+				OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(org.getId());
+				
+				List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
+				if(count==0){	
+					 tempHTML.append("<tr>");
+						        tempHTML.append("<th> Employee Name </th>");
+						        tempHTML.append("<th> Frequency </th>");
+								tempHTML.append("<th> Project Name </th>");
+								tempHTML.append("<th> Manager Name </th>");
+								tempHTML.append("</tr>");
+								count++;
+					}
+				
+				for (Projects projects : projectsList) {
+					
+					Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
+					
+					for (ProjectMembers projectMembers : projectMembersList) {
+						          HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequencyByProjMemId(projectMembers.getId());	
+						          TimesheetSubmissions ts = timesheetSubmissions.iterator().next();
+						          List<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.getAllProjectApproverHierarchyByProjectIdForManager(ts.getProjectMembers().getProjects().getId(), projectMembers.getEmployee().getUser().getId(),2);
+						           if(projectApproverHierarchyList.size() > 0){
+						        	   projectApproverHierarchy = projectApproverHierarchyList.get(0);
+						        	   if(projectApproverHierarchy.getLevel() == 2){
+						        		   user = projectApproverHierarchy.getApproverUserId();
+						        	   }
+						           }
+						          LinkedList<String> frequency = new LinkedList<>();
+									if(timesheetSubmissions != null && !timesheetSubmissions.isEmpty()){
+										if(projectApproverHierarchyList.size() == 0){
+											 tempHTML.append("<tr>");
+											 tempHTML.append("<td>"+projectMembers.getEmployee().getUser().getFirstName()+"</td>");
+											 for(TimesheetSubmissions ts1 :timesheetSubmissions){
+												 frequency.add("<b>"+Constants.DMY.format(ts1.getStartDate())+" To "+Constants.DMY.format(ts1.getEndDate()));
+											   }
+										    if(frequency != null && !frequency.isEmpty()){
+											 tempHTML.append("<td>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
+										     }
+											  tempHTML.append("<td>"+projectMembers.getProjects().getProjectName()+"</td>");
+											  ProjectApproverHierarchy managerProjectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdLevel1(projectMembers.getProjects().getId(),projectMembers.getEmployee().getUser().getId());
+											  tempHTML.append("<td>"+managerProjectApproverHierarchy.getApproverUserId().getFirstName()+"</td>");
+											 tempHTML.append("</tr>");
+										
+										}
+									}
+							}
+					}
+				tempHTML.append("</table> ");
+				
+				projectsService.userEmailToAdmin(tempHTML,orgLocations,user);
+				}
+		} catch (Exception e) {
+			logger.error("ERROR in " + e.getMessage());
+		}
+	}
 	/**
 	 * this method for delete project by id
 	 * @return

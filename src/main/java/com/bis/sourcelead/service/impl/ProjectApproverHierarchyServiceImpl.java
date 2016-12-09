@@ -145,9 +145,8 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 
 
 	@Override
-	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectIdForManager(Long projectId,
-			Long userId) throws Exception {
-		return projectApproverHierarchyDao.getAllProjectApproverHierarchyByProjectIdForManager(projectId,userId);
+	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectIdForManager(Long projectId,Long userId,int managerLevel) throws Exception {
+		return projectApproverHierarchyDao.getAllProjectApproverHierarchyByProjectIdForManager(projectId,userId,managerLevel);
 	}
 
 

@@ -1100,5 +1100,11 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		}
 
 
+@Override
+public HashSet<TimesheetSubmissions> getWeekFrequencyByProjMemId(Long projectId) throws Exception {
+	return timesheetSubmissionsDao.getWeekFrequencyByProjMemId(projectId);
+}
+
+
 		
 }

@@ -66,4 +66,6 @@ public interface TimesheetSubmissionsDao {
  
 	public HashSet<TimesheetSubmissions> getWeekFrequency(Long projectId,Long locationsId, Long userId) throws Exception;
 
+	public HashSet<TimesheetSubmissions> getWeekFrequencyByProjMemId(Long projectId) throws Exception;
+
 }

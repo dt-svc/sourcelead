@@ -78,6 +78,10 @@ public interface ProjectsService {
 
 		void userEmailNotificationForTimeSheetSubmissionToManagers(Map<UserRole, HashSet<TimesheetSubmissions>> timesheetSubmissionsMap, int level)throws Exception;
 
+		void userEmailNotificationForTimeSheetSubmissionAdmin(Map<UserRole, HashSet<TimesheetSubmissions>> timesheetSubmissionsMap, OrgLocations orgLocations)throws Exception;
+
+		void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations, User user)throws Exception;
+
 		//HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() throws Exception;
 		
 		

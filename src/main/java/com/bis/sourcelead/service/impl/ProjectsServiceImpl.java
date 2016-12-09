@@ -476,7 +476,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	@Override
 	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,HashSet<TimesheetSubmissions> timesheetSubmissions,String level) throws Exception {
 		
-		EmailMessage emailMessage = new EmailMessage();
+		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
@@ -1554,8 +1554,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				}
 
 			@Override
-			public void userEmailNotificationForTimeSheetSubmissionToManagers(
-					Map<UserRole, HashSet<TimesheetSubmissions>> timesheetSubmissionsMap,int level) throws Exception {
+			public void userEmailNotificationForTimeSheetSubmissionToManagers(Map<UserRole, HashSet<TimesheetSubmissions>> timesheetSubmissionsMap,int level) throws Exception {
 				User user = null;
 				StringBuilder tempHTML = new StringBuilder();
 				UserRole userRole1 = null;
@@ -1568,7 +1567,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 					TimesheetSubmissions ts = timesheetSubmissions.iterator().next();
 					List<ProjectApproverHierarchy> projectApproverHierarchyList = null;
 					if(level == 1){
-						projectApproverHierarchyList = projectApproverHierarchyService.getAllProjectApproverHierarchyByProjectIdForManager(ts.getProjectMembers().getProjects().getId(), userRole.getUser().getId());	
+						projectApproverHierarchyList = projectApproverHierarchyService.getAllProjectApproverHierarchyByProjectIdForManager(ts.getProjectMembers().getProjects().getId(), userRole.getUser().getId(),1);	
 					}else{
 						projectApproverHierarchyList = projectApproverHierarchyService.getAllProjectApproverHierarchyByProjectIdlevel2Manager(ts.getProjectMembers().getProjects().getId(), userRole.getUser().getId());	
 					}
@@ -1659,12 +1658,165 @@ public class ProjectsServiceImpl implements ProjectsService{
 					//sendWeeklyBaseNotiFication(user);
 				}
 				}
+/**
+ * mail to Admin
+ */
+			@Override
+			public void userEmailNotificationForTimeSheetSubmissionAdmin(Map<UserRole, HashSet<TimesheetSubmissions>> timesheetSubmissionsMap, OrgLocations orgLocations)
+					throws Exception {
 
-			
-
-			/*@Override
-			public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() throws Exception {
-				return projectsDao.getAllUserTimeSheetSubmissionStatusCurrentWeek();
+				User user = orgLocations.getUser();
+				StringBuilder tempHTML = new StringBuilder();
+//				UserRole userRole1 = null;
+				int count=0;
+//				ProjectApproverHierarchy projectApproverHierarchy = null;
+				tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
+				for (Map.Entry<UserRole, HashSet<TimesheetSubmissions>> entry : timesheetSubmissionsMap.entrySet()) {
+					UserRole userRole = entry.getKey();
+					HashSet<TimesheetSubmissions> timesheetSubmissions = entry.getValue();
+					TimesheetSubmissions ts = timesheetSubmissions.iterator().next();
+					List<ProjectApproverHierarchy> projectApproverHierarchyList = null;
+//					if(level == 1){
+//						projectApproverHierarchyList = projectApproverHierarchyService.getAllProjectApproverHierarchyByProjectIdForManager(ts.getProjectMembers().getProjects().getId(), userRole.getUser().getId());	
+//					}else{
+//						projectApproverHierarchyList = projectApproverHierarchyService.getAllProjectApproverHierarchyByProjectIdlevel2Manager(ts.getProjectMembers().getProjects().getId(), userRole.getUser().getId());	
+//					}
+//					if(projectApproverHierarchyList.size() >0){
+//						for(ProjectApproverHierarchy par :projectApproverHierarchyList){
+//							if(par.getLevel() == level){
+//								projectApproverHierarchy = projectApproverHierarchyList.get(0);
+//								user = projectApproverHierarchy.getApproverUserId();
+//								userRole1 = entry.getKey();
+//							}
+//						}
+//					}
+					LinkedList<String> frequency = new LinkedList<>();
+//					if(projectApproverHierarchyList.size()==0){
+						
+						if(count==0){	
+						 tempHTML.append("<tr>");
+							        tempHTML.append("<th> Employee Name </th>");
+							        tempHTML.append("<th> Frequency </th>");
+									tempHTML.append("<th> Project Name </th>");
+									tempHTML.append("<th> Manager Name </th>");
+									tempHTML.append("</tr>");
+									count++;
+						}
+						
+							if(timesheetSubmissions != null && !timesheetSubmissions.isEmpty()){
+								
+									 tempHTML.append("<tr>");
+									 tempHTML.append("<td>"+userRole.getUser().getFirstName()+"</td>");
+									 for(TimesheetSubmissions ts1 :timesheetSubmissions){
+										 frequency.add("<b>"+Constants.DMY.format(ts1.getStartDate())+" To "+Constants.DMY.format(ts1.getEndDate()));
+									   }
+								    if(frequency != null && !frequency.isEmpty()){
+									 tempHTML.append("<td>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
+								     }
+									  tempHTML.append("<td>"+ts.getProjectMembers().getProjects().getProjectName()+"</td>");
+									  ProjectApproverHierarchy managerProjectApproverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdLevel1(ts.getProjectMembers().getProjects().getId(),userRole.getUser().getId());
+									  tempHTML.append("<td>"+managerProjectApproverHierarchy.getApproverUserId().getFirstName()+"</td>");
+									 tempHTML.append("</tr>");
+								
+							}
+							
+						
+//					}
+					
+				}
+				tempHTML.append("</table> ");
+//				if(user !=null && userRole1 != null){
+					 EmailMessage emailMessage = new EmailMessage();
+					 emailMessage.setFirstName(user.getFirstName());
+					 emailMessage.setLastName(user.getLastName());
+					 emailMessage.setToEmail(user.getEmail());
+					 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+					 emailMessage.setFromName(user.getFirstName()+" "+user.getLastName());
+					 
+					//setting the class filed values
+					 Map<String, String> globalVarsMap = new HashMap<String, String>();
+					 globalVarsMap.put("firstName", emailMessage.getFirstName());
+					 globalVarsMap.put("lastName",emailMessage.getLastName());
+					 globalVarsMap.put("administratorFirstName", user.getFirstName());
+					 globalVarsMap.put("administratorLastName",user.getLastName());
+					 globalVarsMap.put("role",user.getUserType());
+					 globalVarsMap.put("userEmailId",user.getEmail()); //
+					 globalVarsMap.put("weekFrequency",tempHTML.toString());
+					 //setting the Recipient information
+					 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+					 EmailRecipient emailRecipient = new EmailRecipient();
+					 emailRecipient.setEmail(emailMessage.getToEmail());
+					 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+					 emailRecipientList.add(emailRecipient);
+					
+					 //getting the current EmailScenario by EmailScenario unique name and entity type
+					 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+					
+					 //covert subject,body and signature
+					 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+					 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+					 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+					 String url = "";
+					 
+					 //construct HTML template using required data
+					 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+					 emailMessage.setSubject(subject);
+					 emailMessage.setMessageBody(emailTemplate);
+					 
+					 //calling the sendEmail method of emailScenerioUtil
+					emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+					//sendWeeklyBaseNotiFication(user);
+//				}
+				
 			}
-			  */
+
+@Override
+public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,User user1) throws Exception {
+	     User user = null;
+	     if(user1!=null){
+	    	 user = user1;
+	     }else{
+	    	 user = orgLocations.getUser();
+	     }
+	     
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(user.getFirstName());
+		 emailMessage.setLastName(user.getLastName());
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromName(user.getFirstName()+" "+user.getLastName());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("firstName", emailMessage.getFirstName());
+		 globalVarsMap.put("lastName",emailMessage.getLastName());
+		 globalVarsMap.put("administratorFirstName", user.getFirstName());
+		 globalVarsMap.put("administratorLastName",user.getLastName());
+		 globalVarsMap.put("role",user.getUserType());
+		 globalVarsMap.put("userEmailId",user.getEmail()); //
+		 globalVarsMap.put("weekFrequency",tempHTML.toString());
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+}
 }

@@ -760,5 +760,33 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		return tsSet;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public HashSet<TimesheetSubmissions> getWeekFrequencyByProjMemId(Long projectId) throws Exception {
+		Date currentWeekStartDate = CalendarUtil.getCurrentWeekDay("MON");
+		java.sql.Date  currentWeekStartDayDate = new java.sql.Date(currentWeekStartDate.getTime());
+		
+		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		cal.setLenient(false);
+		cal.setTime(new Date());
+		
+		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+		
+		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
+		Date previousWeekStartDate = previousMonday.getTime();
+		java.sql.Date  previousWeekStartDayDate = new java.sql.Date(previousWeekStartDate.getTime());
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from TimesheetSubmissions tss left join fetch tss.projectMembers tm left join fetch tm.projects projects left join fetch projects.orgLocationsId locations left join fetch tm.employee emp left join fetch emp.user usr where tss.projectMembers.id = :projectId and tss.startDate >= :frmDate and tss.endDate < :endsDate order by tss.startDate desc";
+		//String query = "from TimesheetSubmissions tss left join fetch tss.projectMembers tm left join fetch tm.employee emp left join fetch emp.user usr where  usr.id = :userID and  tss.startDate BETWEEN :frmDate AND :endDate";
+		List<TimesheetSubmissions> timeSheetSubmissions  = session.createQuery(query).setLong("projectId",projectId ).setDate("frmDate", previousWeekStartDayDate).setDate("endsDate", currentWeekStartDayDate).setCacheable(true).list();
+		HashSet<TimesheetSubmissions> tsSet = null;
+		if(timeSheetSubmissions != null && !timeSheetSubmissions.isEmpty()){
+			tsSet = new HashSet<>(timeSheetSubmissions);
+		}
+		return tsSet;
+	}
+
 
 }
