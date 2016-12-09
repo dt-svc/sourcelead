@@ -3782,15 +3782,15 @@ ul.addTasUl li .fa{
 .ratepop-parent {
 	position:relative;
 }
-.ratepop{
+.ratepop {
 	border-radius:3px;
 	/*box-shadow:1px 1px 2px #b6b6b6;*/
 	padding:10px;
 	position:absolute;
-	top:35px;
+	bottom:-10px;
 	background:#ccc;
 	z-index:999;
-	right:0;
+	right:65px;
 	text-wrap:none;
 	font-style:normal;
 	display:none;
@@ -3798,7 +3798,8 @@ ul.addTasUl li .fa{
 }
 .ratepop section.tbl-scroll{
 	margin-bottom:15px;
-	height:175px;	
+	min-height:75px;
+	max-height:175px;	
 	overflow-y:scroll;
 }
 .ratepop section.tbl-scroll .fa{
@@ -3808,8 +3809,8 @@ ul.addTasUl li .fa{
   overflow-y:visible !important;
 }
 .ratepop:after{
-	bottom: 100%;
-	right:20px;
+	bottom:10%;
+	left:100%;
 	border: solid transparent;
 	content: " ";
 	height: 0;
@@ -3817,9 +3818,9 @@ ul.addTasUl li .fa{
 	position: absolute;
 	pointer-events: none;
 	border-color: rgba(255, 255, 255, 0);
-	border-bottom-color: #ccc;
 	border-width: 15px;
-	margin-left: -20px;
+	margin-top: -20px;
+	border-left-color:#ccc;
 }
 .ratepop table tr th{
 height:35px !important;

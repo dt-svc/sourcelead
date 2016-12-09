@@ -2,13 +2,14 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
-import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 
@@ -59,6 +60,22 @@ public interface RequirementSubmissionService {
 	Integer getAllSubmissionCountByRequirementIdAndSubmissionStage(Long orgLocationsId, Long requirementId, String submissionStatus);
 	
 	public Integer getApplicantCountByrequirementIdandAssignedUsercode(Long requirementId, String userCode) throws Exception;
+	
+	/*public void applicantReceiveMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
+			OrgLocations orgLocations) throws Exception; */
+	
+	public void applicantAcceptMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
+			OrgLocations orgLocations) throws Exception;
+	
+	public void applicantRejectMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
+			OrgLocations orgLocations, String rejectreason) throws Exception;
+	
+	RequirementSubmission acceptRejectCandidate(JSONObject jsonObj, User user, RequirementSubmission requirementSubmission, String decision, MultipartFile multiFile) throws Exception;
+
+	public void applicantNegotiateEmail(Requirement requirement, User initiatorUser, Candidate candidate,
+			OrgLocations orgLocations, RequirementRateSubmissionNegotiation negotiation) throws Exception;
+
+	RequirementRateSubmissionNegotiation getRequirementRateBySubmissionById(Long submissionId);
 
 	List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long valueOf, User user,
 			OrgLocations loginOrgLocation, String submissionType)throws Exception;

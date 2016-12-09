@@ -7,6 +7,7 @@ public enum ApplicantSubmissionStatus {
 	INTERVIEW("interview"),
 	CUSTOMER_INTERVIEW("customer_interview"),
 	/*OFFER("offer"),*/
+	REQUEST_SENT("request_sent”"),
 	REJECTED("rejected"),
     SUBMIT_TO_CLIENT("submit_to_client"),
     OFFERMADE("offer_made"),

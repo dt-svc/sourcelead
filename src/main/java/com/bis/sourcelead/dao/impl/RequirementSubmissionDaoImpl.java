@@ -26,6 +26,7 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
@@ -74,7 +75,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception{
 		Session session = this.sessionFactory.getCurrentSession();	
-		String query = "from RequirementSubmission rs where rs.id = :submissionId";
+		String query = "from RequirementSubmission rs left join fetch rs.requirement where rs.id = :submissionId";
 		List<RequirementSubmission>  submission = session.createQuery(query).setLong( "submissionId", submissionId).list();
 		logger.info("RequirementSubmission loaded successfully, RequirementSubmission details="+submission);
 		return submission.get(0);
@@ -440,6 +441,17 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	  return null;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementRateSubmissionNegotiation getRequirementRateBySubmissionById(Long submissionId) {
+		Session session = this.sessionFactory.getCurrentSession();	
+		String query = "from RequirementRateSubmissionNegotiation rs left join fetch rs.requirementsubmissionId where rs.createdDate IN( select max(rs1.createdDate) from  RequirementRateSubmissionNegotiation rs1 where rs1.requirementsubmissionId.id = :submissionId  )";
+		List<RequirementRateSubmissionNegotiation>  submission = session.createQuery(query).setLong( "submissionId", submissionId).list();
+		logger.info("RequirementRateSubmission loaded successfully, RequirementRateSubmission details="+submission);
+		return submission.get(0);
+		
+	}
+		
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long requirementId, User user,

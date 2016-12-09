@@ -143,8 +143,10 @@ $(document).ready(function() {
     
     
      <div class="clients_side_wrap_inn no_pad">
-        <div id="requirementSideDiv"> </div> 
-       <!--  <div id="requirementStatusDiv"> </div>  -->
+
+        <div id="requirementSideDiv"> </div>
+          <div id="loading"></div>
+
       </div>   
       
       <!-- Addede by Rajashekar -->
@@ -676,7 +678,7 @@ function requirementDetails(requirementId){
 				            var REJECTED = "REJECTED";
 
 				             if(json.requirementSubmissionStatus  !='DRAFT'  &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
-               					 result = result +'<button  class="btn btn-success mr" type="button" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
+               					 result = result +'<button  class="btn btn-success mr" type="button" id = "approverbut" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
                		             result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
    				           	 }else if(json.requirementApproverHierarchyStatus == 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
       						              result = result +'<strong  id="requirementStatus" class="pull-right mr btn btn-success disabled">OPEN</strong>';
@@ -954,6 +956,8 @@ function updateReuqirementStatus(status){
 	 {
 		 reason = '';
 	 }
+     $("#approverbut").attr("disabled", "disabled");
+
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason, 
@@ -1242,7 +1246,7 @@ function requirementPipeline(requirementId,submissionType){
 							    	     }
 							           
 							           if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-							        	   result = result + '         <td><div><span>'+report.expectedCTC+'</span></div></td>';
+							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop" id="ratepop"></div></td>';
 								           }
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
@@ -2011,6 +2015,231 @@ $(".export_pipline").click(function(e){
 function editFun(){
 $('.edit-status').toggle();
 }
+</script>
+
+<script>
+function getRateListDiv(submissionId, candidateId){
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId,        
+         success :function(data) {
+        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+            	 var json = JSON.parse(data);
+          		 if( data.indexOf('Sign In') >= 0){
+		    		location.replace(sourceleadUrl);
+		    	 }
+          		 else if (data.indexOf('exception') >= 0) {
+          			 location.replace(sourceleadUrl+"/errorPage");
+          		 }else{
+          			     var result = "";
+      			         result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
+         			     result = result + '<section class="tbl-scroll">';
+	                     result = result + '  <table>';
+	                     result = result + '    <thead>';
+	                     result = result + '      <tr>';
+	                     result = result + '        <th>By</th>';
+	                     result = result + '        <th>Rate</th>';
+	                     result = result + '        <th>Comment</th>';
+	                     result = result + '        <th>Date</th>';
+	                     result = result + '        <th>Action</th>';
+	                     result = result + '      </tr>';
+	                     result = result + '    </thead>';
+	                     result = result + '    <tbody>';
+	                     var divState = "";
+	                     for (var i=0; i<json.length; i++)
+			   				{
+					    	 var report = json[i];
+					    	 if(i == json.length-1){
+		                    	 divState = report.rateInitiatorType;
+	                    	 }
+		                     result = result + '      <tr>';
+		                     result = result + '        <td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
+		                     result = result + '        <td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
+		                     result = result + '        <td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';
+		                     result = result + '        <td><div class="tblminwidth-75">'+report.createdDateStr+'</div></td>';
+		                     result = result + '        <td>';
+		                     if(i == json.length-1 && report.rateStage == 'NEWRATE' && divState != 'CLIENT' && divState != 'VENDOR' && divState != 'ORG'){
+		                    	 var Accepted = 'Accepted';
+		                    	 var Rejected = 'Rejected';
+		                     	result = result + '			<a href="javascript:void(0)" class="text-primary" title="Accept" onclick="acceptRejectRate('+submissionId+',\''+Accepted+'\');"><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject" onclick="acceptRejectRate('+submissionId+',\''+Rejected+'\');"><i class="fa fa-times"></i></a>';
+		                     }
+		                     result = result + '		</td>';
+		                     result = result + '      </tr>';
+			   				}
+	                     result = result + '    </tbody>';
+	                     result = result + '  </table>';
+	                     result = result + '</section>';
+	                     if(divState != 'CLIENT' && divState != 'VENDOR' && divState != 'ORG'){
+	                    	 
+		                     result = result + '<div class="clearfix row">';
+		                     result = result + '<form name="rate_form" id="rate_form" method="post">';
+		                     result = result + '  <div class="form-group col-md-5">';
+		                     result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required">';
+		                     /* result = result + '    <div class="clearfix mt10 pull-right">';
+		                     result = result + '      <input type="button" value="Add" class="btn btn-primary btn-sm mr">';
+		                     result = result + '      <input type="button" value="Cancel" class="btn btn-default btn-sm">';
+		                     result = result + '    </div>'; */
+		                     result = result + '  </div>';
+		                     
+		                     result = result + '<div class="form-group col-md-5 select-field">';
+		                     result = result + ' <select class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Type" data-validation="required">';
+		                     result = result + '	<option value="">Rate Per</option>';
+		                     result = result + '    <option>Hourly</option>';
+		                     result = result + '    <option>Weekly</option>';
+		                     result = result + '    <option>Bi-weekly</option>';
+		                     result = result + '    <option>Semi-Monthly</option>';
+		                     result = result + '    <option>Monthly</option>';
+		                     result = result + '    <option>Bi-Monthly</option>';
+		                     result = result + '    <option>Yearly</option>';
+		                     result = result + ' </select>';
+		                     result = result + ' </div>';
+		                     
+		                     result = result + '  <div class="form-group col-md-7">';
+		                     result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="rateComment" name="rateComment" field-name="Reason" data-validation="required"></textarea>';
+		                     result = result + '  </div>';
+		                     result = result + '  <div class="form-group col-md-10">';
+		                     result = result + '    <div class="pull-right">';
+		                     result = result + '      <input type="button" value="Add" class="btn btn-primary btn-sm mr" id="add_rate" onClick="proposeNewRate('+submissionId+','+candidateId+');">';
+		                     result = result + '      <input type="button" value="Cancel" class="btn btn-default btn-sm" onClick="closeratediv();">';
+		                     result = result + '    </div>';
+		                     result = result + '  </div>';
+		                     result = result + '</form>';
+		                     result = result + '</div>';
+	                     }
+	                     result = result + '</i>';
+	                     $("#ratepop").empty();  
+	      	 		     $("#ratepop").append(result); 
+	      	 		 	 $("#ratepop").fadeIn(); 
+          		 	}
+        	 	}else{
+        	 		$("#ratepop").removeAttr("style");
+		    	     var result ="";
+		    	     result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
+		    	     result = result+"   <div class='row'>"; 
+					 result = result+"	<div class='col-lg-12'>"; 
+					 result = result+"		<div class='content-area clearfix'>"; 
+					 result = result+"			<div class='blank-pages'>";
+					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+					 result = result+"			        <p>No rate history found</p>";
+					 result = result+"			 </div>";
+					 result = result+"		</div>"; 
+					 result = result+"	</div>"; 
+					 result = result+"  </div> ";
+		    	     
+		    	     result = result + '<div class="clearfix row">';
+		    	     result = result + '<form name="rate_form" id="rate_form" method="post">';
+                     result = result + '  <div class="form-group col-md-5">';
+                     result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required">';
+                     /* result = result + '    <div class="clearfix mt10 pull-right">';
+                     result = result + '      <input type="button" value="Add" class="btn btn-primary btn-sm mr">';
+                     result = result + '      <input type="button" value="Cancel" class="btn btn-default btn-sm">';
+                     result = result + '    </div>'; */
+                     result = result + '  </div>';
+                     
+                     result = result + '<div class="form-group col-md-5 select-field">';
+                     result = result + ' <select class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Type" data-validation="required">';
+                     result = result + '	<option value="">Rate Per</option>';
+                     result = result + '    <option>Hourly</option>';
+                     result = result + '    <option>Weekly</option>';
+                     result = result + '    <option>Bi-weekly</option>';
+                     result = result + '    <option>Semi-Monthly</option>';
+                     result = result + '    <option>Monthly</option>';
+                     result = result + '    <option>Bi-Monthly</option>';
+                     result = result + '    <option>Yearly</option>';
+                     result = result + ' </select>';
+                     result = result + ' </div>';
+                     
+                     result = result + '  <div class="form-group col-md-7">';
+                     result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="rateComment" name="rateComment" field-name="Reason" data-validation="required"></textarea>';
+                     result = result + '  </div>';
+                     result = result + '  <div class="form-group col-md-10">';
+                     result = result + '    <div class="pull-right">';
+                     result = result + '      <input type="button" value="Add" class="btn btn-primary btn-sm mr" id="add_rate" onClick="proposeNewRate('+submissionId+','+candidateId+');">';
+                     result = result + '      <input type="button" value="Cancel" class="btn btn-default btn-sm" onClick="closeratediv();">';
+                     result = result + '    </div>';
+                     result = result + '  </div>';
+                     result = result + '</form>';
+                     result = result + '</div>';
+                     result = result + '</i>';
+                     $("#ratepop").empty();  
+	      	 		 $("#ratepop").append(result); 
+	      	 		 $("#ratepop").fadeIn(); 
+            	}
+         	},
+      	}); 
+	};
+</script>
+
+
+<script type="text/javascript">
+	function proposeNewRate(submissionId, candidateId) {
+		 if ($('#rate_form').validate(false, validationSettings)){
+			var sourceleadUrl ='${sourceleadUrl}';
+			var frm = $('#rate_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			//It will escape all the special characters
+		    var jsonData = encodeURIComponent(con);
+		    $("#add_rate").attr("disabled", "disabled");
+			$.ajax({
+			type: "POST",
+			url: sourceleadUrl+"/proposeRate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&candidateId="+candidateId,
+				success: function(data) {
+					 $("#ratepop").fadeOut();
+				},
+			});
+			  return true;
+			 }else{
+			  return false;
+			 }
+	}
+	$('body').on('blur', '#rate_form', function() {
+		$("#rate_form").showHelpOnFocus();;
+		$("#rate_form").validateOnBlur(false, validationSettings);  
+	});
+</script>
+
+<script type="text/javascript">
+	function acceptRejectRate(submissionId,status) {
+			var sourceleadUrl ='${sourceleadUrl}';
+			$.ajax({
+			type: "POST",
+			url: sourceleadUrl+"/acceptRejectRate?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,
+				success: function(data) {
+					 $("#ratepop").fadeOut();
+				},
+			});
+			  return true;
+	}
+</script>
+
+<script>
+ $('.showRate').click(function(){
+	$(this).next().fadeIn(200);
+});
+function closeratediv(){
+  $("#ratepop").fadeOut();
+}
+</script>
+<script>
+		// Accept function
+	function acceptFun(){
+		$('#accpet').fadeIn();
+	};
+	$('html').click(function(){
+		$('#accpet').fadeOut();
+	});
+	$("#accpet, .acceptreject-pop, .labelsuccess").click(function(e){
+	 e.stopPropagation();
+ });
+</script>
+	
+<script>
+// Add rate div
+	function addrate(){
+		$("#addrate").toggle();
+	}
 </script>
 
 <script>

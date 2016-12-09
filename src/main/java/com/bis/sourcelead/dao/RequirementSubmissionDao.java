@@ -6,6 +6,7 @@ import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 
@@ -47,6 +48,10 @@ public interface RequirementSubmissionDao {
  
 	RequirementSubmission getVendorSubmissionByClientSubmissionIdAndCLientLocationId(Long clientSubmissionId,Long clientOrgLocationId);
 
+
+	RequirementRateSubmissionNegotiation getRequirementRateBySubmissionById(Long submissionId);
+
 	List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long requirementId, User user,
 			OrgLocations loginOrgLocation, String submissionType)throws Exception;
+
 }
