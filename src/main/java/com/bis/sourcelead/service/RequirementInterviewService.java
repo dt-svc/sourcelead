@@ -31,6 +31,15 @@ public interface RequirementInterviewService {
 	
 
 	RequirementInterview getRequirementInterviewById(String requirementInterviewId);
+	
+	/**
+	 * @author Prasad Salina
+	 * @param requirementInterviewId
+	 * @param submissionId
+	 * @param orgLocationsId
+	 * @return
+	 */
+	RequirementInterview getRequirementInterviewByIdAndSubmissionIdAndOrgLocationsId(Long requirementInterviewId, Long submissionId, Long orgLocationsId);
 
 	void saveRequirementInterview(RequirementInterview requirementInterview) throws Exception;
 

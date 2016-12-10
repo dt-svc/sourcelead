@@ -185,6 +185,9 @@ public class RequirementSubmission implements Serializable{
 	List<RequirementInterview> requirementInterviewList;
 	
 	@Transient
+	List<RequirementInterviewHistory> requirementInterviewHistoryList;
+	
+	@Transient
 	private String offerJoinDate;
 	
 	@Transient
@@ -433,6 +436,14 @@ public class RequirementSubmission implements Serializable{
 
 	public void setSkillsList(String skillsList) {
 		this.skillsList = skillsList;
+	}
+	
+	public List<RequirementInterviewHistory> getRequirementInterviewHistoryList() {
+		return requirementInterviewHistoryList;
+	}
+
+	public void setRequirementInterviewHistoryList(List<RequirementInterviewHistory> requirementInterviewHistoryList) {
+		this.requirementInterviewHistoryList = requirementInterviewHistoryList;
 	}
 
 	public String getCreatedBy() {

@@ -57,12 +57,6 @@ import org.hibernate.annotations.FetchMode;
 	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
 	private String location;
 	
-	@Column(name="NOTIFICATION_TO_APPLICANT")
-	private String notificationToApplicant;
-	
-	@Column(name="NOTIFICATION_TO_SPOC")
-	private String notificationToSpoc;
-	
 	@Column(name="NOTIFICATION_TO_OTHERS")
 	private String notificationToOthers;
 	
@@ -122,6 +116,12 @@ import org.hibernate.annotations.FetchMode;
 	
 	@Transient
 	private String clientName;
+	
+	@Transient
+	private String notificationToApplicant;
+	
+	@Transient
+	private String notificationToSpoc;
 	
 	@OneToMany(mappedBy = "requirementInterview",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)

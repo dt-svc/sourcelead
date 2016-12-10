@@ -1265,7 +1265,7 @@ function requirementPipeline(requirementId,submissionType){
 						        	   if(report.totalNoOfInterviews != null && report.totalNoOfInterviews != '' && report.totalNoOfInterviews != 'undefined'){
 						        		   /* ------tooltip---- */
 						        		   result = result +'<td><div class="show-tooltip"><span>'+report.totalNoOfInterviews+'</span>';
-						       		   if(report.requirementInterviewList.length > 0){
+						       		   if(report.requirementInterviewHistoryList.length > 0){
 						       		        result = result +'<div class="tooltipint_detilas">';
 						       			    result = result +'<table class="table-bordered table-hover table-striped table-responsive" width="100%;">';
 						       			    result = result +' <thead><tr>';
@@ -1278,20 +1278,20 @@ function requirementPipeline(requirementId,submissionType){
 						       			    result = result +'<th>Interview</th>';
 						       			    result = result +'</tr></thead>';
 						       			    result = result +'<tbody>';
-						       			    for(var j=0;j<report.requirementInterviewList.length;j++){
-						       			    	 var sub = report.requirementInterviewList[j];
+						       			    for(var j=0;j<report.requirementInterviewHistoryList.length;j++){
+						       			    	 var sub = report.requirementInterviewHistoryList[j];
 						       			    	 var location = "---";
-						       			    	 if(sub.location != null && sub.location != "" && sub.location !="undefined"){
-						       			    		location = sub.location;
+						       			    	 if(sub.interviewId.location != null && sub.interviewId.location != "" && sub.interviewId.location !="undefined"){
+						       			    		location = sub.interviewId.location;
 						       			    	 }
 						       			    	result = result +'<tr>';
-						       			    	result = result +'<td><span>'+sub.interviewType+'</span></td>';
+						       			    	result = result +'<td><span>'+sub.interviewId.interviewType+'</span></td>';
 						       			    	result = result +'<td><span>'+sub.dateOfInterviewStr+'</span></td>';
 						       			    	result = result +'<td><span>'+sub.startTimeStr+'</span></td>';
 						       			    	result = result +'<td><span>'+sub.endTimeStr+'</span></td>';
 						       			    	result = result +'<td><span>'+location+'</span></td>';
 						       			    	result = result +'<td><span>cxmbnv mnbbvnvnbv nbvnbvxnbv nbvcxnbvbnv bnvcxzbvnb  nbxzcvnbz nb vbnxcnbzxcv</span></td>';
-						       			    	result = result +'<td><span title="'+sub.interviewSubmissionType+'">'+sub.interviewSubmissionType+'</span></td>';
+						       			    	result = result +'<td><span title="'+sub.interviewSourceType+'">'+sub.interviewSourceType+'</span></td>';
 						       			    	result = result +'</tr>';
 						       			    } 
 						       			    result = result +'</tbody>';
