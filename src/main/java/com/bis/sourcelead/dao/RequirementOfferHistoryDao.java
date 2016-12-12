@@ -1,0 +1,16 @@
+package com.bis.sourcelead.dao;
+
+import java.util.List;
+
+import com.bis.sourcelead.entity.RequirementOfferHistory;
+
+public interface RequirementOfferHistoryDao {
+	
+	RequirementOfferHistory storeRequirementOfferHistory(RequirementOfferHistory requirementOfferHistory)throws Exception;
+
+	List<RequirementOfferHistory> getRequirementInternalAndIsClientOfferssBySubmissionIdAndOrgLocationsId(
+			Long submissionId, Long orgLocationsId) throws Exception;
+
+	RequirementOfferHistory getRequirementOfferHistoryById(Long id);
+	
+}

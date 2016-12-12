@@ -33,7 +33,7 @@ public interface RequirementOffersService {
 	
 	String acceptOrRejectOffer(Long submissionId,Long OfferId, User loginUser,String offerStatus,String reason, OrgLocations orgLocations ) throws Exception;
 	
-	RequirementOffers offerDetails(Long submissionId, User loginUser, OrgLocations orgLocations ,String userType) throws Exception;
+	//RequirementOffers offerDetails(Long submissionId, User loginUser, OrgLocations orgLocations ,String userType) throws Exception;
 	
   
 	void offerRejectEmailScenario(User loginUser,OrgLocations loginOrgLocations,Requirement requirement,RequirementOffers requirementOffers,RequirementSubmission requirementSubmission) throws Exception;

@@ -13,4 +13,6 @@ public interface RequirementInterviewHistoryDao {
 
 	RequirementInterviewHistory getRequirementInterviewHistoryById(Long id);
 	
+	List<RequirementInterviewHistory> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
+	
 }

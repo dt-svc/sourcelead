@@ -253,6 +253,7 @@ public class Constants {
 	public static String MAIL_ACCEPTED = "Accepted";
 	public static String MAIL_REJECTED = "Rejected";
 	public static String OFFERMADE = "OFFERMADE";
+	public static String CLIENT_OFFERMADE = "CLIENT_OFFERMADE";
 	
 	
 	public static String REQUIREMENT_STATUS = "Draft";

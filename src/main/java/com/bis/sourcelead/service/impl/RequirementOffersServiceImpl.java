@@ -33,6 +33,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -41,6 +42,7 @@ import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
@@ -48,7 +50,6 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class RequirementOffersServiceImpl implements RequirementOffersService{
@@ -81,7 +82,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	@Autowired
 	private RequirementAssignToService requirementAssignToService;
 	
-	
+	@Autowired
+	RequirementOfferHistoryService requirementOfferHistoryService;
 	
 	@Autowired
 	private CandidateService candidateService;
@@ -144,15 +146,6 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 									requirementOffers.setPositionType(jsonObj.getString(c+"PositionType"));
 								}
 								
-								if(jsonObj.has("notifyToVendor") && !jsonObj.getString("notifyToVendor").isEmpty()){
-									requirementOffers.setNotifyToVendor(jsonObj.getString("notifyToVendor"));
-								}
-								
-								if(jsonObj.has("notifyToApplicant") && !jsonObj.getString("notifyToApplicant").isEmpty()){
-									requirementOffers.setNotifyToApplicant(jsonObj.getString("notifyToApplicant"));
-								}
-                               
-								
                                final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
                    		       final Map files = multiRequest.getFileMap();
                               
@@ -172,25 +165,73 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 								requirementOffers.setCreatedBy(loginUser.getUserCode());
 								requirementOffers.setUpdatedDate(new Date());
 								requirementOffers.setUpdatedBy(loginUser.getUserCode());
-					            requirementOffersDao.storeRequirementOffers(requirementOffers);
+								RequirementOffers updateOffer = requirementOffersDao.storeRequirementOffers(requirementOffers);
 					           RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 					           RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
 					           requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
 					           requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
+					           
+					           if(jsonObj.has("isClientOffer")){
+					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);
+					           }else{
+					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
+					           }
 					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+					           
+					           
+					           //to save offer history
+					           RequirementOfferHistory offerHistory = new RequirementOfferHistory();
+					           offerHistory.setOfferId(updateOffer);
+					           offerHistory.setSubmissionId(submission);
+					           offerHistory.setOrgLocationId(orgLocations);
+					           if(jsonObj.has("isClientOffer")){
+					        	   offerHistory.setOfferSourceType(Constants.CLIENT_OFFERMADE);
+					           }else{
+					        	   offerHistory.setOfferSourceType(Constants.OFFERMADE);
+					           }
+					           if(jsonObj.has("notifyToApplicant") && !jsonObj.getString("notifyToApplicant").isEmpty()){
+					        	   offerHistory.setNotifyToApplicant(jsonObj.getString("notifyToApplicant"));
+					           }
+					           if(jsonObj.has("notifyToVendor") && !jsonObj.getString("notifyToVendor").isEmpty()){
+					        	   offerHistory.setNotifyToVendor(jsonObj.getString("notifyToVendor"));
+					           }
+					           
+					           offerHistory.setStatus(Constants.RECORD_ACTIVE);
+					           offerHistory.setCreatedDate(new Date());
+					           offerHistory.setCreatedBy(loginUser.getUserCode());
+					           offerHistory.setUpdatedDate(new Date());
+					           offerHistory.setUpdatedBy(loginUser.getUserCode());
+					           requirementOfferHistoryService.storeRequirementOfferHistory(offerHistory);
+					           
+					           
 					           
 					           if(requirementSubmission.getSourceSubmission() !=null){
 					        	   RequirementSubmission sourcesubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
-					        	   if(sourcesubmission !=null ){
-					        		    requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
-	                                	sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
-	                                	requirementSubmissionService.storeRequirementSubmission(sourcesubmission);
-	                                }
-					        	   // This is to  notify  the Vendor
-						            if(jsonObj.has("notifyToVendor")  && !jsonObj.getString("notifyToVendor").isEmpty()){
-										Requirement vendorRequirement= requirementService.getRequirementByRequirementId(sourcesubmission.getRequirement().getId());
-										offerMailToVendors(loginUser,orgLocations,vendorRequirement);
-						            }
+					        		   if(jsonObj.has("notifyToVendor") && !jsonObj.getString("notifyToVendor").isEmpty() && sourcesubmission != null){
+					        			   requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
+		                                	sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);
+		                                	requirementSubmissionService.storeRequirementSubmission(sourcesubmission);
+		                                	
+		                                	//to save offer history
+		     					           RequirementOfferHistory vendorOfferHistory = new RequirementOfferHistory();
+		     					           vendorOfferHistory.setOfferId(updateOffer);
+							        	   vendorOfferHistory.setSubmissionId(requirementSubmission);
+							        	   vendorOfferHistory.setOrgLocationId(requirementSubmission.getVendorLocationId());
+								           vendorOfferHistory.setOfferSourceType(Constants.CLIENT_OFFERMADE);
+								           vendorOfferHistory.setNotifyToApplicant(Constants.NO);
+								           vendorOfferHistory.setNotifyToVendor(Constants.NO);
+								           vendorOfferHistory.setStatus(Constants.RECORD_ACTIVE);
+								           vendorOfferHistory.setCreatedDate(new Date());
+								           vendorOfferHistory.setCreatedBy(loginUser.getUserCode());
+								           vendorOfferHistory.setUpdatedDate(new Date());
+								           vendorOfferHistory.setUpdatedBy(loginUser.getUserCode());
+		     					           requirementOfferHistoryService.storeRequirementOfferHistory(vendorOfferHistory);
+		                                	
+		                                	// This is to  notify  the Vendor
+		                                	Requirement vendorRequirement= requirementService.getRequirementByRequirementId(sourcesubmission.getRequirement().getId());
+											offerMailToVendors(loginUser,orgLocations,vendorRequirement);
+					        		   }
+					        	   
 					           }
 					           requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser, requirementSubmissionHistory);
 					            
@@ -284,7 +325,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             // getting the current EmailScenario by EmailScenario unique name and
             // entity type
             EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_MAIL_TO_VENDORS, Constants.ENTITY_TYPE_EMAIL);
-            EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_MAIL_TO_VENDORS, Constants.ENTITY_TYPE_NOTIFICATION);
+           // EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_MAIL_TO_VENDORS, Constants.ENTITY_TYPE_NOTIFICATION);
 
 
             // covert subject,body and signature
@@ -293,8 +334,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
             String url = "";
             
-            String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
-            notificationScenario.setBody(notificationbody);
+            //String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+           // notificationScenario.setBody(notificationbody);
 
 
             // construct HTML template using required data
@@ -310,7 +351,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
                 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
                 String actionLink="";
                OrgLocations vendorLocation = clientrequirement.getOrgLocationId();
-				emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getSpocUser(), vendorLocation, notificationScenario);
+				//emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getSpocUser(), vendorLocation, notificationScenario);
         		}catch (MessagingException e) {
         			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
         		} catch (UnsupportedEncodingException e) {
@@ -612,7 +653,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				  if(requirementSubmission != null){
 					  
 					     RequirementOffers  requirementOffers  =  requirementOffersDao.getRequirementOfferId(offerId);
-					     requirementOffers.setNotifyToApplicant("Y");
+					     //requirementOffers.setNotifyToApplicant("Y");
 					     requirementOffersDao.storeRequirementOffers(requirementOffers);
 					     Candidate candidate  =  candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
 							     if(requirementOffers != null){
@@ -786,7 +827,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	}
 
 
-	@Override
+	/*@Override
 	public RequirementOffers offerDetails(Long submissionId, User loginUser,OrgLocations orgLocations ,String userType) throws Exception {
 		
 		
@@ -878,7 +919,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			
 		}
 		return null;
-	}
+	}*/
 
 
 	@Override

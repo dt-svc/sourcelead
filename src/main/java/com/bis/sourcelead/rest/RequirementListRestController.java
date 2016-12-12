@@ -766,7 +766,13 @@ public class RequirementListRestController {
 						else if("SUBMIT_TO_CLIENT".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
 							numOfSubmitToClient++;
 						}
-						else if("OFFERMADE".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+						else if("OFFERMADE".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString()) 
+								|| "OFFERACCEPTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
+								|| "OFFERREJECTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
+								|| "CLIENT_OFFERMADE".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
+								|| "CLIENT_OFFERACCEPTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
+								|| "CLIENT_OFFERREJECTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
+								){
 							numOfOffers++;
 						}else if("REJECTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
 							numOfRejected++;
