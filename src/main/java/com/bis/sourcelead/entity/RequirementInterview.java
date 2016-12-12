@@ -81,9 +81,6 @@ import org.hibernate.annotations.FetchMode;
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@Column(name = "INTERVIEW_SUBMISSION_TYPE")
-	private String interviewSubmissionType;
-	
 	@Transient
 	private String remainderTime;
 	
@@ -379,15 +376,5 @@ import org.hibernate.annotations.FetchMode;
 	public void setRequirementInterviewers(Set<RequirementInterviewer> requirementInterviewers) {
 		this.requirementInterviewers = requirementInterviewers;
 	}
-
-	public String getInterviewSubmissionType() {
-		return interviewSubmissionType;
-	}
-
-	public void setInterviewSubmissionType(String interviewSubmissionType) {
-		this.interviewSubmissionType = interviewSubmissionType;
-	}
-	
-	
 	
 }

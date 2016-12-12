@@ -478,7 +478,7 @@ function getInternalInterviewsList(submissionId){
 	                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span id="'+report.id+'notifiedDiv">'+notifiedDetails+'<span></p>';
 	                         result = result + '</div>';
 	                        
-                             if(report.clientName != null && report.clientName != "" && report.clientName != 'undefined' && report.interviewType !="INTERVIEW"){
+                             if(report.clientName != null && report.clientName != "" && report.clientName != 'undefined' && report.interviewSourceType !="INTERVIEW"){
 	                        	 result = result + '<div class="row clearfix">';
 		                    	 result = result + '<label class="col-md-5">';
 		                    	 result = result + '<strong>Client Name:</strong>';

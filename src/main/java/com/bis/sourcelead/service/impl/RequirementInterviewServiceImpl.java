@@ -158,12 +158,6 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 									
 									requirementInterview.setRemainedBefore(remainedBefore.toString());
 								}
-								 
-								/*if(jsonObj.has("isClientInterview")){
-									requirementInterview.setInterviewSubmissionType(Constants.CUSTOMER_INTERVIEW);
-								}else{
-									requirementInterview.setInterviewSubmissionType(Constants.INTERVIEW);
-								}*/
 							   	
 							   requirementInterview.setStatus(Constants.RECORD_ACTIVE);
 					           requirementInterview.setCreatedDate(new Date());

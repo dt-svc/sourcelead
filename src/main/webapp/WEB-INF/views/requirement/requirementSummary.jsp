@@ -1281,14 +1281,19 @@ function requirementPipeline(requirementId,submissionType){
 						       			    for(var j=0;j<report.requirementInterviewHistoryList.length;j++){
 						       			    	 var sub = report.requirementInterviewHistoryList[j];
 						       			    	 var location = "---";
+						       			    	 var endDate = "---";
 						       			    	 if(sub.interviewId.location != null && sub.interviewId.location != "" && sub.interviewId.location !="undefined"){
 						       			    		location = sub.interviewId.location;
+						       			    	 }
+						       			    	
+						       			    	 if(sub.interviewId.endTimeStr != null && sub.interviewId.endTimeStr != "" && sub.interviewId.endTimeStr !="undefined"){
+						       			    		endDate = sub.interviewId.endTimeStr;
 						       			    	 }
 						       			    	result = result +'<tr>';
 						       			    	result = result +'<td><span>'+sub.interviewId.interviewType+'</span></td>';
 						       			    	result = result +'<td><span>'+sub.dateOfInterviewStr+'</span></td>';
 						       			    	result = result +'<td><span>'+sub.startTimeStr+'</span></td>';
-						       			    	result = result +'<td><span>'+sub.endTimeStr+'</span></td>';
+						       			    	result = result +'<td><span>'+endDate+'</span></td>';
 						       			    	result = result +'<td><span>'+location+'</span></td>';
 						       			    	result = result +'<td><span>cxmbnv mnbbvnvnbv nbvnbvxnbv nbvcxnbvbnv bnvcxzbvnb  nbxzcvnbz nb vbnxcnbzxcv</span></td>';
 						       			    	result = result +'<td><span title="'+sub.interviewSourceType+'">'+sub.interviewSourceType+'</span></td>';
