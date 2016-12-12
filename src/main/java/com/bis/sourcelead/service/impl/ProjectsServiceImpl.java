@@ -1534,6 +1534,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 				return teamMembersList;
 				}
 
+			@Override
+			public Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId, Long orgLocationId)
+					throws Exception {
+				return projectsDao.getProjectApproversCountByUserIdAndOrgLocationId(userId, orgLocationId);
+			}
+
 			/*@Override
 			public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() throws Exception {
 				return projectsDao.getAllUserTimeSheetSubmissionStatusCurrentWeek();

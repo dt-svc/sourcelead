@@ -343,6 +343,21 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 		 }
 		 userRole.setTeamOwnersList(teamOwnersList);
 		 
+		 Integer projectApproverCount = projectsService.getProjectApproversCountByUserIdAndOrgLocationId(userId, orgLocations.getId());
+		 userRole.setProjectApproverCount(projectApproverCount);
+		 List<User> approversOwnersList = new ArrayList<User>();
+		 if(projectApproverCount > 0){
+			 List<User> projectApproversList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocations.getId(), userId, Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			 for(User user :projectApproversList){
+				 UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				 if(role != null){
+					 user.setUserType(role.getRoles().getDisplayName());
+					 approversOwnersList.add(user);
+				 }
+			 }
+		 }
+		 userRole.setProjectApproversList(approversOwnersList);
+		 
 		 resultJson = toJSON(userRole);
 		 return resultJson;
 	  }
@@ -475,6 +490,12 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 							teamMembers.setUpdatedDate(new Date());
 							teamMembersService.saveOrUpdateTeamMembers(teamMembers);
 						}
+					}
+					
+					
+					if(jsonObj.has("projectApproverUser") && !isNullOrEmpty("projectApproverUser")){
+						User projectApproverUser = new User();
+						projectApproverUser.setId(Long.valueOf(jsonObj.getString("projectApproverUser")));
 					}
 					
 					

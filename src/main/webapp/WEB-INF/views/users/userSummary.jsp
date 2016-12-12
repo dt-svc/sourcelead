@@ -145,6 +145,7 @@ $(document).ready(function(){
 			    var managerUsers = "";
 			    var approversUsers = "";
 			    var teamOwnerUsers = "";
+			    var projectApproverUsers = "";
 			    
 			    if(isTimeSheetEnrolled == 'Y'){
 			    	
@@ -312,6 +313,31 @@ $(document).ready(function(){
 							    					{
 												    	teamOwnerUsers = json.teamOwnersList[i];
 												    	result = result+"<option value='"+teamOwnerUsers.id+"'>"+teamOwnerUsers.firstName+" "+teamOwnerUsers.lastName+"&nbsp;("+teamOwnerUsers.userType+")</option>"; 
+														
+							    					}
+												    result = result + '</select>';
+											}
+											result = result + '</div>';
+											result = result + '</div>';	
+										  }	
+									
+									
+									
+									if(json.projectApproverCount > 0){
+										result = result + '<div class="clearfix mb10">';
+										result = result + '<div class="col-md-6">';
+										    result = result + '<div class="user_badg">';
+											    result = result + '<p>Assigned as Project Approver<strong class="label label-success">'+json.projectApproverCount+'</strong></p>';
+													result = result + '</div>';
+									            result = result + '</div>';
+											result = result + '<div class="col-md-6" id="teamOwnerUserDiv">';
+											if(json.projectApproversList != null && json.projectApproversList != "" && json.projectApproversList != 'undefined' && json.projectApproversList.length > 0){
+											       result = result + '<select class="chosen-select" data-validation="required" field-name="Assign To" id="projectApproverUser" name="projectApproverUser">';
+												    result = result + '<option value="">Assign to</option>';
+												    for (var i=0; i<json.projectApproversList.length; i++)
+							    					{
+												    	projectApproverUsers = json.projectApproversList[i];
+												    	result = result+"<option value='"+projectApproverUsers.id+"'>"+projectApproverUsers.firstName+" "+projectApproverUsers.lastName+"&nbsp;("+projectApproverUsers.userType+")</option>"; 
 														
 							    					}
 												    result = result + '</select>';

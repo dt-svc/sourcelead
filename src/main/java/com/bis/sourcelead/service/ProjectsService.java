@@ -77,6 +77,8 @@ public interface ProjectsService {
 		//HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() throws Exception;
 		
 		
+		Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId,Long orgLocationId)throws Exception;
+		
 		
 		
 }

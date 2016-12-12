@@ -147,6 +147,9 @@ public class UserRole implements Serializable{
 	@Transient
 	List<User> teamOwnersList;
 	
+	@Transient
+	List<User> projectApproversList;
+	
 	
 	@Transient
 	private Integer assignedUsersCountToReportingManager;
@@ -165,6 +168,9 @@ public class UserRole implements Serializable{
 	
 	@Transient
 	private Integer teamsCountAsOwner;
+	
+	@Transient
+	private Integer projectApproverCount;
 	
 	
 	public String getUserName() {
@@ -498,6 +504,22 @@ public class UserRole implements Serializable{
 
 	public void setTeamsCountAsOwner(Integer teamsCountAsOwner) {
 		this.teamsCountAsOwner = teamsCountAsOwner;
+	}
+
+	public List<User> getProjectApproversList() {
+		return projectApproversList;
+	}
+
+	public void setProjectApproversList(List<User> projectApproversList) {
+		this.projectApproversList = projectApproversList;
+	}
+
+	public Integer getProjectApproverCount() {
+		return projectApproverCount;
+	}
+
+	public void setProjectApproverCount(Integer projectApproverCount) {
+		this.projectApproverCount = projectApproverCount;
 	}
 
 
