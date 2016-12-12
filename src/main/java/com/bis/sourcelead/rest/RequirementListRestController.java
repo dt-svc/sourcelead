@@ -760,7 +760,7 @@ public class RequirementListRestController {
 						if("SHORTLIST".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
 							numOfShortList++;
 						}
-						else if("INTERVIEW".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString()) || "CUSTOMER_INTERVIEW".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+						else if("INTERVIEW".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString()) || "CLIENT_INTERVIEW".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
 							numOfInterview++;
 						}
 						else if("SUBMIT_TO_CLIENT".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){

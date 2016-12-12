@@ -203,7 +203,7 @@ public class RequirementInterviewRestController {
 		 
 		 if(requirementSubmission.getSourceSubmission() != null){
       	   RequirementSubmission parentSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
-	        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CUSTOMER_INTERVIEW);
+	        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_INTERVIEW);
 	        	   requirementSubmissionService.storeRequirementSubmission(parentSubmission);
          }
 		 
@@ -222,7 +222,7 @@ public class RequirementInterviewRestController {
   	     vendorInterviewHistory.setInterviewId(requirementInterview);
   	     vendorInterviewHistory.setSubmissionId(requirementSubmission.getSourceSubmission());
   	     vendorInterviewHistory.setOrgLocationId(requirementSubmission.getVendorLocationId());
-         vendorInterviewHistory.setInterviewSourceType(Constants.CUSTOMER_INTERVIEW);
+         vendorInterviewHistory.setInterviewSourceType(Constants.CLIENT_INTERVIEW);
          vendorInterviewHistory.setNotificationToApplicant(Constants.NO);
          vendorInterviewHistory.setNotificationToSpoc(Constants.NO);
          vendorInterviewHistory.setStatus(Constants.RECORD_ACTIVE);
