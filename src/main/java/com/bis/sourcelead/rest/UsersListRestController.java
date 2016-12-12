@@ -7,7 +7,9 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +41,9 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
@@ -46,10 +51,14 @@ import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectMembersHistoryService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
@@ -110,7 +119,14 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	@Autowired
 	TeamMembersService teamMembersService;
 	
-		
+	@Autowired
+	ProjectApproverHierarchyService projectApproverHierarchyService;
+	
+	@Autowired
+	ProjectMembersService projectMembersService;
+	
+	@Autowired
+	ProjectMembersHistoryService projectMembersHistoryService;
 	
 	/**
 	 * To get All the Users by filtering 
@@ -494,8 +510,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					
 					
 					if(jsonObj.has("projectApproverUser") && !isNullOrEmpty("projectApproverUser")){
-						User projectApproverUser = new User();
-						projectApproverUser.setId(Long.valueOf(jsonObj.getString("projectApproverUser")));
+						
+						projectsService.tereminateAsProjectApprover(jsonObj, user, userId, orgLocations);
 					}
 					
 					

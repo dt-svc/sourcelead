@@ -4886,7 +4886,9 @@ edit-status {
     position:absolute;
     text-align:left;
 	width:650px;
-	height:350px;
+	/* height:350px; */
+	min-height:175px;
+	max-height:400px;
 	overflow-y: auto;
 	background-color:#FFF;
 	box-sizing:border-box;

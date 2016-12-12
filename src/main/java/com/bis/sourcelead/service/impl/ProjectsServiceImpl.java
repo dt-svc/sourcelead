@@ -1540,6 +1540,59 @@ public class ProjectsServiceImpl implements ProjectsService{
 				return projectsDao.getProjectApproversCountByUserIdAndOrgLocationId(userId, orgLocationId);
 			}
 
+			
+			
+			@Override
+			public void tereminateAsProjectApprover(JSONObject jsonObj,User user,Long userId,OrgLocations orgLocations) throws Exception {
+				
+				   boolean flag = false;
+				
+		    		List<ProjectApproverHierarchy> projectApproverList = projectApproverHierarchyService.getProjectApproversListByUserIdAndOrgLocationId(userId,orgLocations.getId());
+		    		
+		    		for(ProjectApproverHierarchy hierarchy : projectApproverList){
+		    			
+							
+						   
+							User usr = userService.getUserById(Long.valueOf(jsonObj.getString("projectApproverUser")));
+							User terminatedUser = hierarchy.getApproverUserId();
+							hierarchy.setApproverUserId(usr);
+							hierarchy.setUpdatedBy(user.getUserCode());
+							hierarchy.setUpdatedDate(new Date());
+						
+							
+							List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(hierarchy.getProjectId().getId(), orgLocations.getId());	
+							for(ProjectApproverHierarchy approverHierarchy : hierarchyList){
+								if(approverHierarchy.getApproverUserId().getId().equals(usr.getId())){
+									flag = true;
+								}
+							}
+							
+							if(flag == false){
+								
+					    			//getting projectmember userId's who are added to the project
+					    					ProjectMembers pm = storeProjectMemberByMemberUserIdAndLoginUser(usr.getId(), user, hierarchy.getProjectId(), new Date());
+					    					if(pm != null){
+					    						commonUtil.storeTimesheetSubmissionRecords(user);
+					    					}
+										 
+							}
+							
+							 if(hierarchy.getProjectId() != null && hierarchy.getProjectId().getId() != null){
+			    					ProjectMembers pm1 = projectMembersService.getProjectMemberByUserIdAndProjectId(terminatedUser.getId(), hierarchy.getProjectId().getId());
+				    				if(pm1.getId() != null){
+				    					ProjectMembersHistory projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm1.getId());
+				    					projectMembersHistory.setProjectTerminationDate(new Date());
+				    					projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
+					    				commonUtil.terminateProjectMemberByProjectMemberId(pm1.getId(), Primary.Yes);
+				    				}
+				    				 
+			    				}
+						
+								projectApproverHierarchyService.updateProjectApproverHierarchy(hierarchy);
+		    		}
+		    		
+			}
+
 			/*@Override
 			public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() throws Exception {
 				return projectsDao.getAllUserTimeSheetSubmissionStatusCurrentWeek();
