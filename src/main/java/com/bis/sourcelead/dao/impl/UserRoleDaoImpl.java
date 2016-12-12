@@ -220,10 +220,11 @@ public class UserRoleDaoImpl implements UserRoleDao {
 				.setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<UserRole> getUsersListByRoleAndNameAndLocationId(Long roleId, String userName, Long locationId,
-			String userState, Long userId,String loginUserRole,String userCode) throws Exception {
+			String userState, Long userId,String loginUserRole,String userCode,Integer offset) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
         Map<String, Object> params = new HashMap<String,Object>();
@@ -293,7 +294,19 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			}
         	
         }
-	 	return  query.setCacheable(true).list();
+		List<UserRole>  list =null;
+		list = query.setCacheable(true).list();
+		if(query.list().size() >= offset){
+			if(query.list().size() > offset + 10){
+				return   list.subList(offset, (offset+10));
+			}else{
+				return   list.subList(offset, (  offset + (query.list().size() - offset)));
+			}
+		}else{
+			return  null;
+		}
+		
+	 	
 	}
 
 	@Override

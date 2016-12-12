@@ -103,7 +103,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 			@RequestParam(value="userRole", required=false) String userRole,
 			@RequestParam(value="searchByName", required=false) String searchByName,
 			@RequestParam(value="userState", required=false) String userState,
-			@RequestParam(value="loginUserRole", required=false) String loginUserRole) throws Exception {
+			@RequestParam(value="loginUserRole", required=false) String loginUserRole,
+			@RequestParam(value="offset", required=false) Integer offset) throws Exception {
 		
 	 	String resultJson = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -119,7 +120,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				 userRoleType = null;
 			}
 			
-			rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode());
+			rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),offset);
 	
 			if(null != rolesList){
 				for(UserRole role : rolesList){

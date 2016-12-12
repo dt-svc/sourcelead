@@ -169,7 +169,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
  				rolesList = userRoleService.getUsersListByUserNameAndLocationId(searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode());
  			}
  			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName)){
- 				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(Long.parseLong(userRole), searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode());
+ 				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(Long.parseLong(userRole), searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),0);
  			}
  		
  			if(null != rolesList){
