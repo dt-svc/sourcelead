@@ -205,12 +205,16 @@ function requirementList(){
 			                     '</sec:authorize>';
 	                    	 }
 		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
+		                    	 result = result +"<td><div title="+opt.clientName+"><span>"+opt.clientName+"</span></div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
 		                     if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
-		                    	 result = result +"<td><div>"+opt.jobType+"</div></td>";
+		                    	 if(opt.jobType=='Other'){
+		                    		 result = result +"<td><div>"+opt.otherJobType+"</div></td>";
+		                    	 }else{
+		                    		 result = result +"<td><div>"+opt.jobType+"</div></td>";
+		                    	 }
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
@@ -235,7 +239,8 @@ function requirementList(){
 		                        if(opt.requirementSubmissionStatus == "DRAFT"){
 									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 									'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-										result = result +"<option value='ONHOLD'>ONHOLD</option>";
+						
+									result = result +"<option value='ONHOLD'>ONHOLD</option>";
 									'</sec:authorize>';
 									'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
 										result = result +"<option value='CANCEL'>CANCEL</option>";

@@ -214,7 +214,7 @@ function getVendorLists(){
    	        		result = result +'<tr>';
    	        		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
    	        			result = result +'<td>';
-   	        			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.vendorlocationId+'\',\''+report.id+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+   	        			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.vendorlocationId+'\',\''+report.id+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="${report.responderLocationId.org.orgName}'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
    	        			result = result +'</div>';
    	        			result = result +'</td>';
    	        		'</sec:authorize>';
@@ -378,7 +378,7 @@ function getVendorContactLists(){
    	        			result = result +'<td><div>--</div></td>';
    	        		}
    	        		result = result +'<td><div><span>'+report.ownerName+'</span></div></td>';
-   	        		result = result +'<td><div><span>'+report.orgName+'</span></div></td>';
+   	        		result = result +'<td><div title='+report.orgName+'><span>'+report.orgName+'</span></div></td>';
    	        		
    	        		
    	        		result = result + ' <td><div>';
