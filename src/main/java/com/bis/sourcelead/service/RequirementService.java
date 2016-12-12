@@ -76,5 +76,9 @@ public interface RequirementService {
 	Integer getManagerAssignedRequirementsCount(Long userId,Long orgLocationId) throws Exception;
 	
 	public Integer getRequirementsCountAsApprover(Long userId,Long orgLocationId) throws Exception;
+	
+	public List<Requirement> getManagerAssignedRequirementsList(Long userId,Long orgLocationId) throws Exception;
+	
+	
 
 }

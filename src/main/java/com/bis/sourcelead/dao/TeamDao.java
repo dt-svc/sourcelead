@@ -18,5 +18,7 @@ public interface TeamDao {
 	
 	public Integer getTeamCountByTeamOwner(Long userId,Long orgLocationId) throws Exception;
 	
+	public List<Team> getTeamListByTeamOwner(Long userId,Long orgLocationId) throws Exception;
+	
 	
 }

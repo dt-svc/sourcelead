@@ -50,4 +50,7 @@ public interface RequirementDao {
 	
 	public Integer getRequirementsCountAsApprover(Long userId,Long orgLocationId) throws Exception;
 	
+	public List<Requirement> getManagerAssignedRequirementsList(Long userId,Long orgLocationId) throws Exception;
+	
+	
 }

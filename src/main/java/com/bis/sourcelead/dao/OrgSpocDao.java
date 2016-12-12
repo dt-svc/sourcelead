@@ -62,5 +62,6 @@ public interface OrgSpocDao {
 	
 	List<Long> getAssignedAsClientOrVendorSpocCountByUserId(Long userId, Long orgLocationId,String type) throws Exception;
 	
+	List<OrgSpoc> getAssignedAsClientOrVendorSpocByUserId(Long userId, Long orgLocationId,String type) throws Exception;
 	
 }

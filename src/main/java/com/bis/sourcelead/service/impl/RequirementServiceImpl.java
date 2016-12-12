@@ -1815,5 +1815,10 @@ public Integer getManagerAssignedRequirementsCount(Long userId, Long orgLocation
 public Integer getRequirementsCountAsApprover(Long userId,Long orgLocationId) throws Exception {
 	return requirementDao.getRequirementsCountAsApprover(userId,orgLocationId);
 }
+
+@Override
+public List<Requirement> getManagerAssignedRequirementsList(Long userId, Long orgLocationId) throws Exception {
+	return requirementDao.getManagerAssignedRequirementsList(userId, orgLocationId);
+}
 }
 

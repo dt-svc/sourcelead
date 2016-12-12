@@ -74,7 +74,9 @@ public interface UserRoleDao {
 	
 	public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek();
 	
-	List<Long> getAllAssignedUsersIdsByReportingManagerId(Long reportingManagerId);
+	List<Long> getAllAssignedUsersIdsByReportingManagerId(Long reportingManagerId,Long orgLocationId);
+	
+	List<UserRole> getAllAssignedUsersByReportingManagerId(Long reportingManagerId,Long orgLocationId);
 
 
 }

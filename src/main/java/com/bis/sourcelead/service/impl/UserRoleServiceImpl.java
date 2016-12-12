@@ -303,8 +303,13 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 
 	@Override
-	public List<Long> getAllAssignedUsersIdsByReportingManagerId(Long reportingManagerId) {
-		return userRoleDao.getAllAssignedUsersIdsByReportingManagerId(reportingManagerId);
+	public List<Long> getAllAssignedUsersIdsByReportingManagerId(Long reportingManagerId,Long orgLocationId) {
+		return userRoleDao.getAllAssignedUsersIdsByReportingManagerId(reportingManagerId,orgLocationId);
+	}
+
+	@Override
+	public List<UserRole> getAllAssignedUsersByReportingManagerId(Long reportingManagerId, Long orgLocationId) {
+		return userRoleDao.getAllAssignedUsersByReportingManagerId(reportingManagerId, orgLocationId);
 	}
 	
 

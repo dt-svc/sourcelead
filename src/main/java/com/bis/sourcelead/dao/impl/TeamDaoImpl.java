@@ -151,6 +151,17 @@ public class TeamDaoImpl  implements TeamDao{
         
 	}
 
+	@Override
+	@Transactional
+	public List<Team> getTeamListByTeamOwner(Long userId, Long orgLocationId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Team team "
+					+ "where team.ownerUserId.id = :userId and team.orgLocationsId.id = :orgLocationId";
+		return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+	}
+
 
 	/*@Override
 	@Transactional(rollbackFor = { Exception.class })

@@ -146,6 +146,16 @@ public class TeamServiceImpl implements TeamService {
 	public Integer getTeamCountByTeamOwner(Long userId, Long orgLocationId) throws Exception {
 		return teamDao.getTeamCountByTeamOwner(userId, orgLocationId);
 	}
+
+	@Override
+	public List<Team> getTeamListByTeamOwner(Long userId, Long orgLocationId) throws Exception {
+		return teamDao.getTeamListByTeamOwner(userId, orgLocationId);
+	}
+
+	@Override
+	public Team saveTeam(Team team) throws Exception {
+		return teamDao.storeTeam(team);
+	}
 	
 }
 	 

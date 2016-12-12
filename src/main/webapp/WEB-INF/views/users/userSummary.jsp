@@ -176,7 +176,8 @@ $(document).ready(function(){
 									result = result + ' <b><input id="save_reason" value="Submit" onClick="terminateUser('+userId+');" type="button"/><input class="u_can_color" onclick="cancelUser();" value="Cancel" type="button"></b>'; */
 									
 									result = result + '<div class="clearfix assignroles">';
-								  
+									result = result + ' <div id="deleteLoading" ></div>';
+									
 									if(json.assignedUsersCountToReportingManager > 0){
 									result = result + '<div class="clearfix mb10">';
 									result = result + '<div class="col-md-6">';
@@ -798,9 +799,22 @@ function firstname(name)
 		 var frm = $('#deleteUser_form').serializeFormJSON();
          var con = JSON.stringify(frm);
          con = con.replace(/[{}]/g, "");
-         
          //It will escape all the special characters
          var jsonData = encodeURIComponent(con);
+         var sourceleadUrl ='${sourceleadUrl}';
+         
+         $("#deleteLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+         
+         $.ajax({
+             type: "POST",
+             url: sourceleadUrl+"/terminateUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&json="+jsonData,
+             success: function(data) {
+                 if(data == "success"){
+                	 location.replace(sourceleadUrl+"/usersList");
+                 }
+                 
+             }
+             }); 
          
 		 
 		 return true;
@@ -1074,7 +1088,7 @@ function cancelUser(){
 </script>
 
 
-<script>
+<!-- <script>
 function terminateUser(userId){   
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reason").value;
@@ -1101,7 +1115,7 @@ function terminateUser(userId){
 	}
 }
 
-</script>
+</script> -->
 
 
 <script>
