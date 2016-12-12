@@ -61,5 +61,6 @@ public interface CandidateEducationService {
 	 */
 	public CandidateEducation getCandidateEducationBycandidateIdandEducationId(Long candidateId,Long candidateCertificateId)  throws Exception;
 
+	public Boolean validateEducationName(Long candidateId, String candidateEducation) throws Exception;
 
 }

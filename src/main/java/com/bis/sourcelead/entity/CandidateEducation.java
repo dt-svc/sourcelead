@@ -87,6 +87,9 @@ public class CandidateEducation implements Serializable{
     private String startDateStr;
 	
 	@Transient
+	private String msg;
+	
+	@Transient
 	private String endDateStr;
 	
 	@Transient
@@ -250,6 +253,14 @@ public class CandidateEducation implements Serializable{
 
 	public void setEducationList(List<LookUpData> educationList) {
 		this.educationList = educationList;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 	
 }
