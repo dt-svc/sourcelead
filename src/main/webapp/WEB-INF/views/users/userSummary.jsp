@@ -21,6 +21,10 @@
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/chosen.jquery.min.js"></script> 
+
 <div class="wraper">
 	<!-- Content Area -->
 	<section class="content-wraper">
@@ -135,6 +139,14 @@ $(document).ready(function(){
 			    var result = "";
 			    var submissionCountsResult = "";
 			    
+			    var reportingManagers = "";
+			    var clientOwnerAndSpoc = "";
+			    var vendorOwnerAndSpoc = "";
+			    var managerUsers = "";
+			    var approversUsers = "";
+			    var teamOwnerUsers = "";
+			    var projectApproverUsers = "";
+			    
 			    if(isTimeSheetEnrolled == 'Y'){
 			    	
 			    	    submissionCountsResult = '<p>Projects<strong class="label label-default">'+projectsCount+'</strong></p>';
@@ -158,11 +170,203 @@ $(document).ready(function(){
 				      
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\')">'
 						result = result + ' <a id="remove-user" href="javascript:removeUser();"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
-							result = result + ' <div id="remove_user_id" class="remove_user_pop" >';
-									result = result +'<textarea placeholder="Comments here" id="reason" name="reason"/></textarea>';
+						result = result + ' <form id="deleteUser_form"  name="deleteUser_form" method="post">';	
+						result = result + ' <div id="remove_user_id" class="remove_user_pop" >';
+									/* result = result +'<textarea placeholder="Comments here" id="reason" name="reason"/></textarea>';
 									result = result + ' <div id="reasonDiv"/>';
-									result = result + ' <b><input id="save_reason" value="Submit" onClick="terminateUser('+userId+');" type="button"/><input class="u_can_color" onclick="cancelUser();" value="Cancel" type="button"></b>';
-						     result = result + ' </div>';
+									result = result + ' <b><input id="save_reason" value="Submit" onClick="terminateUser('+userId+');" type="button"/><input class="u_can_color" onclick="cancelUser();" value="Cancel" type="button"></b>'; */
+									
+									result = result + '<div class="clearfix assignroles">';
+									result = result + ' <div id="deleteLoading" ></div>';
+									
+									if(json.assignedUsersCountToReportingManager > 0){
+									result = result + '<div class="clearfix mb10">';
+									result = result + '<div class="col-md-6">';
+									    result = result + '<div class="user_badg">';
+										    result = result + '<p>Assigned Users as a Manager<strong class="label label-default">'+json.assignedUsersCountToReportingManager+'</strong></p>';
+												result = result + '</div>';
+								            result = result + '</div>';
+										result = result + '<div class="col-md-6" id="reportingManagerDiv">';
+										if(json.reportingManagers != null && json.reportingManagers != "" && json.reportingManagers != 'undefined' && json.reportingManagers.length > 0){
+										       result = result + '<select class="chosen-select" id="assignReportingManagers" data-validation="required" field-name="Assign To" name="assignReportingManagers"  >';
+											    result = result + '<option value="">Assign to</option>';
+											    for (var i=0; i<json.reportingManagers.length; i++)
+						    					{
+											    	reportingManagers = json.reportingManagers[i];
+											    	result = result+"<option value='"+reportingManagers.id+"'>"+reportingManagers.firstName+" "+reportingManagers.lastName+"&nbsp;("+reportingManagers.userType+")</option>"; 
+													
+						    					}
+											    result = result + '</select>';
+										}
+										result = result + '</div>';
+										result = result + '</div>';	
+									  }
+										
+									if(json.assignedAsClientOwnerOrSpocCount > 0){
+										result = result + '<div class="clearfix mb10">';
+										result = result + '<div class="col-md-6">';
+										    result = result + '<div class="user_badg">';
+											    result = result + '<p>Assigned as Client Owner and Spoc<strong class="label label-info">'+json.assignedAsClientOwnerOrSpocCount+'</strong></p>';
+													result = result + '</div>';
+									            result = result + '</div>';
+											result = result + '<div class="col-md-6" id="clientUserDiv">';
+											if(json.clientUsersList != null && json.clientUsersList != "" && json.clientUsersList != 'undefined' && json.clientUsersList.length > 0){
+											       result = result + '<select class="chosen-select" data-validation="required" field-name="Assign To" id="clientUsers" name="clientUsers" >';
+												    result = result + '<option value="">Assign to</option>';
+												    for (var i=0; i<json.clientUsersList.length; i++)
+							    					{
+												    	clientOwnerAndSpoc = json.clientUsersList[i];
+												    	result = result+"<option value='"+clientOwnerAndSpoc.id+"'>"+clientOwnerAndSpoc.firstName+" "+clientOwnerAndSpoc.lastName+"&nbsp;("+clientOwnerAndSpoc.userType+")</option>"; 
+														
+							    					}
+												    result = result + '</select>';
+											}
+											result = result + '</div>';
+											result = result + '</div>';	
+										  }	
+									
+									
+									if(json.assignedAsVendorOwnerOrSpocCount > 0){
+										result = result + '<div class="clearfix mb10">';
+										result = result + '<div class="col-md-6">';
+										    result = result + '<div class="user_badg">';
+											    result = result + '<p>Assigned as Vendor Owner and Spoc<strong class="label label-primary">'+json.assignedAsVendorOwnerOrSpocCount+'</strong></p>';
+													result = result + '</div>';
+									            result = result + '</div>';
+											result = result + '<div class="col-md-6" id="vendorUserDiv">';
+											if(json.vendorUsersList != null && json.vendorUsersList != "" && json.vendorUsersList != 'undefined' && json.vendorUsersList.length > 0){
+											       result = result + '<select class="chosen-select" data-validation="required" field-name="Assign To" id="vendorUsers" name="vendorUsers">';
+												    result = result + '<option value="">Assign to</option>';
+												    for (var i=0; i<json.vendorUsersList.length; i++)
+							    					{
+												    	vendorOwnerAndSpoc = json.vendorUsersList[i];
+												    	result = result+"<option value='"+vendorOwnerAndSpoc.id+"'>"+vendorOwnerAndSpoc.firstName+" "+vendorOwnerAndSpoc.lastName+"&nbsp;("+vendorOwnerAndSpoc.userType+")</option>"; 
+														
+							    					}
+												    result = result + '</select>';
+											}
+											result = result + '</div>';
+											result = result + '</div>';	
+										  }	
+									
+									
+									if(json.requirementsCountAsManager > 0){
+										result = result + '<div class="clearfix mb10">';
+										result = result + '<div class="col-md-6">';
+										    result = result + '<div class="user_badg">';
+											    result = result + '<p>Assigned as Manager to Requirements<strong class="label label-success">'+json.requirementsCountAsManager+'</strong></p>';
+													result = result + '</div>';
+									            result = result + '</div>';
+											result = result + '<div class="col-md-6" id="managerUserDiv">';
+											if(json.requirementManagersList != null && json.requirementManagersList != "" && json.requirementManagersList != 'undefined' && json.requirementManagersList.length > 0){
+											       result = result + '<select class="chosen-select" data-validation="required" field-name="Assign To" id="managerUsers" name="managerUsers">';
+												    result = result + '<option value="">Assign to</option>';
+												    for (var i=0; i<json.requirementManagersList.length; i++)
+							    					{
+												    	managerUsers = json.requirementManagersList[i];
+												    	result = result+"<option value='"+managerUsers.id+"'>"+managerUsers.firstName+" "+managerUsers.lastName+"&nbsp;("+managerUsers.userType+")</option>"; 
+														
+							    					}
+												    result = result + '</select>';
+											}
+											result = result + '</div>';
+											result = result + '</div>';	
+										  }	
+										
+									if(json.requirementsCountAsApprover > 0){
+										result = result + '<div class="clearfix mb10">';
+										result = result + '<div class="col-md-6">';
+										    result = result + '<div class="user_badg">';
+											    result = result + '<p>Assigned as Approver to Requirements<strong class="label label-warning">'+json.requirementsCountAsApprover+'</strong></p>';
+													result = result + '</div>';
+									            result = result + '</div>';
+											result = result + '<div class="col-md-6" id="approverUserDiv">';
+											if(json.requirementApproversList != null && json.requirementApproversList != "" && json.requirementApproversList != 'undefined' && json.requirementApproversList.length > 0){
+											       result = result + '<select class="chosen-select" data-validation="required" field-name="Assign To" name="approverUser" id="approverUser">';
+												    result = result + '<option value="">Assign to</option>';
+												    for (var i=0; i<json.requirementApproversList.length; i++)
+							    					{
+												    	approversUsers = json.requirementApproversList[i];
+												    	result = result+"<option value='"+approversUsers.id+"'>"+approversUsers.firstName+" "+approversUsers.lastName+"&nbsp;("+approversUsers.userType+")</option>"; 
+														
+							    					}
+												    result = result + '</select>';
+											}
+											result = result + '</div>';
+											result = result + '</div>';	
+										  }	
+									
+									
+										
+									if(json.teamsCountAsOwner > 0){
+										result = result + '<div class="clearfix mb10">';
+										result = result + '<div class="col-md-6">';
+										    result = result + '<div class="user_badg">';
+											    result = result + '<p>Assigned as Team Owner for Requirements<strong class="label label-info">'+json.teamsCountAsOwner+'</strong></p>';
+													result = result + '</div>';
+									            result = result + '</div>';
+											result = result + '<div class="col-md-6" id="teamOwnerUserDiv">';
+											if(json.teamOwnersList != null && json.teamOwnersList != "" && json.teamOwnersList != 'undefined' && json.teamOwnersList.length > 0){
+											       result = result + '<select class="chosen-select" data-validation="required" field-name="Assign To" id="teamOwnerUser" name="teamOwnerUser">';
+												    result = result + '<option value="">Assign to</option>';
+												    for (var i=0; i<json.teamOwnersList.length; i++)
+							    					{
+												    	teamOwnerUsers = json.teamOwnersList[i];
+												    	result = result+"<option value='"+teamOwnerUsers.id+"'>"+teamOwnerUsers.firstName+" "+teamOwnerUsers.lastName+"&nbsp;("+teamOwnerUsers.userType+")</option>"; 
+														
+							    					}
+												    result = result + '</select>';
+											}
+											result = result + '</div>';
+											result = result + '</div>';	
+										  }	
+									
+									
+									
+									if(json.projectApproverCount > 0){
+										result = result + '<div class="clearfix mb10">';
+										result = result + '<div class="col-md-6">';
+										    result = result + '<div class="user_badg">';
+											    result = result + '<p>Assigned as Project Approver<strong class="label label-success">'+json.projectApproverCount+'</strong></p>';
+													result = result + '</div>';
+									            result = result + '</div>';
+											result = result + '<div class="col-md-6" id="teamOwnerUserDiv">';
+											if(json.projectApproversList != null && json.projectApproversList != "" && json.projectApproversList != 'undefined' && json.projectApproversList.length > 0){
+											       result = result + '<select class="chosen-select" data-validation="required" field-name="Assign To" id="projectApproverUser" name="projectApproverUser">';
+												    result = result + '<option value="">Assign to</option>';
+												    for (var i=0; i<json.projectApproversList.length; i++)
+							    					{
+												    	projectApproverUsers = json.projectApproversList[i];
+												    	result = result+"<option value='"+projectApproverUsers.id+"'>"+projectApproverUsers.firstName+" "+projectApproverUsers.lastName+"&nbsp;("+projectApproverUsers.userType+")</option>"; 
+														
+							    					}
+												    result = result + '</select>';
+											}
+											result = result + '</div>';
+											result = result + '</div>';	
+										  }	
+										
+										
+										
+								result = result + '<div class="clearfix mb10 mt">';
+								  result = result + '<div class="col-md-12" id="reasonDiv">';
+									  result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required" field-name="Reason" placeholder="Terminate Reason"></textarea>';
+									  	result = result + '</div>';
+									  result = result + '</div>';
+								  result = result + '<div class="clearfix"></div>';
+										result = result + '<div class="user_summary_edit_cta">';
+										result = result + '<input class="us-btn us-btn_a " type="button" value="Delete" type="button" onclick="deleteUser('+userId+');"/>';
+											result = result + '&nbsp;<input class="us-btn" onclick="cancelUser();" type="button" value="Cancel"/>';
+											result = result + '</div>';
+												
+										result = result + '<div class="clearfix"></div>';
+													
+									result = result + '</div>';	
+									
+									result = result + ' </div>';
+									result = result + ' </form>';
+									
+									
 				    '</sec:authorize>';	     
 				     result = result + ' </div>';
 				}
@@ -275,6 +479,22 @@ $(document).ready(function(){
 				
 				$("#tab-1").empty(); 
 			    $("#tab-1").append(result);  
+			    
+			    var config = {
+			  		  '.chosen-select'           : {},
+			  		  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  		  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  		  '.chosen-select-width'     : {width:"95%"}
+			  		}
+			  		for (var selector in config) {
+			  		  $(selector).chosen(config[selector]);
+			  		}
+			  		$('.chosen-select').each(function() {
+			  			var $this = $(this);
+			  			$this.next().css({'width': '100%'});
+
+			           });
 	    
 	      },
 	});
@@ -303,170 +523,7 @@ function firstname(name)
 
 
 
-<!-- <script>
- function userProjectDetails(userId,filterValue){    
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 
-	 $.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/getUserDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
-	        success: function(data) {
-			    var json = JSON.parse(data);
-				if(json.userState != null && json.userState != "" && json.userState == 'INACTIVE'){
-				  $("#assign_project_id").empty();
-				}else{
-					$("#assign_project_id").empty().append("<a href='javascript:void(0)' data-target='#assignProject' onClick='flushProject();getUnAssignedProjects("+userId+");' data-toggle='modal'><i class='fa fa-plus'></i>Assign Project</a>") ;
-				}
-	      }
-	 });
-	 
-	 
-	 $.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/getProjectDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&filterValue="+filterValue, 
-	        success: function(data) {
-			    var jsonData = JSON.parse(data);
-	    		var result = "";
-	    		if(jsonData.length > 0)
-		   		{
-						   result = result + '        <div class="user_summ_wrap_table">';
-						   result = result + '	<table>';
-						   result = result + '    	<tbody>';
-						   result = result + '      	<tr>';
-						   result = result + '         	<th>Project Name</th>';
-						   result = result + '             <th>Start Date</th>';
-						   result = result + '            <th>End Date</th>';
-						   result = result + '             <th>Approved hrs</th>';
-						   result = result + '              <th>Rejected hrs</th>';
-						   result = result + '             <th>Saved</th>';
-						   result = result + '             <th>Wait for approval</th>';
-						   result = result + '                 <th>Action</th>';
-						   result = result + '         </tr>';
-						   for(var i=0; i<jsonData.length; i++){
-							   var json = jsonData[i];
-							   var startDate = "";
-							   var endDate = "";
-							   var approvedHrs = "";
-							   var rejectedHrs = "";
-							   var draftHrs = "";
-							   var submittedHrs = "";
-						    if(json.startDate != null && json.startDate != '' && json.startDate != 'undefined'){
-							 startDate = json.startDate ;
-						   }
-						   if(json.endDate  != null && json.endDate  != '' && json.endDate  != 'undefined'){
-						    	endDate = json.endDate;
-						   }
-						   if(json.approvedHrs  != null && json.approvedHrs  != '' && json.approvedHrs  != 'undefined'){
-							   approvedHrs = json.approvedHrs;
-						   }
-						   if(json.rejectedHrs  != null && json.rejectedHrs  != '' && json.rejectedHrs  != 'undefined'){
-							   rejectedHrs = json.rejectedHrs;
-						   }
-						   if(json.draftHrs  != null && json.draftHrs  != '' && json.draftHrs  != 'undefined'){
-							   draftHrs = json.draftHrs;
-						   }
-						   if(json.submittedHrs  != null && json.submittedHrs  != '' && json.submittedHrs  != 'undefined'){
-							   submittedHrs = json.submittedHrs;
-						   }
-						   result = result + '       <tr>';
-						   result = result + '    	<td><div>'+json.projectName+'</div></td>';
-						  
-						   result = result + '<td><div id="startDate'+json.id+'">'+startDate+'</div></td>';
-						   result = result + ' <td>';
-						   if(json.status != null && json.status != "" && json.status !='undefined' && json.status != "INACTIVE" && json.userState != "INACTIVE"){
-							   result = result + '<div><input type="text" value="'+endDate+'" id="endDate'+json.id+'" readonly name = "endDate'+json.id+'" class="project_inline_field"  /></div>';
-						   }
-						   else{
-							   result = result + '<div>'+endDate+'</div>';
-						   }
-						   result = result + ' </td>';
 
-						   result = result + ' <td><div>'+approvedHrs+'</div></td>';
-						   result = result + ' <td><div>'+rejectedHrs+'</div></td>';
-						   result = result + ' <td><div>'+draftHrs+'</div></td>';
-						   result = result + ' <td><div>'+submittedHrs+'</div></td>';
-						   if(json.status != null && json.status != '' && json.status !='undefined' && json.status != "INACTIVE" && json.userState != "INACTIVE"){
-                               result = result + '<td><div><i id="dele-user" class="glyphicon glyphicon-trash"  onClick="deleteProject(\''+json.id+'\',\''+userId+'\',\''+json.projectName+'\')"; ></i>';
-                            }
-                            else{
-                                 result = result + '<td><div><a onclick="reActiveProject(\''+json.id+'\',\''+json.projectName+'\',\''+startDate+'\',\''+endDate+'\',\''+json.projectEndDateStr+'\',\''+userId+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">&nbsp;Re-Active</a></div></td>';
-                            }
-							result = result + '</div></td> '; 
-						   
-						   result = result + '   </tr>';
-						   }
-						   result = result + '        </tbody>';
-						   result = result + '    </table>            ';
-						   result = result + '        </div>';
-							 			
-						   /*  result = result + ' <nav>';
-						    result = result + '<ul id="paging" class="pagination">';
-						    result = result + '	<li><a href="#">Previous</a></li>';
-						    result = result + '	<li><a href="#">3</a></li>';
-						    result = result + '	<li><a href="#">4</a></li>';
-						    result = result + '<li><a href="#">5</a></li>';
-						    result = result + '<li class="disabled"><a href="#">6</a></li>';
-						    result = result + '<li data-page="last"><a href="#">Next</a></li>';
-						    result = result + '</ul>';
-						    result = result + '<div class="clearfix"></div>';
-						    result = result + '</nav>		';	 */
-						
-						    result = result + '   </div>';
-						    
-						    result = result + ' </div>';
-						    result = result + '</div> ';
-						
-						    result = result + '<div class="project_inn_mask"></div>';
-						    result = result + '<div class="project_error">';
-						    result = result + '	<p>User delete message here ....</p>';
-						    result = result + '	<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> ';
-						    result = result + '</div>';
-						
-						    result = result + '</div>';
-						    $("#projectList_User").empty(); 
-							$("#projectList_User").append(result);
-		   		}
-	    		else{
-	    			result = "<div class='content-area mt text-center text-muted'><h3>Project List is Empty</h3></div>";
-	    			$("#projectList_User").empty(); 
-					$("#projectList_User").append(result); 
-	    		}
-	    		if(jsonData.length > 0)
-		   		{
-	    			 for(var i=0; i<jsonData.length; i++){
-						   var json = jsonData[i];
-						   if(json.status != null && json.status != '' && json.status !='undefined' && json.status == "IN-ACTIVE")
-							   continue;
-			    			var selected = json.startDate;
-							 var dt = new Date(selected);
-				             dt.setDate(dt.getDate());
-				             
-				             
-				             
-				             //Main project end date
-				             var projectEndDate = json.projectEndDateStr;
-				             var endDate = "";
-				             if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
-				            	 endDate = new Date(projectEndDate);
-			 		             endDate.setDate(endDate.getDate()); 
-				             }
-							 $('#endDate'+json.id).datepicker({
-					    		      dateFormat: 'yy-mm-dd',
-					    		      minDate: dt,
-					    		      maxDate: endDate,
-					    		      onClose: function() {
-					    		    	  	 var id = $(this).attr('id');
-											 var projectMemberId = $(this).attr('id').split('endDate')[1];
-					    		        	 inlineEditForEndDate(id,projectMemberId);
-					    		      }
-					    		  }); 
-	    			 }
-		   		}
-	        },
-		});
-	 }
-</script> -->
-		<!-- Timesheet -->
 
 	</section>
 	<!-- Content Area Ends-->
@@ -751,6 +808,53 @@ function firstname(name)
     });
 </script>
 
+
+
+
+
+<script type="text/javascript">
+ function deleteUser(userId) {
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+		   }; 
+	 if ($('#deleteUser_form').validate(false, validationSettings)){ 
+		 
+		 var frm = $('#deleteUser_form').serializeFormJSON();
+         var con = JSON.stringify(frm);
+         con = con.replace(/[{}]/g, "");
+         //It will escape all the special characters
+         var jsonData = encodeURIComponent(con);
+         var sourceleadUrl ='${sourceleadUrl}';
+         
+         $("#deleteLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+         
+         $.ajax({
+             type: "POST",
+             url: sourceleadUrl+"/terminateUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&json="+jsonData,
+             success: function(data) {
+                 if(data == "success"){
+                	 location.replace(sourceleadUrl+"/usersList");
+                 }
+                 
+             }
+             }); 
+         
+		 
+		 return true;
+	 }else{
+		 return false;
+	 }
+    }
+ 
+ $('body').on('blur', '#deleteUser_form', function() {
+		$("#deleteUser_form").showHelpOnFocus();;
+		$("#deleteUser_form").validateOnBlur(false, validationSettings);  
+	});
+</script>
+
 <script type="text/javascript">
         var validationSettings = {
             errorMessagePosition : 'element',
@@ -988,9 +1092,19 @@ function getCalendar(){
 <script>
 function removeUser(){
 	$("#reason").val('');
-	$("#reasonDiv").empty();
 	$("#remove_user_id").slideToggle(100);
 	$(".user_summary_edit").slideUp(100);
+	
+	$('#reportingManagerDiv').find('p.jquery_form_error_message').remove();
+	$('#clientUserDiv').find('p.jquery_form_error_message').remove();
+	$('#vendorUserDiv').find('p.jquery_form_error_message').remove();
+	$('#managerUserDiv').find('p.jquery_form_error_message').remove();
+	$('#approverUserDiv').find('p.jquery_form_error_message').remove();
+	$('#teamOwnerUserDiv').find('p.jquery_form_error_message').remove();
+	$('#reasonDiv').find('p.jquery_form_error_message').remove();
+	
+	
+	
 }
 </script>
 <script>
@@ -1000,7 +1114,7 @@ function cancelUser(){
 </script>
 
 
-<script>
+<!-- <script>
 function terminateUser(userId){   
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reason").value;
@@ -1027,7 +1141,7 @@ function terminateUser(userId){
 	}
 }
 
-</script>
+</script> -->
 
 
 <script>
@@ -1563,5 +1677,7 @@ function flushReProject(){
 	$('#assignProjectDiv').find('p.jquery_form_error_message').remove();
 }
 </script>
+
+<
 
 <!-- () -->

@@ -57,12 +57,6 @@ import org.hibernate.annotations.FetchMode;
 	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
 	private String location;
 	
-	@Column(name="NOTIFICATION_TO_APPLICANT")
-	private String notificationToApplicant;
-	
-	@Column(name="NOTIFICATION_TO_SPOC")
-	private String notificationToSpoc;
-	
 	@Column(name="NOTIFICATION_TO_OTHERS")
 	private String notificationToOthers;
 	
@@ -86,9 +80,6 @@ import org.hibernate.annotations.FetchMode;
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
-	
-	@Column(name = "INTERVIEW_SUBMISSION_TYPE")
-	private String interviewSubmissionType;
 	
 	@Transient
 	private String remainderTime;
@@ -122,6 +113,12 @@ import org.hibernate.annotations.FetchMode;
 	
 	@Transient
 	private String clientName;
+	
+	@Transient
+	private String notificationToApplicant;
+	
+	@Transient
+	private String notificationToSpoc;
 	
 	@OneToMany(mappedBy = "requirementInterview",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
@@ -379,15 +376,5 @@ import org.hibernate.annotations.FetchMode;
 	public void setRequirementInterviewers(Set<RequirementInterviewer> requirementInterviewers) {
 		this.requirementInterviewers = requirementInterviewers;
 	}
-
-	public String getInterviewSubmissionType() {
-		return interviewSubmissionType;
-	}
-
-	public void setInterviewSubmissionType(String interviewSubmissionType) {
-		this.interviewSubmissionType = interviewSubmissionType;
-	}
-	
-	
 	
 }

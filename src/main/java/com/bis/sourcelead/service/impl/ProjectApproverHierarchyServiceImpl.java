@@ -143,5 +143,18 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 		return projectMemberList;
 	}
 
+
+	@Override
+	public List<ProjectApproverHierarchy> getProjectApproversListByUserIdAndOrgLocationId(Long userId,
+			Long orgLocationId) throws Exception {
+		return projectApproverHierarchyDao.getProjectApproversListByUserIdAndOrgLocationId(userId, orgLocationId);
+	}
+
+
+	@Override
+	public List<ProjectApproverHierarchy> getProjectsHierarchyListByProjectIdAndOrgLocationId(Long projectId,
+			Long orgLocationId) throws Exception {
+		return projectApproverHierarchyDao.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectId, orgLocationId);
+	}
 	
 }

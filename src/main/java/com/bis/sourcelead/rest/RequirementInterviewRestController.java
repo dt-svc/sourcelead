@@ -22,12 +22,14 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -57,6 +59,9 @@ public class RequirementInterviewRestController {
 	
 	@Autowired
 	RequirementInterviewService requirementInterviewService;
+	
+	@Autowired
+	RequirementInterviewHistoryService requirementInterviewHistoryService;
 	
 	@RequestMapping(value = "/getAllInterviewers")
 	public @ResponseBody String getAllApprovers(HttpServletRequest request) throws Exception {
@@ -122,7 +127,8 @@ public class RequirementInterviewRestController {
 	     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 String resultJson = null;
 			
-		 List<RequirementInterview> interviewsList = requirementInterviewService.getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(submissionId, orgLocations.getId());
+		// List<RequirementInterview> interviewsList = requirementInterviewService.getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(submissionId, orgLocations.getId());
+		 List<RequirementInterviewHistory> interviewsList = requirementInterviewHistoryService.getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(submissionId, orgLocations.getId());
 		 resultJson = commonUtil.toJSON(interviewsList);
 		 return resultJson;
 	   }
@@ -167,6 +173,7 @@ public class RequirementInterviewRestController {
 	 @RequestMapping(value = "/sendMailToapplicant")
 	 @ResponseBody String sendMailToapplicant(@RequestParam(value="submissionId", required=false) String submissionId,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
+				@RequestParam(value = "interviewHistoryId", required = false) String interviewHistoryId,
 			 HttpServletRequest request) throws Exception {
 		 
 		 
@@ -179,18 +186,26 @@ public class RequirementInterviewRestController {
 		 OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 requirementInterviewService.sendEmailToApplicants(requirementSubmission.getCandidate(),orgLoc, requirementSubmission, loginUser,org, requirementInterview);
 		 
-		 requirementInterview.setNotificationToApplicant("Y");
-		 requirementInterviewService.saveRequirementInterview(requirementInterview);
+		 RequirementInterviewHistory interviewHistory =  requirementInterviewHistoryService.getRequirementInterviewHistoryById(Long.parseLong(interviewHistoryId));
+		 interviewHistory.setNotificationToApplicant(Constants.YES);
+		 requirementInterviewHistoryService.storeRequirementInterviewHistory(interviewHistory);
 		 
 		return "success";
 	 }		
 	 @RequestMapping(value = "/sendMailToVendor")
 	 @ResponseBody String sendMailToVendor(@RequestParam(value="submissionId", required=false) String submissionId,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
+				@RequestParam(value = "interviewHistoryId", required = false) String interviewHistoryId,
 			 HttpServletRequest request) throws Exception {
 		 
 		 
 		 RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
+		 
+		 if(requirementSubmission.getSourceSubmission() != null){
+      	   RequirementSubmission parentSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
+	        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_INTERVIEW);
+	        	   requirementSubmissionService.storeRequirementSubmission(parentSubmission);
+         }
 		 
 		 RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewId);
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -199,8 +214,24 @@ public class RequirementInterviewRestController {
 
 		 requirementInterviewService.sendEmailToVendors(requirementSubmission.getCandidate(), requirementSubmission, loginUser,org, requirementInterview,orgLocations);
 	 
-		 requirementInterview.setNotificationToSpoc("Y");
-		 requirementInterviewService.saveRequirementInterview(requirementInterview);
+		 RequirementInterviewHistory interviewHistory =  requirementInterviewHistoryService.getRequirementInterviewHistoryById(Long.parseLong(interviewHistoryId));
+		 interviewHistory.setNotificationToSpoc(Constants.YES);
+		 requirementInterviewHistoryService.storeRequirementInterviewHistory(interviewHistory);
+		 
+		 RequirementInterviewHistory vendorInterviewHistory = new RequirementInterviewHistory();
+  	     vendorInterviewHistory.setInterviewId(requirementInterview);
+  	     vendorInterviewHistory.setSubmissionId(requirementSubmission.getSourceSubmission());
+  	     vendorInterviewHistory.setOrgLocationId(requirementSubmission.getVendorLocationId());
+         vendorInterviewHistory.setInterviewSourceType(Constants.CLIENT_INTERVIEW);
+         vendorInterviewHistory.setNotificationToApplicant(Constants.NO);
+         vendorInterviewHistory.setNotificationToSpoc(Constants.NO);
+         vendorInterviewHistory.setStatus(Constants.RECORD_ACTIVE);
+         vendorInterviewHistory.setCreatedDate(new Date());
+         vendorInterviewHistory.setCreatedBy(loginUser.getUserCode());
+         vendorInterviewHistory.setUpdatedDate(new Date());
+         vendorInterviewHistory.setUpdatedBy(loginUser.getUserCode());
+         requirementInterviewHistoryService.storeRequirementInterviewHistory(vendorInterviewHistory);
+		 
 		 
 		return "success";
 	 }		

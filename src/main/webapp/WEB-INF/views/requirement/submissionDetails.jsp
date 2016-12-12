@@ -226,9 +226,9 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	                  '</sec:authorize>';
 	     			  
 	     			  //Customer Interviews List
-	     			 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
+	     			/* '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
 	     			  result  = result + '   <div id="customerInterviewsList" ></div>';
-	     			 '</sec:authorize>';
+	     			 '</sec:authorize>';  */
 	     			 
 	     			 //Reject Offer Popup
 	     			  result = result+'<div id="rejectOfferAlert" ></div>  ';
@@ -334,7 +334,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 var report = json[i]; 
 	                    	 
 	                    	 var notifiedDetails ="";
-	                    	 var interviewers = "---";
+	                    	// var interviewers = "---";
 	                    	 var interviewTypeHeader = "";
 	                    	 var interviewType = "---";
 	                    	// var timeZone = "---";
@@ -356,21 +356,21 @@ function getInternalInterviewsList(submissionId){
 	                    		notifiedDetails = '---';
 	                    	 }
 	                    	 
-	                    	 if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
+	                    	 /* if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
 	                    		 interviewers = report.interviewersList;
+	                    	 } */
+	                    	 
+	                    	 if(report.interviewId.interviewType != null && report.interviewId.interviewType != 'undefined' && report.interviewId.interviewType != ""){
+	                    		 interviewType = report.interviewId.interviewType;
+	                    		 interviewTypeHeader = report.interviewId.interviewType;
 	                    	 }
 	                    	 
-	                    	 if(report.interviewType != null && report.interviewType != 'undefined' && report.interviewType != ""){
-	                    		 interviewType = report.interviewType;
-	                    		 interviewTypeHeader = report.interviewType;
-	                    	 }
-	                    	 
-	                    	 if(report.timeZone != null && report.timeZone != 'undefined' && report.timeZone != ""){
+	                    	 /* if(report.timeZone != null && report.timeZone != 'undefined' && report.timeZone != ""){
 	                    		 timeZone = report.timeZone;
-	                    	 }
+	                    	 } */
 	                    	 
-	                    	 if(report.location != null && report.location != 'undefined' && report.location != ""){
-	                    		 location = report.location;
+	                    	 if(report.interviewId.location != null && report.interviewId.location != 'undefined' && report.interviewId.location != ""){
+	                    		 location = report.interviewId.location;
 	                    	 }
 	                    	 
 	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
@@ -380,34 +380,34 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<div class="action-nav" >';
-	                    	 result = result + '<span id="'+report.id+'actionDiv">';
-		                    	 if(report.interviewStatus == null || report.interviewStatus == '' || report.interviewStatus =='undefined'){
-		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
+	                    	 result = result + '<span id="'+report.interviewId.id+'actionDiv">';
+		                    	 if(report.interviewId.interviewStatus == null || report.interviewId.interviewStatus == '' || report.interviewId.interviewStatus =='undefined'){
+		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
 		                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
-			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Not Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
+			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
 			                    	 '</sec:authorize>';
-			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Maybe\');" title="Maybe"  class="brder-int"><i class="fa fa-question-circle text-muted"></i></a>';
+			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Maybe\');" title="Maybe"  class="brder-int"><i class="fa fa-question-circle text-muted"></i></a>';
 		                    	 }
 	                    	 result = result + '</span>';
-	                    	 result = result + '<span id="'+report.id+'showStatus"></span>';
-	                    	 if(report.interviewStatus == "Attending"){
+	                    	 result = result + '<span id="'+report.interviewId.id+'showStatus"></span>';
+	                    	 if(report.interviewId.interviewStatus == "Attending"){
 	                    		 result = result +' <font color="green" class="brder-int">Attending</font>';
 	                    	 }
-	                    	 if(report.interviewStatus == "Not Attending"){
+	                    	 if(report.interviewId.interviewStatus == "Not Attending"){
 	                    		 result = result +' <font color="red" class="brder-int">Not Attending</font>';
 	                    	 }
-	                    	 if(report.interviewStatus == "Maybe"){
+	                    	 if(report.interviewId.interviewStatus == "Maybe"){
 	                    		 result = result +' <font color="orange" class="brder-int">Maybe</font>';
 	                    	 }
 	                    	 
-	                    	 if(report.notificationToApplicant == null || report.notificationToApplicant == '' || report.notificationToApplicant =='undefined'){
+	                    	 if(report.notificationToApplicant == null || report.notificationToApplicant == '' || report.notificationToApplicant =='undefined' || report.notificationToApplicant == 'N'){
 	                    		 result = result + '<span id="'+report.id+'applicantDiv">';
-	                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onclick="sendMailToapplicant('+submissionId+','+report.id+');" title="Notify to Applicant"><i class="fa fa-user text-muted"></i></a>';
+	                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onclick="sendMailToapplicant('+submissionId+','+report.interviewId.id+','+report.id+');" title="Notify to Applicant"><i class="fa fa-user text-muted"></i></a>';
 	                    		 result = result + '</span>';
 	                    	 }
-	                    	 if((report.notificationToSpoc == null || report.notificationToSpoc == '' || report.notificationToSpoc =='undefined') && (parentRequirement == 'Y')){
+	                    	 if((report.notificationToSpoc == null || report.notificationToSpoc == '' || report.notificationToSpoc =='undefined' || report.notificationToSpoc == 'N') && (parentRequirement == 'Y')){
 	                    		 result = result + '<span id="'+report.id+'vendorDiv">';
-	                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onclick="sendMailToVendor('+submissionId+','+report.id+');" title="Notify to Vednor"><i class="fa fa-suitcase text-muted"></i></a>';
+	                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onclick="sendMailToVendor('+submissionId+','+report.interviewId.id+','+report.id+');" title="Notify to Vednor"><i class="fa fa-suitcase text-muted"></i></a>';
 	                    		 result = result + '</span>';
 	                    	 }
 	                    	 
@@ -453,20 +453,23 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '</label>';
                              result = result + '<p class="col-md-7 tbldata-dotdot-big">'+timeZone+'</p>';
 	                    	 result = result + '</div>'; */
+	                    	 if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
+	                    		 result = result + '<div class="row clearfix">';
+		                    	 result = result + '<label class="col-md-5">';
+		                    	 result = result + '<strong>Interviewers</strong>';
+		                    	 result = result + '</label>';
+		                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.interviewersList+'</p>';
+		                    	 result = result + '</div>';
+	                    	 }
 	                    	 
-	                    	 result = result + '<div class="row clearfix">';
-	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Interviewers</strong>';
-	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+interviewers+'</p>';
-	                    	 result = result + '</div>';
-	                    	 
-	                    	 result = result + '<div class="row clearfix">';
-	                         result = result + '<label class="col-md-5">';
-	                         result = result + '<strong>Reminder details</strong>';
-	                         result = result + '</label>';
-	                         result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.remainderTime+'</p>';
-	                         result = result + '</div>';
+	                    	 if(report.remainderTime != null && report.remainderTime != 'undefined' && report.remainderTime != ""){
+	                    		 result = result + '<div class="row clearfix">';
+		                         result = result + '<label class="col-md-5">';
+		                         result = result + '<strong>Reminder details</strong>';
+		                         result = result + '</label>';
+		                         result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.remainderTime+'</p>';
+		                         result = result + '</div>';
+	                    	 }
 	                         
 	                         result = result + '<div class="row clearfix">';
 	                         result = result + '<label class="col-md-5">';
@@ -475,7 +478,7 @@ function getInternalInterviewsList(submissionId){
 	                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span id="'+report.id+'notifiedDiv">'+notifiedDetails+'<span></p>';
 	                         result = result + '</div>';
 	                        
-                             if(report.interviewSubmissionType != null && report.interviewSubmissionType != "" && report.interviewSubmissionType != 'undefined' && report.interviewSubmissionType !="INTERVIEW"){
+                             if(report.clientName != null && report.clientName != "" && report.clientName != 'undefined' && report.interviewSourceType !="INTERVIEW"){
 	                        	 result = result + '<div class="row clearfix">';
 		                    	 result = result + '<label class="col-md-5">';
 		                    	 result = result + '<strong>Client Name:</strong>';
@@ -539,20 +542,20 @@ function changeInterviewStatus(submissionId,interviewId,interviewStatus){
 </script>
 
 <script>
-function sendMailToapplicant(submissionId,interviewId){
+function sendMailToapplicant(submissionId,interviewId,interviewHistoryId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/sendMailToapplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId,	    	   
+		    url: sourceleadUrl+"/sendMailToapplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId+"&interviewHistoryId="+interviewHistoryId,	    	   
 		    success: function(data) {
-		    	 jQuery("#"+(interviewId)+"applicantDiv").css("display","none");
-           		 var existingVal = $("#"+(interviewId)+"notifiedDiv").text();
+		    	 jQuery("#"+(interviewHistoryId)+"applicantDiv").css("display","none");
+           		 var existingVal = $("#"+(interviewHistoryId)+"notifiedDiv").text();
  		    	
  		    	if(existingVal == "" || existingVal == null || existingVal =="---" ){
- 		    		 $("#"+(interviewId)+"notifiedDiv").html("Applicant");
+ 		    		 $("#"+(interviewHistoryId)+"notifiedDiv").html("Applicant");
  		    	}
  		    	else{
- 		    		 $("#"+(interviewId)+"notifiedDiv").html(existingVal+",Applicant");
+ 		    		 $("#"+(interviewHistoryId)+"notifiedDiv").html(existingVal+",Applicant");
  		    	}
 	         }
 	   });
@@ -560,20 +563,20 @@ function sendMailToapplicant(submissionId,interviewId){
 </script>
 
 <script>
-function sendMailToVendor(submissionId,interviewId){
+function sendMailToVendor(submissionId,interviewId,interviewHistoryId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/sendMailToVendor?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId,	    	   
+		    url: sourceleadUrl+"/sendMailToVendor?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId+"&interviewHistoryId="+interviewHistoryId,	    	   
 		    success: function(data) {
-		    	jQuery("#"+(interviewId)+"vendorDiv").css("display","none");
-		    	var existingVal = $("#"+(interviewId)+"notifiedDiv").text();
+		    	jQuery("#"+(interviewHistoryId)+"vendorDiv").css("display","none");
+		    	var existingVal = $("#"+(interviewHistoryId)+"notifiedDiv").text();
 		    	
 		    	if(existingVal == "" || existingVal ==null){
-		    		 $("#"+(interviewId)+"notifiedDiv").html("Vendor");
+		    		 $("#"+(interviewHistoryId)+"notifiedDiv").html("Vendor");
 		    	}
 		    	else{
-		    		 $("#"+(interviewId)+"notifiedDiv").html(existingVal+",Vendor");
+		    		 $("#"+(interviewHistoryId)+"notifiedDiv").html(existingVal+",Vendor");
 		    	}
        		   
            	  } 
@@ -924,14 +927,12 @@ function getOfferDetails(submissionId){
      this script is for Reject Offer alert
      1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
 --%>
+
 <script type="text/javascript">
-function cancelAlert(){ 
-	$("#rejectOfferAlert").empty();
-	$(".project_inn_mask").fadeOut(200);
-}
+function canceloffer(){ 
+	$("#remove_user_pop, .project_inn_mask").fadeOut(200);
+};
 </script>
-
-
 
 <script type="text/javascript">
 function rejectOffer(offerStatus,submissionId){
@@ -941,7 +942,7 @@ function rejectOffer(offerStatus,submissionId){
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='acceptingOffer(\""+ offerStatus+ "\" ,\""+ submissionId+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='acceptingOffer(\""+ offerStatus+ "\" ,\""+ submissionId+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='canceloffer()'></b>";
 	result = result +"	</div>";
 	$("#rejectOfferAlert").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -970,8 +971,12 @@ function acceptingOffer(offerStatus,submissionId){
          type : "POST",
          url: sourceleadUrl+"/acceptingOffer?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason,        
          success :function(data) {
+
         	 $("#rejectOfferAlert").empty();
            	 getOfferDetails(submissionId);
+ 
+        	 $("#remove_user_pop, .project_inn_mask").fadeOut(200);
+        	 
        },
          
     }); 

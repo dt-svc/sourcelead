@@ -44,7 +44,7 @@ public class RequirementRateSubmissionNegotiationServiceTest {
 		rateNegotiation.setCreatedDate(commonUtil.currentDate());
 		rateNegotiation.setCurrentRateType("hourly");
 		rateNegotiation.setCurrentRate("inr");
-//		rateNegotiation.setStatus("open");
+		rateNegotiation.setStatus(1);
 		rateNegotiation.setUpdatedBy("you");
 		rateNegotiation.setUpdatedDate(commonUtil.currentDate());
 		RequirementSubmission requirementsubmissionId= new RequirementSubmission();

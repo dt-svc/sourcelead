@@ -23,6 +23,15 @@ public interface RequirementInterviewDao {
 	
 	RequirementInterview getRequirementInterviewById(String requirementInterviewId);
 	
+	/**
+	 * @author Prasad Salina
+	 * @param requirementInterviewId
+	 * @param submissionId
+	 * @param orgLocationsId
+	 * @return
+	 */
+	RequirementInterview getRequirementInterviewByIdAndSubmissionIdAndOrgLocationsId(Long requirementInterviewId, Long submissionId, Long orgLocationsId);
+	
 	List<RequirementInterview> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)throws Exception; 
 
 	List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId,
