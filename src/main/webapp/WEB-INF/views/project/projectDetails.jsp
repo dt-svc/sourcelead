@@ -62,6 +62,9 @@
 						result = result	+ ' <div class="project_tabs_inn_table">';
 						result = result + '	<div class="project_details">';
 						result = result + '<div class="useredit useredit_a">';
+						result  = result + '<div class="success_pop" id="selector2" style="display: none;">';
+					    result  = result + '<i class="fa fa-check-circle"></i><span id="docMsgDiv2"></span>';
+					    result  = result + '</div>';
 						
 						result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT\')">'; 
 						result = result	+ '<a id="edit-user" href="javascript:editProjectDetails('+ projectId+ ')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
@@ -102,8 +105,8 @@
 							result = result	+ '<div class="project_details_cta">';
 							result = result	+ '	<strong>Manager 2:</strong><span>';
 
-							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
-								var manager = json.managersListwithoutManager1[j];
+							for (var j = 0; j < json.managersList.length; j++) {
+								var manager = json.managersList[j];
 								if (json.manager2 == manager.id) {
 									result = result + manager.firstName + " "
 											+ manager.lastName;
@@ -454,7 +457,11 @@
 						type : "POST",
 						url : sourceleadUrl + "/updateProjectByProjectId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&ProjectId=" + projectId,
 						success : function(data) {
+							$("#selector2").removeAttr("style");
+	            			$("#selector2").css({ display: "block" });
+	            			$("#docMsgDiv2").html("Success!! Project details updated");
 							projectDetails(projectId);
+							docMsgFadein();
 						}
 					});
 			return true;
@@ -685,3 +692,9 @@
 		}
 	}
 </script>
+<script>
+	function docMsgFadein() {
+		$("#selector2").fadeIn(200);
+        $('#selector2').delay(2000).fadeOut('slow');
+	}
+</script> 

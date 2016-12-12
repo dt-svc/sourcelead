@@ -125,8 +125,52 @@ public class UserRole implements Serializable{
 	@Transient
 	List<User> allReportingManagers;
 	
+	
 	@Transient
 	private String userName;
+	
+	@Transient
+	List<User> reportingManagers;
+	
+	@Transient
+	List<User> clientUsersList;
+	
+	@Transient
+	List<User> vendorUsersList;
+	
+	@Transient
+	List<User> requirementManagersList;
+	
+	@Transient
+	List<User> requirementApproversList;
+	
+	@Transient
+	List<User> teamOwnersList;
+	
+	@Transient
+	List<User> projectApproversList;
+	
+	
+	@Transient
+	private Integer assignedUsersCountToReportingManager;
+	
+	@Transient
+	private Integer assignedAsVendorOwnerOrSpocCount;
+	
+	@Transient
+	private Integer assignedAsClientOwnerOrSpocCount;
+	
+	@Transient
+	private Integer requirementsCountAsManager;
+	
+	@Transient
+	private Integer requirementsCountAsApprover;
+	
+	@Transient
+	private Integer teamsCountAsOwner;
+	
+	@Transient
+	private Integer projectApproverCount;
 	
 	
 	public String getUserName() {
@@ -366,7 +410,117 @@ public class UserRole implements Serializable{
 		this.employeeId = employeeId;
 	}
 
-	
-	
+	public List<User> getReportingManagers() {
+		return reportingManagers;
+	}
+
+	public void setReportingManagers(List<User> reportingManagers) {
+		this.reportingManagers = reportingManagers;
+	}
+
+	public Integer getAssignedUsersCountToReportingManager() {
+		return assignedUsersCountToReportingManager;
+	}
+
+	public void setAssignedUsersCountToReportingManager(Integer assignedUsersCountToReportingManager) {
+		this.assignedUsersCountToReportingManager = assignedUsersCountToReportingManager;
+	}
+
+	public List<User> getClientUsersList() {
+		return clientUsersList;
+	}
+
+	public void setClientUsersList(List<User> clientUsersList) {
+		this.clientUsersList = clientUsersList;
+	}
+
+	public List<User> getVendorUsersList() {
+		return vendorUsersList;
+	}
+
+	public void setVendorUsersList(List<User> vendorUsersList) {
+		this.vendorUsersList = vendorUsersList;
+	}
+
+	public Integer getAssignedAsVendorOwnerOrSpocCount() {
+		return assignedAsVendorOwnerOrSpocCount;
+	}
+
+	public void setAssignedAsVendorOwnerOrSpocCount(Integer assignedAsVendorOwnerOrSpocCount) {
+		this.assignedAsVendorOwnerOrSpocCount = assignedAsVendorOwnerOrSpocCount;
+	}
+
+	public Integer getAssignedAsClientOwnerOrSpocCount() {
+		return assignedAsClientOwnerOrSpocCount;
+	}
+
+	public void setAssignedAsClientOwnerOrSpocCount(Integer assignedAsClientOwnerOrSpocCount) {
+		this.assignedAsClientOwnerOrSpocCount = assignedAsClientOwnerOrSpocCount;
+	}
+
+	public List<User> getRequirementManagersList() {
+		return requirementManagersList;
+	}
+
+	public void setRequirementManagersList(List<User> requirementManagersList) {
+		this.requirementManagersList = requirementManagersList;
+	}
+
+	public Integer getRequirementsCountAsManager() {
+		return requirementsCountAsManager;
+	}
+
+	public void setRequirementsCountAsManager(Integer requirementsCountAsManager) {
+		this.requirementsCountAsManager = requirementsCountAsManager;
+	}
+
+	public Integer getRequirementsCountAsApprover() {
+		return requirementsCountAsApprover;
+	}
+
+	public void setRequirementsCountAsApprover(Integer requirementsCountAsApprover) {
+		this.requirementsCountAsApprover = requirementsCountAsApprover;
+	}
+
+	public List<User> getRequirementApproversList() {
+		return requirementApproversList;
+	}
+
+	public void setRequirementApproversList(List<User> requirementApproversList) {
+		this.requirementApproversList = requirementApproversList;
+	}
+
+	public List<User> getTeamOwnersList() {
+		return teamOwnersList;
+	}
+
+	public void setTeamOwnersList(List<User> teamOwnersList) {
+		this.teamOwnersList = teamOwnersList;
+	}
+
+	public Integer getTeamsCountAsOwner() {
+		return teamsCountAsOwner;
+	}
+
+	public void setTeamsCountAsOwner(Integer teamsCountAsOwner) {
+		this.teamsCountAsOwner = teamsCountAsOwner;
+	}
+
+	public List<User> getProjectApproversList() {
+		return projectApproversList;
+	}
+
+	public void setProjectApproversList(List<User> projectApproversList) {
+		this.projectApproversList = projectApproversList;
+	}
+
+	public Integer getProjectApproverCount() {
+		return projectApproverCount;
+	}
+
+	public void setProjectApproverCount(Integer projectApproverCount) {
+		this.projectApproverCount = projectApproverCount;
+	}
+
 
 }

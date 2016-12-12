@@ -28,6 +28,7 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.dao.TimesheetSubmissionsDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
@@ -60,6 +61,7 @@ import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -133,6 +135,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 
 	 @Autowired
 	 private ProjectTasksService projectTasksService;
+	 
+	 @Autowired
+	 private TimesheetSubmissionsService timesheetSubmissionsService;
 
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
@@ -322,16 +327,18 @@ public class ProjectsServiceImpl implements ProjectsService{
     	
 
     	//prepare ProjectApproverHierarchy
-    	Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(jsonObj, request, projects);
+    	Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(jsonObj,request,projects);
     	projects.setProjectApprovers(projectApproverHierarchyList);
 		
 		//prepare project task set...
 		/*tasksService.*/
+    	/*User user1 = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");*/
+    	
 		Set<ProjectTasks>  projectTasksList = projectTasksService.prepareProjectTasksListByJson(jsonObj, request, projects);
 		projects.setProjectTasks(projectTasksList);
 		//prepare projectmembers list...
 		
-		Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj, request, projects);
+		Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
 		projects.setProjectMembers(projectMemberList);
 		
 		Projects updatedProjects = saveProject(projects);
@@ -1533,6 +1540,79 @@ public class ProjectsServiceImpl implements ProjectsService{
 				    }
 				return teamMembersList;
 				}
+
+			@Override
+			public Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId, Long orgLocationId)
+					throws Exception {
+				return projectsDao.getProjectApproversCountByUserIdAndOrgLocationId(userId, orgLocationId);
+			}
+
+			
+			
+			@Override
+			public void tereminateAsProjectApprover(JSONObject jsonObj,User user,Long userId,OrgLocations orgLocations) throws Exception {
+				
+				   boolean flag = false;
+				
+		    		List<ProjectApproverHierarchy> projectApproverList = projectApproverHierarchyService.getProjectApproversListByUserIdAndOrgLocationId(userId,orgLocations.getId());
+		    		
+		    		for(ProjectApproverHierarchy hierarchy : projectApproverList){
+		    			
+							
+						   
+							User usr = userService.getUserById(Long.valueOf(jsonObj.getString("projectApproverUser")));
+							User terminatedUser = hierarchy.getApproverUserId();
+							hierarchy.setApproverUserId(usr);
+							hierarchy.setUpdatedBy(user.getUserCode());
+							hierarchy.setUpdatedDate(new Date());
+						
+							
+							List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(hierarchy.getProjectId().getId(), orgLocations.getId());	
+							for(ProjectApproverHierarchy approverHierarchy : hierarchyList){
+								if(approverHierarchy.getApproverUserId().getId().equals(usr.getId())){
+									flag = true;
+								}
+							}
+							
+							if(flag == false){
+								
+					    			//getting projectmember userId's who are added to the project
+					    					ProjectMembers pm = storeProjectMemberByMemberUserIdAndLoginUser(usr.getId(), user, hierarchy.getProjectId(), new Date());
+					    					if(pm != null){
+					    						commonUtil.storeTimesheetSubmissionRecords(user);
+					    					}
+										 
+							}
+							
+							 if(hierarchy.getProjectId() != null && hierarchy.getProjectId().getId() != null){
+			    					ProjectMembers pm1 = projectMembersService.getProjectMemberByUserIdAndProjectId(terminatedUser.getId(), hierarchy.getProjectId().getId());
+				    				if(pm1.getId() != null){
+				    					ProjectMembersHistory projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm1.getId());
+				    					
+				    					if(null != projectMembersHistory){
+				    						projectMembersHistory.setProjectTerminationDate(new Date());
+					    					projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
+				    					}
+				    					
+					    				commonUtil.terminateProjectMemberByProjectMemberId(pm1.getId(), Primary.Yes);
+				    				}
+				    				
+				    				List<TimesheetSubmissions> submissionsList = timesheetSubmissionsService.getTimeSheetSubmissionByProjectMemberId(pm1.getId());
+				    				if(null != submissionsList){
+				    					for(TimesheetSubmissions submissions : submissionsList){
+				    						submissions.setStatus(Constants.MEMBER_IN_ACTIVE);
+				    						submissions.setUpdatedBy(user.getUserCode());
+				    						submissions.setUpdatedDate(new Date());
+				    						timesheetSubmissionsService.addTimesheetSubmissions(submissions);
+				    					}
+				    				}
+				    				 
+			    				}
+						
+								projectApproverHierarchyService.updateProjectApproverHierarchy(hierarchy);
+		    		}
+		    		
+			}
 
 			/*@Override
 			public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() throws Exception {
