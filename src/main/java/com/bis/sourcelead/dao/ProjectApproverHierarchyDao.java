@@ -22,4 +22,8 @@ public interface ProjectApproverHierarchyDao {
 	
 	public List<Long> getProjectIdsByLoginUserId(Long userId);
 	
+	List<ProjectApproverHierarchy> getProjectApproversListByUserIdAndOrgLocationId(Long userId,Long orgLocationId)throws Exception;
+	
+	List<ProjectApproverHierarchy> getProjectsHierarchyListByProjectIdAndOrgLocationId(Long projectId,Long orgLocationId)throws Exception;
+	
 }

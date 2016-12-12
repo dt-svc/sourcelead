@@ -223,4 +223,48 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			return spocsList;
 			
 		}
+
+		@Override
+		@Transactional
+		public List<Long> getAssignedAsClientOrVendorSpocCountByUserId(Long userId, Long orgLocationId,String type) throws Exception {
+			logger.debug("getAssignedAsClientOrVendorSpocCountByUserId start");
+			Session session = this.sessionFactory.getCurrentSession();
+			List<Long> ownersList = null;;
+				String query = "select spoc.id from OrgSpoc spoc where ((spoc.ownerUser.id = :ownerUserId and spoc.orgRelations.locationId = :orgLocationId and spoc.orgRelations.initiatorType = :initiatorType) "
+						+ "OR (spoc.spocUser.id = :spocUserId and spoc.orgRelations.responderLocationId = :responderLocationId and spoc.orgRelations.responderType = :responderType))";
+			    
+				ownersList = session.createQuery(query).setLong("ownerUserId", userId)
+													   .setLong("orgLocationId", orgLocationId)
+													   .setString("initiatorType", type)
+			    									   .setLong("spocUserId", userId)
+			    									   .setLong("responderLocationId", orgLocationId)
+			    									   .setString("responderType", type)
+			    									   .setCacheable(true).list();
+		    
+	        return ownersList;
+	        
+		}
+
+		@Override
+		@Transactional
+		public List<OrgSpoc> getAssignedAsClientOrVendorSpocByUserId(Long userId, Long orgLocationId, String type)
+				throws Exception {
+			
+			logger.debug("In getAssignedAsClientOrVendorSpocByUserId method");
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			List<OrgSpoc> spocsList;
+			 
+			Query query = session.createQuery("from OrgSpoc spoc where ((spoc.ownerUser.id = :ownerUserId and spoc.orgRelations.locationId = :orgLocationId and spoc.orgRelations.initiatorType = :initiatorType) "
+						+ "OR (spoc.spocUser.id = :spocUserId and spoc.orgRelations.responderLocationId = :responderLocationId and spoc.orgRelations.responderType = :responderType))"); 
+			spocsList = query.setLong("ownerUserId", userId)
+					   .setLong("orgLocationId", orgLocationId)
+					   .setString("initiatorType", type)
+					   .setLong("spocUserId", userId)
+					   .setLong("responderLocationId", orgLocationId)
+					   .setString("responderType", type)
+					   .setCacheable(true).list();
+			return spocsList;
+			
+		}
 }

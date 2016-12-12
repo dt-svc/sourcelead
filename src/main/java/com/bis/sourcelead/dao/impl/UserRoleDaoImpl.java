@@ -460,5 +460,24 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getAllAssignedUsersIdsByReportingManagerId(Long reportingManagerId,Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select userRole.user.id from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.orgLocations.id = :locationId  " ;
+	    List<Long> userIds = session.createQuery(query).setLong( "reportingManagerId", reportingManagerId).setLong("locationId", orgLocationId).setCacheable(true).list();
+        return userIds;
+        
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<UserRole> getAllAssignedUsersByReportingManagerId(Long reportingManagerId, Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.orgLocations.id = :locationId ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong( "reportingManagerId", reportingManagerId).setLong("locationId", orgLocationId).setCacheable(true).list();
+		return userRoleList;
+	}
+
 	
 }

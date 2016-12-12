@@ -591,6 +591,23 @@ public void saveAllProjects(List<Projects> projectsList) throws Exception {
 	}
 }
 
+@Override
+@Transactional
+public Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+	logger.debug("getProjectApproversCountByUserIdAndOrgLocationId start");
+	Session session = this.sessionFactory.getCurrentSession();
+		String query = "select count(projects.id) from Projects projects "
+				+ "where projects.id IN (select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy where hierarchy.approverUserId.id = :userId) and projects.orgLocationsId.id = :orgLocationId ";
+		
+		List<Long> projectsCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		Integer count = 0;
+		if(projectsCount != null && !projectsCount.isEmpty()){
+				count = projectsCount.get(0).intValue();
+		}
+		return count;
+    
+}
+
 /*@Override
 @Transactional(rollbackFor = { Exception.class })
 public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
