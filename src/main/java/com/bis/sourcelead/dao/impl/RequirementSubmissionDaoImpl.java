@@ -87,7 +87,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 Session session = this.sessionFactory.getCurrentSession();
 		 String subQuery = "";
 		 if(isClientInterview != null && "Y".equalsIgnoreCase(isClientInterview)){
-			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CUSTOMER_INTERVIEW' ) "; 
+			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CLIENT_INTERVIEW' ) "; 
 		 }else{
 			 subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' ) "; 
 		 }
@@ -459,7 +459,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
 		if(submissionType != null && "INTERVIEW".equalsIgnoreCase(submissionType)){
-			subQuery = " and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CUSTOMER_INTERVIEW') "; 
+			subQuery = " and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW') "; 
 		}else{
 			subQuery = " and reqSub.submissionStatus = '"+submissionType+"' ";
 		}

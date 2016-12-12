@@ -89,7 +89,7 @@ public class Constants {
 	public static String ENTITY_TYPE_EMAIL = "Email";
 	public static String ENTITY_TYPE_NOTIFICATION = "Notification";
 	
-	public static String CUSTOMER_INTERVIEW = "CUSTOMER_INTERVIEW";
+	public static String CLIENT_INTERVIEW = "CLIENT_INTERVIEW";
 	public static String INTERVIEW = "INTERVIEW";
 	
 	

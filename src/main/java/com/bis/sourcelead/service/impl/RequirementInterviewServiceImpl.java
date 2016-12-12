@@ -169,7 +169,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					           RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
 					           requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
 					           if(jsonObj.has("isClientInterview")){
-					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CUSTOMER_INTERVIEW);
+					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_INTERVIEW);
 					           }else{
 					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW);
 					           }
@@ -179,7 +179,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					           if(requirementSubmission.getSourceSubmission() != null){
 					        	   RequirementSubmission parentSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
 						           if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty() && parentSubmission != null){
-						        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CUSTOMER_INTERVIEW);
+						        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_INTERVIEW);
 						        	   requirementSubmissionService.storeRequirementSubmission(parentSubmission);
 						           }
 					           }
@@ -191,7 +191,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					           interviewHistory.setSubmissionId(submission);
 					           interviewHistory.setOrgLocationId(orgLocations);
 					           if(jsonObj.has("isClientInterview")){
-					        	   interviewHistory.setInterviewSourceType(Constants.CUSTOMER_INTERVIEW);
+					        	   interviewHistory.setInterviewSourceType(Constants.CLIENT_INTERVIEW);
 					           }else{
 					        	   interviewHistory.setInterviewSourceType(Constants.INTERVIEW);
 					           }
@@ -210,7 +210,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					        	   vendorInterviewHistory.setInterviewId(updateInterview);
 					        	   vendorInterviewHistory.setSubmissionId(requirementSubmission.getSourceSubmission());
 					        	   vendorInterviewHistory.setOrgLocationId(requirementSubmission.getVendorLocationId());
-						           vendorInterviewHistory.setInterviewSourceType(Constants.CUSTOMER_INTERVIEW);
+						           vendorInterviewHistory.setInterviewSourceType(Constants.CLIENT_INTERVIEW);
 						           vendorInterviewHistory.setNotificationToApplicant(Constants.NO);
 						           vendorInterviewHistory.setNotificationToSpoc(Constants.NO);
 						           vendorInterviewHistory.setStatus(Constants.RECORD_ACTIVE);
