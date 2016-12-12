@@ -28,6 +28,7 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.dao.TimesheetSubmissionsDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
@@ -60,6 +61,7 @@ import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -133,6 +135,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 
 	 @Autowired
 	 private ProjectTasksService projectTasksService;
+	 
+	 @Autowired
+	 private TimesheetSubmissionsService timesheetSubmissionsService;
 
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
@@ -1581,9 +1586,23 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    					ProjectMembers pm1 = projectMembersService.getProjectMemberByUserIdAndProjectId(terminatedUser.getId(), hierarchy.getProjectId().getId());
 				    				if(pm1.getId() != null){
 				    					ProjectMembersHistory projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm1.getId());
-				    					projectMembersHistory.setProjectTerminationDate(new Date());
-				    					projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
+				    					
+				    					if(null != projectMembersHistory){
+				    						projectMembersHistory.setProjectTerminationDate(new Date());
+					    					projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
+				    					}
+				    					
 					    				commonUtil.terminateProjectMemberByProjectMemberId(pm1.getId(), Primary.Yes);
+				    				}
+				    				
+				    				List<TimesheetSubmissions> submissionsList = timesheetSubmissionsService.getTimeSheetSubmissionByProjectMemberId(pm1.getId());
+				    				if(null != submissionsList){
+				    					for(TimesheetSubmissions submissions : submissionsList){
+				    						submissions.setStatus(Constants.MEMBER_IN_ACTIVE);
+				    						submissions.setUpdatedBy(user.getUserCode());
+				    						submissions.setUpdatedDate(new Date());
+				    						timesheetSubmissionsService.addTimesheetSubmissions(submissions);
+				    					}
 				    				}
 				    				 
 			    				}

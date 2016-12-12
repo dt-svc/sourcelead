@@ -760,5 +760,16 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		return tsSet;
 	}
 
+	@Override
+	@Transactional
+	public List<TimesheetSubmissions> getTimeSheetSubmissionByProjectMemberId(Long pojectMemberId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();  
+		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  where pm.id = :pojectMemberId and ts.status = '1' ";   
+		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("pojectMemberId", pojectMemberId.intValue()).list();
+		
+		return timesheetSubmissionsList;
+	}
+
 
 }
