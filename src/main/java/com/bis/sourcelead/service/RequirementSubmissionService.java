@@ -73,11 +73,14 @@ public interface RequirementSubmissionService {
 	RequirementSubmission acceptRejectCandidate(JSONObject jsonObj, User user, RequirementSubmission requirementSubmission, String decision, MultipartFile multiFile) throws Exception;
 
 	public void applicantNegotiateEmail(Requirement requirement, User initiatorUser, Candidate candidate,
-			OrgLocations orgLocations, RequirementRateSubmissionNegotiation negotiation) throws Exception;
+			OrgLocations orgLocations, RequirementRateSubmissionNegotiation negotiation, StringBuilder tempHTML) throws Exception;
 
 	RequirementRateSubmissionNegotiation getRequirementRateBySubmissionById(Long submissionId);
 
 	List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long valueOf, User user,
 			OrgLocations loginOrgLocation, String submissionType)throws Exception;
+
+	void userNegotiateEmail(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations,
+			RequirementRateSubmissionNegotiation neogtation, StringBuilder tempHTML) throws Exception;
 
 }
