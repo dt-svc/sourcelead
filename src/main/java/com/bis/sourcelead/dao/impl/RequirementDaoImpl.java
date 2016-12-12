@@ -461,7 +461,7 @@ public class RequirementDaoImpl implements RequirementDao {
         	
         }
 		
-		return query.list();
+		return query.setCacheable(true).list();
 		
 	
 	}
