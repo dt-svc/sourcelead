@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -75,6 +76,7 @@ public class CandidateController {
 			model.addObject("educationsList", educationsList);
 			
 			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			
 			model.addObject("skillsList", skillsList);
 			
 			return model;
@@ -116,6 +118,12 @@ public class CandidateController {
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "candidateCreateMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "candidateCreateMsg");
+		}
+		
 		return model;
 
 	}
@@ -151,5 +159,10 @@ public class CandidateController {
 		
 	}
 	
+
+	private boolean isNullOrEmpty(String msg) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }

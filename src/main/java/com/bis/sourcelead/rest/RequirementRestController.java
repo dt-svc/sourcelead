@@ -132,6 +132,27 @@ public class RequirementRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Requirement requirement = requirementService.storeRequirement(jsonObj,orgLocation,user,multiFile);
 		
+		if(jsonObj.getString("saveType").equalsIgnoreCase("draft")){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! New "+requirement.getJobTitle()+" requirement  saved to Draft");
+		}
+		if(jsonObj.getString("saveType").equalsIgnoreCase("save")){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! New "+requirement.getJobTitle()+" requirement  saved");
+		}
+		if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval")){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! New "+requirement.getJobTitle()+" requirement  submitted for approval");
+		}
+		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("save"))){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! "+requirement.getJobTitle()+" details updated");
+		}
+		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval"))){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! "+requirement.getJobTitle()+" Updated and Submitted ");
+		}
+		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("draft"))){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!!  "+requirement.getJobTitle()+" Updated in Draft Stage");
+		}
+		
+		
+
 		return "success";
 		
 	}

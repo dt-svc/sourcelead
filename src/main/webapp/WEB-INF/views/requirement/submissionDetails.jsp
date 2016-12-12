@@ -143,6 +143,31 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + '<li><i class="fa fa-rupee"></i>'+currentRate+' / '+currentRateCurrency+' - Current Rate / Salary</li>';
 		       result = result + '<li><i class="fa fa-rupee"></i>'+expectedRate+' / '+rateType+' - Expected Rate / Salary</li>';
 		       result = result + '</ul>';
+		       
+		       
+		       
+		       
+		       
+			    result = result + '<div class="acceptreject-actions">';
+				result = result + '<ul class="list-unstyled list-inline">';
+				result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept" onClick="acceptFun('+submissionId+');"></i>';
+				result = result + '		<div class="acceptreject-pop" id="accpet">';
+				result = result + '		</div>';
+				result = result + '	</li>';
+				
+				result = result + '	<li><i class="fa fa-close labeldanger" title="Reject" onClick="rejectFun('+submissionId+');"></i>';
+				result = result + '		<div class="acceptreject-pop" id="reject">';
+				result = result + '		</div>';
+				result = result + '	</li>';
+				
+				result = result + '</ul>';
+				result = result + '</div>';
+			
+			
+			
+			
+		       
+		       
 		       result = result + '</div>';
 		       result = result + '</div>';
        		
@@ -201,9 +226,9 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	                  '</sec:authorize>';
 	     			  
 	     			  //Customer Interviews List
-	     			 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
+	     			/* '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
 	     			  result  = result + '   <div id="customerInterviewsList" ></div>';
-	     			 '</sec:authorize>';
+	     			 '</sec:authorize>';  */
 	     			 
 	     			 //Reject Offer Popup
 	     			  result = result+'<div id="rejectOfferAlert" ></div>  ';
@@ -309,7 +334,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 var report = json[i]; 
 	                    	 
 	                    	 var notifiedDetails ="";
-	                    	 var interviewers = "---";
+	                    	// var interviewers = "---";
 	                    	 var interviewTypeHeader = "";
 	                    	 var interviewType = "---";
 	                    	// var timeZone = "---";
@@ -331,21 +356,21 @@ function getInternalInterviewsList(submissionId){
 	                    		notifiedDetails = '---';
 	                    	 }
 	                    	 
-	                    	 if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
+	                    	 /* if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
 	                    		 interviewers = report.interviewersList;
+	                    	 } */
+	                    	 
+	                    	 if(report.interviewId.interviewType != null && report.interviewId.interviewType != 'undefined' && report.interviewId.interviewType != ""){
+	                    		 interviewType = report.interviewId.interviewType;
+	                    		 interviewTypeHeader = report.interviewId.interviewType;
 	                    	 }
 	                    	 
-	                    	 if(report.interviewType != null && report.interviewType != 'undefined' && report.interviewType != ""){
-	                    		 interviewType = report.interviewType;
-	                    		 interviewTypeHeader = report.interviewType;
-	                    	 }
-	                    	 
-	                    	 if(report.timeZone != null && report.timeZone != 'undefined' && report.timeZone != ""){
+	                    	 /* if(report.timeZone != null && report.timeZone != 'undefined' && report.timeZone != ""){
 	                    		 timeZone = report.timeZone;
-	                    	 }
+	                    	 } */
 	                    	 
-	                    	 if(report.location != null && report.location != 'undefined' && report.location != ""){
-	                    		 location = report.location;
+	                    	 if(report.interviewId.location != null && report.interviewId.location != 'undefined' && report.interviewId.location != ""){
+	                    		 location = report.interviewId.location;
 	                    	 }
 	                    	 
 	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
@@ -355,34 +380,34 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<div class="action-nav" >';
-	                    	 result = result + '<span id="'+report.id+'actionDiv">';
-		                    	 if(report.interviewStatus == null || report.interviewStatus == '' || report.interviewStatus =='undefined'){
-		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
+	                    	 result = result + '<span id="'+report.interviewId.id+'actionDiv">';
+		                    	 if(report.interviewId.interviewStatus == null || report.interviewId.interviewStatus == '' || report.interviewId.interviewStatus =='undefined'){
+		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
 		                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
-			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Not Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
+			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
 			                    	 '</sec:authorize>';
-			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Maybe\');" title="Maybe"  class="brder-int"><i class="fa fa-question-circle text-muted"></i></a>';
+			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Maybe\');" title="Maybe"  class="brder-int"><i class="fa fa-question-circle text-muted"></i></a>';
 		                    	 }
 	                    	 result = result + '</span>';
-	                    	 result = result + '<span id="'+report.id+'showStatus"></span>';
-	                    	 if(report.interviewStatus == "Attending"){
+	                    	 result = result + '<span id="'+report.interviewId.id+'showStatus"></span>';
+	                    	 if(report.interviewId.interviewStatus == "Attending"){
 	                    		 result = result +' <font color="green" class="brder-int">Attending</font>';
 	                    	 }
-	                    	 if(report.interviewStatus == "Not Attending"){
+	                    	 if(report.interviewId.interviewStatus == "Not Attending"){
 	                    		 result = result +' <font color="red" class="brder-int">Not Attending</font>';
 	                    	 }
-	                    	 if(report.interviewStatus == "Maybe"){
+	                    	 if(report.interviewId.interviewStatus == "Maybe"){
 	                    		 result = result +' <font color="orange" class="brder-int">Maybe</font>';
 	                    	 }
 	                    	 
-	                    	 if(report.notificationToApplicant == null || report.notificationToApplicant == '' || report.notificationToApplicant =='undefined'){
+	                    	 if(report.notificationToApplicant == null || report.notificationToApplicant == '' || report.notificationToApplicant =='undefined' || report.notificationToApplicant == 'N'){
 	                    		 result = result + '<span id="'+report.id+'applicantDiv">';
-	                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onclick="sendMailToapplicant('+submissionId+','+report.id+');" title="Notify to Applicant"><i class="fa fa-user text-muted"></i></a>';
+	                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onclick="sendMailToapplicant('+submissionId+','+report.interviewId.id+','+report.id+');" title="Notify to Applicant"><i class="fa fa-user text-muted"></i></a>';
 	                    		 result = result + '</span>';
 	                    	 }
-	                    	 if((report.notificationToSpoc == null || report.notificationToSpoc == '' || report.notificationToSpoc =='undefined') && (parentRequirement == 'Y')){
+	                    	 if((report.notificationToSpoc == null || report.notificationToSpoc == '' || report.notificationToSpoc =='undefined' || report.notificationToSpoc == 'N') && (parentRequirement == 'Y')){
 	                    		 result = result + '<span id="'+report.id+'vendorDiv">';
-	                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onclick="sendMailToVendor('+submissionId+','+report.id+');" title="Notify to Vednor"><i class="fa fa-suitcase text-muted"></i></a>';
+	                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onclick="sendMailToVendor('+submissionId+','+report.interviewId.id+','+report.id+');" title="Notify to Vednor"><i class="fa fa-suitcase text-muted"></i></a>';
 	                    		 result = result + '</span>';
 	                    	 }
 	                    	 
@@ -428,20 +453,23 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '</label>';
                              result = result + '<p class="col-md-7 tbldata-dotdot-big">'+timeZone+'</p>';
 	                    	 result = result + '</div>'; */
+	                    	 if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
+	                    		 result = result + '<div class="row clearfix">';
+		                    	 result = result + '<label class="col-md-5">';
+		                    	 result = result + '<strong>Interviewers</strong>';
+		                    	 result = result + '</label>';
+		                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.interviewersList+'</p>';
+		                    	 result = result + '</div>';
+	                    	 }
 	                    	 
-	                    	 result = result + '<div class="row clearfix">';
-	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Interviewers</strong>';
-	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+interviewers+'</p>';
-	                    	 result = result + '</div>';
-	                    	 
-	                    	 result = result + '<div class="row clearfix">';
-	                         result = result + '<label class="col-md-5">';
-	                         result = result + '<strong>Reminder details</strong>';
-	                         result = result + '</label>';
-	                         result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.remainderTime+'</p>';
-	                         result = result + '</div>';
+	                    	 if(report.remainderTime != null && report.remainderTime != 'undefined' && report.remainderTime != ""){
+	                    		 result = result + '<div class="row clearfix">';
+		                         result = result + '<label class="col-md-5">';
+		                         result = result + '<strong>Reminder details</strong>';
+		                         result = result + '</label>';
+		                         result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.remainderTime+'</p>';
+		                         result = result + '</div>';
+	                    	 }
 	                         
 	                         result = result + '<div class="row clearfix">';
 	                         result = result + '<label class="col-md-5">';
@@ -449,6 +477,15 @@ function getInternalInterviewsList(submissionId){
 	                         result = result + '</label>';
 	                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span id="'+report.id+'notifiedDiv">'+notifiedDetails+'<span></p>';
 	                         result = result + '</div>';
+	                        
+                             if(report.clientName != null && report.clientName != "" && report.clientName != 'undefined' && report.interviewSourceType !="INTERVIEW"){
+	                        	 result = result + '<div class="row clearfix">';
+		                    	 result = result + '<label class="col-md-5">';
+		                    	 result = result + '<strong>Client Name:</strong>';
+		                    	 result = result + '</label>';
+		                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.clientName+'</p>';
+		                    	 result = result + '</div>';
+	                         }
 	                         
 	                         result = result + '</div>';
 	                         result = result + '</div>';
@@ -505,20 +542,20 @@ function changeInterviewStatus(submissionId,interviewId,interviewStatus){
 </script>
 
 <script>
-function sendMailToapplicant(submissionId,interviewId){
+function sendMailToapplicant(submissionId,interviewId,interviewHistoryId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/sendMailToapplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId,	    	   
+		    url: sourceleadUrl+"/sendMailToapplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId+"&interviewHistoryId="+interviewHistoryId,	    	   
 		    success: function(data) {
-		    	 jQuery("#"+(interviewId)+"applicantDiv").css("display","none");
-           		 var existingVal = $("#"+(interviewId)+"notifiedDiv").text();
+		    	 jQuery("#"+(interviewHistoryId)+"applicantDiv").css("display","none");
+           		 var existingVal = $("#"+(interviewHistoryId)+"notifiedDiv").text();
  		    	
  		    	if(existingVal == "" || existingVal == null || existingVal =="---" ){
- 		    		 $("#"+(interviewId)+"notifiedDiv").html("Applicant");
+ 		    		 $("#"+(interviewHistoryId)+"notifiedDiv").html("Applicant");
  		    	}
  		    	else{
- 		    		 $("#"+(interviewId)+"notifiedDiv").html(existingVal+",Applicant");
+ 		    		 $("#"+(interviewHistoryId)+"notifiedDiv").html(existingVal+",Applicant");
  		    	}
 	         }
 	   });
@@ -526,20 +563,20 @@ function sendMailToapplicant(submissionId,interviewId){
 </script>
 
 <script>
-function sendMailToVendor(submissionId,interviewId){
+function sendMailToVendor(submissionId,interviewId,interviewHistoryId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/sendMailToVendor?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId,	    	   
+		    url: sourceleadUrl+"/sendMailToVendor?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId+"&interviewHistoryId="+interviewHistoryId,	    	   
 		    success: function(data) {
-		    	jQuery("#"+(interviewId)+"vendorDiv").css("display","none");
-		    	var existingVal = $("#"+(interviewId)+"notifiedDiv").text();
+		    	jQuery("#"+(interviewHistoryId)+"vendorDiv").css("display","none");
+		    	var existingVal = $("#"+(interviewHistoryId)+"notifiedDiv").text();
 		    	
 		    	if(existingVal == "" || existingVal ==null){
-		    		 $("#"+(interviewId)+"notifiedDiv").html("Vendor");
+		    		 $("#"+(interviewHistoryId)+"notifiedDiv").html("Vendor");
 		    	}
 		    	else{
-		    		 $("#"+(interviewId)+"notifiedDiv").html(existingVal+",Vendor");
+		    		 $("#"+(interviewHistoryId)+"notifiedDiv").html(existingVal+",Vendor");
 		    	}
        		   
            	  } 
@@ -972,5 +1009,169 @@ function notifyToApplicant(submissionId,offerId){
 
 </script>
 
+<script>
+		// Accept function
+	function acceptFun(submissionId){
+		$('#accpet').empty();
+		$('#reject').empty();
+		var result = "";	
+		result = result + '	        <form id="accept_form" name="accept_form" action="upload" enctype="multipart/form-data" method="post">';
+		result = result + '			<div class="row">';
+		result = result + '				<div class="col-md-12">';
+		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required" field-name="Comment"></textarea>';
+		result = result + '				</div>';
+		result = result + '				</div>';
+		result = result + '				<div class="row">';
+		result = result + '				<div class="col-md-8">';
+		result = result + '					<input type="file" multiple id="docFile" name="docFile" class="mt10" data-validation="required validate_Space validatedoc" field-name="Attachment">';
+		result = result + '				</div>';
+		result = result + '			<div class="col-md-2"><input type="button" id="accept_candidate" value="Submit" title="Sibmit" class="btn btn-primary btn-sm mt10 ml10" onclick="acceptCandidate(\''+submissionId+'\',\'accept\');">';
+		result = result + '			</div>';
+		result = result + '			</div>';
+		result = result + '	        </form>';
+		$('#accpet').fadeIn();
+		$('#accpet').append(result);
+		$('#reject').fadeOut();
+	};
+	$("#accpet, .acceptreject-pop, .labelsuccess, .col-md-6, .acceptreject-actions").click(function(e){
+		 e.stopPropagation();
+	 });
+	
+	function rejectFun(submissionId){
+		$('#reject').empty();
+		$('#accpet').empty();
+		var result = "";
+		result = result + '	        <form id="reject_form" name="reject_form" action="upload" enctype="multipart/form-data" method="post">';
+		result = result + '			<div class="row">';
+		result = result + '				<div class="col-md-12">';
+		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required" field-name="Comment"></textarea>';
+		result = result + '				</div>';
+		result = result + '			</div>';
+		result = result + '			<div class="row">';
+		result = result + '				<div class="col-md-12"><input type="button" id="reject_candidate" value="Submit" title="Sibmit" class="pull-right btn btn-primary mt10 btn-sm ml10" onclick="rejectCandidate(\''+submissionId+'\',\'reject\');">';
+		result = result + '				</div>';
+		result = result + '			</div>';
+		result = result + '	        </form>';
+		$('#reject').fadeIn();
+		$('#reject').append(result);
+		$('#accpet').fadeOut();
+	};
+	$("#reject, .acceptreject-pop, .labelsuccess").click(function(e){
+		 e.stopPropagation();
+	 });
+</script>
 
+<%-- 
+     @author : Venkat Kesav
+     this script is for accept Candidate
+     1.usage     : onclick
+     2.parameter : .
+     3.ajax url implementation in CandidateResumeRestController.
+--%>
+<script type="text/javascript">
+	function acceptCandidate(submissionId, decision){
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			        borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+		         }; 
+			 if ($('#accept_form').validate(false, validationSettings)){
+				var frm = $('#accept_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, "");
+				var form = $('#accept_form')[0];
+	      		var formData = new FormData(form); 
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#accept_candidate").attr("disabled", "disabled");
+         		$("#accept_candidate" ).addClass('button').val('Processing..');
+				//It will escape all the special characters
+		        var jsonData = encodeURIComponent(con);
+				$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/acceptRejectCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
+						success : function(result) {
+							 if( result.indexOf('Sign In') >= 0){
+					    		location.replace(sourceleadUrl);
+					    	 }
+		            		 else if (result.indexOf('exception') >= 0) {
+		            			 location.replace(sourceleadUrl+"/errorPage");
+		            		 }
+		            		 else{
+						 		/* $("#popUpDivResume").removeClass("edit-details-active");
+						 		candidateResumesList(candidateId); */
+		            			 $('#accpet').fadeOut();
+		            			 $('#reject').fadeOut();
+		            		 }
+						},
+					});
+					return true;
+			 }else{ 
+					return false;
+			 }
+		}
+		$('body').on('blur', '#accept_form', function() {
+		$("#accept_form").showHelpOnFocus();
+		$("#accept_form").validateOnBlur(false, validationSettings);
+	});
+</script>
+<script type="text/javascript">
+	function rejectCandidate(submissionId, decision){
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			        borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+		         }; 
+			 if ($('#reject_form').validate(false, validationSettings)){
+				var frm = $('#reject_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, "");
+				var form = $('#reject_form')[0];
+	      		var formData = new FormData(form); 
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#accept_candidate").attr("disabled", "disabled");
+         		$("#accept_candidate" ).addClass('button').val('Processing..');
+				//It will escape all the special characters
+		        var jsonData = encodeURIComponent(con);
+				$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/acceptRejectCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&decision="+decision,
+						success : function(result) {
+							 if( result.indexOf('Sign In') >= 0){
+					    		location.replace(sourceleadUrl);
+					    	 }
+		            		 else if (result.indexOf('exception') >= 0) {
+		            			 location.replace(sourceleadUrl+"/errorPage");
+		            		 }
+		            		 else{
+						 		/* $("#popUpDivResume").removeClass("edit-details-active");
+						 		candidateResumesList(candidateId); */
+		            			 $('#accpet').fadeOut();
+		            			 $('#reject').fadeOut();
+		            		 }
+						},
+					});
+					return true;
+			 }else{ 
+					return false;
+			 }
+		}
+		$('body').on('blur', '#reject_form', function() {
+		$("#reject_form").showHelpOnFocus();
+		$("#reject_form").validateOnBlur(false, validationSettings);
+	});
+</script>
 

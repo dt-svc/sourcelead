@@ -79,7 +79,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 			if (jsonObject.has("description")) {
 				candidatecertificate.setDescription(jsonObject.getString("description"));
 			}
-				if (jsonObject.has("validFrom") && !(jsonObject.getString("validFrom").isEmpty())) {
+				if (jsonObject.has("validFrom") && !(jsonObject.getString("validFrom").isEmpty()) && !" ".equals(jsonObject.get("validFrom"))) {
 					try {
 						
 						String pattern = "yyyy-MM-dd";
@@ -96,7 +96,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 						e.printStackTrace();
 					}
 				}
-				if (jsonObject.has("validTo") && !(jsonObject.getString("validTo").isEmpty())) {
+				if (jsonObject.has("validTo") && !(jsonObject.getString("validTo").isEmpty()) && !" ".equals(jsonObject.get("validTo"))) {
 					try {
 						String pattern = "yyyy-MM-dd";
                         SimpleDateFormat format = new SimpleDateFormat(pattern);
