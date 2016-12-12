@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.time.DateUtils;
@@ -105,7 +106,8 @@ public class EMailJobScheduler {
 	
 	
 	/**
-	 * Fires on first Friday on every month emailJobScheduler.job.cron.everyfriday.expression
+	 * @author Rajashekar
+	 * Fires on Every Firday at 6:30 PM and send mails to employees those who are not submited their timesheets
 	 */
 	@Scheduled(cron = "0 30 18 ? * FRI")
 	public void runJobSchedulerByWeekly() {
@@ -128,13 +130,13 @@ public class EMailJobScheduler {
 				}
 			}
 			
-			
 		} catch (Exception e) {
 			logger.error("ERROR in " + e.getMessage());
 		}
     }
 	
 	/**
+	 * @author prasanna
 	 * Fires on every 30 min on every day emailJobScheduler.job.cron.everyminute.expression
 	 * @throws Exception 
 	 */
@@ -198,7 +200,8 @@ public class EMailJobScheduler {
     }
 	
 	/**
-	 * Fires for Every two weeks in a month
+	 * @author Rajashekar
+	 * Fires on Every 14 (Bi_Weekly) days at 7:30 PM and send mails to employees those who are not submited their timesheets
 	 */
 	@Scheduled(cron = "0 30 19 1/14 * ?")
 	public void runJobSchedulerByBi_Weekly() {
@@ -227,8 +230,10 @@ public class EMailJobScheduler {
 			logger.error("ERROR in " + e.getMessage());
 		}
     }
+
 	/**
-	 * Fires at Every 15 days in a month
+	 * @author Rajashekar
+	 * Fires on Every 15 (semi_monthly) days at 7:30 PM and send mails to employees those who are not submited their timesheets
 	 */
 	@Scheduled(cron = "0 30 19 1/15 * ?")
 	public void runJobSchedulerBySemi_Monthly() {
@@ -256,7 +261,8 @@ public class EMailJobScheduler {
 		}
     }
 	/**
-	 * Fires Every month 30th
+	 * @author Rajashekar
+	 * Fires on Every month at 7:30 PM and send mails to employees those who are not submited their timesheets
 	 */
 	@Scheduled(cron = "0 30 19 30 1/1 ?")
 	public void runJobSchedulerByMonthly() {
@@ -321,7 +327,6 @@ public class EMailJobScheduler {
 					}
 				
 				for (Projects projects : projectsList) {
-					
 					Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
 					
 					for (ProjectMembers projectMembers : projectMembersList) {
@@ -368,7 +373,7 @@ public class EMailJobScheduler {
 	/**
 	 * Prasanna vadla
 	 * this is for level for level 2
-	 * Fires on Monday of every week of the month emailJobScheduler.job.cron.everyfriday.expression
+	 * Fires on Wednesday of every week of the month emailJobScheduler.job.cron.everyfriday.expression
 	 */
 	@Scheduled(cron = "0 1 0 ? * WED")
 	public void runJobSchedulerByWedDay() {
@@ -400,7 +405,6 @@ public class EMailJobScheduler {
 					}
 				
 				for (Projects projects : projectsList) {
-					
 					Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
 					
 					for (ProjectMembers projectMembers : projectMembersList) {
@@ -445,15 +449,16 @@ public class EMailJobScheduler {
 	/**
 	 * Prasanna vadla
 	 * this is for Admin mail
-	 * Fires on Monday of every week of the month emailJobScheduler.job.cron.everyfriday.expression
+	 * Fires on Friday of every week of the month emailJobScheduler.job.cron.everyfriday.expression
 	 */
 	@Scheduled(cron = "0 1 0 ? * FRI")
 	public void runJobSchedulerByFRIDay() {
 		logger.info("******************  Notification Job Scheduler FRIDAY of every week of the month started..! **********");
 		try {
 			List<Org> orgList = orgService.getOrgs();
-			User user = null;
+			
 			for (Org org : orgList) {
+				User user = null;
 				StringBuilder tempHTML = new StringBuilder();
 				int count=0;
 				tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
@@ -472,7 +477,6 @@ public class EMailJobScheduler {
 					}
 				
 				for (Projects projects : projectsList) {
-					
 					Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
 					
 					for (ProjectMembers projectMembers : projectMembersList) {

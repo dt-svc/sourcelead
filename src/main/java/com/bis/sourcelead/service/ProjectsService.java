@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONObject;
 
@@ -76,9 +77,9 @@ public interface ProjectsService {
         
 		String  storeProject(JSONObject jsonObj) throws Exception;
 
-		void userEmailNotificationForTimeSheetSubmissionToManagers(Map<UserRole, HashSet<TimesheetSubmissions>> timesheetSubmissionsMap, int level)throws Exception;
-
-		void userEmailNotificationForTimeSheetSubmissionAdmin(Map<UserRole, HashSet<TimesheetSubmissions>> timesheetSubmissionsMap, OrgLocations orgLocations)throws Exception;
+//		void userEmailNotificationForTimeSheetSubmissionToManagers(Map<UserRole, HashSet<TimesheetSubmissions>> timesheetSubmissionsMap, int level)throws Exception;
+//
+//		void userEmailNotificationForTimeSheetSubmissionAdmin(Map<UserRole, HashSet<TimesheetSubmissions>> timesheetSubmissionsMap, OrgLocations orgLocations)throws Exception;
 
 		void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations, User user)throws Exception;
 

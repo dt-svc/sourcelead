@@ -121,6 +121,7 @@ public class Constants {
 	public static String ASSIGNTEAMMEMBERSFORREQUIREMENT = "AssignToTeamMembers";
 	public static String  WEEK_TIME_SHEET_SUBMISSION= "Week Time Sheet Submission";
 	public static String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";
+	public static String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	
 
 	public static String OFFERREJECT_EMAIL = "Vendor Offer Reject";
