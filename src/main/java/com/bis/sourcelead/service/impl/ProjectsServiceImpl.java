@@ -327,16 +327,18 @@ public class ProjectsServiceImpl implements ProjectsService{
     	
 
     	//prepare ProjectApproverHierarchy
-    	Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(jsonObj, request, projects);
+    	Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(jsonObj,request,projects);
     	projects.setProjectApprovers(projectApproverHierarchyList);
 		
 		//prepare project task set...
 		/*tasksService.*/
+    	/*User user1 = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");*/
+    	
 		Set<ProjectTasks>  projectTasksList = projectTasksService.prepareProjectTasksListByJson(jsonObj, request, projects);
 		projects.setProjectTasks(projectTasksList);
 		//prepare projectmembers list...
 		
-		Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj, request, projects);
+		Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
 		projects.setProjectMembers(projectMemberList);
 		
 		Projects updatedProjects = saveProject(projects);

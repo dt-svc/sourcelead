@@ -2,13 +2,14 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
-import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 
@@ -24,7 +25,7 @@ public interface RequirementSubmissionService {
 	
 	RequirementSubmission getRequirementSubmissionById(Long submissionId)throws Exception;
 	
-	List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId, Long requirementId, List<Long> existingApplicantsIds) throws Exception;
+	List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview) throws Exception;
 	
 	List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(Long orgLocationsId, Long requirementId, List<Long> existingApplicantsIds) throws Exception;
 	
@@ -40,7 +41,10 @@ public interface RequirementSubmissionService {
 	
 	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus,String dateRange,String userType,User user);
 	
-
+	//to get candidates for submit to client
+	List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(Long id,Long requirementId) throws Exception;
+	
+	
 	List<RequirementSubmission> getRequirementPerCandidate(Long candudateId) throws Exception;
 
 	RequirementSubmission getRequirementSubmissionByIdAndSubmissionStatus(Long submissionId,String submissionStatus)throws Exception;
@@ -56,6 +60,22 @@ public interface RequirementSubmissionService {
 	Integer getAllSubmissionCountByRequirementIdAndSubmissionStage(Long orgLocationsId, Long requirementId, String submissionStatus);
 	
 	public Integer getApplicantCountByrequirementIdandAssignedUsercode(Long requirementId, String userCode) throws Exception;
+	
+	/*public void applicantReceiveMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
+			OrgLocations orgLocations) throws Exception; */
+	
+	public void applicantAcceptMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
+			OrgLocations orgLocations) throws Exception;
+	
+	public void applicantRejectMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
+			OrgLocations orgLocations, String rejectreason) throws Exception;
+	
+	RequirementSubmission acceptRejectCandidate(JSONObject jsonObj, User user, RequirementSubmission requirementSubmission, String decision, MultipartFile multiFile) throws Exception;
+
+	public void applicantNegotiateEmail(Requirement requirement, User initiatorUser, Candidate candidate,
+			OrgLocations orgLocations, RequirementRateSubmissionNegotiation negotiation) throws Exception;
+
+	RequirementRateSubmissionNegotiation getRequirementRateBySubmissionById(Long submissionId);
 
 	List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long valueOf, User user,
 			OrgLocations loginOrgLocation, String submissionType)throws Exception;

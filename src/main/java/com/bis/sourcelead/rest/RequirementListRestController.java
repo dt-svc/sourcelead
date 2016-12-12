@@ -38,6 +38,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -52,6 +53,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
@@ -102,6 +104,9 @@ public class RequirementListRestController {
 	 CandidateResumesService candidateResumesService;
 	 
 	 @Autowired
+	 RequirementInterviewHistoryService requirementInterviewHistoryService;
+	 
+	 @Autowired
 	 RequirementAssignToService requirementAssignToService;
 	 
 	 @Autowired
@@ -144,7 +149,7 @@ public class RequirementListRestController {
 	 @PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT')")
 	 @RequestMapping(value = "/getRequirementListByOrgLocationID")
 	 public String getRequirementListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
-
+		 String msg = "";
 		String resultJson;
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -170,6 +175,12 @@ public class RequirementListRestController {
 				}
 				requirement.setManager(managerFirstName+" "+managerLastName);
 			}
+			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqStatusChange");
+			if(msg != null && msg != ""){
+				requirement.setMsg(msg);
+			}
+				 SourceLeadSessionManager.removeSessionAttribute(request, "reqStatusChange");
+			
 		}
 		
 		ArrayList<Requirement>  requirementList1 = new ArrayList<Requirement>();
@@ -370,7 +381,7 @@ public class RequirementListRestController {
 								if(requirementSubmission.getCandidateResumes() != null){
 									CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
 									RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
-									List<RequirementInterview> numberOfInterviews = requirementInterviewService.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(requirementSubmission.getId(),loginOrgLocation.getId());
+									List<RequirementInterviewHistory> numberOfInterviews = requirementInterviewHistoryService.getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(requirementSubmission.getId(),loginOrgLocation.getId());
 									List<RequirementOffers> requirementOffersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(requirementSubmission.getId(),loginOrgLocation.getId());
 									List<RequirementSubmissionHistory> requirementSubmissionHistoryServiceList = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndStage(loginOrgLocation.getId(),submissionType,requirementSubmission.getId());
 									if(requirementSubmissionHistoryServiceList !=null && requirementSubmissionHistoryServiceList.size() >0){
@@ -411,7 +422,7 @@ public class RequirementListRestController {
 									requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 									requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
 									requirementSubmission.setTotalNoOfInterviews(numberOfInterviews.size());
-									requirementSubmission.setRequirementInterviewList(numberOfInterviews);
+									requirementSubmission.setRequirementInterviewHistoryList(numberOfInterviews);
 									if(requirementSubmission.getCreatedDate() != null){
 										requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 									}
@@ -455,6 +466,8 @@ public class RequirementListRestController {
 			 requirement.setUpdatedBy(loginUser.getUserCode());
 			 requirement.setUpdatedDate(commonUtil.currentDate());
 			 requirementService.addRequirement(requirement); 
+			SourceLeadSessionManager.setSessionAttribute(request, "reqStatusChange", " "+requirement.getJobTitle()+" Status changed "+requirement.getRequirementSubmissionPreviousStatus()+" to "+requirement.getRequirementSubmissionStatus()+" ");
+
 			return "success";
 		 }
 		 
@@ -747,7 +760,7 @@ public class RequirementListRestController {
 						if("SHORTLIST".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
 							numOfShortList++;
 						}
-						else if("INTERVIEW".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+						else if("INTERVIEW".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString()) || "CLIENT_INTERVIEW".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
 							numOfInterview++;
 						}
 						else if("SUBMIT_TO_CLIENT".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
