@@ -927,14 +927,12 @@ function getOfferDetails(submissionId){
      this script is for Reject Offer alert
      1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
 --%>
+
 <script type="text/javascript">
-function cancelAlert(){ 
-	$("#rejectOfferAlert").empty();
-	$(".project_inn_mask").fadeOut(200);
-}
+function canceloffer(){ 
+	$("#remove_user_pop, .project_inn_mask").fadeOut(200);
+};
 </script>
-
-
 
 <script type="text/javascript">
 function rejectOffer(offerStatus,submissionId){
@@ -944,7 +942,7 @@ function rejectOffer(offerStatus,submissionId){
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='acceptingOffer(\""+ offerStatus+ "\" ,\""+ submissionId+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='acceptingOffer(\""+ offerStatus+ "\" ,\""+ submissionId+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='canceloffer()'></b>";
 	result = result +"	</div>";
 	$("#rejectOfferAlert").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -973,8 +971,12 @@ function acceptingOffer(offerStatus,submissionId){
          type : "POST",
          url: sourceleadUrl+"/acceptingOffer?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason,        
          success :function(data) {
+
         	 $("#rejectOfferAlert").empty();
            	 getOfferDetails(submissionId);
+ 
+        	 $("#remove_user_pop, .project_inn_mask").fadeOut(200);
+        	 
        },
          
     }); 
