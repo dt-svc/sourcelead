@@ -72,5 +72,13 @@ public interface RequirementService {
 	Boolean checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long requirementId,Long userId)  throws Exception;
 
 	public List<Requirement> getAllReleasedJobsForVendor(Long orgLocationId, Long orgRelationId, User user, OrgLocations orgLocations) throws Exception;
+	
+	Integer getManagerAssignedRequirementsCount(Long userId,Long orgLocationId) throws Exception;
+	
+	public Integer getRequirementsCountAsApprover(Long userId,Long orgLocationId) throws Exception;
+	
+	public List<Requirement> getManagerAssignedRequirementsList(Long userId,Long orgLocationId) throws Exception;
+	
+	
 
 }

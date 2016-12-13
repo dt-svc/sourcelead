@@ -57,10 +57,15 @@ public class TeamController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<User> allusersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		model.addObject("usersList", allusersList); 
-		 
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCreateMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "userCreateMsg");
+		}
 		return model;
 
 	}
+
 
 	/**
 	 * author Laxman
@@ -96,4 +101,11 @@ public class TeamController {
 
 	}
 	
+
+	private boolean isNullOrEmpty(String msg) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
 }

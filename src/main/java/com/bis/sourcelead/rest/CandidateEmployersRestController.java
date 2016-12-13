@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEmployersService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -47,6 +49,8 @@ public class CandidateEmployersRestController {
 	private CommonUtil commonUtil;
 
 	
+	@Autowired
+	private CandidateService candidateService;
 
 	/*------------Create a Candidate Employers details--------------------------------*/
 	
@@ -79,6 +83,9 @@ public class CandidateEmployersRestController {
 		String json1 = "{"+json+"}";
 		JSONObject jsonObject = new JSONObject(json1);
 	    candidateEmployersService.storeCandidateEmployers(jsonObject,users,loginOrgLocation,candidateId);
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		SourceLeadSessionManager.setSessionAttribute(request, "addExep", "New Employer added for "+candidate.getFirstName()+" ");
+
 		return json;
 	}
 	
@@ -97,11 +104,28 @@ public class CandidateEmployersRestController {
 	@RequestMapping(value = "/getCandidatesEmployersListByCandidateIdAndOrgLocationID")
 	public String getCandidatesEmployersListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
 
+		String msg = "";
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson;
-		
-
 		 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), loginOrgLocation.getId());
+		 
+		 for(CandidateEmployers candidateEmployers : candidatesEmployersList){
+			 
+			 msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addExep");
+			 if(msg == null){
+					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editExep");
+				}
+				if(msg == null){
+					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "deleteExep");
+				}
+				if(msg !=null && msg != ""){
+					candidateEmployers.setMsg(msg);
+				}
+				 	SourceLeadSessionManager.removeSessionAttribute(request, "addExep");
+				    SourceLeadSessionManager.removeSessionAttribute(request, "editExep");
+				    SourceLeadSessionManager.removeSessionAttribute(request, "deleteExep");
+		 }
+		 
 		 resultJson = commonUtil.toJSON(candidatesEmployersList);
 		 return resultJson;
 	}
@@ -129,6 +153,8 @@ public class CandidateEmployersRestController {
 
 		CandidateEmployers  candidatesEmployersList = candidateEmployersService.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateemployerId);
 		 resultJson = commonUtil.toJSON(candidatesEmployersList);
+		SourceLeadSessionManager.setSessionAttribute(request, "deleteExep", "Employer deleted");
+
 		 return resultJson;
 	}
 	
@@ -182,7 +208,8 @@ public class CandidateEmployersRestController {
 			JSONObject jsonObj = new JSONObject(jsonc);
 			
 			candidateEmp = candidateEmployersService.storeCandidateEmployers(jsonObj,user,loginOrgLocation,candidateId);
-			
+			SourceLeadSessionManager.setSessionAttribute(request, "editExep", "Employers details updated");
+
 			return "success";
 	}
 	

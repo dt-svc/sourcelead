@@ -19,8 +19,27 @@ public interface RequirementInterviewService {
 	
 	List<RequirementInterview> getRequirementInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
 	
+	/**
+	 * @author Prasad Salina
+	 * @param submissionId
+	 * @param orgLocationsId
+	 * @return
+	 * @throws Exception
+	 * To get both internal and Is Client job INterviews
+	 */
+	List<RequirementInterview> getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
+	
 
 	RequirementInterview getRequirementInterviewById(String requirementInterviewId);
+	
+	/**
+	 * @author Prasad Salina
+	 * @param requirementInterviewId
+	 * @param submissionId
+	 * @param orgLocationsId
+	 * @return
+	 */
+	RequirementInterview getRequirementInterviewByIdAndSubmissionIdAndOrgLocationsId(Long requirementInterviewId, Long submissionId, Long orgLocationsId);
 
 	void saveRequirementInterview(RequirementInterview requirementInterview) throws Exception;
 

@@ -115,6 +115,9 @@ overflow: visible;
 .timesheet_head ul {
 padding: 1px 280px 2px 0;
 }
+.require_wrap_table select {
+width:100% !important;
+}
  </style>
  
  
@@ -186,6 +189,17 @@ function requirementList(){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     var json = JSON.parse(data);
+	                     for (var i = 0; i < 1; i++) {
+	                            var val= json[i];
+	                            var opt = "";
+	                                    if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+	                                            opt  = opt + '<div class="success_pop" id="selector2" style="display: block;">';
+	                                            opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+	                                            opt  = opt + '</div>';
+	                                            }
+	                                    $("#msgDiv").empty();
+	                                    $("#msgDiv").append(opt);
+	                            }
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
@@ -205,12 +219,16 @@ function requirementList(){
 			                     '</sec:authorize>';
 	                    	 }
 		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
+		                    	 result = result +"<td><div title="+opt.clientName+"><span>"+opt.clientName+"</span></div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
 		                     if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
-		                    	 result = result +"<td><div>"+opt.jobType+"</div></td>";
+		                    	 if(opt.jobType=='Other'){
+		                    		 result = result +"<td><div>"+opt.otherJobType+"</div></td>";
+		                    	 }else{
+		                    		 result = result +"<td><div>"+opt.jobType+"</div></td>";
+		                    	 }
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
@@ -235,7 +253,8 @@ function requirementList(){
 		                        if(opt.requirementSubmissionStatus == "DRAFT"){
 									result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 									'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-										result = result +"<option value='ONHOLD'>ONHOLD</option>";
+						
+									result = result +"<option value='ONHOLD'>ONHOLD</option>";
 									'</sec:authorize>';
 									'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
 										result = result +"<option value='CANCEL'>CANCEL</option>";
@@ -347,6 +366,7 @@ function requirementList(){
 	                     $("#noReq").val('');
 	                     $("#requirementList").append(result); 
 	                     pagination(); 
+	                     msgFadein1(); 
 			    	} 
                  }else{
                 	 $("#requirementList").empty();
@@ -1129,6 +1149,11 @@ function requirementPipeline(requirementId){
 
 <section class="content-wraper">
   <section class="content-header clearfix">
+   <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector2"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
     <div class="pull-left">
       <h2>Requirement List</h2>
     </div>
@@ -1187,6 +1212,7 @@ function requirementPipeline(requirementId){
       				<div id="requirementSideDiv">
 				     </div>  
       </div>
+      <div id ="msgDiv"></div>
     </div>
     <!-- Project --> 
   </div>
@@ -1224,7 +1250,7 @@ function requirementPipeline(requirementId){
 });
  		</script> 
 <script>
-
+$('#selector').delay(2000).fadeOut('slow');
 // Error pop
 $(document).ready(function() {
     $(".glyphicon-trash").click(function(){
@@ -1478,5 +1504,11 @@ function cancel(){
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }
+</script>
+<script>
+       function msgFadein1() {
+           setTimeout(function(){
+                   $('#selector2').fadeOut('slow'); }, 1000);
+       }
 </script>
 <jsp:include page="../masterFooter.jsp" />

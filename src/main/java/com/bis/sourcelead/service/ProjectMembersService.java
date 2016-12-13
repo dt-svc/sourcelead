@@ -57,4 +57,6 @@ public interface ProjectMembersService {
 
 	/*by sarath*/
     public Set<ProjectMembers> prepareProjectMembersListByJson(JSONObject jsonObj,HttpServletRequest request,Projects projects) throws Exception;
+    
+    public List<ProjectMembers> getAllProjectsAssigendToUserByIdAndStatus(Long userId, String status) throws Exception;
 }

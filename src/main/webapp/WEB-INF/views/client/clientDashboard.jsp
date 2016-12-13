@@ -486,7 +486,7 @@ function getVendorContactLists(){
    	        			result = result +'<td><div>--</div></td>';
    	        		}
    	        		result = result +'<td><div><span>'+report.ownerName+'</span></div></td>';
-   	        		result = result +'<td><div><span>'+report.orgName+'</span></div></td>';
+   	        		result = result +'<td><div title='+report.orgName+'><span>'+report.orgName+'</span></div></td>';
    	        		
    	        		result = result + ' <td><div>';
 					result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';

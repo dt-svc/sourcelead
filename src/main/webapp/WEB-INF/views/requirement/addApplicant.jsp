@@ -65,6 +65,7 @@ function getAddApplicant(requirementId){
 	
                         
 	result = result + '</div>';
+	result = result + '<input type="checkbox"    name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit();" >&nbsp;&nbsp;<span>Need Applicant Permit</span> ';
 	 result = result + '<div class="form-footer clearfix">';
 	result = result + '<div class="pull-right mr">';
 	result = result + '<button type="submit" id="save_button"  class="btn btn-sm btn-primary ">SUBMIT</button>';
@@ -85,6 +86,15 @@ function getAddApplicant(requirementId){
 }
 </script>
 
+<script type="text/javascript">
+function ApplicantPermit(){
+	 if($("#needApplicantPermit").is(':checked')){
+		  $("#needApplicantPermit").val("Y");
+	 }else{
+		 $("#needApplicantPermit").val("N");
+	 }
+}
+</script>
 
 
 <script type="text/javascript">

@@ -39,16 +39,17 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateSkills;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.AutoCompleteController;
 
 
 /**
@@ -84,7 +85,8 @@ public class CandidateListRestController {
 	 @Autowired
 	 CandidateSkillsService candidateSkillsService;
 	 
-		
+	@Autowired	
+	 LookUpDataService lookUpDataService;
 	 /**
 	   * @author David and sarath kumar
 	   * @since  aug 30 2016
@@ -244,11 +246,26 @@ public class CandidateListRestController {
 						cs.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
 						cs.setOrgLocationID(loginOrgLocation);
 						cs.setName(skill);
+						List<String> skillList = Arrays.asList(skills);
+						lookUpDataService.getSkillsBySkillsName(skillList);
 						candidateSkillsService.storeCandidateSkills(cs);
 				 }
 			}
 			return "success";
 			
+		 }
+	   
+	   
+	   @RequestMapping(value = "/getSkillsExcludeExistingSkills")
+	   public String getSkillsExcludeExistingSkills(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
+
+		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			String resultJson;
+			
+				List<String> candidateSkillNames = candidateSkillsService.getCandidateSkillNamesByCandidateId(candidateId);
+				List<LookUpData> skills = lookUpDataService.getSkillsBySkillsName(candidateSkillNames);
+				resultJson = commonUtil.toJSON(skills);
+				return resultJson;
 		 }
 	   
 	   
@@ -381,7 +398,11 @@ public class CandidateListRestController {
 			JSONObject jsonObj = new JSONObject(jsonc);
 
 			 candidate = candidateService.storeCandidate(jsonObj,loginOrgLocation,user,multiFile);
-			
+				if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
+					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", "Success!!  "+candidate.getFirstName()+" Details Updated");
+
+				}
+
 			return "success";
 			
 		 }
@@ -411,6 +432,10 @@ public class CandidateListRestController {
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidateService.saveOrUpdateCandidate(candidate);
+				
+				SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg",  ""+candidate.getFirstName()+" Removed");
+	
+			
 			}
 			return "success";
 		 }

@@ -38,12 +38,18 @@ function addInterview(requirementId){
 	interviewTemplate();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var parentRequirement = '${parentRequirement}';
-	
+	var clientSubmissions = '${clientSubmissions}';
 	var result = "";
 	result = result + '<div class="add_inter">';
 	result = result + '<form id="addInterview_form" name="addInterview_form" >';
 	result = result + '<input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
 	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
+	result = result + '<input type="hidden" id="isFlushRequired" name="isFlushRequired">';
+	if(clientSubmissions == 'Y'){
+	    result = result + '<input type="checkbox" name="isClientInterview" id="isClientInterview" class="isClient" onclick="myFunction();">';
+        result = result + '<label>&nbsp;&nbsp;<strong>Is Client Interview</strong>&nbsp;&nbsp;</label>';
+	}  
+        
 	result = result + '<div class="add_inter_head"> <span>Add Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>';
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</div>';
@@ -256,6 +262,7 @@ function checkEmails(){
 <script type="text/javascript">
 	function addInterviewRow() {
 		
+		$("#isFlushRequired").val('N');
 		var checkMaxTsRowNum = $("#maxTsRowNum").val();
 		var tbl = document.getElementById("addInterviewTbl");
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
@@ -462,6 +469,19 @@ function cancelAddInterviewDiv(){
   
 <script type="text/javascript">
  function getShortListCandidates(rowId) {
+	 var clientSubmissions = '${clientSubmissions}';
+	 var isClientInterview = "";
+	 if(clientSubmissions == 'Y'){
+		 if(rowId == null || rowId == "undefined" || rowId == ""){
+	     	rowId = $("#maxTsRowNum").val() - 1;
+	     }
+		 if(document.getElementById('isClientInterview').checked) {
+		        isClientInterview = 'Y';
+	     }else{
+	    	isClientInterview = 'N';
+	     }
+	 }
+	
 	 var existingApplicantsIds = [];    
 	 for(i=rowId ; i > 0; i--){
 		 var applicant = $("#"+(i)+"applicant").val();
@@ -469,13 +489,12 @@ function cancelAddInterviewDiv(){
 			 existingApplicantsIds.push(applicant);
 		 }
 	 }
-	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#reqId").val();
      
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
+		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview,  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -485,6 +504,17 @@ function cancelAddInterviewDiv(){
 			        		var opt = json[i];
 			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
 					}
+		        	
+		        	var isFlushRequired = $("#isFlushRequired").val();
+		        	if(clientSubmissions == 'Y' && isFlushRequired == 'Y'){
+		        		for(i=rowId ; i > 0; i--){
+		       	        	$("#"+(i-1)+"applicant").empty();
+		       	        	$("#"+(i-1)+"applicant").append(output);
+		       	        	$("#"+(i-1)+"applicant").trigger("chosen:updated");
+			       	    }
+		        	}
+		        	
+		        	
 		        	$("#"+rowId+"applicant").empty();
 		        	$("#"+rowId+"applicant").append(output);
 		        	$("#"+rowId+"applicant").trigger("chosen:updated");
@@ -507,10 +537,20 @@ function cancelAddInterviewDiv(){
 	 }
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#reqId").val();
+	 var clientSubmissions = '${clientSubmissions}';
+	 var isClientInterview = "";
+	 if(clientSubmissions == 'Y'){
+		 if(document.getElementById('isClientInterview').checked) {
+		        isClientInterview = 'Y';
+	     }else{
+	    	isClientInterview = 'N';
+	     }
+	 }
+	 
      
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
+		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -635,3 +675,11 @@ function interviewTemplate(){
 	    });
 }
 </script>
+
+<script>
+function myFunction(){
+	$("#isFlushRequired").val('Y');
+	getShortListCandidates();
+}
+</script>
+
