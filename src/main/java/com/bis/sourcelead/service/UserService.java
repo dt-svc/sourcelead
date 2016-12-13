@@ -140,7 +140,14 @@ public interface UserService  {
 	
 	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
 	
-	public List<Roles> getTabAccessRolesListByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
+	public List<User> getUsersForAddAsConsultant(Org org,Long orgLocationsId) throws Exception;
+	
+	
+	public List<User> getUsersForConsultantsByUserRoleIdAndOrgLocationId(Long roleId,Long orgLocationsId) throws Exception;
+	
+	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(Long orgLocationsId,List<Long> userIds,Long tabId) throws Exception;
+	
+	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(Long orgLocationsId,Long userId,Long tabId) throws Exception;
 	
 }	
 		

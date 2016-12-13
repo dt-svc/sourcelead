@@ -811,10 +811,27 @@ public class UserServiceImpl implements UserService {
 	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId, Long tabId) throws Exception {
 		return userDao.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationsId, tabId);
 	}
-	
+
 	@Override
-	public List<Roles> getTabAccessRolesListByOrgLocationIdAndTabId(Long orgLocationsId, Long tabId) throws Exception {
-		return userDao.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocationsId, tabId);
+	public List<User> getUsersForAddAsConsultant(Org org,Long orgLocationsId) throws Exception {
+		return userDao.getUsersForAddAsConsultant(org,orgLocationsId);
+	}
+
+	@Override
+	public List<User> getUsersForConsultantsByUserRoleIdAndOrgLocationId(Long roleId, Long orgLocationsId) throws Exception {
+		return userDao.getUsersForConsultantsByUserRoleIdAndOrgLocationId(roleId, orgLocationsId);
+	}
+
+	@Override
+	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(Long orgLocationsId, List<Long> userIds,
+			Long tabId) throws Exception {
+		return userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(orgLocationsId, userIds, tabId);
+	}
+
+	@Override
+	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(Long orgLocationsId, Long userId, Long tabId)
+			throws Exception {
+		return userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocationsId, userId, tabId);
 	}
 	
 	

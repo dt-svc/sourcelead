@@ -52,6 +52,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "JOB_TYPE")
 	private String jobType;
 	
+	@Column(name = "OTHER_JOBTYPE")
+	private String otherJobType;
+		
 	@Column(name = "JOB_ID")
 	private String jobId;
 	
@@ -185,6 +188,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	@Transient
 	private  Long  requirementId;
+	
+	@Transient
+	private String msg;
 	
 	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SELECT)
@@ -798,6 +804,15 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public String getIsLoginUserAsManager() {
 		return isLoginUserAsManager;
 	}
+	
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
 
 	public void setIsLoginUserAsManager(String isLoginUserAsManager) {
 		this.isLoginUserAsManager = isLoginUserAsManager;
@@ -811,4 +826,11 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.requirementSubmissionPreviousStatus = requirementSubmissionPreviousStatus;
 	}
 
+	public String getOtherJobType() {
+		return otherJobType;
+	}
+
+	public void setOtherJobType(String otherJobType) {
+		this.otherJobType = otherJobType;
+	}
 }

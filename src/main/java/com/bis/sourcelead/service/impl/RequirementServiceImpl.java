@@ -193,10 +193,18 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setJobTitle(jsonObj.getString("jobTitle"));
 			}
 			
-			if(jsonObj.has("jobType")){
+			if(!"".equalsIgnoreCase(jsonObj.getString("jobType"))){
+			if(jsonObj.has("jobType") ){				
 				requirement.setJobType(jsonObj.getString("jobType"));
-			}
+			   }
+			}	
 			
+			if(jsonObj.has("jobOtherType") && jsonObj.has("jobType") && "Other".equalsIgnoreCase(jsonObj.getString("jobType"))){
+					requirement.setOtherJobType(jsonObj.getString("jobOtherType"));
+			}else{
+					requirement.setOtherJobType(null);
+			}
+						
 			if(jsonObj.has("jobId")){
 			requirement.setJobId(jsonObj.getString("jobId"));
 			}
@@ -488,7 +496,6 @@ public class RequirementServiceImpl implements RequirementService {
 					  rah.setUpdatedDate(commonUtil.currentDate());
 					  
 					  requirementApproverHierarchyList.add(rah);
-
 				  }
 				  
 				  if(jsonObj.has("sequentialApprover2") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover2"))){
@@ -578,52 +585,62 @@ public class RequirementServiceImpl implements RequirementService {
 			
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
 		
-		//send mail to sequential approver1 
-		if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
-			  String approverNames = jsonObj.getString("sequentialApprover1");
-			  User approverUser = userService.getUserById(Long.parseLong(approverNames));
-			  approverEmailScenario(user, approverUser ,savedRequirement,location,orgLocations);
-		}
-		
-		//send mail to parallel approver
-		  if(jsonObj.has("parallelApprover")){
-				
-				String parallelApprovers =null;
-				try{
-					JSONArray jsonArray = jsonObj.getJSONArray("parallelApprover");
-					parallelApprovers = jsonArray.toString();
-				}
-				catch(JSONException e){
-					parallelApprovers =jsonObj.getString("parallelApprover");
-				}
-				parallelApprovers = parallelApprovers.replaceAll("\\[", "").replaceAll("\\]","");
-				parallelApprovers = parallelApprovers.replaceAll("\"", "");
-				
-			    String[] approvers = parallelApprovers.split(",");
-			    for(String approver : approvers){
-			    	User approverUser = userService.getUserById(Long.parseLong(approver));
-			    	approverEmailScenario(user,approverUser,requirement,location,orgLocations);
-			    }
-		 }
-		
-		//send mail to Assigned Team 
-		//condition : if login user as team member then mail not send
-		Set<RequirementAssignTo> updatedRequirementAssignToList = requirement.getRequirementAssignTo();
-		if(updatedRequirementAssignToList != null  ){
-			for(RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList ){
-				if(!user.getId().equals(requirementAssignTo.getAssignUserId().getId())){
-					AssignToTeamMembersEmail(user, requirementAssignTo.getAssignUserId(), savedRequirement,location,orgLocations);
-				}
-				
-			}
-		}
-		
-		
-		//send mail to manger 
-		//condition : login user as manager then  mail shoul not forwared
-		if(!user.getId().equals(requirement.getManagerUserId().getId())){
-			mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
-		}
+	
+			       if(!requirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT)){
+				 		
+					 mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
+					 if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
+						  String approverNames = jsonObj.getString("sequentialApprover1");
+						  User approverUser = userService.getUserById(Long.parseLong(approverNames));
+						  approverEmailScenario(user, approverUser ,savedRequirement,location,orgLocations);
+				     }
+			  
+					//send mail to sequential approver1 
+					if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
+						  String approverNames = jsonObj.getString("sequentialApprover1");
+						  User approverUser = userService.getUserById(Long.parseLong(approverNames));
+						  approverEmailScenario(user, approverUser ,savedRequirement,location,orgLocations);
+					}
+					
+					//send mail to parallel approver
+					if(jsonObj.has("parallelApprover")){
+							
+							String parallelApprovers =null;
+							try{
+								JSONArray jsonArray = jsonObj.getJSONArray("parallelApprover");
+								parallelApprovers = jsonArray.toString();
+							}
+							catch(JSONException e){
+								parallelApprovers =jsonObj.getString("parallelApprover");
+							}
+							parallelApprovers = parallelApprovers.replaceAll("\\[", "").replaceAll("\\]","");
+							parallelApprovers = parallelApprovers.replaceAll("\"", "");
+							
+						    String[] approvers = parallelApprovers.split(",");
+						    for(String approver : approvers){
+						    	User approverUser = userService.getUserById(Long.parseLong(approver));
+						    	approverEmailScenario(user,approverUser,requirement,location,orgLocations);
+						    }
+					 }
+					
+					//send mail to Assigned Team 
+					//condition : if login user as team member then mail not send
+					Set<RequirementAssignTo> updatedRequirementAssignToList = requirement.getRequirementAssignTo();
+					if(updatedRequirementAssignToList != null  ){
+						for(RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList ){
+							if(requirementAssignTo.getAssignUserId() != null && !user.getId().equals(requirementAssignTo.getAssignUserId().getId())){
+								AssignToTeamMembersEmail(user, requirementAssignTo.getAssignUserId(), savedRequirement,location,orgLocations);
+							}
+						}
+					}
+					
+					
+					//send mail to manger 
+					//condition : login user as manager then  mail shoul not forwared
+					if(savedRequirement.getManagerUserId() != null && !user.getId().equals(savedRequirement.getManagerUserId().getId())){
+						mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
+					}
+		 }			
 		
 		return savedRequirement;
 	}
@@ -776,6 +793,7 @@ public class RequirementServiceImpl implements RequirementService {
 			}else{
 			globalVarsMap.put("jobInitiatorName","--");
 		}
+		 
 		if(approverUser.getEmail()!=null && !"".equalsIgnoreCase(approverUser.getEmail())){
 			globalVarsMap.put("userEmailId",approverUser.getEmail());
 			}else{
@@ -792,6 +810,12 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("role","--");
 			}
+		 
+		 if(requirement.getFileName() != null && !requirement.getFileName().isEmpty() ){
+	            globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"downloadRequirementAttachment?requirementId="+requirement.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment"+"<br/></div></a>");
+         }else{
+            globalVarsMap.put(" ","<a href='"+sourceleadUrl+"/"+"downloadRequirementAttachment?requirementId="+requirement.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment"+"<br/></div></a>");
+         }
 		 
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
@@ -871,6 +895,10 @@ public class RequirementServiceImpl implements RequirementService {
 		 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
 		 globalVarsMap.put("role", loginUser.getUserType());
 		 globalVarsMap.put("approverOne", loginUser.getFirstName());
+		 
+		 
+		 globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>");
+
 		 
 		 
 		 //setting the Recipient information
@@ -1195,6 +1223,8 @@ public class RequirementServiceImpl implements RequirementService {
 			 }
 		 
 		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+		 globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>");
+
 
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
@@ -1286,6 +1316,8 @@ public class RequirementServiceImpl implements RequirementService {
 				 globalVarsMap.put("Role","--"); 
 			 }
 		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+		 globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>");
+
 
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
@@ -1796,6 +1828,21 @@ public class RequirementServiceImpl implements RequirementService {
 
 public List<Requirement> getAllReleasedJobsForVendor(Long orgLocationId, Long orgRelationId, User user,OrgLocations orgLocations) throws Exception{
 	return requirementDao.getAllReleasedJobsForVendor(orgLocationId, orgRelationId, user,orgLocations);
+}
+
+@Override
+public Integer getManagerAssignedRequirementsCount(Long userId, Long orgLocationId) throws Exception {
+	return requirementDao.getManagerAssignedRequirementsCount(userId, orgLocationId);
+}
+
+@Override
+public Integer getRequirementsCountAsApprover(Long userId,Long orgLocationId) throws Exception {
+	return requirementDao.getRequirementsCountAsApprover(userId,orgLocationId);
+}
+
+@Override
+public List<Requirement> getManagerAssignedRequirementsList(Long userId, Long orgLocationId) throws Exception {
+	return requirementDao.getManagerAssignedRequirementsList(userId, orgLocationId);
 }
 }
 

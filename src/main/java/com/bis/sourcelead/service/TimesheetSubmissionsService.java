@@ -80,4 +80,7 @@ public interface TimesheetSubmissionsService {
 	public HashSet<TimesheetSubmissions> getWeekFrequency(Long project,Long LocationsId, Long userId) throws Exception;
 
 	public HashSet<TimesheetSubmissions> getWeekFrequencyByProjMemId(Long projectId) throws Exception;
+	
+	public List<TimesheetSubmissions> getTimeSheetSubmissionByProjectMemberId(Long pojectMemberId) throws Exception;
+
 }

@@ -40,6 +40,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -92,6 +93,9 @@ public class RequirementRestController {
 	 @Autowired
 	 private RecommendationsService recommendationsService;
 	 
+	 @Autowired
+	 private RolesService roleService;
+	 
 	 
 	 
 	
@@ -128,6 +132,27 @@ public class RequirementRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Requirement requirement = requirementService.storeRequirement(jsonObj,orgLocation,user,multiFile);
 		
+		if(jsonObj.getString("saveType").equalsIgnoreCase("draft")){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! New "+requirement.getJobTitle()+" requirement  saved to Draft");
+		}
+		if(jsonObj.getString("saveType").equalsIgnoreCase("save")){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! New "+requirement.getJobTitle()+" requirement  saved");
+		}
+		if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval")){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! New "+requirement.getJobTitle()+" requirement  submitted for approval");
+		}
+		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("save"))){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! "+requirement.getJobTitle()+" details updated");
+		}
+		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval"))){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! "+requirement.getJobTitle()+" Updated and Submitted ");
+		}
+		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("draft"))){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!!  "+requirement.getJobTitle()+" Updated in Draft Stage");
+		}
+		
+		
+
 		return "success";
 		
 	}
@@ -355,9 +380,9 @@ public class RequirementRestController {
 			}
 		}
 		
-		List<Roles> usersList = userService.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_REQUIREMENT));
-		if(usersList != null){
-			combinedList.setRoles(usersList);
+		List<Roles> rolesList = roleService.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_REQUIREMENT));
+		if(rolesList != null){
+			combinedList.setRoles(rolesList);
 		}
 		
 		resultJson = commonUtil.toJSON(combinedList);

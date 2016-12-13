@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
@@ -249,10 +251,22 @@ public class RequirementOfferRestController {
 		RequirementSubmission  requirementSubmission =null;
 		RequirementOffers  requirementOffers =null;
 		
-		requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-		requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(requirementSubmission.getId());
+		  requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+    	  
+		  
+		   // This if condition is for the vendor login accepts the Offer  so bringing offer made by  the client 
+		   
+		  RequirementSubmission 	clientsubmission = requirementSubmissionService.getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(submissionId,orgLocations.getId());
+			
+		  if(clientsubmission != null){
+				requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(clientsubmission.getId());
 
-	    offerStatus  = requirementOffersService.acceptOrRejectOffer(submissionId, requirementOffers.getId(), loginUser, offerStatus, reason, orgLocations);
+			}else{
+				requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(requirementSubmission.getId());
+			}
+    	
+
+	     offerStatus  = requirementOffersService.acceptOrRejectOffer(submissionId, requirementOffers.getId(), loginUser, offerStatus, reason, orgLocations);
 		 
 		return offerStatus;
 	}
@@ -368,6 +382,45 @@ public class RequirementOfferRestController {
 	}
 
 	
-	
+	/**
+	* @author Venkat Kesav 
+	* 
+	* Handles accept Candidate
+	* 
+	* @param json, 
+	* @param request
+	* 
+	* @return ResponseBody
+	* 
+	* @throws Exception
+	*/
+	@RequestMapping(value = "/acceptRejectCandidate", method = RequestMethod.POST)
+	public @ResponseBody String acceptRejectCandidate(@RequestParam(value = "json", required = false) String json, String submissionId, String decision, MultipartHttpServletRequest request) throws Exception {
+
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+		
+		MultipartFile multiFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if(itrator.hasNext()){
+	        multiFile = request.getFile(itrator.next());
+		}
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		if(StringUtils.isNotEmpty(submissionId)){
+			RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
+			
+			requirementSubmissionService.acceptRejectCandidate(jsonObj, user, requirementSubmission, decision, multiFile);
+
+			/*SourceLeadSessionManager.setSessionAttribute(request, "resumeAddMessage",
+					"Successfully you have added");*/
+
+			return "success";
+		}else{
+			return "exception";
+		}
+	}
 	
 }

@@ -94,5 +94,9 @@ public interface UserRoleService {
 	 public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek();
 
 	 public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String wEEKLY) throws Exception;
+
+	 List<Long> getAllAssignedUsersIdsByReportingManagerId(Long reportingManagerId,Long orgLocationId);
+	 
+	 List<UserRole> getAllAssignedUsersByReportingManagerId(Long reportingManagerId,Long orgLocationId);
 	
 }

@@ -148,6 +148,11 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 		}
 		return teamMembersList;
 	}
+
+	@Override
+	public List<TeamMembers> getTeamMembersListByUserIdAndLocationId(Long userId,Long orgLocationId) throws Exception {
+		return teamMemberDao.getTeamMembersListByUserIdAndLocationId(userId,orgLocationId);
+	}
 	 
 }
 
