@@ -5045,7 +5045,26 @@ margin-right: 10px;
 .star-rating label:before { content: "\f005"; } /* unchecked icon */
 .activestar-rating {color: #FB8C00;} /* checked icon */
 /*** custom checkboxes ***/
-
+.hotlist-header .chosen-container-single .chosen-single {
+	height: 30px !important;
+	line-height: 30px !important;
+}
+.hotlist-header .chosen-container-single .chosen-single div b{
+	position: relative;
+	top: -3px;
+}
+.hotlist-header {
+	min-height: 50px;
+}
+.hotlist-header .chosen-container .chosen-results li.active-result {
+	width: 100%;
+}
+.hotlist-header ul{
+	padding: 0px 245px 0px 0px !important;
+}
+.hotlist-header ul.chosen-results{
+	padding: 0 !important;
+}
 
 /* media 320px */
 @media (max-width: 320px) {

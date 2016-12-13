@@ -45,6 +45,7 @@ import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
@@ -135,6 +136,24 @@ public class CandidateListRestController {
 		}
 		
 		resultJson = commonUtil.toJSON(candList);
+		return resultJson;
+	 }
+	 
+	 
+	 
+	 
+	 
+	 @RequestMapping(value = "/getHotListCandidates")
+	 public String getHotListCandidates(@RequestParam(value="candidateType", required=false) String  candidateType,
+			 HttpServletRequest request) throws Exception {
+
+		String resultJson;
+		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<Candidate> candList = new ArrayList<Candidate>();
+		List<Candidate>   candidatesList = candidateService.getHotListCandidatesListByOrgLocationID(loginOrgLocation.getId(), candidateType);
+		
+		resultJson = commonUtil.toJSON(candidatesList);
 		return resultJson;
 	 }
 		 
@@ -500,6 +519,35 @@ public class CandidateListRestController {
 			
 			return "success";
 		}
+	   
+	   
+	   
+	   @RequestMapping(value = "/assignHotListCandiddatesToTeam", method = RequestMethod.POST)
+		public @ResponseBody String assignHotListCandiddatesToTeam(@RequestParam(value = "teamId", required = false) Long teamId,
+				@RequestParam(value = "hotlist", required = false) String hotlist,HttpServletRequest request) throws Exception {
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			String[] candidateIds = hotlist.split(",");
+			Team team =new Team();
+			team.setId(teamId);
+			
+			for(int i = 0; i < candidateIds.length; i++){
+				
+				CandidateHotList hotList = candidateHotListService.getCandidateHotListByCandidateIdAndOrgLocationId(Long.valueOf(candidateIds[i]), orgLocation.getId());
+				hotList.setTeamId(team);
+				hotList.setUpdatedBy(user.getUserCode());
+				hotList.setUpdatedDate(new Date());
+				candidateHotListService.saveCandidateHotList(hotList);
+			}
+			
+			
+			return "success";
+		}
+	   
+	   
+	   
 	 
 	   
 	   

@@ -163,15 +163,15 @@
 				            	}
 				            	
 				            	if(opt.isFavourite == 'Y'){
-				            		isFavourite = 'checked';
-				            		isFavClass = 'activestar-rating'
+				            		isFavourite = "checked";
+				            		isFavClass = "activestar-rating";
 				            	}
 				            	
 				            	
 		                     result = result +"<tr>";
 		                     result = result +"<td style='width : 25px;'>";
 		                     result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.id+"'>";
-		                     result = result +"<input type='checkbox' id='fav"+opt.id+"' "+isFavourite+"' onclick='addFavourite("+opt.id+")'></input>";
+		                     result = result +"<input type='checkbox' id='fav"+opt.id+"' "+isFavourite+" onclick='addFavourite("+opt.id+")'></input>";
 		                     result = result +" <label></label>";
 		                     result = result +"</div>";
 		                     result = result +"</td>";
@@ -738,6 +738,7 @@ function addFavourite(candidateId){
 	var checked = document.getElementById("fav"+candidateId).checked;
 	var sourceleadUrl = '${sourceleadUrl}';
 	
+	
 	 	$.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/saveCandidateAsFavourite?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
@@ -917,6 +918,8 @@ function cancel(candidateId){
            <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
               <li><a href="<c:url value='/addConsultant'/>" title=""><i class="fa fa-plus"></i>Add Consultant</a></li>
            </sec:authorize>
+           
+           <li><a href="<c:url value='/assignHotListToTeam'/>" title=""><i class="fa fa-plus"></i>Assign To Team</a></li>
            </ul>
            </div>
           </li>
