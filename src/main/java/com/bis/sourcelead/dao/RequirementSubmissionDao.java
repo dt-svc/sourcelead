@@ -6,6 +6,7 @@ import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 
@@ -19,7 +20,7 @@ public interface RequirementSubmissionDao {
 	
 	RequirementSubmission getRequirementSubmissionById(Long submissionId)throws Exception;
 	
-	List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId, Long requirementId, List<Long> existingApplicantsIds) throws Exception;
+	List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationsId, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview) throws Exception;
 	
 	List<RequirementSubmission>  getAllSubmittedAndShortListAndInterviewededCandidates(Long orgLocationsId, Long requirementId, List<Long> existingApplicantsIds) throws Exception;
 	
@@ -33,6 +34,8 @@ public interface RequirementSubmissionDao {
 
 	Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus, String dateRange,String userType,User user);
 	
+	List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(Long id,Long requirementId) throws Exception;
+	
 	RequirementSubmission getRequirementSubmissionByIdAndSubmissionStatus(Long submissionId,String submissionStatus)throws Exception;
 
 	RequirementSubmission getSubmissionsBySourceSubmissionId(Long sourceSubmissionId, Long orgLocationsId);
@@ -45,6 +48,10 @@ public interface RequirementSubmissionDao {
  
 	RequirementSubmission getVendorSubmissionByClientSubmissionIdAndCLientLocationId(Long clientSubmissionId,Long clientOrgLocationId);
 
+
+	RequirementRateSubmissionNegotiation getRequirementRateBySubmissionById(Long submissionId);
+
 	List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long requirementId, User user,
 			OrgLocations loginOrgLocation, String submissionType)throws Exception;
+
 }

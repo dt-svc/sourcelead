@@ -363,7 +363,7 @@ public class ClientRestController {
 	@RequestMapping(value = "/getSubmissionTemplatesList", method = RequestMethod.POST)
 	@ResponseBody String getSubmissionTemplatesList(@RequestParam(value = "clientLocationId", required = false) Long clientLocationId) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getSubmissionTemplateByClientLocationIdAndOrgLocationId(clientLocationId, orgLocations.getId());
+		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getSubmissionTemplateByClientLocationIdAndOrgLocationIdAndTemplateType(clientLocationId, orgLocations.getId(),"Submission");
 		
 		return commonUtil.toJSON(submissiontTemplateList);
 	}
@@ -796,8 +796,11 @@ public class ClientRestController {
 			   submissionTemplate.setOrgLocationId(orgLocations);
 			   submissionTemplate.setJsonString(jsonStringData);
 			   submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+			   submissionTemplate.setTemplateType("Submission");
 			   submissionTemplate.setCreatedBy(user.getUserCode());
 			   submissionTemplate.setCreatedDate(new Date());
+			   submissionTemplate.setUpdatedBy(user.getUserCode());
+			   submissionTemplate.setUpdatedDate(new Date());
 			   submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 				
 			} catch (Exception e) {

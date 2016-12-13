@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -52,6 +54,9 @@ public class CandidateEducationRestController {
 	
 	@Autowired
 	LookUpDataService lookUpDataService;
+	
+	@Autowired
+	private CandidateService candidateService;
 
 
 	 /**
@@ -79,8 +84,9 @@ public class CandidateEducationRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
-		
 		candidateEducationService.storeCandidateEducation(jsonObject,Long.parseLong(candidateId),loginOrgLocation.getId(), user);
+		Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
+		SourceLeadSessionManager.setSessionAttribute(request, "addEducation", "New Education added for "+candidate.getFirstName()+" ");
 		return "success";
 	}
 	
@@ -98,10 +104,27 @@ public class CandidateEducationRestController {
 	 */
 	@RequestMapping(value = "/getCandidateEducationListByCandidateId")
 	public String getCandidateEducationListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
-
+		
+		String msg = "";
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 String resultJson;
 		 List<CandidateEducation>   candidatesEducationList = candidateEducationService.getCandidateEducationListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), loginOrgLocation.getId());
+		 for(CandidateEducation candidateEducation :candidatesEducationList){
+			 msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addEducation");
+			 if(msg == null){
+					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editEducation");
+				}
+				if(msg == null){
+					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "deleteEducation");
+				}
+				if(msg !=null && msg != ""){
+					candidateEducation.setMsg(msg);
+				}
+				 	SourceLeadSessionManager.removeSessionAttribute(request, "addEducation");
+				    SourceLeadSessionManager.removeSessionAttribute(request, "editEducation");
+				    SourceLeadSessionManager.removeSessionAttribute(request, "deleteEducation");
+			 
+		 }
 		 resultJson = commonUtil.toJSON(candidatesEducationList);
 		 return resultJson;
 	}	
@@ -129,6 +152,8 @@ public class CandidateEducationRestController {
 		String resultJson;
 		CandidateEducation  candidateEducation = candidateEducationService.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateId, candidateEducationId);
 		 resultJson = commonUtil.toJSON(candidateEducation);
+			SourceLeadSessionManager.setSessionAttribute(request, "deleteEducation", "Education deleted");
+
 		 return resultJson;
 	}
 
@@ -160,9 +185,20 @@ public class CandidateEducationRestController {
 			JSONObject jsonObj = new JSONObject(jsonc);
 			
 			candidateEdu = candidateEducationService.storeCandidateEducation(jsonObj,candidateId,loginOrgLocation.getId(),user);
-			
+			SourceLeadSessionManager.setSessionAttribute(request, "editEducation", "Education details updated");
+
 			return "success";
 	}
+	
+	
+	@RequestMapping(value = "/validateEduname")
+	public Boolean validateEduname(@RequestParam(value="name", required=false) String  name,@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
+		String candidateEducation = name;
+			Boolean canEdu = candidateEducationService.validateEducationName(candidateId, candidateEducation );
+			return canEdu;
+	}
+	
+	
 	
 }
 

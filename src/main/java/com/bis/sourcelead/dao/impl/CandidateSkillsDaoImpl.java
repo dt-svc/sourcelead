@@ -54,6 +54,16 @@ public class CandidateSkillsDaoImpl  implements CandidateSkillsDao{
 		candidateSkillsList = citiesListQuery.setString("candidateId", candidateId).setInteger( "status", status ).setCacheable(true).list();
 		return candidateSkillsList;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<String> getCandidateSkillNamesByCandidateId(String candidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		Integer status = Constants.CANDIDATE_SKILL_ACTIVE;
+		String query = "select cs.name from CandidateSkills cs where cs.candidateId.id =:candidateId and (cs.status =:status or cs.status is null)";
+	    List<String> skillNames = session.createQuery(query).setString( "candidateId", candidateId).setInteger( "status", status ).setCacheable(true).list();
+        return skillNames;
+	}
 
 
 	@Override

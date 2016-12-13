@@ -161,7 +161,7 @@ public class SubmissionsRestController {
     @RequestMapping(value = "/getOrgSubmissionTemplatesList", method = RequestMethod.POST)
 	@ResponseBody String getOrgSubmissionTemplatesList(HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationId(orgLocations.getId());
+		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationIdAndTemplateType(orgLocations.getId(),"Submission");
 		
 		return commonUtil.toJSON(submissiontTemplateList);
 	}
@@ -192,9 +192,12 @@ public class SubmissionsRestController {
 			   submissionTemplate.setDescription(jsonObj.getString("description"));
 			   submissionTemplate.setOrgLocationId(orgLocations);
 			   submissionTemplate.setJsonString(jsonStringData);
+			   submissionTemplate.setTemplateType("Submission");
 			   submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
 			   submissionTemplate.setCreatedBy(user.getUserCode());
 			   submissionTemplate.setCreatedDate(new Date());
+			   submissionTemplate.setUpdatedBy(user.getUserCode());
+			   submissionTemplate.setUpdatedDate(new Date());
 			   submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 				
 			} catch (Exception e) {
@@ -205,7 +208,7 @@ public class SubmissionsRestController {
 	   }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_SHORTLIST','ROLE_SUBMIT_TO_CLIENT')")
+    @PreAuthorize("hasAnyRole('ROLE_SHORTLIST')")
     @RequestMapping(value = "/getSubmissionCandidates" , method = RequestMethod.POST)
 	   public String getSubmissionCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
 			   @RequestParam(value="status", required=false) String status,HttpServletRequest request) throws Exception {
@@ -213,6 +216,42 @@ public class SubmissionsRestController {
     	 String resultJson = null;
     	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
      	 List<RequirementSubmission> shortlistedList = requirementSubmissionService.getAllSubmissionListByRequirementIdAndSubmissionStage(orgLocations.getId(), requirementId,status);    
+     	 ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
+     	 
+     	 for (RequirementSubmission requirementSubmission : shortlistedList) {
+			CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+			if(requirementSubmissionTemplateFields.getLastName() != null){
+				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName()+" "+requirementSubmissionTemplateFields.getLastName());
+			}else{
+				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
+			}
+			
+			requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
+			requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
+			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
+			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+			if(requirementSubmission.getCreatedDate() != null){
+				requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
+			}
+			User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+			requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
+			requirementSubmission.setResumeName(candidateResumes.getFileName());
+			candidatesList.add(requirementSubmission);
+		  }
+     	 resultJson = toJSON(candidatesList);
+		 return resultJson;
+	    
+    }
+    
+    @PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
+    @RequestMapping(value = "/getShortListedCandidates" , method = RequestMethod.POST)
+	   public String getShortListedCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
+			   HttpServletRequest request) throws Exception {
+			
+    	 String resultJson = null;
+    	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+     	 List<RequirementSubmission> shortlistedList = requirementSubmissionService.getAllShortLitstedCandidatesForClientSubmissionByRequirementId(orgLocations.getId(), requirementId);    
      	 ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
      	 
      	 for (RequirementSubmission requirementSubmission : shortlistedList) {

@@ -47,7 +47,11 @@ public interface RequirementDao {
 	
 	public Requirement getRequirementTemplateByRequirementId(Long requirementId,Long orgLocationId) throws Exception;
 	
+	Integer getManagerAssignedRequirementsCount(Long userId,Long orgLocationId) throws Exception;
 	
+	public Integer getRequirementsCountAsApprover(Long userId,Long orgLocationId) throws Exception;
+	
+	public List<Requirement> getManagerAssignedRequirementsList(Long userId,Long orgLocationId) throws Exception;
 	
 	
 }

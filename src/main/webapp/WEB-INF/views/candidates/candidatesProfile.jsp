@@ -64,6 +64,12 @@
 	}
 	</style>
 
+<c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
+
 <style type="text/css">
 .require_wrap_details{
 text-align:left;
@@ -231,6 +237,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							result = result + '</div>';
 							
+							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
 							
 							result = result + '<div class="input-group er ratetype">';
@@ -268,8 +275,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							result = result + '</div>';
 							
-							
-							result = result + '<div class="clearfix mb10 exprience">';
+							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
 							result = result + '<div class="row">';
 							result = result + '<div class="col-md-7">';
@@ -579,6 +585,7 @@ function deleteCandidate(candidateId){
      1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
 --%>
 <script type="text/javascript">
+$('#selector').delay(2000).fadeOut('slow');
 function cancelAlert(){ 
 	$("#removeCandidateAlert").empty();
 	$(".project_inn_mask").fadeOut(200);
@@ -709,6 +716,9 @@ function candidateProfile(candidateId){
 							result = result +'		          <div class="select-skills">                                                                                                         ';
 							result = result +'		            <div class="divskill col-md-12">                                                                                                  ';
 							result = result +'		              <!-- Add skills div -->                                                                                                         ';
+
+							/*result = result +'		              <div class="addSkills"> <a href="#" class="btn-addskills" title="Add Skills" onClick ="getAllSkills('+candidateId+'); removeSkillPopUp('+candidateId+');"> <i class="fa fa-code"></i>Add Skills </a>         ';*/
+
 							
 							if(window.candidateStatusGlobal == '0'){
 								result = result +'		              <div class="addSkills"> <a href="#" class="btn btn-primary" title="Add Skills"> <i class="fa fa-code"></i>Add Skills</a>         ';
@@ -1494,6 +1504,29 @@ function certificationSubmissionProfile(candidateId){
 </script>
 <script>
 $('.selectpicker').selectpicker('refresh');
+
+/* function getAllSkills(candidateId){
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+		$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getSkillsExcludeExistingSkills?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.name+ "'>"+opt.name+"</option>";
+				}
+	        	$("#skillName").empty();
+		        $("#skillName").append(output);
+		        $('#skillName').trigger("chosen:updated");
+	        },
+	    });
+	
+} */
+
 </script>
            
   

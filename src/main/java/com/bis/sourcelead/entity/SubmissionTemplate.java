@@ -48,6 +48,10 @@ public class SubmissionTemplate implements Serializable{
 	@Type(type="text")
 	private String description;
 	
+
+	@Column(name = "TEMPLATE_TYPE")
+	private String templateType;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -162,5 +166,13 @@ public class SubmissionTemplate implements Serializable{
 
 	public void setIsDefault(String isDefault) {
 		this.isDefault = isDefault;
+	}
+
+	public String getTemplateType() {
+		return templateType;
+	}
+
+	public void setTemplateType(String templateType) {
+		this.templateType = templateType;
 	}
 }

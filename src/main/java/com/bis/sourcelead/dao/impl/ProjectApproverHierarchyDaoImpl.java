@@ -185,6 +185,29 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 		 return pah;
 		
 	}
+	
+	@Override
+	@Transactional
+	public List<ProjectApproverHierarchy> getProjectApproversListByUserIdAndOrgLocationId(Long userId,
+			Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectApproverHierarchy hierarchy left join fetch hierarchy.projectId projects left join fetch hierarchy.approverUserId where hierarchy.approverUserId.id = :userId and projects.orgLocationsId.id = :orgLocationId";
+		 List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId)
+				                                                                                     .setCacheable(true)
+				 																					 .list();
+	        return projectHirachyList;
+	}
+	@Override
+	@Transactional
+	public List<ProjectApproverHierarchy> getProjectsHierarchyListByProjectIdAndOrgLocationId(Long projectId,
+			Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectApproverHierarchy hierarchy left join fetch hierarchy.projectId projects left join fetch hierarchy.approverUserId where projects.id = :projectId and projects.orgLocationsId.id = :orgLocationId";
+		 List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId).setLong("orgLocationId", orgLocationId)
+				                                                                                     .setCacheable(true)
+				 																					 .list();
+	        return projectHirachyList;
+	}
 
 	
 }

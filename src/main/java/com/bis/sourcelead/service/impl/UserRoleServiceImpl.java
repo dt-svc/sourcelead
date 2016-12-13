@@ -301,6 +301,16 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public UserRole getUserDetailsByUserIdAndLocationId(Long userId, Long locationId) throws Exception {
 		return userRoleDao.getUserDetailsByUserIdAndLocationId(userId, locationId);
 	}
+
+	@Override
+	public List<Long> getAllAssignedUsersIdsByReportingManagerId(Long reportingManagerId,Long orgLocationId) {
+		return userRoleDao.getAllAssignedUsersIdsByReportingManagerId(reportingManagerId,orgLocationId);
+	}
+
+	@Override
+	public List<UserRole> getAllAssignedUsersByReportingManagerId(Long reportingManagerId, Long orgLocationId) {
+		return userRoleDao.getAllAssignedUsersByReportingManagerId(reportingManagerId, orgLocationId);
+	}
 	
 
 }
