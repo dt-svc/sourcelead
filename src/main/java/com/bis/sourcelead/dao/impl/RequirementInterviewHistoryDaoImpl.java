@@ -53,7 +53,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 			}
 			logger.debug("RequirementInterviewHistory Added Successfully");
 		} catch (Exception exception) {
-			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"REQUIREMENT_SUBMISSION"));
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"REQUIREMENT_INTERVIEW_HISTORY"));
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return requirementInterviewHistory;
@@ -79,6 +79,14 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		return interviewsList;
 	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementInterviewHistory> getAllInterviewListByCurrentDate(String currentTime, String triggerTime) {
+		Session session = this.sessionFactory.getCurrentSession();
+		 String query ="from RequirementInterviewHistory rih left join fetch rih.interviewId ri left join fetch rih.submissionId submission left join fetch  submission.orgLocations where rih.interviewId.id IN(select interview.id from RequirementInterview interview where interview.status = 1 and interview.startTime > :date and interview.startTime < :triggerTime) and rih.status = 1";
+		List<RequirementInterviewHistory> requirementInterviewList = session.createQuery(query).setString("date",currentTime).setString("triggerTime",triggerTime).setCacheable(true).list();
+		return requirementInterviewList;
+	}
 
 	
 }
