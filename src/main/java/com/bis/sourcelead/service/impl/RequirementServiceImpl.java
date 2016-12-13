@@ -1603,18 +1603,22 @@ public class RequirementServiceImpl implements RequirementService {
 
 	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Requirement requirement) {
 		
-		if(requirement.getId() != null){
-			 writeRow.createCell(0).setCellValue(requirement.getId()); 
+		if(requirement.getJobId() != null){
+			 writeRow.createCell(0).setCellValue(requirement.getJobId()); 
 		}
 		if(requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle())){
 			 writeRow.createCell(1).setCellValue(requirement.getJobTitle()); 
 		}
 		if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
-			 writeRow.createCell(2).setCellValue(requirement.getMinExp()+"-"+requirement.getMaxExp()+" years"); 
-		}if((requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp())) || (requirement.getMaxExp() ==null)){
-			 writeRow.createCell(2).setCellValue(requirement.getMinExp()+" years");
-		}if((requirement.getMinExp() == null ) || (requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp()))){
-			 writeRow.createCell(2).setCellValue(requirement.getMaxExp()+" years");
+			writeRow.createCell(2).setCellValue(requirement.getMinExp()+"-"+requirement.getMaxExp()+" years");
+		}else{
+			if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp())){
+				writeRow.createCell(2).setCellValue("0 - "+requirement.getMinExp()+"years");
+			}else{
+				if(requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
+					writeRow.createCell(2).setCellValue("0 - "+requirement.getMaxExp()+"years");
+				}
+			}
 		}
 		
 		if(requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()) && requirement.getRateType() != null && !"".equalsIgnoreCase(requirement.getRateType())){
