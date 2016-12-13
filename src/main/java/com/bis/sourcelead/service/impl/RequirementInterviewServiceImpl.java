@@ -214,7 +214,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 							            /* sendEmailToInterviewrs(candidate,interviewerUser,requirementSubmission, user, jsonObj.getString(c+"startTime"), jsonObj.getString(c+"endTime"), loginOrg, jsonObj.getString(c+"dateOfInterview"), jsonObj.getString(c+"location"),jsonObj.getString(c+"interviewType"),orgLocations);*/
 							             sendEmailToInterviewrs(candidate,interviewerUser,requirementSubmission, user, loginOrg,requirementInterview,orgLocations);
 							             if(jsonObj.has("interviewSubmissionTemplate") && !jsonObj.getString("interviewSubmissionTemplate").isEmpty()){
-							            	 interViewerFeedbackTemplateSendEmailToInterviewrs(candidate,interviewerUser,requirementSubmission, user, loginOrg,requirementInterview,orgLocations); 
+							            	 String templateId = jsonObj.getString("interviewSubmissionTemplate");
+							            	 interViewerFeedbackTemplateSendEmailToInterviewrs(candidate,interviewerUser,requirementSubmission, user, loginOrg,requirementInterview,orgLocations,templateId); 
 							             }
 								         requirementInterviewerDao.storeRequirementInterviewer(interviewer);
 									}
@@ -576,8 +577,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	 * @throws Exception
 	 * This method is send email from Interviewrs
 	 */
-	public void interViewerFeedbackTemplateSendEmailToInterviewrs(Candidate candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser,Org org,RequirementInterview requirementInterview,OrgLocations orgLocations)	throws Exception {
-		 
+	public void interViewerFeedbackTemplateSendEmailToInterviewrs(Candidate candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser,Org org,RequirementInterview requirementInterview,OrgLocations orgLocations,String templateId)	throws Exception {
+		 Long requirementInterviewid =requirementInterview.getId(); 
 		EmailMessage emailMessage = new EmailMessage();
 		
 		if(interviewerUser.getFirstName()!=null){
@@ -628,7 +629,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 if(endTime!=null){
 			  time=time+" - "+endTime;
 		 }
-		 dateOfInterviewValue = dateOfInterviewValue +" "+time;
+		 String interviewTime =  time;
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("interviewerFirstName", emailMessage.getFirstName());
@@ -636,10 +637,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("loginUser", emailMessage.getFromName());
 			 globalVarsMap.put("requirementTitle", requirementSubmission.getRequirement().getJobTitle());
 			 globalVarsMap.put("interviewDate", dateOfInterviewValue);
+			 globalVarsMap.put("interviewTime", interviewTime);
 			 globalVarsMap.put("interviewType",interviewTypeValue);
 			 globalVarsMap.put("applicantName",candidateName);
-			 globalVarsMap.put("Location",requirementInterview.getLocation());
-			 
+			 globalVarsMap.put("FeedbackLink","<a href='"+sourceleadUrl+"/"+"publicInterviewFeedBackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewid+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>");
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
@@ -649,13 +650,13 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = null;
-			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.INTERVIEWER_INVITATION,Constants.ENTITY_TYPE_EMAIL);
-		
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.INTERVIEWER_TEMPLATE,Constants.ENTITY_TYPE_EMAIL);
+			 
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());

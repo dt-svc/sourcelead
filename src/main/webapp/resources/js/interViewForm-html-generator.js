@@ -6,10 +6,10 @@
  */
 
 //generates the form HTML
-function generateForm(sourceleadUrl,templateId) {
+function generateForm12(sourceleadUrl,templateId) {
 
     //empty out the preview area
-    $("#sjfb-fields").empty();
+    $("#interviewsjfb-fields").empty();
     
     
     $.ajax({
@@ -25,8 +25,8 @@ function generateForm(sourceleadUrl,templateId) {
                      var fieldType = v['type'];
 
                      //Add the field
-                     $('#sjfb-fields').append(addFieldHTML(fieldType,v['req'],v['label']));
-                     var $currentField = $('#sjfb-fields .sjfb-field').last();
+                     $('#interviewsjfb-fields').append(addFieldHTML(fieldType,v['req'],v['label']));
+                     var $currentField = $('#interviewsjfb-fields .sjfb-field').last();
                      
                      var reqSymbol = '';
                 	 if(v['req'] == '1'){
@@ -136,40 +136,6 @@ function generateForm(sourceleadUrl,templateId) {
                              '<label class="sjfb-label"></label>' +
                              '<div class="choices choices-checkbox"></div>' +
                              '</div>';
-                         
-
-                     case 'calendar':
-                         return '' +
-                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
-                             '<label for="calandar-' + uniqueID + '"></label>' +
-                             '<input type="text" id="text-' + uniqueID + '">' +
-                             '</div>';
-                         
-                     case 'autocomplete':
-                    	 if(label == 'location'){
-                    		 return '' +
-                             '<div id="sjfb-' + countryUniqueID + '" class="sjfb-field sjfb-text">' +
-                             '<label>Country'+reqSymbol+'</label>' +
-                             '<input type="text" id="text-' + countryUniqueID + '">' +
-                             '</div>'+
-                             '<div id="sjfb-' + stateUniqueID + '" class="sjfb-field sjfb-text">' +
-                             '<label>State'+reqSymbol+'</label>' +
-                             '<input type="text" id="text-' + stateUniqueID + '">' +
-                             '</div>'+
-                             '<div id="sjfb-' + cityUniqueID + '" class="sjfb-field sjfb-text">' +
-                             '<label>City'+reqSymbol+'</label>' +
-                             '<input type="text" id="text-' + cityUniqueID + '">' +
-                             '</div>';
-                    	 }
-                    	 else{
-                    		 return '' +
-                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
-                             '<label for="autocomplete-' + uniqueID + '"></label>' +
-                             '<input type="text" id="text-' + uniqueID + '">' +
-                             '</div>';
-                    	 }	 
-                    		 
-                        
 
                  }
              }
@@ -183,14 +149,13 @@ function generateForm(sourceleadUrl,templateId) {
 
 // To Generate Org SubmissionForm
 
-function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
-
+function generateInterviewFeedbackForm(sourceleadUrl,templateId) {
     //empty out the preview area
-    $("#sjfb-fields").empty();
+    $("#interviewsjfb-fields").empty();
     
     $.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getRequirmentOrgSubmissionTemplate?requirementId="+requirementId, 
+        url: sourceleadUrl+"/getInterviewFeedbackTemplate?templateId="+templateId, 
         success: function(data) {
         	 var data = eval(data);
         	 
@@ -201,8 +166,8 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                      var fieldType = v['type'];
 
                      //Add the field
-                     $('#sjfb-fields').append(addFieldHTML(fieldType,v['req'],v['label'],sourceleadUrl));
-                     var $currentField = $('#sjfb-fields .sjfb-field').last();
+                     $('#interviewsjfb-fields').append(addFieldHTML(fieldType,v['req'],v['label'],sourceleadUrl));
+                     var $currentField = $('#interviewsjfb-fields .sjfb-field').last();
                      
                      var reqSymbol = '';
                 	 if(v['req'] == '1'){
@@ -264,40 +229,12 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             	 
             	 var datavalidation = '';	
             	 var novalidation = '';
-            	 var datavalidation2 = '';
             	 
         		 if(required == 1){
-        			 if(label == 'Email Id'){
-        				 datavalidation = 'data-validation="required validate_email validate_Space validate_length length2-50"';
-        				 
-        			 }else if(label == 'Phone Number'){
-        				 datavalidation = 'data-validation="required validate_phone validate_Space validate_length length9-20"';
-        			 }
-        			 else{
-        				 datavalidation = 'data-validation="required validate_Space validate_length length2-50"';
-        			 }
         			 
-        			 if(label == 'Current CTC' || label == 'Expected CTC'){
-            			 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
-            		 }
-            		 if(label == 'Designation' || label == 'Education'){
-            			 datavalidation = 'data-validation="required validate_Space validate_Alphabet length2-50"';
-            		 }
-        			 
-        			 datavalidation2 = 'data-validation="required"';
+        			 datavalidation = 'data-validation="required"';
         		 }else{
-        			 if(label == 'Alternate Number'){
-        				 datavalidation = 'data-validation="validate_phone validate_Space validate_length length9-20"';
-        			 }else{
-        				 datavalidation = 'data-validation="validate_Space validate_length length2-50"';
-        			 }
-        			 
-        			 if(label == 'Current CTC' || label == 'Expected CTC'){
-        				 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
-            		 }
-            		 if(label == 'Designation' || label == 'Education'){
-            			 datavalidation = 'data-validation="validate_Space validate_Alphabet length2-50"';
-            		 }
+        			
         			 novalidation = 'data-validation-optional="true"';
         		 }
         		 
@@ -339,7 +276,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-select">' +
                              '<label for="select-' + uniqueID + '"></label>' +
-                             '<select id="select-' + uniqueID + '" '+datavalidation2+' '+novalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' class="choices choices-select"></select>' +
+                             '<select id="select-' + uniqueID + '" '+datavalidation+' '+novalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' class="choices choices-select"></select>' +
                              '</div>';
 
                      case 'radio':
@@ -355,64 +292,10 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                              '<label for="checkbox-' + uniqueID + '"></label>' +
                              '<div class="choices choices-checkbox"></div>' +
                              '</div>';
-                         
-
-                     case 'calendar':
-                         return '' +
-                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
-                             '<label for="calandar-' + uniqueID + '"></label>' +
-                             '<input type="text" class="DatePicker dp" '+datavalidation2+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' id=\''+label.replace(/\s+/g, '')+'\' readonly="readonly">' +
-                             '</div>';
-                         
-                     case 'autocomplete':
-                    	 if(label == 'location'){
-                    		 return '' +
-                             '<div id="sjfb-' + countryUniqueID + '" class="sjfb-field sjfb-text">' +
-                             '<label>Country'+reqSymbol+'</label>' +
-                             '<select class="chosen-select form-control select-bg"  '+datavalidation2+' '+novalidation+'  name="country" id="country" field-name="Country"  >'+
-                             '<option>--Select--</option>'+
-                             '</select>'+
-                             '</div>'+
-                             
-                             '<div id="sjfb-' + stateUniqueID + '" class="sjfb-field sjfb-text">' +
-                             '<label>State'+reqSymbol+'</label>' +
-                             '<select class="chosen-select form-control select-bg"  '+datavalidation2+' '+novalidation+'  name="state" id="state" field-name="State"  >'+
-                             '<option>--Select--</option>'+
-                             '</select>'+
-                             '</div>'+
-                             
-                             '<div id="sjfb-' + cityUniqueID + '" '+novalidation+' class="sjfb-field sjfb-text">' +
-                             '<label>City'+reqSymbol+'</label>' +
-                             '<select class="chosen-select form-control select-bg" '+datavalidation2+' '+novalidation+'  name="city" id="city" field-name="State"  >'+
-                             '<option>--Select--</option>'+
-                             '</select>'+
-                             '</div>';
-                    		 
-                    		 
-                    	 }
-                    	 else{
-                    		 return '' +
-                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
-                             '<label for="autocomplete-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation2+' '+novalidation+' field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
-                             '</div>';
-                    	 }	
                     	 
                     	 
                  }
              }
-             init();
-             var d = new Date();
-             var year = d.getFullYear() - 18;
-             d.setFullYear(year);
-             $(".DatePicker").datepicker({
-            	 dateFormat: 'yy-mm-dd',
-            	 yearRange: "-70Y:-18Y" ,
-            	 defaultDate: d,
-            	 changeMonth: true,
-                 changeYear: true
-                 
-             });
         },
     });
     

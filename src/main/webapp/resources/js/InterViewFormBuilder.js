@@ -84,10 +84,6 @@ function addField(fieldType,value,labelValue,sourceleadUrl,templateId,labelValid
     var readOnly = '';
     var checkbox = '';
     
-    if(templateId == undefined){
-    	templateId = 1;
-    }
-    
     if(addField.i == undefined){
     	 addField.i = 1;
     }else{
@@ -139,10 +135,6 @@ function addField(fieldType,value,labelValue,sourceleadUrl,templateId,labelValid
     }else{
     	DeleteButtion = '<button type="button"  class="btnDisable btn btn-default disabled"><i class="glyphicon glyphicon-remove"></i></button>'
     	
-    		if(labelValue == 'First Name' || labelValue == 'Phone Number' || labelValue == 'Email Id'){
-    			checkbox = 'disabled="disabled"'
-    		}
-    		
     }
     
     if(labelValue == 'N' || labelValue == 'undefined' || null == labelValue || labelValue == ''){
@@ -180,7 +172,7 @@ function addField(fieldType,value,labelValue,sourceleadUrl,templateId,labelValid
     	 includeTextHTML = ''+
 		   '<label class="col-md-5"><div class="col-md-3 lblHeight">Label:</div>' +
 	       ' <div class="col-md-9" id="label'+addField.i+'"> ' +
-	       '<input type="text" '+readOnly+' onblur="validateLabelName('+addField.i+','+templateId+',\''+sourceleadUrl+'\',\''+labelValidationCheck+'\')" id="textLabel'+addField.i+'" data-validation="required validate_Space" placeholder="Required *" field-name="Label" class="field-label form-control input-sm" >' +
+	       '<input type="text" '+readOnly+' onblur="validateLabelName('+addField.i+',\''+sourceleadUrl+'\',\''+labelValidationCheck+'\')" id="textLabel'+addField.i+'" data-validation="required validate_Space" placeholder="Required *" field-name="Label" class="field-label form-control input-sm" >' +
 	       ' </div> ' +
 	       '</label>' 
     }
@@ -318,12 +310,13 @@ function loadSavedForm(templateId,sourceleadUrl) {
 
 
 
-function validateLabelName(i,templateId,sourceleadUrl,labelValidationCheck){
+function validateLabelName(i,sourceleadUrl,labelValidationCheck){
+	var templateId = null;
 	var labelName = $("#textLabel"+i).val();
 	if(labelName && labelValidationCheck == 'Y'){
 		$.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/validateSubmissionTemplateLabelName?templateId="+templateId+"&labelName="+labelName, 
+	        url: sourceleadUrl+"/validateFeedbackTemplateLabelName?labelName="+labelName, 
 	        success: function(result) {
 	       	 if(result == 'Success'){
 		    		$("#save_button").removeAttr("disabled");

@@ -84,7 +84,7 @@ function addInterview(requirementId){
 	result = result + '<div class="mb10 mt clearfix">';
 	
 	result = result + '<div id="emptyTemplate" style="dispaly:none">';
-	result = result + '<strong class="clearfix col-md-12">InterView Submission Template</strong>';
+	result = result + '<strong class="clearfix col-md-12">Interview Template</strong>';
 	result = result + '<div class="col-md-3">';
 	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
 	result = result + '</select>';

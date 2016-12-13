@@ -4795,6 +4795,21 @@ import-tranhd  [class*="col-md-"]{
 .edit-amd .col-md-6{
     margin-bottom: 15px;
 }
+
+.choices input[type="checkbox"], .choices input[type="radio"] {
+margin-right: 10px;
+}
+.viewTemplate.feedbackTemplate {
+	padding-bottom: 0px;
+}
+.viewTemplate.feedbackTemplate p{
+	left: 28%;
+	top:70px;
+	position: absolute;
+}
+.viewTemplate.feedbackTemplate .sjfb-field{
+	margin-bottom: 0px !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {

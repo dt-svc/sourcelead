@@ -5,7 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="resources/js/InterViewFormBuilder.js" type="text/javascript" ></script>
-<script src="resources/js/interViewForm-html-generator.js" type="text/javascript" ></script> 
+<script src="resources/js/interViewForm-html-generator.js" type="text/javWascript" ></script> 
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
@@ -52,12 +52,11 @@ $(function(){
 	        	for (var i=0; i<json.length; i++)
 				  {	        		
 	        		var opt = json[i];
-	        		
 	        		result = result + '<tr>';
 	                result = result + '<td><div><span class="mid-span">'+opt.templateName+'</span></a></div></td>';
 	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.description+'"><span class="mid-span">'+opt.description+'</span></div></td>';
 	                result = result + '<td><div>';
-	                    result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;|&nbsp;';
+	                    result = result + '<a href="javascript:void(0)" onclick="viewInterviewFeedbackTemplate('+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;|&nbsp;';
                     '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_APPLICANT_TEMPLATE\',\'ROLE_VIEW_EDIT_APPLICANT_TEMPLATE\')">'
 	                    result = result + '&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\',\''+opt.description+'\')">Edit</a>';
                     '</sec:authorize>';
@@ -78,17 +77,15 @@ $(function(){
 
 
 <script type="text/javascript">
-	function viewSubmissionTemplate(templateId,templateName) {
-		
+	function viewInterviewFeedbackTemplate(templateId,templateName) {
 		var sourceleadUrl ='${sourceleadUrl}';
-		generateForm(sourceleadUrl,templateId);
-		
+		generateTemplateForm(sourceleadUrl,templateId);
 		var result = "";
 		result = result + '<div class="clearfix templateName">';
 		result = result + '<h2>'+templateName+'</h2>';
         result = result + '</div>';
 
-        result = result + '<div id="sjfb-fields" class="viewTemplate">';
+        result = result + '<div id="interviewsjfb-fields" class="viewTemplate">';
         
         result = result + '</div>';
         result = result + '<div class="form-footer clearfix">';
@@ -309,23 +306,12 @@ function cancel(){
             
             
             
-            if(fieldLabel == 'First Name'  || fieldLabel == 'Phone Number'  
-        		|| fieldLabel == 'Email Id' || fieldLabel == 'DOB' || fieldLabel == 'Current / Last Company' || fieldLabel == 'Designation' 
-        		|| fieldLabel == 'Education' || fieldLabel == 'Work Experience' || fieldLabel == 'Current CTC' || fieldLabel == 'Expected CTC' 
-        		|| fieldLabel == 'Notice Period'){
-        	
-            	isRemoved = 'N';
-            }else{
-            	isRemoved = 'Y';
-            }
-            
+                   
             fields.push({
                 type: fieldType,
                 label: fieldLabel,
                 req: fieldReq,
                 choices: choices,
-                isRemoved : isRemoved,
-                isLabelModified : isLabelModified
             });
 
         });
@@ -453,7 +439,7 @@ function validateTemplateName(){
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>InterView Templates</h2>
+      <h2>Interview Templates</h2>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Interview Template</div>
   </section>
@@ -526,5 +512,148 @@ function scrollToBottom(){
         $("html, body").animate({scrollTop: 0}, 500);
         return false;
     });
+</script>
+
+
+<script>
+function generateTemplateForm(sourceleadUrl,templateId) {
+    //empty out the preview area
+    $("#interviewsjfb-fields").empty();
+    
+    
+    $.ajax({
+    	type: "GET",
+        url: sourceleadUrl+"/loadSavedSubmissionTemplate?templateId="+templateId, 
+        success: function(data) {
+        	 var data = eval(data);
+        	 
+        	 if (data) {
+                 //go through each saved field object and render the form HTML
+                 $.each( data, function( k, v ) {
+
+                     var fieldType = v['type'];
+
+                     //Add the field
+                     $('#interviewsjfb-fields').append(addFieldHTML(fieldType,v['req'],v['label']));
+                     var $currentField = $('#interviewsjfb-fields .sjfb-field').last();
+                     
+                     var reqSymbol = '';
+                	 if(v['req'] == '1'){
+                		reqSymbol = " *";
+                	 }
+                     
+                     //Add the label
+                     if(v['label'] != 'location' ){
+                    	 $currentField.find('label').text(v['label']+reqSymbol);
+                     }
+                     
+                     
+                     //Any choices?
+                     if (v['choices']) {
+
+                         var uniqueID = Math.floor(Math.random()*999999)+1;
+
+                         $.each( v['choices'], function( k, v ) {
+
+                             if (fieldType == 'select') {
+                                 var selected = v['sel'] ? ' selected' : '';
+                                 var choiceHTML = '<option' + selected + '>' + v['label'] + '</option>';
+                                 $currentField.find(".choices").append(choiceHTML);
+                             }
+
+                             else if (fieldType == 'radio') {
+                                 var selected = v['sel'] ? ' checked' : '';
+                                 var choiceHTML = '<label><input type="radio" name="radio-' + uniqueID + '"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
+                                 $currentField.find(".choices").append(choiceHTML);
+                             }
+
+                             else if (fieldType == 'checkbox') {
+                                 var selected = v['sel'] ? ' checked' : '';
+                                 var choiceHTML = '<label><input type="checkbox" name="checkbox-' + uniqueID + '[]"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
+                                 $currentField.find(".choices").append(choiceHTML);
+                             }
+
+                         });
+                     }
+
+                     //Is it required?
+                     if (v['req']) {
+                         if (fieldType == 'text') { $currentField.find("input").prop('required',true).addClass('required-choice') }
+                         else if (fieldType == 'calendar') { $currentField.find("calandar").prop('required',true).addClass('required-choice') }
+                         else if (fieldType == 'autocomplete') { $currentField.find("autocomplete").prop('required',true).addClass('required-choice') }
+                         else if (fieldType == 'textarea') { $currentField.find("textarea").prop('required',true).addClass('required-choice') }
+                         else if (fieldType == 'select') { $currentField.find("select").prop('required',true).addClass('required-choice') }
+                         else if (fieldType == 'radio') { $currentField.find("input").prop('required',true).addClass('required-choice') }
+                         $currentField.addClass('required-field');
+                     }
+
+                 });
+             }
+        	 
+        	 
+        	 
+        	  //HTML templates for rendering frontend form fields
+             function addFieldHTML(fieldType,required,label) {
+            	 
+            	 if(label == 'location'){
+            		 var reqSymbol = ''
+            		 if(required == 1){
+            			 reqSymbol = '<span>&nbsp;*</span>'
+            		 }
+            		 var countryUniqueID = Math.floor(Math.random()*999999)+1;
+            		 var stateUniqueID = Math.floor(Math.random()*999999)+1;
+            		 var cityUniqueID = Math.floor(Math.random()*999999)+1;
+            	 }
+            	 else{
+            		 var uniqueID = Math.floor(Math.random()*999999)+1;
+            	 }
+                
+
+                 switch (fieldType) {
+
+                     case 'text':
+                         return '' +
+                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
+                             '<label for="text-' + uniqueID + '"></label>' +
+                             '<input type="text" id="text-' + uniqueID + '">' +
+                             '</div>';
+
+                     case 'textarea':
+                         return '' +
+                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-textarea">' +
+                             '<label for="textarea-' + uniqueID + '"></label>' +
+                             '<textarea rows="3" id="textarea-' + uniqueID + '"></textarea>' +
+                             '</div>';
+
+                     case 'select':
+                         return '' +
+                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-select">' +
+                             '<label for="select-' + uniqueID + '"></label>' +
+                             '<select id="select-' + uniqueID + '" class="choices choices-select"></select>' +
+                             '</div>';
+
+                     case 'radio':
+                         return '' +
+                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-radio">' +
+                             '<label></label>' +
+                             '<div class="choices choices-radio"></div>' +
+                             '</div>';
+
+                     case 'checkbox':
+                         return '' +
+                             '<div id="sjfb-checkbox-' + uniqueID + '" class="sjfb-field sjfb-checkbox">' +
+                             '<label class="sjfb-label"></label>' +
+                             '<div class="choices choices-checkbox"></div>' +
+                             '</div>';
+
+                 }
+             }
+        },
+    });
+    
+    
+}
+
+
 </script>
 

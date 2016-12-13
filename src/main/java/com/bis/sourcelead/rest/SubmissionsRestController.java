@@ -33,9 +33,11 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
@@ -45,6 +47,8 @@ import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
+import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -95,6 +99,12 @@ public class SubmissionsRestController {
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
+	@Autowired
+	InterviewFeedbackTemplateService interviewFeedbackTemplateService; 
+	
+	@Autowired
+	RequirementInterviewService requirementInterviewService;
+	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
@@ -129,6 +139,13 @@ public class SubmissionsRestController {
 			return requirement.getSubmissionTemplateJsonString();
 	    
     }
+    
+    @RequestMapping(value = "/getInterviewFeedbackTemplate" , method = RequestMethod.GET)
+	   public String getInterviewFeedbackTemplate(@RequestParam(value="templateId", required=false) Long templateId) throws Exception {
+    	    SubmissionTemplate st =  submissionTemplateService.getSubmissionTemplateById(templateId);
+		    return st.getJsonString();
+ }
+    
     
     
     @PreAuthorize("hasRole('ROLE_ADD_APPLICANT')")
@@ -166,13 +183,7 @@ public class SubmissionsRestController {
 		return commonUtil.toJSON(submissiontTemplateList);
 	}
     
-    @RequestMapping(value = "/getInterviewFeedbackTemplatesList", method = RequestMethod.POST)
-	@ResponseBody String getInterviewFeedbackTemplatesList(HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getInterviewFeedbackTemplatesByOrgLocationId(orgLocations.getId());
-		
-		return commonUtil.toJSON(submissiontTemplateList);
-	}
+ 
     
 
 
@@ -215,43 +226,7 @@ public class SubmissionsRestController {
 	    
 	   }
     
-    @RequestMapping(value = "/saveInterviewFeedBackTemplate" , method = RequestMethod.POST)
-	   public String saveInterviewFeedBackTemplate(@RequestParam(value="jsonData", required=false) String json,
-			   @RequestParam(value="templateId", required=false) String templateId,
-			   @RequestParam(value="jsonStringData", required=false) String jsonStringData,HttpServletRequest request) throws Exception {
-			
-		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
-		    
-		    String json1 = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json1);
-			
-			
-		   try {
-			   SubmissionTemplate submissionTemplate = null;
-			   if(!isNullOrEmpty(templateId)){
-				   submissionTemplate = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
-				}else{
-					submissionTemplate = new SubmissionTemplate();
-				}
-			   //submissionTemplate.setTemplateType("Feedback");
-			   submissionTemplate.setTemplateName(jsonObj.getString("templateName"));
-			   submissionTemplate.setDescription(jsonObj.getString("description"));
-			   submissionTemplate.setOrgLocationId(orgLocations);
-			   submissionTemplate.setJsonString(jsonStringData);
-			   submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
-			   submissionTemplate.setCreatedBy(user.getUserCode());
-			   submissionTemplate.setCreatedDate(new Date());
-			   submissionTemplateService.addSubmissionTemplate(submissionTemplate);
-				
-			} catch (Exception e) {
-				e.printStackTrace(); 
-			}
-			   return "interViewFeedBackTemplate";
-	    
-	   }
-    
-    
+   
     
     @PreAuthorize("hasAnyRole('ROLE_SHORTLIST','ROLE_SUBMIT_TO_CLIENT')")
     @RequestMapping(value = "/getSubmissionCandidates" , method = RequestMethod.POST)
@@ -385,6 +360,28 @@ public class SubmissionsRestController {
 	}
     
     
+    
+    @RequestMapping(value = "/saveInterviewFeddbackTemlate" , method = RequestMethod.POST)
+	   public String saveInterviewFeddbackTemlate(@RequestParam(value="jsonData", required=false) String json,
+			   @RequestParam(value="con", required=false) String con,MultipartHttpServletRequest request,
+			   @RequestParam(value="locationMapFile", required=false) CommonsMultipartFile locationMapFileData) throws Exception {
+			
+ 	    String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+			
+			
+			MultipartFile multiFile = null;
+			Iterator<String> itrator = request.getFileNames();
+			if(itrator.hasNext()){
+		        multiFile = request.getFile(itrator.next());
+			}
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj, user, orgLocations,con,multiFile);
+			return "success";
+	    
+}
     
 
 	//vendors mail sending the private method
