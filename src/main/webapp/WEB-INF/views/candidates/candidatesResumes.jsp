@@ -36,7 +36,10 @@
 <script>
 function candidateResume(candidateId){
 	var result ="";
-	result = result+'<div class="project_tabs_inn_head addUser-org">';
+	
+	result = result+'	    <div class="project_tabs_inn_head addUser-org">';
+	result = result +' <div id="msgDiv3" ></div>';
+	
 	if(window.candidateStatusGlobal == '0'){
 		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\')">'; 
 		  result = result+'<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
@@ -47,12 +50,14 @@ function candidateResume(candidateId){
 		   result = result+'<a href="javascript:void(0)" onClick="refreshResumeList('+candidateId+'); addResume('+candidateId+');" class="addUser-org" id="addCandidateResume"><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
 		'</sec:authorize>';
 	}
+
 		result = result  +' <div id="popUpDivResume" class="edit-details col-md-4"> ';
 		result = result  +' </div>  ';
 		result  = result + '<div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		result  = result + ' <div id="resumesList" ></div>';
 		result  = result + '</div>';
 		result = result+'</div>';
+
 	
     $("#tab-1").empty();
     $("#tab-2").empty(); 
@@ -61,6 +66,7 @@ function candidateResume(candidateId){
     $("#tab-5").empty();  
     $("#tab-6").empty();  
     $("#tab-2").append(result); 
+   
     
 }
 </script>
@@ -232,6 +238,8 @@ function addResume(candidateId) {
 						 		$("#popUpDivResume").removeClass("edit-details-active");
 						 		candidateResumesList(candidateId);
 		            		 }
+							 /* $("#conMsg").fadeIn(200);
+							 $('#conMsg').delay(2000).fadeOut('slow'); */
 						},
 					});
 					return true;
@@ -243,6 +251,7 @@ function addResume(candidateId) {
 		$("#candidateResume_form").showHelpOnFocus();
 		$("#candidateResume_form").validateOnBlur(false, validationSettings);
 	});
+		
 </script>
 
 <%-- 
@@ -270,6 +279,17 @@ function addResume(candidateId) {
         			 location.replace(sourceleadUrl+"/errorPage");
         		 }
         		 else{
+        			 for (var i = 0; i < 1; i++) {
+                         var val= json[i];
+                         var opt = "";
+                                 if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+                                         opt  = opt + '<div class="success_pop" id="selector3" style="display: block;">';
+                                         opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+                                         opt  = opt + '</div>';
+                                         }
+                                 $("#msgDiv3").empty();
+                                 $("#msgDiv3").append(opt);
+                         }
 					if(json.length<=0 || (data == null && data == 'undefined' && data == "")){
 							result = result+"   <div class='row'>"; 
 						 	result = result+"	<div class='col-lg-12'>"; 
@@ -339,6 +359,7 @@ function addResume(candidateId) {
 					}
 					$("#resumesList").empty();
 					$("#resumesList").append(result);
+					  msgFadein2(); 
         		}
 				},
 		});
@@ -454,3 +475,9 @@ function removeResumeNameDiv(){
 		};
 	})(jQuery);
 </script>
+<script>
+       function msgFadein2() {
+           setTimeout(function(){
+                   $('#selector3').fadeOut('slow'); }, 1000);
+       }
+</script>  

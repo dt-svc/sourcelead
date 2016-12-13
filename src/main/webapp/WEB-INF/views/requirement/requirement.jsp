@@ -108,10 +108,20 @@ $(document).ready(function() {
 
 <script type="text/javascript">
 		window.onload = function () {
+			var jobType = '${requirement.jobType}';
+			if(jobType !=null && jobType != "" && jobType != "undefined" && jobType == 'Other'){
+				  document.getElementById("jobTypeDiv").style.display="";
+				  $("#jobOtherType").attr("data-validation", "required validate_Space validate_length length2-250");
+			}else{
+				document.getElementById("jobTypeDiv").style.display="none";
+				  $("#jobOtherType").attr("data-validation-optional", "true");
+				  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
+				  $("#jobOtherType").val('');
+			}
+			
 			getAllCountries();
 			removeEditButton();
 			disableMonths();
-			
 			/*  $(".isClient").click(function(){  
 		        $(".clientDetails").toggleClass('hidden', 500);
 		    });  */
@@ -269,16 +279,15 @@ $(document).ready(function () {
 	           </div>
 	         </div>
 	       </div>
-	       
-	       
+
           <div class="form-group" id="jobIdDiv">
             <label class="col-md-3">Id</label>
             <div class="col-md-9">
               <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  onblur="validateJobId();"  onKeyUp="validateJobId();" value="">
             </div>
           </div>
-          
-          <div class="form-group" id="jobTypeDiv" style="display: none">
+           
+            <div class="form-group" id="jobTypeDiv" style="display:none">
             <label class="col-md-3">Job Type</label>
             <div class="col-md-9">
               <input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}"  field-name="Job Type" value="">
@@ -2157,7 +2166,7 @@ function removeEditButton() {
 
 <script>
 function getJobType(jobType){
-	
+	var existingJobType = '${requirement.jobType}';
 	if(jobType.value == 'Other'){
 		  document.getElementById("jobTypeDiv").style.display="";
 		  $("#jobOtherType").attr("data-validation", "required validate_Space validate_length length2-250");
@@ -2165,7 +2174,9 @@ function getJobType(jobType){
 		document.getElementById("jobTypeDiv").style.display="none";
 		  $("#jobOtherType").attr("data-validation-optional", "true");
 		  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
-		  $("#jobOtherType").val('');
+		  if(existingJobType ==null || existingJobType == "" || existingJobType == "undefined" || existingJobType != 'Other'){
+			  $("#jobOtherType").val('');
+		  }
 	}
 }
 </script>
