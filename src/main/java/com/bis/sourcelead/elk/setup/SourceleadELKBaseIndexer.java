@@ -3,6 +3,8 @@ package com.bis.sourcelead.elk.setup;
 import java.io.Writer;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.elasticsearch.index.engine.DocumentMissingException;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -24,43 +26,27 @@ public  class SourceleadELKBaseIndexer<T> {
 	 * @param index
 	 * @param type
 	 * @param id
-	 * @purpose : For To Save Fresh Elk Document
+	 * @purpose : For To Save/Update  Elk Document Based On id
 	 */
-	public void saveElkDocument(T entityClass,String index,String type,String id) {
+	public void saveOrUpdateElkDocument(T entityClass,String index,String type,String id) {
+		String entityInJson = null;
 		try {
-			String entityInJson = toJSON(entityClass);
-			sourceleadELKTransportClient.getClient().prepareIndex(index, type,id)
-			    .setSource(entityInJson).execute().actionGet();
-			
-			sourceleadELKTransportClient.shutdown();
-		    logger.info(type+" has been indexed.");
-		} catch (Exception e) {
-			logger.error(type+" could not be serialized. "+ExceptionUtils.getFullStackTrace(e));
-		}
-		
-    }
-	
-	
-	/**
-	 * 
-	 * @param entityClass
-	 * @param index
-	 * @param type
-	 * @param id
-	 *  @purpose : For To Update  Elk Document Based on db(ElkDocument) id
-	 */
-	public void updateElkDocument(T entityClass,String index,String type,String id) {
-		try {
-			String entityInJson = toJSON(entityClass);
+		    entityInJson = toJSON(entityClass);
 			sourceleadELKTransportClient.getClient().prepareUpdate(index, type,id).setDoc(entityInJson).get();
 			sourceleadELKTransportClient.shutdown();
+		    logger.info(type+" has been updated.");
+		} 
+        catch(DocumentMissingException e){
+        	sourceleadELKTransportClient.getClient().prepareIndex(index, type,id)
+		    .setSource(entityInJson).execute().actionGet();
+		    sourceleadELKTransportClient.shutdown();
 		    logger.info(type+" has been indexed.");
-		} catch (Exception e) {
-			logger.error(type+" could not be serialized. "+ExceptionUtils.getFullStackTrace(e));
+		}
+		catch (Exception e) {
+			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
 		}
 		
     }
-	
 	
 	/**
 	 * @param entityClass
@@ -81,7 +67,17 @@ public  class SourceleadELKBaseIndexer<T> {
 		
 		
 	}
-	public  void searchDocument(String index,String type, String field, String value){
+	public  void searchDocument(String index,String type,BoolQueryBuilder query){
+		/*
+		try {
+			 sourceleadELKTransportClient.getClient().prepareDelete(index, type,id).execute().actionGet();
+			 sourceleadELKTransportClient.shutdown();
+			// logger.info(index+" Document With id :"+ id +" has been deleted.");
+		}
+		catch (Exception e) {
+			//logger.error(index+" Document With id :"+ id +" deletion fails "+ExceptionUtils.getFullStackTrace(e));
+		}*/
+		
            
 		
 		//  BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery().must(QueryBuilders.matchAllQuery());
