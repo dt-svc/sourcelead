@@ -831,13 +831,36 @@ public class RequirementListRestController {
 				} 
      }
 
+		
+		 @RequestMapping(value = "/getRequirementTemplateListByOrgLocationsId" , method = RequestMethod.POST)
+		 public @ResponseBody  String getRequirementTemplateListByOrgLocationsId(HttpServletRequest request) throws Exception {
+			 
+				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			    List<Requirement> reqTemplatesList = requirementService.getAllRequirementTeplateJobsByOrgLocationId( loginOrgLocation.getId(),  user);
+			    String resultJson;
+			    resultJson = commonUtil.toJSON(reqTemplatesList);
+				return resultJson;
+	     }
+		 
+		 @RequestMapping(value = "/getRequirementTemplateByRequirementId" , method = RequestMethod.POST)
+		 public @ResponseBody  String getRequirementTemplateByRequirementId(@RequestParam(value="requirementId", required=false) Long  requirementId,
+				 HttpServletRequest request) throws Exception {
+			 
+				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				Requirement requirement = requirementService.getRequirementTemplateByRequirementId(requirementId,loginOrgLocation.getId());
+			    String resultJson;
+			    resultJson = commonUtil.toJSON(requirement);
+				return resultJson;
+	     }
+		 
+		 
 
+		@RequestMapping(value = "/getSubmissionsExportByRequirementId")
 
-
-@RequestMapping(value = "/getSubmissionsExportByRequirementId")
-
-@ResponseBody  void getSubmissionsExportByRequirementId(@RequestParam(value="requirementId", required=false) String  requirementId,@RequestParam(value="submissionType", required=false) String  submissionType,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		@ResponseBody  void getSubmissionsExportByRequirementId(@RequestParam(value="requirementId", required=false) String  requirementId,@RequestParam(value="submissionType", required=false) String  submissionType,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			File file =null;
@@ -936,5 +959,6 @@ public class RequirementListRestController {
 				
 				
 			}
+
 }
 }
