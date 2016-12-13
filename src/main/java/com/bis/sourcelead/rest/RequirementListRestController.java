@@ -807,4 +807,33 @@ public class RequirementListRestController {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				} 
      }
+		
+		
+		
+		 @RequestMapping(value = "/getRequirementTemplateListByOrgLocationsId" , method = RequestMethod.POST)
+		 public @ResponseBody  String getRequirementTemplateListByOrgLocationsId(HttpServletRequest request) throws Exception {
+			 
+				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			    List<Requirement> reqTemplatesList = requirementService.getAllRequirementTeplateJobsByOrgLocationId( loginOrgLocation.getId(),  user);
+			    String resultJson;
+			    resultJson = commonUtil.toJSON(reqTemplatesList);
+				return resultJson;
+	     }
+		 
+		 @RequestMapping(value = "/getRequirementTemplateByRequirementId" , method = RequestMethod.POST)
+		 public @ResponseBody  String getRequirementTemplateByRequirementId(@RequestParam(value="requirementId", required=false) Long  requirementId,
+				 HttpServletRequest request) throws Exception {
+			 
+				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				Requirement requirement = requirementService.getRequirementTemplateByRequirementId(requirementId,loginOrgLocation.getId());
+			    String resultJson;
+			    resultJson = commonUtil.toJSON(requirement);
+				return resultJson;
+	     }
+		 
+		 
+		 
+		 
 }

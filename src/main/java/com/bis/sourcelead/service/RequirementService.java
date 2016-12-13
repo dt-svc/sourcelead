@@ -72,5 +72,15 @@ public interface RequirementService {
 	Boolean checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long requirementId,Long userId)  throws Exception;
 
 	public List<Requirement> getAllReleasedJobsForVendor(Long orgLocationId, Long orgRelationId, User user, OrgLocations orgLocations) throws Exception;
-
+    
+	List<Requirement> getAllRequirementTeplateJobsByOrgLocationId(Long orgLocationId, User user) throws Exception;
+	
+	public Requirement storeRequirementTemplate(JSONObject jsonObj,OrgLocations orgLocations,User user) throws Exception;
+	
+	public Requirement getRequirementTemplateByRequirementId(Long requirementId,Long orgLocationId) throws Exception;
+	
+	public Requirement updateRequirementTemplate(Requirement requirement) throws Exception;
+	 
+	
+	
 }
