@@ -310,11 +310,11 @@ public class TimesheetSubmissionsServiceTest {
 		assertNotNull(timesheetSubmissions);
 	}
 	
-	@Test 
-	public void getWeekFrequencyTest() throws Exception{
-	      HashSet<TimesheetSubmissions> tms = timesheetSubmissionsService.getWeekFrequency(1l,1l);
-		assertNotNull(tms);
-	}
+//	@Test 
+//	public void getWeekFrequencyTest() throws Exception{
+//	      HashSet<TimesheetSubmissions> tms = timesheetSubmissionsService.getWeekFrequency(1l,1l);
+//		assertNotNull(tms);
+//	}
 	
 	
 	
@@ -435,7 +435,5 @@ public class TimesheetSubmissionsServiceTest {
 		String tms = timesheetSubmissionsService.dynamicTimesheet(user, navigation, startDate, memberId, projectMemberUserId, employeeId, locationsId);
 		assertNotNull(tms);
 	}
-	
-	
 	
 }
