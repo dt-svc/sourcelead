@@ -96,6 +96,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	private String defaultFromEmailAddressPwd;
 
 	@Override
+	@Async
 	public void sendEmail(EmailMessage emailMessage, Long locationsId, ArrayList<EmailRecipient> emailRecipientList,
 			List<EmailAttachment> attachmentList) throws Exception {
 
