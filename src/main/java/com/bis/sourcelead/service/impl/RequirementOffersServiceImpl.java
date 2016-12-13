@@ -431,7 +431,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 //            System.out.println("SOME ERRORS!");
         
         
-        if( !requirementOffers.getFileName().isEmpty() ){
+        if(requirementOffers.getFileName() != null && !requirementOffers.getFileName().isEmpty() ){
             globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"downloadOfferAttachment?offerId="+requirementOffers.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment"+"<br/></div></a>");
 
         }else{
