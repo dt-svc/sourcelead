@@ -120,6 +120,7 @@
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                    /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
+	                     result = result +"    <th>&nbsp;</th>";
 	                     result = result +"    <th>Name</th>"; 
 	                     result = result +"    <th>Designation</th>"; 
 	                     result = result +"    <th>Position type</th>"; 
@@ -137,6 +138,9 @@
 	                    	 var mobilePhone = "";
 	                    	 var designation ="";
 	                    	 var address="";
+	                    	 var isFavourite = "";
+	                    	 var isFavClass = "";
+	                    	 
 	                    	 if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
 	                    		 mobilePhone = opt.mobilePhone;
 				            	}else{
@@ -157,9 +161,21 @@
 				            	}else{
 				            		candidateUpdateDateToString = "---";
 				            	}
+				            	
+				            	if(opt.isFavourite == 'Y'){
+				            		isFavourite = 'checked';
+				            		isFavClass = 'activestar-rating'
+				            	}
+				            	
+				            	
 		                     result = result +"<tr>";
+		                     result = result +"<td style='width : 25px;'>";
+		                     result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.id+"'>";
+		                     result = result +"<input type='checkbox' id='fav"+opt.id+"' "+isFavourite+"' onclick='addFavourite("+opt.id+")'></input>";
+		                     result = result +" <label></label>";
+		                     result = result +"</div>";
+		                     result = result +"</td>";
 
-			                 /* result = result +"  <td><input type='checkbox' id='checkbox12'/></td>"; */
 			                
 			                 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
 			                   result = result +"  <td><div class='proj_show' onclick='candidateSideBar("+opt.id+");'><span title='"+opt.firstName+" "+opt.lastName+"'>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
@@ -713,6 +729,33 @@ function refreshImageBlock(candidateId){
          	},
       }); 
    }
+</script>
+
+
+<script>
+function addFavourite(candidateId){
+	
+	var checked = document.getElementById("fav"+candidateId).checked;
+	var sourceleadUrl = '${sourceleadUrl}';
+	
+	 	$.ajax({
+			type : "POST",
+			url : sourceleadUrl+"/saveCandidateAsFavourite?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+			success : function(result) {
+				if(checked){
+					 document.getElementById("favourite"+candidateId).removeAttribute("class")
+					 document.getElementById("favourite"+candidateId).className = 'star-rating activestar-rating' 
+				}else{
+					 document.getElementById("favourite"+candidateId).removeAttribute("class")
+					 document.getElementById("favourite"+candidateId).className = 'star-rating' 
+				}
+				
+			},
+		}); 
+		 
+		
+	
+}
 </script>
 
 

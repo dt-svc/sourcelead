@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -38,11 +40,13 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateHotList;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -85,8 +89,11 @@ public class CandidateListRestController {
 	 @Autowired
 	 CandidateSkillsService candidateSkillsService;
 	 
-	@Autowired	
+	 @Autowired	
 	 LookUpDataService lookUpDataService;
+	
+	  @Autowired
+	  CandidateHotListService candidateHotListService;
 	 /**
 	   * @author David and sarath kumar
 	   * @since  aug 30 2016
@@ -112,8 +119,22 @@ public class CandidateListRestController {
 		String resultJson;
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<Candidate> candList = new ArrayList<Candidate>();
 		List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType);
-		resultJson = commonUtil.toJSON(candidatesList);
+		
+		if(null != candidatesList){
+			for(Candidate candidate : candidatesList){
+				boolean flag = candidateHotListService.isCandidateIsFavourite(candidate.getId(), loginOrgLocation.getId());
+				if(flag == true){
+					candidate.setIsFavourite(Constants.YES);
+				}else{
+					candidate.setIsFavourite(Constants.NO);
+				}
+				candList.add(candidate);
+			}
+		}
+		
+		resultJson = commonUtil.toJSON(candList);
 		return resultJson;
 	 }
 		 
@@ -439,6 +460,47 @@ public class CandidateListRestController {
 			}
 			return "success";
 		 }
+	   
+	   
+	   
+	   
+	   @RequestMapping(value = "/saveCandidateAsFavourite", method = RequestMethod.POST)
+		public @ResponseBody String saveCandidateAsFavourite(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Candidate candidate = new Candidate();
+			candidate.setId(candidateId);
+			
+			CandidateHotList hotList = candidateHotListService.getCandidateHotListByCandidateIdAndOrgLocationId(candidateId, orgLocation.getId());
+			if(null != hotList){
+				if(hotList.getStatus().equals(1)){
+					hotList.setStatus(0);
+				}else{
+					hotList.setStatus(1);
+				}
+				hotList.setTeamId(null);
+				hotList.setUpdatedBy(user.getUserCode());
+				hotList.setUpdatedDate(new Date());
+				candidateHotListService.saveCandidateHotList(hotList);
+				
+			}else{
+				hotList = new CandidateHotList();
+				hotList.setCandidateId(candidate);
+				hotList.setOrgLocationId(orgLocation);
+				hotList.setStatus(1);
+				hotList.setCreatedBy(user.getUserCode());
+				hotList.setCreatedDate(new Date());
+				hotList.setUpdatedBy(user.getUserCode());
+				hotList.setUpdatedDate(new Date());
+				candidateHotListService.saveCandidateHotList(hotList);
+			}
+			
+			
+			
+			return "success";
+		}
+	 
 	   
 	   
 	   /**
