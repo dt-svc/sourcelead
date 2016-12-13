@@ -23,11 +23,6 @@
 
 <section class="content-wraper">
   <section class="content-header clearfix">
-   <c:if test="${!empty msg}">
-	        <div class="success_pop" id="sucesspop"  style="display: block;">
-		         <i class="fa fa-check-circle"></i><span>${msg}</span>
-			</div>
-	     </c:if>
     <div class="pull-left">
       <h2>Hot List</h2>
     </div>
@@ -45,7 +40,7 @@
            	
            	
           
-          <li><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
+          <li id="candFilter"><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
               	<div id="filter3ApprovedPop" class="approved_pop">
                   	<ul>
 	                    <li><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" onclick="hotListCandidates();"  ><label for="c5">All</label></li>
@@ -179,6 +174,7 @@
 					 result = result+"			        <p>No Candidates Found</p>";
 					 result = result+"			 </div>";
 					$("#noCandidates").val("nocandidate");
+					$("#candFilter").empty();
 					$("#candidateList").empty();
 				    $("#candidateList").append(result); 
                  }
