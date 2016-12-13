@@ -258,10 +258,22 @@ public class RequirementOfferRestController {
 		RequirementSubmission  requirementSubmission =null;
 		RequirementOffers  requirementOffers =null;
 		
-		requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-		requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(requirementSubmission.getId());
+		  requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+    	  
+		  
+		   // This if condition is for the vendor login accepts the Offer  so bringing offer made by  the client 
+		   
+		  RequirementSubmission 	clientsubmission = requirementSubmissionService.getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(submissionId,orgLocations.getId());
+			
+		  if(clientsubmission != null){
+				requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(clientsubmission.getId());
 
-	    offerStatus  = requirementOffersService.acceptOrRejectOffer(submissionId, requirementOffers.getId(), loginUser, offerStatus, reason, orgLocations);
+			}else{
+				requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(requirementSubmission.getId());
+			}
+    	
+
+	     offerStatus  = requirementOffersService.acceptOrRejectOffer(submissionId, requirementOffers.getId(), loginUser, offerStatus, reason, orgLocations);
 		 
 		return offerStatus;
 	}

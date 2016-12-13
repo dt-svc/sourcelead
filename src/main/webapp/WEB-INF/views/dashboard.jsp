@@ -288,7 +288,19 @@ overflow-x: auto;
 			    </div>
 		    </c:if>
 	    <%-- </c:if> --%>
-	    
+	     <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT')">
+	   				  <div class='row'>
+						<div class='col-lg-12'> 
+						<div class='content-area clearfix'>
+							<div class='blank-pages'>
+							        <p><i class='fa fa-5x fa-bar-chart'></i></p>
+						        	<p>No Records Found</p>
+							 </div>
+						</div>
+						</div>
+					  </div> 
+					   </sec:authorize>
+					 
 	    <div class="clearfix row mb"> 
 	   	 <%--  <jsp:include page="dashboardTimesheetsApprovals.jsp"></jsp:include> --%>
 	    </div>

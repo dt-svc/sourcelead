@@ -30,5 +30,7 @@ public interface ProjectApproverHierarchyService {
 	
 	Set<ProjectApproverHierarchy> prepareProjectApproverHierarchyListByJson(JSONObject jsonObj,HttpServletRequest request,Projects projects) throws Exception;
 	
+	List<ProjectApproverHierarchy> getProjectApproversListByUserIdAndOrgLocationId(Long userId,Long orgLocationId)throws Exception;
 
+	List<ProjectApproverHierarchy> getProjectsHierarchyListByProjectIdAndOrgLocationId(Long projectId,Long orgLocationId) throws Exception;
 }

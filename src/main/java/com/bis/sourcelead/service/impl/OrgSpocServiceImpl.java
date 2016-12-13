@@ -379,6 +379,17 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		return  contactsList;
 	}
 
+	@Override
+	public List<Long> getAssignedAsClientOrVendorSpocCountByUserId(Long userId, Long orgLocationId,String type) throws Exception {
+		return orgSpocDao.getAssignedAsClientOrVendorSpocCountByUserId(userId, orgLocationId,type);
+	}
+
+	@Override
+	public List<OrgSpoc> getAssignedAsClientOrVendorSpocByUserId(Long userId, Long orgLocationId, String type)
+			throws Exception {
+		return orgSpocDao.getAssignedAsClientOrVendorSpocByUserId(userId, orgLocationId, type);
+	}
+
 
 	
 }
