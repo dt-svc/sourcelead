@@ -49,6 +49,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
@@ -512,7 +513,36 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 					if(jsonObj.has("projectApproverUser") && !isNullOrEmpty("projectApproverUser")){
 						
 						projectsService.tereminateAsProjectApprover(jsonObj, user, userId, orgLocations);
+					}else{
+					
+						List<ProjectMembers> projectmembersList = projectMembersService.getAllProjectsAssigendToUserByIdAndStatus(userId, Constants.MEMBER_ACTIVE);
+						if(null != projectmembersList){
+							for(ProjectMembers pm :projectmembersList){
+								
+								ProjectMembersHistory projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
+		    					
+		    					if(null != projectMembersHistory){
+		    						projectMembersHistory.setProjectTerminationDate(new Date());
+			    					projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
+		    					}
+		    					
+			    				commonUtil.terminateProjectMemberByProjectMemberId(pm.getId(), Primary.Yes);
+			    				
+			    				List<TimesheetSubmissions> submissionsList = timesheetSubmissionsService.getTimeSheetSubmissionByProjectMemberId(pm.getId());
+			    				if(null != submissionsList){
+			    					for(TimesheetSubmissions submissions : submissionsList){
+			    						submissions.setStatus(Constants.MEMBER_IN_ACTIVE);
+			    						submissions.setUpdatedBy(user.getUserCode());
+			    						submissions.setUpdatedDate(new Date());
+			    						timesheetSubmissionsService.addTimesheetSubmissions(submissions);
+			    					}
+			    				}
+								
+							}
+						}
 					}
+					
+					
 					
 					
 					userRole.setIsPrimary(0);
