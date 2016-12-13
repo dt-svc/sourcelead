@@ -83,6 +83,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Transient
 	private String clientName;
+	
+	@Transient
+    private String isNotifyToVendorRequired;
 
 	public Long getId() {
 		return id;
@@ -228,6 +231,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setClientName(String clientName) {
 		this.clientName = clientName;
 	}
-	
-	
+
+	public String getIsNotifyToVendorRequired() {
+		return isNotifyToVendorRequired;
+	}
+
+	public void setIsNotifyToVendorRequired(String isNotifyToVendorRequired) {
+		this.isNotifyToVendorRequired = isNotifyToVendorRequired;
+	}
 }

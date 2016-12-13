@@ -50,20 +50,45 @@ public class RequirementOfferHistoryServiceImpl implements RequirementOfferHisto
 		offersList = requirementOfferHistoryDao.getRequirementInternalAndIsClientOfferssBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
 		if (offersList != null && !offersList.isEmpty() ) {
 			for (RequirementOfferHistory requirementOfferHistory : offersList) {
-				RequirementOffers offers = requirementOffersDao.getRequirementOfferId(requirementOfferHistory.getId());
+				RequirementOffers offers = requirementOffersDao.getRequirementOfferId(requirementOfferHistory.getOfferId().getId());
 				if(offers.getDateOfJoining() != null){
 					requirementOfferHistory.setDateOfJoiningStr(Constants.DF_DMY.format((offers.getDateOfJoining())));
 				}
-				RequirementSubmission sourcesubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(offers.getSubmissionId().getId(),orgLocationsId);
-				if(sourcesubmission != null && sourcesubmission.getVendorLocationId() !=null){
-					requirementOfferHistory.setClientName(sourcesubmission.getVendorLocationId().getOrg().getOrgName());
+				
+				if(requirementOfferHistory.getSubmissionId().getVendorLocationId() != null){
+					requirementOfferHistory.setIsNotifyToVendorRequired(Constants.YES);
+				}else{
+					requirementOfferHistory.setIsNotifyToVendorRequired(Constants.NO);
 				}
+				/*if(offers.getSubmissionId().getRequirement().getClientId() != null){
+					if(offers.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
+						requirementOfferHistory.setClientName(offers.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
+					}
+					if(offers.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+						requirementOfferHistory.setClientName(offers.getSubmissionId().getRequirement().getClientId().getLocationId().getOrg().getOrgName());
+					}
+				}else{*/
+					RequirementSubmission requirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(offers.getSubmissionId().getId(),orgLocationsId);
+				    if(requirementSubmission != null){
+				    	requirementOfferHistory.setClientName(requirementSubmission.getOrgLocations().getOrg().getOrgName());
+				    }else if(offers.getSubmissionId().getSourceSubmission() != null && offers.getSubmissionId().getSourceSubmission().getId() != null){
+				    	RequirementSubmission parentRequirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(offers.getSubmissionId().getSourceSubmission().getId(),orgLocationsId);
+				    	 if(parentRequirementSubmission != null){
+						     requirementOfferHistory.setClientName(parentRequirementSubmission.getOrgLocations().getOrg().getOrgName());
+				    	 }
+				    }
+				/*}*/
 				
 			}
 		}
 		
 		
 		return offersList;
+	}
+
+	@Override
+	public List<RequirementOfferHistory> getAllRequirementOfferHistoriesByOfferId(Long offerId) {
+		return requirementOfferHistoryDao.getAllRequirementOfferHistoriesByOfferId(offerId);
 	}
 	
 }

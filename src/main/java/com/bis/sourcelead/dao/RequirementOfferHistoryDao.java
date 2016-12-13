@@ -13,4 +13,6 @@ public interface RequirementOfferHistoryDao {
 
 	RequirementOfferHistory getRequirementOfferHistoryById(Long id);
 	
+	List<RequirementOfferHistory> getAllRequirementOfferHistoriesByOfferId(Long offerId);
+	
 }

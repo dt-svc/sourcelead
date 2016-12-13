@@ -76,6 +76,17 @@ public class RequirementOfferHistoryDaoImpl implements RequirementOfferHistoryDa
 		
 		return offersList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementOfferHistory> getAllRequirementOfferHistoriesByOfferId(Long offerId) {
+		logger.debug("In RequirementOfferHistoryDaoImpl class getAllRequirementOfferHistoriesByOfferId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementOfferHistory roh where roh.offerId.id = :offerId  ";
+		List<RequirementOfferHistory> offersList =  session.createQuery(query).setLong("offerId", offerId).setCacheable(true).list();
+		
+		return offersList;
+	}
 	
 
 	

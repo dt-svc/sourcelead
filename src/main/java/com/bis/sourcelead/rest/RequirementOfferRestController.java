@@ -249,12 +249,14 @@ public class RequirementOfferRestController {
 	public @ResponseBody String acceptingOffer(@RequestParam(value="submissionId", required=false) Long submissionId,
 			                                   @RequestParam(value="offerStatus", required=false) String offerStatus,
 			                                   @RequestParam(value="reason", required=false) String reason, 
+			                                   @RequestParam(value="OfferId", required=false) Long OfferId,
 			                                   HttpServletRequest request) throws Exception {
 		
 		
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Requirement req   =null;
+		/*
+		 * Requirement req   =null;
 		RequirementSubmission  requirementSubmission =null;
 		RequirementOffers  requirementOffers =null;
 		
@@ -263,7 +265,7 @@ public class RequirementOfferRestController {
 		  
 		   // This if condition is for the vendor login accepts the Offer  so bringing offer made by  the client 
 		   
-		  RequirementSubmission 	clientsubmission = requirementSubmissionService.getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(submissionId,orgLocations.getId());
+		  RequirementSubmission clientsubmission = requirementSubmissionService.getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(submissionId,orgLocations.getId());
 			
 		  if(clientsubmission != null){
 				requirementOffers  = requirementOffersService.getRequirementOfferSubmissionById(clientsubmission.getId());
@@ -273,7 +275,8 @@ public class RequirementOfferRestController {
 			}
     	
 
-	     offerStatus  = requirementOffersService.acceptOrRejectOffer(submissionId, requirementOffers.getId(), loginUser, offerStatus, reason, orgLocations);
+	     offerStatus  = requirementOffersService.acceptOrRejectOffer(submissionId, requirementOffers.getId(), loginUser, offerStatus, reason, orgLocations);*/
+		  offerStatus  = requirementOffersService.acceptOrRejectOffer(submissionId, OfferId, loginUser, offerStatus, reason, orgLocations);
 		 
 		return offerStatus;
 	}
@@ -378,12 +381,13 @@ public class RequirementOfferRestController {
 	public String notifyToApplicantOfRequirementOfferMade(@RequestParam(value="submissionId", required=false) Long submissionId,
 														  @RequestParam(value="offerId", required=false) Long offerId,
 														  @RequestParam(value="notificationtype", required=false) String notificationtype,
+														  @RequestParam(value = "offerHistoryId", required = false) Long offerHistoryId,
 														  HttpServletRequest request) throws Exception {
 		
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
-	        requirementOffersService.sendNotificationAboutRequirementOfferMade(submissionId, offerId, loginUser, orgLocations,notificationtype);
+	        requirementOffersService.sendNotificationAboutRequirementOfferMade(submissionId, offerId, offerHistoryId,loginUser, orgLocations,notificationtype);
 			return "success";
 	    
 	}

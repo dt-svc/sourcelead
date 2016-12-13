@@ -75,35 +75,30 @@ function addOffer(requirementId){
 				result= result + '	              </tbody>';
 				result= result + '	            </table>';
 				
-				if(data =="true"){
-					result= result + '	          <div class="row pad2">';
-					result= result + '	          <div class="form-group">';
-					result= result + '<label class="col-md-3"></label>';
-					result= result + '<div class="col-md-5">';
-					result= result + '<div class="checkbox checkBox">';
-					result= result + ' <label>';
-					result= result + '<input type="checkbox" value="" onclick="NotifyToVendor();" id="notifyToVendor" name="notifyToVendor">Notify To Vendor</label>';
-				    result= result + '</div>';
-				    result= result + '</div>';
-				    result= result + '</div>';
-				}   
+				result= result + ' <div class="row pad2">';
+				result = result + '<div class="col-md-12 mt10">';
+				result = result + '<div class="ne-ch">';
 				
-			    result= result + '<div class="form-group">';
-				result= result + '<label class="col-md-3"></label>';
-				result= result + '<div class="col-md-5">';
-				result= result + '<div class="checkbox checkBox">';
 				result= result + ' <label>';
-				result= result + '<input type="checkbox" value=""  onclick="NotifyToApplicant();" id="notifyToApplicant" name="notifyToApplicant">Notify To Applicant</label>';
+				result= result + '<input type="checkbox" value=""  onclick="NotifyToApplicant();" id="notifyToApplicant" name="notifyToApplicant">&nbsp;Notify To Applicant</label>';
+			   
+				if(data =="true"){
+					result= result + ' <label>';
+					result= result + '<input type="checkbox" value="" onclick="NotifyToVendor();" id="notifyToVendor" name="notifyToVendor">&nbsp;Notify To Vendor</label>';
+				} 
+				
+				result= result + '</div>';
 			    result= result + '</div>';
-			    result= result + '</div>';
+			    result= result + '	              <div class="clearfix"></div>';
 			    result= result + '</div>';
 				result= result + '	              <div class="clearfix"></div>';
-			    
-				result= result + '	            <div class="col-md-12 pad1">';
+				result= result + '<div class="clearfix">';
+				result = result + '<div class="pull-right">';
 				result = result +'				  <button type="submit" id="add_offer" class="btn btn-sm btn-primary mr">Submit</button>';
 				result= result + '	              <button type="submit" class="btn btn-sm btn-danger" onclick="cancelAddOffer();" >Cancel</button>';
 				result= result + '	            </div>';
 				result= result + '	          </div>';
+				result= result + '</div>';
 				
 				result = result + '</form>';
 				//result = result + '<div id="loading"></div>';

@@ -77,6 +77,12 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			    	 interviewHistory.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
 			    }
 			    
+			    if(interviewHistory.getSubmissionId().getVendorLocationId() != null){
+			    	interviewHistory.setIsNotifyToVendorRequired(Constants.YES);
+				}else{
+					interviewHistory.setIsNotifyToVendorRequired(Constants.NO);
+				}
+			    
 			    if(requirementInterview.getSubmissionId().getRequirement().getClientId() != null){
 					if(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
 						interviewHistory.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
