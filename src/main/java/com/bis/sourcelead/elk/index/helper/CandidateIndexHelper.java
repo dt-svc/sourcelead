@@ -18,7 +18,6 @@ public class CandidateIndexHelper {
 		CandidateIndex candidateIndex = null;
 		if(null != candidate && null != candidate.getId()){
 			candidateIndex = new CandidateIndex();
-			candidateIndex.setCandidateId(candidate.getId());
 			candidateIndex.setOrgLocationId(candidate.getOrgLocationId().getId());
 			candidateIndex.setFirstName(candidate.getFirstName());
 			candidateIndex.setLastName(candidate.getLastName());

@@ -217,7 +217,7 @@ public class CandidateServiceImpl implements CandidateService {
 	    //Elastic Search Document Saving
 		SourceleadELKBaseIndexer<CandidateIndex> candidateIndexer = new SourceleadELKBaseIndexer<CandidateIndex>();
 		CandidateIndex candidateIndex = CandidateIndexHelper.getCandidateIndexFromCandidate(savedCandidate);
-		candidateIndexer.saveElkDocument(candidateIndex, "candidates", "candidate");
+		candidateIndexer.saveElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,savedCandidate.getId().toString());
 		return savedCandidate;
 	}
 

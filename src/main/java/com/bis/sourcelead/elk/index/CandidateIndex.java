@@ -7,8 +7,6 @@ public class CandidateIndex implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long candidateId;
-
 	private Long orgLocationId;
 
 	private String firstName;
@@ -76,14 +74,6 @@ public class CandidateIndex implements Serializable {
 	private Date updatedDate;
 
 	private String updatedBy;
-
-	public Long getCandidateId() {
-		return candidateId;
-	}
-
-	public void setCandidateId(Long candidateId) {
-		this.candidateId = candidateId;
-	}
 
 	public Long getOrgLocationId() {
 		return orgLocationId;

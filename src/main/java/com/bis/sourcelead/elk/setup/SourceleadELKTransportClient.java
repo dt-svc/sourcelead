@@ -45,7 +45,7 @@ public class SourceleadELKTransportClient {
      */
     public SourceleadELKTransportClient() {
 	     try {
-	    	 final  Settings settings = Settings.settingsBuilder()
+	    	  Settings settings = Settings.settingsBuilder()
 	    			  .put("cluster.name", "sourcelead")
 	                  .put("node.name", "sourcelead_node")
 	         		  .put("path.home", "/home/sourcelead_es")
