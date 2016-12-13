@@ -165,6 +165,34 @@ public class InterviewFeedbackRestController {
 	   }
     
     
+    
+    
+    @RequestMapping(value = "/savePublicInterviewFeddbackTemlate" , method = RequestMethod.GET)
+	   public String savePublicInterviewFeddbackTemlate(@RequestParam(value="jsonData", required=false) String json,
+			   @RequestParam(value="templateId", required=false) String templateId,
+			   @RequestParam(value="requirementInterviewid", required=false) String requirementInterviewid,
+			   @RequestParam(value="jsonStringData", required=false) String jsonStringData,HttpServletRequest request) throws Exception {
+		       String json1 = "{" + json + "}";
+		       
+			   JSONObject jsonObj = new JSONObject(json1);
+	           SubmissionTemplate sub =  submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
+		       RequirementInterview rq = requirementInterviewService.getRequirementInterviewById(requirementInterviewid);
+		       User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		       
+			   InterviewFeedbackTemplate ift = new InterviewFeedbackTemplate();
+			   ift.setRequirementInterviewId(rq);
+			   ift.setSubmissionTemplateId(sub);
+			   ift.setStatus("Y");
+			   ift.setComment(jsonObj.getString("interviewComment"));
+			   ift.setInterviewStatus(jsonObj.getString("feedback"));
+			   ift.setInterviewTemplateJsonString(jsonStringData);
+			   ift.setCreatedBy(user.getUserCode());
+			   ift.setCreatedDate(new Date());
+			   interviewFeedbackTemplateService.addInterviewFeedbackTemplate(ift);
+			   return "publicInterviewFeedBackTemplate";
+	    
+	   }
+    
     @RequestMapping(value = "/getInterviewFeedbackTemplatesList", method = RequestMethod.POST)
  	@ResponseBody String getInterviewFeedbackTemplatesList(HttpServletRequest request) throws Exception {
  		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");

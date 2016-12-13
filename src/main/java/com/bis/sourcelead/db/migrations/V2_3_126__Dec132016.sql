@@ -1,4 +1,9 @@
 
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`ID`, `SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('76', 'Timesheet Scheduler', 'Notification', 'Timesheet Scheduler', 'Used for Timesheet Scheduler Notification', 'You need to update timesheet', '', '', '', 'N', 'SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
+
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{TimesheetScheduler.FirstName}}{{TimesheetScheduler.LastName}},\nYou need to update the timesheets of as soon as possible' WHERE `ID`='76';
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`ID`, `SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('75', 'Timesheet Scheduler Level1 Manager', 'Email', 'Timesheet Scheduler Level1 Manager', 'Used for Timesheet Scheduler Level1 Manager', 'Employees not update timesheet', 'sourcelead', 'Best Regards,\nSourceLead.', 'Dear {{TimesheetScheduler.FirstName}}{{TimesheetScheduler.LastName}},\n\n  Employees not update their  timesheet . The list of     & Frequencies are below\n{{TimesheetScheduler.WeekFrequency}}So update as soon as possible', 'N', 'SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
+
 INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`,`ENTITY_TYPE`) VALUES ('InterviewrTemplate','Email');
 INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'interviewerFirstName', '{{InterviewrTemplate.InterviewerFirstName}}');
 INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'interviewerLastName', '{{InterviewrTemplate.InterviewerLastName}}');
@@ -33,8 +38,3 @@ CREATE TABLE `sourcelead`.`INTERVIEWFEEDBACK_TEMPLATE` (
   FOREIGN KEY(SUBMISSION_TEMPLATE_ID) REFERENCES `sourcelead`.`SUBMISSION_TEMPLATE`(ID)
 ); 
 
-INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`ID`, `SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('67', 'Timesheet Scheduler', 'Notification', 'Timesheet Scheduler', 'Used for Timesheet Scheduler Notification', 'You need to update timesheet', '', '', '', 'N', 'SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
-
-
-UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{TimesheetScheduler.FirstName}}{{TimesheetScheduler.LastName}},\nYou need to update the timesheets of as soon as possible' WHERE `ID`='67';
-INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`ID`, `SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('66', 'Timesheet Scheduler Level1 Manager', 'Email', 'Timesheet Scheduler Level1 Manager', 'Used for Timesheet Scheduler Level1 Manager', 'Employees not update timesheet', 'sourcelead', 'Best Regards,\nSourceLead.', 'Dear {{TimesheetScheduler.FirstName}}{{TimesheetScheduler.LastName}},\n\n  Employees not update their  timesheet . The list of     & Frequencies are below\n{{TimesheetScheduler.WeekFrequency}}So update as soon as possible', 'N', 'SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
