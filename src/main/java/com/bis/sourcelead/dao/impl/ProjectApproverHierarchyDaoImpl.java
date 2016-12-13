@@ -185,7 +185,31 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 		 return pah;
 		
 	}
-	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectIdForManager(Long projectId,Long userId,int managerLevel) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId and usr.id = :userId and projectHirachy.level =:managerLevel";
+		return session.createQuery(query.toString()).setLong("projectId", projectId).setLong("userId", userId).setInteger("managerLevel", managerLevel).setCacheable(true).list();
+	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public ProjectApproverHierarchy getApproverUsersByProjectIdLevel1(Long projectId, Long userId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId  and projectHirachy.level=1 ";
+		List<ProjectApproverHierarchy> projectApproverHierarchies =  session.createQuery(query.toString()).setLong("projectId", projectId).setCacheable(true).list();
+		 return projectApproverHierarchies.get(0);
+	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectIdlevel2Manager(Long projectId,Long userId){
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr where   projectHirachy.projectId =:projectId  and usr.id = :userId and projectHirachy.level=2 ";
+		List<ProjectApproverHierarchy> projectApproverHierarchies =  session.createQuery(query.toString()).setLong("projectId", projectId).setLong("userId", userId).setCacheable(true).list();
+		 return projectApproverHierarchies;
+	}
+
 	@Override
 	@Transactional
 	public List<ProjectApproverHierarchy> getProjectApproversListByUserIdAndOrgLocationId(Long userId,
@@ -207,6 +231,7 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 				                                                                                     .setCacheable(true)
 				 																					 .list();
 	        return projectHirachyList;
+
 	}
 
 	
