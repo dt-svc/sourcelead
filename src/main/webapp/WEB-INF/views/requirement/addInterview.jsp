@@ -45,14 +45,15 @@ function addInterview(requirementId){
 	result = result + '<input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
 	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
 	result = result + '<input type="hidden" id="isFlushRequired" name="isFlushRequired">';
-	if(clientSubmissions == 'Y'){
-	    result = result + '<input type="checkbox" name="isClientInterview" id="isClientInterview" class="isClient" onclick="myFunction();">';
-        result = result + '<label>&nbsp;&nbsp;<strong>Is Client Interview</strong>&nbsp;&nbsp;</label>';
-	}  
-        
+	
 	result = result + '<div class="add_inter_head"> <span>Add Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>';
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</div>';
+	
+	if(clientSubmissions == 'Y'){
+	    result = result + '<input type="checkbox" name="isClientInterview" id="isClientInterview" class="isClient" onclick="myFunction();">';
+        result = result + '<label>&nbsp;&nbsp;<strong>Is Client Interview</strong>&nbsp;&nbsp;</label>';
+	} 
 	
 	result = result + '<table cellpadding="0" cellspacing="0" id="addInterviewTbl">';
 	result = result + '<tbody>';

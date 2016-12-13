@@ -13,10 +13,13 @@ public enum ApplicantSubmissionStatus {
     OFFERMADE("offer_made"),
     OFFERACCEPTED("offer_accepted"),
     OFFERREJECTED("offer_rejected"),
+    OFFERHIRED("hired"),
+    
     CLIENT_OFFERMADE("client_offer_made"),
     CLIENT_OFFERACCEPTED("client_offer_accepted"),
     CLIENT_OFFERREJECTED("client_offer_rejected"),
-    OFFERHIRED("hired");
+    CLIENT_OFFERHIRED("client_offer_hired");
+   
 	
     private String value;
 	private ApplicantSubmissionStatus(String value){
