@@ -173,6 +173,8 @@ public class SubmissionsRateRestController {
 				requirementRateSubmissionNegotiation.setProposeByName(proposedUser.getFirstName());
 			}
 			
+			requirementRateSubmissionNegotiation.setInitiatorOrgLocationIdStr(requirementRateSubmissionNegotiation.getInitiatorOrgLocationId().getId().toString());
+			
 			requirementRateSubmissionNegotiation.setRateAndType(requirementRateSubmissionNegotiation.getExpectedRate()+" "+requirementRateSubmissionNegotiation.getExpectedRateType());
 		}
 		

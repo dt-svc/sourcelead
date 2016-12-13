@@ -1177,6 +1177,7 @@ function requirementPipeline(requirementId,submissionType){
 				           if(submissionType == 'all' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
 				        	   result = result + '<th>Applied on</th>';
 					           result = result + '<th>Rate</th>';
+					           result = result + '<th>Sub. Rate</th>';
 					           result = result + '<th>Source</th>';
 				            }
 						  
@@ -1251,6 +1252,20 @@ function requirementPipeline(requirementId,submissionType){
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
 							    	     }
+							           
+							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
+							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
+							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
+							        	   }else{
+							        		   result = result + '         <td><div><span>--</span></div></td>';
+							        	   }
+							           }else{
+							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
+							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
+							        	   }else{
+							        		   result = result + '         <td><div><span>--</span></div></td>';
+							        	   }
+							           }
 							           
 							           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
 							        	   result = result + '         <td><div><span>'+report.userName+'</span></div></td>';
@@ -2020,6 +2035,7 @@ $('.edit-status').toggle();
 <script>
 function getRateListDiv(submissionId, candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId,        
@@ -2047,11 +2063,17 @@ function getRateListDiv(submissionId, candidateId){
 	                     result = result + '    </thead>';
 	                     result = result + '    <tbody>';
 	                     var divState = "";
+	                     var isLastNegotiator = "";
 	                     for (var i=0; i<json.length; i++)
 			   				{
 					    	 var report = json[i];
 					    	 if(i == json.length-1){
 		                    	 divState = report.rateInitiatorType;
+		                    	 if((report.rateInitiatorType != "ORG" && report.rateInitiatorType != "CANDIDATE") && (report.initiatorOrgLocationIdStr==orgLocationId)){
+		                    		 isLastNegotiator = "true";
+		                    	 }else{
+		                    		 isLastNegotiator = "false";
+		                    	 }
 	                    	 }
 		                     result = result + '      <tr>';
 		                     result = result + '        <td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
@@ -2059,7 +2081,7 @@ function getRateListDiv(submissionId, candidateId){
 		                     result = result + '        <td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';
 		                     result = result + '        <td><div class="tblminwidth-75">'+report.createdDateStr+'</div></td>';
 		                     result = result + '        <td>';
-		                     if(i == json.length-1 && report.rateStage == 'NEWRATE' && divState != 'CLIENT' && divState != 'VENDOR' && divState != 'ORG'){
+		                     if(i == json.length-1 && report.rateStage == 'NEWRATE' && isLastNegotiator=="false"){
 		                    	 var Accepted = 'Accepted';
 		                    	 var Rejected = 'Rejected';
 		                     	result = result + '			<a href="javascript:void(0)" class="text-primary" title="Accept" onclick="acceptRejectRate('+submissionId+',\''+Accepted+'\');"><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject" onclick="acceptRejectRate('+submissionId+',\''+Rejected+'\');"><i class="fa fa-times"></i></a>';
@@ -2070,11 +2092,11 @@ function getRateListDiv(submissionId, candidateId){
 	                     result = result + '    </tbody>';
 	                     result = result + '  </table>';
 	                     result = result + '</section>';
-	                     if(divState != 'CLIENT' && divState != 'VENDOR' && divState != 'ORG'){
+	                     if(isLastNegotiator=="false"){
 	                    	 
 		                     result = result + '<div class="clearfix row">';
 		                     result = result + '<form name="rate_form" id="rate_form" method="post">';
-		                     result = result + '  <div class="form-group col-md-5">';
+		                     result = result + '  <div class="form-group col-md-6">';
 		                     result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required">';
 		                     /* result = result + '    <div class="clearfix mt10 pull-right">';
 		                     result = result + '      <input type="button" value="Add" class="btn btn-primary btn-sm mr">';
@@ -2082,7 +2104,7 @@ function getRateListDiv(submissionId, candidateId){
 		                     result = result + '    </div>'; */
 		                     result = result + '  </div>';
 		                     
-		                     result = result + '<div class="form-group col-md-5 select-field">';
+		                     result = result + '<div class="form-group col-md-6 select-field">';
 		                     result = result + ' <select class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Type" data-validation="required">';
 		                     result = result + '	<option value="">Rate Per</option>';
 		                     result = result + '    <option>Hourly</option>';
@@ -2095,10 +2117,10 @@ function getRateListDiv(submissionId, candidateId){
 		                     result = result + ' </select>';
 		                     result = result + ' </div>';
 		                     
-		                     result = result + '  <div class="form-group col-md-7">';
+		                     result = result + '  <div class="form-group col-md-12">';
 		                     result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="rateComment" name="rateComment" field-name="Reason" data-validation="required"></textarea>';
 		                     result = result + '  </div>';
-		                     result = result + '  <div class="form-group col-md-10">';
+		                     result = result + '  <div class="form-group col-md-12">';
 		                     result = result + '    <div class="pull-right">';
 		                     result = result + '      <input type="button" value="Add" class="btn btn-primary btn-sm mr" id="add_rate" onClick="proposeNewRate('+submissionId+','+candidateId+');">';
 		                     result = result + '      <input type="button" value="Cancel" class="btn btn-default btn-sm" onClick="closeratediv();">';
@@ -2118,8 +2140,8 @@ function getRateListDiv(submissionId, candidateId){
 		    	     result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
 		    	     result = result+"   <div class='row'>"; 
 					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
+					 result = result+"		<div class='clearfix'>"; 
+					 result = result+"			<div class='blank-data'>";
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 					 result = result+"			        <p>No rate history found</p>";
 					 result = result+"			 </div>";
@@ -2129,7 +2151,7 @@ function getRateListDiv(submissionId, candidateId){
 		    	     
 		    	     result = result + '<div class="clearfix row">';
 		    	     result = result + '<form name="rate_form" id="rate_form" method="post">';
-                     result = result + '  <div class="form-group col-md-5">';
+                     result = result + '  <div class="form-group col-md-6">';
                      result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required">';
                      /* result = result + '    <div class="clearfix mt10 pull-right">';
                      result = result + '      <input type="button" value="Add" class="btn btn-primary btn-sm mr">';
@@ -2137,7 +2159,7 @@ function getRateListDiv(submissionId, candidateId){
                      result = result + '    </div>'; */
                      result = result + '  </div>';
                      
-                     result = result + '<div class="form-group col-md-5 select-field">';
+                     result = result + '<div class="form-group col-md-6 select-field">';
                      result = result + ' <select class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Type" data-validation="required">';
                      result = result + '	<option value="">Rate Per</option>';
                      result = result + '    <option>Hourly</option>';
@@ -2150,10 +2172,10 @@ function getRateListDiv(submissionId, candidateId){
                      result = result + ' </select>';
                      result = result + ' </div>';
                      
-                     result = result + '  <div class="form-group col-md-7">';
+                     result = result + '  <div class="form-group col-md-12">';
                      result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="rateComment" name="rateComment" field-name="Reason" data-validation="required"></textarea>';
                      result = result + '  </div>';
-                     result = result + '  <div class="form-group col-md-10">';
+                     result = result + '  <div class="form-group col-md-12">';
                      result = result + '    <div class="pull-right">';
                      result = result + '      <input type="button" value="Add" class="btn btn-primary btn-sm mr" id="add_rate" onClick="proposeNewRate('+submissionId+','+candidateId+');">';
                      result = result + '      <input type="button" value="Cancel" class="btn btn-default btn-sm" onClick="closeratediv();">';

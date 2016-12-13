@@ -201,6 +201,12 @@ public class RequirementSubmission implements Serializable{
 	
 	@Transient
 	private String submittedBy;
+	
+	@Transient
+	private String proposedSubmissionRate;
+	
+	@Transient
+	private String clientSubmissionId;
 
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -610,6 +616,22 @@ public class RequirementSubmission implements Serializable{
 
 	public void setSubmittedBy(String submittedBy) {
 		this.submittedBy = submittedBy;
+	}
+
+	public String getProposedSubmissionRate() {
+		return proposedSubmissionRate;
+	}
+
+	public void setProposedSubmissionRate(String proposedSubmissionRate) {
+		this.proposedSubmissionRate = proposedSubmissionRate;
+	}
+
+	public String getClientSubmissionId() {
+		return clientSubmissionId;
+	}
+
+	public void setClientSubmissionId(String clientSubmissionId) {
+		this.clientSubmissionId = clientSubmissionId;
 	}
 
 	public String getRejectedReason() {

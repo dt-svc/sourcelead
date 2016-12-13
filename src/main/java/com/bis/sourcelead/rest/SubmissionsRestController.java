@@ -283,17 +283,16 @@ public class SubmissionsRestController {
     
     @PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
     @RequestMapping(value = "/submitShortlistedToClient" , method = RequestMethod.POST)
-	   public String submitShortlistedToClient(@RequestParam(value="requirementId", required=false) Long requirementId,
-			   @RequestParam(value="submissionsList", required=false) String submissionsList,HttpServletRequest request) throws Exception {
+	   	public String submitShortlistedToClient(@RequestParam(value="requirementId", required=false) Long requirementId,
+			   @RequestParam(value="submissionsList", required=false) String submissionsList,
+			   @RequestParam(value="selectedShortlistsRate", required=false) String selectedShortlistsRate, HttpServletRequest request) throws Exception {
     	
     	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
     	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
     	 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
     	
-    	 requirementSubmissionService.storeClientSubmission(requirementId, user, orgLocations, submissionsList,org);
-    	 
-    	
-    	return "success";
+    	 requirementSubmissionService.storeClientSubmission(requirementId, user, orgLocations, submissionsList, selectedShortlistsRate, org);
+    	 return "success";
     }
     
     
