@@ -88,6 +88,15 @@ public class RequirementRateSubmissionNegotiation {
 	@Transient
 	private String initiatorOrgLocationIdStr;
 	
+	@Transient
+	private String previouslyProposedBy;
+	
+	@Transient
+	private String requirementName;
+	
+	@Transient
+	private String requirementRate;
+	
 
 	public Long getId() {
 		return id;
@@ -240,4 +249,29 @@ public class RequirementRateSubmissionNegotiation {
 	public void setInitiatorOrgLocationIdStr(String initiatorOrgLocationIdStr) {
 		this.initiatorOrgLocationIdStr = initiatorOrgLocationIdStr;
 	}
+
+	public String getPreviouslyProposedBy() {
+		return previouslyProposedBy;
+	}
+
+	public void setPreviouslyProposedBy(String previouslyProposedBy) {
+		this.previouslyProposedBy = previouslyProposedBy;
+	}
+
+	public String getRequirementName() {
+		return requirementName;
+	}
+
+	public void setRequirementName(String requirementName) {
+		this.requirementName = requirementName;
+	}
+
+	public String getRequirementRate() {
+		return requirementRate;
+	}
+
+	public void setRequirementRate(String requirementRate) {
+		this.requirementRate = requirementRate;
+	}
+	
 }

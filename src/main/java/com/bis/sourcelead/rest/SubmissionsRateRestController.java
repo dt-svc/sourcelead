@@ -124,16 +124,18 @@ public class SubmissionsRateRestController {
 			requirementRateSubmissionNegotiation.setCurrentRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
 			requirementRateSubmissionNegotiation.setCurrentRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
 		}
-		requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.CANDIDATE);
+		
 		requirementRateSubmissionNegotiation.setInitiatorOrgLocationId(requirementSubmission.getCandidate().getOrgLocationId());
 		requirementRateSubmissionNegotiation.setRateStage(SubmissionRateStatus.NEWRATE);
 		requirementRateSubmissionNegotiation.setRateReason("rate is changed due to more expectations");
 		requirementRateSubmissionNegotiation.setStatus(Constants.RECORD_ACTIVE);
 		requirementRateSubmissionNegotiation.setCreatedDate(commonUtil.currentDate());
 		if("user".equalsIgnoreCase(type)){
+			requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.ORG);
 			requirementRateSubmissionNegotiation.setCreatedBy(user.getUserCode());
 			requirementRateSubmissionNegotiation.setUpdatedBy(user.getUserCode());
 		}else{
+			requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.CANDIDATE);
 			requirementRateSubmissionNegotiation.setCreatedBy("");
 			requirementRateSubmissionNegotiation.setUpdatedBy("");
 		}
@@ -214,12 +216,36 @@ public class SubmissionsRateRestController {
 	
 	@RequestMapping(value = "/getRateHistoryBySubmissionId", method = RequestMethod.POST)
 	public @ResponseBody String getRateHistoryBySubmissionId(@RequestParam(value = "submissionId", required = false) Long submissionId,
-															 @RequestParam(value = "candidateId", required = false) Long candidateId) throws Exception {
+															 @RequestParam(value = "candidateId", required = false) Long candidateId
+															) throws Exception {
 		 
 		//to get rate history of a requirement
 		List<RequirementRateSubmissionNegotiation> allSubmissionRateHistory = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId,candidateId);
 		for(RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation : allSubmissionRateHistory){
+			
+			RequirementRateSubmissionNegotiation rate = allSubmissionRateHistory.get(allSubmissionRateHistory.size()-1);
+			if(rate != null){
+				if(rate.getCreatedBy() != null && "" != rate.getCreatedBy()){
+					requirementRateSubmissionNegotiation.setPreviouslyProposedBy("User");
+				}else{
+					requirementRateSubmissionNegotiation.setPreviouslyProposedBy("Candidate");
+				}
+			}
 		
+			requirementRateSubmissionNegotiation.setRequirementName(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getRequirement().getJobTitle());
+			requirementRateSubmissionNegotiation.setRequirementRate(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getRequirement().getRate());
+			
+			/*if(requirementRateSubmissionNegotiation.getCreatedBy() != null && "" != requirementRateSubmissionNegotiation.getCreatedBy()){
+	        	 User proposedUser = userService.getUserByUserCode(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getCreatedBy());
+	        	 requirementRateSubmissionNegotiation.setProposeByName(proposedUser.getFirstName()+" "+proposedUser.getLastName());
+			}else{
+				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+				if(candidate.getLastName() != null){
+					requirementRateSubmissionNegotiation.setProposeByName(candidate.getFirstName()+" "+candidate.getLastName());
+				}else{
+					requirementRateSubmissionNegotiation.setProposeByName(candidate.getFirstName());
+				}
+			}*/
 			DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
 			String commonDateFormat = standardFormat.format(requirementRateSubmissionNegotiation.getCreatedDate());
 			requirementRateSubmissionNegotiation.setCreatedDateStr(commonDateFormat.toString());
