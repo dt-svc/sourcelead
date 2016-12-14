@@ -389,6 +389,8 @@ public class RequirementServiceImpl implements RequirementService {
 					if(requirement.getId() != null){
 							if(requirement.getRequirementSubmissionStatus().equals("OPEN")){
 								requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+							}else{
+								requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED);	
 							}
 					}else{
 						requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED);

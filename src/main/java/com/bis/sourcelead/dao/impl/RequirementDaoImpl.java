@@ -339,7 +339,7 @@ public class RequirementDaoImpl implements RequirementDao {
 				params.put("orgLocationId",orgLocationId);
 			}
 		}else{
-			subQuery = "where requirement.orgLocationId.id =:orgLocationId  ";
+			subQuery = "where requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT')  and requirement.orgLocationId.id =:orgLocationId  ";
 			params.put("orgLocationId",orgLocationId);
 		}
 		
