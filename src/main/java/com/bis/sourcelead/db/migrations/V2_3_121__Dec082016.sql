@@ -1,4 +1,8 @@
 
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='You has invited as vendor from {{InviteVendor.clientOrgName}}' WHERE `ID`='37';
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='You has invited as Client from {{inviteClient.vendorOrgName}}' WHERE `ID`='38';
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_INTERVIEW','INTERVIEW_SUBMISSION_TYPE','VARCHAR(250) NULL  AFTER `SUBMISSION_ID`');
 
 UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='You has invited as vendor from {{InviteVendor.clientOrgName}}' WHERE `ID`='37';
 UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='You has invited as Client from {{inviteClient.vendorOrgName}}' WHERE `ID`='38';
@@ -36,5 +40,4 @@ INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_S
 #email_scenario
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`)
 VALUES ('Vendor Accepted Offer', 'Email', 'VendorAcceptedOffer', 'Used to notify vendor requirement offer', '{{VendorAcceptedOffer.ApplicantName}} accepted the offer for {{VendorAcceptedOffer.RequirementName}}', 'sourcelead', 'Best Regards \n {{VendorAcceptedOffer.VendorContact}}','Dear {{VendorAcceptedOffer.ClientContactName}},\n\n {{VendorAcceptedOffer.ApplicantName}} accepted the offer for {{VendorAcceptedOffer.RequirementName}}. \n\n Join Date :{{VendorAcceptedOffer.JoinDate}} \n\n Rate :{{VendorAcceptedOffer.Rate}}\n\n', 'N', 'SLADMIN', 'sourceLead.com', 'in.sourceLead.com');						
-
 
