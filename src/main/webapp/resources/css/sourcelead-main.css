@@ -5064,6 +5064,7 @@ margin-right: 10px;
 }
 .hotlist-header ul.chosen-results{
 	padding: 0 !important;
+	width: 96%;
 }
 
 /* media 320px */
