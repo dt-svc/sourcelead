@@ -831,10 +831,9 @@ public class RequirementListRestController {
 
 
 
-
-@RequestMapping(value = "/getSubmissionsExportByRequirementId")
-
-@ResponseBody  void getSubmissionsExportByRequirementId(@RequestParam(value="requirementId", required=false) String  requirementId,@RequestParam(value="submissionType", required=false) String  submissionType,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	@PreAuthorize("hasAnyRole('ROLE_EXPORT_PIPELINE')")
+	@RequestMapping(value = "/getSubmissionsExportByRequirementId")
+	@ResponseBody  void getSubmissionsExportByRequirementId(@RequestParam(value="requirementId", required=false) String  requirementId,@RequestParam(value="submissionType", required=false) String  submissionType,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");

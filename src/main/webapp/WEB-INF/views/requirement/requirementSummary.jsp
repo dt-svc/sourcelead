@@ -5,6 +5,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
  
  <style type="text/css">
@@ -1154,6 +1155,8 @@ function requirementPipeline(requirementId,submissionType){
 				            result = result +'    </span>';
 				            result = result +' </div>';	
 				            result = result +' </li>';
+				            
+				            '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
 				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
 				            result = result +'<div class="export_pipline" style="display:none">';
 				            result = result +'<ul>';
@@ -1162,7 +1165,7 @@ function requirementPipeline(requirementId,submissionType){
 				            result = result +' </ul>';
 				            result = result +'</div>';
 				            result = result +'</li>';
-				            
+				            '</sec:authorize>';
 				           result = result + '<div class="clearfix"></div>';
 				           result = result + '</div>';
 				           result = result + '<div class="require_wrap_table overflow-data">';
