@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -142,7 +143,7 @@ public class CandidateListRestController {
 	 
 	 
 	 
-	 
+	 @PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
 	 @RequestMapping(value = "/getHotListCandidates")
 	 public String getHotListCandidates(@RequestParam(value="candidateType", required=false) String  candidateType,
 			 HttpServletRequest request) throws Exception {
@@ -482,7 +483,7 @@ public class CandidateListRestController {
 	   
 	   
 	   
-	   
+	   @PreAuthorize("hasRole('ROLE_ADD_CANDIDATE_HOTLIST')")
 	   @RequestMapping(value = "/saveCandidateAsFavourite", method = RequestMethod.POST)
 		public @ResponseBody String saveCandidateAsFavourite(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
 			
@@ -521,7 +522,7 @@ public class CandidateListRestController {
 		}
 	   
 	   
-	   
+	   @PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
 	   @RequestMapping(value = "/assignHotListCandiddatesToTeam", method = RequestMethod.POST)
 		public @ResponseBody String assignHotListCandiddatesToTeam(@RequestParam(value = "teamId", required = false) Long teamId,
 				@RequestParam(value = "hotlist", required = false) String hotlist,HttpServletRequest request) throws Exception {
