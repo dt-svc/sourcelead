@@ -173,9 +173,20 @@ public class DashboardRestController {
 		
 		//List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
 		for(Requirement requirement : requirementList){
-			if(requirement.getClientId() != null){
+			/*if(requirement.getClientId() != null){
 				requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+			}*/
+			//changed ny prasad salina
+			if(requirement.getClientId() != null){
+				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+				}
+				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+					requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+				}
 			}
+			
+			
 			
 			int applicantsCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "APPLICANTS");
 			int shortlistedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SHORTLISTED");
