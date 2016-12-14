@@ -283,6 +283,7 @@ public class RequirementController {
 
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE')")
 	@RequestMapping(value = "/addTemplate")
 	public ModelAndView AddTemplates(HttpServletRequest request,@RequestParam(value="requirementId", required=false) Long requirementId) throws Exception {
 		
@@ -322,7 +323,7 @@ public class RequirementController {
 
 	}
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
 	@RequestMapping(value = "/requirementTemplateSummary")
 	public ModelAndView requirementTemplateSummary(HttpServletRequest request,@RequestParam(value="requirementId", required=false)Long requirementId) throws Exception {
 		 

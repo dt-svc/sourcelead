@@ -61,9 +61,12 @@
 			    
 			    result = result + ' <div class="useredit">';
 			    result = result + ' <div class="pull-right mt">';
-		        result = result + ' <a id="edit-user" href="<c:url value="/addTemplate?requirementId='+requirementId+'"/>"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
-		        result = result + ' <a id="edit-user" href="#" onClick="deleteRequirementTemplate(\''+requirementId+'\',\''+remove+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
-		        
+			    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\')">';
+			        result = result + ' <a id="edit-user" href="<c:url value="/addTemplate?requirementId='+requirementId+'"/>"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+			    '</sec:authorize>';
+			     '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">';    
+			        result = result + ' <a id="edit-user" href="#" onClick="deleteRequirementTemplate(\''+requirementId+'\',\''+remove+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
+		        '</sec:authorize>';
 		        result = result + ' <div id="remove_user_id" class="remove_user_pop" >';
 				result = result +'<textarea placeholder="Comments here" id="reason" name="reason"/></textarea>';
 				result = result + ' <div />';
@@ -106,19 +109,19 @@
 				 
 				 if(json.skills != null && json.skills != "" && json.skills != 'undefined'){
 						result = result + ' 		<div class="project_details_cta">';
-						result = result + '				 <strong>Skills :</strong><span class="fix">'+json.skills+'</span><div class="clearfix"></div>';
+						result = result + '				 <strong>Skills :</strong><span class="fix" title="'+json.skills+'">'+json.skills+'</span><div class="clearfix"></div>';
 						result = result + ' 		</div>';
 					 }
 				 
 				 if(json.education != null && json.education != "" && json.education != 'undefined'){
 						result = result + ' 		<div class="project_details_cta">';
-						result = result + '				 <strong>Education :</strong><span class="fix">'+json.education+'</span><div class="clearfix"></div>';
+						result = result + '				 <strong>Education :</strong><span class="fix" title="'+json.education+'">'+json.education+'</span><div class="clearfix"></div>';
 						result = result + ' 		</div>';
 					 }
 				 
 				 if(json.description != null && json.description != "" && json.description != 'undefined'){
 						result = result + ' 		<div class="project_details_cta">';
-						result = result + '				 <strong>Description :</strong><span class="fix">'+json.description+'</span><div class="clearfix"></div>';
+						result = result + '				 <strong>Description :</strong><span class="fix" title="'+json.description+'">'+json.description+'</span><div class="clearfix"></div>';
 						result = result + ' 		</div>';
 					 }
 				 
