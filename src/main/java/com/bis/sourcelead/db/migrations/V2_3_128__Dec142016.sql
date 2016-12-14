@@ -1,5 +1,5 @@
 
-UPDATE `sourcelead`.`email_scenario` SET `BODY`='Dear {{ApplicantNegotiateRequirement.initiatorUserName}}, \n\n  {{ApplicantNegotiateRequirement.applicantName}} requested new rate for the {{ApplicantNegotiateRequirement.requirementName}},Please find out the details,acknowledge for rate . \n{{ApplicantNegotiateRequirement.negotiationTable}} \n' WHERE `ID`='73';
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{ApplicantNegotiateRequirement.initiatorUserName}}, \n\n  {{ApplicantNegotiateRequirement.applicantName}} requested new rate for the {{ApplicantNegotiateRequirement.requirementName}},Please find out the details,acknowledge for rate . \n{{ApplicantNegotiateRequirement.negotiationTable}} \n' WHERE `ID`='73';
 
 
 INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('70', 'negotiationTable', '{{ApplicantNegotiateRequirement.negotiationTable}}');
