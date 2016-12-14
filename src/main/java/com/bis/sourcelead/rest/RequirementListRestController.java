@@ -848,7 +848,7 @@ public class RequirementListRestController {
 				} 
      }
 
-		
+		@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
 		 @RequestMapping(value = "/getRequirementTemplateListByOrgLocationsId" , method = RequestMethod.POST)
 		 public @ResponseBody  String getRequirementTemplateListByOrgLocationsId(HttpServletRequest request) throws Exception {
 			 
@@ -860,6 +860,7 @@ public class RequirementListRestController {
 				return resultJson;
 	     }
 		 
+		 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
 		 @RequestMapping(value = "/getRequirementTemplateByRequirementId" , method = RequestMethod.POST)
 		 public @ResponseBody  String getRequirementTemplateByRequirementId(@RequestParam(value="requirementId", required=false) Long  requirementId,
 				 HttpServletRequest request) throws Exception {
