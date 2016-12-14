@@ -171,7 +171,10 @@
 		                     result = result +"<tr>";
 		                     result = result +"<td style='width : 25px;'>";
 		                     result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.id+"'>";
+		                     '<sec:authorize access="hasRole(\'ROLE_ADD_CANDIDATE_HOTLIST\')">'; 
 		                     result = result +"<input type='checkbox' id='fav"+opt.id+"' "+isFavourite+" onclick='addFavourite("+opt.id+")'></input>";
+		                     '</sec:authorize>';
+		                    
 		                     result = result +" <label></label>";
 		                     result = result +"</div>";
 		                     result = result +"</td>";
@@ -861,6 +864,7 @@ function cancel(candidateId){
     <div class="vendor_wrap">
       <div class="timesheet_head hdr-styles">
         <ul>
+          <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES')">
           <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="candidate-export"></i>
             <div class="export_pop">
               <ul>
@@ -869,6 +873,7 @@ function cancel(candidateId){
               </ul>
             </div>
           </li>
+          </sec:authorize>
 	      
            <li><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
@@ -913,7 +918,9 @@ function cancel(candidateId){
               <li><a href="<c:url value='/addConsultant'/>" title=""><i class="fa fa-plus"></i>Add Consultant</a></li>
            </sec:authorize>
            
-           <li><a href="<c:url value='/assignHotListToTeam'/>" title=""><i class="fa fa-plus"></i>Assign To Team</a></li>
+           <sec:authorize access="hasAnyRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')">
+              <li><a href="<c:url value='/assignHotListToTeam'/>" title=""><i class="fa fa-plus"></i>Assign To Team</a></li>
+           </sec:authorize>
            </ul>
            </div>
           </li>

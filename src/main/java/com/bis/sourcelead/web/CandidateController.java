@@ -132,8 +132,7 @@ public class CandidateController {
 	
 	
 	
-	
-	
+	@PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
 	@RequestMapping(value = "/assignHotListToTeam")
 	public ModelAndView assignHotListToTeam(HttpServletRequest request) throws Exception {
 		
