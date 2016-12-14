@@ -143,10 +143,10 @@ $(document).ready(function() {
     
     
      <div class="clients_side_wrap_inn no_pad">
-
         <div id="requirementSideDiv"> </div>
           <div id="loading"></div>
-
+        <input type="hidden" id="emptyPipelinelist" name="emptyPipelinelist">
+       <!--  <div id="requirementStatusDiv"> </div>  -->
       </div>   
       
       <!-- Addede by Rajashekar -->
@@ -1172,7 +1172,9 @@ function requirementPipeline(requirementId,submissionType){
 				           result = result + '<tr>';
 				           result = result + '<th>Name</th>';
 				           result = result + '<th>Email</th>';
+				           if(submissionType != 'REJECTED'){
 				           result = result + '<th>Ph. No</th>';
+				           }
 				           result = result + '<th>Resume</th>';
 				           if(submissionType == 'all' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
 				        	   result = result + '<th>Applied on</th>';
@@ -1192,11 +1194,18 @@ function requirementPipeline(requirementId,submissionType){
 							   result = result + '<th>Offer Rate</th>'; 
 							   result = result + '<th>Attachment</th>'; 
 					           }
+
 				           if(submissionType == 'all' || submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
 				        	   if(submissionType != 'INTERVIEW'){
 				        		   result = result + '<th>Score</th>';
 						           result = result + '<th>Exp</th>';
 				        	   }
+					           result = result + '<th>Status</th>';
+				           }
+				           if(submissionType == 'REJECTED'){
+				        	   result = result + '<th>Rejected On</th>';
+				        	   result = result + '<th>Rejected By</th>';
+					           result = result + '<th>Rejected Stage</th>';
 					           result = result + '<th>Status</th>';
 				           }
 				           result = result + '         </tr>';
@@ -1220,13 +1229,15 @@ function requirementPipeline(requirementId,submissionType){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
 						           
-						           
+						           if(submissionType != 'REJECTED'){
 						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.phoneNumber+'</span></div></td>';
 							           }
+						           
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
+						           }
 						           
 						           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
 						        	   result = result + '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeId+'\"></a></span></div></td>';
@@ -1343,6 +1354,7 @@ function requirementPipeline(requirementId,submissionType){
 								        	result = result + '         <td><div><span>--</span></div></td>';
 							    	     } 
 						           }
+
 						           if(submissionType == 'all' || submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
 						        	   
 						        	   if(submissionType != 'INTERVIEW'){
@@ -1361,6 +1373,30 @@ function requirementPipeline(requirementId,submissionType){
 								    	     }
 						        	   }
 						        	   
+						        	   if(submissionType != 'REJECTED'){
+						        	   if(report.score != null && report.score != '' && report.score != 'undefined'){
+							        	   result = result + '         <td><div><span>'+report.score+'</span></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     }
+						        	   }
+							           if(submissionType != 'REJECTED'){
+							           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
+							        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
+								           }
+								       else{
+								        	result = result + '         <td><div><span>--</span></div></td>';
+							    	     }
+							           }
+							           
+							           if(submissionType == 'REJECTED'){
+							           result = result + '<td><div class="tblwidth-150"><span>'+report.upDatedStr+'</span>';
+						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submittedBy+'</span>';
+						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>';
+							           
+							           }
+							           
 							           if(report.submissionStatus == 'REJECTED'){
 							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 							        	   result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
@@ -1390,6 +1426,7 @@ function requirementPipeline(requirementId,submissionType){
 							$("#status-data").empty();
 							$("#status-data").append(result);
 							$("#tab-2").append(status-data);
+							$("#emptyPipelinelist").val(json.length);
 							
 							documentpagination();
 							$("#tab-2").show();
@@ -2251,11 +2288,22 @@ function closeratediv(){
 function exportPipelineToExcel(requirementId,submissionType){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  alert(" requirementId "+requirementId);
-	  alert(" submissionType "+submissionType);
-	  
-      window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
+	  var emptypilpeline = $("#emptyPipelinelist").val();
+      if(emptypilpeline > 0 ){
+          window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
+	  }else{
+		  var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#pipeline_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	  }
+
 }
 
 </script>
@@ -2265,14 +2313,32 @@ function exportPipelineToExcel(requirementId,submissionType){
 function exportPipelineToPdf(requirementId,submissionType){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
-	  alert(" requirementId "+requirementId);
-	  alert(" submissionType "+submissionType);
-      window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=pdf";
+	  var emptypilpeline = $("#emptyPipelinelist").val();
+	  if(emptypilpeline > 0 ){
+		  window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=pdf";
+	  }else{
+		  var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#pipeline_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	  }
+      
 }
 
 </script> 
 
-
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />
 <jsp:include page="submitToClient.jsp" />
