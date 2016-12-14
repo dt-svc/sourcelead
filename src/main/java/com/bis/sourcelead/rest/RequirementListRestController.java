@@ -262,9 +262,26 @@ public class RequirementListRestController {
 					}
 					if(requirement.getSpocId() !=null){
 						if(requirement.getClientId() !=null ){
-							requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+							if(requirement.getClientId().getInitiatorType().equalsIgnoreCase("Client")){
+								requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+							}
+							if(requirement.getClientId().getInitiatorType().equalsIgnoreCase("Vendor")){
+								requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+							}
 						}
-					requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
+					//requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
+					
+					if(requirement.getSpocId().getInitiatorLocationId().getId() == loginOrgLocation.getId() ){
+						
+						if(requirement.getSpocId().getSpocUser().getFirstName() != null && requirement.getSpocId().getSpocUser().getFirstName() != "" && requirement.getSpocId().getSpocUser().getLastName() != null && requirement.getSpocId().getSpocUser().getLastName() != "" ){
+							requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
+						}else{
+							requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName());
+						}
+					 }
+					if(requirement.getSpocId().getResponderLocationId().getId() == loginOrgLocation.getId()){
+						requirement.setSpocName(requirement.getSpocId().getOwnerUser().getFirstName()+" "+requirement.getSpocId().getOwnerUser().getLastName());
+					}
 					requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
 					requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
 					/*requirement.setClientSubmissionTemplate(requirement.getClientSubmissionTemplateId().getTemplateName());*/
