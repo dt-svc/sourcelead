@@ -158,6 +158,15 @@ public class RequirementRestController {
 		
 	}
 	
+	/**
+	 * This method is used for to create template and stored in Requirement table
+	 * @param json
+	 * @param request
+	 * @return success msg
+	 * @throws NullPointer
+	 */
+	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE')")
 	@RequestMapping(value = "/storeRequirementTemplate", method = RequestMethod.POST)
 	public @ResponseBody String storeRequirementTemplate(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
 		
@@ -497,27 +506,5 @@ public class RequirementRestController {
 				return validatejobName.toString();
 		    }
 	 
-	 
-		@RequestMapping(value = "/terminateRequirementTemplate", method = RequestMethod.POST)
-		public @ResponseBody String terminateRequirementTemplate(String requirementId, String status, HttpServletRequest request) throws Exception {
-			
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			
-			Requirement rt =  requirementService.getRequirementTemplateByRequirementId(Long.parseLong(requirementId),orgLocation.getId());
-			if(rt != null){
-				
-				if(status.equalsIgnoreCase("remove")){
-					rt.setStatus(Constants.MEMBER_IN_ACTIVE);
-				}else if(status.equalsIgnoreCase("reActive")){
-					rt.setStatus(Constants.MEMBER_ACTIVE);
-				}
-				
-				rt.setUpdatedBy(user.getUserCode());
-				rt.setUpdatedDate(commonUtil.currentDate());
-				requirementService.updateRequirementTemplate(rt);
-			}
-			return "success";
-		}
 		
 }
