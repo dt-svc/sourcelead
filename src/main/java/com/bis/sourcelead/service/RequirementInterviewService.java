@@ -55,7 +55,7 @@ public interface RequirementInterviewService {
 	void sendEmailToInterviewrs(Candidate candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser,Org org,RequirementInterview requirementInterview,OrgLocations orgLocations)	throws Exception;
 
 
-	List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
+	//List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 	
 
 }

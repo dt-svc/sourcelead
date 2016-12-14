@@ -12,5 +12,7 @@ public interface RequirementInterviewHistoryService {
 	RequirementInterviewHistory getRequirementInterviewHistoryById(Long Id);
 	
 	List<RequirementInterviewHistory> getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
+	
+	List<RequirementInterviewHistory> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 
 }

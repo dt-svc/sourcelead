@@ -1,30 +1,8 @@
 
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='You has invited as vendor from {{InviteVendor.clientOrgName}}' WHERE `ID`='37';
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='You has invited as Client from {{inviteClient.vendorOrgName}}' WHERE `ID`='38';
 
-ALTER TABLE `sourcelead`.`REQUIREMENT_INTERVIEW` 
-DROP COLUMN `NOTIFICATION_TO_SPOC`,
-DROP COLUMN `NOTIFICATION_TO_APPLICANT`;
-
-DROP TABLE IF EXISTS `sourcelead`.`REQUIREMENT_INTERVIEW_HISTORY`;
-CREATE TABLE `sourcelead`.`REQUIREMENT_INTERVIEW_HISTORY` (
-  ID BIGINT NOT NULL AUTO_INCREMENT,
-  INTERVIEW_ID BIGINT DEFAULT NULL,
-  SUBMISSION_ID BIGINT DEFAULT NULL,
-  ORG_LOCATION_ID BIGINT DEFAULT NULL,
-  INTERVIEW_SOURCE_TYPE VARCHAR(250),
-  NOTIFICATION_TO_APPLICANT VARCHAR(3),
-  NOTIFICATION_TO_SPOC VARCHAR(2),
-  STATUS INT(10) DEFAULT NULL,
-  CREATED_DATE DATETIME,
-  CREATED_BY VARCHAR(10),
-  UPDATED_DATE DATETIME,
-  UPDATED_BY VARCHAR(10),
-  
-  PRIMARY KEY (`ID`), 
-  FOREIGN KEY(INTERVIEW_ID) REFERENCES `sourcelead`.`REQUIREMENT_INTERVIEW`(ID),
-  FOREIGN KEY(SUBMISSION_ID) REFERENCES `sourcelead`.`REQUIREMENT_SUBMISSION`(ID),
-  FOREIGN KEY(ORG_LOCATION_ID) REFERENCES `sourcelead`.`ORG_LOCATIONS`(ID)
-); 
-
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_INTERVIEW','INTERVIEW_SUBMISSION_TYPE','VARCHAR(250) NULL  AFTER `SUBMISSION_ID`');
 
 UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='You has invited as vendor from {{InviteVendor.clientOrgName}}' WHERE `ID`='37';
 UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='You has invited as Client from {{inviteClient.vendorOrgName}}' WHERE `ID`='38';
@@ -62,5 +40,4 @@ INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_S
 #email_scenario
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`)
 VALUES ('Vendor Accepted Offer', 'Email', 'VendorAcceptedOffer', 'Used to notify vendor requirement offer', '{{VendorAcceptedOffer.ApplicantName}} accepted the offer for {{VendorAcceptedOffer.RequirementName}}', 'sourcelead', 'Best Regards \n {{VendorAcceptedOffer.VendorContact}}','Dear {{VendorAcceptedOffer.ClientContactName}},\n\n {{VendorAcceptedOffer.ApplicantName}} accepted the offer for {{VendorAcceptedOffer.RequirementName}}. \n\n Join Date :{{VendorAcceptedOffer.JoinDate}} \n\n Rate :{{VendorAcceptedOffer.Rate}}\n\n', 'N', 'SLADMIN', 'sourceLead.com', 'in.sourceLead.com');						
-
 
