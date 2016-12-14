@@ -1,0 +1,182 @@
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
+
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script
+	src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+
+<script src="resources/js/jquery-fun.js"></script>
+
+<script src="resources/js/chosen.jquery.min.js"></script>
+<script src="resources/js/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+
+
+<script>
+ window.onload = function() { 
+	 viewRequirementTemplateDetails();
+};
+</script>
+
+      	  <div class="content-wraper">
+<section class="content-header clearfix">
+		<div class="pull-left">
+			<h2>Template Details</h2>
+		</div>
+		<div class="pull-right brud-crum">
+			<a href="/sourcelead/dashboard/1">Home</a>»<a href="/sourcelead/requirementList">Requirement List </a>»
+			Add Requirement
+		</div>
+	</section>
+		      <div class="content-area">
+		      				<div id="viewReqTemplateDiv" class="mt">
+						     </div>  
+		      </div>
+          </div>
+<script>
+ function viewRequirementTemplateDetails(){  
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var requirementId= ${requirementId}
+	 $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getRequirementTemplateByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 
+	        success: function(data) {
+	        	 
+			    var json = JSON.parse(data);
+			    var result = "";
+			    
+			    var remove = "remove";
+			    var reActive = "reActive";
+			    
+			    if(json.status != null && json.status != "" && json.status != '0'){ 
+			    
+			    result = result + ' <div class="useredit">';
+			    result = result + ' <div class="pull-right mt">';
+		        result = result + ' <a id="edit-user" href="<c:url value="/addTemplate?requirementId='+requirementId+'"/>"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+		        result = result + ' <a id="edit-user" href="#" onClick="deleteRequirementTemplate(\''+requirementId+'\',\''+remove+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
+		        
+		        result = result + ' <div id="remove_user_id" class="remove_user_pop" >';
+				result = result +'<textarea placeholder="Comments here" id="reason" name="reason"/></textarea>';
+				result = result + ' <div />';
+				result = result + ' <b><input  value="Submit" type="button"/><input class="u_can_color" onclick="cancelUser();" value="Cancel" type="button"></b>';
+	            result = result + ' </div>';
+			    }/* else{
+			    
+			    result = result + ' <div class="useredit">';
+			    result = result + ' <div class="pull-right mt">';
+		        result = result + ' <a id="edit-user" href="#" onClick="deleteRequirementTemplate(\''+requirementId+'\',\''+reActive+'\');"><i class="glyphicon glyphicon-trash"></i>Re-Active</a>';
+		        
+	            result = result + ' </div>';
+	            result = result + ' </div>';
+			    
+			    }  */
+		        
+		        result = result + ' </div>'; 
+		        result = result + ' </div>';
+		        result = result + ' <div class="clearfix"></div>';
+			    
+				 result = result + '<div class="user_details_cta mt">';
+				 result = result + '<div class="clearfix">';
+				 if(json.jobTitle != null && json.jobTitle != "" && json.jobTitle != 'undefined'){
+					result = result + '<div class="project_details_cta">';
+					result = result + '<strong>Job Title :</strong><span class="fix">'+json.jobTitle+'-'+json.jobType+'</span><div class="clearfix"></div>';
+					result = result + ' </div>';
+				 }
+				 
+				 if(json.minExp != null && json.minExp != "" && json.minExp != 'undefined'){
+						result = result + ' 		<div class="project_details_cta">';
+						result = result + '				 <strong>Min Experience :</strong><span class="fix">'+json.minExp+'</span><div class="clearfix"></div>';
+						result = result + ' 		</div>';
+					 }
+				 
+				 if(json.maxExp != null && json.maxExp != "" && json.maxExp != 'undefined'){
+						result = result + ' 		<div class="project_details_cta">';
+						result = result + '				 <strong>Min Experience :</strong><span class="fix">'+json.maxExp+'</span><div class="clearfix"></div>';
+						result = result + ' 		</div>';
+					 }
+				 
+				 if(json.skills != null && json.skills != "" && json.skills != 'undefined'){
+						result = result + ' 		<div class="project_details_cta">';
+						result = result + '				 <strong>Skills :</strong><span class="fix">'+json.skills+'</span><div class="clearfix"></div>';
+						result = result + ' 		</div>';
+					 }
+				 
+				 if(json.education != null && json.education != "" && json.education != 'undefined'){
+						result = result + ' 		<div class="project_details_cta">';
+						result = result + '				 <strong>Education :</strong><span class="fix">'+json.education+'</span><div class="clearfix"></div>';
+						result = result + ' 		</div>';
+					 }
+				 
+				 if(json.description != null && json.description != "" && json.description != 'undefined'){
+						result = result + ' 		<div class="project_details_cta">';
+						result = result + '				 <strong>Description :</strong><span class="fix">'+json.description+'</span><div class="clearfix"></div>';
+						result = result + ' 		</div>';
+					 }
+				 
+				result = result + '	</div>';
+				result = result + '</div>';
+				$("#viewReqTemplateDiv").empty();  
+   	    	    $("#viewReqTemplateDiv").append(result);
+				
+				
+	    
+	      },
+	});
+ }
+</script>
+
+<script>
+function deleteRequirementTemplate(requirementId, status){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var message = confirm("You are choosing to delete the Requirement Template");
+	if (message == true) {
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/terminateRequirementTemplate?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status, 	   
+   		    success: function(data) {
+   		    	if( data.indexOf('Sign In') >= 0){
+		    		location.replace(sourceleadUrl);
+		    	 }
+        		 else if (data.indexOf('exception') >= 0) {
+        			 location.replace(sourceleadUrl+"/errorPage");
+        		 }
+        		 else{
+        			 location.replace(sourceleadUrl+"/template");
+        			 
+        		 }
+   		    }
+	     });
+	}
+}
+</script>
+
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>
+<jsp:include page="../masterFooter.jsp" />

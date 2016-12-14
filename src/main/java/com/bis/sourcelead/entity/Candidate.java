@@ -185,6 +185,9 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private String reqSubmissionId;
 	 
+	 @Transient
+	 private String isFavourite;
+	 
 	 
 	 
 	 @Transient
@@ -665,6 +668,16 @@ public class Candidate implements Serializable{
 
 	public void setCandidateType(String candidateType) {
 		this.candidateType = candidateType;
+	}
+
+
+	public String getIsFavourite() {
+		return isFavourite;
+	}
+
+
+	public void setIsFavourite(String isFavourite) {
+		this.isFavourite = isFavourite;
 	}
 	
 	
