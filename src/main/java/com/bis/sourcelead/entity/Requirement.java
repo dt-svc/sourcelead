@@ -264,6 +264,17 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String isLoginUserAsManager;
 	
+	@Transient
+	private String mailBody;
+	
+	@Transient
+	private String submitToClientFromMailId;
+	
+	@Transient
+	private String submitToClientToMailId;
+	
+	@Transient
+	private String submitToClientMailSubject;
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -821,4 +832,38 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setOtherJobType(String otherJobType) {
 		this.otherJobType = otherJobType;
 	}
+
+	public String getMailBody() {
+		return mailBody;
+	}
+
+	public void setMailBody(String mailBody) {
+		this.mailBody = mailBody;
+	}
+
+	public String getSubmitToClientFromMailId() {
+		return submitToClientFromMailId;
+	}
+
+	public void setSubmitToClientFromMailId(String submitToClientFromMailId) {
+		this.submitToClientFromMailId = submitToClientFromMailId;
+	}
+
+	public String getSubmitToClientToMailId() {
+		return submitToClientToMailId;
+	}
+
+	public void setSubmitToClientToMailId(String submitToClientToMailId) {
+		this.submitToClientToMailId = submitToClientToMailId;
+	}
+
+	public String getSubmitToClientMailSubject() {
+		return submitToClientMailSubject;
+	}
+
+	public void setSubmitToClientMailSubject(String submitToClientMailSubject) {
+		this.submitToClientMailSubject = submitToClientMailSubject;
+	}
+	
+	
 }

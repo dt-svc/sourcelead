@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.json.JSONObject;
@@ -61,6 +62,8 @@ public interface RequirementSubmissionService {
 
 	List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long valueOf, User user,
 			OrgLocations loginOrgLocation, String submissionType)throws Exception;
+
+	void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations orgLocations,String submissionsList, Org org, JSONObject jsonObj, Map files)throws Exception;
 
 
 }
