@@ -17,11 +17,13 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -49,6 +51,9 @@ public class SubmissionsRateController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	UserRoleService userRoleService;
 
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
@@ -60,6 +65,10 @@ public class SubmissionsRateController {
     private String sourceleadUrl;
 	
  
+	/**
+	 * this method is used to Accept or reject or to negotiate rate from Candidate
+	 *
+	 */
 	@RequestMapping(value = "/acceptOrRejectOrRateNegotiateApplicantRates")
 	public ModelAndView acceptOrRejectOrRateNegotiateApplicantRates(@RequestParam(value="rateStatus", required=false) String rateStatus,
 			@RequestParam(value = "submissionId", required = false) Long submissionId,
@@ -81,12 +90,49 @@ public class SubmissionsRateController {
 			
 			
 			Requirement requirement = requirementSubmission.getRequirement();
-			User initiatorUser = requirementSubmission.getOrgLocations().getUser();
+			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), requirementSubmission.getOrgLocations().getId());
 			Candidate candidate = requirementSubmission.getCandidate();
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
-			requirementSubmissionService.applicantAcceptMailAboutRequirement(requirement,initiatorUser,candidate,orgLocations);
+			requirementSubmissionService.applicantAcceptMailAboutRequirement(requirement,userRole.getUser(),candidate,orgLocations);
 			
 		}
+		return model;
+
+	}
+	
+	/**
+	 * This method is used to Accept or Reject or Negotiate Rate from User.
+	 */
+	@RequestMapping(value = "/acceptOrRejectOrRateNegotiateUserRates")
+	public ModelAndView acceptOrRejectOrRateNegotiateUserRates(@RequestParam(value="rateStatus", required=false) String rateStatus,
+			@RequestParam(value = "submissionId", required = false) Long submissionId,
+			 HttpServletRequest request) throws Exception {
+		
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+		
+		ModelAndView model = new ModelAndView();
+		model.addObject("rateStatus",rateStatus);
+		model.addObject("type","user");
+		model.addObject("submissionId",submissionId);
+		model.addObject("sourceleadUrl",sourceleadUrl);
+		model.addObject("requirementSubmission",requirementSubmission);
+		model.setViewName("requirement/submissionRate");
+		
+		/*if("Accepted".equalsIgnoreCase(rateStatus)){
+			//write accept logic ....like send mail and put status as submission
+			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+			
+			
+			Requirement requirement = requirementSubmission.getRequirement();
+			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), requirementSubmission.getOrgLocations().getId());
+			Candidate candidate = requirementSubmission.getCandidate();
+			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
+			requirementSubmissionService.applicantAcceptMailAboutRequirement(requirement,userRole.getUser(),candidate,orgLocations);
+			
+		}*/
 		return model;
 
 	}
