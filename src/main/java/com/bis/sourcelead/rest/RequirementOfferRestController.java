@@ -33,6 +33,7 @@ import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
@@ -41,6 +42,7 @@ import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -74,6 +76,9 @@ public class RequirementOfferRestController {
 	
 	@Autowired
 	RequirementAssignToService  requirementAssignToService;
+	
+	@Autowired
+	private RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
 	
 	@Autowired
 	RequirementService  requirementService;
@@ -118,36 +123,36 @@ public class RequirementOfferRestController {
 		String resultJson = null;
 	
 		List<RequirementSubmission> shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations.getId(), requirementId,existingApplicantsIds,isClientOffer);
+		for (RequirementSubmission requirementSubmission : shortListCandidatesList) {
+			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+			if(requirementSubmissionTemplateFields.getLastName() != null){
+				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName()+" "+requirementSubmissionTemplateFields.getLastName());
+			}else{
+				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
+			}
+		}
+		resultJson = commonUtil.toJSON(shortListCandidatesList);
+		return resultJson;
 		
-		/*for (RequirementSubmission sub : shortListCandidatesList) {
-			String candidateName = "";
- 		   if(StringUtils.isNotEmpty(sub.getCandidate().getFirstName())){
- 			   candidateName = sub.getCandidate().getFirstName();
- 		   }
- 		   if(StringUtils.isNotEmpty(sub.getCandidate().getLastName()) && StringUtils.isNotBlank(sub.getCandidate().getLastName())){
- 			   candidateName = candidateName+" "+sub.getCandidate().getLastName();
- 		   }
- 		  sub.setCandidateName(candidateName);
-		}*/
-		
-	    List<RequirementSubmission>  list = new ArrayList<RequirementSubmission>();
+		//commented by prasad salina
+	    /*List<RequirementSubmission>  list = new ArrayList<RequirementSubmission>();
 		for (RequirementSubmission sub : shortListCandidatesList) {
 			 RequirementAssignTo  requirementAssignTo = requirementAssignToService.getRequirementAssignToByRequirementId(sub.getRequirement().getId());
-			 /*
+			 
 			  * Offer can be shown to either loggedin user is admin of org  or 
 			  *                                               manager of  requirement or 
 			  *                                               requirement assigned to owner or
 			  *                                               requirement team lead
 			  *                                               
-			  */
+			  
 			 String loginUserType =  (String) SourceLeadSessionManager.getSessionAttribute(request, "userType");
-			/* if(requirementAssignTo != null && 
+			if(requirementAssignTo != null && 
 					 (sub.getCreatedBy().equalsIgnoreCase(loginUser.getUserCode()) 
 					   || (sub.getRequirement().getManagerUserId().getId() == loginUser.getId())
 					   || (StringUtils.isNotEmpty(loginUserType) && loginUserType.equalsIgnoreCase(Constants.ADMIN)) 
 					   || ( requirementAssignTo.getTeamId() !=null && requirementAssignTo.getTeamId().getOwnerUserId().getId() == loginUser.getId())
 					  )
-					){*/
+					){
 						
 							String candidateName = "";
 				 		   if(StringUtils.isNotEmpty(sub.getCandidate().getFirstName())){
@@ -159,14 +164,11 @@ public class RequirementOfferRestController {
 				 		  sub.setCandidateName(candidateName);
 				 		 list.add(sub);
 					 
-			 /*}*/
+			 }
 			 
 		}
-	
-	
-		
 		resultJson = commonUtil.toJSON(list);
-		return resultJson;
+		return resultJson;*/
 	}
 	
 	
@@ -326,11 +328,59 @@ public class RequirementOfferRestController {
 	
 	@RequestMapping(value = "/acceptOrRejectOffer")
     @ResponseBody  String acceptOrRejectOffer(@RequestParam(value="offerStatus", required=false) String offerStatus,
-                           @RequestParam(value = "submissionId", required = false) Long submissionId,
+                           @RequestParam(value = "offerId", required = false) Long offerId,
                            HttpServletRequest request) throws Exception {
 
 			 String setofferStatus = "";
-            RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submissionId);
+			 
+			 
+			 RequirementOffers requirementOffers  = requirementOffersService.getRequirementOfferId(offerId);
+				List<RequirementOfferHistory> requirementOfferHistories = requirementOfferHistoryService.getAllRequirementOfferHistoriesByOfferId(offerId);
+			    
+			    if(requirementOfferHistories != null && !requirementOfferHistories.isEmpty() ){  
+				    if(offerStatus.equalsIgnoreCase("Accepted")){
+				    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
+				    		   RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
+					    		if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
+					    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+					    		}else{
+					    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);
+					    		}
+								 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+								 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+						  }
+				    	
+				    	  //Changing the status of offerTable 
+					      if(requirementOffers  != null){
+							    requirementOffers.setOfferStatus("OFFERACCEPTED");
+							    requirementOffers.setUpdatedDate(commonUtil.currentDate());
+							    requirementOffersService.saveOfferStatus(requirementOffers);
+					     }
+					      setofferStatus ="you have accepted the offer";
+			    }else if(offerStatus.equalsIgnoreCase("Rejected")){
+			    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
+			    		    RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
+				    		if(requirementSubmission.getSourceSubmission() == null){
+				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
+				    		}else{
+				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERREJECTED);
+				    		}
+							 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+							 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+					  }
+			    	
+			    	  //Changing the status of offerTable 
+					  if(requirementOffers  != null ){
+						    requirementOffers.setOfferStatus("OFFERREJECTED");
+						    requirementOffers.setUpdatedDate(commonUtil.currentDate());
+						    requirementOffersService.saveOfferStatus(requirementOffers);
+				      }
+					  setofferStatus ="you have rejected the offer";
+			    }
+			 }
+			 
+			 
+            /*RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submissionId);
 
             RequirementSubmission requirementSubmission   =requirementSubmissionService.getRequirementSubmissionById(submissionId);
             if(offerStatus.equalsIgnoreCase("Accepted")){
@@ -353,7 +403,7 @@ public class RequirementOfferRestController {
                         setofferStatus ="you have rejected the offer";
                     }
                     
-            }
+            }*/
             
            return setofferStatus;
     }                
