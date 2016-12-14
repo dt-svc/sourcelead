@@ -91,9 +91,9 @@ function requirementTemplateList(){
 	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
-	                    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
+	                    	 result = result +"<tr>"; 
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\',\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
-		                     	result = result +'<td><div class="proj_show tbldata-dotdot"><a href="<c:url value="/requirementTemplateSummary?requirementId='+opt.id+'"/>" ><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'</span></a></div></td>';
+		                     	result = result +'<td><div class="proj_show tbldata-dotdot"><a href="<c:url value="/requirementTemplateSummary?requirementId='+opt.id+'"/>" ><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-binoculars"></i></span></a></div></td>';
 		                     '</sec:authorize>';
 		                     if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
 		                    	 result = result +"<td><div>"+opt.jobType+"</div></td>";
@@ -108,7 +108,7 @@ function requirementTemplateList(){
 		                     }
 		                     
 		                     if(opt.skills!=null && opt.skills !='' && opt.skills !='undefined'){
-		                    	 result = result +"<td><div>"+opt.skills+"</div></td>";
+		                    	 result = result +"<td><div title='"+opt.skills+"'>"+opt.skills+"</div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
@@ -118,10 +118,6 @@ function requirementTemplateList(){
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
-		                     
-		                  /*   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\',\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
-		                     result = result +' <td><div><a href="<c:url value="/requirementTemplateSummary?requirementId='+opt.id+'"/>" class="glyphicon glyphicon-pencil"></a></div></td>';
-		                    '</sec:authorize>'; */
 		                    
 		                    result = result +"</tr>";
 	                     }
