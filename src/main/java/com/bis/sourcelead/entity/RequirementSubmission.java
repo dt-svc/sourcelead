@@ -185,6 +185,9 @@ public class RequirementSubmission implements Serializable{
 	List<RequirementInterview> requirementInterviewList;
 	
 	@Transient
+	List<RequirementInterviewHistory> requirementInterviewHistoryList;
+	
+	@Transient
 	private String offerJoinDate;
 	
 	@Transient
@@ -207,6 +210,9 @@ public class RequirementSubmission implements Serializable{
 	
 	@Transient
 	private String clientSubmissionId;
+
+	@Transient
+	private String submittedOn;
 
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -440,6 +446,14 @@ public class RequirementSubmission implements Serializable{
 	public void setSkillsList(String skillsList) {
 		this.skillsList = skillsList;
 	}
+	
+	public List<RequirementInterviewHistory> getRequirementInterviewHistoryList() {
+		return requirementInterviewHistoryList;
+	}
+
+	public void setRequirementInterviewHistoryList(List<RequirementInterviewHistory> requirementInterviewHistoryList) {
+		this.requirementInterviewHistoryList = requirementInterviewHistoryList;
+	}
 
 	public String getCreatedBy() {
 		return createdBy;
@@ -634,6 +648,14 @@ public class RequirementSubmission implements Serializable{
 		this.clientSubmissionId = clientSubmissionId;
 	}
 
+	public String getSubmittedOn() {
+		return submittedOn;
+	}
+
+	public void setSubmittedOn(String submittedOn) {
+		this.submittedOn = submittedOn;
+	}
+
 	public String getRejectedReason() {
 		return rejectedReason;
 	}
@@ -649,4 +671,5 @@ public class RequirementSubmission implements Serializable{
 	public void setPreviousSubmissionStatus(ApplicantSubmissionStatus previousSubmissionStatus) {
 		this.previousSubmissionStatus = previousSubmissionStatus;
 	}
+
 }

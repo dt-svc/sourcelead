@@ -269,8 +269,11 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setPriority(jsonObj.getString("priority"));
 			}
 			
-			if(jsonObj.has("isTemplate")){
-			requirement.setIsTemplate(jsonObj.getString("isTemplate"));
+			if(jsonObj.has("isTemplate") && "Y".equalsIgnoreCase(jsonObj.getString("isTemplate"))){
+				/*
+				 * This is to store the Requirement Template  as another Requirement
+				 */
+			   storeRequirementTemplate(jsonObj, orgLocations, user);
 			}
 			
 			if(jsonObj.has("skills")){
@@ -1826,8 +1829,150 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 	
 
-public List<Requirement> getAllReleasedJobsForVendor(Long orgLocationId, Long orgRelationId, User user,OrgLocations orgLocations) throws Exception{
+	public List<Requirement> getAllReleasedJobsForVendor(Long orgLocationId, Long orgRelationId, User user,OrgLocations orgLocations) throws Exception{
 	return requirementDao.getAllReleasedJobsForVendor(orgLocationId, orgRelationId, user,orgLocations);
-}
+	}
+
+
+	@Override
+	public List<Requirement> getAllRequirementTeplateJobsByOrgLocationId(Long orgLocationId, User user) throws Exception {
+		
+		List<Requirement>  list = requirementDao.getAllRequirementTeplateJobsByOrgLocationId(orgLocationId, user);
+		
+		for(Requirement req :list){
+			
+			req.setRequirementCreatedDateToString(Constants.DF_YMD.format(req.getCreatedDate()));
+
+		}
+			
+		return list;
+	}
+
+	@Override
+	public Requirement storeRequirementTemplate(JSONObject jsonObj, OrgLocations orgLocations, User user)
+			throws Exception {
+		
+		
+		 Requirement reqTemplate = null;
+
+        if (jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())){
+        	
+        	  reqTemplate = requirementDao.getRequirementTemplateByRequirementId(Long.parseLong(jsonObj.getString("requirementId")), orgLocations.getId());
+			
+		}else{
+			reqTemplate = new Requirement();
+		}
+		
+		 reqTemplate.setIsTemplate(jsonObj.getString("isTemplate"));
+		 
+		 if(orgLocations != null){
+			 reqTemplate.setOrgLocationId(orgLocations);
+			}
+		 
+		 if(jsonObj.has("jobTitle")){
+			 reqTemplate.setJobTitle(jsonObj.getString("jobTitle"));
+			}
+			
+			if(!"".equalsIgnoreCase(jsonObj.getString("jobType"))){
+			if(jsonObj.has("jobType") ){				
+				reqTemplate.setJobType(jsonObj.getString("jobType"));
+			   }
+			}
+			
+			if(jsonObj.has("maxExp")){
+				reqTemplate.setMaxExp(jsonObj.getString("maxExp"));
+				}
+				
+				if(jsonObj.has("minExp")){
+					reqTemplate.setMinExp(jsonObj.getString("minExp"));
+				}
+				
+				if(jsonObj.has("rate")){
+					reqTemplate.setRate(jsonObj.getString("rate"));
+				}
+				
+				if(jsonObj.has("rateType")){
+					reqTemplate.setRateType(jsonObj.getString("rateType"));
+				} 
+				
+				if(jsonObj.has("description")){
+					reqTemplate.setDescription(jsonObj.getString("description"));
+				}
+				
+				
+				if(jsonObj.has("currencyCode")){
+					reqTemplate.setCurrencyCode(jsonObj.getString("currencyCode"));
+				}
+				
+	             if(jsonObj.has("skills")){
+					
+					String skillId =null;
+					try{
+						JSONArray jsonArray = jsonObj.getJSONArray("skills");
+						skillId = jsonArray.toString();
+					}
+					catch(JSONException e){
+						skillId =jsonObj.getString("skills");
+					}
+					skillId = skillId.replaceAll("\\[", "").replaceAll("\\]","");
+					
+					
+					skillId = skillId.replaceAll("\"", "");
+					reqTemplate.setSkills(skillId);
+				
+				}
+				
+				if(jsonObj.has("education")){
+					
+	             String educationId =null;
+					try{
+						JSONArray jsonArray = jsonObj.getJSONArray("education");
+						educationId = jsonArray.toString();
+					}
+					catch(JSONException e){
+						educationId =jsonObj.getString("education");
+					}
+					educationId = educationId.replaceAll("\\[", "").replaceAll("\\]","");
+					educationId = educationId.replaceAll("\"", "");
+					
+					reqTemplate.setEducation(educationId);
+				
+				 }
+				reqTemplate.setStatus(Constants.MEMBER_ACTIVE);
+				reqTemplate.setCreatedDate(commonUtil.currentDate());
+				reqTemplate.setCreatedBy(user.getUserCode());
+				reqTemplate.setUpdatedBy(user.getUserCode());
+				reqTemplate.setUpdatedDate(commonUtil.currentDate());
+				
+				 requirementDao.storeRequirement(reqTemplate);
+		return reqTemplate;
+	}
+
+	@Override
+	public Requirement getRequirementTemplateByRequirementId(Long requirementId,Long orgLocationId) throws Exception {
+		return requirementDao.getRequirementTemplateByRequirementId(requirementId,orgLocationId);
+	}
+
+	@Override
+	public Requirement updateRequirementTemplate(Requirement requirement) throws Exception {
+		return requirementDao.storeRequirement(requirement);
+	}
+
+
+	@Override
+	public Integer getManagerAssignedRequirementsCount(Long userId, Long orgLocationId) throws Exception {
+		return requirementDao.getManagerAssignedRequirementsCount(userId, orgLocationId);
+	}
+
+	@Override
+	public Integer getRequirementsCountAsApprover(Long userId,Long orgLocationId) throws Exception {
+		return requirementDao.getRequirementsCountAsApprover(userId,orgLocationId);
+	}
+
+	@Override
+	public List<Requirement> getManagerAssignedRequirementsList(Long userId, Long orgLocationId) throws Exception {
+		return requirementDao.getManagerAssignedRequirementsList(userId, orgLocationId);
+	}
+
 }
 

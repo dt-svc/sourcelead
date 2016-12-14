@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,7 +132,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 		String from = "from Requirement requirement"; 
 		
-		String subQuery1 = "requirement.createdBy =:loginUserCode";
+		String subQuery1 = "requirement.createdBy =:loginUserCode and requirement.isTemplate <> 'Y'";
 		params.put("loginUserCode",user.getUserCode());
 		
 		String subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level and  requirement.requirementSubmissionStatus <> 'DRAFT'  ) or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) ) ";
@@ -296,7 +297,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public List<Requirement> getJobTitleByJobTemplateStatusAndOrgLocationId(Long orgLocationId)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Requirement req where isTemplate = 'Y' and req.orgLocationId =:orgLocationId";
+		String query = "from Requirement req where isTemplate = 'Y' and req.orgLocationId =:orgLocationId and req.status<>'0'";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		
 	}
@@ -471,7 +472,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public List<Requirement> getRequirementListById(Long requirementId) {
 		Session session = sessionFactory.getCurrentSession();
 		String query = "from Requirement requ  left join fetch requ.spocId spoc   left join fetch spoc.spocUser left join fetch requ.parentRequirement where requ.parentRequirement.id =:requirementId";
-		return session.createQuery(query).setLong("requirementId", requirementId).list();
+		return session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
 		
 	}
 
@@ -567,8 +568,80 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 	
 	}
-	
 
-	
+	/**
+	 * prasad K
+	 * This Method for to get All Template Requirements
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getAllRequirementTeplateJobsByOrgLocationId(Long orgLocationId, User user)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Requirement req where req.isTemplate = 'Y' and req.orgLocationId.id =:orgLocationId and req.status <>'0'";
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Requirement getRequirementTemplateByRequirementId(Long requirementId,Long orgLocationId) throws Exception {
+        
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "from Requirement requirement  where requirement.id =:requirementId and requirement.isTemplate = 'Y' and requirement.orgLocationId.id =:orgLocationId ";
+		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+		Requirement requirement = null;
+		if(requirementList != null && !requirementList.isEmpty())
+		{
+			requirement = (Requirement) requirementList.iterator().next();
+		}
+		return requirement;
+	}
+
+
+	@Override
+	@Transactional
+	public Integer getManagerAssignedRequirementsCount(Long userId, Long orgLocationId) throws Exception {
+		logger.debug("getManagerAssignedRequirementsCount start");
+		Session session = this.sessionFactory.getCurrentSession();
+			String query = "select count(requirement.id) from Requirement requirement "
+					+ "where requirement.managerUserId.id = :userId and requirement.orgLocationId.id = :orgLocationId ";
+			
+			List<Long> jobCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			Integer count = 0;
+			if(jobCount != null && !jobCount.isEmpty()){
+					count = jobCount.get(0).intValue();
+			}
+			return count;
+        
+	}
+
+	@Override
+	@Transactional
+	public Integer getRequirementsCountAsApprover(Long userId,Long orgLocationId) throws Exception {
+		logger.debug("getRequirementsCountAsApprover start");
+		Session session = this.sessionFactory.getCurrentSession();
+			String query = "select count(requirement.id) from Requirement requirement "
+					+ "where requirement.id IN (select hierarchy.requirementId.id from RequirementApproverHierarchy hierarchy where hierarchy.approverUserId.id = :userId) and requirement.orgLocationId.id = :orgLocationId ";
+			
+			List<Long> jobCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			Integer count = 0;
+			if(jobCount != null && !jobCount.isEmpty()){
+					count = jobCount.get(0).intValue();
+			}
+			return count;
+        
+	}
+
+	@Override
+	@Transactional
+	public List<Requirement> getManagerAssignedRequirementsList(Long userId, Long orgLocationId) throws Exception {
+		Session session = sessionFactory.getCurrentSession();
+		String query = "from Requirement requirement "
+					+ "where requirement.managerUserId.id = :userId and requirement.orgLocationId.id = :orgLocationId";
+		return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+	}
 	
 }

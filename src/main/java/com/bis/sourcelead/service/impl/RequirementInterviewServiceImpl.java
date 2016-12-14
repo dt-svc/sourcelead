@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.RequirementInterviewDao;
 import com.bis.sourcelead.dao.RequirementInterviewerDao;
 import com.bis.sourcelead.entity.Candidate;
@@ -26,6 +25,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -34,6 +34,7 @@ import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
@@ -77,6 +78,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	
 	@Autowired
 	private RequirementInterviewerService requirementInterviewerService;
+	
+	@Autowired
+	private RequirementInterviewHistoryService requirementInterviewHistoryService;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -131,14 +135,6 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 									requirementInterview.setLocation(jsonObj.getString(c+"location"));
 								}
 								
-								if(jsonObj.has("notificationToApplicant") && !jsonObj.getString("notificationToApplicant").isEmpty()){
-									requirementInterview.setNotificationToApplicant(jsonObj.getString("notificationToApplicant"));
-								}
-								
-								if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty()){
-									requirementInterview.setNotificationToSpoc(jsonObj.getString("notificationToSpoc"));
-								}
-								
 								if(jsonObj.has("notificationToOthers") && !jsonObj.getString("notificationToOthers").isEmpty()){
 									requirementInterview.setNotificationToOthers(jsonObj.getString("notificationToOthers"));
 								}
@@ -154,37 +150,74 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 									
 									requirementInterview.setRemainedBefore(remainedBefore.toString());
 								}
-								 
-								if(jsonObj.has("isClientInterview")){
-									requirementInterview.setInterviewSubmissionType(Constants.CUSTOMER_INTERVIEW);
-								}else{
-									requirementInterview.setInterviewSubmissionType(Constants.INTERVIEW);
-								}
 							   	
 							   requirementInterview.setStatus(Constants.RECORD_ACTIVE);
 					           requirementInterview.setCreatedDate(new Date());
 					           requirementInterview.setCreatedBy(user.getUserCode());
 					           requirementInterview.setUpdatedDate(new Date());
 					           requirementInterview.setUpdatedBy(user.getUserCode());
-					           requirementInterviewDao.storeRequirementInterview(requirementInterview);
+					           RequirementInterview updateInterview = requirementInterviewDao.storeRequirementInterview(requirementInterview);
 					           RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 					           RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
 					           requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
 					           if(jsonObj.has("isClientInterview")){
-					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CUSTOMER_INTERVIEW);
+					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_INTERVIEW);
 					           }else{
 					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW);
 					           }
 					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					           requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 					           
-					           RequirementSubmission parentSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
-					           if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty() && parentSubmission != null){
-					        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CUSTOMER_INTERVIEW);
-					        	   requirementSubmissionService.storeRequirementSubmission(parentSubmission);
+					           if(requirementSubmission.getSourceSubmission() != null){
+					        	   RequirementSubmission parentSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
+						           if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty() && parentSubmission != null){
+						        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_INTERVIEW);
+						        	   requirementSubmissionService.storeRequirementSubmission(parentSubmission);
+						           }
 					           }
 					           
 					           
+					           //to save interview history
+					           RequirementInterviewHistory interviewHistory = new RequirementInterviewHistory();
+					           interviewHistory.setInterviewId(updateInterview);
+					           interviewHistory.setSubmissionId(submission);
+					           interviewHistory.setOrgLocationId(orgLocations);
+					           if(jsonObj.has("isClientInterview")){
+					        	   interviewHistory.setInterviewSourceType(Constants.CLIENT_INTERVIEW);
+					           }else{
+					        	   interviewHistory.setInterviewSourceType(Constants.INTERVIEW);
+					           }
+					           if(jsonObj.has("notificationToApplicant") && !jsonObj.getString("notificationToApplicant").isEmpty()){
+					        	   interviewHistory.setNotificationToApplicant(jsonObj.getString("notificationToApplicant"));
+					           }
+					           if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty()){
+					        	   interviewHistory.setNotificationToSpoc(jsonObj.getString("notificationToSpoc"));
+					           }
+					           interviewHistory.setStatus(Constants.RECORD_ACTIVE);
+					           interviewHistory.setCreatedDate(new Date());
+					           interviewHistory.setCreatedBy(user.getUserCode());
+					           interviewHistory.setUpdatedDate(new Date());
+					           interviewHistory.setUpdatedBy(user.getUserCode());
+					           requirementInterviewHistoryService.storeRequirementInterviewHistory(interviewHistory);
+					           
+					           //to save vendor interview history
+					           if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty()&& jsonObj.getString("notificationToSpoc").equalsIgnoreCase("Y") && requirementSubmission.getVendorLocationId() != null){
+					        	   RequirementInterviewHistory vendorInterviewHistory = new RequirementInterviewHistory();
+					        	   vendorInterviewHistory.setInterviewId(updateInterview);
+					        	   vendorInterviewHistory.setSubmissionId(requirementSubmission.getSourceSubmission());
+					        	   vendorInterviewHistory.setOrgLocationId(requirementSubmission.getVendorLocationId());
+						           vendorInterviewHistory.setInterviewSourceType(Constants.CLIENT_INTERVIEW);
+						           vendorInterviewHistory.setNotificationToApplicant(Constants.NO);
+						           vendorInterviewHistory.setNotificationToSpoc(Constants.NO);
+						           vendorInterviewHistory.setStatus(Constants.RECORD_ACTIVE);
+						           vendorInterviewHistory.setCreatedDate(new Date());
+						           vendorInterviewHistory.setCreatedBy(user.getUserCode());
+						           vendorInterviewHistory.setUpdatedDate(new Date());
+						           vendorInterviewHistory.setUpdatedBy(user.getUserCode());
+						           requirementInterviewHistoryService.storeRequirementInterviewHistory(vendorInterviewHistory);
+					           }
+					        		   
+					        		   
 					          Candidate candidate = candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
 					           
 					           
@@ -674,9 +707,16 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		}
 		return customerInterviewList;
 	}
+	
 	@Override
+	public RequirementInterview getRequirementInterviewByIdAndSubmissionIdAndOrgLocationsId(Long requirementInterviewId,
+			Long submissionId, Long orgLocationsId) {
+		return requirementInterviewDao.getRequirementInterviewByIdAndSubmissionIdAndOrgLocationsId(requirementInterviewId, submissionId, orgLocationsId);
+	}
+	
+	/*@Override
 	public List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime) {
 		return requirementInterviewDao.getAllInterviewListByCurrentDate(currentTime,  triggerTime);
-	}
+	}*/
 
 }

@@ -1157,7 +1157,7 @@ function requirementPipeline(requirementId,submissionType){
 				            result = result +'<li><a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
 				            result = result +'<div class="export_pipline" style="display:none">';
 				            result = result +'<ul>';
-				            result = result +'<li onclick="exportPipelineToPdf();">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+				            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
 				            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
 				            result = result +' </ul>';
 				            result = result +'</div>';
@@ -1280,7 +1280,7 @@ function requirementPipeline(requirementId,submissionType){
 						        	   if(report.totalNoOfInterviews != null && report.totalNoOfInterviews != '' && report.totalNoOfInterviews != 'undefined'){
 						        		   /* ------tooltip---- */
 						        		   result = result +'<td><div class="show-tooltip"><span>'+report.totalNoOfInterviews+'</span>';
-						       		   if(report.requirementInterviewList.length > 0){
+						       		   if(report.requirementInterviewHistoryList.length > 0){
 						       		        result = result +'<div class="tooltipint_detilas">';
 						       			    result = result +'<table class="table-bordered table-hover table-striped table-responsive" width="100%;">';
 						       			    result = result +' <thead><tr>';
@@ -1293,20 +1293,25 @@ function requirementPipeline(requirementId,submissionType){
 						       			    result = result +'<th>Interview</th>';
 						       			    result = result +'</tr></thead>';
 						       			    result = result +'<tbody>';
-						       			    for(var j=0;j<report.requirementInterviewList.length;j++){
-						       			    	 var sub = report.requirementInterviewList[j];
+						       			    for(var j=0;j<report.requirementInterviewHistoryList.length;j++){
+						       			    	 var sub = report.requirementInterviewHistoryList[j];
 						       			    	 var location = "---";
-						       			    	 if(sub.location != null && sub.location != "" && sub.location !="undefined"){
-						       			    		location = sub.location;
+						       			    	 var endDate = "---";
+						       			    	 if(sub.interviewId.location != null && sub.interviewId.location != "" && sub.interviewId.location !="undefined"){
+						       			    		location = sub.interviewId.location;
+						       			    	 }
+						       			    	
+						       			    	 if(sub.interviewId.endTimeStr != null && sub.interviewId.endTimeStr != "" && sub.interviewId.endTimeStr !="undefined"){
+						       			    		endDate = sub.interviewId.endTimeStr;
 						       			    	 }
 						       			    	result = result +'<tr>';
-						       			    	result = result +'<td><span>'+sub.interviewType+'</span></td>';
+						       			    	result = result +'<td><span>'+sub.interviewId.interviewType+'</span></td>';
 						       			    	result = result +'<td><span>'+sub.dateOfInterviewStr+'</span></td>';
 						       			    	result = result +'<td><span>'+sub.startTimeStr+'</span></td>';
-						       			    	result = result +'<td><span>'+sub.endTimeStr+'</span></td>';
+						       			    	result = result +'<td><span>'+endDate+'</span></td>';
 						       			    	result = result +'<td><span>'+location+'</span></td>';
 						       			    	result = result +'<td><span>cxmbnv mnbbvnvnbv nbvnbvxnbv nbvcxnbvbnv bnvcxzbvnb  nbxzcvnbz nb vbnxcnbzxcv</span></td>';
-						       			    	result = result +'<td><span title="'+sub.interviewSubmissionType+'">'+sub.interviewSubmissionType+'</span></td>';
+						       			    	result = result +'<td><span title="'+sub.interviewSourceType+'">'+sub.interviewSourceType+'</span></td>';
 						       			    	result = result +'</tr>';
 						       			    } 
 						       			    result = result +'</tbody>';
@@ -2268,12 +2273,27 @@ function closeratediv(){
 function exportPipelineToExcel(requirementId,submissionType){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
+	  var sourceleadUrl ='${sourceleadUrl}';
 	  alert(" requirementId "+requirementId);
 	  alert(" submissionType "+submissionType);
-    // window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
+	  
+      window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
 }
 
 </script>
+
+
+ <script>
+function exportPipelineToPdf(requirementId,submissionType){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  var clientSubmissions = '${clientSubmissions}';
+	  alert(" requirementId "+requirementId);
+	  alert(" submissionType "+submissionType);
+      window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=pdf";
+}
+
+</script> 
+
 
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />

@@ -175,6 +175,7 @@
 			
 			var sourceleadUrl = '${sourceleadUrl}';
 			var submissionId = '${submissionId}';
+			var type = '${type}';
 			if ($('#negotiation_form').validate(false, validationSettings)){ 
 			$('#negotiationButtonId').addClass('button').val('Processing..').attr('disabled','disabled');
 			var frm = $('#negotiation_form').serializeFormJSON();
@@ -183,7 +184,7 @@
 			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&submissionId="+submissionId,
+						url : sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&submissionId="+submissionId+"&type="+type,
 						success : function(result) {
 							$('#rateProposal').val('');
 							$('#rateType').val('');

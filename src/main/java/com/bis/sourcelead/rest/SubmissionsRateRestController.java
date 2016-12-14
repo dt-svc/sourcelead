@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
@@ -34,6 +35,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -69,6 +71,9 @@ public class SubmissionsRateRestController {
 	EmailScenarioService emailScenarioService;
 	
 	@Autowired
+	UserRoleService userRoleService;
+	
+	@Autowired
 	RequirementRateSubmissionNegotiationService requirementRateSubmissionNegotiationService;
 	
 	@Value("${sourceleadUrl}")
@@ -81,6 +86,7 @@ public class SubmissionsRateRestController {
 		//this logic is for update status 
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+		requirementSubmission.setRejectedReason(rejectreason);
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 		
 		//this logic is for mail 
@@ -93,12 +99,14 @@ public class SubmissionsRateRestController {
 	}
 	
 	@RequestMapping(value = "/storeNegotiation", method = RequestMethod.POST)
-	public @ResponseBody String storeNegotiation(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "submissionId", required = false) Long submissionId) throws Exception {
+	public @ResponseBody String storeNegotiation(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "submissionId", required = false) Long submissionId,@RequestParam(value = "type", required = false) String type) throws Exception {
 	 
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
 		
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+		User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+		UserRole userRole =userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), requirementSubmission.getOrgLocations().getId());
 		
 		RequirementRateSubmissionNegotiation  requirementRateSubmissionNegotiation = new RequirementRateSubmissionNegotiation();
 		
@@ -122,9 +130,14 @@ public class SubmissionsRateRestController {
 		requirementRateSubmissionNegotiation.setRateReason("rate is changed due to more expectations");
 		requirementRateSubmissionNegotiation.setStatus(Constants.RECORD_ACTIVE);
 		requirementRateSubmissionNegotiation.setCreatedDate(commonUtil.currentDate());
-		requirementRateSubmissionNegotiation.setCreatedBy("");
+		if("user".equalsIgnoreCase(type)){
+			requirementRateSubmissionNegotiation.setCreatedBy(user.getUserCode());
+			requirementRateSubmissionNegotiation.setUpdatedBy(user.getUserCode());
+		}else{
+			requirementRateSubmissionNegotiation.setCreatedBy("");
+			requirementRateSubmissionNegotiation.setUpdatedBy("");
+		}
 		requirementRateSubmissionNegotiation.setUpdatedDate(commonUtil.currentDate());
-		requirementRateSubmissionNegotiation.setUpdatedBy("");
 		requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);
 		
 		
@@ -142,13 +155,58 @@ public class SubmissionsRateRestController {
 		requirementRateSubmissionNegotiation.setUpdatedBy("");
 		
 		requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);*/
-	
+		
 		 Requirement requirement = requirementSubmission.getRequirement();
-		 User initiatorUser = requirementSubmission.getOrgLocations().getUser();
+		 
 		 Candidate candidate = requirementSubmission.getCandidate();
 		 OrgLocations orgLocations = requirementSubmission.getOrgLocations();
 		 RequirementRateSubmissionNegotiation neogtation = requirementSubmissionService.getRequirementRateBySubmissionById(submissionId);
-		requirementSubmissionService.applicantNegotiateEmail(requirement,initiatorUser,candidate,orgLocations,neogtation);
+		 
+		 List<RequirementRateSubmissionNegotiation>  negotiationList = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId, candidate.getId());
+		 StringBuilder tempHTML = new StringBuilder();
+		 if(negotiationList != null){
+	         tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
+	         tempHTML.append("<tr>");
+	         tempHTML.append("<th> Requirement Title </th>");
+	         tempHTML.append("<th> Requirement Rate </th>");
+	         tempHTML.append("<th> Rate </th>");
+	         tempHTML.append("<th> By </th>");
+	         //tempHTML.append("<th> Action </th>");
+	         tempHTML.append("</tr>");
+	        	 for (RequirementRateSubmissionNegotiation negotiations : negotiationList) {
+			         tempHTML.append("<tr>");
+			         tempHTML.append("<td>"+requirement.getJobTitle()+"</td>");
+			         tempHTML.append("<td>"+requirement.getRate()+"</td>");
+			         tempHTML.append("<td>"+negotiations.getExpectedRate()+"</td>");
+			         if(negotiations.getCreatedBy() != null && "" != negotiations.getCreatedBy()){
+			        	 User proposedUser = userService.getUserByUserCode(negotiations.getRequirementsubmissionId().getCreatedBy());
+			        	 tempHTML.append("<td>"+proposedUser.getFirstName()+" "+proposedUser.getLastName()+"</td>");
+			         }else{
+			        	 tempHTML.append("<td>"+candidate.getFirstName()+" "+candidate.getLastName()+"</td>");
+			         }
+			         tempHTML.append("</tr>");
+	            }
+		        tempHTML.append("</table> ");
+		        
+		        if("user".equalsIgnoreCase(type)){
+		        	//these links are provided in user to applicant Negotiate email
+		        	tempHTML.append("<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Accepted&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
+			        tempHTML.append("<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Rejected&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
+			        tempHTML.append("<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Negotiate&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>");
+		        }else{
+		        	//these links are provided in applicant to user Negotiate email
+		        	tempHTML.append("<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateUserRates?rateStatus=Accepted&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
+			        tempHTML.append("<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateUserRates?rateStatus=Rejected&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
+			        tempHTML.append("<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateUserRates?rateStatus=Negotiate&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>");
+		        }
+		        
+		 	}
+		 if("user".equalsIgnoreCase(type)){
+			 requirementSubmissionService.userNegotiateEmail(requirement,userRole.getUser(),candidate,orgLocations,neogtation,tempHTML);
+		 }else{
+			 requirementSubmissionService.applicantNegotiateEmail(requirement,userRole.getUser(),candidate,orgLocations,neogtation,tempHTML);
+		 }
+		
 		
 		return "success";
 	}

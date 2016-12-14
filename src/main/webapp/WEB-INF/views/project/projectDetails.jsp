@@ -105,8 +105,8 @@
 							result = result	+ '<div class="project_details_cta">';
 							result = result	+ '	<strong>Manager 2:</strong><span>';
 
-							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
-								var manager = json.managersListwithoutManager1[j];
+							for (var j = 0; j < json.managersList.length; j++) {
+								var manager = json.managersList[j];
 								if (json.manager2 == manager.id) {
 									result = result + manager.firstName + " "
 											+ manager.lastName;
