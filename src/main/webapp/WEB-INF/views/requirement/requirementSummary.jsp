@@ -1088,6 +1088,7 @@ function requirementPipeline(requirementId,submissionType){
 							result = result +' <div class="new_side_wrap_inn">';
 							result = result +'<div class="add_inter">';
 							result = result + '<div id="submitToClientDiv"></div>';
+							result = result + '<div id="emailTemplateDiv"></div>';
 							result = result +'</div>';
 							result = result +'</div>';
 							result = result +'</div>';
