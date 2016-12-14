@@ -21,6 +21,13 @@ public interface ProjectApproverHierarchyDao {
 	public List<ProjectApproverHierarchy> getProjectHierarchyListByLoginUserId(Long userId);
 	
 	public List<Long> getProjectIdsByLoginUserId(Long userId);
+
+	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectIdForManager(Long projectId,
+			Long userId, int managerLevel)throws Exception;
+
+	public ProjectApproverHierarchy getApproverUsersByProjectIdLevel1(Long projectId, Long userId);
+
+	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectIdlevel2Manager(Long projectId,Long userId)throws Exception;
 	
 	List<ProjectApproverHierarchy> getProjectApproversListByUserIdAndOrgLocationId(Long userId,Long orgLocationId)throws Exception;
 	

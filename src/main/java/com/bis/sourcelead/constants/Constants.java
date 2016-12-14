@@ -126,6 +126,7 @@ public class Constants {
 	public static String ASSIGNTEAMMEMBERSFORREQUIREMENT = "AssignToTeamMembers";
 	public static String  WEEK_TIME_SHEET_SUBMISSION= "Week Time Sheet Submission";
 	public static String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";
+	public static String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	
 
 	public static String OFFERREJECT_EMAIL = "Vendor Offer Reject";
@@ -139,6 +140,7 @@ public class Constants {
 	public static String APPLICANT_REJECT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION = "ApplicantRejectanceRequirement";
 	
 	public static String APPLICANT_NEGOTIATE_REQUIREMENT = "ApplicantNegotiateRequirement";
+	public static String USER_RATE_NEGOTIATION = "UserRateNegotiation";
 
 
 
@@ -262,7 +264,8 @@ public class Constants {
 	public static String TEAM_IN_ACTIVE = "0";
 	
 	public static Integer DEFAULT_CATEGORY = 0;
-
+	
+	public static String WEEKLY = "Weekly";
 	public static String BI_WEEKLY = "Bi-Weekly";
 	public static String SEMI_MONTHLY = "Semi-Monthly";
 	public static String MONTHLY = "Monthly";
@@ -309,4 +312,7 @@ public class Constants {
     
     public static String[] VENDOR_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};
     public static String[] CLIENT_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};
+    
+    public static int level1 =1;
+    public static int level2 =2;
 }

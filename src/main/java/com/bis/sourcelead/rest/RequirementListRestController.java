@@ -262,9 +262,26 @@ public class RequirementListRestController {
 					}
 					if(requirement.getSpocId() !=null){
 						if(requirement.getClientId() !=null ){
-							requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+							if(requirement.getClientId().getInitiatorType().equalsIgnoreCase("Client")){
+								requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+							}
+							if(requirement.getClientId().getInitiatorType().equalsIgnoreCase("Vendor")){
+								requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+							}
 						}
-					requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
+					//requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
+					
+					if(requirement.getSpocId().getInitiatorLocationId().getId() == loginOrgLocation.getId() ){
+						
+						if(requirement.getSpocId().getSpocUser().getFirstName() != null && requirement.getSpocId().getSpocUser().getFirstName() != "" && requirement.getSpocId().getSpocUser().getLastName() != null && requirement.getSpocId().getSpocUser().getLastName() != "" ){
+							requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
+						}else{
+							requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName());
+						}
+					 }
+					if(requirement.getSpocId().getResponderLocationId().getId() == loginOrgLocation.getId()){
+						requirement.setSpocName(requirement.getSpocId().getOwnerUser().getFirstName()+" "+requirement.getSpocId().getOwnerUser().getLastName());
+					}
 					requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
 					requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
 					/*requirement.setClientSubmissionTemplate(requirement.getClientSubmissionTemplateId().getTemplateName());*/
@@ -831,13 +848,37 @@ public class RequirementListRestController {
 				} 
      }
 
+		@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
+		 @RequestMapping(value = "/getRequirementTemplateListByOrgLocationsId" , method = RequestMethod.POST)
+		 public @ResponseBody  String getRequirementTemplateListByOrgLocationsId(HttpServletRequest request) throws Exception {
+			 
+				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			    List<Requirement> reqTemplatesList = requirementService.getAllRequirementTeplateJobsByOrgLocationId( loginOrgLocation.getId(),  user);
+			    String resultJson;
+			    resultJson = commonUtil.toJSON(reqTemplatesList);
+				return resultJson;
+	     }
+		 
+		 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
+		 @RequestMapping(value = "/getRequirementTemplateByRequirementId" , method = RequestMethod.POST)
+		 public @ResponseBody  String getRequirementTemplateByRequirementId(@RequestParam(value="requirementId", required=false) Long  requirementId,
+				 HttpServletRequest request) throws Exception {
+			 
+				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				Requirement requirement = requirementService.getRequirementTemplateByRequirementId(requirementId,loginOrgLocation.getId());
+			    String resultJson;
+			    resultJson = commonUtil.toJSON(requirement);
+				return resultJson;
+	     }
+		 
+		 
 
+		@RequestMapping(value = "/getSubmissionsExportByRequirementId")
 
-
-@RequestMapping(value = "/getSubmissionsExportByRequirementId")
-
-@ResponseBody  void getSubmissionsExportByRequirementId(@RequestParam(value="requirementId", required=false) String  requirementId,@RequestParam(value="submissionType", required=false) String  submissionType,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		@ResponseBody  void getSubmissionsExportByRequirementId(@RequestParam(value="requirementId", required=false) String  requirementId,@RequestParam(value="submissionType", required=false) String  submissionType,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			File file =null;
@@ -936,5 +977,6 @@ public class RequirementListRestController {
 				
 				
 			}
+
 }
 }

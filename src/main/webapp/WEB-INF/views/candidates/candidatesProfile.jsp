@@ -303,8 +303,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6">';
-							result = result + '<textarea class="form-control input-sm" placeholder = "Summary"  name="summary" rows="2" cols="0" > '+summary+'</textarea>';
-							//result = result + ''+json.summary+'</textarea>';
+							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5">'+summary+'</textarea>';
 							result = result + ' </div>';
 							result = result + '</div>';
 							result = result + '<div class="clearfix mr">';

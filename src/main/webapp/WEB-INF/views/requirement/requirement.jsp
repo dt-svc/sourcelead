@@ -1356,16 +1356,20 @@ function setTemplateValues(){
 					$('#education').val('').trigger('chosen:updated');
 					$('#skills').val('').trigger('chosen:updated');
 					
-					var skills = [];
-		            skills = json.skills.split(",");
-		            $("#skills").val(skills);
-		            $('#skills').trigger("chosen:updated");
-		            
-		           
-		            var educations = [];
-		            educations = json.education.split(",");
-		            $("#education").val(educations);
-		            $('#education').trigger("chosen:updated");
+					if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
+						var skills = [];
+			            skills = json.skills.split(",");
+			            $("#skills").val(skills);
+			            $('#skills').trigger("chosen:updated");
+					}
+					
+					if(json.education != null && json.education != '' && json.education != 'undefined'){
+			            var educations = [];
+			            educations = json.education.split(",");
+			            alert("educations"+educations);
+			            $("#education").val(educations);
+			            $('#education').trigger("chosen:updated");
+					}
 					
 					 
 			    	

@@ -419,4 +419,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public File getCandidatePdf(List<Candidate> candidatesList, String orgName) throws Exception {
 		return pdfUtil.createCandidatePdfTable(candidatesList,orgName);
 	}
+
+	@Override
+	public List<Candidate> getHotListCandidatesListByOrgLocationID(Long orgLocationId, String candidateType)
+			throws Exception {
+		return candidateDao.getHotListCandidatesListByOrgLocationID(orgLocationId, candidateType);
+	}
 }
