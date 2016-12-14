@@ -291,6 +291,8 @@ public class Constants {
     
     public static String[] REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS={"Name","Email","Phone No","Experience","OfferDateJoining","Position","Offer Rate","Offerd Date","Attachment"};
     
+    public static String[] REQUIREMENT_PIPELINE_REJECTED_EXCEL_HEADERS={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Rejected On","Rejected By","Rejected Stage","Status"};
+    
     public static String[] TIMESHEET_EXCEL_HEADERS = {"Projects","Tasks","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Status"};
    
     public static String[] CLIENT_EXCEL_HEADERS = {"Client Name","Website","Location","Tiers","Number of Contacts"};
@@ -315,4 +317,15 @@ public class Constants {
     
     public static int level1 =1;
     public static int level2 =2;
+    
+    public static String SHORTLIST_COUNT= "Shortlisted Applicants:";
+    public static String INTERVIEW_COUNT= "Interview Applicants: ";
+    public static String OFFER_COUNT= "Offer Applicants:";
+    public static String REJECTED_COUNT= "Rejected Applicants :";
+    public static String SUBMITTED_APPLICANTS_COUNT= "Submitted Applicants :";
+    
+    
+    
+     
+   
 }

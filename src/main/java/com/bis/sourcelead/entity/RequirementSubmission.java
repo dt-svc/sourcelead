@@ -140,6 +140,10 @@ public class RequirementSubmission implements Serializable{
    	private String createdDateStr;
     
     @Transient
+   	private String upDatedStr;
+    
+    
+    @Transient
 	private String skillsList;
     
     @Transient
@@ -650,5 +654,14 @@ public class RequirementSubmission implements Serializable{
 	public void setPreviousSubmissionStatus(ApplicantSubmissionStatus previousSubmissionStatus) {
 		this.previousSubmissionStatus = previousSubmissionStatus;
 	}
+
+	public String getUpDatedStr() {
+		return upDatedStr;
+	}
+
+	public void setUpDatedStr(String upDatedStr) {
+		this.upDatedStr = upDatedStr;
+	}
+	
 
 }
