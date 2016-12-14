@@ -268,9 +268,26 @@ public class RequirementListRestController {
 					}
 					if(requirement.getSpocId() !=null){
 						if(requirement.getClientId() !=null ){
-							requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+							if(requirement.getClientId().getInitiatorType().equalsIgnoreCase("Client")){
+								requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+							}
+							if(requirement.getClientId().getInitiatorType().equalsIgnoreCase("Vendor")){
+								requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+							}
 						}
-					requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
+					//requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
+					
+					if(requirement.getSpocId().getInitiatorLocationId().getId() == loginOrgLocation.getId() ){
+						
+						if(requirement.getSpocId().getSpocUser().getFirstName() != null && requirement.getSpocId().getSpocUser().getFirstName() != "" && requirement.getSpocId().getSpocUser().getLastName() != null && requirement.getSpocId().getSpocUser().getLastName() != "" ){
+							requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
+						}else{
+							requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName());
+						}
+					 }
+					if(requirement.getSpocId().getResponderLocationId().getId() == loginOrgLocation.getId()){
+						requirement.setSpocName(requirement.getSpocId().getOwnerUser().getFirstName()+" "+requirement.getSpocId().getOwnerUser().getLastName());
+					}
 					requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
 					requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
 					/*requirement.setClientSubmissionTemplate(requirement.getClientSubmissionTemplateId().getTemplateName());*/
@@ -858,7 +875,7 @@ public class RequirementListRestController {
 				} 
      }
 
-		
+		@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
 		 @RequestMapping(value = "/getRequirementTemplateListByOrgLocationsId" , method = RequestMethod.POST)
 		 public @ResponseBody  String getRequirementTemplateListByOrgLocationsId(HttpServletRequest request) throws Exception {
 			 
@@ -870,6 +887,7 @@ public class RequirementListRestController {
 				return resultJson;
 	     }
 		 
+		 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
 		 @RequestMapping(value = "/getRequirementTemplateByRequirementId" , method = RequestMethod.POST)
 		 public @ResponseBody  String getRequirementTemplateByRequirementId(@RequestParam(value="requirementId", required=false) Long  requirementId,
 				 HttpServletRequest request) throws Exception {

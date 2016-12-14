@@ -3,8 +3,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<%@taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script
@@ -35,8 +34,8 @@
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='/requirementList'/>">Requirement List </a>&raquo;
-			Add Requirement
+				href="<c:url value='/template'/>">Template List </a>&raquo;
+			Add Template
 		</div>
 	</section>
 	<div class="content-area content-new clearfix">
