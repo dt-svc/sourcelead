@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -156,6 +157,30 @@ public class RequirementRestController {
 		return "success";
 		
 	}
+	
+	/**
+	 * This method is used for to create template and stored in Requirement table
+	 * @param json
+	 * @param request
+	 * @return success msg
+	 * @throws NullPointer
+	 */
+	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE')")
+	@RequestMapping(value = "/storeRequirementTemplate", method = RequestMethod.POST)
+	public @ResponseBody String storeRequirementTemplate(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
+		
+		String jsonc = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(jsonc);
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Requirement requirement = requirementService.storeRequirementTemplate(jsonObj,orgLocation,user);
+		
+		return "success";
+		
+	}
+	
 	
 	/**
 	 * @author sarath kumaar
@@ -480,4 +505,6 @@ public class RequirementRestController {
 				Boolean validatejobName = requirementService.validateRequirementTitle(templateName,orgLocation.getId());
 				return validatejobName.toString();
 		    }
+	 
+		
 }

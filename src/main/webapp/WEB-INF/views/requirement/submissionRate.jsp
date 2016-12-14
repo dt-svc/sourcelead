@@ -36,6 +36,7 @@
 			if(rateStatus == 'Negotiate'){
 				$("#negotiation").removeAttr("style");		
 			}
+			getNegotiationHistory();
 		});
 </script>
 
@@ -82,13 +83,16 @@
 					</form>							  
 		  		</div>
 		  		<div id="negotiation" style="display:none">
+		  		
 		  			<form id="negotiation_form" name="negotiation_form" method="post" >
 				          <div class="col-md-8 col-md-offset-2 inner-widget negotiation-user" id="negotiationDivId">
+				          
 							  <div class="col-md-6">
-							  	<i class="fa fa-handshake-o fa-3x"></i>
+							  	<!-- <i class="fa fa-handshake-o fa-3x"></i> -->
 							  <p class="reason-msg">Rate Negotiation</p>
 							  </div>
-							  <div class="col-md-6">
+							  <div id="ratehistoryDiv"></div>
+							  <div class="col-md-6" id="fieldsDiv" style="display:block">
 								  <div class="col-md-12 mb10">
 								   Requirement Rate : ${requirementSubmission.requirement.rate}
 								  </div>
@@ -99,7 +103,7 @@
 								  <div class="col-md-7">
 								  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="rate" id="rateProposal" name="rateProposal" data-validation="required validate_Space validate_float validate_length length1-8">
 								  </div> 
-								  
+								  <input type="hidden" name="candidateId" id="candidateId" value="${requirementSubmission.candidate.id}"/> 
 								  <div class="col-md-5 select-field">
 								  <select  class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Type" data-validation="required">
 										<option value="">Rate Per</option>
@@ -171,26 +175,26 @@
 
 <script type="text/javascript">
 	function storeNegotiation() {
-		
-			
 			var sourceleadUrl = '${sourceleadUrl}';
 			var submissionId = '${submissionId}';
+			var type = '${type}';
 			if ($('#negotiation_form').validate(false, validationSettings)){ 
 			$('#negotiationButtonId').addClass('button').val('Processing..').attr('disabled','disabled');
 			var frm = $('#negotiation_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
-			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&submissionId="+submissionId,
+						url : sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&submissionId="+submissionId+"&type="+type,
 						success : function(result) {
 							$('#rateProposal').val('');
 							$('#rateType').val('');
 							$('#negotiationButtonId').addClass('button').val('submit').removeAttr("disabled");
+							$("#fieldsDiv").css({ display: "none" });
 							$('#negotiationDivId').append("<span><center>Rate submitted successfully !!</center></span>");
+							getNegotiationHistory();
 						},
-			});
+			});   
 		}else{
 			    $('body').on('blur', '#negotiation_form', function() {
 				$("#negotiation_form").showHelpOnFocus();
@@ -202,6 +206,74 @@
 	
 </script>
 
+<script type="text/javascript">
+	function getNegotiationHistory() {
+			var sourceleadUrl = '${sourceleadUrl}';
+			var submissionId = '${submissionId}';
+			var type = '${type}';
+			var candidateId = '${candidateId}';
+			alert("dgdfg   "+submissionId+"  fdsfsd   "+candidateId)
+			$.ajax({
+						type : "POST",
+						url : sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId,
+						success : function(data) {
+							if("success"){
+								var json = JSON.parse(data);
+								
+								var result = "";
+								result = result +"<html>";
+			                	 result = result +"<table width='100%' cellpadding='0' border='2' cellspacing='0'>"; 
+			                     result = result +"<thead>"; 
+			                     result = result +"  <tr>"; 
+			                     result  = result + '<th> Requirement Title </th>';
+			                 	 result  = result + '<th> Requirement Rate </th>';
+			                 	 result  = result + '<th> Proposed Rate </th>';
+			                 	 result  = result + '<th> Proposed By </th>';
+			                     result = result +"  </tr>"; 
+			                     result = result +"</thead>";
+			                     result = result +"<tbody>"; 
+			                     for (var i = 0; i < json.length; i++) { 
+			                    	 var opt = json[i];  
+			                    	 result  = result + '         <tr>';
+			                    	 if(opt.requirementName != null && opt.requirementName != '' && opt.requirementName != 'undefined'){
+			                    	    result  = result + '<td><div><span>'+opt.requirementName+'</span></div></td>';
+		                    	     }else{
+		                    	    	 result  = result + ' <td><div><span>--</span></div></td>';
+		                    	     }
+			                    	 
+			                    	 if(opt.requirementRate != null && opt.requirementRate != '' && opt.requirementRate != 'undefined'){
+			                    	 result  = result + ' <td><div><span>'+opt.requirementRate+'</span></div></td>';
+			                    	 }else{
+			                    		 result  = result + ' <td><div><span>--</span></div></td>';
+			                    	 } 
+			                    	 if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined'){
+				                    	 result  = result + '<td><div><span>'+opt.expectedRate+'</span></div></td>';
+			                    	 }else{
+			                    		 result  = result + '<td><div><span>--</span></div></td>'; 
+			                    	 }
+			                    	 
+			                    	 if(opt.proposeByName != null && opt.proposeByName != '' && opt.proposeByName != 'undefined'){
+				                    	 result  = result + '<td><div><span>'+opt.proposeByName+'</span></div></td>';
+			                    	 }else{
+			                    		 result  = result + '<td><div><span>--</span></div></td>';
+			                    	 }
+			                    	
+			                    	 result  = result + '</tr>';
+			                      } 
+			                     result = result +" </tbody>";
+			                     result = result +"</table>";
+			                     result = result +"</html>";
+			                     $("#ratehistoryDiv").empty(); 
+			                     alert(result)
+			                     $("#ratehistoryDiv").append(result); 
+								
+							}
+							
+						},
+					});
+			       
+	} 
+</script>
 
 <script type="text/javascript">
 	(function($) {
