@@ -18,7 +18,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "INTERVIEWFEEDBACK_TEMPLATE", catalog = "sourcelead")
+@Table(name = "INTERVIEW_FEEDBACK_TEMPLATE", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "interviewfeedbackTemplate")
 public class InterviewFeedbackTemplate implements Serializable{
 

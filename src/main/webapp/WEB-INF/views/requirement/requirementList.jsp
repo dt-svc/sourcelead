@@ -1182,8 +1182,10 @@ function requirementPipeline(requirementId){
           </sec:authorize>
           <sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
           	<li> <a href="<c:url value='/team'/>"><i class="fa fa-plus"></i>Team</a></li>
-          	<li> <a href="<c:url value='/interViewFeedBackTemplate'/>"><i class="fa fa-plus"></i>Template</a></li>
           </sec:authorize>
+          <sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
+          <li> <a href="<c:url value='/interViewFeedBackTemplate'/>"><i class="fa fa-plus"></i>Template</a></li>
+           </sec:authorize>
           <sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
            <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop" onClick="mypop();"></i>
             <div class="export_pop">

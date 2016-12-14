@@ -172,7 +172,7 @@ function addField(fieldType,value,labelValue,sourceleadUrl,templateId,labelValid
     	 includeTextHTML = ''+
 		   '<label class="col-md-5"><div class="col-md-3 lblHeight">Label:</div>' +
 	       ' <div class="col-md-9" id="label'+addField.i+'"> ' +
-	       '<input type="text" '+readOnly+' onblur="validateLabelName('+addField.i+',\''+sourceleadUrl+'\',\''+labelValidationCheck+'\')" id="textLabel'+addField.i+'" data-validation="required validate_Space" placeholder="Required *" field-name="Label" class="field-label form-control input-sm" >' +
+	       '<input type="text" '+readOnly+' onblur="validateLabelName('+addField.i+',\''+sourceleadUrl+'\',\''+templateId+'\',\''+labelValidationCheck+'\')" id="textLabel'+addField.i+'" data-validation="required validate_Space" placeholder="Required *" field-name="Label" class="field-label form-control input-sm" >' +
 	       ' </div> ' +
 	       '</label>' 
     }
@@ -310,13 +310,12 @@ function loadSavedForm(templateId,sourceleadUrl) {
 
 
 
-function validateLabelName(i,sourceleadUrl,labelValidationCheck){
-	var templateId = null;
+function validateLabelName(i,sourceleadUrl,templateId,labelValidationCheck){
 	var labelName = $("#textLabel"+i).val();
 	if(labelName && labelValidationCheck == 'Y'){
 		$.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/validateFeedbackTemplateLabelName?labelName="+labelName, 
+	        url: sourceleadUrl+"/validateFeedbackTemplateLabelName?labelName="+labelName+"&templateId="+templateId, 
 	        success: function(result) {
 	       	 if(result == 'Success'){
 		    		$("#save_button").removeAttr("disabled");

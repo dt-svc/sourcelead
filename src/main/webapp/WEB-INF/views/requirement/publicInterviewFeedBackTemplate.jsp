@@ -270,7 +270,7 @@ function interviewTemplateForm(){
 		result = result + '<div class="viewTemplate feedbackTemplate col-md-12">';
 		result = result + '<div class="sjfb-field sjfb-text">';
 		result = result + '<label>Comment <span class="text-danger">*</span></label>';
-		result = result + '<textarea rows="2" placeholder="Comment" class="form-control" name="interviewComment" id="interviewComment" field-name="Comment" data-validation="required"></textarea>';
+		result = result + '<textarea rows="2" placeholder="Comment" class="form-control" name="interviewComment" field-name="Comment" data-validation="required"></textarea>';
 		result = result + '</div>';
 		result = result + '<div class="sjfb-field sjfb-text">';
 		result = result + '<label>Selected for Interview</label>';

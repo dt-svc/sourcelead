@@ -65,43 +65,6 @@ public class TeamController {
 		return model;
 
 	}
-
-
-	/**
-	 * author Laxman
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/interViewFeedBackTemplate")
-	public ModelAndView interViewFeedBackTemplate(HttpServletRequest request) throws Exception {
-		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("requirement/interViewFeedBackTemplate");
-		return model;
-
-	}
-	
-	
-	@RequestMapping(value = "/publicInterviewFeedBackTemplate")
-	public ModelAndView publicInterviewFeedBackTemplate(@RequestParam(value = "templateId", required = false) Long templateId,
-			@RequestParam(value = "requirementInterviewid", required = false) Long requirementInterviewid,HttpServletRequest request) throws Exception {
-		ModelAndView model = new ModelAndView();
-		model.addObject("templateId", templateId);
-		model.addObject("requirementInterviewid", requirementInterviewid);
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		InterviewFeedbackTemplate ift =interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(requirementInterviewid);
-		if(ift !=null){
-			String requirementId = ift.getRequirementInterviewId().getId().toString();
-			model.addObject("feedbackStatus", ift.getStatus());
-			model.addObject("afterRequirementInterviewid", requirementId);
-		}
-		model.setViewName("requirement/publicInterviewFeedBackTemplate");
-		return model;
-
-	}
-	
-
 	private boolean isNullOrEmpty(String msg) {
 		// TODO Auto-generated method stub
 		return false;

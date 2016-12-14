@@ -56,10 +56,19 @@ $(function(){
 	                result = result + '<td><div><span class="mid-span">'+opt.templateName+'</span></a></div></td>';
 	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.description+'"><span class="mid-span">'+opt.description+'</span></div></td>';
 	                result = result + '<td><div>';
+	                '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE\')">'
 	                    result = result + '<a href="javascript:void(0)" onclick="viewInterviewFeedbackTemplate('+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;|&nbsp;';
-                    '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_APPLICANT_TEMPLATE\',\'ROLE_VIEW_EDIT_APPLICANT_TEMPLATE\')">'
+	                 '</sec:authorize>';
+	                 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE\')">'
+	                    result = result + '<a href="javascript:void(0)" >View</a>&nbsp;|&nbsp;';
+	                 '</sec:authorize>';
+	                    
+                    '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE\')">'
 	                    result = result + '&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\',\''+opt.description+'\')">Edit</a>';
                     '</sec:authorize>';
+                    '<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE\')">'
+                    result = result + '&nbsp;<a href="javascript:void(0)">Edit</a>';
+                  '</sec:authorize>';
 	                result = result +'</div></td>';
 	                result = result + '	 </tr>';
 				}  
@@ -117,7 +126,6 @@ function templatepagination(){
     } );
 }
 </script>
-
 <script type="text/javascript">
 	function addSubmissionTemplateFields(templateId,templateName,description) {
 		var sourceleadUrl ='${sourceleadUrl}';
@@ -331,7 +339,6 @@ function cancel(){
             }
         }
         
-        
         var frontEndFormHTML = '';
         var templateId = document.getElementById("templateId").value;
         if(templateId == 'undefined'){
@@ -342,23 +349,34 @@ function cancel(){
         //Demo doesn't actually save. Download project files for save
         var con2 = JSON.stringify(fields);
         var jsonStringData = encodeURIComponent(con2);
-        
-        if(submitTemplate){
-        	$( "#save_button" ).addClass('button').val('Processing..');
-        	  $.ajax({
-      	    	type: "POST",
-      	        url: sourceleadUrl+"/saveInterviewFeedBackTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
-      	        success: function(result) {
-      	        	if((result == 'interViewFeedBackTemplate')){
-      	        		location.replace(sourceleadUrl+"/interViewFeedBackTemplate"); 
-      		        } 
-      	        },
-      	    });  
-              return true;
+        if( myArray.length > 0){
+            if(submitTemplate){
+            	$( "#save_button" ).addClass('button').val('Processing..');
+            	  $.ajax({
+          	    	type: "POST",
+          	        url: sourceleadUrl+"/saveInterviewFeedBackTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+          	        success: function(result) {
+          	        	if((result == 'interViewFeedBackTemplate')){
+          	        		location.replace(sourceleadUrl+"/interViewFeedBackTemplate"); 
+          		        } 
+          	        },
+          	    });  
+                  return true;
+            }else{
+            	alertMessage("Provide choice for "+fieldLabel)
+            }
         }else{
-        	alertMessage("Provide choice for "+fieldLabel)
+        	var result = "";
+    		result = result +"	<div class='project_inn_mask'></div>";
+    		result = result +"	   <div id='template_pop' class='remove_user_pop remove_user_pop_a'>";
+    		result = result +"		<p>At least one Add column</p>";
+    		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+    		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+    		result = result +"	</div>";
+    		$("#popUp").append(result);
+    		$("#template_pop").slideDown(200);
+    		$(".project_inn_mask").fadeIn(200);
         }
-    	  
       }
       else{
       	return false;	
@@ -369,7 +387,12 @@ function cancel(){
     $('#sjfb').validateOnBlur(false, validationSettings); 
   
   </script>
-  
+  <script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 <script type="text/javascript">
 function validateTemplateName(){
@@ -445,9 +468,11 @@ function validateTemplateName(){
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
-	      <div class="timesheet_head timesheet_head_11"  id="addTemplate">
+	      <div class="timesheet_head timesheet_head_11"  id="addTemplate" style="min-height:35px">
 	        <ul>
+	        <sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE')">
 	          <li><a onClick="addSubmissionTemplateFields();" id="add-tm"><i class="fa fa-plus"></i>Add Template</a></li>
+	        </sec:authorize>
 	          <div class="clearfix"></div>
 	        </ul>
 	        <div class="clearfix"></div>

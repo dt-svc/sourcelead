@@ -84,6 +84,15 @@ public class InterviewFeedbackRestController {
     private String sourceleadUrl;
 	
   
+	/**
+	 * author Laxman
+	 * this method is used for the getting public page interviewFeedback template list  
+	 * @param templateId
+	 * @param requirementInterviewid
+	 * @return
+	 * @throws Exception
+	 */
+	
 	@RequestMapping(value = "/getPublicInterviewFeedbackTemplate" , method = RequestMethod.GET)
 	   public String getPublicInterviewFeedbackTemplate(@RequestParam(value="templateId", required=false) Long templateId,
 			   @RequestParam(value="requirementInterviewid", required=false) Long requirementInterviewid) throws Exception {
@@ -92,6 +101,17 @@ public class InterviewFeedbackRestController {
 		    resultJson = toJSON(interviewFeedbackTemplate);
 			 return resultJson;
 	   }
+	
+	/**
+	 * Store the InterviewFeedBack Template Reason 
+	 * @param json
+	 * @param templateId
+	 * @param requirementInterviewid
+	 * @param jsonStringData
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	
 	@RequestMapping(value = "/savePublicInterviewFeddbackTemlateReason" , method = RequestMethod.GET)
 	   public String savePublicInterviewFeddbackTemlateReason(@RequestParam(value="jsonData", required=false) String json,
@@ -130,6 +150,7 @@ public class InterviewFeedbackRestController {
      * @throws Exception
      */
     
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')")
     @RequestMapping(value = "/saveInterviewFeedBackTemplate" , method = RequestMethod.POST)
 	   public String saveInterviewFeedBackTemplate(@RequestParam(value="jsonData", required=false) String json,
 			   @RequestParam(value="templateId", required=false) String templateId,
@@ -165,9 +186,20 @@ public class InterviewFeedbackRestController {
 	   }
     
     
+    /**
+     * author Laxman
+     * Store the publicInterviewFeedback Template 
+     * @param json
+     * @param templateId
+     * @param requirementInterviewid
+     * @param jsonStringData
+     * @param request
+     * @return publicInterviewFeedBackTemplate page
+     * @throws Exception
+     */
+	
     
-    
-    @RequestMapping(value = "/savePublicInterviewFeddbackTemlate" , method = RequestMethod.GET)
+       @RequestMapping(value = "/savePublicInterviewFeddbackTemlate" , method = RequestMethod.GET)
 	   public String savePublicInterviewFeddbackTemlate(@RequestParam(value="jsonData", required=false) String json,
 			   @RequestParam(value="templateId", required=false) String templateId,
 			   @RequestParam(value="requirementInterviewid", required=false) String requirementInterviewid,
@@ -192,6 +224,14 @@ public class InterviewFeedbackRestController {
 			   return "publicInterviewFeedBackTemplate";
 	    
 	   }
+       
+       /**
+        * author Laxman
+        * this methos is used for interviewFeedback Template list
+        * @param request
+        * @return json submissiontTemplateList
+        * @throws Exception
+        */
     
     @RequestMapping(value = "/getInterviewFeedbackTemplatesList", method = RequestMethod.POST)
  	@ResponseBody String getInterviewFeedbackTemplatesList(HttpServletRequest request) throws Exception {
