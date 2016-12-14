@@ -85,5 +85,8 @@ public interface OrgSpocService {
 	
 	List<OrgSpoc> getAssignedAsClientOrVendorSpocByUserId(Long userId, Long orgLocationId,String type) throws Exception;
 	
+	List<OrgSpoc> getAllClientContactsListByOrgLocationId(Long userId,Long orgLocationId) throws Exception;
+	
+	List<OrgSpoc> getOrgSpocByOrgRelationId(Long orgRelationId) throws Exception;
 	
 }
