@@ -1196,18 +1196,17 @@ function requirementPipeline(requirementId,submissionType){
 					           }
 
 				           if(submissionType == 'all' || submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
-				        	   if(submissionType != 'INTERVIEW'){
+				        	   if(submissionType != 'INTERVIEW' && submissionType != 'REJECTED'){
 				        		   result = result + '<th>Score</th>';
 						           result = result + '<th>Exp</th>';
 				        	   }
-					           result = result + '<th>Status</th>';
 				           }
 				           if(submissionType == 'REJECTED'){
 				        	   result = result + '<th>Rejected On</th>';
 				        	   result = result + '<th>Rejected By</th>';
 					           result = result + '<th>Rejected Stage</th>';
-					           result = result + '<th>Status</th>';
 				           }
+				           result = result + '<th>Status</th>';
 				           result = result + '         </tr>';
 				           result = result + '       </thead>';
 				           result = result + '       <tbody>';
@@ -1357,7 +1356,7 @@ function requirementPipeline(requirementId,submissionType){
 
 						           if(submissionType == 'all' || submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
 						        	   
-						        	   if(submissionType != 'INTERVIEW'){
+						        	   if(submissionType != 'INTERVIEW' && submissionType != 'REJECTED'){
 						        		   if(report.score != null && report.score != '' && report.score != 'undefined'){
 								        	   result = result + '         <td><div><span>'+report.score+'</span></div></td>';
 									           }
@@ -1373,7 +1372,7 @@ function requirementPipeline(requirementId,submissionType){
 								    	     }
 						        	   }
 						        	   
-						        	   if(submissionType != 'REJECTED'){
+						        	  /*  if(submissionType != 'REJECTED'){
 						        	   if(report.score != null && report.score != '' && report.score != 'undefined'){
 							        	   result = result + '         <td><div><span>'+report.score+'</span></div></td>';
 								           }
@@ -1388,7 +1387,7 @@ function requirementPipeline(requirementId,submissionType){
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
 							    	     }
-							           }
+							           } */
 							           
 							           if(submissionType == 'REJECTED'){
 							           result = result + '<td><div class="tblwidth-150"><span>'+report.upDatedStr+'</span>';

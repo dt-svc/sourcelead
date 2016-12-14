@@ -41,6 +41,12 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 	@Autowired
 	PdfUtilPipelineHelper pdfUtilPipelineHelper;
 
+	/**
+	 * @author Shiva and Rakshith
+	 * prepares excel and pdf and retun it as File
+	 * @return File
+	 * @throws NumberFormatException
+	 */
 	@Override
 	public File getExportRequirementFile(List<RequirementSubmission> requirementStatusList, String orgName,
 			String exportType, String requirementId, String submissionType,RequirementSubmissionCounts requirementSubmissionCounts) throws NumberFormatException, Exception {
@@ -88,7 +94,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			}
 
 			else {
-				createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,
+				createExcelsheet = getExcelSheetWithHeaderApplicants(createExcelsheet, writeRow, createExcelworkbook,
 						requirementId,requirementSubmissionCounts);
 				int column = 0;
 				for (RequirementSubmission requirementsub : requirementStatusList) {
@@ -173,53 +179,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
 
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
-
-		writeRow = createExcelsheet.createRow(1);
-		createExcelsheet.setColumnWidth(0, 10000);
-		createExcelsheet.setColumnWidth(1, 10000);
-
-		Cell cell1 = writeRow.createCell(0);
-		cell1.setCellValue("Requirement Name :");
-		cell1.setCellStyle(style);
-		Cell cell2 = writeRow.createCell(1);
-		cell2.setCellValue(requirement.getJobTitle());
-		cell2.setCellStyle(style);
-
-		writeRow = createExcelsheet.createRow(2);
-		createExcelsheet.setColumnWidth(0, 10000);
-		createExcelsheet.setColumnWidth(1, 10000);
-
-		Cell cell3 = writeRow.createCell(0);
-		cell3.setCellValue("Location :");
-		cell3.setCellStyle(style);
-
-		Cell cell4 = writeRow.createCell(1);
-		cell4.setCellValue(requirement.getCountry() + " " + requirement.getState());
-		cell4.setCellStyle(style);
-
-		writeRow = createExcelsheet.createRow(3);
-		createExcelsheet.setColumnWidth(0, 10000);
-		createExcelsheet.setColumnWidth(1, 10000);
-
-		Cell cell5 = writeRow.createCell(0);
-		cell5.setCellValue("Experience : ");
-		cell5.setCellStyle(style);
-
-		Cell cell6 = writeRow.createCell(1);
-		cell6.setCellValue(requirement.getMaxExp() + " " + requirement.getMinExp());
-		cell6.setCellStyle(style);
-
-		writeRow = createExcelsheet.createRow(4);
-		createExcelsheet.setColumnWidth(0, 10000);
-		createExcelsheet.setColumnWidth(1, 10000);
-
-		Cell cell7 = writeRow.createCell(0);
-		cell7.setCellValue("Rejected Applicants : ");
-		cell7.setCellStyle(style);
-
-		Cell cell12 = writeRow.createCell(1);
-		cell12.setCellValue(requirementSubmissionCounts.getNumOfRejected());
-		cell12.setCellStyle(style);
+        prepareHeaders(writeRow, createExcelsheet, style, requirement, Constants.REJECTED_COUNT, requirementSubmissionCounts.getNumOfRejected());
 		String headers[] = Constants.REQUIREMENT_PIPELINE_REJECTED_EXCEL_HEADERS;
 		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 7);
 
@@ -282,53 +242,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
 
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
-
-		writeRow = createExcelsheet.createRow(1);
-		createExcelsheet.setColumnWidth(0, 10000);
-		createExcelsheet.setColumnWidth(1, 10000);
-
-		Cell cell1 = writeRow.createCell(0);
-		cell1.setCellValue("Requirement Name :");
-		cell1.setCellStyle(style);
-		Cell cell2 = writeRow.createCell(1);
-		cell2.setCellValue(requirement.getJobTitle());
-		cell2.setCellStyle(style);
-
-		writeRow = createExcelsheet.createRow(2);
-		createExcelsheet.setColumnWidth(0, 10000);
-		createExcelsheet.setColumnWidth(1, 10000);
-
-		Cell cell3 = writeRow.createCell(0);
-		cell3.setCellValue("Location :");
-		cell3.setCellStyle(style);
-
-		Cell cell4 = writeRow.createCell(1);
-		cell4.setCellValue(requirement.getCountry() + " " + requirement.getState());
-		cell4.setCellStyle(style);
-
-		writeRow = createExcelsheet.createRow(3);
-		createExcelsheet.setColumnWidth(0, 10000);
-		createExcelsheet.setColumnWidth(1, 10000);
-
-		Cell cell5 = writeRow.createCell(0);
-		cell5.setCellValue("Experience : ");
-		cell5.setCellStyle(style);
-
-		Cell cell6 = writeRow.createCell(1);
-		cell6.setCellValue(requirement.getMaxExp() + " " + requirement.getMinExp());
-		cell6.setCellStyle(style);
-
-		writeRow = createExcelsheet.createRow(4);
-		createExcelsheet.setColumnWidth(0, 10000);
-		createExcelsheet.setColumnWidth(1, 10000);
-
-		Cell cell7 = writeRow.createCell(0);
-		cell7.setCellValue("offer Applicants : ");
-		cell7.setCellStyle(style);
-
-		Cell cell12 = writeRow.createCell(1);
-		cell12.setCellValue(requirementSubmissionCounts.getNumOfOffers());
-		cell12.setCellStyle(style);
+		prepareHeaders(writeRow, createExcelsheet, style, requirement, Constants.OFFER_COUNT, requirementSubmissionCounts.getNumOfOffers());
 		String headers[] = Constants.REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS;
 		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 7);
 
@@ -378,53 +292,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
 
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
-
-		writeRow = createExcelsheet.createRow(1);
-		createExcelsheet.setColumnWidth(0, 10000);
-		createExcelsheet.setColumnWidth(1, 10000);
-
-		Cell cell1 = writeRow.createCell(0);
-		cell1.setCellValue("Requirement Name :");
-		cell1.setCellStyle(style);
-		Cell cell2 = writeRow.createCell(1);
-		cell2.setCellValue(requirement.getJobTitle());
-		cell2.setCellStyle(style);
-
-		writeRow = createExcelsheet.createRow(2);
-		createExcelsheet.setColumnWidth(0, 10000);
-		createExcelsheet.setColumnWidth(1, 10000);
-
-		Cell cell3 = writeRow.createCell(0);
-		cell3.setCellValue("Location :");
-		cell3.setCellStyle(style);
-
-		Cell cell4 = writeRow.createCell(1);
-		cell4.setCellValue(requirement.getCountry() + " " + requirement.getState());
-		cell4.setCellStyle(style);
-
-		writeRow = createExcelsheet.createRow(3);
-		createExcelsheet.setColumnWidth(0, 10000);
-		createExcelsheet.setColumnWidth(1, 10000);
-
-		Cell cell5 = writeRow.createCell(0);
-		cell5.setCellValue("Experience : ");
-		cell5.setCellStyle(style);
-
-		Cell cell6 = writeRow.createCell(1);
-		cell6.setCellValue(requirement.getMaxExp() + " " + requirement.getMinExp());
-		cell6.setCellStyle(style);
-
-		writeRow = createExcelsheet.createRow(4);
-		createExcelsheet.setColumnWidth(0, 10000);
-		createExcelsheet.setColumnWidth(1, 10000);
-
-		Cell cell7 = writeRow.createCell(0);
-		cell7.setCellValue("Interview Applicants : ");
-		cell7.setCellStyle(style);
-
-		Cell cell12 = writeRow.createCell(1);
-		cell12.setCellValue(requirementSubmissionCounts.getNumOfInterview());
-		cell12.setCellStyle(style);
+		prepareHeaders(writeRow, createExcelsheet, style, requirement, Constants.INTERVIEW_COUNT, requirementSubmissionCounts.getNumOfInterview());
 		String headers[] = Constants.REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS;
 		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 7);
 
@@ -496,11 +364,26 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 	 * @Description : for short listed candidates
 	 */
 	private Sheet getExcelSheetWithHeaderShortListed(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,
-			String requirementId, RequirementSubmissionCounts requirementSubmissionCounts) throws NumberFormatException, Exception {
+			String requirementId, RequirementSubmissionCounts requirementSubmissionCounts)
+			throws NumberFormatException, Exception {
 		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
-
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
-
+		prepareHeaders(writeRow, createExcelsheet, style, requirement, Constants.SHORTLIST_COUNT,requirementSubmissionCounts.getNumOfShortList());
+		String headers[] = Constants.REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 7);
+		return createExcelsheet;
+	}
+/**
+ * @author Rajashekar
+ * 
+ * @param writeRow
+ * @param createExcelsheet
+ * @param style
+ * @param requirement
+ * @param headerName
+ * @param count
+ */
+	private void prepareHeaders(Row writeRow, Sheet createExcelsheet, CellStyle style, Requirement requirement, String headerName, int count) {
 		writeRow = createExcelsheet.createRow(1);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
@@ -520,8 +403,14 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		cell3.setCellValue("Location :");
 		cell3.setCellStyle(style);
 
+		String location = "";
+		if(requirement.getCountry() !=null && requirement.getState() !=null){
+			location = requirement.getCountry() + " " + requirement.getState();
+		}else{
+			location = requirement.getCountry();
+		}
 		Cell cell4 = writeRow.createCell(1);
-		cell4.setCellValue(requirement.getCountry() + " " + requirement.getState());
+		cell4.setCellValue(location);
 		cell4.setCellStyle(style);
 
 		writeRow = createExcelsheet.createRow(3);
@@ -541,16 +430,13 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		createExcelsheet.setColumnWidth(1, 10000);
 
 		Cell cell7 = writeRow.createCell(0);
-		cell7.setCellValue("Shortlisted Applicants : ");
+		cell7.setCellValue(headerName);
 		cell7.setCellStyle(style);
 
 		Cell cell12 = writeRow.createCell(1);
-		cell12.setCellValue(requirementSubmissionCounts.getNumOfShortList());
+		cell12.setCellValue(count);
 		cell12.setCellStyle(style);
-		String headers[] = Constants.REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS;
-		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 7);
-
-		return createExcelsheet;
+		
 	}
 
 	/**
@@ -625,59 +511,12 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 	 * @throws Exception
 	 * @description: for applied candidates(ALL)
 	 */
-	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,
+	private Sheet getExcelSheetWithHeaderApplicants(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,
 			String requirementId, RequirementSubmissionCounts requirementSubmissionCounts) throws NumberFormatException, Exception {
 
 		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
-
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
-
-		writeRow = createExcelsheet.createRow(1);
-		createExcelsheet.setColumnWidth(0, 10000);
-		createExcelsheet.setColumnWidth(1, 10000);
-
-		Cell cell1 = writeRow.createCell(0);
-		cell1.setCellValue("Requirement Name :");
-		cell1.setCellStyle(style);
-		Cell cell2 = writeRow.createCell(1);
-		cell2.setCellValue(requirement.getJobTitle());
-		cell2.setCellStyle(style);
-
-		writeRow = createExcelsheet.createRow(2);
-		createExcelsheet.setColumnWidth(0, 10000);
-		createExcelsheet.setColumnWidth(1, 10000);
-
-		Cell cell3 = writeRow.createCell(0);
-		cell3.setCellValue("Location :");
-		cell3.setCellStyle(style);
-
-		Cell cell4 = writeRow.createCell(1);
-		cell4.setCellValue(requirement.getCountry() + " " + requirement.getState());
-		cell4.setCellStyle(style);
-
-		writeRow = createExcelsheet.createRow(3);
-		createExcelsheet.setColumnWidth(0, 10000);
-		createExcelsheet.setColumnWidth(1, 10000);
-
-		Cell cell5 = writeRow.createCell(0);
-		cell5.setCellValue("Experience : ");
-		cell5.setCellStyle(style);
-
-		Cell cell6 = writeRow.createCell(1);
-		cell6.setCellValue(requirement.getMaxExp() + " " + requirement.getMinExp());
-		cell6.setCellStyle(style);
-
-		writeRow = createExcelsheet.createRow(4);
-		createExcelsheet.setColumnWidth(0, 10000);
-		createExcelsheet.setColumnWidth(1, 10000);
-
-		Cell cell7 = writeRow.createCell(0);
-		cell7.setCellValue("Submitted Applicants : ");
-		cell7.setCellStyle(style);
-
-		Cell cell12 = writeRow.createCell(1);
-		cell12.setCellValue(requirementSubmissionCounts.getSubmittedCount());
-		cell12.setCellStyle(style);
+        prepareHeaders(writeRow, createExcelsheet, style, requirement, Constants.SUBMITTED_APPLICANTS_COUNT, requirementSubmissionCounts.getSubmittedCount());
 		String headers[] = Constants.REQUIREMENT_PIPELINE_EXCEL_HEADERS;
 		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 7);
 
