@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,10 +13,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateHotListService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -36,6 +41,12 @@ public class MailBoxController {
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	CandidateService candidateService;
+	
+	@Autowired
+	CandidateHotListService candidateHotListService;
 	
 	
 	
@@ -79,6 +90,29 @@ public class MailBoxController {
 	    
 	    List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId(),user.getId());
 	    resultJson = commonUtil.toJSON(clientsList);
+		return resultJson;
+	}
+	
+	@RequestMapping(value = "/getCandidatesForCampaign")
+	public @ResponseBody String getCandidatesForCampaign(HttpServletRequest request) throws Exception {
+
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    String resultJson;
+	    List<Candidate> candList = new ArrayList<Candidate>();
+	    List<Candidate> candidatesList = candidateService.getAllActiveCandidatesForCampaignByLocation(orgLocations.getId(),"Consultant");
+	    if(null != candidatesList){
+	    	for(Candidate candidate : candidatesList){
+	    		boolean flag = candidateHotListService.isCandidateIsFavourite(candidate.getId(), orgLocations.getId());
+	    		if(flag == true){
+	    			candidate.setIsFavourite(Constants.YES);
+	    		}else{
+	    			candidate.setIsFavourite(Constants.NO);
+	    		}
+	    		candList.add(candidate);
+	    	}
+	    }
+	    resultJson = commonUtil.toJSON(candList);
 		return resultJson;
 	}
 	

@@ -80,4 +80,6 @@ public interface CandidateService {
 	public File getCandidatePdf(List<Candidate> candidatesList, String orgName) throws Exception;
 	
 	public List<Candidate> getHotListCandidatesListByOrgLocationID(Long orgLocationId,String candidateType) throws Exception;
+	
+	public List<Candidate> getAllActiveCandidatesForCampaignByLocation(Long orgLocationId,String type)throws Exception;
 }

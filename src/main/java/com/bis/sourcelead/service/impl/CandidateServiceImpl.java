@@ -425,4 +425,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			throws Exception {
 		return candidateDao.getHotListCandidatesListByOrgLocationID(orgLocationId, candidateType);
 	}
+
+	@Override
+	public List<Candidate> getAllActiveCandidatesForCampaignByLocation(Long orgLocationId,String type) throws Exception {
+		return candidateDao.getAllActiveCandidatesForCampaignByLocation(orgLocationId,type);
+	}
 }

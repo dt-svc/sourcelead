@@ -10,11 +10,7 @@
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
-<script>
- window.onload = function() {
-	 listChange();
-};
-</script>
+
 
 
 <section class="content-wraper">
@@ -37,7 +33,7 @@
           <div class="col-md-10 positionRelative">
             <select class="chosen-select" multiple data-placeholder="&nbsp;" id="emailsList">
             </select>
-            <span class="select-multiple" data-target="#multiplemail" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
+            <span class="select-multiple" data-target="#multiplemail" onclick="listChange();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
             <!-- Modal content Multiple mail -->
             <div role="dialog" id="multiplemail" class="modal fade">
               <div class="modal-dialog modal-lg">
@@ -86,78 +82,35 @@
           <label class="col-md-2 control-label text-success small">Candiates</label>
           <div class="col-md-10">
             <select class="chosen-select" multiple data-placeholder="&nbsp;">
-              <option>Candiate-1</option>
-              <option>Candiate-2</option>
             </select>
-            <span class="select-multiple" data-target="#requirement" data-toggle="modal"><i class="fa fa-th-large" title="Select Requirement"></i></span> 
+            <span class="select-multiple" data-target="#requirement" onclick="candidateListChange()" data-toggle="modal"><i class="fa fa-th-large" title="Select Candidates"></i></span> 
             <!-- Modal content Multiple mail -->
             <div role="dialog" id="requirement" class="modal fade custom-modal">
               <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                   <div class="modal-header">
                     <button data-dismiss="modal" class="close" type="button">×</button>
-                    <h4 class="modal-title">Select Requirement</h4>
+                    <h4 class="modal-title">Select Candidates / Consultants</h4>
                   </div>
+                  
                   <div class="modal-body clearfix">
                     <div class="form-horizontal custom-form">
                       <div class="row">
-                        <div class="col-xs-12 col-md-8 col-lg-8">
-                          <div class="input-group">
-                            <input type="search" class="form-control" value="">
-                            <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>
-                        </div>
                         <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field">
-                          <select class="form-control">
-                            <option selected disabled>Select Type</option>
-                            <option value="All">All</option>
-                            <option value="Hostlist">Hostlist</option>
-                            <option value="Consultant">Consultant</option>
-                            <option value="Candidate">Candidate</option>
+                          <select class="form-control" id="candidatesListType" onchange="candidateListChange();">
+                            <option value="consultants" selected>Consultants</option>
+                            <option value="candidates">Candidates</option>
+                            <option value="hotlistConsultants">Hostlist Consultants</option>
+                            <option value="hotlistCandidates">Hostlist Candidates</option>
+                          
                           </select>
                         </div>
                       </div>
                     </div>
-                    <div class="modal-body-custom mt clearfix">
-                      <table cols="0" class="table table-bordered table-striped  clearfix">
-                        <tbody>
-                          <tr>
-                        <thead>
-                        <th><input type="checkbox"></th>
-                          <th>Name</th>
-                          <th>Email</th>
-                          <th>Phone</th>
-                          <th>Designation</th>
-                          <th>Postion Type</th>
-                          <th>Location</th>
-                            </thead>
-                        </tr>
-                        <tr>
-                          <td><input type="checkbox" name="team"></td>
-                          <td><span class="tbldata-dotdot">Murali Krishna</span></td>
-                          <td><span class="tbldata-dotdot" title="muraraikumarmahessrinivas@businessintelli.com"> muraraikumarmahessrinivas@businessintelli.com</span></td>
-                          <td>2244559900112233</td>
-                          <td><span class="tbldata-dotdot-100">UI Developer</span></td>
-                          <td><span class="tbldata-dotdot-100">Contract</span></td>
-                          <td><span class="tbldata-dotdot-100">Hyderabad</span></td>
-                        </tr>
-                          </tbody>
-                        
-                      </table>
+                    <div class="modal-body-custom mailerpopup mt clearfix">
+                     <div id="candidatesList"></div>
                     </div>
-                    <div class="clearfix">
-                      <ul class="pagination pull-right pagination-sm" style="margin:0;">
-                        <li><a href="#">1</a></li>
-                        <li class="active"><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button data-dismiss="modal" class="btn btn-primary" type="button">Assign</button>
-                    <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                  </div>
+                  </div> 
                 </div>
               </div>
             </div>
@@ -556,6 +509,150 @@ function pagination(){
 </script>
 
 
+
+
+
+<script>
+function getCandidates(){ 
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+           type : "POST",
+           url: sourceleadUrl+"/getCandidatesForCampaign?${_csrf.parameterName}=${_csrf.token}",    
+            success :function(data) {
+            	
+                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+               		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+               		 else if (data.indexOf('exception') >= 0) {
+               			 location.replace(sourceleadUrl+"/errorPage");
+               		 }
+               		 else{
+	                	   
+               			    var result = '';
+	                	    result = result +'<div class="modal-body clearfix">';
+	                		result = result +'     </div>';
+	                		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
+	                	    result = result +'       <table id="candidates" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
+	                		result = result +'           <thead>';
+	                		result = result +'           <tr>';
+	                		result = result +'             <th><input type="checkbox" id="checkAllClients" onclick="toggleClients(this);"></th>';
+	                		result = result +'             <th>Name</th>';
+	                		result = result +'             <th>Email</th>';
+	                		result = result +'             <th>Phone</th>';
+	                		result = result +'             <th>Designation</th>';
+	                		result = result +'             <th>Position Type</th>';
+	                		result = result +'           </tr>';
+	                		result = result +'           </thead>';
+		                    result = result +"<tbody>"; 
+		                    var json = JSON.parse(data);
+		                    for (var i = 0; i < json.length; i++) { 
+		                    	 var opt = json[i]; 
+		                    	 var name = '';
+		                    	 var mobile = ''
+		                    	 var designation = '';
+		                    	 var designationType = '';
+		                    	 
+		                    	 if(opt.lastName != null && opt.lastName != 'undefined' && opt.lastName != ""){
+		                    		 name = opt.firstName+", "+opt.lastName ;
+		                    	 }else{
+		                    		 name = opt.firstName;
+		                    	 }
+		                    	 
+		                    	 if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
+		                    		 mobile = opt.mobilePhone ;
+		                    	 }else{
+		                    		 mobile = "&nbsp;&nbsp;-----------";
+		                    	 }
+		                    	 
+		                    	 if(opt.designation != null && opt.designation != 'undefined' && opt.designation != ""){
+		                    		 designation = opt.designation ;
+		                    	 }else{
+		                    		 designation = "&nbsp;&nbsp;-----------";
+		                    	 }
+		                    	 
+		                    	 if(opt.designationType != null && opt.designationType != 'undefined' && opt.designationType != ""){
+		                    		 designationType = opt.designationType ;
+		                    	 }else{
+		                    		 designationType = "&nbsp;&nbsp;-----------";
+		                    	 }
+		                    	 
+		                    	 
+		                    	 
+		                    	 result = result +'<tr>';
+		                    	 result = result +'<td>&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.id+'"  type="checkbox" name="candidatesIds[]" class="myCheckbox" ></td>';
+		                    	 result = result +'<td>'+name+'</td>';
+		                    	 result = result +'<td>'+opt.email+'</td>';
+		                    	 result = result +'<td>'+mobile+'</td>';
+		                    	 result = result +'<td>'+designation+'</td>';
+		                    	 result = result +'<td>'+designationType+'</td>';
+		                    	 result = result +'</tr>';
+		                    	
+	                     }
+		                    
+	                     result = result +" </tbody>";
+	                     result = result +"</table>"; 
+	                     result = result +'     </div>'; 
+	                 	 result = result +'     <div class="clearfix">';
+	                 	
+	                 	 result = result +'       </div>'; 
+	                 	 result = result +'   </div>'; 
+	                 	 result = result +'   <div class="modal-footer">';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="getContactEmails();">Assign</button>';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
+	                 	 result = result +'   </div>'; 
+	                 	 $("#candidatesList").empty(); 
+	                     $("#candidatesList").append(result); 
+	                     candidatePagenation(); 
+			    	} 
+                 }else{
+  	    	         
+                 	var result ="";
+ 	    	        result = result +'<div class="modal-body clearfix">';
+ 	           		result = result +'     </div>';
+ 	           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
+ 	           	    result = result +'       <table id="candidates" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
+ 	           		result = result +'           <thead>';
+ 	           		result = result +'           <tr>';
+ 	           		result = result +'             <th><input type="checkbox" id="checkAll" onclick="toggle(this);"></th>';
+	 	           	result = result +'             <th>Client Name</th>';
+	        		result = result +'             <th>Website</th>';
+	        		result = result +'             <th>Location</th>';
+	        		result = result +'             <th>Tier</th>';
+	        		result = result +'             <th>No:of Contacts</th>';
+ 	           		result = result +'           </tr>';
+ 	           		result = result +'           </thead>';
+ 	        		result = result +'           </table>';
+ 	        		result = result +'     </div>';
+ 	        		result = result +'     </div>';
+ 					$("#candidatesList").empty();
+ 				    $("#candidatesList").append(result); 
+ 				    candidatePagenation();  
+                 } 
+          },
+            
+       }); 
+  } 
+</script>
+
+
+
+<script>
+function candidatePagenation(){
+    $("#candidates").DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+
+
  <script>
 function toggleClientContacts(source) {
     var checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -690,6 +787,24 @@ function getContactEmails(){
 				$this.next().css({'width': '100%'});
 });
 </script> 
+
+
+
+<script>
+function candidateListChange(){
+	
+	
+	  var candidatesListType = document.getElementById("candidatesListType").value;
+	  if(candidatesListType == 'consultants'){
+		  $("#candidatesList").empty(); 
+		  getCandidates();
+	  }
+}
+
+</script>
+
+
+
   <script>
   $(function () {
     //Add text editor

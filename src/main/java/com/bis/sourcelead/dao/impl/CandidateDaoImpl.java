@@ -307,5 +307,19 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		return candidateList;
 	}
+
+	@Override
+	@Transactional
+	public List<Candidate> getAllActiveCandidatesForCampaignByLocation(Long orgLocationId,String type) throws Exception {
+		logger.debug("In getAllActiveCandidatesByLocation method");
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String query = "from Candidate candidate  where candidate.id NOT IN "
+				+ "(select hotlist.candidateId.id from CandidateHotList hotlist where hotlist.orgLocationId.id = :orgLocationId and hotlist.teamId IS NOT NULL) "
+				+ "and candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.candidateType = :type ";  
+		List<Candidate> candidateList = session.createQuery(query)
+				               .setLong("orgLocationId", orgLocationId).setString("type", type).setCacheable(true).list();
+		return candidateList;
+	}
 	
 }
