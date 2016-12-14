@@ -71,6 +71,7 @@ public class Constants {
 	public static String OFFER_MAIL_TO_VENDORS="Client to Vendor Acceptence";
 	public static String APPLICANT_INTERVIEW = "Applicant Interview";
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
+	public static String INTERVIEWER_TEMPLATE = "Interviewer Template";
 	
 	public static String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static String ADD_OFFER_MAIL ="Forward the Mail";
@@ -88,6 +89,7 @@ public class Constants {
 	
 	public static String ENTITY_TYPE_EMAIL = "Email";
 	public static String ENTITY_TYPE_NOTIFICATION = "Notification";
+	public static String ENTITY_TYPE_TEMPLATE = "Notification";
 	
 	public static String CLIENT_INTERVIEW = "CLIENT_INTERVIEW";
 	public static String INTERVIEW = "INTERVIEW";

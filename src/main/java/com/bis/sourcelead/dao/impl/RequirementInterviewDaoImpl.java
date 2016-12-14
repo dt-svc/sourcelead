@@ -156,7 +156,7 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
         if(dateRange != null && "today".equals(dateRange)){
             query ="from RequirementInterview ri where ri.submissionId.orgLocations = :orgLocationsId and ri.submissionId.submissionStatus = 'INTERVIEW' and ri.submissionId.status = 1 and DATE(ri.dateOfInterview) = CURDATE() and ri.endTime >= NOW() "+subQuery;
         }else if(dateRange != null && "previous".equals(dateRange)){
-            query ="from RequirementInterview ri where ri.submissionId.orgLocations = :orgLocationsId and ri.submissionId.submissionStatus = 'INTERVIEW' and ri.submissionId.status = 1 and DATE(ri.dateOfInterview) < CURDATE() and ri.endTime < NOW()"+subQuery;
+            query ="from RequirementInterview ri where ri.submissionId.orgLocations = :orgLocationsId and ri.submissionId.submissionStatus = 'INTERVIEW' and ri.submissionId.status = 1 and DATE(ri.dateOfInterview) <= CURDATE() and ri.endTime < NOW()"+subQuery;
         }else if(dateRange != null && "upcoming".equals(dateRange)){
         	query ="from RequirementInterview ri where ri.submissionId.orgLocations = :orgLocationsId and ri.submissionId.submissionStatus = 'INTERVIEW' and ri.submissionId.status = 1 and DATE(ri.dateOfInterview) > CURDATE()"+subQuery;
         }else{
