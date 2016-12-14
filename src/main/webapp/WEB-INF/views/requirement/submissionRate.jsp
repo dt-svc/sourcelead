@@ -92,7 +92,7 @@
 							  <p class="reason-msg">Rate Negotiation</p>
 							  </div>
 							  <div id="ratehistoryDiv"></div>
-							  <div class="col-md-6" id="fieldsDiv" style="display:block">
+							  <div class="col-md-6" id="fieldsDiv" style="display:none">
 								  <div class="col-md-12 mb10">
 								   Requirement Rate : ${requirementSubmission.requirement.rate}
 								  </div>
@@ -191,7 +191,6 @@
 							$('#rateType').val('');
 							$('#negotiationButtonId').addClass('button').val('submit').removeAttr("disabled");
 							$("#fieldsDiv").css({ display: "none" });
-							$('#negotiationDivId').append("<span><center>Rate submitted successfully !!</center></span>");
 							getNegotiationHistory();
 						},
 			});   
@@ -210,9 +209,8 @@
 	function getNegotiationHistory() {
 			var sourceleadUrl = '${sourceleadUrl}';
 			var submissionId = '${submissionId}';
-			var type = '${type}';
+			var actionUsertype = '${type}';
 			var candidateId = '${candidateId}';
-			alert("dgdfg   "+submissionId+"  fdsfsd   "+candidateId)
 			$.ajax({
 						type : "POST",
 						url : sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId,
@@ -234,6 +232,9 @@
 			                     result = result +"<tbody>"; 
 			                     for (var i = 0; i < json.length; i++) { 
 			                    	 var opt = json[i];  
+			                    	 if(i==0){
+			                    		 result  = result + '<input type="hidden" id="lastProposedBy" value='+opt.previouslyProposedBy+'>';
+			                    	 }
 			                    	 result  = result + '         <tr>';
 			                    	 if(opt.requirementName != null && opt.requirementName != '' && opt.requirementName != 'undefined'){
 			                    	    result  = result + '<td><div><span>'+opt.requirementName+'</span></div></td>';
@@ -263,16 +264,28 @@
 			                     result = result +" </tbody>";
 			                     result = result +"</table>";
 			                     result = result +"</html>";
+			                 
 			                     $("#ratehistoryDiv").empty(); 
-			                     alert(result)
 			                     $("#ratehistoryDiv").append(result); 
-								
+			                     isShowForm(actionUsertype);
 							}
 							
 						},
 					});
 			       
 	} 
+</script>
+<script type="text/javascript">
+function isShowForm(actionUsertype){
+	 var lastProposedBy = $("#lastProposedBy").val();
+     if(lastProposedBy != null && lastProposedBy != "" && lastProposedBy !='undefined' && lastProposedBy == actionUsertype){
+    	 $('#negotiationDivId').append("<span><center>Rate submitted successfully !! Kindly wait for the Response...</center></span>");
+    	 document.getElementById("fieldsDiv").style.display="none";
+     }else{
+    	 document.getElementById("fieldsDiv").style.display="";
+     }
+     
+}
 </script>
 
 <script type="text/javascript">

@@ -78,6 +78,7 @@ public class SubmissionsRateController {
 		
 		ModelAndView model = new ModelAndView();
 		model.addObject("rateStatus",rateStatus);
+		model.addObject("type","Candidate");
 		model.addObject("submissionId",submissionId);
 		model.addObject("candidateId",requirementSubmission.getCandidate().getId());
 		model.addObject("sourceleadUrl",sourceleadUrl);
@@ -114,7 +115,7 @@ public class SubmissionsRateController {
 		
 		ModelAndView model = new ModelAndView();
 		model.addObject("rateStatus",rateStatus);
-		model.addObject("type","user");
+		model.addObject("type","User");
 		model.addObject("submissionId",submissionId);
 		model.addObject("candidateId",requirementSubmission.getCandidate().getId());
 		model.addObject("sourceleadUrl",sourceleadUrl);
