@@ -326,11 +326,59 @@ public class RequirementOfferRestController {
 	
 	@RequestMapping(value = "/acceptOrRejectOffer")
     @ResponseBody  String acceptOrRejectOffer(@RequestParam(value="offerStatus", required=false) String offerStatus,
-                           @RequestParam(value = "submissionId", required = false) Long submissionId,
+                           @RequestParam(value = "offerId", required = false) Long offerId,
                            HttpServletRequest request) throws Exception {
 
 			 String setofferStatus = "";
-            RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submissionId);
+			 
+			 
+			 RequirementOffers requirementOffers  = requirementOffersService.getRequirementOfferId(offerId);
+				List<RequirementOfferHistory> requirementOfferHistories = requirementOfferHistoryService.getAllRequirementOfferHistoriesByOfferId(offerId);
+			    
+			    if(requirementOfferHistories != null && !requirementOfferHistories.isEmpty() ){  
+				    if(offerStatus.equalsIgnoreCase("Accepted")){
+				    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
+				    		   RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
+					    		if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
+					    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+					    		}else{
+					    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);
+					    		}
+								 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+								 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+						  }
+				    	
+				    	  //Changing the status of offerTable 
+					      if(requirementOffers  != null){
+							    requirementOffers.setOfferStatus("OFFERACCEPTED");
+							    requirementOffers.setUpdatedDate(commonUtil.currentDate());
+							    requirementOffersService.saveOfferStatus(requirementOffers);
+					     }
+					      setofferStatus ="you have accepted the offer";
+			    }else if(offerStatus.equalsIgnoreCase("Rejected")){
+			    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
+			    		    RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
+				    		if(requirementSubmission.getSourceSubmission() == null){
+				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
+				    		}else{
+				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERREJECTED);
+				    		}
+							 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+							 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+					  }
+			    	
+			    	  //Changing the status of offerTable 
+					  if(requirementOffers  != null ){
+						    requirementOffers.setOfferStatus("OFFERREJECTED");
+						    requirementOffers.setUpdatedDate(commonUtil.currentDate());
+						    requirementOffersService.saveOfferStatus(requirementOffers);
+				      }
+					  setofferStatus ="you have rejected the offer";
+			    }
+			 }
+			 
+			 
+            /*RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submissionId);
 
             RequirementSubmission requirementSubmission   =requirementSubmissionService.getRequirementSubmissionById(submissionId);
             if(offerStatus.equalsIgnoreCase("Accepted")){
@@ -353,7 +401,7 @@ public class RequirementOfferRestController {
                         setofferStatus ="you have rejected the offer";
                     }
                     
-            }
+            }*/
             
            return setofferStatus;
     }                
