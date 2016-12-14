@@ -1,5 +1,5 @@
 
-UPDATE `sourcelead`.`email_scenario` SET `BODY`='Dear {{ApplicantNegotiateRequirement.initiatorUserName}}, \n\n  {{ApplicantNegotiateRequirement.applicantName}} requested new rate for the {{ApplicantNegotiateRequirement.requirementName}},Please find out the details,acknowledge for rate . \n{{ApplicantNegotiateRequirement.negotiationTable}} \n' WHERE `ID`='71';
+UPDATE `sourcelead`.`email_scenario` SET `BODY`='Dear {{ApplicantNegotiateRequirement.initiatorUserName}}, \n\n  {{ApplicantNegotiateRequirement.applicantName}} requested new rate for the {{ApplicantNegotiateRequirement.requirementName}},Please find out the details,acknowledge for rate . \n{{ApplicantNegotiateRequirement.negotiationTable}} \n' WHERE `ID`='73';
 
 
 INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('70', 'negotiationTable', '{{ApplicantNegotiateRequirement.negotiationTable}}');
@@ -18,3 +18,15 @@ INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_S
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES 
 											('UserRateNegotiation','Email', 'UserRateNegotiation', 'Used mail from user to Applicant  ', 'New Rate proposed by {{UserRateNegotiation.userName}}','org', 'Best Regards,\n{{UserRateNegotiation.userName}}', 'Dear {{UserRateNegotiation.applicantName}},\n\n {{UserRateNegotiation.userName}} proposed new rate for the Position {{UserRateNegotiation.requirementName}} at {{UserRateNegotiation.organizationName}}\n {{UserRateNegotiation.negotiationTable}}','N', 'SLADMIN', 'sourcelead', 'sourceleadIN');
 
+											
+#User Accept rate negotiation of the Requirement.
+
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`,`ENTITY_TYPE`) VALUES ('UserAcceptRateNegotiation','Email');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'applicantName', '{{UserAcceptRateNegotiation.applicantName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'requirementName', '{{UserAcceptRateNegotiation.requirementName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'organizationName', '{{UserAcceptRateNegotiation.organizationName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'userName', '{{UserAcceptRateNegotiation.userName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'negotiationTable', '{{UserAcceptRateNegotiation.negotiationTable}}');
+
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES 
+											('UserAcceptRateNegotiation','Email', 'UserAcceptRateNegotiation', 'Used mail when User accept Rate Negotiation.', 'New Rate proposed by {{UserAcceptRateNegotiation.userName}}','org', 'Best Regards,\n{{UserAcceptRateNegotiation.userName}}', 'Dear {{UserAcceptRateNegotiation.applicantName}},\n\n {{UserAcceptRateNegotiation.userName}} proposed new rate for the Position {{UserAcceptRateNegotiation.requirementName}} at {{UserAcceptRateNegotiation.organizationName}}\n {{UserAcceptRateNegotiation.negotiationTable}}','N', 'SLADMIN', 'sourcelead', 'sourceleadIN');

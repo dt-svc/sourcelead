@@ -86,6 +86,7 @@ public class SubmissionsRateRestController {
 		//this logic is for update status 
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+		requirementSubmission.setRejectedReason(rejectreason);
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 		
 		//this logic is for mail 
@@ -172,7 +173,6 @@ public class SubmissionsRateRestController {
 	         tempHTML.append("<th> By </th>");
 	         //tempHTML.append("<th> Action </th>");
 	         tempHTML.append("</tr>");
-	         if("user".equalsIgnoreCase(type)){
 	        	 for (RequirementRateSubmissionNegotiation negotiations : negotiationList) {
 			         tempHTML.append("<tr>");
 			         tempHTML.append("<td>"+requirement.getJobTitle()+"</td>");
@@ -188,33 +188,19 @@ public class SubmissionsRateRestController {
 	            }
 		        tempHTML.append("</table> ");
 		        
-		        tempHTML.append("<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateUserRates?rateStatus=Accepted&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
-		        tempHTML.append("<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateUserRates?rateStatus=Rejected&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
-		        tempHTML.append("<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateUserRates?rateStatus=Negotiate&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>");
+		        if("user".equalsIgnoreCase(type)){
+		        	//these links are provided in user to applicant Negotiate email
+		        	tempHTML.append("<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Accepted&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
+			        tempHTML.append("<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Rejected&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
+			        tempHTML.append("<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Negotiate&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>");
+		        }else{
+		        	//these links are provided in applicant to user Negotiate email
+		        	tempHTML.append("<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateUserRates?rateStatus=Accepted&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
+			        tempHTML.append("<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateUserRates?rateStatus=Rejected&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
+			        tempHTML.append("<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateUserRates?rateStatus=Negotiate&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>");
+		        }
 		        
-	         }else{
-	        	 for (RequirementRateSubmissionNegotiation negotiations : negotiationList) {
-			         tempHTML.append("<tr>");
-			         tempHTML.append("<td>"+requirement.getJobTitle()+"</td>");
-			         tempHTML.append("<td>"+requirement.getRate()+"</td>");
-			         tempHTML.append("<td>"+negotiations.getExpectedRate()+"</td>");
-			         if(negotiations.getCreatedBy() != null && "" != negotiations.getCreatedBy()){
-			        	 User proposedUser = userService.getUserByUserCode(negotiations.getRequirementsubmissionId().getCreatedBy());
-			        	 tempHTML.append("<td>"+proposedUser.getFirstName()+" "+proposedUser.getLastName()+"</td>");
-			         }else{
-			        	 tempHTML.append("<td>"+candidate.getFirstName()+" "+candidate.getLastName()+"</td>");
-			         }
-			         tempHTML.append("</tr>");
-	            }
-		        tempHTML.append("</table> ");
-		        
-		        tempHTML.append("<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateUserRates?rateStatus=Accepted&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
-		        tempHTML.append("<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateUserRates?rateStatus=Rejected&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
-		        tempHTML.append("<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateUserRates?rateStatus=Negotiate&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>");
-		        
-	         }
-	         
-		 }
+		 	}
 		 if("user".equalsIgnoreCase(type)){
 			 requirementSubmissionService.userNegotiateEmail(requirement,userRole.getUser(),candidate,orgLocations,neogtation,tempHTML);
 		 }else{
