@@ -182,26 +182,6 @@ public class RequirementListRestController {
 			for (String stat : status1) {
 				for(Requirement requirement : requirementList){
 					if(stat.equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
-						if(requirement.getClientId() != null){
-							if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
-								requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
-							}
-							if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-								requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
-							}
-						}
-						if(requirement.getManagerUserId() != null){
-							String managerFirstName = "";
-							if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
-								managerFirstName = requirement.getManagerUserId().getFirstName();
-							}
-							String managerLastName = "";
-							if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
-								managerLastName = requirement.getManagerUserId().getLastName();
-							}
-							requirement.setManager(managerFirstName+" "+managerLastName);
-						}
-						
 						requirementList1.add(requirement);
 					}
 				}
@@ -209,12 +189,8 @@ public class RequirementListRestController {
 			}
 			resultJson = commonUtil.toJSON(requirementList1);
 		}else{
-			
 			resultJson = commonUtil.toJSON(requirementList);
 		}
-		
-		
-		
 		return resultJson;
 	 }
 	    

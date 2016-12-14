@@ -172,7 +172,7 @@ public class RequirementDaoImpl implements RequirementDao {
         	
         }
 		
-		return query.list();
+		return query.setCacheable(true).list();
 		
 		
 		/*String query = "from Requirement requirement  where requirement.orgLocationId =:orgLocationId and  ( requirement.createdBy =:loginUserCode  or  )";
@@ -297,7 +297,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Requirement req where isTemplate = 'Y' and req.orgLocationId =:orgLocationId";
-		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		
 	}
 
@@ -306,10 +306,11 @@ public class RequirementDaoImpl implements RequirementDao {
 	public List<RequirementAssignTo> getUserAssignJobCount(Long userId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();  
 		String query = "from RequirementAssignTo reqassignto left join fetch reqassignto.teamId left join fetch reqassignto.roleId left join fetch reqassignto.assignUserId left join fetch reqassignto.requirementId  where reqassignto.assignUserId.id =:userId";
-		return session.createQuery(query).setLong("userId", userId).list();
+		return session.createQuery(query).setLong("userId", userId).setCacheable(true).list();
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode)
@@ -356,10 +357,11 @@ public class RequirementDaoImpl implements RequirementDao {
         	
         }
 		
-		return query.list();
+		return query.setCacheable(true).list();
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode)
@@ -411,10 +413,11 @@ public class RequirementDaoImpl implements RequirementDao {
         	
         }
 		
-		return query.list();
+		return query.setCacheable(true).list();
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Requirement> getAssignedRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, Long userId)
@@ -475,6 +478,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Integer validateJobId(String id,Long orgLocationId) throws Exception {
@@ -482,7 +486,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 		String query ="select count(*)from Requirement requirement where requirement.jobId = :id and requirement.orgLocationId.id =:orgLocationId";
 		
-		List<Long> jobCount = session.createQuery(query.toString()).setString("id", id).setLong("orgLocationId", orgLocationId).list();
+		List<Long> jobCount = session.createQuery(query.toString()).setString("id", id).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 			Integer count = 0;
 			if(jobCount != null && !jobCount.isEmpty()){
 					count = jobCount.get(0).intValue();
@@ -549,6 +553,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Boolean checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long requirementId, Long userId)
