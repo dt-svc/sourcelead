@@ -10,35 +10,28 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
+
+import com.bis.sourcelead.db.DatabaseConnectionConfig;
+import com.bis.sourcelead.db.PropertyPathConfiguration;
 
 /**
  * @purpose:Elastic Search Transport Client Configuration
  * @author: Naresh Bolisetty
  * @date: 06-December-2016
  */
-@Configuration
-@PropertySource("${propertyLocation:app.properties}")
+@Component
 public class SourceleadELKTransportClient {
     private static final Logger logger = LoggerFactory.getLogger(SourceleadELKTransportClient.class);
    
     private TransportClient client;
-   
     
-    @Value("${elk.cluster}")
-	private String cluster;
-
-	@Value("${elk.node}")
-	private String node;
-
-	@Value("${elk.path}")
-	private String path;
-
-	@Value("${elk.host}")
-	private String host;
-
+    ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+    
 	/**
      * Default constructor, initializing the transport client.
      * @throws UnknownHostException 
@@ -46,92 +39,16 @@ public class SourceleadELKTransportClient {
     public SourceleadELKTransportClient() {
 	     try {
 	    	  Settings settings = Settings.settingsBuilder()
-	    			  .put("cluster.name", "sourcelead")
-	                  .put("node.name", "sourcelead_node")
-	         		  .put("path.home", "/home/sourcelead_es")
+	    			  .put("cluster.name", dbconfig.getCluster())
+	                  .put("node.name", dbconfig.getNode())
+	         		  .put("path.home", dbconfig.getPath())
 	                  .build();
 			client = TransportClient.builder().settings(settings).build().
-			      addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300));
+			      addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
 	     } catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}
     }
-
-
-	public String getCluster() {
-		return cluster;
-	}
-
-
-	public void setCluster(String cluster) {
-		this.cluster = cluster;
-	}
-
-
-
-
-
-
-
-	public String getNode() {
-		return node;
-	}
-
-
-
-
-
-
-
-	public void setNode(String node) {
-		this.node = node;
-	}
-
-
-
-
-
-
-
-	public String getPath() {
-		return path;
-	}
-
-
-
-
-
-
-
-	public void setPath(String path) {
-		this.path = path;
-	}
-
-
-
-
-
-
-
-	public String getHost() {
-		return host;
-	}
-
-
-
-
-
-
-
-	public void setHost(String host) {
-		this.host = host;
-	}
-
-
-
-
-
-
 
 	/** {@inheritDoc} */
     public Client getClient() {

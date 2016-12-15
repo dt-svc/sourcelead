@@ -15,12 +15,11 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -76,6 +75,12 @@ public class CandidateServiceImpl implements CandidateService {
 	
 	@Autowired
 	PdfUtil pdfUtil;
+	
+	@Autowired
+	CandidateIndexHelper candidateIndexHelper;
+	
+	@Autowired
+    private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	/**
 	 * @author prasad k
 	 * @since  aug 26 2016
@@ -216,15 +221,10 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		
-	    //Elastic Search Document Saving
-		SourceleadELKBaseIndexer<CandidateIndex> candidateIndexer = new SourceleadELKBaseIndexer<CandidateIndex>();
-		CandidateIndex candidateIndex = CandidateIndexHelper.getCandidateIndexFromCandidate(savedCandidate);
-		candidateIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,savedCandidate.getId().toString());
-		
-		candidateIndexer = new SourceleadELKBaseIndexer<CandidateIndex>();
-		//final BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-		//boolQueryBuilder.must(QueryBuilders.termQuery("orgLocationId", candidateIndex.getOrgLocationId()));
-		//candidateIndexer.searchDocument(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, boolQueryBuilder);
+		/*
+		 * Saving Candidate DB data as ElasticSearch Documents
+		 */
+		saveOrUpdateCandidateElkDocument(savedCandidate);
 		return savedCandidate;
 	}
 
@@ -439,5 +439,15 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getHotListCandidatesListByOrgLocationID(Long orgLocationId, String candidateType)
 			throws Exception {
 		return candidateDao.getHotListCandidatesListByOrgLocationID(orgLocationId, candidateType);
+	}
+	
+	
+	@Override
+	@Async
+	public void saveOrUpdateCandidateElkDocument(Candidate candidate) throws Exception{
+		 //Elastic Search Document Saving
+	//	SourceleadELKBaseIndexer<CandidateIndex> candidateIndexer = new SourceleadELKBaseIndexer<CandidateIndex>();
+		CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
+		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 	}
 }

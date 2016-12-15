@@ -9,19 +9,28 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.search.SearchHits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
-@Configuration
+@Component
 public  class SourceleadELKBaseIndexer<T> {
 	private static final Logger logger = LoggerFactory.getLogger(SourceleadELKBaseIndexer.class);
 	
-	SourceleadELKTransportClient sourceleadELKTransportClient = new SourceleadELKTransportClient();
-	
+	@Autowired
+	SourceleadELKTransportClient sourceleadELKTransportClient;
+
+	@Bean
+	public SourceleadELKBaseIndexer<T> getSourceleadELKBaseIndexer() {
+	  return new SourceleadELKBaseIndexer<T>();
+	}
+    
 	/**
 	 * 
 	 * @param entityClass
@@ -30,6 +39,7 @@ public  class SourceleadELKBaseIndexer<T> {
 	 * @param id
 	 * @purpose : For To Save/Update  Elk Document Based On id
 	 */
+	@Async
 	public void saveOrUpdateElkDocument(T entityClass,String index,String type,String id) {
 		String entityInJson = null;
 		try {

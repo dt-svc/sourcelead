@@ -57,6 +57,18 @@ public class DatabaseConfig {
 	@Value("${jdbc.password}")
 	private String password;
 	
+	@Value("${elk.cluster}")
+	private String cluster;
+
+	@Value("${elk.node}")
+	private String node;
+
+	@Value("${elk.path}")
+	private String path;
+
+	@Value("${elk.host}")
+	private String host;
+	
 	@Bean
 	public PlatformTransactionManager txManager() {
 		HibernateTransactionManager hibernateTransactionManager = new HibernateTransactionManager();

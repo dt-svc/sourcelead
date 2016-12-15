@@ -2,22 +2,29 @@ package com.bis.sourcelead.elk.index.helper;
 
 import java.util.HashSet;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
+import com.bis.sourcelead.service.CandidateResumesService;
 
 @Component
 public class CandidateIndexHelper {
 	
+	@Autowired
+    CandidateResumesService candidateResumesService;
 	
-	public static CandidateIndex getCandidateIndexFromCandidate(Candidate candidate) throws Exception{
+	public CandidateIndex getCandidateIndexFromCandidate(Candidate candidate) throws Exception{
 		CandidateIndex candidateIndex = null;
 		if(null != candidate && null != candidate.getId()){
 			candidateIndex = new CandidateIndex();
+			candidateIndex.setCandidateId(candidate.getId());
 			candidateIndex.setOrgLocationId(candidate.getOrgLocationId().getId());
 			candidateIndex.setFirstName(candidate.getFirstName());
 			candidateIndex.setLastName(candidate.getLastName());
@@ -61,6 +68,12 @@ public class CandidateIndexHelper {
 				}
 			}
 			
+			CandidateResumes candidateResumes = candidateResumesService.getCandidateLatesResumes(candidate.getId(),Constants.CANDIDATE_SKILL_ACTIVE);
+			if(null != candidateResumes){
+				candidateIndex.setCurrentResumeId(candidateResumes.getId());
+				candidateIndex.setCurrentResumeName(candidateResumes.getFileName());
+				candidateIndex.setResumeContent("");
+			}
 			candidateIndex.setExperienceYears(candidate.getExperienceYears());
 			candidateIndex.setExperienceMonths(candidate.getExperienceMonths());
 			candidateIndex.setDesignation(candidate.getDesignation());

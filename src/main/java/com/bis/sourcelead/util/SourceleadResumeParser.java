@@ -2,7 +2,6 @@ package com.bis.sourcelead.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -16,15 +15,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.bis.sourcelead.service.LookUpDataService;
-import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.impl.LookUpDataServiceImpl;
 import com.google.i18n.phonenumbers.PhoneNumberMatch;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
