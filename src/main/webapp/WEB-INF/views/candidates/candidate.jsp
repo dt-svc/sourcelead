@@ -182,6 +182,7 @@
              <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
              <div class="input-group-btn selp-custom-min">
              <select class="selectpicker" id="designationType" name="designationType">
+                <option><a href="#">Select</a></option>
                  <option><a href="#">C2C</a></option>
                  <option><a href="#">W-2</a></option>
                  <option><a href="#">Part Time</a></option>
@@ -219,26 +220,7 @@
           </div>
         </div>
        
-         <%-- <div class="form-group">
-         <label class="col-md-3">Current Rate</label>
-         <div class="col-md-9">
-           <div class="input-group ratetype">
-             <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate"  data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
-             <div class="input-group-btn selp-custom-min">
-             <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
-                 
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
-                 
-             </select>
-             </div>
-           </div>
-         </div>
-       </div> --%>
+       
        
        
        <div class="form-group">
@@ -353,6 +335,21 @@
             <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
           </div>
         </div>
+        
+        <div class="form-group">
+         <label class="col-md-3">Notice Period</label>
+          <div class="col-md-9">
+               <select class="form-control valid" id="noticePeriod" name="noticePeriod">
+                <option value=""><a href="#">Select</a></option>
+                 <option ${noticePeriod  == 'Immediately' ? 'selected' : ''}><a href="#">Immediately</a></option>
+                 <option ${noticePeriod  == '15 days' ? 'selected' : ''}><a href="#">15 days</a></option>
+                 <option ${noticePeriod  == 'Month' ? 'selected' : ''}><a href="#">Month</a></option>
+                 <option ${noticePeriod  == '2 months' ? 'selected' : ''}><a href="#">2 months</a></option>
+                 <option ${noticePeriod  == '3 months' ? 'selected' : ''}><a href="#">3 months</a></option>
+                </select>
+             
+           </div>
+         </div>
         
         <div class="form-group">
           <label class="col-md-3"></label>
