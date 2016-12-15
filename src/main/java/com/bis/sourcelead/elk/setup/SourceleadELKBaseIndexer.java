@@ -1,13 +1,12 @@
 package com.bis.sourcelead.elk.setup;
 
 import java.io.Writer;
-import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -70,18 +69,20 @@ public  class SourceleadELKBaseIndexer<T> {
 		
 		
 	}
-	public  void searchDocument(String index,String type,BoolQueryBuilder query){
+	public  SearchHits searchDocument(String index,String type,int offset,int maxResults,BoolQueryBuilder query){
 		 SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index).setTypes(type).setQuery(query)
-				                 .setFrom(0).setSize(60).setExplain(true)
+				                 .setFrom(offset).setSize(maxResults).setExplain(true)
 	                             .execute()
 	                             .actionGet();
-			SearchHit[] results = response.getHits().getHits();
-			 System.out.println("Current results: " + results.length);
+			
+			/* System.out.println("Current results: " + results.length);
 			for (SearchHit hit : results) {
 				System.out.println("------------------------------");
 				Map<String,Object> result = hit.getSource();
 				System.out.println(result);
-			}
+			}*/
+		 
+		 return response.getHits();
 
    }
 	

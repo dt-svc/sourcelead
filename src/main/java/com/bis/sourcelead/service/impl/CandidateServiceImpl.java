@@ -222,9 +222,9 @@ public class CandidateServiceImpl implements CandidateService {
 		candidateIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,savedCandidate.getId().toString());
 		
 		candidateIndexer = new SourceleadELKBaseIndexer<CandidateIndex>();
-		final BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-		boolQueryBuilder.must(QueryBuilders.termQuery("orgLocationId", candidateIndex.getOrgLocationId()));
-		candidateIndexer.searchDocument(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, boolQueryBuilder);
+		//final BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		//boolQueryBuilder.must(QueryBuilders.termQuery("orgLocationId", candidateIndex.getOrgLocationId()));
+		//candidateIndexer.searchDocument(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, boolQueryBuilder);
 		return savedCandidate;
 	}
 

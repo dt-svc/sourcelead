@@ -129,6 +129,18 @@ public class AddElkCandidate{
 									candidateIndex.setEducation(educationList.toArray(new String[0]));
 								}
 		    	           }
+							
+							
+						   String sql4= "SELECT * FROM sourcelead.CANDIDATE_RESUMES candidateResumes where candidateResumes.CANDIDATE_ID = '"+ candidateId+"'  and candidateResumes.CREATED_DATE IN (SELECT max(canresume.CREATED_DATE) FROM sourcelead.CANDIDATE_RESUMES canresume where canresume.CANDIDATE_ID = '"+ candidateId+"' and canresume.status = '1') and candidateResumes.status = '1' ";
+						   Statement stmt4 = conn.createStatement();
+							ResultSet rs4 = stmt4.executeQuery(sql4);
+							if(rs4 != null){
+								 while(rs4.next()){
+									 candidateIndex.setCurrentResumeId(rs4.getLong("ID"));
+									 candidateIndex.setCurrentResumeName(rs4.getString("FILE_NAME"));
+									 candidateIndex.setResumeContent("");
+							    }
+		    	           }
 		    	    }
 		    	    candidateIndexsList.add(candidateIndex);
 			    }

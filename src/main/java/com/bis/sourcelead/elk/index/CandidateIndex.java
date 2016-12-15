@@ -3,10 +3,6 @@ package com.bis.sourcelead.elk.index;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Transient;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class CandidateIndex implements Serializable {
 
 	private static final long serialVersionUID = 1L;
