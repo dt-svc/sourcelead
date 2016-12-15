@@ -32,7 +32,7 @@ public class AddElkCandidate{
 		if(elkCandidateList != null && !elkCandidateList.isEmpty()){
 			for (CandidateIndex candidateIndex :elkCandidateList) {
 				SourceleadELKBaseIndexer<CandidateIndex> candidateIndexer = new SourceleadELKBaseIndexer<CandidateIndex>();
-				candidateIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateIndex.getID().toString());
+				candidateIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateIndex.getCustomerId().toString());
 			}
 		}
 		System.out.println("Candidates Successfully Added To Elk");
@@ -48,7 +48,7 @@ public class AddElkCandidate{
 				ResultSet rs = stmt.executeQuery(sql);
 			    while(rs.next()){
 			    	CandidateIndex candidateIndex = new CandidateIndex();
-			    	candidateIndex.setID(rs.getLong("ID"));
+			    	candidateIndex.setCustomerId(rs.getLong("ID"));
 			    	candidateIndex.setOrgLocationId(rs.getLong("ORG_LOCATION_ID"));
 					candidateIndex.setFirstName(rs.getString("FIRST_NAME"));
 					candidateIndex.setLastName(rs.getString("LAST_NAME"));
