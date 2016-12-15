@@ -214,8 +214,8 @@
           <div class="col-md-9">
             <div class="row">
              <div class="col-xs-6 col-md-6">
-             		<select class="form-control" id="experienceYears" name="experienceYears" onchange="disableMonths();">
-             		  <option selected disabled>Year</option>
+             		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
+             		  <option selected disabled>Years</option>
              		  <c:forEach begin="0" end="24" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
@@ -224,8 +224,8 @@
              </div>
              
              <div class="col-xs-6 col-md-6">
-             		<select class="form-control" id="experienceMonths" name="experienceMonths">
-             		<option selected disabled>Month</option>
+             		<select class="form-control selectpicker" id="experienceMonths" name="experienceMonths">
+             		<option selected disabled>Months</option>
              		 <c:forEach begin="0" end="11" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
@@ -351,6 +351,8 @@
               </div>
             </div>
        
+         
+        
         
         <div class="form-group">
               <label class="col-md-3">Skills</label>
@@ -363,12 +365,29 @@
               </div>
             </div>
         
+        
+        
         <div class="form-group">
           <label class="col-md-3">Summary</label>
           <div class="col-md-9">
             <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
           </div>
         </div>
+        
+        <div class="form-group">
+         <label class="col-md-3">Notice Period</label>
+          <div class="col-md-9">
+               <select class="form-control valid selectpicker" id="noticePeriod" name="noticePeriod">
+                <option value=""><a href="#">Select</a></option>
+                 <option ${noticePeriod  == 'Immediately' ? 'selected' : ''}><a href="#">Immediately</a></option>
+                 <option ${noticePeriod  == '15 days' ? 'selected' : ''}><a href="#">15 days</a></option>
+                 <option ${noticePeriod  == 'Month' ? 'selected' : ''}><a href="#">Month</a></option>
+                 <option ${noticePeriod  == '2 months' ? 'selected' : ''}><a href="#">2 months</a></option>
+                 <option ${noticePeriod  == '3 months' ? 'selected' : ''}><a href="#">3 months</a></option>
+                </select>
+             
+           </div>
+         </div>
         
         <div class="form-group">
           <label class="col-md-3"></label>
