@@ -11,7 +11,7 @@ public class CandidateIndex implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	 
-	private Long customerId;
+	private Long candidateId;
 
 	private Long orgLocationId;
 
@@ -362,12 +362,12 @@ public class CandidateIndex implements Serializable {
 		this.candidateType = candidateType;
 	}
 
-	public Long getCustomerId() {
-		return customerId;
+	public Long getCandidateId() {
+		return candidateId;
 	}
 
-	public void setCustomerId(Long customerId) {
-		this.customerId = customerId;
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
 	}
 
 	public Integer getNoticePriod() {
