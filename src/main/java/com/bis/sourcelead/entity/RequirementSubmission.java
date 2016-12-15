@@ -140,6 +140,10 @@ public class RequirementSubmission implements Serializable{
    	private String createdDateStr;
     
     @Transient
+   	private String upDatedStr;
+    
+    
+    @Transient
 	private String skillsList;
     
     @Transient
@@ -205,6 +209,12 @@ public class RequirementSubmission implements Serializable{
 	@Transient
 	private String submittedBy;
 	
+	@Transient
+	private String proposedSubmissionRate;
+	
+	@Transient
+	private String clientSubmissionId;
+
 	@Transient
 	private String submittedOn;
 
@@ -626,6 +636,22 @@ public class RequirementSubmission implements Serializable{
 		this.submittedBy = submittedBy;
 	}
 
+	public String getProposedSubmissionRate() {
+		return proposedSubmissionRate;
+	}
+
+	public void setProposedSubmissionRate(String proposedSubmissionRate) {
+		this.proposedSubmissionRate = proposedSubmissionRate;
+	}
+
+	public String getClientSubmissionId() {
+		return clientSubmissionId;
+	}
+
+	public void setClientSubmissionId(String clientSubmissionId) {
+		this.clientSubmissionId = clientSubmissionId;
+	}
+
 	public String getSubmittedOn() {
 		return submittedOn;
 	}
@@ -633,7 +659,6 @@ public class RequirementSubmission implements Serializable{
 	public void setSubmittedOn(String submittedOn) {
 		this.submittedOn = submittedOn;
 	}
-	
 
 	public String getRejectedReason() {
 		return rejectedReason;
@@ -650,5 +675,14 @@ public class RequirementSubmission implements Serializable{
 	public void setPreviousSubmissionStatus(ApplicantSubmissionStatus previousSubmissionStatus) {
 		this.previousSubmissionStatus = previousSubmissionStatus;
 	}
+
+	public String getUpDatedStr() {
+		return upDatedStr;
+	}
+
+	public void setUpDatedStr(String upDatedStr) {
+		this.upDatedStr = upDatedStr;
+	}
+	
 
 }

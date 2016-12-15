@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -55,6 +56,26 @@ public class CandidateHotList implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Transient
+    private String candidateFullName;
+	
+	@Transient
+    private String candidateDesignation;
+	
+	@Transient
+    private String positionType;
+	
+	@Transient
+    private String candidateEmail;
+	
+	@Transient
+    private String candidateMobileNumber;
+	
+	@Transient
+    private String candidateType;
+	
+	@Transient
+    private String candidateLocation;
 	
 
 	public Long getId() {
@@ -127,5 +148,61 @@ public class CandidateHotList implements Serializable{
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getCandidateFullName() {
+		return candidateFullName;
+	}
+
+	public void setCandidateFullName(String candidateFullName) {
+		this.candidateFullName = candidateFullName;
+	}
+
+	public String getCandidateDesignation() {
+		return candidateDesignation;
+	}
+
+	public void setCandidateDesignation(String candidateDesignation) {
+		this.candidateDesignation = candidateDesignation;
+	}
+
+	public String getPositionType() {
+		return positionType;
+	}
+
+	public void setPositionType(String positionType) {
+		this.positionType = positionType;
+	}
+
+	public String getCandidateEmail() {
+		return candidateEmail;
+	}
+
+	public void setCandidateEmail(String candidateEmail) {
+		this.candidateEmail = candidateEmail;
+	}
+
+	public String getCandidateMobileNumber() {
+		return candidateMobileNumber;
+	}
+
+	public void setCandidateMobileNumber(String candidateMobileNumber) {
+		this.candidateMobileNumber = candidateMobileNumber;
+	}
+
+	public String getCandidateType() {
+		return candidateType;
+	}
+
+	public void setCandidateType(String candidateType) {
+		this.candidateType = candidateType;
+	}
+
+	public String getCandidateLocation() {
+		return candidateLocation;
+	}
+
+	public void setCandidateLocation(String candidateLocation) {
+		this.candidateLocation = candidateLocation;
 	}
 }

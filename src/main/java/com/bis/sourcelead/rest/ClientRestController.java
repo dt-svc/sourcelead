@@ -851,6 +851,25 @@ public class ClientRestController {
 	    
 	   }
 	
+	
+	
+	@RequestMapping(value = "/validateFeedbackTemplateLabelName" , method = RequestMethod.GET)
+	   public String validateFeedbackTemplateLabelName(@RequestParam(value="templateId", required=false) Long templateId,
+			   @RequestParam(value="labelName", required=false) String labelName) throws Exception {
+			
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    SubmissionTemplate submissionTemplate = null;
+		    if(templateId != null){
+		    	submissionTemplate = submissionTemplateService.getSubmissionTemplateByLabelName(templateId, labelName);	
+		    }
+		    if(submissionTemplate == null){
+		    	return "Success";
+		    }else{
+		    	return "Existed";
+		    }
+	    
+	   }
+	
 	/**
 	 * @author Rajashekar
 	 * Export client data to excel and pdf

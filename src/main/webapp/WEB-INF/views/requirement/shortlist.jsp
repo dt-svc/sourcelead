@@ -52,7 +52,7 @@ function candidateShortList(requirementId){
 	    			    result = result + '<tr>';
 	    			    result = result + '<td><input type="checkbox"  class="submissionsChecks" value='+report.id+' name="submissionList[]" ></td>';
 	    			    
-			            result = result + '<td><div><span>'+report.candidateName+'</span></div></td>';
+			            result = result + '<td><div><span>'+report.candidateName+'llllllllll</span></div></td>';
 			           
 			           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
 			        	   result = result + '<td><div><span>'+report.candidateEmail+'</span></div></td>';
@@ -69,7 +69,7 @@ function candidateShortList(requirementId){
 			    	     }
 			           
 			           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
-			        	   result = result + '<td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.id+'\"></a>'+report.resumeName+'</span></div></td>';
+			        	   result = result + '<td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.candidateResumes.id+'\"></a>'+report.resumeName+'</span></div></td>';
 				           }
 				       else{
 				    	   result = result + '<td><div>--</div></td>';
