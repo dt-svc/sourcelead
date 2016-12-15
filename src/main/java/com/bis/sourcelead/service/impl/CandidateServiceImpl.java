@@ -15,6 +15,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -218,6 +220,11 @@ public class CandidateServiceImpl implements CandidateService {
 		SourceleadELKBaseIndexer<CandidateIndex> candidateIndexer = new SourceleadELKBaseIndexer<CandidateIndex>();
 		CandidateIndex candidateIndex = CandidateIndexHelper.getCandidateIndexFromCandidate(savedCandidate);
 		candidateIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,savedCandidate.getId().toString());
+		
+		candidateIndexer = new SourceleadELKBaseIndexer<CandidateIndex>();
+		final BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		boolQueryBuilder.must(QueryBuilders.termQuery("orgLocationId", candidateIndex.getOrgLocationId()));
+		candidateIndexer.searchDocument(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, boolQueryBuilder);
 		return savedCandidate;
 	}
 

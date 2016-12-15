@@ -3,9 +3,16 @@ package com.bis.sourcelead.elk.index;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class CandidateIndex implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	 
+	@JsonIgnore
+	private Long ID;
 
 	private Long orgLocationId;
 
@@ -74,6 +81,15 @@ public class CandidateIndex implements Serializable {
 	private Date updatedDate;
 
 	private String updatedBy;
+	
+    private Integer noticePriod;
+	
+	private Long currentResumeId;
+	
+	private String currentResumeName;
+	
+	private String resumeContent;
+	
 
 	public Long getOrgLocationId() {
 		return orgLocationId;
@@ -346,5 +362,47 @@ public class CandidateIndex implements Serializable {
 	public void setCandidateType(String candidateType) {
 		this.candidateType = candidateType;
 	}
+
+	public Long getID() {
+		return ID;
+	}
+
+	public void setID(Long iD) {
+		ID = iD;
+	}
+
+	public Integer getNoticePriod() {
+		return noticePriod;
+	}
+
+	public void setNoticePriod(Integer noticePriod) {
+		this.noticePriod = noticePriod;
+	}
+
+	public Long getCurrentResumeId() {
+		return currentResumeId;
+	}
+
+	public void setCurrentResumeId(Long currentResumeId) {
+		this.currentResumeId = currentResumeId;
+	}
+
+	public String getCurrentResumeName() {
+		return currentResumeName;
+	}
+
+	public void setCurrentResumeName(String currentResumeName) {
+		this.currentResumeName = currentResumeName;
+	}
+
+	public String getResumeContent() {
+		return resumeContent;
+	}
+
+	public void setResumeContent(String resumeContent) {
+		this.resumeContent = resumeContent;
+	}
+
+	
 
 }

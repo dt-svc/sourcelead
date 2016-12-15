@@ -40,6 +40,20 @@ public class DatabaseConnectionConfig {
 
 	@Value("${jdbc.password}")
 	private String password;
+	
+
+    @Value("${elk.cluster}")
+	private String cluster;
+
+	@Value("${elk.node}")
+	private String node;
+
+	@Value("${elk.path}")
+	private String path;
+
+	@Value("${elk.host}")
+	private String host;
+	
 
 	public ComboPooledDataSource getComboPooledDataSource() {
 		return comboPooledDataSource;
@@ -59,6 +73,24 @@ public class DatabaseConnectionConfig {
 
 	public String getPassword() {
 		return password;
+	}
+	
+	
+
+	public String getCluster() {
+		return cluster;
+	}
+
+	public String getNode() {
+		return node;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public String getHost() {
+		return host;
 	}
 
 	public Environment getEnv() {

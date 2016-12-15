@@ -1,10 +1,13 @@
 package com.bis.sourcelead.elk.setup;
 
 import java.io.Writer;
+import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -68,40 +71,17 @@ public  class SourceleadELKBaseIndexer<T> {
 		
 	}
 	public  void searchDocument(String index,String type,BoolQueryBuilder query){
-		/*
-		try {
-			 sourceleadELKTransportClient.getClient().prepareDelete(index, type,id).execute().actionGet();
-			 sourceleadELKTransportClient.shutdown();
-			// logger.info(index+" Document With id :"+ id +" has been deleted.");
-		}
-		catch (Exception e) {
-			//logger.error(index+" Document With id :"+ id +" deletion fails "+ExceptionUtils.getFullStackTrace(e));
-		}*/
-		
-           
-		
-		//  BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery().must(QueryBuilders.matchAllQuery());
-               
-
-			//SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(paramArrayOfString).
-					
-					
-				/*	get.prepareSearch(index)
-			              .setTypes(type)
-			              .setSearchType(SearchType.QUERY_AND_FETCH)
-			              .setQuery(fieldQuery(field, value))
-			              .setFrom(0).setSize(60).setExplain(true)
-			              .execute()
-			              .actionGet();*/
-			
-			/*SearchHit[] results = response.getHits().getHits();
-			
-			System.out.println("Current results: " + results.length);
+		 SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index).setTypes(type).setQuery(query)
+				                 .setFrom(0).setSize(60).setExplain(true)
+	                             .execute()
+	                             .actionGet();
+			SearchHit[] results = response.getHits().getHits();
+			 System.out.println("Current results: " + results.length);
 			for (SearchHit hit : results) {
-			System.out.println("------------------------------");
-			Map<String,Object> result = hit.getSource();
-			System.out.println(result);
-			}*/
+				System.out.println("------------------------------");
+				Map<String,Object> result = hit.getSource();
+				System.out.println(result);
+			}
 
    }
 	
