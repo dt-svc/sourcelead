@@ -24,6 +24,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
  <script src="resources/js/formvalidator.js"></script>
+ <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script>
 		$(document).ready(function() { 
 			var rateStatus = '${param.rateStatus}';
@@ -40,6 +41,19 @@
 		});
 </script>
 
+<style>
+body {
+background-color:#e1e6fa;
+}
+.project_wrap_table table {
+	border: 1px solid #fff;
+	border-bottom: 1px solid #909090;
+	margin-bottom: 10px;
+}
+.project_wrap_table table tr td:last-child {
+width: auto;
+}
+</style>
 <body>
 <div class="wraper"> 
   <!-- Header Area -->
@@ -55,7 +69,7 @@
   <!-- Header Area --> 
 
   <!-- Content Area -->
-  <section class="success-wraper container">
+  <section class="container">
 		<div class="row">
 		  		<div id="accept" style="display:none">
 				          <div class="col-md-8 col-md-offset-2 inner-widget success-user">
@@ -85,26 +99,24 @@
 		  		<div id="negotiation" style="display:none">
 		  		
 		  			<form id="negotiation_form" name="negotiation_form" method="post" >
-				          <div class="col-md-8 col-md-offset-2 inner-widget negotiation-user" id="negotiationDivId">
+				          <div class="col-md-8 rate-negotiation project_wrap_table" id="negotiationDivId">
 				          
-							  <div class="col-md-6">
-							  	<!-- <i class="fa fa-handshake-o fa-3x"></i> -->
-							  <p class="reason-msg">Rate Negotiation</p>
+							  <div class="clearfix">
+							  <h4>Rate Negotiation</h4>
 							  </div>
 							  <div id="ratehistoryDiv"></div>
-							  <div class="col-md-6" id="fieldsDiv" style="display:none">
-								  <div class="col-md-12 mb10">
+							  <div class="clearfix mt" id="fieldsDiv" style="display:none">
+								  <div class="col-md-12 mb10 hidden">
 								   Requirement Rate : ${requirementSubmission.requirement.rate}
 								  </div>
 								  
-								  
-								   <div class="col-md-12 mb10">
+								   <div class="clearfix">
 								  <div class="row">
-								  <div class="col-md-7">
+								  <div class="col-md-3">
 								  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="rate" id="rateProposal" name="rateProposal" data-validation="required validate_Space validate_float validate_length length1-8">
 								  </div> 
 								  <input type="hidden" name="candidateId" id="candidateId" value="${requirementSubmission.candidate.id}"/> 
-								  <div class="col-md-5 select-field">
+								  <div class="col-md-3 select-field">
 								  <select  class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Type" data-validation="required">
 										<option value="">Rate Per</option>
 					                    <option>Hourly</option>
@@ -116,13 +128,17 @@
 					                    <option>Yearly</option>
 								  </select>
 								  </div>
+								  <div class="clearfix"></div>
+								  <div class="col-md-6 mt">
+									  <textarea class="form-control" rows="2" name="comment" placeholder="Comment" id="comment"></textarea>	
+								  </div>
 								  </div>
 								  </div>
 								 
 								 <!--  <div class="col-md-12 mb10">
 									  <textarea row="1" class="form-control" placeholder="Comments" name="comments"></textarea>
 								  </div> -->
-								  <div class="col-md-12 mt10"><input type="button" class="btn btn-sm btn-default" id="negotiationButtonId" onclick="storeNegotiation();" value="submit"></div>
+								  <div class="col-md-6 mt10"><input type="button" class="btn btn-sm btn-primary pull-right" id="negotiationButtonId" onclick="storeNegotiation();" value="Submit"></div>
 							  	
 							  </div>
 						 </div>
@@ -131,9 +147,10 @@
 		 <div>
   </section>
   <!-- Footer Area -->
-  <footer class="footer-area footer-area-active clearfix">
+  <footer class="footer-publicpages clearfix">
+  <div class="container">
     <div class="copyright"> @ Copyright : Source Lead, All right reserved </div>
-    <div class="powered-by"> Powered by: businessintelli.com </div>
+    <div class="powered-by"> Powered by: businessintelli.com </div></div>
   </footer>
   <!-- Footer Area --> 
 </div>
@@ -145,6 +162,7 @@
 	function storeReject() {
 			var sourceleadUrl = '${sourceleadUrl}';
 			var submissionId = '${submissionId}';
+			var type = '${type}';
 			var rejectreason = document.getElementById("rejectId").value;
 			var frm = $('#reject_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -152,7 +170,7 @@
 			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/storeReject?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason,
+						url : sourceleadUrl+"/storeReject?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason+"&type="+type,
 						success : function(data) {
 							if("success"){
 								$('#rejectIdDiv').empty();
@@ -220,7 +238,7 @@
 								
 								var result = "";
 								result = result +"<html>";
-			                	 result = result +"<table width='100%' cellpadding='0' border='2' cellspacing='0'>"; 
+			                	 result = result +"<table id='rateNegotiationTable' width='100%' cellpadding='0' border='2' cellspacing='0'>"; 
 			                     result = result +"<thead>"; 
 			                     result = result +"  <tr>"; 
 			                     result  = result + '<th> Requirement Title </th>';
@@ -268,6 +286,7 @@
 			                     $("#ratehistoryDiv").empty(); 
 			                     $("#ratehistoryDiv").append(result); 
 			                     isShowForm(actionUsertype);
+			                     pagination();
 							}
 							
 						},
@@ -275,6 +294,22 @@
 			       
 	} 
 </script>
+
+<script>
+function pagination(){  
+    $('#rateNegotiationTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[6, 15, 20, -1], [6, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+
 <script type="text/javascript">
 function isShowForm(actionUsertype){
 	 var lastProposedBy = $("#lastProposedBy").val();
