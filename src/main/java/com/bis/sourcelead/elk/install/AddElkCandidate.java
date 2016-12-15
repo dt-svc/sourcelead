@@ -1,6 +1,8 @@
 package com.bis.sourcelead.elk.install;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
+import java.io.Writer;
+import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,6 +13,11 @@ import java.util.HashSet;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.engine.DocumentMissingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -21,19 +28,22 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.CandidateIndex;
-import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 
 
 public class AddElkCandidate{
 	private static final Logger logger = LoggerFactory.getLogger(AddElkCandidate.class);
 	private ComboPooledDataSource comboPooledDataSource;
+	 private TransportClient client;
 	public void addElkCandidate() throws IOException, SQLException {
 		ArrayList<CandidateIndex> elkCandidateList = getElkCandidates();
 		if(elkCandidateList != null && !elkCandidateList.isEmpty()){
 			for (CandidateIndex candidateIndex :elkCandidateList) {
-				SourceleadELKBaseIndexer<CandidateIndex> candidateIndexer = new SourceleadELKBaseIndexer<CandidateIndex>();
-				candidateIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateIndex.getCandidateId().toString());
+				saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateIndex.getCandidateId().toString());
 			}
 		}
 		  logger.info("Candidates Successfully Added To Elk");
@@ -150,6 +160,36 @@ public class AddElkCandidate{
 		}
 		return candidateIndexsList;
 	}
+	
+	
+	public void saveOrUpdateElkDocument(CandidateIndex candidateIndex,String index,String type,String id) {
+		String entityInJson = null;
+		try {
+		    entityInJson = toJSON(candidateIndex);
+		    client.prepareUpdate(index, type,id).setDoc(entityInJson).get();
+		    logger.info(type+" has been updated.");
+		} 
+        catch(DocumentMissingException e){
+        	client.prepareIndex(index, type,id)
+		    .setSource(entityInJson).execute().actionGet();
+		    logger.info(type+" has been indexed.");
+		}
+		catch (Exception e) {
+			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
+		}
+		
+     }
+	
+	 public String toJSON(Object obj){
+	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+	            public HierarchicalStreamWriter createWriter(Writer writer) {
+	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+	            }
+	        });
+	        return xstream.toXML(obj);
+	  }
+	 
+	 
 	@Bean
 	public DataSource comboPooledDataSource() {
 		@SuppressWarnings("resource")
@@ -165,6 +205,19 @@ public class AddElkCandidate{
 		comboPooledDataSource.setJdbcUrl(dbconfig.getJdbcUrl());
 		comboPooledDataSource.setUser(dbconfig.getUser());
 		comboPooledDataSource.setPassword(dbconfig.getPassword());
+		
+		try {
+	    	  Settings settings = Settings.settingsBuilder()
+	    			  .put("cluster.name", dbconfig.getCluster())
+	                  .put("node.name", dbconfig.getNode())
+	         		  .put("path.home", dbconfig.getPath())
+	                  .build();
+			client = TransportClient.builder().settings(settings).build().
+			      addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
+	     } catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+		
 		return comboPooledDataSource;
 	}
 	public static void main(String[] args) throws IOException {
