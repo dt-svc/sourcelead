@@ -22,6 +22,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -319,6 +320,21 @@ public class CandidateDaoImpl implements CandidateDao {
 				+ "and candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.candidateType = :type ";  
 		List<Candidate> candidateList = session.createQuery(query)
 				               .setLong("orgLocationId", orgLocationId).setString("type", type).setCacheable(true).list();
+		return candidateList;
+	}
+
+	@Override
+	@Transactional
+	public List<Candidate> getAllCandidatesForCampaignByTeam(List<Team> teamId, String type) throws Exception {
+		
+		logger.debug("In getAllCandidatesForCampaignByTeam method");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "from Candidate candidate  where candidate.id IN "
+				+ "(select hotlist.candidateId.id from CandidateHotList hotlist where hotlist.teamId IN (:teamId) and "
+				+ "hotlist.candidateId.status = '1' and hotlist.candidateId.candidateType = :type) ";  
+		List<Candidate> candidateList = session.createQuery(query)
+				               .setParameterList("teamId", teamId).setString("type", type).setCacheable(true).list();
 		return candidateList;
 	}
 	

@@ -18,11 +18,15 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.TeamService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -48,6 +52,15 @@ public class MailBoxController {
 	@Autowired
 	CandidateHotListService candidateHotListService;
 	
+	@Autowired
+	TeamService teamService;
+	
+	@Autowired
+	UserRoleService userRoleService;
+	
+	protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
 	
 	
 	@RequestMapping(value = "/mailBox")
@@ -94,13 +107,42 @@ public class MailBoxController {
 	}
 	
 	@RequestMapping(value = "/getCandidatesForCampaign")
-	public @ResponseBody String getCandidatesForCampaign(HttpServletRequest request) throws Exception {
+	public @ResponseBody String getCandidatesForCampaign(@RequestParam(value = "candidatesListType", required = false) String candidatesListType,
+			HttpServletRequest request) throws Exception {
 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    String resultJson;
 	    List<Candidate> candList = new ArrayList<Candidate>();
-	    List<Candidate> candidatesList = candidateService.getAllActiveCandidatesForCampaignByLocation(orgLocations.getId(),"Consultant");
+	    List<Candidate> candidatesList = null;
+	    List<Team> teamList = null;
+	    
+	    if(!isNullOrEmpty(candidatesListType)){
+	    	if(candidatesListType.equalsIgnoreCase("consultants")){
+	    		 candidatesList = candidateService.getAllActiveCandidatesForCampaignByLocation(orgLocations.getId(),"Consultant");
+	    	}else if(candidatesListType.equalsIgnoreCase("candidates")){
+	    		 candidatesList = candidateService.getAllActiveCandidatesForCampaignByLocation(orgLocations.getId(),"Candidate");
+	    	}
+	    	else if(candidatesListType.equalsIgnoreCase("hotlistConsultants") || candidatesListType.equalsIgnoreCase("hotlistCandidates")){
+	    		UserRole userRole = userRoleService.getUserByUserId(user.getId());
+	    		if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_ADMIN") || userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
+	    			teamList = teamService.getTeamListByOrgLocationID(orgLocations.getId());
+	    		}else{
+	    			teamList = teamService.getUserAssignedTeamListByOrgLocationId(user.getId(), orgLocations.getId());
+	    		}
+	    		if(candidatesListType.equalsIgnoreCase("hotlistConsultants")){
+	    			candidatesList = candidateService.getAllCandidatesForCampaignByTeam(teamList,"Consultant");
+	    		}else if(candidatesListType.equalsIgnoreCase("hotlistCandidates")){
+	    			candidatesList = candidateService.getAllCandidatesForCampaignByTeam(teamList,"Candidate");
+	    		}
+	    		
+	    	}
+	    	
+	    }
+	    
+	   
+	    
+	    
 	    if(null != candidatesList){
 	    	for(Candidate candidate : candidatesList){
 	    		boolean flag = candidateHotListService.isCandidateIsFavourite(candidate.getId(), orgLocations.getId());
