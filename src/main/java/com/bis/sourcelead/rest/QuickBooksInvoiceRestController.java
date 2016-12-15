@@ -40,7 +40,7 @@ public class QuickBooksInvoiceRestController {
 	
 	
 	/**
-	 * @author sarath kumar punnana 
+	 * @author sarath kumar punnana and Ajith Matta
 	 * 
 	 * @description this method is for get invoice details by invoice id
 	 * 
@@ -59,7 +59,7 @@ public class QuickBooksInvoiceRestController {
 	}
 		
 	/**
-	 * @author sarath kumar punnana
+	 * @author sarath kumar punnana and Ajith Matta
 	 * 
 	 * @description this method returns invoiceList
 	 * 

@@ -24,6 +24,12 @@ public class QuickBookCustomerServiceImpl implements QuickBookCustomerService {
 	@Value("${sandBoxUrl}")
 	private String sandBoxUrl;
 	
+	 /**
+		 * @author Ajith Matta and sarath kumar punnana 
+		 * @return all customers.
+		 * @throws Exception
+		 * This method is used to get the all customers.
+		 */
 	
 	@Override
 	public String getAllCustomers() throws Exception {
@@ -34,7 +40,13 @@ public class QuickBookCustomerServiceImpl implements QuickBookCustomerService {
 		   
 	}
 
-
+	 /**
+		 * @author  Ajith Matta and sarath kumar punnana  
+		 * @param customerId
+		 * @return customer by id.
+		 * @throws Exception
+		 * This method is used to get the customer by id.
+		 */
 	@Override
 	public String getCustomerByCustomerId(Long customerId) throws Exception {
 
