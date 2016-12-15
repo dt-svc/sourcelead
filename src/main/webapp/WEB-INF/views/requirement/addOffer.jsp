@@ -28,47 +28,14 @@
 		});
 </script>
 
-<script type="text/javascript">
- function getShortListAndSubmittedAndInterviewedCandidates(rowId) { 
-	 var existingApplicantsIds = [];    
-	 for(i=rowId ; i > 0; i--){
-		 var applicant = $("#"+(i)+"applicantId").val();
-		 if(applicant != null && applicant != '' && applicant != 'undefined'){
-			 existingApplicantsIds.push(applicant);
-		 }
-	 }
-	
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 var requirementId = $("#reqId").val();
-     
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var output = "";
-		        	
-		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
-					}
-		        	$("#"+rowId+"applicantId").empty();
-		        	$("#"+rowId+"applicantId").append(output);
-		        	$("#"+rowId+"applicantId").trigger("chosen:updated");
-			       
-		        },
-		    });
-	
- }
-</script> 
+
 
 <!-- For add New Interview -->
 <script>
 function addOffer(requirementId){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
-	
+	var clientSubmissions = '${clientSubmissions}';
 	
 	 $.ajax({
 	    	type: "POST",
@@ -83,9 +50,16 @@ function addOffer(requirementId){
 				result = result + '<input type="hidden" id="maxOfferRowNum" name="maxOfferRowNum" value="1" />';
 				result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
 				
+				result = result + '<input type="hidden" id="isFlushCandidateRequired" name="isFlushCandidateRequired">';
+				
 				result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><a href="javascript:void(0)" onClick="addOfferRow(this);"><i class="fa fa-plus"></i> Add row</a>';
 				result= result + '	              <div class="clearfix"></div>';
 				result= result + '	            </div>';
+				
+				if(clientSubmissions == 'Y'){
+				    result = result + '<input type="checkbox" name="isClientOffer" id="isClientOffer" class="isClient" onclick="myOfferFunction();">';
+			        result = result + '<label>&nbsp;&nbsp;<strong>Is Client Offer</strong>&nbsp;&nbsp;</label>';
+				} 
 				
 				result= result + '	            <table cellpadding="0" cellspacing="0" id="addOfferTbl">';
 				result= result + '	              <tbody>';
@@ -101,35 +75,30 @@ function addOffer(requirementId){
 				result= result + '	              </tbody>';
 				result= result + '	            </table>';
 				
-				if(data =="true"){
-					result= result + '	          <div class="row pad2">';
-					result= result + '	          <div class="form-group">';
-					result= result + '<label class="col-md-3"></label>';
-					result= result + '<div class="col-md-5">';
-					result= result + '<div class="checkbox checkBox">';
-					result= result + ' <label>';
-					result= result + '<input type="checkbox" value="" onclick="NotifyToVendor();" id="notifyToVendor" name="notifyToVendor">Notify To Vendor</label>';
-				    result= result + '</div>';
-				    result= result + '</div>';
-				    result= result + '</div>';
-				}   
+				result= result + ' <div class="row pad2">';
+				result = result + '<div class="col-md-12 mt10">';
+				result = result + '<div class="ne-ch">';
 				
-			    result= result + '<div class="form-group">';
-				result= result + '<label class="col-md-3"></label>';
-				result= result + '<div class="col-md-5">';
-				result= result + '<div class="checkbox checkBox">';
 				result= result + ' <label>';
-				result= result + '<input type="checkbox" value=""  onclick="NotifyToApplicant();" id="notifyToApplicant" name="notifyToApplicant">Notify To Applicant</label>';
+				result= result + '<input type="checkbox" value=""  onclick="NotifyToApplicant();" id="notifyToApplicant" name="notifyToApplicant">&nbsp;Notify To Applicant</label>';
+			   
+				if(data =="true"){
+					result= result + ' <label>';
+					result= result + '<input type="checkbox" value="" onclick="NotifyToVendor();" id="notifyToVendor" name="notifyToVendor">&nbsp;Notify To Vendor</label>';
+				} 
+				
+				result= result + '</div>';
 			    result= result + '</div>';
-			    result= result + '</div>';
+			    result= result + '	              <div class="clearfix"></div>';
 			    result= result + '</div>';
 				result= result + '	              <div class="clearfix"></div>';
-			    
-				result= result + '	            <div class="col-md-12 pad1">';
+				result= result + '<div class="clearfix">';
+				result = result + '<div class="pull-right">';
 				result = result +'				  <button type="submit" id="add_offer" class="btn btn-sm btn-primary mr">Submit</button>';
 				result= result + '	              <button type="submit" class="btn btn-sm btn-danger" onclick="cancelAddOffer();" >Cancel</button>';
 				result= result + '	            </div>';
 				result= result + '	          </div>';
+				result= result + '</div>';
 				
 				result = result + '</form>';
 				//result = result + '<div id="loading"></div>';
@@ -221,6 +190,9 @@ function loadRemiderDiv(){
 
 <script type="text/javascript">
 	function addOfferRow() {
+		
+		$("#isFlushCandidateRequired").val('N');
+		
 		var checkMaxTsRowNum = $("#maxOfferRowNum").val();
 		var tbl = document.getElementById("addOfferTbl");
 		var maxRowNum = parseInt($("input[name = 'maxOfferRowNum']").val());
@@ -382,7 +354,7 @@ function cancelAddOffer(){
   
   </script>
  
-<script type="text/javascript">
+<!-- <script type="text/javascript">
  function getShortListAndSubmittedAndInterviewedCandidates(rowId) { 
 	 var existingApplicantsIds = [];    
 	 for(i=rowId ; i > 0; i--){
@@ -415,6 +387,64 @@ function cancelAddOffer(){
 		    });
 	
  }
+</script>  -->
+
+<script type="text/javascript">
+ function getShortListAndSubmittedAndInterviewedCandidates(rowId) { 
+	 var clientSubmissions = '${clientSubmissions}';
+	 var isClientOffer = "";
+	 if(clientSubmissions == 'Y'){
+		 if(rowId == null || rowId == "undefined" || rowId == ""){
+	     	rowId = $("#maxOfferRowNum").val() - 1;
+	     }
+		 if(document.getElementById('isClientOffer').checked) {
+			 isClientOffer = 'Y';
+	     }else{
+	    	 isClientOffer = 'N';
+	     }
+	 }
+	 
+	 var existingApplicantsIds = [];    
+	 for(i=rowId ; i > 0; i--){
+		 var applicant = $("#"+(i)+"applicantId").val();
+		 if(applicant != null && applicant != '' && applicant != 'undefined'){
+			 existingApplicantsIds.push(applicant);
+		 }
+	 }
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var requirementId = $("#reqId").val();
+     
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientOffer="+isClientOffer, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
+					}
+		        	
+		        	var isFlushCandidateRequired = $("#isFlushCandidateRequired").val();
+		        	if(clientSubmissions == 'Y' && isFlushCandidateRequired == 'Y'){
+		        		for(i=rowId ; i > 0; i--){
+		       	        	$("#"+(i-1)+"applicantId").empty();
+		       	        	$("#"+(i-1)+"applicantId").append(output);
+		       	        	$("#"+(i-1)+"applicantId").trigger("chosen:updated");
+			       	    }
+		        	}
+		        	
+		        	$("#"+rowId+"applicantId").empty();
+		        	$("#"+rowId+"applicantId").append(output);
+		        	$("#"+rowId+"applicantId").trigger("chosen:updated");
+			       
+		        },
+		    });
+	
+ }
 </script> 
 
 <script type="text/javascript">
@@ -429,10 +459,20 @@ function cancelAddOffer(){
 	 }
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var requirementId = $("#reqId").val();
+	 
+	 var clientSubmissions = '${clientSubmissions}';
+	 var isClientOffer = "";
+	 if(clientSubmissions == 'Y'){
+		 if(document.getElementById('isClientOffer').checked) {
+			 isClientOffer = 'Y';
+	     }else{
+	    	 isClientOffer = 'N';
+	     }
+	 }
      
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
+		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientOffer="+isClientOffer, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -512,7 +552,12 @@ $(function(){
 </script>
 
 
-
+<script>
+function myOfferFunction(){
+	$("#isFlushCandidateRequired").val('Y');
+	getShortListAndSubmittedAndInterviewedCandidates();
+}
+</script>
 
   
 <jsp:include page="../masterFooter.jsp" />

@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
@@ -37,6 +38,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
@@ -89,6 +91,9 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	RequirementInterviewService requirementInterviewService;
+	
+	@Autowired
+	RequirementInterviewHistoryService requirementInterviewHistoryService;
 	
 	@Autowired
 	RequirementInterviewerService requirementInterviewerService;
@@ -157,8 +162,10 @@ public class EMailJobScheduler {
 				String currentTimeStr = dateFormat.format(date); 
 				
 				
-				List<RequirementInterview> interviewList = requirementInterviewService.getAllInterviewListByCurrentDate(currentTimeStr,triggerTimeStr);
-				for (RequirementInterview requirementInterview : interviewList) {
+				List<RequirementInterviewHistory> interviewList = requirementInterviewHistoryService.getAllInterviewListByCurrentDate(currentTimeStr,triggerTimeStr);
+				for (RequirementInterviewHistory interviewHistory : interviewList) {
+					
+					RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(interviewHistory.getInterviewId().getId().toString());
 			 		
 					int remainderTime = -(Integer.parseInt(requirementInterview.getRemainedBefore()));
 					Date newTargetTime = DateUtils.addMinutes(requirementInterview.getStartTime(), remainderTime); 
@@ -176,10 +183,10 @@ public class EMailJobScheduler {
 						}
 					}
 					
-					if(requirementInterview.getNotificationToApplicant().equalsIgnoreCase("Y")){
+					if(interviewHistory.getNotificationToApplicant().equalsIgnoreCase("Y")){
 								requirementInterviewService.sendEmailToApplicants(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId().getOrgLocations(),requirementInterview.getSubmissionId(), user, org, requirementInterview);
 					}
-					if(requirementInterview.getNotificationToSpoc().equalsIgnoreCase("Y")){
+					if(interviewHistory.getNotificationToSpoc().equalsIgnoreCase("Y")){
 
 						requirementInterviewService.sendEmailToVendors(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId(), user,org, requirementInterview,requirementInterview.getSubmissionId().getOrgLocations());
 

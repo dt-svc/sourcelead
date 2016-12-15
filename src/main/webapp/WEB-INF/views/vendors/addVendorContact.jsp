@@ -584,6 +584,8 @@ function validateEmail(){
 	 var orgLocationId = vendorName.split(',');
 	 var orgRelationId = orgLocationId[0];
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var SourceLeadWeb_userId= '${SourceLeadWeb_userId}';
+	 
 	 if(email != null && email != "" && email != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
@@ -591,16 +593,33 @@ function validateEmail(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
+		        	var flag=false;
 		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		if(i == 0){
-			        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
-			        		}else{
-			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
-			        		}
-			        		
-					}
+	        		{
+	        		    var check = json[i];
+		        		if(check.id == SourceLeadWeb_userId){
+		        			flag=true;
+		        		}
+	        		}
+		        	if(flag){
+				        	for (var i=0; i<json.length; i++)
+							{
+					        	    var opt = json[i];
+					        		if(opt.id == SourceLeadWeb_userId){
+					        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+					        		}
+					        		else{
+					        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					        		}
+			                }
+		        	}
+		        	if(!flag){
+	                	for (var j=0; j<json.length; j++)
+						{
+				        	var opt1 = json[j];
+				        	output = output + "<option value='" +opt1.id+ "'>"+opt1.firstName+" "+opt1.lastName+"</option>";
+						}
+           		 	}
 		        	$("#owner").empty();
 			        $("#owner").append(output);
 			        $('#owner').trigger("chosen:updated");
