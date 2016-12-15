@@ -61,6 +61,7 @@ import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionXlsService;
@@ -120,6 +121,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
 	@Autowired
+	RequirementRateSubmissionNegotiationService requirementRateSubmissionNegotiationService;
+	
+	@Autowired
 	private CommonUtil commonUtil;
 	
 	@Autowired
@@ -136,8 +140,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	@Override
-	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(Long orgLocationsId,Long requirementId, List<Long> existingApplicantsIds) throws Exception {
-		return requirementSubmissionDao.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocationsId,requirementId,existingApplicantsIds);
+	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(Long orgLocationsId,Long requirementId, List<Long> existingApplicantsIds, String isClientOffer) throws Exception {
+		return requirementSubmissionDao.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocationsId,requirementId,existingApplicantsIds,isClientOffer);
 	}
 
 	
@@ -219,6 +223,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					 if(jsonObj.has("WorkExperience") && !isNullOrEmpty(jsonObj.getString("WorkExperience"))){
 						 candidate.setExperienceYears(jsonObj.getString("WorkExperience"));
 					 }
+					candidate.setCandidateType("Candidate");
 					candidate.setCreatedBy(user.getUserCode());
 					candidate.setCreatedDate(new Date());
 					candidate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -393,9 +398,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 
 	@Override
 	public void storeClientSubmission(Long requirementId, User user, OrgLocations loginOrgLocation,
-			String submissionIds,Org org) throws Exception {
+			String submissionIds, String selectedShortlistsRate, Org org) throws Exception {
 		
 		 String[] submissionId = submissionIds.split(",");
+		 String[] clientShortlistsRate = selectedShortlistsRate.split(",");
     	 Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
 		 requirement.setId(requirementId);
 		 
@@ -503,6 +509,25 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 clientSubmission.setCreatedDate(new Date());
     		 clientSubmission.setCreatedBy(user.getUserCode());
     		 clientSubmission = requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
+    		 
+    		 String clientRate = clientShortlistsRate[i];
+    		 RequirementRateSubmissionNegotiation rateNegotiation = new RequirementRateSubmissionNegotiation();
+    		 rateNegotiation.setRequirementsubmissionId(clientSubmission);
+			 rateNegotiation.setExpectedRate(clientRate);
+			 rateNegotiation.setExpectedRateType("Yearly");
+ 			 rateNegotiation.setRateInitiatorType(SubmissionRateStatus.VENDOR);
+ 			 rateNegotiation.setInitiatorOrgLocationId(loginOrgLocation);
+ 			 rateNegotiation.setRateReason("");
+ 			 rateNegotiation.setRateStage(SubmissionRateStatus.NEWRATE);
+ 			 rateNegotiation.setStatus(Constants.RECORD_ACTIVE);
+ 			 rateNegotiation.setCreatedDate(commonUtil.currentDate());
+ 			 rateNegotiation.setCreatedBy(user.getUserCode());
+ 			 rateNegotiation.setUpdatedDate(commonUtil.currentDate());
+ 			 rateNegotiation.setUpdatedBy(user.getUserCode());
+    		 requirementRateSubmissionNegotiationService.saveRateNegotiation(rateNegotiation);
+    		 
+    		 
+    		 
     		 
     		 RequirementSubmissionTemplateFields templateFields = requirementSubmissionTemplateFieldsDao.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submission.getId());
     		 
@@ -1092,7 +1117,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	
 	@Override
 	public void applicantNegotiateEmail(Requirement requirement, User initiatorUser, Candidate candidate,
-			OrgLocations orgLocations,RequirementRateSubmissionNegotiation negotiation) throws Exception {
+			OrgLocations orgLocations,RequirementRateSubmissionNegotiation negotiation,StringBuilder tempHTML) throws Exception {
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(initiatorUser.getFirstName());
 		 emailMessage.setLastName(initiatorUser.getLastName());
@@ -1133,6 +1158,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }else{
 				 globalVarsMap.put("applicantRate","--");
 			 }
+		 if(tempHTML != null){
+			 globalVarsMap.put("negotiationTable",tempHTML.toString());
+		 }
+		 
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
@@ -1573,3 +1602,86 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 }
 
+	
+	@Override
+	public RequirementSubmission getClientSubmissionsBySubmissionIdAndOrgLocationId(Long submissionId, Long orgLocationId){
+		return requirementSubmissionDao.getClientSubmissionsBySubmissionIdAndOrgLocationId(submissionId, orgLocationId);
+	}
+	
+
+	@Override
+	public void userNegotiateEmail(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations,
+			RequirementRateSubmissionNegotiation neogtation, StringBuilder tempHTML) throws Exception {
+		EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(candidate.getFirstName());
+		 emailMessage.setLastName(candidate.getLastName());
+		 emailMessage.setToEmail(candidate.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(user.getUserCode());
+		 emailMessage.setFromName(user.getFirstName()+" "+user.getLastName());
+		 
+		 
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 
+		 if(user.getFirstName()!= null && !"".equalsIgnoreCase(user.getFirstName()) && user.getLastName()!= null && !"".equalsIgnoreCase(user.getLastName())){
+			 globalVarsMap.put("userName", user.getFirstName()+" "+user.getLastName());
+			 }else{
+				 globalVarsMap.put("userName",user.getFirstName());
+			 }
+		 
+		 if(requirement.getJobTitle()!= null && !"".equalsIgnoreCase(requirement.getJobTitle())){
+			 globalVarsMap.put("requirementName", requirement.getJobTitle());
+			 }else{
+				 globalVarsMap.put("requirementName","--");
+			 }
+		
+		 if(candidate.getFirstName()+""+candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()+""+candidate.getLastName())){
+			 globalVarsMap.put("applicantName", candidate.getFirstName()+""+candidate.getLastName());
+			 }else{
+				 globalVarsMap.put("applicantName","--");
+			 }
+		 if(orgLocations.getOrg().getOrgName()!= null && !"".equalsIgnoreCase(orgLocations.getOrg().getOrgName())){
+			 globalVarsMap.put("organizationName", orgLocations.getOrg().getOrgName());
+			 }else{
+				 globalVarsMap.put("organizationName","--");
+			 }
+		 if(tempHTML != null){
+			 globalVarsMap.put("negotiationTable",tempHTML.toString());
+		 }
+		 
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
+//		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_NEGOTIATE_REQUIREMENT,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		/*String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		notificationScenario.setBody(notificationbody);*/
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		  
+		 User toUser = orgLocations.getUser();
+		 
+		 String actionLink="";
+		//calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());		
+	}
+
+}

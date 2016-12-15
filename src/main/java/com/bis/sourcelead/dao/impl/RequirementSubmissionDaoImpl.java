@@ -105,14 +105,23 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(Long orgLocationsId, Long requirementId, List<Long> existingApplicantsIds) throws Exception {
+	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(Long orgLocationsId, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
+		 
+		 String subQuery = "";
+		 if(isClientOffer != null && "Y".equalsIgnoreCase(isClientOffer)){
+			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CLIENT_INTERVIEW' ) "; 
+		 }else{
+			 subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR "
+			 		+ " rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED' OR rs.submissionStatus = 'CLIENT_OFFERHIRED') "; 
+		 }
+		 
 		 List<RequirementSubmission> shortListCandidatesList;
 		 if(existingApplicantsIds != null && !existingApplicantsIds.isEmpty()){
-			 String query = "from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and ( rs.submissionStatus = 'SUBMISSION' or rs.submissionStatus = 'SHORTLIST' or rs.submissionStatus = 'INTERVIEW'  )  and rs.id NOT IN (:existingApplicantsIds)";
+			 String query = "from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and rs.id NOT IN (:existingApplicantsIds) "+subQuery+" ";
 			 shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setLong( "requirementId", requirementId).setParameterList("existingApplicantsIds", existingApplicantsIds).setCacheable(true).list();
 		 }else{
-			 String query = "from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and ( rs.submissionStatus = 'SUBMISSION' or rs.submissionStatus = 'SHORTLIST' or rs.submissionStatus = 'INTERVIEW'  ) ";
+			 String query = "from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId "+subQuery+" ";
 			 shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setLong( "requirementId", requirementId).setCacheable(true).list();
 		 }
 	     return shortListCandidatesList;
@@ -460,6 +469,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		String subQuery = "";
 		if(submissionType != null && "INTERVIEW".equalsIgnoreCase(submissionType)){
 			subQuery = " and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW') "; 
+		}else if(submissionType != null && "OFFERMADE".equalsIgnoreCase(submissionType)){
+			subQuery = " and (reqSub.submissionStatus = 'OFFERMADE' OR reqSub.submissionStatus = 'OFFERACCEPTED' OR reqSub.submissionStatus = 'OFFERREJECTED' "
+					+ " OR reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED') "; 
 		}else{
 			subQuery = " and reqSub.submissionStatus = '"+submissionType+"' ";
 		}
@@ -519,6 +531,21 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		return requirementSubmission;
 	}
 	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementSubmission getClientSubmissionsBySubmissionIdAndOrgLocationId(Long submissionId, Long orgLocationId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+	     String query = "from RequirementSubmission rs where rs.sourceSubmission =:submissionId and rs.vendorLocationId =:orgLocationId";
+	     List<RequirementSubmission> vendorsubmissionList = session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	   
+	     if(vendorsubmissionList != null && vendorsubmissionList.size() >0){
+				return vendorsubmissionList.get(0);
+			}
+	  return null;
+	}
 	
 	/*
 	SUBMISSION("submission"),

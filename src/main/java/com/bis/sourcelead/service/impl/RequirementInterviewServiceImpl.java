@@ -135,14 +135,6 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 									requirementInterview.setLocation(jsonObj.getString(c+"location"));
 								}
 								
-								if(jsonObj.has("notificationToApplicant") && !jsonObj.getString("notificationToApplicant").isEmpty()){
-									requirementInterview.setNotificationToApplicant(jsonObj.getString("notificationToApplicant"));
-								}
-								
-								if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty()){
-									requirementInterview.setNotificationToSpoc(jsonObj.getString("notificationToSpoc"));
-								}
-								
 								if(jsonObj.has("notificationToOthers") && !jsonObj.getString("notificationToOthers").isEmpty()){
 									requirementInterview.setNotificationToOthers(jsonObj.getString("notificationToOthers"));
 								}
@@ -195,8 +187,12 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					           }else{
 					        	   interviewHistory.setInterviewSourceType(Constants.INTERVIEW);
 					           }
-					           interviewHistory.setNotificationToApplicant(updateInterview.getNotificationToApplicant());
-					           interviewHistory.setNotificationToSpoc(updateInterview.getNotificationToSpoc());
+					           if(jsonObj.has("notificationToApplicant") && !jsonObj.getString("notificationToApplicant").isEmpty()){
+					        	   interviewHistory.setNotificationToApplicant(jsonObj.getString("notificationToApplicant"));
+					           }
+					           if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty()){
+					        	   interviewHistory.setNotificationToSpoc(jsonObj.getString("notificationToSpoc"));
+					           }
 					           interviewHistory.setStatus(Constants.RECORD_ACTIVE);
 					           interviewHistory.setCreatedDate(new Date());
 					           interviewHistory.setCreatedBy(user.getUserCode());
@@ -836,9 +832,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		return requirementInterviewDao.getRequirementInterviewByIdAndSubmissionIdAndOrgLocationsId(requirementInterviewId, submissionId, orgLocationsId);
 	}
 	
-	@Override
+	/*@Override
 	public List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime) {
 		return requirementInterviewDao.getAllInterviewListByCurrentDate(currentTime,  triggerTime);
-	}
+	}*/
 
 }
