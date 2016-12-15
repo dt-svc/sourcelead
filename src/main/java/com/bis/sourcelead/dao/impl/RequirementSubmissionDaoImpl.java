@@ -264,7 +264,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
             	
             }
     		
-    		List<Long> reqSubmsCount  = query.list();
+    		List<Long> reqSubmsCount  = query.setCacheable(true).list();
     		Integer count = 0;
 			if(reqSubmsCount != null && !reqSubmsCount.isEmpty()){
 					count = reqSubmsCount.get(0).intValue();

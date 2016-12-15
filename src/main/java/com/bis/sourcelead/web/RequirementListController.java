@@ -42,9 +42,6 @@ public class RequirementListController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementList");
 		
-		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
-		
 	    	/*
 		    *  This code is commented as  the client  based requirement   is not in use 
 		    */

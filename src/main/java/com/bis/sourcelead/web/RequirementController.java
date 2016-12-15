@@ -258,6 +258,8 @@ public class RequirementController {
 			model.addObject("clientSubmissions","N");
 		}
 		
+		// This code is commented as not in use 
+		
 		/*Requirement parentRequirement = requirementService.getRequirementByParentRequirementId(requirementId);
         if(parentRequirement != null){
             model.addObject("parentRequirement","Y");

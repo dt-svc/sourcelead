@@ -82,12 +82,6 @@ public class RequirementListRestController {
 	 private String sourceleadUrl;
 		
 	 @Autowired
-	 private OrgService orgService;
-	 
-	 @Autowired
-	 private OrgLocationService orgLocationService;
-	
-	 @Autowired
 	 CommonUtil commonUtil;
 	 
 	 @Autowired

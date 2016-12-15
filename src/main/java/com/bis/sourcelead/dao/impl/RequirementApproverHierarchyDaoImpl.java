@@ -48,7 +48,7 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementApproverHierarchy rah where rah.requirementId.id =:requirementId and rah.approverUserId.id =:approverUserId";
-		List requirementApproverHierarchyList =  session.createQuery(query).setLong("requirementId", requirementId).setLong("approverUserId", approverUserId).list();
+		List requirementApproverHierarchyList =  session.createQuery(query).setLong("requirementId", requirementId).setLong("approverUserId", approverUserId).setCacheable(true).list();
 		
 		RequirementApproverHierarchy requirementApproverHierarchy = null;
 		if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty())
@@ -103,7 +103,10 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementApproverHierarchy rah where rah.requirementId.id =:requirementId ";
-		List<RequirementApproverHierarchy> list =  session.createQuery(query).setLong("requirementId", requirementId).list();
+		List<RequirementApproverHierarchy> list =  session.createQuery(query)
+													      .setLong("requirementId", requirementId)
+													      .setCacheable(true)
+													      .list();
 		if(list!=null && list.size()>0){
 			return list;
 		}else{
