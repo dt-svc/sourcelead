@@ -241,13 +241,16 @@ public class RequirementController {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("requirement/requirementSummary");
 		model.addObject("requirementId",requirementId);
-		
+		model.addObject("sourceleadUrl", sourceleadUrl);
+
+		// This code is commented as not in use 
+
 		//to get time zone list
-		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		/*Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(countries != null){
 			String[] timezonesList = com.ibm.icu.util.TimeZone.getAvailableIDs(countries.getCode2());
 			model.addObject("timezonesList", timezonesList);
-		}
+		}*/
 		
 		if(requirement.getIsClientJob() != null && requirement.getIsClientJob().equalsIgnoreCase("Y")){
 			model.addObject("clientSubmissions","Y");
@@ -255,14 +258,13 @@ public class RequirementController {
 			model.addObject("clientSubmissions","N");
 		}
 		
-		Requirement parentRequirement = requirementService.getRequirementByParentRequirementId(requirementId);
+		/*Requirement parentRequirement = requirementService.getRequirementByParentRequirementId(requirementId);
         if(parentRequirement != null){
             model.addObject("parentRequirement","Y");
         }else{
             model.addObject("parentRequirement","N");
-        }
+        }*/
 		
-		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 
 	}

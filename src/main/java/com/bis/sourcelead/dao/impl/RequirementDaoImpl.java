@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.stat.Statistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,6 +120,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	 * @throws NullPointer
 	 */
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,Long  userId) throws Exception {
@@ -126,7 +128,6 @@ public class RequirementDaoImpl implements RequirementDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		User user = userDao.getUserById(userId);
 		
-				
 		Map<String, Object> params = new HashMap<String,Object>();
 		
 		String from = "from Requirement requirement"; 
@@ -174,49 +175,6 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 		return query.setCacheable(true).list();
 		
-		
-		/*String query = "from Requirement requirement  where requirement.orgLocationId =:orgLocationId and  ( requirement.createdBy =:loginUserCode  or  )";
-		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("loginUserCode", user.getUserCode()).setInteger("userId", userId.intValue()).list();
-		*/
-		
-		
-		/*String[] stat = status.split(",");
-		ArrayList<Requirement> requirementList = new ArrayList<Requirement>();
-		String[] client = clients.split(",");
-		Integer ra = stat.length; 
-		String subQuery2 = "";
-		
-		if(!Arrays.asList(stat).contains("")){
-		
-			if (Arrays.asList(stat).contains("New")) {
-				subQuery2 = subQuery2 + "requirement.status = 'New' or ";
-			}
-			if (Arrays.asList(stat).contains("Draft")) {
-				subQuery2 = subQuery2 + "requirement.status = 'Draft' or ";
-			}
-			if (Arrays.asList(stat).contains("Waiting for approval")) {
-				subQuery2 = subQuery2 + "requirement.status = 'Waiting for approval ' or ";
-			}
-			if (Arrays.asList(stat).contains("Open")) {
-				subQuery2 = subQuery2 + "requirement.status = 'Open' or  ";
-			}
-			if (Arrays.asList(stat).contains("Cancelled")) { 
-				subQuery2 = subQuery2 + "requirement.status = 'Cancelled' or ";
-			}
-			if (Arrays.asList(stat).contains("On Hold")) {
-				subQuery2 = subQuery2 + "requirement.status = 'On Hold' or ";
-			}
-			
-			// to remove  the last conditional statement if any 
-		    subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
-			String query = "from Requirement requirement  where  "+subQuery2+" and requirement.orgLocationId =:orgLocationId    ";
-			return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
-		}else{
-			
-			subQuery2 =  subQuery2 + "  ( requirement.status = 'New' or requirement.status = 'Draft' or requirement.status = 'Waiting for approval' or requirement.status = 'Open' or requirement.status = 'On Hold' or requirement.status = 'Cancelled' )";
-			String query = "from Requirement requirement  where  requirement.orgLocationId =:orgLocationId  and  "+subQuery2+" ";
-			return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
-		}*/
 	}
 
 	/**
@@ -356,7 +314,6 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
         	
         }
-		
 		return query.setCacheable(true).list();
 		
 	}
@@ -412,7 +369,6 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
         	
         }
-		
 		return query.setCacheable(true).list();
 		
 	}
@@ -463,7 +419,6 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
         	
         }
-		
 		return query.setCacheable(true).list();
 		
 	

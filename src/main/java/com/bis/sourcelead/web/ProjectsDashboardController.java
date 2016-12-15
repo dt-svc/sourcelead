@@ -78,7 +78,7 @@ public class ProjectsDashboardController {
         model.addObject("add_client", orgClientList);
         model.addObject(orgClientList);
         
-        List<Long> projectIds = projectApproverHierarchyService.getProjectIdsByLoginUserId(user.getId());
+        /*List<Long> projectIds = projectApproverHierarchyService.getProjectIdsByLoginUserId(user.getId());
         
         if(!projectIds.isEmpty()){
         List<Projects> projectsList = projectsService.getAllLoginUserProjectsList(projectIds, loginOrgLocations.getId());
@@ -89,7 +89,7 @@ public class ProjectsDashboardController {
             }
         }
 		model.addObject(projectsList);
-        }
+        }*/
 		
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "projectCreateMsg");
 		if(!isNullOrEmpty(msg)){

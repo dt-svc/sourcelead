@@ -154,6 +154,7 @@ public class RequirementListRestController {
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
+		
 		for(Requirement requirement : requirementList){
 			if(requirement.getClientId() != null){
 				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
@@ -176,6 +177,9 @@ public class RequirementListRestController {
 			}
 		}
 		
+		/*
+		 * filter based search for requirement  List
+		 */
 		ArrayList<Requirement>  requirementList1 = new ArrayList<Requirement>();
 		String[] status1 = status.split(",");
 		if (status1[0] != null && status1[0].length() > 0) {
