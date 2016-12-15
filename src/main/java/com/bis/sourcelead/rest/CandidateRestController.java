@@ -341,7 +341,7 @@ public class CandidateRestController {
 			
 		}
 	 
-	 
+	 @PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
 	 @RequestMapping(value = "/getTeams", method = RequestMethod.POST)
 		public @ResponseBody String getTeams(HttpServletRequest request) throws Exception {
 			String resultJson = null;

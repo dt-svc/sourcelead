@@ -153,6 +153,16 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
         
 	}
 
+	@Override
+	@Transactional
+	public List<SubmissionTemplate> getInterviewFeedbackTemplatesByOrgLocationId(Long orgLocationId) throws Exception {
+		logger.debug("getOrgSubmissionTemplatesByOrgLocationId start");
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from SubmissionTemplate st where st.orgLocationId.id = :orgLocationId and st.templateType = 'Feedback'";
+	    List<SubmissionTemplate> submissionTemplateList = session.createQuery(query).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+        return submissionTemplateList;
+        
+	}
 
 	@Override
 	@Transactional
