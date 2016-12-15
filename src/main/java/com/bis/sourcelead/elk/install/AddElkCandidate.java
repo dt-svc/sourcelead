@@ -11,8 +11,8 @@ import java.util.HashSet;
 
 import javax.sql.DataSource;
 
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +26,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 
 public class AddElkCandidate{
+	private static final Logger logger = LoggerFactory.getLogger(AddElkCandidate.class);
 	private ComboPooledDataSource comboPooledDataSource;
 	public void addElkCandidate() throws IOException, SQLException {
 		ArrayList<CandidateIndex> elkCandidateList = getElkCandidates();
@@ -35,7 +36,7 @@ public class AddElkCandidate{
 				candidateIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateIndex.getCustomerId().toString());
 			}
 		}
-		System.out.println("Candidates Successfully Added To Elk");
+		  logger.info("Candidates Successfully Added To Elk");
 	}
 	
 	private ArrayList<CandidateIndex> getElkCandidates(){
