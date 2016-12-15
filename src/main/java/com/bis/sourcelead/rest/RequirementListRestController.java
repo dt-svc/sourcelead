@@ -47,8 +47,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
@@ -144,7 +142,6 @@ public class RequirementListRestController {
 	 public String getRequirementListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
 
 		String resultJson;
-		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
@@ -210,9 +207,7 @@ public class RequirementListRestController {
 	 @RequestMapping(value = "/getRequirementById" , method = RequestMethod.POST)
 	 public @ResponseBody  String getRequirementById(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
 			String resultJson = null;
-		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			Org loginOrgCode = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			if(requirementId !=null && !requirementId.isEmpty()){
 				Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
 				
@@ -655,7 +650,6 @@ public class RequirementListRestController {
 		public String getRequirementByListCountBasedOnStatus(HttpServletRequest request) throws Exception {
 
 			String resultJson;
-			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			

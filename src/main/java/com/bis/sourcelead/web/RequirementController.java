@@ -19,7 +19,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -82,10 +81,8 @@ public class RequirementController {
 	@RequestMapping(value = "/requirement")
 	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
 		Requirement requirement ;
-		RequirementAssignTo requirementAssignTo;
 		ModelAndView model = new ModelAndView();
 		
-		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
@@ -234,7 +231,6 @@ public class RequirementController {
 	@RequestMapping(value = "/requirementSummary")
 	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementId", required=false)Long requirementId) throws Exception {
 		 
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		

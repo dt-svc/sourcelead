@@ -31,6 +31,7 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	
+	@SuppressWarnings("unchecked")
 	@Transactional(rollbackFor = { Exception.class })	
 	@Override
 	public List<RequirementApproverHierarchy> getRequirementApproverHierarchyList(Long requirementId,
@@ -38,7 +39,11 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 			
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementApproverHierarchy rah where rah.requirementId.id =:requirementId and rah.approverUserId.id =:approverUserId";
-		return session.createQuery(query).setLong("requirementId", requirementId).setLong("approverUserId", approverUserId).list();
+		return session.createQuery(query)
+				      .setLong("requirementId", requirementId)
+				      .setLong("approverUserId", approverUserId)
+				      .setCacheable(true)
+				      .list();
 	
 	}
 	
@@ -48,7 +53,11 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementApproverHierarchy rah where rah.requirementId.id =:requirementId and rah.approverUserId.id =:approverUserId";
-		List requirementApproverHierarchyList =  session.createQuery(query).setLong("requirementId", requirementId).setLong("approverUserId", approverUserId).setCacheable(true).list();
+		List requirementApproverHierarchyList =  session.createQuery(query)
+														.setLong("requirementId", requirementId)
+														.setLong("approverUserId", approverUserId)
+														.setCacheable(true)
+														.list();
 		
 		RequirementApproverHierarchy requirementApproverHierarchy = null;
 		if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty())
@@ -87,7 +96,10 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 		
 	    String query = "select   max(rah.level) from  RequirementApproverHierarchy rah where rah.requirementId.id =:requirementId";
 
-		List results =  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+		List results =  session.createQuery(query)
+						       .setLong("requirementId", requirementId)
+							   .setCacheable(true)
+							   .list();
 		if(results != null && !results.isEmpty()){
 			  for(Object result :results){
 					  maxLevel = (Integer) result;
@@ -96,6 +108,7 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 		return maxLevel;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Transactional(rollbackFor = { Exception.class })
 	@Override
 	public List<RequirementApproverHierarchy> getRequirementApproverHierarchyListByRequirementId(Long requirementId)
@@ -140,7 +153,10 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementApproverHierarchy rah where rah.requirementId.id =:requirementId and  rah.level = 2";
-		List requirementApproverHierarchyList =  session.createQuery(query).setLong("requirementId", requirementId).list();
+		List requirementApproverHierarchyList =  session.createQuery(query)
+														.setLong("requirementId", requirementId)
+														.setCacheable(true)
+														.list();
 		
 		RequirementApproverHierarchy requirementApproverHierarchy = null;
 		if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty())
