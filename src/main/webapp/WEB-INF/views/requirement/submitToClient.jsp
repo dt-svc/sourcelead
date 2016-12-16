@@ -48,7 +48,9 @@ function submitToClient(requirementId){
 	var result = "";
 	//var status = "SHORTLIST";
 	/* result = result + '<div class="add_inter_head"> <span>Submissions</span><a href="javascript:void(0)" onclick="clientSubmissions('+requirementId+');" class="sub-btn1">Submit to client</a>'; */
+	'<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
 	result = result + '<div class="add_inter_head"> <span>Submissions</span><a href="javascript:void(0)" onclick="addEmailtemplate('+requirementId+');" class="sub-btn1">Submit to client</a>';
+	'</sec:authorize>';
 	result = result + ' <div class="clearfix"></div>';
 	result = result + ' </div>';
 	

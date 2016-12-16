@@ -516,6 +516,7 @@ public class SubmissionsRestController {
  * @return Json
  * @throws Exception
  */
+    @PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
 	@RequestMapping(value = "/submitToClient",method = RequestMethod.POST )
 	public @ResponseBody String submitToClient(@RequestParam(value = "jsonData", required = false) String jsonData,@RequestParam(value = "selectedIds", required = false) String submissionsList,@RequestParam(value = "requirementId", required = false) Long requirementId,MultipartHttpServletRequest multPartrequest) throws Exception {
 		String jsonc = "{" + jsonData + "}";
@@ -550,6 +551,7 @@ public class SubmissionsRestController {
 	
 //	/addEmailtemplate
 	
+    @PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
     @RequestMapping(value = "/addEmailtemplate" , method = RequestMethod.GET)
     @ResponseBody
 	   public String addEmailtemplate(@RequestParam(value="requirementId", required=false) Long requirementId,@RequestParam(value="selectedShortlistsCount", required=false) String submissionIds,HttpServletRequest request) throws Exception {
