@@ -516,6 +516,7 @@ public class SubmissionsRestController {
  * @return Json
  * @throws Exception
  */
+    @PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
 	@RequestMapping(value = "/submitToClient",method = RequestMethod.POST )
 	public @ResponseBody String submitToClient(@RequestParam(value = "jsonData", required = false) String jsonData,@RequestParam(value = "selectedIds", required = false) String submissionsList,@RequestParam(value = "requirementId", required = false) Long requirementId,MultipartHttpServletRequest multPartrequest) throws Exception {
 		String jsonc = "{" + jsonData + "}";
