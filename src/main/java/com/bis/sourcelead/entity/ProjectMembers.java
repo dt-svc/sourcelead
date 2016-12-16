@@ -47,12 +47,12 @@ public class ProjectMembers implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="PROJECT_ID", nullable=false )	
 	private Projects projects;
 	
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="EMPLOYEE_ID", nullable=false )	
 	private Employees employee;
 	
@@ -130,7 +130,7 @@ public class ProjectMembers implements Serializable{
     private String terminateReason;
     
     @JsonIgnore
-    @OneToMany(mappedBy = "projectMemberId",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "projectMemberId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JsonBackReference
 	@Fetch(FetchMode.SELECT)
 	private Set<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>(0);

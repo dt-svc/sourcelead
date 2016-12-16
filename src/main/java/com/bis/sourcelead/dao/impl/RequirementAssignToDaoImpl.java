@@ -31,6 +31,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 	private String duplicateValue;
 	
 	
+	@SuppressWarnings("unchecked")
 	@Transactional(rollbackFor = { Exception.class })	
 	@Override
 	public List<RequirementAssignTo> getRequirementAssignToListByRequirementId(Long requirementId) throws Exception {
@@ -55,7 +56,8 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 		List<RequirementAssignTo> requirementAssignToList =  session.createQuery(query.toString())
 																	.setLong("teamId", teamId)
 																	.setLong("requirementId", requirementId)
-																	.setCacheable(true).list();
+																	.setCacheable(true)
+																	.list();
 		
 
 		RequirementAssignTo requirementAssignTo = null;

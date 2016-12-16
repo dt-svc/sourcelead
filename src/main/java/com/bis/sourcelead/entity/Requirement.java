@@ -31,7 +31,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	@Entity
 	@Table(name = "REQUIREMENT", catalog = "sourcelead")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement")
+	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement1")
 	public class Requirement implements Serializable{
 
 	
@@ -42,7 +42,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
@@ -107,7 +107,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "IS_CLIENT_JOB")
 	private String isClientJob;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations clientId;
 	    
@@ -125,15 +125,15 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String clientRateType;
 	
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="SUBMISSION_TEMPLATE_ID" )        
     private SubmissionTemplate submissionTemplateId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="CLIENT_SUBMISSION_TEMPLATE_ID" )        
     private SubmissionTemplate clientSubmissionTemplateId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="MANAGER_USER_ID", nullable=false )        
     private User managerUserId;
 	
@@ -161,7 +161,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String clientSubmissionTemplateJsonString;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="PARENT_REQUIREMENT_ID")        
     private Requirement parentRequirement;
 	
@@ -193,7 +193,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementAssignTo> requirementAssignTo = new HashSet<RequirementAssignTo>(0);
 	
-	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementApproverHierarchy> requirementApprover = new HashSet<RequirementApproverHierarchy>(0);
 	

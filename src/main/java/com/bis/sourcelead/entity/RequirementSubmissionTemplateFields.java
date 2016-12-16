@@ -32,7 +32,7 @@ public class RequirementSubmissionTemplateFields implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
  	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "REQUIREMENT_SUBMISSION_ID")
    	private RequirementSubmission requirementSubmission;
 	

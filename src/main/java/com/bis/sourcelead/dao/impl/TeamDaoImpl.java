@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TeamDao;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -109,12 +110,23 @@ public class TeamDaoImpl  implements TeamDao{
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Team getTeamByTeamId(Long teamId) throws Exception {
+		
 		logger.debug("In Team getTeamByTeamId method");
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		return (Team) session.get(Team.class, teamId);
+		String query = "from Team tm  where tm.id =:teamId";
+		List<Team> teamList = session.createQuery(query).setLong("teamId", teamId).setCacheable(true).list();
+		
+		Team team = null;
+		if(teamList != null && !teamList.isEmpty())
+		{
+			team = (Team) teamList.iterator().next();
+		}
+		return team;
 	}
 
 	@SuppressWarnings("unchecked")

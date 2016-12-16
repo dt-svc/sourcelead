@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.stat.Statistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,6 @@ import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
-import com.bis.sourcelead.util.CommonUtil;
 
 /**
  * 
@@ -41,9 +39,6 @@ public class RequirementDaoImpl implements RequirementDao {
 	
 	@Autowired
 	private SessionFactory sessionFactory;
-	
-	@Autowired
-	private CommonUtil commonUtil;
 	
 	@Autowired
 	private UserDao userDao;
