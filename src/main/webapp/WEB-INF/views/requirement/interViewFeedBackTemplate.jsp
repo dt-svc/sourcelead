@@ -56,19 +56,19 @@ $(function(){
 	                result = result + '<td><div><span class="mid-span">'+opt.templateName+'</span></a></div></td>';
 	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.description+'"><span class="mid-span">'+opt.description+'</span></div></td>';
 	                result = result + '<td><div>';
-	                '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE\')">'
+	                 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE\')">' 
 	                    result = result + '<a href="javascript:void(0)" onclick="viewInterviewFeedbackTemplate('+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;|&nbsp;';
 	                 '</sec:authorize>';
 	                 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE\')">'
 	                    result = result + '<a href="javascript:void(0)" >View</a>&nbsp;|&nbsp;';
-	                 '</sec:authorize>';
+	                 '</sec:authorize>'; 
 	                    
-                    '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE\')">'
+                    '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE\')">' 
 	                    result = result + '&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\',\''+opt.description+'\')">Edit</a>';
                     '</sec:authorize>';
                     '<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE\')">'
                     result = result + '&nbsp;<a href="javascript:void(0)">Edit</a>';
-                  '</sec:authorize>';
+                  '</sec:authorize>'; 
 	                result = result +'</div></td>';
 	                result = result + '	 </tr>';
 				}  

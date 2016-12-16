@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -75,6 +76,12 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			    	 String hours = requirementInterview.getEndTime().getHours()+"";
 			    	 String minutes = requirementInterview.getEndTime().getMinutes()+"";
 			    	 interviewHistory.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
+			    	 if(requirementInterview.getEndTime().compareTo(new Date())<0){
+			    		 interviewHistory.setFeedbackEndTime("feedbackEndTime");
+			    	 }
+			    }
+			    if(requirementInterview.getInterviewTemplateId() != null){
+			    	interviewHistory.setInterviewTemplateid(requirementInterview.getInterviewTemplateId().getId());
 			    }
 			    
 			    if(interviewHistory.getSubmissionId().getVendorLocationId() != null){

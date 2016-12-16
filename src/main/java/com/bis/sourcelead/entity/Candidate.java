@@ -146,6 +146,18 @@ public class Candidate implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Transient
+	private String skills;
+	
+	@Transient
+	private String totalExp;
+	
+	@Transient
+	private String rate;
+	
+	@Transient
+	private String candidateName;
+	
 	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);
@@ -691,6 +703,51 @@ public class Candidate implements Serializable{
 
 	public void setNoticePeriod(String noticePeriod) {
 		this.noticePeriod = noticePeriod;
+	}
+
+
+	public String getSkills() {
+		return skills;
+	}
+
+
+	public void setSkills(String skills) {
+		this.skills = skills;
+	}
+
+
+	public String getTotalExp() {
+		return totalExp;
+	}
+
+
+	public void setTotalExp(String totalExp) {
+		this.totalExp = totalExp;
+	}
+
+
+	public String getRate() {
+		return rate;
+	}
+
+
+	public void setRate(String rate) {
+		this.rate = rate;
+	}
+
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+
+	public void setCandidateAdedd(boolean isCandidateAdedd) {
+		this.isCandidateAdedd = isCandidateAdedd;
 	}
 	
 	

@@ -55,7 +55,41 @@ public class PdfUtilPipelineHelper  {
 	public File getRequirementPipelenePdf(java.util.List<RequirementSubmission> requirementStatusList, String orgName,
 			String requirementId,String submissionType,RequirementSubmissionCounts requirementSubmissionCounts) throws NumberFormatException, Exception {
 		
-		if(submissionType.equals("SHORTLIST")){
+		if(submissionType.equals("REQUEST_SENT")){
+			String[] headers = Constants.REQUIREMENT_PIPELINE_REQUEST_SENT_HEADERS;
+			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		    File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");
+		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getNumOfRequestSent(),Constants.REQUEST_SENT_COUNT,file);
+		    try {
+		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5};
+		    	PdfPTable table = getPdfTable(headers,width);
+		        table.completeRow();
+		        java.util.List<String[]> requirements = new ArrayList<>();
+		        for(RequirementSubmission requirementsub : requirementStatusList){
+		        	requirements.add(prepareRequirementPipelineToArrayRequestSent(requirementsub));
+		        }
+		        
+		        for (String[] reqArray: requirements) {
+	                for (int i = 0; i < reqArray.length; i++) {
+	                    String datum = reqArray[i];
+	                    PdfPCell cell = new PdfPCell();
+	                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+	                    table.addCell(cell);
+	                }
+	                table.completeRow();
+	            }
+		        
+		        document.addTitle("Candiate List Table");
+		        table.setSpacingBefore(15f);
+		        document.add(table);
+		        logger.info("Pdf table created !!");
+		    } catch (DocumentException e) {
+		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+		    } finally {
+		        document.close();
+		    }
+			return file;
+		}else if(submissionType.equals("SHORTLIST")){
 			String[] headers = Constants.REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS;
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");
@@ -229,6 +263,70 @@ public class PdfUtilPipelineHelper  {
 		}
 		
 	
+	private String[] prepareRequirementPipelineToArrayRequestSent(RequirementSubmission requirementsub) {
+		String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_REQUEST_SENT_HEADERS.length];
+		
+		
+		
+		if(requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())){
+			requirementArray[0] = requirementsub.getCandidateName();
+		}else{
+			requirementArray[0] = "--";
+		}
+		
+		if(requirementsub.getCandidateEmail() != null && !"".equalsIgnoreCase(requirementsub.getCandidateEmail())){
+			requirementArray[1] = requirementsub.getCandidateEmail();
+		}else{
+			requirementArray[1] = "--";
+		}
+		if(requirementsub.getPhoneNumber() != null && !"".equalsIgnoreCase(requirementsub.getPhoneNumber())){
+			requirementArray[2] = requirementsub.getPhoneNumber();
+
+		}else{
+			requirementArray[2] = "--";
+		}
+		if(requirementsub.getResumeName() != null && !"".equalsIgnoreCase(requirementsub.getResumeName())){
+			requirementArray[3] = requirementsub.getResumeName();
+
+		}else{
+			requirementArray[3] = "--";
+		}
+		if(requirementsub.getCreatedDate() != null && !"".equalsIgnoreCase(requirementsub.getCreatedDate().toString())){
+			requirementArray[4] = requirementsub.getCreatedDate().toString();
+
+		}else{
+			requirementArray[4] = "--";
+		}
+		
+		if(requirementsub.getExpectedCTC() != null && !"".equalsIgnoreCase(requirementsub.getExpectedCTC())){
+			requirementArray[5] = requirementsub.getExpectedCTC();
+		}else{
+			requirementArray[5] = "--";
+		}
+		if(requirementsub.getUserName() != null && !"".equalsIgnoreCase(requirementsub.getUserName())){
+			requirementArray[6] = requirementsub.getUserName();
+		}else{
+			requirementArray[6] = "--";
+		}
+		if(requirementsub.getScore() != null && !"".equalsIgnoreCase(requirementsub.getScore())){
+			requirementArray[7] = requirementsub.getScore();
+		}else{
+			requirementArray[7] = "--";
+		}
+		if(requirementsub.getWorkExperience() != null && !"".equalsIgnoreCase(requirementsub.getWorkExperience())){
+			requirementArray[8] = requirementsub.getWorkExperience();
+		}else{
+			requirementArray[8] = "--";
+		}
+		if(requirementsub.getSubmissionStatus().toString() != null){
+			requirementArray[9] = requirementsub.getSubmissionStatus().toString();
+		}else{
+			requirementArray[9] = "--";
+		}
+		return requirementArray;
+	}
+
+
 	/**
 	 * @author Rajashekar
 	 * prepares column names for pdf table
@@ -610,7 +708,7 @@ public class PdfUtilPipelineHelper  {
 				requirementArray[7] = "--";
 			}
 			if(requirementsub.getWorkExperience() != null && !"".equalsIgnoreCase(requirementsub.getWorkExperience())){
-				requirementArray[8] = requirementsub.getWorkExperience();
+				requirementArray[8] = requirementsub.getWorkExperience()+" years";
 			}else{
 				requirementArray[8] = "--";
 			}

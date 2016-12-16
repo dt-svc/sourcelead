@@ -54,6 +54,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Transient
 	private String interviewerName;
+	
+	@Transient
+	private String feedbackDate;
+	
+	@Transient
+	private String feedbackStatus;
 
 	public Long getId() {
 		return id;
@@ -126,5 +132,20 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setInterviewerName(String interviewerName) {
 		this.interviewerName = interviewerName;
 	}
-			
+
+	public String getFeedbackDate() {
+		return feedbackDate;
+	}
+
+	public void setFeedbackDate(String feedbackDate) {
+		this.feedbackDate = feedbackDate;
+	}
+
+	public String getFeedbackStatus() {
+		return feedbackStatus;
+	}
+
+	public void setFeedbackStatus(String feedbackStatus) {
+		this.feedbackStatus = feedbackStatus;
+	}
 }
