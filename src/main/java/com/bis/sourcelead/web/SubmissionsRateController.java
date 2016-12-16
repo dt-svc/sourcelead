@@ -1,6 +1,8 @@
 package com.bis.sourcelead.web;
 
 import java.io.Writer;
+import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,15 +14,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -61,6 +67,9 @@ public class SubmissionsRateController {
 	@Autowired
 	EmailScenarioService emailScenarioService;
 	
+	@Autowired
+	RequirementRateSubmissionNegotiationService requirementRateSubmissionNegotiationService;
+	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
@@ -75,10 +84,10 @@ public class SubmissionsRateController {
 			 HttpServletRequest request) throws Exception {
 		
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-		
+		String type = "Candidate";
 		ModelAndView model = new ModelAndView();
 		model.addObject("rateStatus",rateStatus);
-		model.addObject("type","Candidate");
+		model.addObject("type",type);
 		model.addObject("submissionId",submissionId);
 		model.addObject("candidateId",requirementSubmission.getCandidate().getId());
 		model.addObject("sourceleadUrl",sourceleadUrl);
@@ -86,14 +95,32 @@ public class SubmissionsRateController {
 		model.setViewName("requirement/submissionRate");
 		
 		if("Accepted".equalsIgnoreCase(rateStatus)){
-			//write accept logic ....like send mail and put status as submission
-			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+			UserRole userRole =userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), requirementSubmission.getOrgLocations().getId());
+			
+			List<RequirementRateSubmissionNegotiation> allSubmissionRateHistory = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId,requirementSubmission.getCandidate().getId());
+			RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(submissionId);
+			RequirementRateSubmissionNegotiation  requirementRateSubmissionNegotiation = new RequirementRateSubmissionNegotiation();
+			
+			if(allSubmissionRateHistory != null && !allSubmissionRateHistory.isEmpty()){
+				requirementRateSubmissionNegotiation.setRequirementsubmissionId(requirementSubmission);
+				requirementRateSubmissionNegotiation.setInitiatorOrgLocationId(requirementSubmission.getCandidate().getOrgLocationId());
+				requirementRateSubmissionNegotiation.setCurrentRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+				requirementRateSubmissionNegotiation.setCurrentRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
+				requirementRateSubmissionNegotiation.setRateStage(SubmissionRateStatus.ACCEPTED);
+				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.CANDIDATE);
+				requirementRateSubmissionNegotiation.setCreatedBy("");
+				requirementRateSubmissionNegotiation.setUpdatedBy("");
+				requirementRateSubmissionNegotiation.setCreatedDate(new Date());
+				requirementRateSubmissionNegotiation.setUpdatedDate(new Date());
+				requirementRateSubmissionNegotiation.setStatus(Constants.RECORD_ACTIVE);
+				requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);
+			}else{
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			}
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
-			
 			Requirement requirement = requirementSubmission.getRequirement();
-			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), requirementSubmission.getOrgLocations().getId());
 			Candidate candidate = requirementSubmission.getCandidate();
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
 			requirementSubmissionService.applicantAcceptMailAboutRequirement(requirement,userRole.getUser(),candidate,orgLocations);
@@ -112,30 +139,48 @@ public class SubmissionsRateController {
 			 HttpServletRequest request) throws Exception {
 		
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-		
+		String type = "User";
 		ModelAndView model = new ModelAndView();
 		model.addObject("rateStatus",rateStatus);
-		model.addObject("type","User");
+		model.addObject("type",type);
 		model.addObject("submissionId",submissionId);
 		model.addObject("candidateId",requirementSubmission.getCandidate().getId());
 		model.addObject("sourceleadUrl",sourceleadUrl);
 		model.addObject("requirementSubmission",requirementSubmission);
 		model.setViewName("requirement/submissionRate");
 		
-		/*if("Accepted".equalsIgnoreCase(rateStatus)){
-			//write accept logic ....like send mail and put status as submission
-			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+		if("Accepted".equalsIgnoreCase(rateStatus)){
+			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+			UserRole userRole =userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), requirementSubmission.getOrgLocations().getId());
+			
+			List<RequirementRateSubmissionNegotiation> allSubmissionRateHistory = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId,requirementSubmission.getCandidate().getId());
+			RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(submissionId);
+			RequirementRateSubmissionNegotiation  requirementRateSubmissionNegotiation = new RequirementRateSubmissionNegotiation();
+			
+			if(allSubmissionRateHistory != null && !allSubmissionRateHistory.isEmpty()){
+				requirementRateSubmissionNegotiation.setRequirementsubmissionId(requirementSubmission);
+				requirementRateSubmissionNegotiation.setInitiatorOrgLocationId(requirementSubmission.getCandidate().getOrgLocationId());
+				requirementRateSubmissionNegotiation.setCurrentRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+				requirementRateSubmissionNegotiation.setCurrentRateType(pastRequirementRateSubmissionNegotiation.getExpectedRateType());
+				requirementRateSubmissionNegotiation.setRateStage(SubmissionRateStatus.ACCEPTED);
+				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.ORG);
+				requirementRateSubmissionNegotiation.setCreatedBy(user.getUserCode());
+				requirementRateSubmissionNegotiation.setUpdatedBy(user.getUserCode());
+				requirementRateSubmissionNegotiation.setCreatedDate(new Date());
+				requirementRateSubmissionNegotiation.setUpdatedDate(new Date());
+				requirementRateSubmissionNegotiation.setStatus(Constants.RECORD_ACTIVE);
+				requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);
+			}else{
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			}
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
-			
 			Requirement requirement = requirementSubmission.getRequirement();
-			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), requirementSubmission.getOrgLocations().getId());
 			Candidate candidate = requirementSubmission.getCandidate();
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
 			requirementSubmissionService.applicantAcceptMailAboutRequirement(requirement,userRole.getUser(),candidate,orgLocations);
 			
-		}*/
+		}
 		return model;
 
 	}
