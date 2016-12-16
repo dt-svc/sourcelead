@@ -460,6 +460,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public List<Candidate> getAllRequestedCandidatesForCampaign(List<Long> candidateId) throws Exception {
 		return candidateDao.getAllRequestedCandidatesForCampaign(candidateId);
+	}
 	
 	@Override
 	@Async
