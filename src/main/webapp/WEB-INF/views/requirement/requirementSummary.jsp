@@ -111,7 +111,7 @@ overflow-y:hidden;
 overflow-y:inherit !important;
 }
 .require_wrap_table {
-overflow-y:visible !important;
+overflow-y:auto !important;
 
 .require_wrap_details_cta.require_uploadfile span{
 width:auto !important;
