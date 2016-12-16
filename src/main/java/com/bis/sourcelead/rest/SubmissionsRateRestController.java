@@ -178,22 +178,6 @@ public class SubmissionsRateRestController {
 		requirementRateSubmissionNegotiation.setUpdatedDate(commonUtil.currentDate());
 		requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);
 		
-		
-		
-		/*requirementRateSubmissionNegotiation.setRequirementsubmissionId(requirementSubmission);
-		if(jsonObj.has("rateProposal")){
-			requirementRateSubmissionNegotiation.setCurrentRate(jsonObj.getString("rateProposal"));
-		}
-		if(jsonObj.has("rateType")){
-			requirementRateSubmissionNegotiation.setCurrentRateType(jsonObj.getString("rateType"));
-		}
-		requirementRateSubmissionNegotiation.setCreatedDate(new Date());
-		requirementRateSubmissionNegotiation.setCreatedBy("");
-		requirementRateSubmissionNegotiation.setUpdatedDate(new Date());
-		requirementRateSubmissionNegotiation.setUpdatedBy("");
-		
-		requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);*/
-		
 		 Requirement requirement = requirementSubmission.getRequirement();
 		 
 		 Candidate candidate = requirementSubmission.getCandidate();
@@ -201,7 +185,18 @@ public class SubmissionsRateRestController {
 		 RequirementRateSubmissionNegotiation neogtation = requirementSubmissionService.getRequirementRateBySubmissionById(submissionId);
 		 
 		 List<RequirementRateSubmissionNegotiation>  negotiationList = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId, candidate.getId());
-		 StringBuilder tempHTML = new StringBuilder();
+		 StringBuilder tempHTML = buildNegotiationHistory(negotiationList,requirement,candidate,submissionId,type);
+		 if("user".equalsIgnoreCase(type)){
+			 requirementSubmissionService.userNegotiateEmail(requirement,userRole.getUser(),candidate,orgLocations,neogtation,tempHTML);
+		 }else{
+			 requirementSubmissionService.applicantNegotiateEmail(requirement,userRole.getUser(),candidate,orgLocations,neogtation,tempHTML);
+		 }
+		return "success";
+	}
+	
+	
+	private StringBuilder buildNegotiationHistory(List<RequirementRateSubmissionNegotiation>  negotiationList, Requirement requirement, Candidate candidate, Long submissionId, String type) throws Exception {
+		StringBuilder tempHTML = new StringBuilder();
 		 if(negotiationList != null){
 	         tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
 	         tempHTML.append("<tr>");
@@ -239,17 +234,9 @@ public class SubmissionsRateRestController {
 		        }
 		        
 		 	}
-		 if("user".equalsIgnoreCase(type)){
-			 requirementSubmissionService.userNegotiateEmail(requirement,userRole.getUser(),candidate,orgLocations,neogtation,tempHTML);
-		 }else{
-			 requirementSubmissionService.applicantNegotiateEmail(requirement,userRole.getUser(),candidate,orgLocations,neogtation,tempHTML);
-		 }
-		
-		
-		return "success";
+		return tempHTML;
 	}
-	
-	
+
 	@RequestMapping(value = "/getRateHistoryBySubmissionId", method = RequestMethod.POST)
 	public @ResponseBody String getRateHistoryBySubmissionId(@RequestParam(value = "submissionId", required = false) Long submissionId,
 															 @RequestParam(value = "candidateId", required = false) Long candidateId
@@ -319,7 +306,8 @@ public class SubmissionsRateRestController {
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	
-		 	
+		 	Candidate candidate = new Candidate();
+		 	User pastUser = new User();
 		 	RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 			
 			RequirementRateSubmissionNegotiation  requirementRateSubmissionNegotiation = new RequirementRateSubmissionNegotiation();
@@ -342,10 +330,17 @@ public class SubmissionsRateRestController {
 			
 			if(requirementSubmission.getVendorLocationId() != null && requirementSubmission.getVendorLocationId() == loginOrgLocation){
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.VENDOR);
+				if(isNullOrEmpty(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
+					pastUser = userService.getUserByUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
+				}
 			}else if(requirementSubmission.getVendorLocationId() != null &&  requirementSubmission.getVendorLocationId() != loginOrgLocation){
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.CLIENT);
+				if(isNullOrEmpty(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
+					pastUser = userService.getUserByUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
+				}
 			}else{
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.ORG);
+				candidate = requirementSubmission.getCandidate();
 			}
 			
 			requirementRateSubmissionNegotiation.setInitiatorOrgLocationId(loginOrgLocation);
@@ -356,6 +351,19 @@ public class SubmissionsRateRestController {
 			requirementRateSubmissionNegotiation.setUpdatedDate(commonUtil.currentDate());
 			requirementRateSubmissionNegotiation.setUpdatedBy(users.getUserCode());
 			requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);
+			
+			
+			
+			/*//UserRole userRole =userRoleService.getUserDetailsByUserIdAndLocationId(pastUser.getId(), requirementSubmission.getOrgLocations().getId());
+			//Requirement requirement = requirementSubmission.getRequirement();
+			 
+			 
+			 OrgLocations orgLocations = requirementSubmission.getOrgLocations();
+			 RequirementRateSubmissionNegotiation neogtation = requirementSubmissionService.getRequirementRateBySubmissionById(submissionId);
+			 
+			 List<RequirementRateSubmissionNegotiation>  negotiationList = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId, candidate.getId());
+			 StringBuilder tempHTML = buildNegotiationHistory(negotiationList,requirementSubmission.getRequirement(),candidate,submissionId,"user");
+			requirementSubmissionService.userNegotiateEmail(requirementSubmission.getRequirement(),users,candidate,loginOrgLocation,neogtation,tempHTML);*/
 			
 			return "SUCCESS";
 		}
