@@ -33,11 +33,13 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -81,6 +83,9 @@ public class CandidateRestController {
 	@Autowired
 	private CommonUtil commonUtil;
 	
+	@Autowired
+	private TeamService teamService;
+	
 	/**
 	 * @author prasad k
 	 * @since  sep 1 2016
@@ -119,6 +124,7 @@ public class CandidateRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Candidate candidate = candidateService.storeCandidate(jsonObj,orgLocation,user,multiFile);
+		SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", "Success !!"+candidate.getFirstName()+" "+candidate.getLastName()+" Candidate Added");
 		return "success";
 	}
 	
@@ -334,6 +340,18 @@ public class CandidateRestController {
 			return commonUtil.toJSON(userList);
 			
 		}
+	 
+	 @PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
+	 @RequestMapping(value = "/getTeams", method = RequestMethod.POST)
+		public @ResponseBody String getTeams(HttpServletRequest request) throws Exception {
+			String resultJson = null;
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<Team> teamList = teamService.getTeamListByOrgLocationID(orgLocations.getId());
+			resultJson = toJSON(teamList);
+			return resultJson;
+		}
+	 
+	 
 	 
 	 public String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

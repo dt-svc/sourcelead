@@ -1,8 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -23,7 +21,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -239,7 +237,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 				 writeRow.createCell(0).setCellValue(emp.getEmployeeId()); 
 			 }
 			 if(emp.getHireDate() !=null){
-				 writeRow.createCell(5).setCellValue(emp.getHireDateStr()); 
+				 String dateOfJoin = Constants.DF_YMD.format(emp.getHireDate());
+				 writeRow.createCell(5).setCellValue(dateOfJoin); 
 			 }
 			 if(emp.getRate() !=null && !"".equalsIgnoreCase(emp.getRate())){
 				 writeRow.createCell(6).setCellValue(emp.getRate()+"/"+emp.getRatePer());
@@ -266,9 +265,17 @@ public class UserRoleServiceImpl implements UserRoleService{
 		   if(userRoles.getReportingManager() !=null){
 			   writeRow.createCell(9).setCellValue(userRoles.getReportingManager().getFirstName());
 		   }
-		   if(userRoles.getUser().getStatus() !=null){
-			   writeRow.createCell(10).setCellValue(userRoles.getUserState().toString());
-		   }
+		   
+		   if(userRoles.getUser().getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString()) && "N".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
+			   writeRow.createCell(10).setCellValue("Invite");
+	   		   }else if((userRoles.getUser().getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString()) && "Y".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString())) &&  (userRoles.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRoles.getUserState().toString()))){
+	   			writeRow.createCell(10).setCellValue("Resend");
+	   		   }else if(userRoles.getUserState() !=null && "ACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
+	   			writeRow.createCell(10).setCellValue("Active");
+	   		   }else if(userRoles.getUserState() !=null && "INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
+	   			writeRow.createCell(10).setCellValue("In-active");
+	   		   }
+		   
 		return createExcelsheet;
 		
 	}
@@ -288,7 +295,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 
 	@Override
-	public HashSet<UserRole> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
+	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
 		return userRoleDao.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency);
 	}
 
@@ -300,6 +307,21 @@ public class UserRoleServiceImpl implements UserRoleService{
 	@Override
 	public UserRole getUserDetailsByUserIdAndLocationId(Long userId, Long locationId) throws Exception {
 		return userRoleDao.getUserDetailsByUserIdAndLocationId(userId, locationId);
+	}
+
+	@Override
+	public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
+		return userRoleDao.getAllUserPrevoiusFridayTimeSheetSubmissionStatus(invoiceFrequency);
+	}
+
+	@Override
+	public List<Long> getAllAssignedUsersIdsByReportingManagerId(Long reportingManagerId,Long orgLocationId) {
+		return userRoleDao.getAllAssignedUsersIdsByReportingManagerId(reportingManagerId,orgLocationId);
+	}
+
+	@Override
+	public List<UserRole> getAllAssignedUsersByReportingManagerId(Long reportingManagerId, Long orgLocationId) {
+		return userRoleDao.getAllAssignedUsersByReportingManagerId(reportingManagerId, orgLocationId);
 	}
 	
 

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -377,6 +378,83 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 			}
 		}
 		return  contactsList;
+	}
+
+	@Override
+	public List<Long> getAssignedAsClientOrVendorSpocCountByUserId(Long userId, Long orgLocationId,String type) throws Exception {
+		return orgSpocDao.getAssignedAsClientOrVendorSpocCountByUserId(userId, orgLocationId,type);
+	}
+
+	@Override
+	public List<OrgSpoc> getAssignedAsClientOrVendorSpocByUserId(Long userId, Long orgLocationId, String type)
+			throws Exception {
+		return orgSpocDao.getAssignedAsClientOrVendorSpocByUserId(userId, orgLocationId, type);
+	}
+
+	@Override
+	public List<OrgSpoc> getAllClientContactsListByOrgLocationId(Long userId,Long orgLocationId) throws Exception {
+		List <OrgSpoc> clientContactsList =  orgSpocDao.getAllClientContactsListByOrgLocationId(userId,orgLocationId);
+		List<OrgSpoc> contactsList = new ArrayList<OrgSpoc>();
+		
+		if(clientContactsList != null && !clientContactsList.isEmpty()){
+			   for (OrgSpoc orgSpoc : clientContactsList) {
+					
+					if(orgSpoc.getSpocUser().getId() == userId || orgSpoc.getOwnerUser().getId() == userId){
+						//if login user is spoc
+						if(orgSpoc.getSpocUser().getId() == userId){
+		    				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+		    				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+		    				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+						}
+						//if login user is Owner
+						else if(orgSpoc.getOwnerUser().getId() == userId){
+								if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
+									orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+								}else{
+									orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
+								}
+								 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+								 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+							}
+							
+						 
+					}else{
+						if(orgSpoc.getInitiatorLocationId().getId() == orgLocationId ){
+							
+							if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
+								orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+							}else{
+								orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
+							}
+							 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+							 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+							 
+						 }
+						if(orgSpoc.getResponderLocationId().getId() == orgLocationId){
+						 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
+						 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
+						 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
+						}
+					}
+					if(orgSpoc.getResponderLocationId().getId() == orgLocationId){
+						 orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
+					}
+					if(orgSpoc.getInitiatorLocationId().getId() == orgLocationId ){
+						orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
+					}
+					
+					contactsList.add(orgSpoc);
+				}
+			   
+			   
+		   }
+		
+		return contactsList;
+	}
+
+	@Override
+	public List<OrgSpoc> getOrgSpocByOrgRelationId(Long orgRelationId) throws Exception {
+		return orgSpocDao.getOrgSpocByOrgRelationId(orgRelationId);
 	}
 
 

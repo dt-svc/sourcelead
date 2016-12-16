@@ -36,6 +36,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -77,6 +78,8 @@ public class RequirementController {
 	@Autowired
 	SubmissionTemplateService submissionTemplateService;
 	
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
 	
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/requirement")
@@ -263,8 +266,116 @@ public class RequirementController {
         }
 		
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "reqsummaryMsg");
+		}
 		return model;
 
+	}
+	
+	@RequestMapping(value = "/reqPipelineSubmitToClientMail")
+	public ModelAndView reqPipelineSubmitToClientMail(HttpServletRequest request,@RequestParam(value="requirementId", required=false)Long requirementId) throws Exception {
+		ModelAndView model = new ModelAndView();
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String fullName = null;
+   	      if(!"".equalsIgnoreCase(user.getLastName()) && user.getLastName() !=null){
+   		 fullName = user.getFirstName()+" "+user.getLastName();
+		   	 }else{
+		   		 fullName = user.getFirstName();
+		   	 }
+         StringBuilder sb = new StringBuilder();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("loginUserEmail",user.getEmail());
+		 model.setViewName("requirement/mail-compose");
+		Requirement req =requirementService.getRequirementByRequirementId(requirementId);
+	    if(req != null && req.getParentRequirement() !=null){
+			 model.addObject("toEmailId",req.getParentRequirement().getManagerUserId().getEmail());
+			 model.addObject("toFullName",req.getParentRequirement().getManagerUserId().getFirstName() +"" +req.getParentRequirement().getManagerUserId().getLastName());
+			 sb.append("Hi,"+req.getParentRequirement().getManagerUserId().getFirstName() +"" +req.getParentRequirement().getManagerUserId().getLastName());
+			 sb.append("\n");
+			 sb.append(fullName+" submitted the applicants for the"+req.getJobTitle()+".\n");
+			 sb.append("Best Regards,\n");
+			 sb.append(fullName);
+			 model.addObject("body",sb.toString());
+			 
+	    }
+		return model.addObject("requirement", req);
+	
+	}
+	
+
+//	/candiCount
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
+	@RequestMapping(value = "/template")
+	public ModelAndView AllTemplates(HttpServletRequest request) throws Exception {
+		
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("requirement/template");
+		
+		return model;
+
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE')")
+	@RequestMapping(value = "/addTemplate")
+	public ModelAndView AddTemplates(HttpServletRequest request,@RequestParam(value="requirementId", required=false) Long requirementId) throws Exception {
+		
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		Requirement requirement =null;
+			ModelAndView model = new ModelAndView();
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("requirement/addTemplate");
+			if(requirementId != null){
+				requirement = requirementService.getRequirementTemplateByRequirementId(requirementId, orgLocations.getId());
+			 model.addObject("requirement", requirement);
+			 
+			 if(requirement.getEducation() != null){
+					String[] educationList = requirement.getEducation().split(",");
+					requirement.setReqEducationList(educationList);
+					requirement.setReqEducationListString(requirement.getEducation());
+			}
+			
+			if(requirement.getSkills() != null){		
+					String[] skillsList = requirement.getSkills().split(",");
+					requirement.setReqSkillsList(skillsList);
+					requirement.setReqSkillsListString(requirement.getSkills());
+			}
+			 
+			}
+		
+		    List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			model.addObject("educationsList", educationsList);
+			
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			model.addObject("skillsList", skillsList);
+			
+		
+		   return model;
+
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
+	@RequestMapping(value = "/requirementTemplateSummary")
+	public ModelAndView requirementTemplateSummary(HttpServletRequest request,@RequestParam(value="requirementId", required=false)Long requirementId) throws Exception {
+		 
+		ModelAndView model = new ModelAndView();
+		model.setViewName("requirement/requirementTemplateSummary");
+		model.addObject("requirementId",requirementId);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+
+	}
+	
+
+	private boolean isNullOrEmpty(String msg) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

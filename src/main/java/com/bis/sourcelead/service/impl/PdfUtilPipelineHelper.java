@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.sis.internal.jaxb.metadata.EX_Extent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,13 @@ import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-
+/**
+ * 
+ * @author Rajashekar
+ * Helper class for prepare PDF Doc
+ * @since 10-12-2016
+ *
+ */
 @Component
 public class PdfUtilPipelineHelper  {
 
@@ -48,42 +55,48 @@ public class PdfUtilPipelineHelper  {
 	public File getRequirementPipelenePdf(java.util.List<RequirementSubmission> requirementStatusList, String orgName,
 			String requirementId,String submissionType,RequirementSubmissionCounts requirementSubmissionCounts) throws NumberFormatException, Exception {
 		
-		if(submissionType.equals("SHORTLIST")){
-			Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId)); 
-			String[] headers = Constants.REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS;
-		    Document document = new Document(PageSize.LETTER.rotate());
-		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		if(submissionType.equals("REQUEST_SENT")){
+			String[] headers = Constants.REQUIREMENT_PIPELINE_REQUEST_SENT_HEADERS;
+			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");
+		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getNumOfRequestSent(),Constants.REQUEST_SENT_COUNT,file);
 		    try {
-		        // Get an instance of PdfWriter and create a Table.pdf file as an output.
-		        PdfWriter.getInstance(document, new FileOutputStream(file));
-		        document.open();
-		        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-		        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
-		        boldFont.setColor(myColor1);
-	            Paragraph para = new Paragraph(orgName+" Requirements.",boldFont);
-	            para.setAlignment(Element.ALIGN_CENTER);
-	            document.add(para);
-		        // Create an instance of PdfPTable. After that we transform the header and
-	            List orderedList = new List(List.ORDERED);
-		        orderedList.add(new ListItem("Requirement Name :"+requirement.getJobTitle()));
-		        orderedList.add(new ListItem("Location :"+requirement.getCountry()));
-		        orderedList.add(new ListItem("Experience :"+requirement.getMaxExp()+"-"+requirement.getMinExp()));
-		        orderedList.add(new ListItem("Shortlisted Applicants :"+requirementSubmissionCounts.getNumOfShortList()));
-
-		        document.add(orderedList);
-	            PdfPTable table = new PdfPTable(headers.length);
-		        table.setWidthPercentage(100);
-	            table.setWidths(new int[]{3,5, 3,5, 5, 3,5,3,5,5,5,3});
-		        for (int i = 0; i < headers.length; i++) {
-		            String header = headers[i];
-		            PdfPCell cell = new PdfPCell();
-		            cell.setGrayFill(0.9f);
-		            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
-		            BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
-		            cell.setBackgroundColor(myColor);
-		            table.addCell(cell);
+		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5};
+		    	PdfPTable table = getPdfTable(headers,width);
+		        table.completeRow();
+		        java.util.List<String[]> requirements = new ArrayList<>();
+		        for(RequirementSubmission requirementsub : requirementStatusList){
+		        	requirements.add(prepareRequirementPipelineToArrayRequestSent(requirementsub));
 		        }
+		        
+		        for (String[] reqArray: requirements) {
+	                for (int i = 0; i < reqArray.length; i++) {
+	                    String datum = reqArray[i];
+	                    PdfPCell cell = new PdfPCell();
+	                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+	                    table.addCell(cell);
+	                }
+	                table.completeRow();
+	            }
+		        
+		        document.addTitle("Candiate List Table");
+		        table.setSpacingBefore(15f);
+		        document.add(table);
+		        logger.info("Pdf table created !!");
+		    } catch (DocumentException e) {
+		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+		    } finally {
+		        document.close();
+		    }
+			return file;
+		}else if(submissionType.equals("SHORTLIST")){
+			String[] headers = Constants.REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS;
+			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		    File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");
+		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getNumOfShortList(),Constants.SHORTLIST_COUNT,file);
+		    try {
+		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,5,3};
+		    	PdfPTable table = getPdfTable(headers,width);
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
@@ -106,48 +119,18 @@ public class PdfUtilPipelineHelper  {
 		        logger.info("Pdf table created !!");
 		    } catch (DocumentException e) {
 		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
-		    } catch (FileNotFoundException e) {
-		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 		    } finally {
 		        document.close();
 		    }
 			return file;
 		}else if(submissionType.equals("INTERVIEW")){
-			Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId)); 
 			String[] headers = Constants.REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS;
-		    Document document = new Document(PageSize.LETTER.rotate());
 		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");
+		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getNumOfInterview(),Constants.INTERVIEW_COUNT,file);
 		    try {
-		        // Get an instance of PdfWriter and create a Table.pdf file as an output.
-		        PdfWriter.getInstance(document, new FileOutputStream(file));
-		        document.open();
-		        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-		        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
-		        boldFont.setColor(myColor1);
-	            Paragraph para = new Paragraph(orgName+" Requirements.",boldFont);
-	            para.setAlignment(Element.ALIGN_CENTER);
-	            document.add(para);
-		        // Create an instance of PdfPTable. After that we transform the header and
-	            List orderedList = new List(List.ORDERED);
-		        orderedList.add(new ListItem("Requirement Name :"+requirement.getJobTitle()));
-		        orderedList.add(new ListItem("Location :"+requirement.getCountry()));
-		        orderedList.add(new ListItem("Experience :"+requirement.getMaxExp()+"-"+requirement.getMinExp()));
-		        orderedList.add(new ListItem("Interview Applicants :"+requirementSubmissionCounts.getNumOfInterview()));
-
-		        document.add(orderedList);
-	            PdfPTable table = new PdfPTable(headers.length);
-		        table.setWidthPercentage(100);
-	            table.setWidths(new int[]{3,5, 3,5});
-		        for (int i = 0; i < headers.length; i++) {
-		            String header = headers[i];
-		            PdfPCell cell = new PdfPCell();
-		            cell.setGrayFill(0.9f);
-		            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
-		            BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
-		            cell.setBackgroundColor(myColor);
-		            table.addCell(cell);
-		        }
+		    	int [] width = new int[]{3,5, 3,5};
+		    	PdfPTable table = getPdfTable(headers,width);
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
@@ -170,48 +153,18 @@ public class PdfUtilPipelineHelper  {
 		        logger.info("Pdf table created !!");
 		    } catch (DocumentException e) {
 		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
-		    } catch (FileNotFoundException e) {
-		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 		    } finally {
 		        document.close();
 		    }
 			return file;
 		}else if(submissionType.equals("OFFERMADE")){
-			Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId)); 
 			String[] headers = Constants.REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS;
-		    Document document = new Document(PageSize.LETTER.rotate());
 		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");
+		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getNumOfOffers(),Constants.OFFER_COUNT,file);
 		    try {
-		        // Get an instance of PdfWriter and create a Table.pdf file as an output.
-		        PdfWriter.getInstance(document, new FileOutputStream(file));
-		        document.open();
-		        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-		        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
-		        boldFont.setColor(myColor1);
-	            Paragraph para = new Paragraph(orgName+" Requirements.",boldFont);
-	            para.setAlignment(Element.ALIGN_CENTER);
-	            document.add(para);
-		        // Create an instance of PdfPTable. After that we transform the header and
-	            List orderedList = new List(List.ORDERED);
-		        orderedList.add(new ListItem("Requirement Name :"+requirement.getJobTitle()));
-		        orderedList.add(new ListItem("Location :"+requirement.getCountry()));
-		        orderedList.add(new ListItem("Experience :"+requirement.getMaxExp()+"-"+requirement.getMinExp()));
-		        orderedList.add(new ListItem("Offered Applicants :"+requirementSubmissionCounts.getNumOfOffers()));
-
-		        document.add(orderedList);
-	            PdfPTable table = new PdfPTable(headers.length);
-		        table.setWidthPercentage(100);
-	            table.setWidths(new int[]{3,5, 3,5, 5, 3,5,3,5});
-		        for (int i = 0; i < headers.length; i++) {
-		            String header = headers[i];
-		            PdfPCell cell = new PdfPCell();
-		            cell.setGrayFill(0.9f);
-		            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
-		            BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
-		            cell.setBackgroundColor(myColor);
-		            table.addCell(cell);
-		        }
+		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5};
+		    	PdfPTable table = getPdfTable(headers,width);
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
@@ -234,48 +187,18 @@ public class PdfUtilPipelineHelper  {
 		        logger.info("Pdf table created !!");
 		    } catch (DocumentException e) {
 		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
-		    } catch (FileNotFoundException e) {
-		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 		    } finally {
 		        document.close();
 		    }
 			return file;
 		}else if(submissionType.equals("REJECTED")){
-			Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId)); 
 			String[] headers = Constants.REQUIREMENT_PIPELINE_REJECTED_EXCEL_HEADERS;
-		    Document document = new Document(PageSize.LETTER.rotate());
 		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");
+		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getNumOfRejected(),Constants.REJECTED_COUNT,file);
 		    try {
-		        // Get an instance of PdfWriter and create a Table.pdf file as an output.
-		        PdfWriter.getInstance(document, new FileOutputStream(file));
-		        document.open();
-		        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-		        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
-		        boldFont.setColor(myColor1);
-	            Paragraph para = new Paragraph(orgName+" Requirements.",boldFont);
-	            para.setAlignment(Element.ALIGN_CENTER);
-	            document.add(para);
-		        // Create an instance of PdfPTable. After that we transform the header and
-	            List orderedList = new List(List.ORDERED);
-		        orderedList.add(new ListItem("Requirement Name :"+requirement.getJobTitle()));
-		        orderedList.add(new ListItem("Location :"+requirement.getCountry()));
-		        orderedList.add(new ListItem("Experience :"+requirement.getMaxExp()+"-"+requirement.getMinExp()));
-		        orderedList.add(new ListItem("Rejected Applicants :"+requirementSubmissionCounts.getNumOfRejected()));
-
-		        document.add(orderedList);
-	            PdfPTable table = new PdfPTable(headers.length);
-		        table.setWidthPercentage(100);
-	            table.setWidths(new int[]{3,5, 3,5, 5, 3,5,3,5,5,5});
-		        for (int i = 0; i < headers.length; i++) {
-		            String header = headers[i];
-		            PdfPCell cell = new PdfPCell();
-		            cell.setGrayFill(0.9f);
-		            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
-		            BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
-		            cell.setBackgroundColor(myColor);
-		            table.addCell(cell);
-		        }
+		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,5};
+		    	PdfPTable table = getPdfTable(headers,width);
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
@@ -298,48 +221,18 @@ public class PdfUtilPipelineHelper  {
 		        logger.info("Pdf table created !!");
 		    } catch (DocumentException e) {
 		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
-		    } catch (FileNotFoundException e) {
-		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 		    } finally {
 		        document.close();
 		    }
 			return file;
 		}else{
-			Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId)); 
 			String[] headers = Constants.REQUIREMENT_PIPELINE_EXCEL_HEADERS;
-		    Document document = new Document(PageSize.LETTER.rotate());
 		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");
+		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getSubmittedCount(),Constants.SUBMITTED_APPLICANTS_COUNT,file);
 		    try {
-		        // Get an instance of PdfWriter and create a Table.pdf file as an output.
-		        PdfWriter.getInstance(document, new FileOutputStream(file));
-		        document.open();
-		        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-		        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
-		        boldFont.setColor(myColor1);
-	            Paragraph para = new Paragraph(orgName+" Requirements.",boldFont);
-	            para.setAlignment(Element.ALIGN_CENTER);
-	            document.add(para);
-		        // Create an instance of PdfPTable. After that we transform the header and
-	            List orderedList = new List(List.ORDERED);
-		        orderedList.add(new ListItem("Requirement Name :"+requirement.getJobTitle()));
-		        orderedList.add(new ListItem("Location :"+requirement.getCountry()));
-		        orderedList.add(new ListItem("Experience :"+requirement.getMaxExp()+"-"+requirement.getMinExp()));
-		        orderedList.add(new ListItem("Submitted Applicants :"+requirementSubmissionCounts.getSubmittedCount()));
-
-		        document.add(orderedList);
-	            PdfPTable table = new PdfPTable(headers.length);
-		        table.setWidthPercentage(100);
-	            table.setWidths(new int[]{3,5, 3,5, 5, 3,5,3,5,5,5,5});
-		        for (int i = 0; i < headers.length; i++) {
-		            String header = headers[i];
-		            PdfPCell cell = new PdfPCell();
-		            cell.setGrayFill(0.9f);
-		            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
-		            BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
-		            cell.setBackgroundColor(myColor);
-		            table.addCell(cell);
-		        }
+		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,5,5};
+		    	PdfPTable table = getPdfTable(headers,width);
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
@@ -362,8 +255,6 @@ public class PdfUtilPipelineHelper  {
 		        logger.info("Pdf table created !!");
 		    } catch (DocumentException e) {
 		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
-		    } catch (FileNotFoundException e) {
-		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 		    } finally {
 		        document.close();
 		    }
@@ -372,7 +263,142 @@ public class PdfUtilPipelineHelper  {
 		}
 		
 	
-	
+	private String[] prepareRequirementPipelineToArrayRequestSent(RequirementSubmission requirementsub) {
+		String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_REQUEST_SENT_HEADERS.length];
+		
+		
+		
+		if(requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())){
+			requirementArray[0] = requirementsub.getCandidateName();
+		}else{
+			requirementArray[0] = "--";
+		}
+		
+		if(requirementsub.getCandidateEmail() != null && !"".equalsIgnoreCase(requirementsub.getCandidateEmail())){
+			requirementArray[1] = requirementsub.getCandidateEmail();
+		}else{
+			requirementArray[1] = "--";
+		}
+		if(requirementsub.getPhoneNumber() != null && !"".equalsIgnoreCase(requirementsub.getPhoneNumber())){
+			requirementArray[2] = requirementsub.getPhoneNumber();
+
+		}else{
+			requirementArray[2] = "--";
+		}
+		if(requirementsub.getResumeName() != null && !"".equalsIgnoreCase(requirementsub.getResumeName())){
+			requirementArray[3] = requirementsub.getResumeName();
+
+		}else{
+			requirementArray[3] = "--";
+		}
+		if(requirementsub.getCreatedDate() != null && !"".equalsIgnoreCase(requirementsub.getCreatedDate().toString())){
+			requirementArray[4] = requirementsub.getCreatedDate().toString();
+
+		}else{
+			requirementArray[4] = "--";
+		}
+		
+		if(requirementsub.getExpectedCTC() != null && !"".equalsIgnoreCase(requirementsub.getExpectedCTC())){
+			requirementArray[5] = requirementsub.getExpectedCTC();
+		}else{
+			requirementArray[5] = "--";
+		}
+		if(requirementsub.getUserName() != null && !"".equalsIgnoreCase(requirementsub.getUserName())){
+			requirementArray[6] = requirementsub.getUserName();
+		}else{
+			requirementArray[6] = "--";
+		}
+		if(requirementsub.getScore() != null && !"".equalsIgnoreCase(requirementsub.getScore())){
+			requirementArray[7] = requirementsub.getScore();
+		}else{
+			requirementArray[7] = "--";
+		}
+		if(requirementsub.getWorkExperience() != null && !"".equalsIgnoreCase(requirementsub.getWorkExperience())){
+			requirementArray[8] = requirementsub.getWorkExperience();
+		}else{
+			requirementArray[8] = "--";
+		}
+		if(requirementsub.getSubmissionStatus().toString() != null){
+			requirementArray[9] = requirementsub.getSubmissionStatus().toString();
+		}else{
+			requirementArray[9] = "--";
+		}
+		return requirementArray;
+	}
+
+
+	/**
+	 * @author Rajashekar
+	 * prepares column names for pdf table
+	 * @param headers
+	 * @param width
+	 * @return PdfPTable
+	 */
+	private PdfPTable getPdfTable(String[] headers, int[] width) {
+		PdfPTable table = new PdfPTable(headers.length);
+		try{
+			table.setWidthPercentage(100);
+	        table.setWidths(width);
+	        for (int i = 0; i < headers.length; i++) {
+	            String header = headers[i];
+	            PdfPCell cell = new PdfPCell();
+	            cell.setGrayFill(0.9f);
+	            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+	            BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
+	            cell.setBackgroundColor(myColor);
+	            table.addCell(cell);
+	        }
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return table;
+	}
+
+
+/**
+ * @author Rajashekar
+ * prepares header for pdf
+ * @param orgName
+ * @param requirementId
+ * @param count
+ * @param headerName
+ * @param file 
+ * @return Document
+ * 
+ */
+	private Document prepareHeadres(String orgName, String requirementId, int count, String headerName, File file) {
+		    Document document = new Document(PageSize.LETTER.rotate());
+		    try {
+		    	Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId)); 
+		    	PdfWriter.getInstance(document, new FileOutputStream(file));
+		        document.open();
+		        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+		        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
+		        boldFont.setColor(myColor1);
+	            Paragraph para = new Paragraph(orgName+" Requirements.",boldFont);
+	            para.setAlignment(Element.ALIGN_CENTER);
+	            document.add(para);
+		        // Create an instance of PdfPTable. After that we transform the header and
+	            List orderedList = new List(List.ORDERED);
+		        orderedList.add(new ListItem("Requirement Name :"+requirement.getJobTitle()));
+		        orderedList.add(new ListItem("Location :"+requirement.getCountry()));
+		        orderedList.add(new ListItem("Experience :"+requirement.getMaxExp()+"-"+requirement.getMinExp()));
+		        orderedList.add(new ListItem(headerName+" "+count));
+
+		        document.add(orderedList);
+		    }catch(Exception ex){
+		    	ex.printStackTrace();
+		    }
+			return document;
+	}
+
+
+/**
+ * @author Rakshith
+ * convert pojo to Array of Rejected
+ * @param requirementsub
+ * @return
+ */
 	private String[] prepareRequirementPipelineToArrayRejected(RequirementSubmission requirementsub) {
 		String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_REJECTED_EXCEL_HEADERS.length];
 		
@@ -448,6 +474,12 @@ public class PdfUtilPipelineHelper  {
 
 
 
+/**
+ * @author Rakshith
+ * convert pojo to Array of Offer
+ * @param requirementsub
+ * @return
+ */
 	private String[] prepareRequirementPipelineToArrayOffer(RequirementSubmission requirementsub) {
 		String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS.length];
 		if(requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())){
@@ -503,6 +535,12 @@ public class PdfUtilPipelineHelper  {
 
 
 
+/**
+ * @author Rakshith
+ * convert pojo to Array of Interview
+ * @param requirementsub
+ * @return
+ */
 	private String[] prepareRequirementPipelineToArrayInterview(RequirementSubmission requirementsub) {
 		String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS.length];
 		
@@ -613,6 +651,12 @@ public class PdfUtilPipelineHelper  {
 		return requirementArray;
 	}
 
+/**
+ * @author Rakshith
+ * convert pojo to Array Applicants
+ * @param requirementsub
+ * @return
+ */
 	private String[] prepareRequirementPipelineToArray(RequirementSubmission requirementsub) {
 			String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_EXCEL_HEADERS.length];
 			
@@ -664,7 +708,7 @@ public class PdfUtilPipelineHelper  {
 				requirementArray[7] = "--";
 			}
 			if(requirementsub.getWorkExperience() != null && !"".equalsIgnoreCase(requirementsub.getWorkExperience())){
-				requirementArray[8] = requirementsub.getWorkExperience();
+				requirementArray[8] = requirementsub.getWorkExperience()+" years";
 			}else{
 				requirementArray[8] = "--";
 			}

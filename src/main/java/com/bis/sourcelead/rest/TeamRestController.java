@@ -20,12 +20,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.CandidateHotList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
@@ -69,6 +71,9 @@ public class TeamRestController {
 	 
 	 @Autowired
 	 private UserRoleService userRoleService;
+	 
+	 @Autowired
+	 private CandidateHotListService candidateHotListService;
 	 
 	 /**
 	   * @author sarath kumar
@@ -269,7 +274,8 @@ public class TeamRestController {
 			
 			JSONObject jsonObj = new JSONObject(json1);
 			teamService.storeTeam(jsonObj,orgLocations);
-			
+			 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Team Created Successfully");
+
 			return "success";
 		}
 	   
@@ -360,6 +366,45 @@ public class TeamRestController {
 				teamService.storeTeam(jsonObj,orgLocations);
 				return "success";
 			}
+		  
+		  
+		  @RequestMapping(value = "/getHotCandidateListForTeamByTeamId")
+		  public @ResponseBody String getHotCandidateListForTeamByTeamId(@RequestParam(value = "teamId", required = false) Long teamId, HttpServletRequest request) throws Exception {
+			  String resultJson;
+			  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			    
+			  List<CandidateHotList> candidateHotList = candidateHotListService.getHotCandidateListForTeamByTeamId(teamId, orgLocations.getId());
+			  for(CandidateHotList hotCandidate : candidateHotList){
+				  if(hotCandidate.getCandidateId() != null){
+					  if(hotCandidate.getCandidateId().getFirstName() != null){
+						  hotCandidate.setCandidateFullName(hotCandidate.getCandidateId().getFirstName());
+						  if(StringUtils.isNotEmpty(hotCandidate.getCandidateId().getLastName())){
+							  hotCandidate.setCandidateFullName(hotCandidate.getCandidateFullName() +" "+ hotCandidate.getCandidateId().getLastName());
+						  }
+					  }
+					  
+					  hotCandidate.setCandidateDesignation(hotCandidate.getCandidateId().getDesignation());
+					  hotCandidate.setPositionType(hotCandidate.getCandidateId().getDesignationType());
+					  hotCandidate.setCandidateEmail(hotCandidate.getCandidateId().getEmail());
+					  hotCandidate.setCandidateMobileNumber(hotCandidate.getCandidateId().getMobilePhone());
+					  hotCandidate.setCandidateType(hotCandidate.getCandidateId().getCandidateType());
+					  
+					  if(StringUtils.isNotEmpty(hotCandidate.getCandidateId().getCountry())){
+						  hotCandidate.setCandidateLocation(hotCandidate.getCandidateId().getCountry());
+						  if(StringUtils.isNotEmpty(hotCandidate.getCandidateId().getState())){
+							  hotCandidate.setCandidateLocation(hotCandidate.getCandidateLocation() +", "+ hotCandidate.getCandidateId().getState());
+							  if(StringUtils.isNotEmpty(hotCandidate.getCandidateId().getCity())){
+								  hotCandidate.setCandidateLocation(hotCandidate.getCandidateLocation() +", "+ hotCandidate.getCandidateId().getCity());
+							  }
+						  }
+					  }
+					  
+				  }
+			  }
+			    
+			  resultJson = commonUtil.toJSON(candidateHotList);
+			  return resultJson;
+		}
 
-	 
+		  
 }

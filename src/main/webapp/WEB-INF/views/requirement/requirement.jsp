@@ -108,10 +108,20 @@ $(document).ready(function() {
 
 <script type="text/javascript">
 		window.onload = function () {
+			var jobType = '${requirement.jobType}';
+			if(jobType !=null && jobType != "" && jobType != "undefined" && jobType == 'Other'){
+				  document.getElementById("jobTypeDiv").style.display="";
+				  $("#jobOtherType").attr("data-validation", "required validate_Space validate_length length2-250");
+			}else{
+				document.getElementById("jobTypeDiv").style.display="none";
+				  $("#jobOtherType").attr("data-validation-optional", "true");
+				  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
+				  $("#jobOtherType").val('');
+			}
+			
 			getAllCountries();
 			removeEditButton();
 			disableMonths();
-			
 			/*  $(".isClient").click(function(){  
 		        $(".clientDetails").toggleClass('hidden', 500);
 		    });  */
@@ -269,16 +279,15 @@ $(document).ready(function () {
 	           </div>
 	         </div>
 	       </div>
-	       
-	       
+
           <div class="form-group" id="jobIdDiv">
             <label class="col-md-3">Id</label>
             <div class="col-md-9">
               <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}"  field-name="JobId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true"  onblur="validateJobId();"  onKeyUp="validateJobId();" value="">
             </div>
           </div>
-          
-          <div class="form-group" id="jobTypeDiv" style="display: none">
+           
+            <div class="form-group" id="jobTypeDiv" style="display:none">
             <label class="col-md-3">Job Type</label>
             <div class="col-md-9">
               <input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}"  field-name="Job Type" value="">
@@ -687,13 +696,13 @@ $(document).ready(function () {
                 <div class="col-md-9">   
                     <select   class="chosen-select form-control" id="sequentialApprover1" name="sequentialApprover1" field-name="Approver" data-validation="required" data-validation-optional="true" onchange="getLevel2Approvers();">
                         <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
-	                       <option disabled>Select Approver</option>
+	                       <option value="">Select Approver1</option>
 	                       <c:forEach var="report" items="${approverList}">
 			                    <option value="${report.id}"    disabled="disabled">${report.firstName}&nbsp;${report.lastName}</option>
 			               </c:forEach>
 		               </c:if>
 		               <c:if test="${requirement.requirementSubmissionStatus != 'OPEN' &&  requirement.requirementSubmissionStatus != 'ONHOLD'}">
-	                       <option disabled>Select Approver</option>
+	                       <option value="">Select Approver1</option>
 	                       <c:forEach var="report" items="${approverList}">
 			                    <option value="${report.id}"    >${report.firstName}&nbsp;${report.lastName}</option>
 			               </c:forEach>
@@ -706,13 +715,13 @@ $(document).ready(function () {
 	            <div class="col-md-9 mt">
 	              		<select   class="chosen-select form-control" id="sequentialApprover2" name="sequentialApprover2" field-name="Approver 2" data-validation="required" data-validation-optional="true">
                        <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
-	                       <option disabled>Select Approver</option>
+	                       <option value="">Select Approver2</option>
 	                       <c:forEach var="report" items="${approverList}">
 			                    <option value="${report.id}" disabled="disabled"   >${report.firstName}&nbsp;${report.lastName}</option>
 			               </c:forEach>
 		               </c:if>
 		               <c:if test="${requirement.requirementSubmissionStatus != 'OPEN' &&  requirement.requirementSubmissionStatus != 'ONHOLD'}">
-	                       <option disabled>Select Approver</option>
+	                       <option value="">Select Approver2</option>
 	                       <c:forEach var="report" items="${approverList}">
 			                    <option value="${report.id}"    >${report.firstName}&nbsp;${report.lastName}</option>
 			               </c:forEach>
@@ -1347,16 +1356,19 @@ function setTemplateValues(){
 					$('#education').val('').trigger('chosen:updated');
 					$('#skills').val('').trigger('chosen:updated');
 					
-					var skills = [];
-		            skills = json.skills.split(",");
-		            $("#skills").val(skills);
-		            $('#skills').trigger("chosen:updated");
-		            
-		           
-		            var educations = [];
-		            educations = json.education.split(",");
-		            $("#education").val(educations);
-		            $('#education').trigger("chosen:updated");
+					if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
+						var skills = [];
+			            skills = json.skills.split(",");
+			            $("#skills").val(skills);
+			            $('#skills').trigger("chosen:updated");
+					}
+					
+					if(json.education != null && json.education != '' && json.education != 'undefined'){
+			            var educations = [];
+			            educations = json.education.split(",");
+			            $("#education").val(educations);
+			            $('#education').trigger("chosen:updated");
+					}
 					
 					 
 			    	
@@ -2157,7 +2169,7 @@ function removeEditButton() {
 
 <script>
 function getJobType(jobType){
-	
+	var existingJobType = '${requirement.jobType}';
 	if(jobType.value == 'Other'){
 		  document.getElementById("jobTypeDiv").style.display="";
 		  $("#jobOtherType").attr("data-validation", "required validate_Space validate_length length2-250");
@@ -2165,7 +2177,9 @@ function getJobType(jobType){
 		document.getElementById("jobTypeDiv").style.display="none";
 		  $("#jobOtherType").attr("data-validation-optional", "true");
 		  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
-		  $("#jobOtherType").val('');
+		  if(existingJobType ==null || existingJobType == "" || existingJobType == "undefined" || existingJobType != 'Other'){
+			  $("#jobOtherType").val('');
+		  }
 	}
 }
 </script>

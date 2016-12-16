@@ -22,4 +22,6 @@ public interface CandidateDao {
 
 	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId);
 	
+	public List<Candidate> getHotListCandidatesListByOrgLocationID(Long orgLocationId,String candidateType) throws Exception;
+	
 }

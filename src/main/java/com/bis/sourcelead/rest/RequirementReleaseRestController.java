@@ -414,7 +414,7 @@ public class RequirementReleaseRestController {
 		requirement.setFileContentType(parentRequirement.getFileContentType());
 		requirement.setFileName(parentRequirement.getFileName());
 		requirement.setIsClientJob("Y");
-		
+		requirement.setIsTemplate("N");
 		requirement.setSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
 		requirement.setClientSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
 		

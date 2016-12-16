@@ -16,17 +16,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.BoPaymentTypes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -52,6 +52,9 @@ public class CandidateController {
 	@Autowired
 	private RolesService roleService;
 	
+	@Autowired
+	private TeamService teamService;
+	
 	/**
 	 * Handles to display candidate jsp
 	 * @return ModelAndView
@@ -75,6 +78,7 @@ public class CandidateController {
 			model.addObject("educationsList", educationsList);
 			
 			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			
 			model.addObject("skillsList", skillsList);
 			
 			return model;
@@ -116,9 +120,40 @@ public class CandidateController {
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "candidateCreateMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "candidateCreateMsg");
+		}
+		
 		return model;
 
 	}
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
+	@RequestMapping(value = "/assignHotListToTeam")
+	public ModelAndView assignHotListToTeam(HttpServletRequest request) throws Exception {
+		
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("candidates/assignHotListToTeam");
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Candidates);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		
+		
+		return model;
+
+	}
+	
 	
 	
 	@PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE')")
@@ -151,5 +186,10 @@ public class CandidateController {
 		
 	}
 	
+
+	private boolean isNullOrEmpty(String msg) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }

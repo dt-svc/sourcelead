@@ -60,5 +60,11 @@ public interface OrgSpocDao {
 	
 	List<OrgSpoc> getAllContactsbyOrgRelationIdAndLocationId(Long relationId, Long locationId, String initiator) throws Exception;
 	
+	List<Long> getAssignedAsClientOrVendorSpocCountByUserId(Long userId, Long orgLocationId,String type) throws Exception;
 	
+	List<OrgSpoc> getAssignedAsClientOrVendorSpocByUserId(Long userId, Long orgLocationId,String type) throws Exception;
+	
+	List<OrgSpoc> getAllClientContactsListByOrgLocationId(Long userId,Long orgLocationId) throws Exception;
+	
+	List<OrgSpoc> getOrgSpocByOrgRelationId(Long orgRelationId) throws Exception;
 }

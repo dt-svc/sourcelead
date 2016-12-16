@@ -57,12 +57,6 @@ import org.hibernate.annotations.FetchMode;
 	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
 	private String location;
 	
-	@Column(name="NOTIFICATION_TO_APPLICANT")
-	private String notificationToApplicant;
-	
-	@Column(name="NOTIFICATION_TO_SPOC")
-	private String notificationToSpoc;
-	
 	@Column(name="NOTIFICATION_TO_OTHERS")
 	private String notificationToOthers;
 	
@@ -119,6 +113,7 @@ import org.hibernate.annotations.FetchMode;
 	
 	@Transient
 	private String clientName;
+	
 	
 	@OneToMany(mappedBy = "requirementInterview",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
@@ -196,22 +191,6 @@ import org.hibernate.annotations.FetchMode;
 
 	public void setLocation(String location) {
 		this.location = location;
-	}
-
-	public String getNotificationToApplicant() {
-		return notificationToApplicant;
-	}
-
-	public void setNotificationToApplicant(String notificationToApplicant) {
-		this.notificationToApplicant = notificationToApplicant;
-	}
-
-	public String getNotificationToSpoc() {
-		return notificationToSpoc;
-	}
-
-	public void setNotificationToSpoc(String notificationToSpoc) {
-		this.notificationToSpoc = notificationToSpoc;
 	}
 
 	public String getNotificationToOthers() {
@@ -376,4 +355,5 @@ import org.hibernate.annotations.FetchMode;
 	public void setRequirementInterviewers(Set<RequirementInterviewer> requirementInterviewers) {
 		this.requirementInterviewers = requirementInterviewers;
 	}
+	
 }

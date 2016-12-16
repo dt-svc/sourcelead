@@ -11,13 +11,32 @@ public interface RequirementInterviewDao {
 	
 	List<RequirementInterview> getRequirementInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
 
+	/**
+	 * @author Prasad Salina
+	 * @param submissionId
+	 * @param orgLocationsId
+	 * @return
+	 * @throws Exception
+	 * To get both internal and Is Client job INterviews
+	 */
+	List<RequirementInterview> getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
+	
 	RequirementInterview getRequirementInterviewById(String requirementInterviewId);
+	
+	/**
+	 * @author Prasad Salina
+	 * @param requirementInterviewId
+	 * @param submissionId
+	 * @param orgLocationsId
+	 * @return
+	 */
+	RequirementInterview getRequirementInterviewByIdAndSubmissionIdAndOrgLocationsId(Long requirementInterviewId, Long submissionId, Long orgLocationsId);
 	
 	List<RequirementInterview> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)throws Exception; 
 
 	List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId,
 			Long orgLocationsId, Long requirementId) throws Exception;
 
-	List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
+	//List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 
 }
