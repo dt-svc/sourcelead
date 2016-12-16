@@ -118,7 +118,6 @@ function getInvoiceDetails(){
 
 <script>
 function getInvoiceByInvoiceId(){  
-	alert("hii");
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",
@@ -143,8 +142,8 @@ function getInvoiceByInvoiceId(){
 	                     result = result +"<tbody>"; 
 	                     
 	                     var json = JSON.parse(data);
-	                     for (var i = 0; i < json.QueryResponse.Invoice.length; i++) { 
-	                    	 var opt = json.QueryResponse.Invoice[i]; 
+	                     for (var i = 0; i < json.length; i++) { 
+	                    	 var opt = json[i];  
 	                    	 result = result +"<tr>"; 
 		                     
 	                    	 if(opt.MetaData != null && opt.MetaData != '' && opt.MetaData != 'undefined'){
@@ -214,7 +213,6 @@ function getInvoiceByInvoiceId(){
 
 <script>
 function getCustomerByCustomerId(){  
-	alert("hello");
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",
@@ -239,8 +237,8 @@ function getCustomerByCustomerId(){
 	                     result = result +"<tbody>"; 
 	                     
 	                     var json = JSON.parse(data);
-	                     for (var i = 0; i < json.QueryResponse.Invoice.length; i++) { 
-	                    	 var opt = json.QueryResponse.Invoice[i]; 
+	                     for (var i = 0; i < json.length; i++) { 
+	                    	 var opt = json[i];  
 	                    	 result = result +"<tr>"; 
 		                     
 	                    	 if(opt.MetaData != null && opt.MetaData != '' && opt.MetaData != 'undefined'){
@@ -332,6 +330,83 @@ function pagination(){
 
 
 
+<script>
+function getPayroll(){  
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+           type : "POST",
+           url: sourceleadUrl+"/getAllPayrolls?${_csrf.parameterName}=${_csrf.token}",    
+            success :function(data) {
+			    	     $("#requirementList").removeAttr("style");
+	                	 $("#requirementList").empty();
+	                	 var result = "";
+	                	 result = result +"<table id='invoicePagination' class='display' cellspacing='0' width='100%' >"; 
+	                     result = result +"<thead>"; 
+	                     result = result +"  <tr>"; 
+	                     result = result +"    <th>EmployeeName</th>"; 
+	                     result = result +"    <th>Gross</th>"; 
+	                     result = result +"    <th>FWT</th>"; 
+	                     result = result +"    <th>SSEC</th>"; 
+	                     result = result +"    <th>MED</th>"; 
+	                     result = result +"    <th>NET</th>"; 
+	                     result = result +"  </tr>"; 
+	                     result = result +"</thead>";
+	                     result = result +"<tbody>"; 
+	                     var json = JSON.parse(data);
+	                     for (var i = 0; i < json.length; i++) { 
+	                    	 var opt = json[i];  
+	                    	 result = result +"<tr>"; 
+	                    	 if(opt.employeeName != null && opt.employeeName != '' && opt.employeeName != 'undefined'){
+		                    	 result = result +"<td><div>"+opt.employeeName+"</div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
+		                     
+	                    	 if(opt.gross != null && opt.gross != '' && opt.gross != 'undefined'){
+		                    	 result = result +"<td><div>"+opt.gross+"</div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
+		                     
+	                    	 if(opt.fwt != null && opt.fwt != '' && opt.fwt != 'undefined'){
+		                    	 result = result +"<td><div>"+opt.fwt+"</div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
+		                     
+	                    	 if(opt.ssec != null && opt.ssec != '' && opt.ssec != 'undefined'){
+		                    	 result = result +"<td><div>"+opt.ssec+"</div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
+		                     
+	                    	 if(opt.med != null && opt.med != '' && opt.med != 'undefined'){
+		                    	 result = result +"<td><div>"+opt.med+"</div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
+		                     
+	                    	 if(opt.net != null && opt.net != '' && opt.net != 'undefined'){
+		                    	 result = result +"<td><div>"+opt.net+"</div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
+		                     
+		                     
+	                     } 
+	                     result = result +" </tbody>";
+	                     result = result +"</table>"; 
+	                     $("#noReq").val('');
+	                     $("#requirementList").append(result); 
+	                     pagination(); 
+			    	     
+          },
+       });  
+  } 
+</script>
+
+
+
 
 <section class="content-wraper">
   <section class="content-header clearfix">
@@ -345,6 +420,7 @@ function pagination(){
       <div class="timesheet_head">
           	<li> <a href="#" onClick="getInvoiceByInvoiceId();" >getInvoiceByInvoiceId</a></li>
           	<li> <a href="#" onClick="getCustomerByCustomerId();">getCustomerByCustomerId</a></li>
+          	<li> <a href="#" onClick="getPayroll();">payroll</a></li>
           <div class="clearfix"></div>
         </ul>
         <div class="clearfix"></div>
