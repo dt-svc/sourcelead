@@ -143,6 +143,7 @@ public class Constants {
 	
 	public static String APPLICANT_NEGOTIATE_REQUIREMENT = "ApplicantNegotiateRequirement";
 	public static String USER_RATE_NEGOTIATION = "UserRateNegotiation";
+	public static String CLIENT_RATE_NEGOTIATION = "ClientRateNegotiation";
 
 
 
