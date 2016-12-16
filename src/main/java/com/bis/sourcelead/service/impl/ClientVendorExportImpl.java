@@ -114,9 +114,6 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		if (orgRelations.getNoOfContatcs() != null) {
 			writeRow.createCell(4).setCellValue(orgRelations.getNoOfContatcs());
 		}
-		if (orgRelations.getCreatedBy() != null) {
-			writeRow.createCell(5).setCellValue(orgRelations.getCreatedBy());
-		}
 		return sheet;
 	}
 
