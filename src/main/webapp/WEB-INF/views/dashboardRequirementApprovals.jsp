@@ -1,7 +1,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
  
- <div class="col-md-6 mb">
+ <div class="col-md-6 mb" id="requirementApproverListDiv" style="display: none;">
         <div class="dashboard-widget">
           <h4 class="clearfix">Requirement Approvals &nbsp;&nbsp;<!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
@@ -52,8 +52,7 @@ function requirementApproverList(){
 	                	 result = result +"<table id='requirementApproverPagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>";  
-	                     result = result +"    <th>ID</th>"; 
-	                     result = result +"    <th>Requirement</th>"; 
+	                     result = result +"    <th>ID-Title</th>"; 
 	                     result = result +"    <th>Rate</th>"; 
 	                     result = result +"    <th>Exp</th>"; 
 	                     result = result +"    <th>Action</th>"; 
@@ -65,8 +64,12 @@ function requirementApproverList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
-	                    	 result = result +"<td><div>"+opt.id+"</div></td>";
-		                     result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobTitle+"</a></div></td>";
+	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
+		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobId+"-"+opt.jobTitle+"</a></div></td>";
+		                     }else{
+		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobTitle+"</a></div></td>";
+		                     }
+	                    	 
 		                     if(opt.rate!=null && opt.rate !='' && opt.rate !='undefined'){
 		                    	 result = result +"<td><div>"+opt.rate+"&nbsp;"+opt.currencyCode+"</div></td>";
 		                     }else{
@@ -100,16 +103,17 @@ function requirementApproverList(){
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
 	                     $("#requirementApproverList").append(result); 
+	                     $("#requirementApproverListDiv").css("display", "block");
 	                     requirementApprovalPagination(); 
 			    	} 
                  }else{
                 	 $("#requirementApproverList").removeAttr("style");
-  	    	         var result ="";
+  	    	        /*  var result ="";
 		    	    
 					 result = result+"			<div class='blank-pages'>";
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 					 result = result+"			        <p>No Requirement Found</p>";
-					 result = result+"			 </div>";
+					 result = result+"			 </div>"; */
 					
 					$("#requirementApproverList").empty();
 				    $("#requirementApproverList").append(result); 
