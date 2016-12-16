@@ -1,7 +1,10 @@
 package com.bis.sourcelead.rest;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,6 +45,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateResumesService;
@@ -140,7 +144,7 @@ public class SubmissionsRestController {
 	    
     }
     
-    @RequestMapping(value = "/getInterviewFeedbackTemplate" , method = RequestMethod.GET)
+    @RequestMapping(value = "/getInterviewrsViewFeedbackList" , method = RequestMethod.GET)
 	   public String getInterviewFeedbackTemplate(@RequestParam(value="templateId", required=false) Long templateId) throws Exception {
     	    SubmissionTemplate st =  submissionTemplateService.getSubmissionTemplateById(templateId);
 		    return st.getJsonString();
@@ -407,30 +411,6 @@ public class SubmissionsRestController {
 		return "success";
 	}
     
-    
-    
-    @RequestMapping(value = "/saveInterviewFeddbackTemlate" , method = RequestMethod.POST)
-	   public String saveInterviewFeddbackTemlate(@RequestParam(value="jsonData", required=false) String json,
-			   @RequestParam(value="con", required=false) String con,MultipartHttpServletRequest request,
-			   @RequestParam(value="locationMapFile", required=false) CommonsMultipartFile locationMapFileData) throws Exception {
-			
- 	    String json1 = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json1);
-			
-			
-			MultipartFile multiFile = null;
-			Iterator<String> itrator = request.getFileNames();
-			if(itrator.hasNext()){
-		        multiFile = request.getFile(itrator.next());
-			}
-			
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj, user, orgLocations,con,multiFile);
-			return "success";
-	    
-}
-    
 
 	//vendors mail sending the private method
 
@@ -502,7 +482,29 @@ public class SubmissionsRestController {
 		 
 	}	
 
-	
+/**
+ * @author Shiva Yogi
+ * candidate submit to the client with email template preview
+ * @param jsonData
+ * @param submissionsList
+ * @param requirementId
+ * @param multPartrequest
+ * @return Json
+ * @throws Exception
+ */
+    @PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
+	@RequestMapping(value = "/submitToClient",method = RequestMethod.POST )
+	public @ResponseBody String submitToClient(@RequestParam(value = "jsonData", required = false) String jsonData,@RequestParam(value = "selectedIds", required = false) String submissionsList,@RequestParam(value = "requirementId", required = false) Long requirementId,MultipartHttpServletRequest multPartrequest) throws Exception {
+		String jsonc = "{" + jsonData + "}";
+		JSONObject jsonObj = new JSONObject(jsonc);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(multPartrequest,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(multPartrequest, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(multPartrequest, "org");
+	 	final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) multPartrequest; 
+		 final Map<String, MultipartFile> files = multiRequest.getFileMap();
+		 requirementSubmissionService.storeClientSubmissionWithEmailPreview(requirementId, user, orgLocations, submissionsList,org,jsonObj,files);
+		return "success";
+	}
 	
     
     private String toJSON(Object obj){
@@ -522,6 +524,43 @@ public class SubmissionsRestController {
 	protected static boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
 	}
+	
+//	/addEmailtemplate
+	
+    @PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
+    @RequestMapping(value = "/addEmailtemplate" , method = RequestMethod.GET)
+    @ResponseBody
+	   public String addEmailtemplate(@RequestParam(value="requirementId", required=false) Long requirementId,@RequestParam(value="selectedShortlistsCount", required=false) String submissionIds,HttpServletRequest request) throws Exception {
+    	
+    	String resultJson = null;
+    	String[] submissions = submissionIds.split(",");
+    	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+    	 String fullName = null;
+    	      if(!"".equalsIgnoreCase(user.getLastName()) && user.getLastName() !=null){
+    		 fullName = user.getFirstName()+" "+user.getLastName();
+ 		   	 }else{
+ 		   		 fullName = user.getFirstName();
+ 		   	 }
+          StringBuilder sb = new StringBuilder();
+ 		Requirement requirement =requirementService.getRequirementByRequirementId(requirementId);
+ 		requirement.setSubmitToClientFromMailId(user.getEmail());
+ 		requirement.setSubmitToClientToMailId(requirement.getParentRequirement().getManagerUserId().getEmail());
+ 		requirement.setSubmitToClientMailSubject("New applicants received for the"+" "+requirement.getJobTitle());
+ 		
+ 	    if(requirement != null && requirement.getParentRequirement() !=null){
+ 			 sb.append("Hi,"+" "+requirement.getParentRequirement().getManagerUserId().getFirstName() +"" +requirement.getParentRequirement().getManagerUserId().getLastName());
+ 			 sb.append("\n\n");
+ 			 sb.append(fullName+" submitted the applicants for the"+" "+requirement.getJobTitle()+".\n\n");
+ 			 sb.append("Total no.of submitted applicants :"+submissions.length);
+ 			 sb.append("Best Regards,\n");
+ 			 sb.append(fullName);
+ 			requirement.setMailBody(sb.toString());
+ 			
+ 	    }    	 
+    	
+ 	     resultJson = toJSON(requirement);
+		 return resultJson;
+    }
 	
 	
 }
