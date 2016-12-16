@@ -181,6 +181,8 @@ public class CandidateController {
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
+		/* educationsList,skillsList are used for autocompletes for education and skills in add consultant creation */
+		
 		 List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		 model.addObject("educationsList", educationsList);
 		
