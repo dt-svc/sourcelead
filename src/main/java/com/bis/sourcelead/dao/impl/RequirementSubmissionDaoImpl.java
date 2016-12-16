@@ -532,6 +532,21 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	}
 	
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementSubmission getClientSubmissionsBySubmissionIdAndOrgLocationId(Long submissionId, Long orgLocationId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+	     String query = "from RequirementSubmission rs where rs.sourceSubmission =:submissionId and rs.vendorLocationId =:orgLocationId";
+	     List<RequirementSubmission> vendorsubmissionList = session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	   
+	     if(vendorsubmissionList != null && vendorsubmissionList.size() >0){
+				return vendorsubmissionList.get(0);
+			}
+	  return null;
+	}
+	
 	/*
 	SUBMISSION("submission"),
 	SHORTLIST("shortList"),

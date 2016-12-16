@@ -272,6 +272,7 @@ public class RequirementController {
 
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
 	@RequestMapping(value = "/template")
 	public ModelAndView AllTemplates(HttpServletRequest request) throws Exception {
 		

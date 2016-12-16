@@ -24,11 +24,13 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -58,6 +60,9 @@ public class RequirementInterviewRestController {
 	RequirementSubmissionService requirementSubmissionService;
 	
 	@Autowired
+	private RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
+	
+	@Autowired
 	RequirementInterviewService requirementInterviewService;
 	
 	@Autowired
@@ -82,14 +87,12 @@ public class RequirementInterviewRestController {
 		String resultJson = null;
 		List<RequirementSubmission> shortListCandidatesList = requirementSubmissionService.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations.getId(), requirementId,existingApplicantsIds,isClientInterview);
 		for (RequirementSubmission sub : shortListCandidatesList) {
-			String candidateName = "";
- 		   if(StringUtils.isNotEmpty(sub.getCandidate().getFirstName())){
- 			   candidateName = sub.getCandidate().getFirstName();
- 		   }
- 		   if(StringUtils.isNotEmpty(sub.getCandidate().getLastName()) && StringUtils.isNotBlank(sub.getCandidate().getLastName())){
- 			   candidateName = candidateName+" "+sub.getCandidate().getLastName();
- 		   }
- 		  sub.setCandidateName(candidateName);
+			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(sub.getId());
+			if(requirementSubmissionTemplateFields.getLastName() != null){
+				sub.setCandidateName(requirementSubmissionTemplateFields.getFirstName()+" "+requirementSubmissionTemplateFields.getLastName());
+			}else{
+				sub.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
+			}
 		}
 		resultJson = commonUtil.toJSON(shortListCandidatesList);
 		return resultJson;

@@ -85,6 +85,9 @@ public class Candidate implements Serializable{
 	@Column(name = "EXPERIENCE_MONTHS")
 	private String experienceMonths;
 	
+	@Column(name = "NOTICE_PERIOD")
+	private String noticePeriod;
+	
 	@Column(name = "DESIGNATION")
 	private String designation;
 	
@@ -678,6 +681,16 @@ public class Candidate implements Serializable{
 
 	public void setIsFavourite(String isFavourite) {
 		this.isFavourite = isFavourite;
+	}
+
+
+	public String getNoticePeriod() {
+		return noticePeriod;
+	}
+
+
+	public void setNoticePeriod(String noticePeriod) {
+		this.noticePeriod = noticePeriod;
 	}
 	
 	

@@ -1,10 +1,13 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.CandidateHotListDao;
 import com.bis.sourcelead.entity.CandidateHotList;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateHotListService;
 
 @Service
@@ -26,6 +29,12 @@ public class CandidateHotListServiceImpl implements CandidateHotListService{
 	@Override
 	public CandidateHotList getCandidateHotListByCandidateIdAndOrgLocationId(Long candidateId, Long orgLocationId) {
 		return candidateHotListDao.getCandidateHotListByCandidateIdAndOrgLocationId(candidateId, orgLocationId);
+	}
+
+	@Override
+	public List<CandidateHotList> getHotCandidateListForTeamByTeamId(Long teamId, Long orgLocationsId)
+			throws Exception {
+		return candidateHotListDao.getHotCandidateListForTeamByTeamId(teamId, orgLocationsId);
 	}
 
 }

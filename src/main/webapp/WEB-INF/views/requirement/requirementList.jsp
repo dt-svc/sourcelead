@@ -1184,10 +1184,14 @@ function requirementPipeline(requirementId){
           	<li> <a href="<c:url value='/team'/>"><i class="fa fa-plus"></i>Team</a></li>
           </sec:authorize>
           
-          <%--  <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE')"> --%>
+            <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')"> 
           	<li> <a href="<c:url value='/template'/>"><i class="fa fa-plus"></i>Template</a></li>
-         <%--  </sec:authorize> --%>
-         
+          </sec:authorize> 
+
+          <sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
+          <li> <a href="<c:url value='/interViewFeedBackTemplate'/>"><i class="fa fa-plus"></i>Interview Template</a></li>
+           </sec:authorize>
+
           <sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
            <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop" onClick="mypop();"></i>
             <div class="export_pop">

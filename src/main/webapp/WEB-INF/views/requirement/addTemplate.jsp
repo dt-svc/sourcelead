@@ -34,8 +34,8 @@
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='/requirementList'/>">Requirement List </a>&raquo;
-			Add Requirement
+				href="<c:url value='/template'/>">Template List </a>&raquo;
+			Add Template
 		</div>
 	</section>
 	<div class="content-area content-new clearfix">

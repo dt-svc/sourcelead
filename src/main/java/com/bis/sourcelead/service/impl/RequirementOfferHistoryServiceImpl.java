@@ -60,14 +60,14 @@ public class RequirementOfferHistoryServiceImpl implements RequirementOfferHisto
 				}else{
 					requirementOfferHistory.setIsNotifyToVendorRequired(Constants.NO);
 				}
-				/*if(offers.getSubmissionId().getRequirement().getClientId() != null){
+				if(offers.getSubmissionId().getRequirement().getClientId() != null){
 					if(offers.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
 						requirementOfferHistory.setClientName(offers.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
 					}
 					if(offers.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
 						requirementOfferHistory.setClientName(offers.getSubmissionId().getRequirement().getClientId().getLocationId().getOrg().getOrgName());
 					}
-				}else{*/
+				}else{
 					RequirementSubmission requirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(offers.getSubmissionId().getId(),orgLocationsId);
 				    if(requirementSubmission != null){
 				    	requirementOfferHistory.setClientName(requirementSubmission.getOrgLocations().getOrg().getOrgName());
@@ -77,7 +77,7 @@ public class RequirementOfferHistoryServiceImpl implements RequirementOfferHisto
 						     requirementOfferHistory.setClientName(parentRequirementSubmission.getOrgLocations().getOrg().getOrgName());
 				    	 }
 				    }
-				/*}*/
+				}
 				
 			}
 		}
