@@ -427,7 +427,7 @@ function sideBar(requirementId){
               			
               			result = result+'    <div class="profile_details requirement_details clearfix">';
               			if(json.jobId != '' && json.jobId != null){
-				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'<i></i></h4></a>';
+				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
               			}
               			else{
     				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
