@@ -1366,7 +1366,6 @@ function setTemplateValues(){
 					if(json.education != null && json.education != '' && json.education != 'undefined'){
 			            var educations = [];
 			            educations = json.education.split(",");
-			            alert("educations"+educations);
 			            $("#education").val(educations);
 			            $('#education').trigger("chosen:updated");
 					}

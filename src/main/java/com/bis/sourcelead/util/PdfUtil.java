@@ -121,7 +121,7 @@ public class PdfUtil {
 	   				table.addCell("--");
 	   			 }
 	   			 if(emp.getHireDate() !=null){
-	   				dateOfJoin = emp.getHireDateStr();
+	   				  dateOfJoin = Constants.DF_YMD.format(emp.getHireDate());
 	   			 }else{
 	   				dateOfJoin = "--";
 	   			 }
@@ -159,7 +159,7 @@ public class PdfUtil {
 	   		   }else{
 	   			table.addCell("--");
 	   		   }
-	   		   if(userRole.getUser().getUserType() != null){
+	   		   if(userRole.getUserType() != null){
 	   			table.addCell(userRole.getUserType());
 	   		   }else{
 	   			table.addCell("--");
@@ -169,10 +169,15 @@ public class PdfUtil {
 	   		   }else{
 	   			table.addCell("--");
 	   		   }
-	   		   if(userRole.getUser().getStatus() !=null){
-	   			table.addCell(userRole.getUserState().toString());
-	   		   }else{
-	   			table.addCell("--");
+	   		   
+	   		   if(userRole.getUser().getIsMailSent() != null && !"".equalsIgnoreCase(userRole.getUser().getIsMailSent().toString()) && "N".equalsIgnoreCase(userRole.getUser().getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRole.getUserState().toString())){
+	   			table.addCell("Invite");
+	   		   }else if ( (userRole.getUser().getIsMailSent() != null && !"".equalsIgnoreCase(userRole.getUser().getIsMailSent().toString()) && "Y".equalsIgnoreCase(userRole.getUser().getIsMailSent().toString())) &&  (userRole.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRole.getUserState().toString()))){
+	   			table.addCell("Resend");
+	   		   }else if(userRole.getUserState() !=null && "ACTIVE".equalsIgnoreCase(userRole.getUserState().toString())){
+	   			table.addCell("Active");
+	   		   }else if(userRole.getUserState() !=null && "INACTIVE".equalsIgnoreCase(userRole.getUserState().toString())){
+	   			table.addCell("In-active");
 	   		   }
 	        }
 	        document.addTitle("Users Table");

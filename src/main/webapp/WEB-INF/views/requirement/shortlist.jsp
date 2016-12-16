@@ -52,7 +52,7 @@ function candidateShortList(requirementId){
 	    			    result = result + '<tr>';
 	    			    result = result + '<td><input type="checkbox"  class="submissionsChecks" value='+report.id+' name="submissionList[]" ></td>';
 	    			    
-			            result = result + '<td><div><span>'+report.candidateName+'</span></div></td>';
+			            result = result + '<td><div><span>'+report.candidateName+'llllllllll</span></div></td>';
 			           
 			           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
 			        	   result = result + '<td><div><span>'+report.candidateEmail+'</span></div></td>';

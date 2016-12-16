@@ -59,6 +59,7 @@ import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionXlsService;
@@ -116,6 +117,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
+	@Autowired
+	RequirementRateSubmissionNegotiationService requirementRateSubmissionNegotiationService;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -392,9 +396,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 
 	@Override
 	public void storeClientSubmission(Long requirementId, User user, OrgLocations loginOrgLocation,
-			String submissionIds,Org org) throws Exception {
+			String submissionIds, String selectedShortlistsRate, Org org) throws Exception {
 		
 		 String[] submissionId = submissionIds.split(",");
+		 String[] clientShortlistsRate = selectedShortlistsRate.split(",");
     	 Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
 		 requirement.setId(requirementId);
 		 
@@ -502,6 +507,25 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 clientSubmission.setCreatedDate(new Date());
     		 clientSubmission.setCreatedBy(user.getUserCode());
     		 clientSubmission = requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
+    		 
+    		 String clientRate = clientShortlistsRate[i];
+    		 RequirementRateSubmissionNegotiation rateNegotiation = new RequirementRateSubmissionNegotiation();
+    		 rateNegotiation.setRequirementsubmissionId(clientSubmission);
+			 rateNegotiation.setExpectedRate(clientRate);
+			 rateNegotiation.setExpectedRateType("Yearly");
+ 			 rateNegotiation.setRateInitiatorType(SubmissionRateStatus.VENDOR);
+ 			 rateNegotiation.setInitiatorOrgLocationId(loginOrgLocation);
+ 			 rateNegotiation.setRateReason("");
+ 			 rateNegotiation.setRateStage(SubmissionRateStatus.NEWRATE);
+ 			 rateNegotiation.setStatus(Constants.RECORD_ACTIVE);
+ 			 rateNegotiation.setCreatedDate(commonUtil.currentDate());
+ 			 rateNegotiation.setCreatedBy(user.getUserCode());
+ 			 rateNegotiation.setUpdatedDate(commonUtil.currentDate());
+ 			 rateNegotiation.setUpdatedBy(user.getUserCode());
+    		 requirementRateSubmissionNegotiationService.saveRateNegotiation(rateNegotiation);
+    		 
+    		 
+    		 
     		 
     		 RequirementSubmissionTemplateFields templateFields = requirementSubmissionTemplateFieldsDao.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submission.getId());
     		 
@@ -1205,6 +1229,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			OrgLocations loginOrgLocation, String submissionType) throws Exception {
 		return requirementSubmissionDao.getSubmissionsByRequirementIdandStatus(requirementId,user,loginOrgLocation,submissionType);
 	}
+	
+	@Override
+	public RequirementSubmission getClientSubmissionsBySubmissionIdAndOrgLocationId(Long submissionId, Long orgLocationId){
+		return requirementSubmissionDao.getClientSubmissionsBySubmissionIdAndOrgLocationId(submissionId, orgLocationId);
+	}
+	
 
 	@Override
 	public void userNegotiateEmail(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations,
@@ -1280,4 +1310,5 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());		
 	}
+
 }
