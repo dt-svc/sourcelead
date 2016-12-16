@@ -5,6 +5,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/chosen.jquery.min.js"></script> 
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 
 <script src="resources/js/formvalidator.js"></script>
@@ -384,10 +386,23 @@ function candidateSideBar(candidateId){
 			             
               		       }else{
               		                                                	  
-              		     result = result+'<li>Experience - ----</li>';  
+              		     result = result+'<li>Experience ----</li>';  
               		     
               		       }
 			             result = result+'</ul>';
+			             
+			             result = result+'<ul class="list-unstyled">';
+			              if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
+			                    	 
+			             result = result+'<li>Notice Period -'+json.noticePeriod+' </li>';
+			             
+             		       }else{
+             		                                                	  
+             		     result = result+'<li>Notice Period ----</li>';  
+             		     
+             		       }
+			             result = result+'</ul>';
+			             
 			             result = result+'<div class="clearfix">';
 			             result = result+'<div class="professinal-details">';
 			             
@@ -872,7 +887,224 @@ function cancel(candidateId){
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
-      <div class="timesheet_head hdr-styles">
+    
+     <div class="pull-left cand-advsrch">
+			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop()">
+			  Advanced Search&nbsp;&nbsp;
+			  <i class="fa fa-search"></i>
+			  </a>
+			  <div class="cand-advsrch-popup">
+				  <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
+				  <div class="row">
+					  <div class="col-md-4">
+						  <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
+						  <div class="clearfix">
+						  	<input type="text" class="form-control input-sm" placeholder="Any of Keyword">
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
+						  <div class="clearfix">
+						  	<input type="text" class="form-control input-sm" placeholder="All Keywords">
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
+						  <div class="clearfix">
+						  	<input type="text" class="form-control input-sm" placeholder="Exclude Keyword">
+						  </div>
+					  </div>
+				  </div>
+				  <div class="row">
+				  <div class="col-md-12">
+					  <h4>Details:</h4>
+				  </div>
+				  <div class="clearfix">
+					  <div class="col-md-4">
+						  <label>Designation</label>
+						  <div class="clearfix">
+						  	<input type="text" class="form-control input-sm" placeholder="Designation">
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>Skills</label>
+						  <div class="clearfix">
+							  <select class="chosen-select"  multiple data-placeholder="Select Skills">
+								  <option>Skill-1</option>
+								  <option>Skill-2</option>
+								  <option>Skill-2</option>
+							  </select>
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>Rate</label>
+						  <div class="clearfix">
+							  <input type="text" class="form-control input-sm" placeholder="Rate">
+						  </div>
+					  </div>
+					  </div>
+					  <div class="clearfix">
+					  <div class="col-md-4">
+						  <label>Experience</label>
+						  <div class="clearfix row">
+						  <div class="col-md-6">
+							  <select class="chosen-select" data-placeholder="Years">
+								  <option selected>Years</option>
+								   <option>1 years</option>
+								  <option>2 years</option>
+								  <option>3 years</option>
+								  <option>4 years</option>
+							  </select>
+						  </div>
+						  <div class="col-md-6">
+							  <select class="chosen-select" data-placeholder="Months">
+								  <option selected>Months</option>
+								  <option>15 Days</option>
+								  <option>one month</option>
+								  <option>Two month</option>
+							  </select>
+						  </div>
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>Notice Period</label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="Notice Period" multiple>
+								  <option>one week</option>
+								  <option>15 Days</option>
+								  <option>one month</option>
+								  <option>Two month</option>
+							  </select>
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>Updated On</label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="Updated On">
+								  <option>All</option>
+								  <option>1 Day Ago</option>
+								  <option>3 Days Ago</option>
+								  <option>1 Week Ago</option>
+								  <option>2 Weeks Ago</option>
+								  <option>1 Month Ago</option>
+								  <option>3 Months Ago</option>
+							  </select>
+						  </div>
+					  </div>
+					  </div>
+					  <div class="clearfix">
+					   <div class="col-md-4">
+						  <label>Country</label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="Country">
+								  <option>India</option>
+								  <option>USA</option>
+								  <option>Germany</option>
+							  </select>
+						  </div>
+					  </div>
+					  
+					  <div class="col-md-4">
+						  <label>State</label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="State">
+								  <option>Andhra Pradesh</option>
+								  <option>Telangana</option>
+								  <option>Punjab</option>
+							  </select>
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>City</label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="City">
+								  <option>India</option>
+								  <option>USA</option>
+								  <option>Germany</option>
+							  </select>
+						  </div>
+					  </div>
+					  </div>
+					  <div class="clearfix">
+				  	<div class="col-md-4">
+						  <label>Education</label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="Education" multiple>
+								  <option>MCA</option>
+								  <option>MBA</option>
+								  <option>B.Sc.(Computers)</option>
+							  </select>
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>Exclude Education<i class="fa fa-info-circle" title="Exclude Education"></i></label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="Exclude Education" multiple>
+								  <option>MCA</option>
+								  <option>MBA</option>
+								  <option>B.Sc.(Computers)</option>
+							  </select>
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>Certification<i class="fa fa-info-circle" title="Certification"></i></label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="Certification" multiple>
+								  <option>MCA</option>
+								  <option>MBA</option>
+								  <option>B.Sc.(Computers)</option>
+							  </select>
+						  </div>
+					  </div>
+					  </div>
+					  <div class="clearfix">
+					  <div class="col-md-4">
+						  <label>Employers<i class="fa fa-info-circle" title="Employers"></i></label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="Employers" multiple>
+								  <option>TCS</option>
+								  <option>IBM</option>
+								  <option>CTS</option>
+							  </select>
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>Exclude Employers<i class="fa fa-info-circle" title="Employers"></i></label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="Employers">
+								  <option>TCS</option>
+								  <option>IBM</option>
+								  <option>CTS</option>
+							  </select>
+						  </div>
+					  </div>
+					  
+					   <div class="col-md-4">
+						  <label>Type</label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="Employers">
+								  <option>Candiate</option>
+								  <option>Consultant</option>
+							  </select>
+						  </div>
+					  </div>
+					  </div>
+				  </div>
+				  <div class="row form-footer">
+					  <div class="pull-right mr">
+						  <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a>
+						  <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a>
+					  </div>
+				  </div>
+			  </div>
+  		  </div>
+    
+    
+    
+    
+    
+    
+      <div class="timesheet_head  customtimesheet-head hdr-styles pull-right">
         <ul>
           <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES')">
           <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="candidate-export"></i>
@@ -1332,5 +1564,34 @@ function savedCommentAndCount(candidateId){
       });
 }
 </script>
-    
+
+    <script>
+	// Close Advanced Search
+		function closePop(){
+			$("div.cand-advsrch-popup").hide();
+		}
+		function openPop(){
+			$("div.cand-advsrch-popup").toggle();
+		}
+	</script>
+	
+	
+<script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	       
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+			var $this = $(this);
+			$this.next().css({'width': '100%'});
+			})
+				
+</script> 
 <jsp:include page="../masterFooter.jsp" />

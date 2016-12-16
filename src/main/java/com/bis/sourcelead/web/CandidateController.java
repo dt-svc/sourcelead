@@ -21,7 +21,6 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -181,6 +180,15 @@ public class CandidateController {
 		sessionData.setNav(Constants.Candidates);
 		
 		request.getSession().setAttribute("sessionData",sessionData);
+		
+		/* educationsList,skillsList are used for autocompletes for education and skills in add consultant creation */
+		
+		 List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+		 model.addObject("educationsList", educationsList);
+		
+		 List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+		
+		 model.addObject("skillsList", skillsList);
 		
 		return model;
 		
