@@ -314,6 +314,13 @@ public class Constants {
     
     public static String CLIENT = "Client";
     
+    public static String ELK_CANDIDATE_INDEX = "candidates";
+    		
+    public static String ELK_CANDIDATE_TYPE = "candidate";
+    
+    public static String ELK_CANDIDATE_ID_PREFIX = "CND";
+    
+    
     public static String[] PROJECT_ASSIGNED_EMPLOYEES = {"Employee","Email id","Project Start Date","Project End Date","Approved Hours","Rejected Hours","Wiating for Approval","Saved Hours"};	
 
     public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
