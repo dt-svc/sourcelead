@@ -11,4 +11,5 @@ public interface InterviewFeedbackTemplateService {
 	
 	InterviewFeedbackTemplate getInterviewFeedbackTemplateByTemplateIdAndRequirementInterviewId(Long templateId,Long requirementInterviewId) throws Exception;
 	
+	
 }
