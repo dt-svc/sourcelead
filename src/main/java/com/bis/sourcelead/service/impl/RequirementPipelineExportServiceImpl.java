@@ -56,7 +56,15 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + dateFormat.format(new Date()));
 			Row writeRow = null;
-			if (submissionType.equals("SHORTLIST")) {
+			if (submissionType.equals("REQUEST_SENT")) {
+				createExcelsheet = getExcelSheetWithHeaderRequestSent(createExcelsheet, writeRow, createExcelworkbook,requirementId,requirementSubmissionCounts);
+				int column = 0;
+				for (RequirementSubmission requirementsub : requirementStatusList) {
+					writeRow = createExcelsheet.createRow(column + 8);
+					createExcelsheet = createXlsSheet(createExcelsheet, writeRow, requirementsub,submissionType);
+					column++;
+				}
+			}else if (submissionType.equals("SHORTLIST")) {
 				createExcelsheet = getExcelSheetWithHeaderShortListed(createExcelsheet, writeRow, createExcelworkbook,requirementId,requirementSubmissionCounts);
 				int column = 0;
 				for (RequirementSubmission requirementsub : requirementStatusList) {
@@ -99,7 +107,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 				int column = 0;
 				for (RequirementSubmission requirementsub : requirementStatusList) {
 					writeRow = createExcelsheet.createRow(column + 8);
-					createExcelsheet = createXlsSheet(createExcelsheet, writeRow, requirementsub);
+					createExcelsheet = createXlsSheet(createExcelsheet, writeRow, requirementsub,submissionType);
 					column++;
 				}
 			}
@@ -115,6 +123,18 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			file = pdfUtilPipelineHelper.getRequirementPipelenePdf(requirementStatusList, orgName, requirementId,submissionType,requirementSubmissionCounts);
 		}
 		return file;
+	}
+
+	private Sheet getExcelSheetWithHeaderRequestSent(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,
+			String requirementId, RequirementSubmissionCounts requirementSubmissionCounts) throws NumberFormatException, Exception {
+
+		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+        prepareHeaders(writeRow, createExcelsheet, style, requirement, Constants.REQUEST_SENT_COUNT, requirementSubmissionCounts.getNumOfRequestSent());
+		String headers[] = Constants.REQUIREMENT_PIPELINE_REQUEST_SENT_HEADERS;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 7);
+
+		return createExcelsheet;
 	}
 
 	/**
@@ -444,10 +464,11 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 	 * @param createExcelsheet
 	 * @param writeRow
 	 * @param requirementsub
+	 * @param submissionType 
 	 * @return
 	 * @description: for applied candidates(All candidates)
 	 */
-	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, RequirementSubmission requirementsub) {
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, RequirementSubmission requirementsub, String submissionType) {
 		if (requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())) {
 			writeRow.createCell(0).setCellValue(requirementsub.getCandidateName());
 		}
@@ -480,23 +501,19 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 				&& !"".equalsIgnoreCase(requirementsub.getSubmissionStatus().toString())) {
 			writeRow.createCell(9).setCellValue(requirementsub.getSubmissionStatus().toString());
 		}
-		String submittedon = "--";
-		/*
-		 * if(requirementsub.getSubmittedOn() != null &&
-		 * !"".equalsIgnoreCase(requirementsub.getSubmittedOn())){
-		 */
-		if (submittedon != null) {
-			writeRow.createCell(10).setCellValue(submittedon);
+		
+		/*String submittedon = "--";*/
+		/*String submittedBy = "--";*/
+		if(!submissionType.equals("REQUEST_SENT")){
+		 if(requirementsub.getSubmittedOn() != null && !"".equalsIgnoreCase(requirementsub.getSubmittedOn())){
+			writeRow.createCell(10).setCellValue(requirementsub.getSubmittedOn());
 		}
-		String submittedBy = "--";
-		/*
-		 * if(requirementsub.getSubmittedBy() != null &&
-		 * !"".equalsIgnoreCase(requirementsub.getSubmittedBy())){
-		 */
-		if (submittedBy != null) {
-			writeRow.createCell(11).setCellValue(submittedBy);
+		 if(requirementsub.getSubmittedBy() != null && !"".equalsIgnoreCase(requirementsub.getSubmittedBy())){
+		writeRow.createCell(11).setCellValue(requirementsub.getSubmittedBy());
+		}
 		}
 		return createExcelsheet;
+		
 	}
 
 	/**

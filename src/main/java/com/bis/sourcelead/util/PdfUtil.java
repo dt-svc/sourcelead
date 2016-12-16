@@ -627,7 +627,11 @@ public class PdfUtil {
 		}else{
 			contactsArray[4] = "--";
 		}
-		contactsArray[5] = "--";
+		if (orgSpoc.getOwnerUser().getUserType() != null && !"".equalsIgnoreCase(orgSpoc.getOwnerUser().getUserType())) {
+			contactsArray[5] = orgSpoc.getOwnerUser().getUserType();
+		}else{
+			contactsArray[5] = "--";
+		}
 		if (orgSpoc.getSpocStatus() != null && !"".equalsIgnoreCase(orgSpoc.getSpocStatus())) {
 			contactsArray[6] = orgSpoc.getSpocStatus();
 		}else{

@@ -792,6 +792,14 @@ public class RequirementListRestController {
 			return resultJson;
 		}
 		
+		/**
+		 * @author update:shivayogi
+		 * 
+		 * @param requirementId
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
 		@RequestMapping(value = "/getSubmissionsCountBySubmissionStatus" , method = RequestMethod.POST)
 		 @ResponseBody  String getSubmissionsCountBySubmissionStatus(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
 				String resultJson = null;
@@ -800,6 +808,7 @@ public class RequirementListRestController {
 				int numOfSubmitToClient = 0;
 				int numOfOffers = 0;
 				int numOfRejected = 0;
+				int numofrequestsent = 0;
 				
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -828,6 +837,8 @@ public class RequirementListRestController {
 							numOfOffers++;
 						}else if("REJECTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
 							numOfRejected++;
+						}else if("REQUEST_SENT".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+							numofrequestsent++;
 						}
 						
 						
@@ -839,6 +850,8 @@ public class RequirementListRestController {
 						rmentSubmission.setNumOfSubmitToClient(numOfSubmitToClient);
 						rmentSubmission.setNumOfOffers(numOfOffers);
 						rmentSubmission.setNumOfRejected(numOfRejected);
+						rmentSubmission.setNumofrequestsent(numofrequestsent);
+						
 						}
 					resultJson = commonUtil.toJSON(requirementSubmissions);
 				}
@@ -1021,6 +1034,8 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 	int numOfSubmitToClient = 0;
 	int numOfOffers = 0;
 	int numOfRejected = 0;
+	int numOfRequestSent = 0;
+	
 	RequirementSubmissionCounts requirementSubmissionCounts = new RequirementSubmissionCounts();
 	if(requirementId !=null){
 		List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
@@ -1040,8 +1055,9 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 				numOfOffers++;
 			}else if("REJECTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
 				numOfRejected++;
+			}else if("REQUEST_SENT".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+				numOfRequestSent++;
 			}
-
 		}
 		requirementSubmissionCounts.setNumOfShortList(numOfShortList);
 		requirementSubmissionCounts.setNumOfInterview(numOfInterview);
@@ -1049,6 +1065,7 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 		requirementSubmissionCounts.setNumOfOffers(numOfOffers);
 		requirementSubmissionCounts.setNumOfRejected(numOfRejected);
 		requirementSubmissionCounts.setSubmittedCount(requirementSubmissions.size());
+		requirementSubmissionCounts.setNumOfRequestSent(numOfRequestSent);
 		
 
 	}

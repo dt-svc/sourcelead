@@ -1180,10 +1180,14 @@ function requirementPipeline(requirementId,submissionType){
 				           result = result + '<th>Ph. No</th>';
 				           }
 				           result = result + '<th>Resume</th>';
-				           if(submissionType == 'all' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
+				           if(submissionType == 'all' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'REQUEST_SENT'){
 				        	   result = result + '<th>Applied on</th>';
 					           result = result + '<th>Rate</th>';
+					           
+					           if(submissionType != 'REQUEST_SENT'){
 					           result = result + '<th>Sub. Rate</th>';
+					           }
+					           
 					           result = result + '<th>Source</th>';
 				            }
 						  
@@ -1200,7 +1204,7 @@ function requirementPipeline(requirementId,submissionType){
 							   result = result + '<th>Attachment</th>'; 
 					           }
 
-				           if(submissionType == 'all' || submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
+				           if(submissionType == 'all' || submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'|| submissionType == 'REQUEST_SENT'){
 				        	   if(submissionType != 'INTERVIEW' && submissionType != 'REJECTED'){
 				        		   result = result + '<th>Score</th>';
 						           result = result + '<th>Exp</th>';
@@ -1251,7 +1255,7 @@ function requirementPipeline(requirementId,submissionType){
 							    	   result = result + '         <td><div>--</div></td>';
 						    	     }
 						           
-						           if(submissionType == 'all' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
+						           if(submissionType == 'all' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'|| submissionType == 'REQUEST_SENT'){
 						        	   
 						        	   if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
 							        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
@@ -1259,14 +1263,13 @@ function requirementPipeline(requirementId,submissionType){
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
 							    	     }
-							           
 							           if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
 							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop" id="ratepop"></div></td>';
 								           }
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
 							    	     }
-							           
+							           if(submissionType != 'REQUEST_SENT'){ 
 							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
@@ -1279,6 +1282,7 @@ function requirementPipeline(requirementId,submissionType){
 							        	   }else{
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
+							           }
 							           }
 							           
 							           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
@@ -1373,7 +1377,7 @@ function requirementPipeline(requirementId,submissionType){
 							    	     } 
 						           }
 
-						           if(submissionType == 'all' || submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'){
+						           if(submissionType == 'all' || submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'SUBMIT_TO_CLIENT'|| submissionType == 'REQUEST_SENT'){
 						        	   
 						        	   if(submissionType != 'INTERVIEW' && submissionType != 'REJECTED'){
 						        		   if(report.score != null && report.score != '' && report.score != 'undefined'){
@@ -1552,6 +1556,7 @@ function requirementSubmissionCount(requirementId){
         	 $("#interviewCount").html(report1.numOfInterview);
         	 $("#offersCount").html(report1.numOfOffers);
         	 $("#rejectedCount").html(report1.numOfRejected);
+        	 $("#requestSent").html(report1.numofrequestsent);
          },
 	  });
 }
@@ -2012,6 +2017,7 @@ function hilightTab(){
 function requirementStatusBar(requirementId){
 	    var result = "";
 	    var all = 'all';
+	   var requestSent ='REQUEST_SENT';
        var shortList = 'SHORTLIST';
   	   var interview = 'INTERVIEW';
   	   var rejected = 'REJECTED';
@@ -2022,6 +2028,11 @@ function requirementStatusBar(requirementId){
 		 result = result + '     <li id="applicantli" class="pipeline-active tabActivation" onclick="filterReq('+requirementId+',\''+all+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Applicants">';
 		 result = result + '       <label><strong>Applicants</strong></label>';
 		 result = result + '       </a> <span class="label label-default" id="applicantsCount">0</span> </li>';
+		 
+		 result = result + '   <li id="requestSentli" class="tabActivation" onclick="filterReq('+requirementId+',\''+requestSent+'\');tabEnable(this);"> <a href="javascript:void(0)" title="RequestSent">';
+         result = result + '     <label><strong>RequestSent</strong></label>';
+         result = result + '      </a><span class="label label-warning" id="requestSent">0</span></li>';
+		 
 		 result = result + '      <li id="shortListli" class="tabActivation" onclick="filterReq('+requirementId+',\''+shortList+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Shortlisted">';
 		 result = result + '       <label><strong>Shortlisted</strong></label>';
 		 result = result + '     </a> <span class="label label-warning" id="shortlistCount">0</span></li>';
@@ -2033,12 +2044,13 @@ function requirementStatusBar(requirementId){
 		 result = result + '      </a><span class="label label-primary" id="interviewCount">0</span></li>';
 		 result = result + '     <li id="offerMadeli" class="tabActivation" onclick="filterReq('+requirementId+',\''+offerMade+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Offers">';
 		 result = result + '      <label><strong>Offers</strong></label>';
-       result = result + '      </a><span class="label label-success" id="offersCount">0</span> </li>';
-       result = result + '   <li id="rejectedli" class="tabActivation" onclick="filterReq('+requirementId+',\''+rejected+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Rejected">';
-       result = result + '     <label><strong>Rejected</strong></label>';
-       result = result + '      </a><span class="label label-warning" id="rejectedCount">0</span></li>';
-       result = result + '   </ul>';
-       result = result + ' </div>';
+       	 result = result + '      </a><span class="label label-success" id="offersCount">0</span> </li>';
+         result = result + '   <li id="rejectedli" class="tabActivation" onclick="filterReq('+requirementId+',\''+rejected+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Rejected">';
+         result = result + '     <label><strong>Rejected</strong></label>';
+         result = result + '      </a><span class="label label-warning" id="rejectedCount">0</span></li>';
+         
+         result = result + '   </ul>';
+         result = result + ' </div>';
        $("#status-div").empty();
       $("#status-div").prepend(result);
       $("#tab-2").prepend(status-div);

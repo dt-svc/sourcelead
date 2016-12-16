@@ -181,7 +181,9 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		if (orgSpoc.getOwnerName() != null && !"".equalsIgnoreCase(orgSpoc.getOwnerName())) {
 			writeRow.createCell(4).setCellValue(orgSpoc.getOwnerName());
 		}
-		writeRow.createCell(5).setCellValue("--");
+		if (orgSpoc.getOwnerUser().getUserType() != null && !"".equalsIgnoreCase(orgSpoc.getOwnerUser().getUserType())) {
+			writeRow.createCell(5).setCellValue(orgSpoc.getOwnerUser().getUserType());
+		}
 		if (orgSpoc.getSpocStatus() != null && !"".equalsIgnoreCase(orgSpoc.getSpocStatus())) {
 			writeRow.createCell(6).setCellValue(orgSpoc.getSpocStatus());
 		}

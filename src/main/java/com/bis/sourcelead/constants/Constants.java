@@ -286,6 +286,8 @@ public class Constants {
 	public static String[] REQUIREMENT_EXCEL_HEADERS = {"Requirement id","Requirement Title","Experience","Rate","Location","Skills","Manager","Priority","Application Form Name","Client Name","Client Contact Name","Client Contact Email"};
     
     public static String[] REQUIREMENT_PIPELINE_EXCEL_HEADERS={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status","Submitted On","Submitted By"};
+    
+    public static String[] REQUIREMENT_PIPELINE_REQUEST_SENT_HEADERS={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status"};
 	
     public static String[] REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS ={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status","ShortListed By","ShortListed On"};
     
@@ -325,6 +327,8 @@ public class Constants {
     public static String OFFER_COUNT= "Offer Applicants:";
     public static String REJECTED_COUNT= "Rejected Applicants :";
     public static String SUBMITTED_APPLICANTS_COUNT= "Submitted Applicants :";
+    public static String REQUEST_SENT_COUNT= "Request Sent Applicants :";
+
     
     
     
