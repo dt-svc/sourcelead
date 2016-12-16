@@ -64,7 +64,7 @@ function interviews(dateRange){
 	            				for (var i=0; i<json.length; i++){
 	            		       		var report = json[i];
 	            		       		var clientName = "---";
-	            		       		if(report.clientName != null && report.clientName != "" && report.clientName != 'undefined'){
+	            		       		if(report.clientName != null && report.clientName != "" && report.clientName != 'undefined' && report.interviewSourceType != 'INTERVIEW'){
 	            		       			clientName = report.clientName;
 	            		       		}
 	            						resultToday = resultToday+'	  <tr>';
