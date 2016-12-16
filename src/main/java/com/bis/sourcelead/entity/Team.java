@@ -27,7 +27,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "TEAM", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "team")
-
 public class Team implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

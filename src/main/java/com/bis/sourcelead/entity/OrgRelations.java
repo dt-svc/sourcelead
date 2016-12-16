@@ -17,12 +17,9 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 @Entity
 @Table(name="ORG_RELATIONS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orgRelation")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class OrgRelations implements Serializable{
 
 	private static final long serialVersionUID = 1L;

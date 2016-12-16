@@ -43,7 +43,7 @@ public class RequirementApproverHierarchy implements Serializable{
     @JoinColumn(name="REQUIREMENT_ID", nullable=false )        
     private Requirement requirementId;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name="APPROVER_USER_ID", nullable=false )        
     private User approverUserId;
 	
