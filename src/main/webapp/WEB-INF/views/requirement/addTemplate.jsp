@@ -24,7 +24,15 @@
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script> 
+
 <!-- end files for autocomplete with tagit -->
+
+<style type="text/css">
+.pras.req-title p{
+bottom:-14px;
+}
+</style>
+
 
 <!-- Content Area -->
 <section class="content-wraper">
@@ -116,7 +124,7 @@
 										<input type="text" class="form-control" placeholder="minExp"
 											id="minExp" name="minExp" value="${requirement.minExp}"
 											field-name="MinExp"
-											data-validation="validate_Space validate_length length1-3 validate_float"
+											data-validation="validate_Space validate_length length1-5 validate_float"
 											data-validation-optional="true" onblur="minMaxExperience();"
 											value="">
 									</div>
@@ -124,7 +132,7 @@
 										<input type="text" class="form-control" id="maxExp"
 											name="maxExp" placeholder="maxExp"
 											value="${requirement.maxExp}" field-name="MaxExp"
-											data-validation="validate_Space validate_length length1-3 validate_float"
+											data-validation="validate_Space validate_length length1-5 validate_float"
 											data-validation-optional="true" onblur="minMaxExperience();"
 											value="">
 									</div>
