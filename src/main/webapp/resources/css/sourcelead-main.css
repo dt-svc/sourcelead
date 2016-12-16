@@ -533,14 +533,14 @@ margin-bottom: 5px; line-height: normal !important; padding-left: 10px;
 	overflow: hidden;
 }
 /* hide time sheet */
-.timesheet-menu {
+.timesheet-menu, .backoffice-menu {
 	background-color: #23496d;
 	border-left: 2px solid #3081cb;
 	float: left;
 	margin-left: 55px;
 	position: absolute;
 	z-index: 999;
-	top: 410px;
+	top: 260px;
 	border-radius: 0 5px 5px 0;
 	-webkit-transition: all 0.5s ease-in-out 0s;
 	-ms-transition: all 0.5s ease-in-out 0s;
@@ -551,44 +551,49 @@ margin-bottom: 5px; line-height: normal !important; padding-left: 10px;
 	-webkit-transform: translateX(-2000px);
 	-moz-transform: translateX(-2000px);
 }
-.timesheet-menu.timesheet-menu-active {
+.backoffice-menu {
+	top:63%;
+	min-resolution: res;-height: 80px;
+	max-height: 80px;
+}
+.timesheet-menu.timesheet-menu-active, .backoffice-menu.backoffice-menu-active {
 	transform: translateX(0);
 	-ms-transform: translateX(0);
 	-webkit-transform: translateX(0);
 	-moz-transform: translateX(0);
 }
-.timesheet-menu li {
+.timesheet-menu li, .backoffice-menu li {
 	border-bottom: 1px solid #325475;
 	line-height: 39px;
 	position: relative;
 	transition: all 0.5s ease-in-out 0s;
 	padding: 0 18px;
 }
-ul.timesheet-menu li:last-child {
+ul.timesheet-menu li:last-child, .backoffice-menu li:last-child {
 	border-bottom: 0;
 }
-ul.timesheet-menu li a {
+ul.timesheet-menu li a, .backoffice-menu li a {
 	color: #fff;
 }
-ul.timesheet-menu li a::before {
+ul.timesheet-menu li a::before, .backoffice-menu li a::before {
 	color: #f0ad4e;
-	content: "ïˆ­";
+	content: "";
 	font-family: fontawesome;
 	padding-right: 5px;
 }
-ul.timesheet-menu li a:hover {
+ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 	color: #f0ad4e;
 }
-.tree-view.tree-view-active {
+.tree-view.tree-view-active, .bakofficetree.bakofficetree-active {
 	display: none !important;
 }
-.tree-view {
+.tree-view, .bakofficetree {
 	display: block;
 }
-.tree-view-new {
+.tree-view-new, .bakofficetree-view {
 	display: none !important;
 }
-.tree-view-new.tree-view-new-active {
+.tree-view-new.tree-view-new-active, .bakofficetree-view.bakofficetree-view-active {
 	display: block !important;
 }
 /* hide time sheet */
@@ -2354,12 +2359,17 @@ ul.tree-checkbox::before {
 	padding: 0 20px;
 	width: 100%;
 }
-.showfeedback .close-btn2, .submissionDetails  .close-btn2 {
-	top:0;
-	right: 0;
-	z-index: 9999;
+.close-div {
+	background: #f60 none repeat scroll 0 0;
+	border: 1px solid #f60;
+	border-radius: 50%;
+	color: #fff;
+	cursor: pointer;
+	left: -15px;
+	padding: 6px 7px;
+	position: absolute;
+	top: -15px;
 }
-
 .collapse-div.show-div, .collapse-div-adduser.show-div, .resume-addcomment.show-div, .addOffer-Req.show-div, .addInterview-Re.show-div, .addApplicant-Re.show-div {
 	visibility: visible;
 	opacity: 1;
@@ -3777,9 +3787,9 @@ ul.addTasUl li .fa{
 .ratepop-parent {
 	position:relative;
 }
-.ratepop{
+/*.ratepop{
 	border-radius:3px;
-	/*box-shadow:1px 1px 2px #b6b6b6;*/
+	box-shadow:1px 1px 2px #b6b6b6;
 	padding:10px;
 	position:absolute;
 	top:35px;
@@ -3793,6 +3803,33 @@ ul.addTasUl li .fa{
 	-moz-box-shadow: 0 0 10px rgba(0,0,0,0.6);
 	-webkit-box-shadow: 0 0 10px rgba(0,0,0,0.6);
 	-o-box-shadow: 0 0 10px rgba(0,0,0,0.6);
+}*/
+.ratepop {
+border-radius:3px;
+/*box-shadow:1px 1px 2px #b6b6b6;*/
+padding:10px;
+position:absolute;
+bottom:-20px;
+background:#ccc;
+z-index:999;
+right:0px;
+text-wrap:none;
+font-style:normal;
+display:none;
+box-shadow: 0 0 10px rgba(0,0,0,0.6); -moz-box-shadow: 0 0 10px rgba(0,0,0,0.6); -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.6); -o-box-shadow: 0 0 10px rgba(0,0,0,0.6);
+width: 600px;
+}
+.ratepop .select-field select{
+width: 100% !important;
+padding: 0 10px;
+border: 1px solid #ddd !important;
+background: #fff;
+}
+.blank-data{
+background: #fff;
+padding: 15px 10px;
+text-align: center;
+margin-bottom: 10px;
 }
 .ratepop section.tbl-scroll{
 	margin-bottom:15px;
@@ -4821,7 +4858,7 @@ a.active-user:hover{
 .deactive-user{
 	color:#5cb85c;	
 }
-edit-status {
+.edit-status {
        position:absolute !important;
        top:25px;
        right: 5px;
@@ -4840,8 +4877,19 @@ edit-status {
 }
 .edit-status p{
        color:#333;
-       
        margin-bottom: 0;
+}
+.timesheet_week_comm.mail-attach table {
+width:100% !important;
+}
+.timesheet_week_comm.mail-attach table tr {
+float: left;
+width:40%;
+}
+.mail-tagit .tagit.ui-widget.ui-widget-content.ui-corner-all{
+border: none !important;
+border-bottom: 1px solid #ccc !important;
+border-radius: 0;
 }
 .tblwidth-150 {
        width: 150px !important;
@@ -4881,17 +4929,23 @@ edit-status {
 	width: 94.8%;
 	margin-left: 15px;
 }
+.remove_user_pop  p.jquery_form_error_message{
+	color:#ff4b4b;
+}
+
 .assignroles {
-    position:absolute;
-	width:100%;
-	height:350px;
-	overflow-y: auto;
-	background-color:#FFF;
-	box-sizing:border-box;
-	right:-55px;
-	top:0px;
-    padding:10px 10px; 
-	display:block; box-shadow:0px 0px 3px rgba(0,0,0,0.3);
+position:absolute;
+width:670px;
+min-height:50px;
+max-height:250px;
+overflow-y: auto;
+background-color:#FFF;
+box-sizing:border-box;
+right:0;
+top:0px;
+text-align:left;
+padding:10px 10px; 
+display:block; box-shadow:0px 0px 3px rgba(0,0,0,0.3);
 }
 .assignroles .user_badg p {
     padding: 0px 0px !important;
@@ -4925,16 +4979,24 @@ edit-status {
 	width: 100%;
 	text-align: left;
 }
+.multiselect-drop .btn .caret {
+    margin-left: 0;
+    right: 10px;
+    position: absolute;
+    top: 14px;
+}
 .saluation select {
 	border: none !important;
 	height: 30px;
+	width: 100%;
+	display: block;text-overflow:ellipsis; overflow: hidden; font-size: 13px;
 }
 .field-border{
 	border-bottom: 1px solid #ccc;
 }
 .createSign-pop{
 	position: absolute;
-	bottom: 40px;
+	bottom: 85px;
 	width: 550px;
 	background: #f5f5f5;
 	border:1px solid #f5f5f5;
@@ -4945,7 +5007,7 @@ edit-status {
 	z-index: 999;
 	display: none;
 	padding: 10px 15px;
-	left: 0;
+	right: 255px;
 	box-shadow: 0 0 10px #909090;
 }
 .createSign-pop .btn{
@@ -5006,32 +5068,139 @@ margin-right: 10px;
     }
     
  .shownofeedback{
-	 position: absolute;
-	 top:0;left: 0;
-	 width: 100%;
-	 z-index: 9999;
-	 padding:0 15px 15px;
-	 display: block;
+     position: absolute;
+     top:0;left: 0;
+     width: 100%;
+     z-index: 9999;
+     padding:0 15px 15px;
+     display: block;
  } 
      
 .closediv {
-	background: #f60 none repeat scroll 0 0;
-	border: 1px solid #f60;
-	border-radius: 25%;
-	color: #fff;
-	cursor: pointer;
-	right: 10px;
-	padding: 1px 3px;
-	position: absolute;
-	top: 10px;
+    background: #f60 none repeat scroll 0 0;
+    border: 1px solid #f60;
+    border-radius: 25%;
+    color: #fff;
+    cursor: pointer;
+    right: 10px;
+    padding: 1px 3px;
+    position: absolute;
+    top: 10px;
 }
 .demo table tr th{
-	height: 35px !important;
+    height: 35px !important;
 }
 .demo table tr td{
-	height: 25px !important;
-	text-align: center;
+    height: 25px !important;
+    text-align: center;
 }
+
+
+
+/*** custom checkboxes ***/
+.star-rating{
+   color: #909090;
+   cursor: pointer;
+}
+.star-rating input[type=checkbox] 
+{
+position: relative; opacity:0; z-index: 999;cursor: pointer;
+padding: 5px;
+   display: block;
+   top: 3px;
+   left: 10px;
+} 
+.star-rating label:before {
+	font-family: FontAwesome;
+	position:absolute;
+	top:2px;
+	left:8px;
+	font-size:16px;
+	display: inline-block; cursor: pointer;
+}
+.star-rating label:before { content: "\f005"; } /* unchecked icon */
+.activestar-rating {color: #FB8C00;} /* checked icon */
+/*** custom checkboxes ***/
+
+
+.hotlist-header .chosen-container-single .chosen-single {
+height: 30px !important;
+line-height: 30px !important;
+}
+.hotlist-header .chosen-container-single .chosen-single div b{
+position: relative;
+top: -3px;
+}
+.hotlist-header {
+min-height: 50px;
+}
+.hotlist-header .chosen-container .chosen-results li.active-result {
+width: 100%;
+}
+.hotlist-header ul{
+padding: 0px 245px 0px 0px !important;
+}
+.hotlist-header ul.chosen-results{
+padding: 0 !important;
+width: 96%;
+}
+.timesheet_week_comm.mail-attach table tr {
+float: left;
+width:40%;
+}
+.mail-tagit .tagit.ui-widget.ui-widget-content.ui-corner-all{
+border: none !important;
+border-bottom: 1px solid #ccc !important;
+border-radius: 0;
+}
+.mailerpopup {
+min-height: 100px;
+max-height: 400px;
+}
+
+/* worked for pav bug */
+.rate-negotiation {
+       padding:10px 50px;
+       box-sizing:border-box;
+}
+#ratehistoryDiv, #campaigncandidatesList {
+       border:1px solid #909090;
+       padding:0 1px 15px 0;
+       background: #fff;
+       clear: both;
+       display: inline-block;
+       width: 100%;
+}
+#ratehistoryDiv .paging_simple_numbers, #campaigncandidatesList .paging_simple_numbers{
+       float: right;
+}
+#ratehistoryDiv .dataTables_info, #campaigncandidatesList .dataTables_info {
+       float: left;
+       padding: 5px 15px !important;
+}
+
+.rate-negotiation table tr th{
+       height: 35px !important;
+}
+.rate-negotiation table tr td{
+       height: 30px !important;
+       border-bottom:1px solid #ccc !important;
+}
+.footer-publicpages {
+       background: #fff;
+       line-height: 40px;
+       height: 40px;
+       position: fixed;
+       bottom:0;
+       width:100%;
+}
+#campaigncandidatesList table tr td{
+padding:5px;
+line-height: 20px;
+text-align: left;
+}
+/* worked  */
+
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {
