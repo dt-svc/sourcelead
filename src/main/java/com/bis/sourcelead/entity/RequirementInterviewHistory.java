@@ -86,6 +86,18 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Transient
     private String isNotifyToVendorRequired;
+	
+	@Transient
+	private String candidateName;
+	
+	@Transient
+	private String requirementTitle;
+	
+	@Transient
+   	private String requirementId;
+	
+	@Transient
+	private String interviewStartDateTimeStr;
 
 	public Long getId() {
 		return id;
@@ -238,5 +250,37 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 	public void setIsNotifyToVendorRequired(String isNotifyToVendorRequired) {
 		this.isNotifyToVendorRequired = isNotifyToVendorRequired;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public String getRequirementTitle() {
+		return requirementTitle;
+	}
+
+	public void setRequirementTitle(String requirementTitle) {
+		this.requirementTitle = requirementTitle;
+	}
+
+	public String getRequirementId() {
+		return requirementId;
+	}
+
+	public void setRequirementId(String requirementId) {
+		this.requirementId = requirementId;
+	}
+
+	public String getInterviewStartDateTimeStr() {
+		return interviewStartDateTimeStr;
+	}
+
+	public void setInterviewStartDateTimeStr(String interviewStartDateTimeStr) {
+		this.interviewStartDateTimeStr = interviewStartDateTimeStr;
 	}
 }

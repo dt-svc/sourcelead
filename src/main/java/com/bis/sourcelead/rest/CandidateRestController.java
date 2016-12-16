@@ -124,7 +124,13 @@ public class CandidateRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Candidate candidate = candidateService.storeCandidate(jsonObj,orgLocation,user,multiFile);
+		
+		if(candidate.getCandidateType().equalsIgnoreCase("Candidate")){
 		SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", "Success !!"+candidate.getFirstName()+" "+candidate.getLastName()+" Candidate Added");
+		}
+		else{
+			SourceLeadSessionManager.setSessionAttribute(request, "consultantCreateMsg", "Success !!"+candidate.getFirstName()+" "+candidate.getLastName()+" Consultant Added");
+		}
 		return "success";
 	}
 	
