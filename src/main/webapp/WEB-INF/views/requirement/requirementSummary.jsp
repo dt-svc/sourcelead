@@ -2132,6 +2132,22 @@ function getRateListDiv(submissionId, candidateId){
           			     var result = "";
       			         result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
          			     result = result + '<section class="tbl-scroll">';
+         			     /*result = result + ' <ul class="nav nav-tabs">';
+	         			  result = result + ' <li class="active"><a data-toggle="tab" href="#tab1">Tab1</a></li>';
+	         			  result = result + ' <li><a data-toggle="tab" href="#tab2">Tab2</a></li>';
+	         			  result = result + ' </ul>';
+	         			  result = result + ' <div class="tab-content">';
+		         			  
+	         			 //Tab1 Data    
+	         			  result = result + ' <div id="tab1" class="tab-pane fade in active">';
+		         			 
+		         			  result = result + ' <h3>HOME</h3>';
+		         			  result = result + ' <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+		         			  
+		         			  result = result + ' </div>';
+			         			
+		         			  //Tab2 Data  
+		         			  result = result + ' <div id="tab2" class="tab-pane fade">';*/
 	                     result = result + '  <table>';
 	                     result = result + '    <thead>';
 	                     result = result + '      <tr>';
@@ -2172,6 +2188,8 @@ function getRateListDiv(submissionId, candidateId){
 			   				}
 	                     result = result + '    </tbody>';
 	                     result = result + '  </table>';
+	                     /*  result = result + ' </div>';
+    			  		 result = result + ' </div>'; */
 	                     result = result + '</section>';
 	                     if(isLastNegotiator=="false"){
 	                    	 
