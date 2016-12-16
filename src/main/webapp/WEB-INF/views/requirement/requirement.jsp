@@ -267,6 +267,7 @@ $(document).ready(function () {
 	             
 	             <div class="input-group-btn selp-custom-min">
 	             <select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
+	                 <option>Select</option>
 	                 <option  ${requirement.jobType  == 'c2c' ? 'selected' : ''}><a href="#">C2C</a></option>
 	                 <option  ${requirement.jobType  == 'W-2' ? 'selected' : ''}><a href="#">W-2</a></option>
 	                 <option  ${requirement.jobType  == 'C2H' ? 'selected' : ''}><a href="#">C2H</a></option>
@@ -1378,8 +1379,9 @@ function setTemplateValues(){
 			    	$("#description").val(json.description);
 			    	$("#rate").val(json.rate);
 			    	$("#currencyCode").val(json.currencyCode);
+			    	$('.selectpicker').selectpicker('refresh');
 			    	$("#rateType").val(json.rateType);
-			    	
+			    	$('.selectpicker').selectpicker('refresh');
 			    	 existedFile = json.fileName;
 			    	 $("#uploadFile").val(existedFile);
 			    	 $('#uploadFile').trigger("chosen:updated");
