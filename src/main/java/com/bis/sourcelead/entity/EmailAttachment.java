@@ -13,6 +13,8 @@ public class EmailAttachment implements Serializable{
 	private String content;
 	
 	private Boolean binary;
+	
+	private byte[] docFile;
 
 	public String getName() {
 		return name;
@@ -44,6 +46,14 @@ public class EmailAttachment implements Serializable{
 
 	public void setBinary(Boolean binary) {
 		this.binary = binary;
+	}
+
+	public byte[] getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
 	}
 
 }
