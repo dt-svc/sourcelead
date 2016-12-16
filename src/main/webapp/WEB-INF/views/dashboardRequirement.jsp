@@ -23,7 +23,7 @@ $(document).ready(function(){
                     <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-check-square" aria-hidden="true"></i> </span>
                       <div class="info-box-content text-center">
                         <p class="info-box-number"><span id="submissionsCount">${submissionsCount}</span></p>
-                        <p class="info-box-text"> <a href="#">Submission</a> </p>
+                        <p class="info-box-text"> Submission </p>
                       </div>
                     </div>
                   </div>
@@ -31,7 +31,7 @@ $(document).ready(function(){
                     <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-black-tie" aria-hidden="true"></i> </span>
                       <div class="info-box-content text-center">
                         <p class="info-box-number"><span id="applicantsCount"></span></p>
-                        <p class="info-box-text"> <a href="#">Applicants</a> </p>
+                        <p class="info-box-text"> Applicants </p>
                       </div>
                     </div>
                   </div>
@@ -39,7 +39,7 @@ $(document).ready(function(){
                     <div class="info-box"> <span class="info-box-icon bg-blue"> <i class="fa fa-graduation-cap" aria-hidden="true"></i> </span>
                       <div class="info-box-content text-center">
                         <p class="info-box-number"><span id="interviewsCount"></span></p>
-                        <p class="info-box-text"><a href="#">Interviews</a></p>
+                        <p class="info-box-text">Interviews</p>
                       </div>
                     </div>
                   </div>
@@ -47,7 +47,7 @@ $(document).ready(function(){
                     <div class="info-box"> <span class="info-box-icon bg-orange"> <i class="fa fa-tags" aria-hidden="true"></i> </span>
                       <div class="info-box-content text-center">
                         <p class="info-box-number"><span id="offersCount"></span></p>
-                        <p class="info-box-text"><a href="#">Offers</a></p>
+                        <p class="info-box-text">Offers</p>
                       </div>
                     </div>
                   </div>

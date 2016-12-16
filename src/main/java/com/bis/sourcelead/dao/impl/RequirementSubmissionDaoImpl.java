@@ -231,6 +231,18 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		
         Session session = this.sessionFactory.getCurrentSession();
         
+        String submissionStages = "";
+        if(submissionStatus.equalsIgnoreCase("SUBMISSION")){
+			 submissionStages = "and rs.submissionStatus = 'SUBMISSION' ";
+		}else if(submissionStatus.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
+			 submissionStages = "and rs.submissionStatus = 'SUBMIT_TO_CLIENT' ";
+		}else if(submissionStatus.equalsIgnoreCase("INTERVIEW")){
+			submissionStages = "and (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') ";
+		}else if(submissionStatus.equalsIgnoreCase("OFFERMADE")){
+			submissionStages = "and (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
+					+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED') ";
+		}
+        
         if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
         	Map<String, Object> params = new HashMap<String,Object>();
     		
@@ -254,12 +266,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
     		String subQuery = "";
     		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
     			if(dateRange != null && "today".equals(dateRange)){
-    				subQuery = "where rs.orgLocations.id = :orgLocationsId and rs.submissionStatus = :submissionStatus and  rs.status = 1 and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+    				subQuery = "where rs.orgLocations.id = :orgLocationsId "+submissionStages+" and  rs.status = 1 and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
     			}else if(dateRange != null && "previous".equals(dateRange)){
-    			    subQuery = "where rs.orgLocations.id = :orgLocationsId and rs.submissionStatus = :submissionStatus and rs.status = 1  and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+    			    subQuery = "where rs.orgLocations.id = :orgLocationsId "+submissionStages+" and rs.status = 1  and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
     			}
     			params.put("orgLocationsId",orgLocationsId);
-    			params.put("submissionStatus",submissionStatus);
+    			//params.put("submissionStatus",submissionStatus);
     		}
     		String whereCondition = subQuery;
     		Query query =  session.createQuery(from+" "+whereCondition+" ");
@@ -272,12 +284,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
     			if(str.equalsIgnoreCase("level") || str.equalsIgnoreCase("level1") || str.equalsIgnoreCase("level2")){
     				query.setInteger(str, (int) params.get( str ));
     			}
-    			if(str.equalsIgnoreCase("submissionStatus") ){
+    			/*if(str.equalsIgnoreCase("submissionStatus") ){
     				query.setParameter(str,ApplicantSubmissionStatus.getNameByValue(submissionStatus));
     			}
     			else{
     				query.setParameter( str, params.get( str ) );
-    			}
+    			}*/
             	
             }
     		
@@ -292,12 +304,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
         	
         	String query = "";
         	if(dateRange != null && "today".equals(dateRange)){
-                query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId and rs.submissionStatus = :submissionStatus and rs.status = 1  and DATE(rs.createdDate) = CURDATE()";
+                query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and DATE(rs.createdDate) = CURDATE()";
      		}else if(dateRange != null && "previous".equals(dateRange)){
-     			query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId and rs.submissionStatus = :submissionStatus and rs.status = 1  and DATE(rs.createdDate) < CURDATE()";
+     			query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and DATE(rs.createdDate) < CURDATE()";
      		}
         	
-        	List<Long> reqSubmsCount =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("submissionStatus", submissionStatus).list();
+        	List<Long> reqSubmsCount =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).list();
 			Integer count = 0;
 			if(reqSubmsCount != null && !reqSubmsCount.isEmpty()){
 					count = reqSubmsCount.get(0).intValue();
@@ -373,11 +385,11 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 String submissionStages = "";
 		 
 		 if(submissionStatus.equalsIgnoreCase("APPLICANTS")){
-			 submissionStages = "and (rs.submissionStatus = 'SUBMISSION' OR rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'REJECTED' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' OR rs.submissionStatus = 'OFFERHIRED')";
+			 submissionStages = "";
 		 }
 		 
 		 if(submissionStatus.equalsIgnoreCase("SHORTLISTED")){
-			 submissionStages = "and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'REJECTED' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' OR rs.submissionStatus = 'OFFERHIRED')";
+			 submissionStages = "and (rs.submissionStatus = 'SHORTLIST')";
 		 }
 		 
 		 if(submissionStatus.equalsIgnoreCase("SUBMITTED")){
@@ -385,11 +397,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 }
 		 
 		 if(submissionStatus.equalsIgnoreCase("INTERVIEWED")){
-			 submissionStages = "and (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'REJECTED' OR rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' OR rs.submissionStatus = 'OFFERHIRED')";
+			 submissionStages = "and (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW')";
 		 }
 		 
 		 if(submissionStatus.equalsIgnoreCase("OFFERED")){
-			 submissionStages = "and (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' OR rs.submissionStatus = 'OFFERHIRED')";
+			 submissionStages = "and (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' OR rs.submissionStatus = 'OFFERHIRED' OR "
+			 		+ " rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED' OR rs.submissionStatus = 'CLIENT_OFFERHIRED' )";
 		 }
 		 
 	     String query = "from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId  "+submissionStages+" ";

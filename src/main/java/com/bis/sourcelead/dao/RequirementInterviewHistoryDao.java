@@ -15,4 +15,18 @@ public interface RequirementInterviewHistoryDao {
 	
 	List<RequirementInterviewHistory> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 	
+	/**
+	 * @author Prasad Salina
+	 * @param orgLocationsId
+	 * @param dateRange
+	 * @param currentTime
+	 * @param userType
+	 * @param userId
+	 * @param userCode
+	 * @return
+	 * @throws Exception
+	 * To get dashboard interviews
+	 */
+	List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)throws Exception;
+	
 }
