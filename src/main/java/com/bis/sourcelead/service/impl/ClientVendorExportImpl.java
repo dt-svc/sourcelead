@@ -105,14 +105,17 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		if (orgRelations.getWebSite() != null && !"".equalsIgnoreCase(orgRelations.getWebSite())) {
 			writeRow.createCell(1).setCellValue(orgRelations.getWebSite());
 		}
-		if (orgRelations.getCity() != null && !"".equalsIgnoreCase(orgRelations.getCity())) {
-			writeRow.createCell(2).setCellValue(orgRelations.getCity());
+		if (orgRelations.getCountry() != null && !"".equalsIgnoreCase(orgRelations.getCountry())) {
+			writeRow.createCell(2).setCellValue(orgRelations.getCountry());
 		}
 		if (orgRelations.getLevel() != null && !"".equalsIgnoreCase(orgRelations.getLevel())) {
 			writeRow.createCell(3).setCellValue(orgRelations.getLevel());
 		}
 		if (orgRelations.getNoOfContatcs() != null) {
 			writeRow.createCell(4).setCellValue(orgRelations.getNoOfContatcs());
+		}
+		if (orgRelations.getCreatedBy() != null) {
+			writeRow.createCell(5).setCellValue(orgRelations.getCreatedBy());
 		}
 		return sheet;
 	}
