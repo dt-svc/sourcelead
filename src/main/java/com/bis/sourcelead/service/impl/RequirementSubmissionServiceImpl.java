@@ -221,6 +221,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					 if(jsonObj.has("WorkExperience") && !isNullOrEmpty(jsonObj.getString("WorkExperience"))){
 						 candidate.setExperienceYears(jsonObj.getString("WorkExperience"));
 					 }
+					candidate.setCandidateType("Candidate");
 					candidate.setCreatedBy(user.getUserCode());
 					candidate.setCreatedDate(new Date());
 					candidate.setStatus(Constants.CANDIDATE_ACTIVE);
