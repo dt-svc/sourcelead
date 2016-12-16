@@ -384,10 +384,23 @@ function candidateSideBar(candidateId){
 			             
               		       }else{
               		                                                	  
-              		     result = result+'<li>Experience - ----</li>';  
+              		     result = result+'<li>Experience ----</li>';  
               		     
               		       }
 			             result = result+'</ul>';
+			             
+			             result = result+'<ul class="list-unstyled">';
+			              if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
+			                    	 
+			             result = result+'<li>Notice Period -'+json.noticePeriod+' </li>';
+			             
+             		       }else{
+             		                                                	  
+             		     result = result+'<li>Notice Period ----</li>';  
+             		     
+             		       }
+			             result = result+'</ul>';
+			             
 			             result = result+'<div class="clearfix">';
 			             result = result+'<div class="professinal-details">';
 			             
