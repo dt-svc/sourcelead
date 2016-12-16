@@ -441,4 +441,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getAllCandidatesForCampaignByTeam(List<Team> teamId, String type) throws Exception {
 		return candidateDao.getAllCandidatesForCampaignByTeam(teamId, type);
 	}
+
+	@Override
+	public List<Candidate> getAllRequestedCandidatesForCampaign(List<Long> candidateId) throws Exception {
+		return candidateDao.getAllRequestedCandidatesForCampaign(candidateId);
+	}
 }

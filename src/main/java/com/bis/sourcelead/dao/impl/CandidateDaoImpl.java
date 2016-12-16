@@ -337,5 +337,18 @@ public class CandidateDaoImpl implements CandidateDao {
 				               .setParameterList("teamId", teamId).setString("type", type).setCacheable(true).list();
 		return candidateList;
 	}
+
+	@Override
+	@Transactional
+	public List<Candidate> getAllRequestedCandidatesForCampaign(List<Long> candidateId) throws Exception {
+		
+		logger.debug("In getAllRequestedCandidatesForCampaign method");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "from Candidate candidate  where candidate.id IN (:candidateId)";  
+		List<Candidate> candidateList = session.createQuery(query)
+				               .setParameterList("candidateId", candidateId).setCacheable(true).list();
+		return candidateList;
+	}
 	
 }

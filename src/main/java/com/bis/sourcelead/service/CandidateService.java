@@ -85,4 +85,6 @@ public interface CandidateService {
 	public List<Candidate> getAllActiveCandidatesForCampaignByLocation(Long orgLocationId,String type)throws Exception;
 	
 	public List<Candidate> getAllCandidatesForCampaignByTeam(List<Team> teamId,String type)throws Exception;
+	
+	public List<Candidate> getAllRequestedCandidatesForCampaign(List<Long> candidateId)throws Exception;
 }

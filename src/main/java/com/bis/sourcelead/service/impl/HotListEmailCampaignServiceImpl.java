@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,11 +22,13 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserSignature;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
+import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.service.UserSignatureService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -51,6 +54,9 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	@Autowired
 	UserSignatureService userSignatureService;
 	
+	@Autowired
+	UserMailBoxService userMailBoxService;
+	
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -66,6 +72,9 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	 String[] hotlistedCandidates = null;
 	 UserSignature userSignature = null;
 	 String signature = "";
+	 String candidates = null;
+	 String emails = null;
+	 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 	 
 	 
 	   	 if(!isNullOrEmpty(user.getLastName())){
@@ -78,17 +87,18 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	   		userSignature = userSignatureService.getUserSignatureById(Long.parseLong(jsonObj.getString("userSignature")));
 	   	}
    	 
-		String emails = jsonObj.getString("Toemails").replaceAll("\\[", "").replaceAll("\\]","");
-		emails = emails.replaceAll("\"", "");
-		String[] toEmails = emails.split(",");
-		
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 
-		for(int i=0 ; i< toEmails.length ; i++){
-			 EmailRecipient emailRecipient = new EmailRecipient();
-			 emailRecipient.setEmail(toEmails[i]);
-			 emailRecipientList.add(emailRecipient);
+		if(jsonObj.has("Toemails") && !isNullOrEmpty(jsonObj.getString("Toemails"))){
+			emails = jsonObj.getString("Toemails").replaceAll("\\[", "").replaceAll("\\]","");
+			emails = emails.replaceAll("\"", "");
+			String[] toEmails = emails.split(",");
+			 
+			for(int i=0 ; i< toEmails.length ; i++){
+				 EmailRecipient emailRecipient = new EmailRecipient();
+				 emailRecipient.setEmail(toEmails[i]);
+				 emailRecipientList.add(emailRecipient);
+			}
 		}
+		
 		
 		if(jsonObj.has("otherEmails") && !isNullOrEmpty(jsonObj.getString("otherEmails"))){
 			String othmails = jsonObj.getString("otherEmails").replaceAll("\\[", "").replaceAll("\\]","");
@@ -107,7 +117,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		
 		 if(jsonObj.has("hotlistcandidates") && !isNullOrEmpty(jsonObj.getString("hotlistcandidates"))){
 			 
-			    String candidates = jsonObj.getString("hotlistcandidates").replaceAll("\\[", "").replaceAll("\\]","");
+			    candidates = jsonObj.getString("hotlistcandidates").replaceAll("\\[", "").replaceAll("\\]","");
 			    candidates = candidates.replaceAll("\"", "");
 				
 				hotlistedCandidates = candidates.split(",");
@@ -122,7 +132,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 globalVarsMap.put("noOfCandidates", String.valueOf(hotlistedCandidates.length));
 		 
 		 globalVarsMap.put("hotlistTable", table);
-		 globalVarsMap.put("requestResume","<a href='"+sourceleadUrl+"/"+"requestForCandidateResume?orgLocationId="+orgLocation.getId()+"&UUID="+UUID+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Request For Resume</div></a>");
+		 globalVarsMap.put("requestResume","<a href='"+sourceleadUrl+"/"+"requestForCandidateResume?UUID="+UUID+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Request For Resume</div></a>");
 		 globalVarsMap.put("signature", String.valueOf(hotlistedCandidates.length));
 		 
 		 EmailScenario emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.HOT_LIST_CAMPAIGN,Constants.ENTITY_TYPE_EMAIL);
@@ -144,10 +154,41 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 
+		 saveUserMailBox(user,orgLocation,emailRecipientList,candidates,subject,table,UUID,jsonObj.getString("bodytext"),userSignature,jsonObj.getString("namefield"));
 		
 	}
 	
 	
+private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailRecipient> emailRecipientList,String candidates,String subject,String table,String UUID,String body,UserSignature userSignature,String nameFields) throws Exception{
+	
+	UserMailBox userMailBox = new UserMailBox();
+	StringBuilder toEmails = new StringBuilder();
+	for (EmailRecipient recipient : emailRecipientList) {
+		toEmails.append(recipient.getEmail()).append(",");
+	 }
+	toEmails.toString();
+	
+	userMailBox.setUserId(user);
+	userMailBox.setOrgLocationId(orgLocation);
+	userMailBox.setFromMail(user.getEmail());
+	userMailBox.setToMail(toEmails.substring(0,toEmails.length()-1));
+	userMailBox.setMailStatus(Constants.MAIL_BOX_SENT);
+	userMailBox.setCandidateId(candidates);
+	userMailBox.setSubject(subject);
+	userMailBox.setCampaignTableData(table);
+	userMailBox.setBody(body);
+	userMailBox.setSignatureId(userSignature);
+	userMailBox.setUuid(UUID);
+	userMailBox.setStatus(1);
+	userMailBox.setNameFields(nameFields);
+	userMailBox.setCreatedBy(user.getUserCode());
+	userMailBox.setCreatedDate(new Date());
+	userMailBox.setUpdatedBy(user.getUserCode());
+	userMailBox.setUpdatedDate(new Date());
+	userMailBoxService.saveUserMailBox(userMailBox);
+	
+}
 	
 private String getHotListCandidatesTable(String[] hotlistedCandidates,String nameField) throws Exception{
 		
@@ -164,13 +205,16 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 		   
 		 
 		 for(int i=0 ; i < hotlistedCandidates.length; i++){
-			 String skills = "";
+			 StringBuilder skills = new StringBuilder();
 			 List<CandidateSkills> skillsList = candidateSkillsService.getCandidateSkillsByCandidateId(hotlistedCandidates[i]);
 			 if(skillsList != null){
 				 for(CandidateSkills skill : skillsList){
-					 skills = skills+skill.getName()+", ";
+					 skills.append(skill.getName()).append(", ");
 				 }
 			 }
+			 
+			 skills.toString();
+			 String candidateSkills =  skills.substring(0,skills.length()-2);
 			 
 			 String candidateName = null;
 			 String experienceInYears = null;
@@ -241,7 +285,7 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+candidateName+"</td>";
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+totalExp+"</td>";
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+rate+"</td>";
-			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+skills.substring(0,skills.length() - 1)+"</td>";
+			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+candidateSkills+"</td>";
 			 
 			 tempHTML = tempHTML+"</tr>";
 			 
