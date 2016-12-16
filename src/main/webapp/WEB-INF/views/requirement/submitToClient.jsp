@@ -46,15 +46,15 @@
 function submitToClient(requirementId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var result = "";
-	var status = "SHORTLIST";
-	/* clientSubmissions('+requirementId+'); */
-	result = result + '<div class="add_inter_head"> <span>Submissions</span><a href="#" onclick="addEmailtemplate('+requirementId+');" class="sub-btn1">Submit to client</a>';
+	//var status = "SHORTLIST";
+	/* result = result + '<div class="add_inter_head"> <span>Submissions</span><a href="javascript:void(0)" onclick="clientSubmissions('+requirementId+');" class="sub-btn1">Submit to client</a>'; */
+	result = result + '<div class="add_inter_head"> <span>Submissions</span><a href="javascript:void(0)" onclick="addEmailtemplate('+requirementId+');" class="sub-btn1">Submit to client</a>';
 	result = result + ' <div class="clearfix"></div>';
 	result = result + ' </div>';
 	
 	 $.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getSubmissionCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,
+	    	url: sourceleadUrl+"/getShortListedCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,
 	    			
 	    	success: function(data) {
 		       
@@ -73,6 +73,7 @@ function submitToClient(requirementId){
 	           result = result + '           <th>Resume</th>';
 	           result = result + '           <th>Applied on</th>';
 	           result = result + '           <th>Rate</th>';
+	           result = result + '           <th>Submission Rate</th>';
 	           result = result + '           <th>Source</th>';
 	           result = result + '           <th>Experince</th>';
 	           result = result + '         </tr>';
@@ -104,7 +105,8 @@ function submitToClient(requirementId){
 			    	     }
 			           
 			           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
-			        	   result = result + '<td><div><span><a href="javascript:void(0)"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.candidateResumes.id+'\"></a>'+report.resumeName+'</span></div></td>';
+/* 			        	   result = result + '<td><div><span><a href="javascript:void(0)"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.id+'\"></a>'+report.resumeName+'</span></div></td>';*/
+ 			        	   result = result + '<td><div><span><a href="javascript:void(0)"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.candidateResumes.id+'\"></a>'+report.resumeName+'</span></div></td>';
 				           }
 				       else{
 				    	   result = result + '<td><div>--</div></td>';
@@ -122,6 +124,13 @@ function submitToClient(requirementId){
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
+			    	     }
+			           
+			           if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+			        	   result = result + '<td><div><input type="text" class="form-control" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value="'+report.expectedCTC+'"></div></td>';
+				           }
+				       else{
+				    	   result = result + '<td><div><input type="text" class="form-control" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
 			    	     }
 			           
 			           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
@@ -188,10 +197,8 @@ function pagination(){
 <!-- For add New Applicant -->
 <script>
     $(".submitToClient_close, .side_mask").click(function() {
-    	
-    	 $("#submitToClientDiv").empty();
-         $("#emailTemplateDiv").empty();
-         
+    	$("#submitToClientDiv").empty();
+    	$("#emailTemplateDiv").empty();
     	$(".submitnew-wrap").removeClass("submitnew-wrap_active");
 		$(".side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
@@ -220,15 +227,19 @@ function selectAllSubmitToClient(){
 function clientSubmissions(requirementId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var selectedShortlists = [];
+	 var selectedShortlistsRate = [];
 	 $("input[name='shortlist[]']:checked").each( function (i) {
 		 selectedShortlists[i] = $(this).val();
-	});
+		 var rateId = $(this).val();
+		 var selectedRate = $("#submissionRate"+rateId).val();
+		 selectedShortlistsRate[i] = selectedRate;
+	 });
 	 
 	 if(selectedShortlists.length > 0){
 		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		 $.ajax({ 
 		    	type: "POST",
-		    	url: sourceleadUrl+"/submitShortlistedToClient?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionsList="+selectedShortlists,
+		    	url: sourceleadUrl+"/submitShortlistedToClient?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionsList="+selectedShortlists+"&selectedShortlistsRate="+selectedShortlistsRate,
 		        success: function(result) {
 		        	$(".submitnew-wrap").removeClass("submitnew-wrap_active");
 		    		$(".side_mask").fadeOut(200);
@@ -244,8 +255,30 @@ function clientSubmissions(requirementId){
 }
 </script>
 
+<script type="text/javascript">
+function alertMessage(message){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
 
-<div id="popUp"></div>
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
 <script>
 function addEmailtemplate(requirementId){
  	var result ="";
@@ -383,45 +416,6 @@ function addEmailtemplate(requirementId){
 }
 </script>
 
-
-<script type="text/javascript">
-function cancel(){
-	$("#popUp").empty();
-	$(".project_inn_mask").fadeOut(200);
-}
-</script>
-
-<script type="text/javascript">
-function alertMessage(message){
-	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>"+message+"</p>";
-	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
-	result = result +"	</div>";
-	$("#popUp").append(result);
-	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
-
-}
-</script>
-
-<script type="text/javascript">
-function cancel(){
-	$("#popUp").empty();
-	$(".project_inn_mask").fadeOut(200);
-}
-</script>
-
-
-
-
-<script>
-
-
-</script>
-
 <script language="javascript">
 function checkEmail(email) {
    var regExp = /^.+@.+\..{2,3}$/
@@ -459,7 +453,8 @@ function checkEmails(){
  <script>
   $(function () {
     //Add text editor
-    $("#compose-textarea").wysihtml5();
+	  $("#compose-textarea").wysihtml5();
+	  $("#create-signature").wysihtml5();
   });
 
 </script>
@@ -540,13 +535,8 @@ function submitToClientMail(selectedIds,requirementId){
 }
 </script>
 
-
-
-
 <script src="js/jquery-1.11.3.min.js"></script>
   <script src="js/bootstrap3-wysihtml5.all.min.js"></script> 
   <script src="js/bootstrap.min.js"></script> 
   <script src="js/masterHeaderAction.js"></script> 
   <script src="js/chosen.jquery.min.js"></script> 
-
-

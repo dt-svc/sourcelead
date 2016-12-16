@@ -562,6 +562,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getAllProjectMembersAssignedOrTerminateDateisGreaterThanProjectEndDate(projectId);
 	}
 
+	@Override
+	public List<ProjectMembers> getAllProjectsAssigendToUserByIdAndStatus(Long userId, String status) throws Exception {
+		return projectMembersDao.getAllProjectsByUserIdAndStatus(userId, status);
+	}
+
 	
 	
 }

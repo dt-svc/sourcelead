@@ -688,12 +688,7 @@ function getRolesList(){
 	                	for (var j=0; j<json.length; j++)
 						{
 				        	var opt1 = json[j];
-				        		if(j==0){
-				        			output = output + "<option value='" +opt1.id+ "' selected>"+opt1.firstName+" "+opt1.lastName+"</option>";
-				        		}
-				        		else{
-				        			output = output + "<option value='" +opt1.id+ "'>"+opt1.firstName+" "+opt1.lastName+"</option>";
-				        		}
+				        	output = output + "<option value='" +opt1.id+ "'>"+opt1.firstName+" "+opt1.lastName+"</option>";
 						}
            		 	}
 		        	$("#owner").empty();

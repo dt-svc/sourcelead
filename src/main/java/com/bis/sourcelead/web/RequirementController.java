@@ -266,6 +266,11 @@ public class RequirementController {
         }
 		
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "reqsummaryMsg");
+		}
 		return model;
 
 	}
@@ -303,5 +308,74 @@ public class RequirementController {
 	
 
 //	/candiCount
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
+	@RequestMapping(value = "/template")
+	public ModelAndView AllTemplates(HttpServletRequest request) throws Exception {
+		
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("requirement/template");
+		
+		return model;
+
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE')")
+	@RequestMapping(value = "/addTemplate")
+	public ModelAndView AddTemplates(HttpServletRequest request,@RequestParam(value="requirementId", required=false) Long requirementId) throws Exception {
+		
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		Requirement requirement =null;
+			ModelAndView model = new ModelAndView();
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("requirement/addTemplate");
+			if(requirementId != null){
+				requirement = requirementService.getRequirementTemplateByRequirementId(requirementId, orgLocations.getId());
+			 model.addObject("requirement", requirement);
+			 
+			 if(requirement.getEducation() != null){
+					String[] educationList = requirement.getEducation().split(",");
+					requirement.setReqEducationList(educationList);
+					requirement.setReqEducationListString(requirement.getEducation());
+			}
+			
+			if(requirement.getSkills() != null){		
+					String[] skillsList = requirement.getSkills().split(",");
+					requirement.setReqSkillsList(skillsList);
+					requirement.setReqSkillsListString(requirement.getSkills());
+			}
+			 
+			}
+		
+		    List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			model.addObject("educationsList", educationsList);
+			
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			model.addObject("skillsList", skillsList);
+			
+		
+		   return model;
+
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
+	@RequestMapping(value = "/requirementTemplateSummary")
+	public ModelAndView requirementTemplateSummary(HttpServletRequest request,@RequestParam(value="requirementId", required=false)Long requirementId) throws Exception {
+		 
+		ModelAndView model = new ModelAndView();
+		model.setViewName("requirement/requirementTemplateSummary");
+		model.addObject("requirementId",requirementId);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+
+	}
+	
+
+	private boolean isNullOrEmpty(String msg) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }

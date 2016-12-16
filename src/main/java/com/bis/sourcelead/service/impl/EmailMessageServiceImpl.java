@@ -211,7 +211,6 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				message.setContent(multipart);
 				Transport.send(message);
 			}
-
 		} catch (MessagingException e) {
 			throw new RuntimeException(e);
 		} catch (UnsupportedEncodingException e) {

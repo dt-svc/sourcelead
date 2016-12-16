@@ -36,9 +36,11 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
@@ -49,6 +51,8 @@ import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
+import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -99,6 +103,12 @@ public class SubmissionsRestController {
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
+	@Autowired
+	InterviewFeedbackTemplateService interviewFeedbackTemplateService; 
+	
+	@Autowired
+	RequirementInterviewService requirementInterviewService;
+	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
@@ -133,6 +143,13 @@ public class SubmissionsRestController {
 			return requirement.getSubmissionTemplateJsonString();
 	    
     }
+    
+    @RequestMapping(value = "/getInterviewFeedbackTemplate" , method = RequestMethod.GET)
+	   public String getInterviewFeedbackTemplate(@RequestParam(value="templateId", required=false) Long templateId) throws Exception {
+    	    SubmissionTemplate st =  submissionTemplateService.getSubmissionTemplateById(templateId);
+		    return st.getJsonString();
+ }
+    
     
     
     @PreAuthorize("hasRole('ROLE_ADD_APPLICANT')")
@@ -169,6 +186,8 @@ public class SubmissionsRestController {
 		
 		return commonUtil.toJSON(submissiontTemplateList);
 	}
+    
+ 
     
 
 
@@ -211,8 +230,9 @@ public class SubmissionsRestController {
 	    
 	   }
     
+   
     
-    @PreAuthorize("hasAnyRole('ROLE_SHORTLIST','ROLE_SUBMIT_TO_CLIENT')")
+    @PreAuthorize("hasAnyRole('ROLE_SHORTLIST')")
     @RequestMapping(value = "/getSubmissionCandidates" , method = RequestMethod.POST)
 	   public String getSubmissionCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
 			   @RequestParam(value="status", required=false) String status,HttpServletRequest request) throws Exception {
@@ -248,20 +268,55 @@ public class SubmissionsRestController {
 	    
     }
     
+    @PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
+    @RequestMapping(value = "/getShortListedCandidates" , method = RequestMethod.POST)
+	   public String getShortListedCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
+			   HttpServletRequest request) throws Exception {
+			
+    	 String resultJson = null;
+    	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+     	 List<RequirementSubmission> shortlistedList = requirementSubmissionService.getAllShortLitstedCandidatesForClientSubmissionByRequirementId(orgLocations.getId(), requirementId);    
+     	 ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
+     	 
+     	 for (RequirementSubmission requirementSubmission : shortlistedList) {
+			CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+			if(requirementSubmissionTemplateFields.getLastName() != null){
+				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName()+" "+requirementSubmissionTemplateFields.getLastName());
+			}else{
+				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
+			}
+			
+			requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
+			requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
+			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
+			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+			if(requirementSubmission.getCreatedDate() != null){
+				requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
+			}
+			User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+			requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
+			requirementSubmission.setResumeName(candidateResumes.getFileName());
+			candidatesList.add(requirementSubmission);
+		  }
+     	 resultJson = toJSON(candidatesList);
+		 return resultJson;
+	    
+    }
+    
     
     @PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
     @RequestMapping(value = "/submitShortlistedToClient" , method = RequestMethod.POST)
-	   public String submitShortlistedToClient(@RequestParam(value="requirementId", required=false) Long requirementId,
-			   @RequestParam(value="submissionsList", required=false) String submissionsList,HttpServletRequest request) throws Exception {
+	   	public String submitShortlistedToClient(@RequestParam(value="requirementId", required=false) Long requirementId,
+			   @RequestParam(value="submissionsList", required=false) String submissionsList,
+			   @RequestParam(value="selectedShortlistsRate", required=false) String selectedShortlistsRate, HttpServletRequest request) throws Exception {
     	
     	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
     	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
     	 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
     	
-    	 requirementSubmissionService.storeClientSubmission(requirementId, user, orgLocations, submissionsList,org);
-    	 
-    	
-    	return "success";
+    	 requirementSubmissionService.storeClientSubmission(requirementId, user, orgLocations, submissionsList, selectedShortlistsRate, org);
+    	 return "success";
     }
     
     
@@ -321,29 +376,64 @@ public class SubmissionsRestController {
     	
     }
     
+    
+    
+    /**
+     * 
+     * author : Pavan Jampana
+     * desc : This method is used to Reject Applicant from 
+     * 		  Requirement Pipeline List from any Stage. 
+     */
+    
     @RequestMapping(value = "/rejectApplicant")
 	public @ResponseBody String rejectApplicant(@RequestParam(value="requirementId", required=false) Long requirementId,@RequestParam(value="submissionId", required=false) Long submissionId,
 			                                              @RequestParam(value="reason", required=false) String reason,
 			                                              HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+		
+		//to update submission history 
+		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+		requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
+		requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.REJECTED.getValue());
+		
+		//to update Submission status 
 		requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
 		requirementSubmission.setRejectedReason(reason);
 		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 		requirementSubmission.setUpdatedBy(user.getUserCode());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		
-		RequirementSubmissionHistory requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementSubmissionHistoryBySubmissionId(submissionId);
-		requirementSubmissionHistory.setFromStage(requirementSubmissionHistory.getToStage());
-		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 		
 		return "success";
 	}
     
     
+    
+    @RequestMapping(value = "/saveInterviewFeddbackTemlate" , method = RequestMethod.POST)
+	   public String saveInterviewFeddbackTemlate(@RequestParam(value="jsonData", required=false) String json,
+			   @RequestParam(value="con", required=false) String con,MultipartHttpServletRequest request,
+			   @RequestParam(value="locationMapFile", required=false) CommonsMultipartFile locationMapFileData) throws Exception {
+			
+ 	    String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+			
+			
+			MultipartFile multiFile = null;
+			Iterator<String> itrator = request.getFileNames();
+			if(itrator.hasNext()){
+		        multiFile = request.getFile(itrator.next());
+			}
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj, user, orgLocations,con,multiFile);
+			return "success";
+	    
+}
     
 
 	//vendors mail sending the private method

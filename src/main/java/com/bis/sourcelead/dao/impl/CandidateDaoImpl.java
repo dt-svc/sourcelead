@@ -279,8 +279,33 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId ORDER BY candidate.id DESC";  
+		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId ORDER BY cnadidate.id DESC";  
         return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional
+	public List<Candidate> getHotListCandidatesListByOrgLocationID(Long orgLocationId, String candidateType)
+			throws Exception {
+
+		
+		//Checking for Candidate Status 
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String candidateTypeSubQuery = "";
+		if(candidateType.equalsIgnoreCase("All")){
+			candidateTypeSubQuery = " and (candidate.candidateType = 'Candidate' OR candidate.candidateType = 'Consultant')";
+		}else{
+			candidateTypeSubQuery = " and candidate.candidateType = '"+candidateType+"' ";
+		}
+    	
+
+		String query = "from Candidate candidate  where candidate.id IN "
+				+ "(select hotlist.candidateId.id from CandidateHotList hotlist where hotlist.orgLocationId.id = :orgLocationId and hotlist.status = '1' and hotlist.teamId IS NULL) "+candidateTypeSubQuery+" ";  
+		List<Candidate> candidateList = session.createQuery(query)
+				               .setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+		return candidateList;
 	}
 	
 }

@@ -71,6 +71,7 @@ public class Constants {
 	public static String OFFER_MAIL_TO_VENDORS="Client to Vendor Acceptence";
 	public static String APPLICANT_INTERVIEW = "Applicant Interview";
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
+	public static String INTERVIEWER_TEMPLATE = "Interviewer Template";
 	
 	public static String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static String ADD_OFFER_MAIL ="Forward the Mail";
@@ -88,6 +89,11 @@ public class Constants {
 	
 	public static String ENTITY_TYPE_EMAIL = "Email";
 	public static String ENTITY_TYPE_NOTIFICATION = "Notification";
+	public static String ENTITY_TYPE_TEMPLATE = "Notification";
+	
+	public static String CLIENT_INTERVIEW = "CLIENT_INTERVIEW";
+	public static String INTERVIEW = "INTERVIEW";
+	
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
@@ -113,6 +119,7 @@ public class Constants {
 	public static String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
 	public static String  PROJECT_MEMBER_HISTORY_CLOSED= "CLOSED";
 	public static String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
+	
 	public static String REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION = "Approval Mechanism Sequential";
 	public static String APPROVED_EMAIL_NOTIFICATION = "Approved Requirement";
 	public static String REJECTED_EMAIL_NOTIFICATION ="Rejected Mail About The Requirement";
@@ -121,12 +128,23 @@ public class Constants {
 	public static String ASSIGNTEAMMEMBERSFORREQUIREMENT = "AssignToTeamMembers";
 	public static String  WEEK_TIME_SHEET_SUBMISSION= "Week Time Sheet Submission";
 	public static String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";
+	public static String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	
 
 	public static String OFFERREJECT_EMAIL = "Vendor Offer Reject";
 	
 	public static String OFFERACCEPT_EMAIL = "VendorAcceptedOffer";
 	
+	public static String APPLICANT_RECEIVE_MAILABOUT_REQUIREMENT_EMAIL = "ApplicantReceiveMailAboutRequirement";
+	
+	public static String APPLICANT_RECEIVE_MAILABOUT_REQUIREMENT_NOTIFICATION = "ApplicantReceiveMailAboutRequirement";
+	public static String APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION = "ApplicantAcceptRequirement";
+	public static String APPLICANT_REJECT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION = "ApplicantRejectanceRequirement";
+	
+	public static String APPLICANT_NEGOTIATE_REQUIREMENT = "ApplicantNegotiateRequirement";
+	public static String USER_RATE_NEGOTIATION = "UserRateNegotiation";
+
+
 
 
 	public static String YES = "Y";
@@ -239,6 +257,7 @@ public class Constants {
 	public static String MAIL_ACCEPTED = "Accepted";
 	public static String MAIL_REJECTED = "Rejected";
 	public static String OFFERMADE = "OFFERMADE";
+	public static String CLIENT_OFFERMADE = "CLIENT_OFFERMADE";
 	
 	
 	public static String REQUIREMENT_STATUS = "Draft";
@@ -247,7 +266,8 @@ public class Constants {
 	public static String TEAM_IN_ACTIVE = "0";
 	
 	public static Integer DEFAULT_CATEGORY = 0;
-
+	
+	public static String WEEKLY = "Weekly";
 	public static String BI_WEEKLY = "Bi-Weekly";
 	public static String SEMI_MONTHLY = "Semi-Monthly";
 	public static String MONTHLY = "Monthly";
@@ -266,6 +286,8 @@ public class Constants {
 	public static String[] REQUIREMENT_EXCEL_HEADERS = {"Requirement id","Requirement Title","Experience","Rate","Location","Skills","Manager","Priority","Application Form Name","Client Name","Client Contact Name","Client Contact Email"};
     
     public static String[] REQUIREMENT_PIPELINE_EXCEL_HEADERS={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status","Submitted On","Submitted By"};
+    
+    public static String[] REQUIREMENT_PIPELINE_REQUEST_SENT_HEADERS={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status"};
 	
     public static String[] REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS ={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status","ShortListed By","ShortListed On"};
     
@@ -277,7 +299,7 @@ public class Constants {
     
     public static String[] TIMESHEET_EXCEL_HEADERS = {"Projects","Tasks","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Status"};
    
-    public static String[] CLIENT_EXCEL_HEADERS = {"Client Name","Website","Location","Tiers","Number of Contacts"};
+    public static String[] CLIENT_EXCEL_HEADERS = {"Client Name","Website","Location","Tiers","Number of Contacts","Created By"};
     
     public static String[] CLIENT_CONTACTS_EXCEL_HEADERS = {"Client Name","Name","Emailid","Phone Number","Owner","Role","Status"};
     
@@ -296,4 +318,20 @@ public class Constants {
     
     public static String[] VENDOR_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};
     public static String[] CLIENT_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};
+    
+    public static int level1 =1;
+    public static int level2 =2;
+    
+    public static String SHORTLIST_COUNT= "Shortlisted Applicants:";
+    public static String INTERVIEW_COUNT= "Interview Applicants: ";
+    public static String OFFER_COUNT= "Offer Applicants:";
+    public static String REJECTED_COUNT= "Rejected Applicants :";
+    public static String SUBMITTED_APPLICANTS_COUNT= "Submitted Applicants :";
+    public static String REQUEST_SENT_COUNT= "Request Sent Applicants :";
+
+    
+    
+    
+     
+   
 }
