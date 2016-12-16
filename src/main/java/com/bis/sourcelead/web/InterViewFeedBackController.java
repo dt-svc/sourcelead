@@ -57,14 +57,14 @@ public class InterViewFeedBackController {
 	
 	@RequestMapping(value = "/publicInterviewFeedBackTemplate")
 	public ModelAndView publicInterviewFeedBackTemplate(@RequestParam(value = "templateId", required = false) Long templateId,
-			@RequestParam(value = "requirementInterviewid", required = false) Long requirementInterviewid,HttpServletRequest request) throws Exception {
+			@RequestParam(value = "requirementInterviewid", required = false) Long requirementInterviewerId,HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
 		model.addObject("templateId", templateId);
-		model.addObject("requirementInterviewid", requirementInterviewid);
+		model.addObject("requirementInterviewid", requirementInterviewerId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		InterviewFeedbackTemplate ift =interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(requirementInterviewid);
+		InterviewFeedbackTemplate ift =interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(requirementInterviewerId);
 		if(ift !=null){
-			String requirementId = ift.getRequirementInterviewId().getId().toString();
+			String requirementId = ift.getRequirementInterviewerId().getId().toString();
 			model.addObject("feedbackStatus", ift.getStatus());
 			model.addObject("afterRequirementInterviewid", requirementId);
 		}

@@ -13,6 +13,21 @@
  <style type="text/css">
  .brder-int {padding:2px 10px; margin-right:5px;}
  .brder-int-left {border-left:1px solid #c1c1c1; margin-left: -5px;}
+ #accordion-sl{
+ position: relative;
+ }
+ #accordion-sl h2{
+ }
+ #accordion-sl .fa-handshake-o {
+ 	position: absolute;
+ 	right: 50px;
+ 	color:#333;
+ 	cursor:pointer;
+ 	top:0;
+ 	padding:0;
+ 	padding:11.74px 4px;
+ 	z-index: 9999;
+ }
  </style>
  
 <script>
@@ -204,7 +219,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + '<div class="clearfix">';
 			   result = result + '</div> ';        
 				   
-			   result = result + ' <div class="row">';
+			   result = result + ' <div class="row positionRelative">';
 			  
 			   			//Submission Details
 			   			 result = result + '<div class="col-md-6">';
@@ -215,7 +230,13 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 					     result = result + submissionDetails;
 					     result = result + ' </div>';
 					     result = result + ' </div>';
-		                 result = result + ' </div>';
+		                 
+
+		                 result = result + ' <div id="viewfeedbackdiv" class="showfeedback"></div>';
+		                 result = result + ' <div id="noviewfeedbackdiv" class="shownofeedback"></div>';
+		                 
+	                     result = result + ' <div class="bg_mask"></div>';
+	                     result = result + ' </div>';
 	                     result = result + ' </div>';
 	                    
 	                    
@@ -332,7 +353,6 @@ function getInternalInterviewsList(submissionId){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 
 	                    	 var report = json[i]; 
-	                    	 
 	                    	 var notifiedDetails ="";
 	                    	// var interviewers = "---";
 	                    	 var interviewTypeHeader = "";
@@ -373,10 +393,17 @@ function getInternalInterviewsList(submissionId){
 	                    		 location = report.interviewId.location;
 	                    	 }
 	                    	 
-	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
-	                    	 result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.dateOfInterviewStr+' '+report.startTimeStr+' </span></h2>';
-	                    	 result = result + '<div class="content clearfix">';
-	                    	 result = result + '<div class="interview-type">';
+	   					     result = result + '<div id="accordion-sl" class="release-jobs positionRelative">';
+	   					     if(report.feedbackEndTime == "feedbackEndTime"){
+	   					    	result = result + '<i class="fa fa-handshake-o pull-right" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';	 
+	   					     }
+	   					     
+	   					     result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.dateOfInterviewStr+' '+report.startTimeStr+' </span></h2>';
+	                    	result = result + '<div class="content clearfix">';
+	                    	
+	                    	 result = result + '<div id="feedbackdiv'+report.interviewId.id+'" class="require_wrap_table demo" style="display:none;">';
+		                     result = result + '</div>';
+	                    	 result = result + '<div class="interview-type" id="interviewtypediv'+report.id+'" style="display:block;">';
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<div class="action-nav" >';
@@ -499,7 +526,9 @@ function getInternalInterviewsList(submissionId){
 	                     $('#accordion-sl .content').hide();
 	                    // $('#accordion-sl').find('.test2'+interviewId+'').addClass('active').next().slideDown('slow');
 	                     $('#accordion-sl h2:first').addClass('active').next().slideDown('slow'); 
-	                     $('#accordion-sl h2').click(function() {
+	                     $('#accordion-sl h2').click(function(id) {
+	                    	 $('.demo').hide();
+	                    	 $(".interview-type").show();
 	                         if($(this).next().is(':hidden')) {
 	                             $('#accordion-sl h2').removeClass('active').next().slideUp('slow');
 	                             $(this).toggleClass('active').next().slideDown('slow');
@@ -1177,3 +1206,178 @@ function notifyToApplicant(submissionId,offerId){
 	});
 </script>
 
+
+
+<!-- this script using for interview feedback Start -->
+<script type="text/javascript">
+function interviewFeedback(interviewId,templateId,id){
+	//$('.content').show();
+	$("#interviewtypediv"+id+"").slideToggle();
+	$("#feedbackdiv"+interviewId+"").toggle();
+	$(this).next('.content').slideDown();
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	type: "GET",
+	url: sourceleadUrl+"/getInterviewrsFeedbackList?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId,
+		success: function(data) {
+			var json = JSON.parse(data);
+			var result = "";
+			result = result +"<table id='requirementApproverPagination' cellspacing='0' width='100%' >"; 
+		    result = result +"<thead>"; 
+		    result = result +"  <tr>";  
+		    result = result +"    <th>Inteviewer Name</th>"; 
+		    result = result +"    <th>Date</th>"; 
+		    result = result +"    <th>Action</th>"; 
+		    result = result +"  </tr>"; 
+		    result = result +"</thead>";
+		    result = result +"<tbody>"; 
+			for (var i=0; i<json.length; i++)
+			{
+				var report = json[i];
+				if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
+					feedbackDate  = report.feedbackDate;
+				}else{
+					feedbackDate = "--";
+				}
+				
+				 result = result +"  <tr>";  
+				    result = result +'<td><div class="tbldata-dotdot-me">'+report.interviewerName+'</div></td>'; 
+				    result = result +' <td><div class="tblminwidth-100">'+feedbackDate+'</div></td>'; 
+				    if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
+				    	result = result +' <td><div class="tblminwidth-50"><span class="text-primary"><a onclick="viewfeedback('+report.id+',\''+templateId+'\',\''+report.feedbackStatus+'\');">View</a></span></div></td>';
+				    }else{
+				    	result = result +'<td><div class="tblminwidth-50"> &nbsp;<span class="text-danger">Notfilled</span></div></td>';
+				    }
+				     
+				    result = result +'</tr>'; 
+			}
+			result = result +"</tbody>"; 
+		    result = result +"</table>"; 
+		    $("#feedbackdiv"+interviewId+"").empty();
+		    $("#feedbackdiv"+interviewId+"").append(result);
+			
+		},
+	});
+    
+}
+
+</script>
+<script type="text/javascript">
+function viewfeedback(requirementInterviewerId,templateId,feedbackStatus){
+		var sourceleadUrl ='${sourceleadUrl}';
+		if(feedbackStatus == "Y"){
+			$('.shownofeedback').hide();
+			$('.showfeedback').show();
+			$(".bg_mask").fadeIn(200);
+			$.ajax({
+		    	type: "GET",
+		    	url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	 var submissionDetails = "";
+			    	 var details = eval(json.interviewTemplateJsonString);
+			    	   $.each(details, function( k, v ) {
+			    		   var value = '';
+			    		   if(v['value'] == null || v['value'] == '' || v['value'] == 'undefined'){
+			    			   var value = 'NO DATA';
+			    		   }else{
+			    			   var value = v['value'];
+			    		   }
+			    		   submissionDetails = submissionDetails + '<div class="clearfix formgroup">';
+			    		   submissionDetails = submissionDetails + '<div class="col-md-5">'+v['label'];
+			    		   submissionDetails = submissionDetails + '</div>';
+			    		   submissionDetails = submissionDetails +'<div class="col-md-7">'+value;
+			    		   submissionDetails = submissionDetails + '</div>';
+			    		   submissionDetails = submissionDetails + '<div class="clearfix">';
+			    		   submissionDetails = submissionDetails + '</div>';
+			    		   submissionDetails = submissionDetails + '</div>';
+			    	   }); 
+			    	   
+			    	     var result = "";
+				  		 result = result + ' <div class="close-btn2" onClick="closefeedback()"><i class="fa fa-close"></i></div>';
+				  		 result = result + '<div class="row">';
+				  		 result = result + '<div class="col-md-12">';
+				  		 result = result + '<div class="release-jobs submissionDetails">';
+				  	     result = result + '<div class="clearfix sub-details">';
+				  	     result = result + ' <h2 class="active">Interview Feedback Details</h2>';
+				  	     result = result + ' <div class="content clearfix" style="display: block;">';
+				  	     result = result + submissionDetails;
+				  	     result = result + ' </div>';
+				  	     result = result + ' </div>';
+				         result = result + ' </div>';
+				         result = result + ' </div>';
+	                   
+	                     $('#viewfeedbackdiv').empty();
+	             		 $('#viewfeedbackdiv').append(result).show();
+		        }
+			});
+		}else{
+			$('.shownofeedback').show();
+			$('.showfeedback').hide();
+			$(".bg_mask").fadeIn(200);
+			$.ajax({
+		    	type: "GET",
+		    	url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+			        	if(json.comment != null && json.comment != '' && json.comment != 'undefined'){
+			        		comment = json.comment;
+			        	}else{
+			        		comment = "";
+			        	}
+			        	if(json.interviewStatus != null && json.interviewStatus != '' && json.interviewStatus != 'undefined'){
+			        		interviewStatus = json.interviewStatus;
+			        	}else{
+			        		interviewStatus = "";
+			        	}
+			        	
+			        	
+			        	 var result = "";
+				  		 
+				  		 result = result + '<div class="row">';
+				  		 result = result + '<div class="col-md-12">';
+				  		 result = result + '<div class="release-jobs submissionDetails">';
+				  		result = result + ' <div class="close-btn2" onClick="closefeedback()"><i class="fa fa-close"></i></div>';
+				  	     result = result + '<div class="clearfix sub-details">';
+				  	     result = result + ' <h2 class="active">Interview Feedback Details</h2>';
+				  	     result = result + ' <div class="content clearfix" style="display: block;">';
+				  	       result = result +  '&nbsp &nbsp Comment :- &nbsp;'+comment;
+				  	     result = result + ' </div>';
+				  	        result = result + ' <div class="content clearfix">'; 
+					     result = result +  '&nbsp &nbsp Selected for Interview :- &nbsp;'+interviewStatus;
+					     result = result + ' </div>';
+				  	     result = result + ' </div>';
+				         result = result + ' </div>';
+				         result = result + ' </div>';
+				         
+				         
+			    	     /* var result = "";
+			    	     result = result + '<div class="clearfix positionRelative">';
+			    	     result = result + ' <div class="close-btn2" onClick="closefeedback()"><i class="fa fa-close"></i></div>';
+			  			 result = result + '<div class="release-jobs submissionDetails">';
+					     result = result + '<div class="clearfix sub-details">';
+					     result = result + ' <h2 class="active">Interview Feedback Details</h2>';
+					     result = result + ' <div class="content clearfix style="display: block;"">'; 
+					     result = result +  '&nbsp &nbsp Comment :- &nbsp;'+comment;
+					     result = result + ' </div>';
+					     result = result + ' <div class="content clearfix">'; 
+					     result = result +  '&nbsp &nbsp Selected for Interview :- &nbsp;'+interviewStatus;
+					     result = result + ' </div>';
+					     result = result + ' </div>';
+		                 result = result + ' </div>';
+	                     result = result + ' </div>';  */
+	                   
+	                   $("#noviewfeedbackdiv").empty();
+	                   $("#noviewfeedbackdiv").append(result);
+		        }
+			});
+		}
+		
+
+}
+function closefeedback(){
+	$(".bg_mask, #viewfeedbackdiv").fadeOut(200);
+}
+</script>
+<!-- this script using for interview feedback Ends -->

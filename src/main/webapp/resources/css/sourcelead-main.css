@@ -2354,17 +2354,12 @@ ul.tree-checkbox::before {
 	padding: 0 20px;
 	width: 100%;
 }
-.close-div {
-	background: #f60 none repeat scroll 0 0;
-	border: 1px solid #f60;
-	border-radius: 50%;
-	color: #fff;
-	cursor: pointer;
-	left: -15px;
-	padding: 6px 7px;
-	position: absolute;
-	top: -15px;
+.showfeedback .close-btn2, .submissionDetails  .close-btn2 {
+	top:0;
+	right: 0;
+	z-index: 9999;
 }
+
 .collapse-div.show-div, .collapse-div-adduser.show-div, .resume-addcomment.show-div, .addOffer-Req.show-div, .addInterview-Re.show-div, .addApplicant-Re.show-div {
 	visibility: visible;
 	opacity: 1;
@@ -4997,6 +4992,45 @@ margin-right: 10px;
 }
 .viewTemplate.feedbackTemplate .sjfb-field{
     margin-bottom: 0px !important;
+}
+.bg_mask {
+    position:absolute; width:100%; height:100%; background-color:#fff; top:0px; left:0px; z-index:9; display:none;
+    } 
+.showfeedback{
+    position: absolute;
+    top:0;left: 0;
+    width: 100%;
+    z-index: 9999;
+    padding:0 15px 15px;
+    display: none;
+    }
+    
+ .shownofeedback{
+	 position: absolute;
+	 top:0;left: 0;
+	 width: 100%;
+	 z-index: 9999;
+	 padding:0 15px 15px;
+	 display: block;
+ } 
+     
+.closediv {
+	background: #f60 none repeat scroll 0 0;
+	border: 1px solid #f60;
+	border-radius: 25%;
+	color: #fff;
+	cursor: pointer;
+	right: 10px;
+	padding: 1px 3px;
+	position: absolute;
+	top: 10px;
+}
+.demo table tr th{
+	height: 35px !important;
+}
+.demo table tr td{
+	height: 25px !important;
+	text-align: center;
 }
 /* media 320px */
 @media (max-width: 320px) {

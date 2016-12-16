@@ -83,6 +83,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Transient
 	private String clientName;
+	
+	@Transient
+	private Long interviewTemplateid;
+	
+	@Transient
+	private String feedbackEndTime;
 
 	public Long getId() {
 		return id;
@@ -228,6 +234,21 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setClientName(String clientName) {
 		this.clientName = clientName;
 	}
-	
+
+	public Long getInterviewTemplateid() {
+		return interviewTemplateid;
+	}
+
+	public void setInterviewTemplateid(Long interviewTemplateid) {
+		this.interviewTemplateid = interviewTemplateid;
+	}
+
+	public String getFeedbackEndTime() {
+		return feedbackEndTime;
+	}
+
+	public void setFeedbackEndTime(String feedbackEndTime) {
+		this.feedbackEndTime = feedbackEndTime;
+	}
 	
 }

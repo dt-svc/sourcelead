@@ -29,6 +29,7 @@ import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
@@ -158,7 +159,12 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 									
 									requirementInterview.setRemainedBefore(remainedBefore.toString());
 								}
-							   	
+								
+							   	if(jsonObj.has("interviewSubmissionTemplate") && jsonObj.getString("interviewSubmissionTemplate") != null){
+							   		SubmissionTemplate submissionTemplate = new SubmissionTemplate();
+									submissionTemplate.setId(Long.parseLong(jsonObj.getString("interviewSubmissionTemplate")));
+								   requirementInterview.setInterviewTemplateId(submissionTemplate);
+							   	}
 							   requirementInterview.setStatus(Constants.RECORD_ACTIVE);
 					           requirementInterview.setCreatedDate(new Date());
 					           requirementInterview.setCreatedBy(user.getUserCode());
@@ -266,11 +272,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 							             interviewer.setUpdatedBy(user.getUserCode());
 							            /* sendEmailToInterviewrs(candidate,interviewerUser,requirementSubmission, user, jsonObj.getString(c+"startTime"), jsonObj.getString(c+"endTime"), loginOrg, jsonObj.getString(c+"dateOfInterview"), jsonObj.getString(c+"location"),jsonObj.getString(c+"interviewType"),orgLocations);*/
 							             sendEmailToInterviewrs(candidate,interviewerUser,requirementSubmission, user, loginOrg,requirementInterview,orgLocations);
-							             if(jsonObj.has("interviewSubmissionTemplate") && !jsonObj.getString("interviewSubmissionTemplate").isEmpty()){
-							            	 String templateId = jsonObj.getString("interviewSubmissionTemplate");
-							            	 interViewerFeedbackTemplateSendEmailToInterviewrs(candidate,interviewerUser,requirementSubmission, user, loginOrg,requirementInterview,orgLocations,templateId); 
-							             }
 								         requirementInterviewerDao.storeRequirementInterviewer(interviewer);
+								         if(jsonObj.has("interviewSubmissionTemplate") && !jsonObj.getString("interviewSubmissionTemplate").isEmpty()){
+							            	 String templateId = jsonObj.getString("interviewSubmissionTemplate");
+							            	 interViewerFeedbackTemplateSendEmailToInterviewrs(candidate,interviewerUser,requirementSubmission, user, loginOrg,requirementInterview,orgLocations,templateId,interviewer); 
+							             }
 									}
 					           }
 							}
@@ -685,8 +691,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	 * @throws Exception
 	 * This method is send email from Interviewrs
 	 */
-	public void interViewerFeedbackTemplateSendEmailToInterviewrs(Candidate candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser,Org org,RequirementInterview requirementInterview,OrgLocations orgLocations,String templateId)	throws Exception {
-		 Long requirementInterviewid =requirementInterview.getId(); 
+	public void interViewerFeedbackTemplateSendEmailToInterviewrs(Candidate candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser,Org org,RequirementInterview requirementInterview,OrgLocations orgLocations,String templateId,RequirementInterviewer interviewer)	throws Exception {
+		 Long requirementInterviewerid =interviewer.getId(); 
 		EmailMessage emailMessage = new EmailMessage();
 		
 		if(interviewerUser.getFirstName()!=null){
@@ -723,14 +729,14 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String time = "";
 		 String endTime = ""; 
 		 if(requirementInterview.getStartTime() != null){
-	    	 String hours = requirementInterview.getStartTime().getHours()+"";
-	    	 String minutes = requirementInterview.getStartTime().getMinutes()+"";
+	    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
+	    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());;
 	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
 	    }
 	    
 	    if(requirementInterview.getEndTime() != null){
-	    	 String hours = requirementInterview.getEndTime().getHours()+"";
-	    	 String minutes = requirementInterview.getEndTime().getMinutes()+"";
+	    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
+	    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
 	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
 	    }
 		 
@@ -748,7 +754,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("interviewTime", interviewTime);
 			 globalVarsMap.put("interviewType",interviewTypeValue);
 			 globalVarsMap.put("applicantName",candidateName);
-			 globalVarsMap.put("FeedbackLink","<a href='"+sourceleadUrl+"/"+"publicInterviewFeedBackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewid+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>");
+			 globalVarsMap.put("FeedbackLink","<a href='"+sourceleadUrl+"/"+"publicInterviewFeedBackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerid+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>");
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
