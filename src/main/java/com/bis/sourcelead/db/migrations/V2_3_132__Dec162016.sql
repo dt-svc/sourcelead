@@ -1,10 +1,8 @@
-<<<<<<< HEAD
 CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_INTERVIEW','INTERVIEW_TEMPLATE_ID','BIGINT NULL AFTER `STATUS`');
 ALTER TABLE `sourcelead`.`REQUIREMENT_INTERVIEW` ADD FOREIGN KEY(INTERVIEW_TEMPLATE_ID) REFERENCES `sourcelead`.SUBMISSION_TEMPLATE(ID);
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','INTERVIEW_FEEDBACK_TEMPLATE','REQUIREMENT_INTERVIEWER_ID','BIGINT NULL AFTER `REQUIREMENT_INTERVIEW_ID`');
 ALTER TABLE `sourcelead`.`INTERVIEW_FEEDBACK_TEMPLATE` ADD FOREIGN KEY(REQUIREMENT_INTERVIEWER_ID) REFERENCES `sourcelead`.REQUIREMENT_INTERVIEWER(ID);
-=======
 
 #vendor negotiate to the Requirement Rate.
 
@@ -19,4 +17,3 @@ INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_S
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES 
 											('ClientRateNegotiation','Email', 'ClientRateNegotiation', 'Used mail from vendor to Client. ', 'New rate request from {{ClientRateNegotiation.vendorContact}} for {{ClientRateNegotiation.requirementName}}.','org', 'Best Regards,\n{{ClientRateNegotiation.loginUser}}\n{{ClientRateNegotiation.loginOrgName}}.', 'Dear {{ClientRateNegotiation.clientContact}},\n\n {{ClientRateNegotiation.loginOrgName}} requested new rate for the {{ClientRateNegotiation.requirementName}} for {{ClientRateNegotiation.candidateName}}.\n     Please find out the details,if you acknowledge with it click on the accept link.\n {{UserRateNegotiation.negotiationTable}}','N', 'SLADMIN', 'sourcelead', 'sourceleadIN');
 									
->>>>>>> 546f51fcf7e53dc6791cefe49c2b63be5c324319
