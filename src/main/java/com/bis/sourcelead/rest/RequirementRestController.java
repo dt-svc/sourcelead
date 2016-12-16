@@ -428,11 +428,11 @@ public class RequirementRestController {
 		String resultJson;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-        List<Candidate> candidateList = recommendationsService.getAllCandidatesByLocation(orgLocation.getId());
+       // List<Candidate> candidateList = recommendationsService.getAllCandidatesByLocation(orgLocation.getId());
 		
 		Requirement requirement = recommendationsService.getRequirementByRequirementId(requirementId);
 		
-		List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScore(candidateList,requirement);
+		List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScoreByUsingElk(orgLocation.getId(),requirement);
 		
 		resultJson = commonUtil.toJSON(candidateListCopy);
 		return resultJson;

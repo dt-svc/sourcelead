@@ -80,4 +80,9 @@ public interface CandidateService {
 	public File getCandidatePdf(List<Candidate> candidatesList, String orgName) throws Exception;
 	
 	public List<Candidate> getHotListCandidatesListByOrgLocationID(Long orgLocationId,String candidateType) throws Exception;
+	
+	
+	public void saveOrUpdateCandidateElkDocument(Candidate candidate) throws Exception;
+	
+	public Long getCandidatesCountByOrgLocationID(Long orgLocationId);
 }
