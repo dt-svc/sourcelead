@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementInterviewDao;
 import com.bis.sourcelead.dao.RequirementInterviewHistoryDao;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
@@ -85,6 +84,12 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			    	interviewHistory.setInterviewTemplateid(requirementInterview.getInterviewTemplateId().getId());
 			    }
 			    
+			    if(interviewHistory.getSubmissionId().getVendorLocationId() != null){
+			    	interviewHistory.setIsNotifyToVendorRequired(Constants.YES);
+				}else{
+					interviewHistory.setIsNotifyToVendorRequired(Constants.NO);
+				}
+			    
 			    if(requirementInterview.getSubmissionId().getRequirement().getClientId() != null){
 					if(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
 						interviewHistory.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
@@ -122,6 +127,11 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			}
 		}
 		return interviewslist;
+	}
+	
+	@Override
+	public List<RequirementInterviewHistory> getAllInterviewListByCurrentDate(String currentTime, String triggerTime) {
+		return requirementInterviewHistoryDao.getAllInterviewListByCurrentDate(currentTime,  triggerTime);
 	}
 
 }

@@ -34,7 +34,7 @@ public class RequirementRateSubmissionNegotiation {
     @JoinColumn(name="REQUIREMENT_SUBMISSION_ID", nullable=false )        
     private RequirementSubmission requirementsubmissionId;
 	
-	@Column(name = "RATE_INITIATOR_TYPY")
+	@Column(name = "RATE_INITIATOR_TYPE")
 	@Enumerated(EnumType.STRING)
 	private SubmissionRateStatus rateInitiatorType;
 	
@@ -84,6 +84,18 @@ public class RequirementRateSubmissionNegotiation {
 	
 	@Transient
 	private String proposeByName;
+	
+	@Transient
+	private String initiatorOrgLocationIdStr;
+	
+	@Transient
+	private String previouslyProposedBy;
+	
+	@Transient
+	private String requirementName;
+	
+	@Transient
+	private String requirementRate;
 	
 
 	public Long getId() {
@@ -229,4 +241,37 @@ public class RequirementRateSubmissionNegotiation {
 	public void setProposeByName(String proposeByName) {
 		this.proposeByName = proposeByName;
 	}
+
+	public String getInitiatorOrgLocationIdStr() {
+		return initiatorOrgLocationIdStr;
+	}
+
+	public void setInitiatorOrgLocationIdStr(String initiatorOrgLocationIdStr) {
+		this.initiatorOrgLocationIdStr = initiatorOrgLocationIdStr;
+	}
+
+	public String getPreviouslyProposedBy() {
+		return previouslyProposedBy;
+	}
+
+	public void setPreviouslyProposedBy(String previouslyProposedBy) {
+		this.previouslyProposedBy = previouslyProposedBy;
+	}
+
+	public String getRequirementName() {
+		return requirementName;
+	}
+
+	public void setRequirementName(String requirementName) {
+		this.requirementName = requirementName;
+	}
+
+	public String getRequirementRate() {
+		return requirementRate;
+	}
+
+	public void setRequirementRate(String requirementRate) {
+		this.requirementRate = requirementRate;
+	}
+	
 }

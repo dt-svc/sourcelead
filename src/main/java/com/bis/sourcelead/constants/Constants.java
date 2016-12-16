@@ -73,6 +73,8 @@ public class Constants {
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
 	public static String INTERVIEWER_TEMPLATE = "Interviewer Template";
 	
+	public static String HOT_LIST_CAMPAIGN = "HotListCampaign";
+	
 	public static String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static String ADD_OFFER_MAIL ="Forward the Mail";
 
@@ -93,6 +95,9 @@ public class Constants {
 	
 	public static String CLIENT_INTERVIEW = "CLIENT_INTERVIEW";
 	public static String INTERVIEW = "INTERVIEW";
+	
+	
+	public static String MAIL_BOX_SENT = "Sent";
 	
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
@@ -142,6 +147,7 @@ public class Constants {
 	public static String APPLICANT_REJECT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION = "ApplicantRejectanceRequirement";
 	
 	public static String APPLICANT_NEGOTIATE_REQUIREMENT = "ApplicantNegotiateRequirement";
+	public static String USER_RATE_NEGOTIATION = "UserRateNegotiation";
 
 
 
@@ -256,6 +262,7 @@ public class Constants {
 	public static String MAIL_ACCEPTED = "Accepted";
 	public static String MAIL_REJECTED = "Rejected";
 	public static String OFFERMADE = "OFFERMADE";
+	public static String CLIENT_OFFERMADE = "CLIENT_OFFERMADE";
 	
 	
 	public static String REQUIREMENT_STATUS = "Draft";
@@ -291,6 +298,8 @@ public class Constants {
     
     public static String[] REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS={"Name","Email","Phone No","Experience","OfferDateJoining","Position","Offer Rate","Offerd Date","Attachment"};
     
+    public static String[] REQUIREMENT_PIPELINE_REJECTED_EXCEL_HEADERS={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Rejected On","Rejected By","Rejected Stage","Status"};
+    
     public static String[] TIMESHEET_EXCEL_HEADERS = {"Projects","Tasks","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Status"};
    
     public static String[] CLIENT_EXCEL_HEADERS = {"Client Name","Website","Location","Tiers","Number of Contacts"};
@@ -305,6 +314,13 @@ public class Constants {
     
     public static String CLIENT = "Client";
     
+    public static String ELK_CANDIDATE_INDEX = "candidates";
+    		
+    public static String ELK_CANDIDATE_TYPE = "candidate";
+    
+    public static String ELK_CANDIDATE_ID_PREFIX = "CND";
+    
+    
     public static String[] PROJECT_ASSIGNED_EMPLOYEES = {"Employee","Email id","Project Start Date","Project End Date","Approved Hours","Rejected Hours","Wiating for Approval","Saved Hours"};	
 
     public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
@@ -315,4 +331,15 @@ public class Constants {
     
     public static int level1 =1;
     public static int level2 =2;
+    
+    public static String SHORTLIST_COUNT= "Shortlisted Applicants:";
+    public static String INTERVIEW_COUNT= "Interview Applicants: ";
+    public static String OFFER_COUNT= "Offer Applicants:";
+    public static String REJECTED_COUNT= "Rejected Applicants :";
+    public static String SUBMITTED_APPLICANTS_COUNT= "Submitted Applicants :";
+    
+    
+    
+     
+   
 }

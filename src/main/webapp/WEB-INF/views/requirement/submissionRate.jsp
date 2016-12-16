@@ -24,6 +24,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
  <script src="resources/js/formvalidator.js"></script>
+ <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script>
 		$(document).ready(function() { 
 			var rateStatus = '${param.rateStatus}';
@@ -36,9 +37,23 @@
 			if(rateStatus == 'Negotiate'){
 				$("#negotiation").removeAttr("style");		
 			}
+			getNegotiationHistory();
 		});
 </script>
 
+<style>
+body {
+background-color:#e1e6fa;
+}
+.project_wrap_table table {
+	border: 1px solid #fff;
+	border-bottom: 1px solid #909090;
+	margin-bottom: 10px;
+}
+.project_wrap_table table tr td:last-child {
+width: auto;
+}
+</style>
 <body>
 <div class="wraper"> 
   <!-- Header Area -->
@@ -54,7 +69,7 @@
   <!-- Header Area --> 
 
   <!-- Content Area -->
-  <section class="success-wraper container">
+  <section class="container">
 		<div class="row">
 		  		<div id="accept" style="display:none">
 				          <div class="col-md-8 col-md-offset-2 inner-widget success-user">
@@ -82,25 +97,26 @@
 					</form>							  
 		  		</div>
 		  		<div id="negotiation" style="display:none">
+		  		
 		  			<form id="negotiation_form" name="negotiation_form" method="post" >
-				          <div class="col-md-8 col-md-offset-2 inner-widget negotiation-user" id="negotiationDivId">
-							  <div class="col-md-6">
-							  	<i class="fa fa-handshake-o fa-3x"></i>
-							  <p class="reason-msg">Rate Negotiation</p>
+				          <div class="col-md-8 rate-negotiation project_wrap_table" id="negotiationDivId">
+				          
+							  <div class="clearfix">
+							  <h4>Rate Negotiation</h4>
 							  </div>
-							  <div class="col-md-6">
-								  <div class="col-md-12 mb10">
+							  <div id="ratehistoryDiv"></div>
+							  <div class="clearfix mt" id="fieldsDiv" style="display:none">
+								  <div class="col-md-12 mb10 hidden">
 								   Requirement Rate : ${requirementSubmission.requirement.rate}
 								  </div>
 								  
-								  
-								   <div class="col-md-12 mb10">
+								   <div class="clearfix">
 								  <div class="row">
-								  <div class="col-md-7">
+								  <div class="col-md-3">
 								  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="rate" id="rateProposal" name="rateProposal" data-validation="required validate_Space validate_float validate_length length1-8">
 								  </div> 
-								  
-								  <div class="col-md-5 select-field">
+								  <input type="hidden" name="candidateId" id="candidateId" value="${requirementSubmission.candidate.id}"/> 
+								  <div class="col-md-3 select-field">
 								  <select  class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Type" data-validation="required">
 										<option value="">Rate Per</option>
 					                    <option>Hourly</option>
@@ -112,13 +128,17 @@
 					                    <option>Yearly</option>
 								  </select>
 								  </div>
+								  <div class="clearfix"></div>
+								  <div class="col-md-6 mt">
+									  <textarea class="form-control" rows="2" name="comment" placeholder="Comment" id="comment"></textarea>	
+								  </div>
 								  </div>
 								  </div>
 								 
 								 <!--  <div class="col-md-12 mb10">
 									  <textarea row="1" class="form-control" placeholder="Comments" name="comments"></textarea>
 								  </div> -->
-								  <div class="col-md-12 mt10"><input type="button" class="btn btn-sm btn-default" id="negotiationButtonId" onclick="storeNegotiation();" value="submit"></div>
+								  <div class="col-md-6 mt10"><input type="button" class="btn btn-sm btn-primary pull-right" id="negotiationButtonId" onclick="storeNegotiation();" value="Submit"></div>
 							  	
 							  </div>
 						 </div>
@@ -127,9 +147,10 @@
 		 <div>
   </section>
   <!-- Footer Area -->
-  <footer class="footer-area footer-area-active clearfix">
+  <footer class="footer-publicpages clearfix">
+  <div class="container">
     <div class="copyright"> @ Copyright : Source Lead, All right reserved </div>
-    <div class="powered-by"> Powered by: businessintelli.com </div>
+    <div class="powered-by"> Powered by: businessintelli.com </div></div>
   </footer>
   <!-- Footer Area --> 
 </div>
@@ -141,6 +162,7 @@
 	function storeReject() {
 			var sourceleadUrl = '${sourceleadUrl}';
 			var submissionId = '${submissionId}';
+			var type = '${type}';
 			var rejectreason = document.getElementById("rejectId").value;
 			var frm = $('#reject_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -148,7 +170,7 @@
 			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/storeReject?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason,
+						url : sourceleadUrl+"/storeReject?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason+"&type="+type,
 						success : function(data) {
 							if("success"){
 								$('#rejectIdDiv').empty();
@@ -171,26 +193,25 @@
 
 <script type="text/javascript">
 	function storeNegotiation() {
-		
-			
 			var sourceleadUrl = '${sourceleadUrl}';
 			var submissionId = '${submissionId}';
+			var type = '${type}';
 			if ($('#negotiation_form').validate(false, validationSettings)){ 
 			$('#negotiationButtonId').addClass('button').val('Processing..').attr('disabled','disabled');
 			var frm = $('#negotiation_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
-			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&submissionId="+submissionId,
+						url : sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&submissionId="+submissionId+"&type="+type,
 						success : function(result) {
 							$('#rateProposal').val('');
 							$('#rateType').val('');
 							$('#negotiationButtonId').addClass('button').val('submit').removeAttr("disabled");
-							$('#negotiationDivId').append("<span><center>Rate submitted successfully !!</center></span>");
+							$("#fieldsDiv").css({ display: "none" });
+							getNegotiationHistory();
 						},
-			});
+			});   
 		}else{
 			    $('body').on('blur', '#negotiation_form', function() {
 				$("#negotiation_form").showHelpOnFocus();
@@ -202,6 +223,105 @@
 	
 </script>
 
+<script type="text/javascript">
+	function getNegotiationHistory() {
+			var sourceleadUrl = '${sourceleadUrl}';
+			var submissionId = '${submissionId}';
+			var actionUsertype = '${type}';
+			var candidateId = '${candidateId}';
+			$.ajax({
+						type : "POST",
+						url : sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId,
+						success : function(data) {
+							if("success"){
+								var json = JSON.parse(data);
+								
+								var result = "";
+								result = result +"<html>";
+			                	 result = result +"<table id='rateNegotiationTable' width='100%' cellpadding='0' border='2' cellspacing='0'>"; 
+			                     result = result +"<thead>"; 
+			                     result = result +"  <tr>"; 
+			                     result  = result + '<th> Requirement Title </th>';
+			                 	 result  = result + '<th> Requirement Rate </th>';
+			                 	 result  = result + '<th> Proposed Rate </th>';
+			                 	 result  = result + '<th> Proposed By </th>';
+			                     result = result +"  </tr>"; 
+			                     result = result +"</thead>";
+			                     result = result +"<tbody>"; 
+			                     for (var i = 0; i < json.length; i++) { 
+			                    	 var opt = json[i];  
+			                    	 if(i==0){
+			                    		 result  = result + '<input type="hidden" id="lastProposedBy" value='+opt.previouslyProposedBy+'>';
+			                    	 }
+			                    	 result  = result + '         <tr>';
+			                    	 if(opt.requirementName != null && opt.requirementName != '' && opt.requirementName != 'undefined'){
+			                    	    result  = result + '<td><div><span>'+opt.requirementName+'</span></div></td>';
+		                    	     }else{
+		                    	    	 result  = result + ' <td><div><span>--</span></div></td>';
+		                    	     }
+			                    	 
+			                    	 if(opt.requirementRate != null && opt.requirementRate != '' && opt.requirementRate != 'undefined'){
+			                    	 result  = result + ' <td><div><span>'+opt.requirementRate+'</span></div></td>';
+			                    	 }else{
+			                    		 result  = result + ' <td><div><span>--</span></div></td>';
+			                    	 } 
+			                    	 if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined'){
+				                    	 result  = result + '<td><div><span>'+opt.expectedRate+'</span></div></td>';
+			                    	 }else{
+			                    		 result  = result + '<td><div><span>--</span></div></td>'; 
+			                    	 }
+			                    	 
+			                    	 if(opt.proposeByName != null && opt.proposeByName != '' && opt.proposeByName != 'undefined'){
+				                    	 result  = result + '<td><div><span>'+opt.proposeByName+'</span></div></td>';
+			                    	 }else{
+			                    		 result  = result + '<td><div><span>--</span></div></td>';
+			                    	 }
+			                    	
+			                    	 result  = result + '</tr>';
+			                      } 
+			                     result = result +" </tbody>";
+			                     result = result +"</table>";
+			                     result = result +"</html>";
+			                 
+			                     $("#ratehistoryDiv").empty(); 
+			                     $("#ratehistoryDiv").append(result); 
+			                     isShowForm(actionUsertype);
+			                     pagination();
+							}
+							
+						},
+					});
+			       
+	} 
+</script>
+
+<script>
+function pagination(){  
+    $('#rateNegotiationTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[6, 15, 20, -1], [6, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+
+<script type="text/javascript">
+function isShowForm(actionUsertype){
+	 var lastProposedBy = $("#lastProposedBy").val();
+     if(lastProposedBy != null && lastProposedBy != "" && lastProposedBy !='undefined' && lastProposedBy == actionUsertype){
+    	 $('#negotiationDivId').append("<span><center>Rate submitted successfully !! Kindly wait for the Response...</center></span>");
+    	 document.getElementById("fieldsDiv").style.display="none";
+     }else{
+    	 document.getElementById("fieldsDiv").style.display="";
+     }
+     
+}
+</script>
 
 <script type="text/javascript">
 	(function($) {

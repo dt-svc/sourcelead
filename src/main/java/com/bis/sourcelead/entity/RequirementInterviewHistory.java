@@ -85,10 +85,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	private String clientName;
 	
 	@Transient
+
 	private Long interviewTemplateid;
 	
 	@Transient
 	private String feedbackEndTime;
+
+    private String isNotifyToVendorRequired;
+
 
 	public Long getId() {
 		return id;
@@ -251,4 +255,13 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 		this.feedbackEndTime = feedbackEndTime;
 	}
 	
+
+	public String getIsNotifyToVendorRequired() {
+		return isNotifyToVendorRequired;
+	}
+
+	public void setIsNotifyToVendorRequired(String isNotifyToVendorRequired) {
+		this.isNotifyToVendorRequired = isNotifyToVendorRequired;
+	}
+
 }

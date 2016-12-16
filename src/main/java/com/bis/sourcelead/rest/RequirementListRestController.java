@@ -40,12 +40,16 @@ import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
+import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionCounts;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -56,6 +60,7 @@ import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementOffersService;
+import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementPipelineExportService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
@@ -131,6 +136,9 @@ public class RequirementListRestController {
 	 @Autowired
 	 private RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	 
+	 @Autowired
+	 private RequirementRateSubmissionNegotiationService requirementRateSubmissionNegotiationService;
+
 	 @Autowired
 	 RequirementPipelineExportService requirementPipelineExportService;
 	 
@@ -262,9 +270,26 @@ public class RequirementListRestController {
 					}
 					if(requirement.getSpocId() !=null){
 						if(requirement.getClientId() !=null ){
-							requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+							if(requirement.getClientId().getInitiatorType().equalsIgnoreCase("Client")){
+								requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+							}
+							if(requirement.getClientId().getInitiatorType().equalsIgnoreCase("Vendor")){
+								requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+							}
 						}
-					requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
+					//requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
+					
+					if(requirement.getSpocId().getInitiatorLocationId().getId() == loginOrgLocation.getId() ){
+						
+						if(requirement.getSpocId().getSpocUser().getFirstName() != null && requirement.getSpocId().getSpocUser().getFirstName() != "" && requirement.getSpocId().getSpocUser().getLastName() != null && requirement.getSpocId().getSpocUser().getLastName() != "" ){
+							requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
+						}else{
+							requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName());
+						}
+					 }
+					if(requirement.getSpocId().getResponderLocationId().getId() == loginOrgLocation.getId()){
+						requirement.setSpocName(requirement.getSpocId().getOwnerUser().getFirstName()+" "+requirement.getSpocId().getOwnerUser().getLastName());
+					}
 					requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
 					requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
 					/*requirement.setClientSubmissionTemplate(requirement.getClientSubmissionTemplateId().getTemplateName());*/
@@ -427,10 +452,33 @@ public class RequirementListRestController {
 									requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
 									requirementSubmission.setTotalNoOfInterviews(numberOfInterviews.size());
 									requirementSubmission.setRequirementInterviewHistoryList(numberOfInterviews);
+									
+									RequirementSubmission clientSubmission = requirementSubmissionService.getClientSubmissionsBySubmissionIdAndOrgLocationId(requirementSubmission.getId(), requirementSubmission.getOrgLocations().getId());
+									
+									if(clientSubmission != null){
+										requirementSubmission.setClientSubmissionId(clientSubmission.getId().toString());
+										RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(clientSubmission.getId());
+										if(pastRequirementRateSubmissionNegotiation != null){
+											requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+										}
+									}else{
+										RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
+										if(pastRequirementRateSubmissionNegotiation != null){
+											if(pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.VENDOR) || pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.CLIENT)){
+												requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+											}else{
+												requirementSubmission.setExpectedCTC(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+											}
+											
+										}
+									}
+									
 									if(requirementSubmission.getCreatedDate() != null){
 										requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 									}
-									
+									if(requirementSubmission.getUpdatedDate() != null){
+										requirementSubmission.setUpDatedStr(Constants.DF_YMD.format(requirementSubmission.getUpdatedDate()));
+									}
 									User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 									requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
 									requirementSubmission.setResumeName(candidateResumes.getFileName());
@@ -770,7 +818,13 @@ public class RequirementListRestController {
 						else if("SUBMIT_TO_CLIENT".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
 							numOfSubmitToClient++;
 						}
-						else if("OFFERMADE".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+						else if("OFFERMADE".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString()) 
+								|| "OFFERACCEPTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
+								|| "OFFERREJECTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
+								|| "CLIENT_OFFERMADE".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
+								|| "CLIENT_OFFERACCEPTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
+								|| "CLIENT_OFFERREJECTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())
+								){
 							numOfOffers++;
 						}else if("REJECTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
 							numOfRejected++;
@@ -825,17 +879,40 @@ public class RequirementListRestController {
 				} 
      }
 
+		@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
+		 @RequestMapping(value = "/getRequirementTemplateListByOrgLocationsId" , method = RequestMethod.POST)
+		 public @ResponseBody  String getRequirementTemplateListByOrgLocationsId(HttpServletRequest request) throws Exception {
+			 
+				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			    List<Requirement> reqTemplatesList = requirementService.getAllRequirementTeplateJobsByOrgLocationId( loginOrgLocation.getId(),  user);
+			    String resultJson;
+			    resultJson = commonUtil.toJSON(reqTemplatesList);
+				return resultJson;
+	     }
+		 
+		 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
+		 @RequestMapping(value = "/getRequirementTemplateByRequirementId" , method = RequestMethod.POST)
+		 public @ResponseBody  String getRequirementTemplateByRequirementId(@RequestParam(value="requirementId", required=false) Long  requirementId,
+				 HttpServletRequest request) throws Exception {
+			 
+				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				Requirement requirement = requirementService.getRequirementTemplateByRequirementId(requirementId,loginOrgLocation.getId());
+			    String resultJson;
+			    resultJson = commonUtil.toJSON(requirement);
+				return resultJson;
+	     }
+		 
 
-
-
-@RequestMapping(value = "/getSubmissionsExportByRequirementId")
-
-@ResponseBody  void getSubmissionsExportByRequirementId(@RequestParam(value="requirementId", required=false) String  requirementId,@RequestParam(value="submissionType", required=false) String  submissionType,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		@PreAuthorize("hasAnyRole('ROLE_EXPORT_PIPELINE')")
+		@RequestMapping(value = "/getSubmissionsExportByRequirementId")
+		@ResponseBody  void getSubmissionsExportByRequirementId(@RequestParam(value="requirementId", required=false) String  requirementId,@RequestParam(value="submissionType", required=false) String  submissionType,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			File file =null;
-			//TimeSheetSubmissionCount requirementSubCount= null;
+			RequirementSubmissionCounts requirementSubmissionCounts = getRequirementSubmissionsCount(Long.valueOf(requirementId),user,loginOrgLocation);
 			if(requirementId !=null && !requirementId.isEmpty()){
 				List<RequirementSubmission> requirementStatusList = null;
 				if(!"all".equalsIgnoreCase(submissionType)){
@@ -895,10 +972,13 @@ public class RequirementListRestController {
 							if(requirementSubmission.getCreatedDate() != null){
 								requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 							}
-							
+							if(requirementSubmission.getUpdatedDate() != null){
+								requirementSubmission.setUpDatedStr(Constants.DF_YMD.format(requirementSubmission.getUpdatedDate()));
+							}
 							User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 							requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
 							requirementSubmission.setResumeName(candidateResumes.getFileName());
+							requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getPreviousSubmissionStatus());
 							Candidate candidate = candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
 							List<Candidate> candidateList = new ArrayList<>();
 							candidateList.add(candidate);
@@ -911,10 +991,11 @@ public class RequirementListRestController {
 							}
 							}
 
-					}file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrg().getOrgName(),exportType,requirementId,submissionType);
-				}else{
-					 file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrg().getOrgName(),exportType,requirementId,submissionType);
+					}
+					//file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrg().getOrgName(),exportType,requirementId,submissionType, requirementSubmissionCounts);
 				}
+					 file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrg().getOrgName(),exportType,requirementId,submissionType,requirementSubmissionCounts);
+				
 				 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 					if (mimeType == null) {
 						mimeType = "application/octet-stream";
@@ -929,6 +1010,49 @@ public class RequirementListRestController {
 					response.getOutputStream().flush();	
 				
 				
+			
+}
+}
+
+
+private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirementId, User user, OrgLocations loginOrgLocation) throws Exception {
+	int numOfShortList = 0;
+	int numOfInterview = 0;
+	int numOfSubmitToClient = 0;
+	int numOfOffers = 0;
+	int numOfRejected = 0;
+	RequirementSubmissionCounts requirementSubmissionCounts = new RequirementSubmissionCounts();
+	if(requirementId !=null){
+		List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+		
+		for(RequirementSubmission rmentSubmission :requirementSubmissions){
+			
+			if("SHORTLIST".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+				numOfShortList++;
 			}
+			else if("INTERVIEW".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+				numOfInterview++;
+			}
+			else if("SUBMIT_TO_CLIENT".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+				numOfSubmitToClient++;
+			}
+			else if("OFFERMADE".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+				numOfOffers++;
+			}else if("REJECTED".equalsIgnoreCase(rmentSubmission.getSubmissionStatus().toString())){
+				numOfRejected++;
+			}
+
+		}
+		requirementSubmissionCounts.setNumOfShortList(numOfShortList);
+		requirementSubmissionCounts.setNumOfInterview(numOfInterview);
+		requirementSubmissionCounts.setNumOfSubmitToClient(numOfSubmitToClient);
+		requirementSubmissionCounts.setNumOfOffers(numOfOffers);
+		requirementSubmissionCounts.setNumOfRejected(numOfRejected);
+		requirementSubmissionCounts.setSubmittedCount(requirementSubmissions.size());
+		
+
+	}
+	return requirementSubmissionCounts;
+	
 }
 }

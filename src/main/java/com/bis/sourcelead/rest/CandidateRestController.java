@@ -33,11 +33,13 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -80,6 +82,9 @@ public class CandidateRestController {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private TeamService teamService;
 	
 	/**
 	 * @author prasad k
@@ -335,6 +340,18 @@ public class CandidateRestController {
 			return commonUtil.toJSON(userList);
 			
 		}
+	 
+	 @PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
+	 @RequestMapping(value = "/getTeams", method = RequestMethod.POST)
+		public @ResponseBody String getTeams(HttpServletRequest request) throws Exception {
+			String resultJson = null;
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<Team> teamList = teamService.getTeamListByOrgLocationID(orgLocations.getId());
+			resultJson = toJSON(teamList);
+			return resultJson;
+		}
+	 
+	 
 	 
 	 public String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

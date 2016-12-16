@@ -303,17 +303,16 @@ public class SubmissionsRestController {
     
     @PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
     @RequestMapping(value = "/submitShortlistedToClient" , method = RequestMethod.POST)
-	   public String submitShortlistedToClient(@RequestParam(value="requirementId", required=false) Long requirementId,
-			   @RequestParam(value="submissionsList", required=false) String submissionsList,HttpServletRequest request) throws Exception {
+	   	public String submitShortlistedToClient(@RequestParam(value="requirementId", required=false) Long requirementId,
+			   @RequestParam(value="submissionsList", required=false) String submissionsList,
+			   @RequestParam(value="selectedShortlistsRate", required=false) String selectedShortlistsRate, HttpServletRequest request) throws Exception {
     	
     	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
     	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
     	 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
     	
-    	 requirementSubmissionService.storeClientSubmission(requirementId, user, orgLocations, submissionsList,org);
-    	 
-    	
-    	return "success";
+    	 requirementSubmissionService.storeClientSubmission(requirementId, user, orgLocations, submissionsList, selectedShortlistsRate, org);
+    	 return "success";
     }
     
     
@@ -373,23 +372,36 @@ public class SubmissionsRestController {
     	
     }
     
+    
+    
+    /**
+     * 
+     * author : Pavan Jampana
+     * desc : This method is used to Reject Applicant from 
+     * 		  Requirement Pipeline List from any Stage. 
+     */
+    
     @RequestMapping(value = "/rejectApplicant")
 	public @ResponseBody String rejectApplicant(@RequestParam(value="requirementId", required=false) Long requirementId,@RequestParam(value="submissionId", required=false) Long submissionId,
 			                                              @RequestParam(value="reason", required=false) String reason,
 			                                              HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+		
+		//to update submission history 
+		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+		requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
+		requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.REJECTED.getValue());
+		
+		//to update Submission status 
 		requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
 		requirementSubmission.setRejectedReason(reason);
 		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 		requirementSubmission.setUpdatedBy(user.getUserCode());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		
-		RequirementSubmissionHistory requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementSubmissionHistoryBySubmissionId(submissionId);
-		requirementSubmissionHistory.setFromStage(requirementSubmissionHistory.getToStage());
-		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 		
 		return "success";

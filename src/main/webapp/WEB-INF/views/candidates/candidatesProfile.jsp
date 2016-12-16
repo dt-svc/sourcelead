@@ -127,6 +127,14 @@ function editCandidate(candidateId){
             			 	if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
             			 		experienceYears = json.experienceYears;            			 		
             			 	}
+            			 	
+            			 	var experienceMonths = '';
+            			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
+            			 		experienceMonths = json.experienceMonths;            			 		
+            			 	}else{
+            			 		experienceMonths = '';  
+            			 	 }
+            			 	
             			 	var summary = '';
             			 	if(json.summary != null && json.summary != '' && json.summary != 'undefined'){
             			 		summary = json.summary;            			 		
@@ -278,35 +286,57 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
 							result = result + '<div class="row">';
-							result = result + '<div class="col-md-7">';
-							result = result + '<input type="text" class="form-control input-sm" name="experienceYears"  value="'+experienceYears+'" placeholder=" Experience Years">';
+							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
+							
+							result = result + '<select  class="input-sm form-control" name="experienceYears"  id="experienceYears" field-name="Experience Years" onchange="javascript:disableMonths();">';
+							result = result + '<option value="">Select Year</option>';
+							
+							<c:forEach var="i" begin="0" end="24" >
+								result = result  +'<option value="${i}" '  + (json.experienceYears == "${i}" ? "selected" : '') +  '>${i}</option>';
+							</c:forEach>
+							
+							if(json.experienceYears == "25+"){
+								result = result  +'<option value="25+" '+ (json.experienceYears == "25+" ? "selected" : '') +'>25+</option>';
+							}else{
+								result = result  +'<option>25+</option>';
+							}
+							
+							result = result + '</select>';
 							result = result + '</div>';
 							
-							result = result + '<div class="col-md-5 custom-fields select-arrow select-field">';
+							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths">';
-							result = result + '<option value="">Select Months</option>';
-							result = result  +'<option value="1" '  + (json.experienceMonths == 1 ? "selected" : '') +  '>1</option>';
-							result = result  +'<option value="2"  '+ (json.experienceMonths == 2 ? "selected" : '') +' >2</option>';
-							result = result  +'<option value="3"  '+ (json.experienceMonths == 3 ? "selected" : '') +' >3</option>';
-							result = result  +'<option value="4"  '+ (json.experienceMonths == 4 ? "selected" : '') +' >4</option>';
-							result = result  +'<option value="5"  '+ (json.experienceMonths == 5 ? "selected" : '') +' >5</option>';
-							result = result  +'<option value="6"  '+ (json.experienceMonths == 6 ? "selected" : '') +' >6</option>';
-							result = result  +'<option value="7"  '+ (json.experienceMonths == 7 ? "selected" : '') +' >7</option>';
-							result = result  +'<option value="8"  '+ (json.experienceMonths == 8 ? "selected" : '') +' >8</option>';
-							result = result  +'<option value="9"  '+ (json.experienceMonths == 9 ? "selected" : '') +' >9</option>';
-							result = result  +'<option value="10"  '+ (json.experienceMonths == 10 ? "selected" : '') +' >10</option>';
-							result = result  +'<option value="11"  '+ (json.experienceMonths == 11 ? "selected" : '') +' >11</option>';
+							result = result + '<option  disabled>Select Months</option>';
+							
+							<c:forEach var="i" begin="0" end="11" >
+							 result = result  +'<option  value="${i}" '  + (json.experienceMonths == "${i}" ? "selected" : '') +  '>${i}</option>';
+						    </c:forEach>
+							
 							
 							result = result + '</select>';
 							result = result + '</div>';
 							result = result + '</div>';
 							result = result + '</div>';
 							
-							result = result + '<div class="col-md-6">';
-							result = result + '<textarea class="form-control input-sm" placeholder = "Summary"  name="summary" rows="2" cols="0" > '+summary+'</textarea>';
-							//result = result + ''+json.summary+'</textarea>';
+							
+							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
+							result = result + '<select class="input-sm form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
+							result = result + '<option value="">Select</option>';
+							result = result + ' <option '+(json.noticePeriod == "Immediately" ? "selected" : '') +'><a href="#">Immediately</a></option>';
+							result = result + '<option  '+ (json.noticePeriod == "15 days" ? "selected" : '') +'><a href="#">15 days</a></option>';
+							result = result + '<option  '+(json.noticePeriod == "Month" ? "selected" : '') +'><a href="#">Month</a></option>';
+							result = result + '<option  '+(json.noticePeriod == "2 months" ? "selected" : '') +'><a href="#">2 months</a></option>';
+							result = result + '<option  '+(json.noticePeriod == "3 months" ? "selected" : '') +'<a href="#">3 months</a></option>';
+							result = result + ' </select>';
 							result = result + ' </div>';
 							result = result + '</div>';
+							
+							result = result + '<div class="col-md-6">';
+							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5">'+summary+'</textarea>';
+							result = result + ' </div>';
+							result = result + '</div>';
+							
+							
 							result = result + '<div class="clearfix mr">';
 							result = result + '<div class="pull-right">';
 							result = result + '<button type="button"  onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
@@ -377,18 +407,7 @@ function editCandidate(candidateId){
 }
 </script>
 
-<!-- <script type="text/javascript">
-function disableMonths() {
-    $("#experienceYears").change(function() {
-   	 
-        if ($(this).val() == '25+'){
-            $("#experienceMonths").attr("disabled", true);
-            $("#experienceMonths").val("disabled", true);
-        }else
-       	 $("#experienceMonths").attr("disabled", false); 
-    });
-}
-</script> -->
+
 
 <!-- Country,State,City Script Starts Here -->
 
@@ -1528,6 +1547,20 @@ $('.selectpicker').selectpicker('refresh');
 	
 } */
 
-</script>
-           
+
+</script>    
+     
+<script>
+ function disableMonths() {
+	 
+	 
+	
+         if ($("#experienceYears").val() == "25+"){
+             $("#experienceMonths").attr("disabled", true);
+             $("#experienceMonths").val("disabled", true);
+         }else{
+        	 $("#experienceMonths").attr("disabled", false); 
+		 }    
+ }
+ </script>
   

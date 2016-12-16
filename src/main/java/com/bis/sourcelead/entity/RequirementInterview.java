@@ -119,11 +119,6 @@ import org.hibernate.annotations.FetchMode;
 	@Transient
 	private String clientName;
 	
-	@Transient
-	private String notificationToApplicant;
-	
-	@Transient
-	private String notificationToSpoc;
 	
 	@OneToMany(mappedBy = "requirementInterview",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
@@ -201,22 +196,6 @@ import org.hibernate.annotations.FetchMode;
 
 	public void setLocation(String location) {
 		this.location = location;
-	}
-
-	public String getNotificationToApplicant() {
-		return notificationToApplicant;
-	}
-
-	public void setNotificationToApplicant(String notificationToApplicant) {
-		this.notificationToApplicant = notificationToApplicant;
-	}
-
-	public String getNotificationToSpoc() {
-		return notificationToSpoc;
-	}
-
-	public void setNotificationToSpoc(String notificationToSpoc) {
-		this.notificationToSpoc = notificationToSpoc;
 	}
 
 	public String getNotificationToOthers() {
