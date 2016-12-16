@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -80,6 +81,10 @@ import org.hibernate.annotations.FetchMode;
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "INTERVIEW_TEMPLATE_ID")
+    private SubmissionTemplate interviewTemplateId;
 	
 	@Transient
 	private String remainderTime;
@@ -355,5 +360,12 @@ import org.hibernate.annotations.FetchMode;
 	public void setRequirementInterviewers(Set<RequirementInterviewer> requirementInterviewers) {
 		this.requirementInterviewers = requirementInterviewers;
 	}
-	
+
+	public SubmissionTemplate getInterviewTemplateId() {
+		return interviewTemplateId;
+	}
+
+	public void setInterviewTemplateId(SubmissionTemplate interviewTemplateId) {
+		this.interviewTemplateId = interviewTemplateId;
+	}
 }
