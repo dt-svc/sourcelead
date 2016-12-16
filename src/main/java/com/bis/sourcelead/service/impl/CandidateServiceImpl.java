@@ -19,11 +19,15 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -72,6 +76,12 @@ public class CandidateServiceImpl implements CandidateService {
 	
 	@Autowired
 	PdfUtil pdfUtil;
+	
+	@Autowired
+	CandidateIndexHelper candidateIndexHelper;
+	
+	@Autowired
+    private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	/**
 	 * @author prasad k
 	 * @since  aug 26 2016
@@ -216,6 +226,11 @@ public class CandidateServiceImpl implements CandidateService {
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 		
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
+		
+		/*
+		 * Saving Candidate DB data as ElasticSearch Documents
+		 */
+		saveOrUpdateCandidateElkDocument(savedCandidate);
 		return savedCandidate;
 	}
 
@@ -445,5 +460,17 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public List<Candidate> getAllRequestedCandidatesForCampaign(List<Long> candidateId) throws Exception {
 		return candidateDao.getAllRequestedCandidatesForCampaign(candidateId);
+	
+	@Override
+	@Async
+	public void saveOrUpdateCandidateElkDocument(Candidate candidate) throws Exception{
+		 //Elastic Search Document Saving
+		CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
+		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+	}
+
+	@Override
+	public Long getCandidatesCountByOrgLocationID(Long orgLocationId) {
+		return candidateDao.getCandidatesCountByOrgLocationID(orgLocationId);
 	}
 }
