@@ -550,6 +550,7 @@ public class SubmissionsRestController {
 	
 //	/addEmailtemplate
 	
+    @PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
     @RequestMapping(value = "/addEmailtemplate" , method = RequestMethod.GET)
     @ResponseBody
 	   public String addEmailtemplate(@RequestParam(value="requirementId", required=false) Long requirementId,@RequestParam(value="selectedShortlistsCount", required=false) String submissionIds,HttpServletRequest request) throws Exception {
