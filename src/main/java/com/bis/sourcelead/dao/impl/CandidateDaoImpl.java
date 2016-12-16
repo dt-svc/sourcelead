@@ -20,8 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.dao.impl.ProjectsDaoImpl.FilterNameValueMap;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -95,6 +97,30 @@ public class CandidateDaoImpl implements CandidateDao {
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return candidate;
+	}
+	
+
+	/**
+	 * to Candidates Count by  orgLocationId
+	 * 
+	 * @author Naresh Bolisetty
+	 * 
+	 * @param request
+	 * 
+	 * @return String
+	 * 
+	 * @throws NullPointerException
+    */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getCandidatesCountByOrgLocationID(Long orgLocationId) {
+		logger.debug("..getCandidatesCount() Method Started..");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.status = '1'";
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		logger.debug("..getCandidatesCount() Method Ended..");
+		return results.get(0);
 	}
 	
 
@@ -305,6 +331,48 @@ public class CandidateDaoImpl implements CandidateDao {
 		List<Candidate> candidateList = session.createQuery(query)
 				               .setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		
+		return candidateList;
+	}
+
+	@Override
+	@Transactional
+	public List<Candidate> getAllActiveCandidatesForCampaignByLocation(Long orgLocationId,String type) throws Exception {
+		logger.debug("In getAllActiveCandidatesByLocation method");
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String query = "from Candidate candidate  where candidate.id NOT IN "
+				+ "(select hotlist.candidateId.id from CandidateHotList hotlist where hotlist.orgLocationId.id = :orgLocationId and hotlist.teamId IS NOT NULL) "
+				+ "and candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.candidateType = :type ";  
+		List<Candidate> candidateList = session.createQuery(query)
+				               .setLong("orgLocationId", orgLocationId).setString("type", type).setCacheable(true).list();
+		return candidateList;
+	}
+
+	@Override
+	@Transactional
+	public List<Candidate> getAllCandidatesForCampaignByTeam(List<Team> teamId, String type) throws Exception {
+		
+		logger.debug("In getAllCandidatesForCampaignByTeam method");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "from Candidate candidate  where candidate.id IN "
+				+ "(select hotlist.candidateId.id from CandidateHotList hotlist where hotlist.teamId IN (:teamId) and "
+				+ "hotlist.candidateId.status = '1' and hotlist.candidateId.candidateType = :type) ";  
+		List<Candidate> candidateList = session.createQuery(query)
+				               .setParameterList("teamId", teamId).setString("type", type).setCacheable(true).list();
+		return candidateList;
+	}
+
+	@Override
+	@Transactional
+	public List<Candidate> getAllRequestedCandidatesForCampaign(List<Long> candidateId) throws Exception {
+		
+		logger.debug("In getAllRequestedCandidatesForCampaign method");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "from Candidate candidate  where candidate.id IN (:candidateId)";  
+		List<Candidate> candidateList = session.createQuery(query)
+				               .setParameterList("candidateId", candidateId).setCacheable(true).list();
 		return candidateList;
 	}
 	

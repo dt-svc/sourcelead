@@ -67,4 +67,6 @@ public interface CandidateResumesService {
 
 	public CandidateResumes getCandidateLatesResumes(Long candidateId, int status) throws Exception;
 	
+	public void saveOrUpdateCandidateElkDocumentWithResumeDetails(Candidate candidate) throws Exception;
+	
 }

@@ -25,6 +25,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -33,6 +35,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
+import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -74,6 +77,9 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 RequirementApproverHierarchyService requirementApproverHierarchyService;
+	 
+	 @Autowired
+	 RequirementInterviewHistoryService requirementInterviewHistoryService;
 	 
 	 @Autowired
 	 UserService userService;
@@ -233,7 +239,7 @@ public class DashboardRestController {
 			userType = "ADMIN";
 		} 
 		
-		int toDayReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION",daterange,userType,user);
+		int toDayReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMIT_TO_CLIENT",daterange,userType,user);
 		//int previousReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION","previous");
 		
 		int toDayReqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION",daterange,userType,user);
@@ -366,7 +372,7 @@ public class DashboardRestController {
 		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			
-			List<RequirementInterview> requirementInterviewList = null;
+			List<RequirementInterviewHistory> requirementInterviewList = null;
 			
 			String currentTime = null;
 			String userType = null;
@@ -376,47 +382,65 @@ public class DashboardRestController {
 			
 			if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
 				userType = "ADMIN";
-				requirementInterviewList = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode);
+				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode);
 			}else{
-				requirementInterviewList = requirementInterviewService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode);
+				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode);
 			}
 			
-			for(RequirementInterview requirementInterview : requirementInterviewList){
+			for(RequirementInterviewHistory interviewHistory : requirementInterviewList){
 				String candidateFirstName = "";
 				String candidateLastName = "";
 				String requirementTitle = "";
-				if(requirementInterview.getSubmissionId() != null && requirementInterview.getSubmissionId().getCandidate() != null){
-					if(requirementInterview.getSubmissionId().getCandidate().getFirstName() != null){
+				if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getCandidate() != null){
+					if(interviewHistory.getSubmissionId().getCandidate().getFirstName() != null){
 						
-						candidateFirstName = requirementInterview.getSubmissionId().getCandidate().getFirstName();
+						candidateFirstName = interviewHistory.getSubmissionId().getCandidate().getFirstName();
 					}
-					if(requirementInterview.getSubmissionId().getCandidate().getLastName() != null){
+					if(interviewHistory.getSubmissionId().getCandidate().getLastName() != null){
 						
-						candidateLastName = requirementInterview.getSubmissionId().getCandidate().getLastName();
+						candidateLastName = interviewHistory.getSubmissionId().getCandidate().getLastName();
 					}
 				}
 				
-				if(requirementInterview.getSubmissionId() != null && requirementInterview.getSubmissionId().getRequirement().getJobTitle() != null){
-					requirementTitle = requirementInterview.getSubmissionId().getRequirement().getJobTitle();
+				if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getRequirement().getJobTitle() != null){
+					requirementTitle = interviewHistory.getSubmissionId().getRequirement().getJobTitle();
 				}
 				
-				requirementInterview.setCandidateName(candidateFirstName+" "+candidateLastName);
+				interviewHistory.setCandidateName(candidateFirstName+" "+candidateLastName);
 				
-				requirementInterview.setRequirementTitle(requirementTitle);
+				interviewHistory.setRequirementTitle(requirementTitle);
 				
-				requirementInterview.setRequirementId(requirementInterview.getSubmissionId().getRequirement().getId().toString());
+				interviewHistory.setRequirementId(interviewHistory.getSubmissionId().getRequirement().getId().toString());
 				
 				//requirementInterview.setInterviewStartDateTimeStr(requirementInterview.getStartTime().toString());
 				
 				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
-				String commonDateFormat = standardFormat.format(requirementInterview.getStartTime());
-				requirementInterview.setInterviewStartDateTimeStr(commonDateFormat.toString());
+				String commonDateFormat = standardFormat.format(interviewHistory.getInterviewId().getStartTime());
+				interviewHistory.setInterviewStartDateTimeStr(commonDateFormat.toString());
 				
 				
-				if(requirementInterview.getSubmissionId().getRequirement().getClientId() != null){
+				/*if(interviewHistory.getSubmissionId().getRequirement().getClientId() != null){
 					
-					requirementInterview.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
-				}
+					interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
+				}*/
+				 if(interviewHistory.getSubmissionId().getRequirement().getClientId() != null){
+						if(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
+							interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
+						}
+						if(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+							interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getLocationId().getOrg().getOrgName());
+						}
+					}else{
+						RequirementSubmission requirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(interviewHistory.getSubmissionId().getId(),loginOrgLocations.getId());
+					    if(requirementSubmission != null){
+					    	interviewHistory.setClientName(requirementSubmission.getOrgLocations().getOrg().getOrgName());
+					    }else if(interviewHistory.getSubmissionId().getSourceSubmission() != null && interviewHistory.getSubmissionId().getSourceSubmission().getId() != null){
+					    	RequirementSubmission parentRequirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(interviewHistory.getSubmissionId().getSourceSubmission().getId(),loginOrgLocations.getId());
+					    	 if(parentRequirementSubmission != null){
+							     interviewHistory.setClientName(parentRequirementSubmission.getOrgLocations().getOrg().getOrgName());
+					    	 }
+					    }
+					}
 				
 			}
 			
