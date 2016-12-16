@@ -446,8 +446,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Async
 	public void saveOrUpdateCandidateElkDocument(Candidate candidate) throws Exception{
 		 //Elastic Search Document Saving
-	//	SourceleadELKBaseIndexer<CandidateIndex> candidateIndexer = new SourceleadELKBaseIndexer<CandidateIndex>();
 		CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+	}
+
+	@Override
+	public Long getCandidatesCountByOrgLocationID(Long orgLocationId) {
+		return candidateDao.getCandidatesCountByOrgLocationID(orgLocationId);
 	}
 }

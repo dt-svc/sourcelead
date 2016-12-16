@@ -1,7 +1,10 @@
 package com.bis.sourcelead.elk.index;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+
+import antlr.collections.List;
 
 public class CandidateIndex implements Serializable {
 
@@ -57,13 +60,13 @@ public class CandidateIndex implements Serializable {
 
 	private String terminateReason;
 
-	private String[] education;
+	private ArrayList<String> education;
 
-	private String[] skills;
+	private ArrayList<String> skills;
 
-	private String[] employer;
+	private ArrayList<String> employer;
 
-	private String[] certifications;
+	private ArrayList<String> certifications;
 
 	private String candidateType;
 
@@ -318,36 +321,38 @@ public class CandidateIndex implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	public String[] getEducation() {
+	
+
+	public ArrayList<String> getEducation() {
 		return education;
 	}
 
-	public void setEducation(String[] education) {
+	public void setEducation(ArrayList<String> education) {
 		this.education = education;
 	}
 
-	public String[] getSkills() {
+	public ArrayList<String> getSkills() {
 		return skills;
 	}
 
-	public void setSkills(String[] skills) {
+	public void setSkills(ArrayList<String> skills) {
 		this.skills = skills;
 	}
 
-	public String[] getCertifications() {
-		return certifications;
-	}
-
-	public void setCertifications(String[] certifications) {
-		this.certifications = certifications;
-	}
-
-	public String[] getEmployer() {
+	public ArrayList<String> getEmployer() {
 		return employer;
 	}
 
-	public void setEmployer(String[] employer) {
+	public void setEmployer(ArrayList<String> employer) {
 		this.employer = employer;
+	}
+
+	public ArrayList<String> getCertifications() {
+		return certifications;
+	}
+
+	public void setCertifications(ArrayList<String> certifications) {
+		this.certifications = certifications;
 	}
 
 	public String getCandidateType() {

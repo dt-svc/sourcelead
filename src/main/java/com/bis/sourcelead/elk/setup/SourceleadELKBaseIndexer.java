@@ -79,9 +79,18 @@ public  class SourceleadELKBaseIndexer<T> {
 		
 		
 	}
-	public  SearchHits searchDocument(String index,String type,int offset,int maxResults,BoolQueryBuilder query){
+	public  SearchHits searchDocumentWithMaxResults(String index,String type,int offset,int maxResults,BoolQueryBuilder query){
 		 SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index).setTypes(type).setQuery(query)
 				                 .setFrom(offset).setSize(maxResults).setExplain(true)
+	                             .execute()
+	                             .actionGet();
+		 
+		 return response.getHits();
+
+  }
+	public  SearchHits searchDocument(String index,String type,BoolQueryBuilder query){
+		 SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index).setTypes(type).setQuery(query)
+				                 .setExplain(true)
 	                             .execute()
 	                             .actionGet();
 			

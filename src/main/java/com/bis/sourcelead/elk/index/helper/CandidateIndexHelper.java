@@ -1,5 +1,7 @@
 package com.bis.sourcelead.elk.index.helper;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,32 +41,32 @@ public class CandidateIndexHelper {
 			candidateIndex.setSummary(candidate.getSummary());
 			candidateIndex.setCandidateType(candidate.getCandidateType());
 			if(null != candidate.getCandidateSkills() && !candidate.getCandidateSkills().isEmpty()){
-				HashSet<String> skillList = new HashSet<>();
+				ArrayList<String> skillList = new ArrayList<>();
 				for(CandidateSkills skills : candidate.getCandidateSkills()){
 					skillList.add(skills.getName());
 				}
 				if(null != skillList && !skillList.isEmpty()){
-					candidateIndex.setSkills(skillList.toArray(new String[0]));
+					candidateIndex.setSkills(skillList);
 				}
 				
 			}
 			if(null != candidate.getCandidateEmployers() && !candidate.getCandidateEmployers().isEmpty()){
-				HashSet<String> employerList = new HashSet<>();
+				ArrayList<String> employerList = new ArrayList<>();
 				for(CandidateEmployers employer : candidate.getCandidateEmployers()){
 					employerList.add(employer.getName());
 				}
 				if(null != employerList && !employerList.isEmpty()){
-					candidateIndex.setEmployer((String[]) employerList.toArray());
+					candidateIndex.setEmployer(employerList);
 				}
 				
 			}
 			if(null != candidate.getCandidateEducation() && !candidate.getCandidateEducation().isEmpty()){
-				HashSet<String> educationList = new HashSet<>();
+				ArrayList<String> educationList = new ArrayList<>();
 				for(CandidateEducation education : candidate.getCandidateEducation()){
 					educationList.add(education.getName());
 				}
 				if(null != educationList && !educationList.isEmpty()){
-					candidateIndex.setEducation((String[]) educationList.toArray());
+					candidateIndex.setEducation(educationList);
 				}
 			}
 			
@@ -98,6 +100,18 @@ public class CandidateIndexHelper {
 		
 	}
 	
-	
-
+	public CandidateIndex getCandidateIndexFromCandidateResume(Candidate candidate) throws Exception{
+		CandidateIndex candidateIndex = null;
+		if(null != candidate && null != candidate.getId()){
+			candidateIndex = new CandidateIndex();
+			candidateIndex.setCandidateId(candidate.getId());
+			CandidateResumes candidateResumes = candidateResumesService.getCandidateLatesResumes(candidate.getId(),Constants.CANDIDATE_SKILL_ACTIVE);
+			if(null != candidateResumes){
+				candidateIndex.setCurrentResumeId(candidateResumes.getId());
+				candidateIndex.setCurrentResumeName(candidateResumes.getFileName());
+				candidateIndex.setResumeContent("");
+			}
+		}
+		return candidateIndex;
+	}
 }

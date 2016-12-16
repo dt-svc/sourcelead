@@ -105,12 +105,12 @@ public class AddElkCandidate{
 							Statement stmt1 = conn.createStatement();
 							ResultSet rs1 = stmt1.executeQuery(sql1);
 							if(rs1 != null){
-								HashSet<String> skillList = new HashSet<>();
+                                ArrayList<String> skillList = new ArrayList<>();
 								 while(rs1.next()){
 									 skillList.add(rs1.getString("NAME"));
 							    }
 							    if(null != skillList && !skillList.isEmpty()){
-									candidateIndex.setSkills(skillList.toArray(new String[0]));
+									candidateIndex.setSkills(skillList);
 								}
 		    	           }
 							
@@ -118,12 +118,12 @@ public class AddElkCandidate{
 							Statement stmt2 = conn.createStatement();
 							ResultSet rs2 = stmt2.executeQuery(sql2);
 							if(rs2 != null){
-								HashSet<String> employerList = new HashSet<>();
+								ArrayList<String> employerList = new ArrayList<>();
 								 while(rs2.next()){
 									 employerList.add(rs2.getString("NAME"));
 							    }
 							    if(null != employerList && !employerList.isEmpty()){
-									candidateIndex.setEmployer(employerList.toArray(new String[0]));
+									candidateIndex.setEmployer(employerList);
 								}
 		    	           }
 							
@@ -131,12 +131,12 @@ public class AddElkCandidate{
 						   Statement stmt3 = conn.createStatement();
 							ResultSet rs3 = stmt3.executeQuery(sql3);
 							if(rs3 != null){
-								HashSet<String> educationList = new HashSet<>();
+								ArrayList<String> educationList = new ArrayList<>();
 								 while(rs1.next()){
 									 educationList.add(rs1.getString("NAME"));
 							    }
 							    if(null != educationList && !educationList.isEmpty()){
-									candidateIndex.setEducation(educationList.toArray(new String[0]));
+									candidateIndex.setEducation(educationList);
 								}
 		    	           }
 							
