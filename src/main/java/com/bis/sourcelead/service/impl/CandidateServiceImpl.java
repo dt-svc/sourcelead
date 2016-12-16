@@ -34,6 +34,7 @@ import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
@@ -182,6 +183,11 @@ public class CandidateServiceImpl implements CandidateService {
 		if(jsonObj.has("experienceMonths") && jsonObj.getString("experienceMonths") !=null){
 		candidate.setExperienceMonths(jsonObj.getString("experienceMonths"));	
 		}
+		
+		if(jsonObj.has("noticePeriod") && jsonObj.getString("noticePeriod") !=null){
+			candidate.setNoticePeriod(jsonObj.getString("noticePeriod"));	
+			}
+		
 		if(jsonObj.has("address") && jsonObj.getString("address") !=null){
 			candidate.setAddress(jsonObj.getString("address"));
 		}
@@ -440,7 +446,20 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			throws Exception {
 		return candidateDao.getHotListCandidatesListByOrgLocationID(orgLocationId, candidateType);
 	}
-	
+
+	@Override
+	public List<Candidate> getAllActiveCandidatesForCampaignByLocation(Long orgLocationId,String type) throws Exception {
+		return candidateDao.getAllActiveCandidatesForCampaignByLocation(orgLocationId,type);
+	}
+
+	@Override
+	public List<Candidate> getAllCandidatesForCampaignByTeam(List<Team> teamId, String type) throws Exception {
+		return candidateDao.getAllCandidatesForCampaignByTeam(teamId, type);
+	}
+
+	@Override
+	public List<Candidate> getAllRequestedCandidatesForCampaign(List<Long> candidateId) throws Exception {
+		return candidateDao.getAllRequestedCandidatesForCampaign(candidateId);
 	
 	@Override
 	@Async

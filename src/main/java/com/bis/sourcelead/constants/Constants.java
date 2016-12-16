@@ -73,6 +73,8 @@ public class Constants {
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
 	public static String INTERVIEWER_TEMPLATE = "Interviewer Template";
 	
+	public static String HOT_LIST_CAMPAIGN = "HotListCampaign";
+	
 	public static String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static String ADD_OFFER_MAIL ="Forward the Mail";
 
@@ -93,6 +95,9 @@ public class Constants {
 	
 	public static String CLIENT_INTERVIEW = "CLIENT_INTERVIEW";
 	public static String INTERVIEW = "INTERVIEW";
+	
+	
+	public static String MAIL_BOX_SENT = "Sent";
 	
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();

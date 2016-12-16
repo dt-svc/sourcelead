@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -80,9 +81,15 @@ public interface CandidateService {
 	public File getCandidatePdf(List<Candidate> candidatesList, String orgName) throws Exception;
 	
 	public List<Candidate> getHotListCandidatesListByOrgLocationID(Long orgLocationId,String candidateType) throws Exception;
+
+	public List<Candidate> getAllActiveCandidatesForCampaignByLocation(Long orgLocationId,String type)throws Exception;
 	
+	public List<Candidate> getAllCandidatesForCampaignByTeam(List<Team> teamId,String type)throws Exception;
+	
+	public List<Candidate> getAllRequestedCandidatesForCampaign(List<Long> candidateId)throws Exception;
 	
 	public void saveOrUpdateCandidateElkDocument(Candidate candidate) throws Exception;
 	
 	public Long getCandidatesCountByOrgLocationID(Long orgLocationId);
+
 }

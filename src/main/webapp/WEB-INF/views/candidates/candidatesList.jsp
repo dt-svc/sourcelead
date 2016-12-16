@@ -307,6 +307,13 @@ function candidateSideBar(candidateId){
 			             var skills = [];
 			             skills = skillsList.split(",");
 			             
+			            var experienceMonths = '';
+         			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
+         			 		experienceMonths = json.experienceMonths;            			 		
+         			 	}else{
+         			 		experienceMonths = '0';  
+         			 	 }
+			             
 	                	 var result = "";
 	                	 
 	                	 result = result+'<div id="popUp" ></div>  ';
@@ -366,20 +373,36 @@ function candidateSideBar(candidateId){
 			             
 			             result = result+' <ul class="list-unstyled">';
                           if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
-						 result = result+'<li>Designation -'+json.designation+' -Designation Type '+json.designationType+'</li>';
+						 result = result+'<li>Designation -'+json.designation+'-'+json.designationType+'</li>';
 						                              }else{
 						  result = result+'<li>Designation - ----</li>';  
 						                              }
 						  result = result+'</ul>';
 			             
 			             result = result+'<ul class="list-unstyled">';
-			                     if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
-			             result = result+'<li>Experience -'+json.experienceYears+' years '+json.experienceMonths+' months </li>';
-              		                               }else{
+			              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
+			                    	 
+			             result = result+'<li>Experience -'+json.experienceYears+' years '+experienceMonths+' months </li>';
+			             
+              		       }else{
               		                                                	  
-              		     result = result+'<li>Experience - ----</li>';  
-              		                              }
+              		     result = result+'<li>Experience ----</li>';  
+              		     
+              		       }
 			             result = result+'</ul>';
+			             
+			             result = result+'<ul class="list-unstyled">';
+			              if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
+			                    	 
+			             result = result+'<li>Notice Period -'+json.noticePeriod+' </li>';
+			             
+             		       }else{
+             		                                                	  
+             		     result = result+'<li>Notice Period ----</li>';  
+             		     
+             		       }
+			             result = result+'</ul>';
+			             
 			             result = result+'<div class="clearfix">';
 			             result = result+'<div class="professinal-details">';
 			             

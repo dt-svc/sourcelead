@@ -41,10 +41,10 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 				                         tempHTML.append("</tr>");
 		                          tempHTML.append("</table> ");
 		
-		tempHTML.append("<table width='600'  bgcolor='#F9F9F9' align='center' style='background-color:#F9F9F9; margin:0px auto 12px auto; padding:25px 0px 10px 20px'  cellpadding='0' cellspacing='0'>");
+		tempHTML.append("<table width='900'  bgcolor='#F9F9F9' align='center' style='background-color:#F9F9F9; margin:0px auto 12px auto; padding:25px 0px 10px 20px'  cellpadding='0' cellspacing='0'>");
 				tempHTML.append("<tr>");
 						tempHTML.append("<td>");
-					  	      tempHTML.append("<table width='600' style='margin:38px auto; font-family:'Segoe UI'; align='center' cellpadding='0' cellspacing='0' >");
+					  	      tempHTML.append("<table width='900' style='margin:38px auto; font-family:'Segoe UI'; align='center' cellpadding='0' cellspacing='0' >");
 						           tempHTML.append("<tr>");
 						                 tempHTML.append("<td>");
 						                         tempHTML.append("<div style='font-size:14px; color:#333333;'>");
@@ -67,7 +67,7 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 		tempHTML.append("<table width='100%' bgcolor='#ddd' align='center' cellpadding='0' cellspacing='0' style='padding:10px 0px 10px 0px; background-color:#ddd; font-family:'Segoe UI';'>");
 			  tempHTML.append("<tr>");
 					  tempHTML.append("<td>");
-					       tempHTML.append("<table bgcolor='#ddd'  width='600' align='center' style='background-color:#ddd; padding:15px 0px;'>");
+					       tempHTML.append("<table bgcolor='#ddd'  width='900' align='center' style='background-color:#ddd; padding:15px 0px;'>");
 					           tempHTML.append("<tr>");
 					                 tempHTML.append("<td>");
 					                   tempHTML.append("<p style='color:#214b90; text-transform: uppercase; padding:5px 0px; margin:0px 0px; font-size:25px; font-weight:700;'>get started!</p>");
