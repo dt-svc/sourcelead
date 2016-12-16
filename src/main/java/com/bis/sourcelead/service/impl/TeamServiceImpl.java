@@ -156,6 +156,11 @@ public class TeamServiceImpl implements TeamService {
 	public Team saveTeam(Team team) throws Exception {
 		return teamDao.storeTeam(team);
 	}
+
+	@Override
+	public List<Team> getUserAssignedTeamListByOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+		return teamDao.getUserAssignedTeamListByOrgLocationId(userId, orgLocationId);
+	}
 	
 }
 	 

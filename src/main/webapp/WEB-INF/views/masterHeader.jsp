@@ -119,6 +119,7 @@
 	            </div>
 	          </li>
             </c:if> --%>
+            <li><a href="${sourceleadUrl}/mailBox" title="Notifications" id="notification"><i class="fa fa-envelope"></i> <span class="label label-success">4</span> </a></li>
             
             <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
             <li> <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
@@ -146,65 +147,9 @@
 	            </div>
 	          </li>
 	          </c:if>
-           
-          <!-- <li> <a href="#" title="Notifications" id="notification"> <i class="fa fa-envelope"></i> <span class="label label-success">4</span> </a>
-            <div class="header-widget note-area">
-              <ul class="list-unstyled">
-                <li>
-                  <div class="clearfix msg">
-                    <div class="msg-img"> <span> <img src="resources/images/pratap-bis.jpg" title="Pratap Reddy" alt="Admin" class="img-circle"> </span> </div>
-                    <div class="msg-content">
-                      <p>Earlier this week, I was doing some work on a project that was using</p>
-                      <span>3 days ago at 7:58 pm - 2.07.2016</span> </div>
-                    <div class="msg-time"> <span> <i class="fa fa-clock-o"></i><br>
-                      1hr ago </span> </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="clearfix msg">
-                    <div class="msg-img"> <span> <img src="resources/images/pratap-bis.jpg" title="Pratap Reddy" alt="Admin" class="img-circle"> </span> </div>
-                    <div class="msg-content">
-                      <p>Earlier this week, I was doing some work on a project that was using</p>
-                      <span>3 days ago at 7:58 pm - 2.07.2016</span> </div>
-                    <div class="msg-time"> <span> <i class="fa fa-clock-o"></i><br>
-                      1hr ago </span> </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="clearfix msg">
-                    <div class="msg-img"> <span> <img src="resources/images/pratap-bis.jpg" title="Pratap Reddy" alt="Admin" class="img-circle"> </span> </div>
-                    <div class="msg-content">
-                      <p>Earlier this week, I was doing some work on a project that was using</p>
-                      <span>3 days ago at 7:58 pm - 2.07.2016</span> </div>
-                    <div class="msg-time"> <span> <i class="fa fa-clock-o"></i><br>
-                      1hr ago </span> </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="clearfix msg">
-                    <div class="msg-img"> <span> <img src="resources/images/pratap-bis.jpg" title="Pratap Reddy" alt="Admin" class="img-circle"> </span> </div>
-                    <div class="msg-content">
-                      <p>Earlier this week, I was doing some work on a project that was using</p>
-                      <span>3 days ago at 7:58 pm - 2.07.2016</span> </div>
-                    <div class="msg-time"> <span> <i class="fa fa-clock-o"></i><br>
-                      1hr ago </span> </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="clearfix msg">
-                    <div class="msg-img"> <span> <img src="resources/images/pratap-bis.jpg" title="Pratap Reddy" alt="Admin" class="img-circle"> </span> </div>
-                    <div class="msg-content">
-                      <p>Earlier this week, I was doing some work on a project that was using</p>
-                      <span>3 days ago at 7:58 pm - 2.07.2016</span> </div>
-                    <div class="msg-time"> <span> <i class="fa fa-clock-o"></i><br>
-                      1hr ago </span> </div>
-                  </div>
-                </li>
-              </ul>
-              <div class="headerwidget-footer"> <a href="javascript:void(0)" >View All</a> </div>
-            </div>
-          </li> -->
-          <li> <a href="#" title="Alerts" id="alert" onclick="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount}</span></a>
+         
+          <li> 
+          <a href="#" title="Alerts" id="alert" onclick="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount}</span></a>
             <div class="header-widget alert-area">
               <ul class="list-unstyled">
               <c:if test="${empty SourceLeadWeb_notificationList}">

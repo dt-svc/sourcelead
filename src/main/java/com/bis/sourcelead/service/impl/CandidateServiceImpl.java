@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
@@ -429,5 +430,20 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getHotListCandidatesListByOrgLocationID(Long orgLocationId, String candidateType)
 			throws Exception {
 		return candidateDao.getHotListCandidatesListByOrgLocationID(orgLocationId, candidateType);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveCandidatesForCampaignByLocation(Long orgLocationId,String type) throws Exception {
+		return candidateDao.getAllActiveCandidatesForCampaignByLocation(orgLocationId,type);
+	}
+
+	@Override
+	public List<Candidate> getAllCandidatesForCampaignByTeam(List<Team> teamId, String type) throws Exception {
+		return candidateDao.getAllCandidatesForCampaignByTeam(teamId, type);
+	}
+
+	@Override
+	public List<Candidate> getAllRequestedCandidatesForCampaign(List<Long> candidateId) throws Exception {
+		return candidateDao.getAllRequestedCandidatesForCampaign(candidateId);
 	}
 }
