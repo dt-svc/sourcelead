@@ -60,7 +60,7 @@ public class InterviewFeedbackTemplateDaoImpl implements InterviewFeedbackTempla
 		Session session = this.sessionFactory.getCurrentSession();
 		List<InterviewFeedbackTemplate> interviewFeedbackTemplate = new ArrayList<InterviewFeedbackTemplate>();
 		logger.debug("getInterviewFeedbackTemplateById start");
-		interviewFeedbackTemplate = session.createQuery("from InterviewFeedbackTemplate where requirementInterviewId =:requirementInterviewid" ).setCacheable(true).setLong( "requirementInterviewid", requirementInterviewid ).setCacheable(true).list();
+		interviewFeedbackTemplate = session.createQuery("from InterviewFeedbackTemplate where requirementInterviewerId =:requirementInterviewid" ).setCacheable(true).setLong( "requirementInterviewid", requirementInterviewid ).setCacheable(true).list();
 		logger.debug("getInterviewFeedbackTemplateById end");
 		if (interviewFeedbackTemplate.size() > 0) {
 			return interviewFeedbackTemplate.get(0);
@@ -74,7 +74,7 @@ public class InterviewFeedbackTemplateDaoImpl implements InterviewFeedbackTempla
 		Session session = this.sessionFactory.getCurrentSession();
 		List<InterviewFeedbackTemplate> interviewFeedbackTemplate = new ArrayList<InterviewFeedbackTemplate>();
 		logger.debug("getInterviewFeedbackTemplateById start");
-		interviewFeedbackTemplate = session.createQuery("from InterviewFeedbackTemplate ift where ift.submissionTemplateId.id =:templateId and ift.requirementInterviewId.id =:requirementInterviewId" ).setLong( "templateId", templateId ).setLong( "requirementInterviewId", requirementInterviewId ).setCacheable(true).list();
+		interviewFeedbackTemplate = session.createQuery("from InterviewFeedbackTemplate ift where ift.submissionTemplateId.id =:templateId and ift.requirementInterviewerId.id =:requirementInterviewId" ).setLong( "templateId", templateId ).setLong( "requirementInterviewId", requirementInterviewId ).setCacheable(true).list();
 		logger.debug("getInterviewFeedbackTemplateById end");
 		if (interviewFeedbackTemplate.size() > 0) {
 			return interviewFeedbackTemplate.get(0);

@@ -1,4 +1,3 @@
-
 #vendor negotiate to the Requirement Rate.
 
 INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`,`ENTITY_TYPE`) VALUES ('ClientRateNegotiation','Email');

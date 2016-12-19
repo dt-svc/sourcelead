@@ -119,11 +119,17 @@ public class CandidateController {
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
-		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "candidateCreateMsg");
-		if(!isNullOrEmpty(msg)){
-			model.addObject("msg", msg);
-			SourceLeadSessionManager.removeSessionAttribute(request, "candidateCreateMsg");
-		}
+		//this block is for success messages --@Yashoda
+				String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "candidateCreateMsg");
+				if(msg != null && !"".equals(msg)){
+					model.addObject("msg", msg);
+					SourceLeadSessionManager.removeSessionAttribute(request, "candidateCreateMsg");
+				}
+				else{
+					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "consultantCreateMsg");
+					model.addObject("msg", msg);
+					SourceLeadSessionManager.removeSessionAttribute(request, "consultantCreateMsg");
+				}		
 		
 		return model;
 
