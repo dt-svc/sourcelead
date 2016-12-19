@@ -124,6 +124,45 @@ public class MailBoxRestController {
 	}
 	
 	
+	@RequestMapping(value = "/sendRequestForResume", method = RequestMethod.POST)
+	public String sendRequestForResume(@RequestParam(value = "json", required = false) String json,
+			@RequestParam(value = "candidatesIds", required = false) String candidatesIds,
+			@RequestParam(value = "UUID", required = false) String UUID,
+			HttpServletRequest request) throws Exception {
+		
+		String jsonc = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(jsonc);
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		userMailBoxService.setRequestForResumeDetails(jsonObj,candidatesIds,UUID);
+		
+		
+		return "success";
+	}
+	
+	
+
+	@RequestMapping(value = "/validateCampaignToEmail", method = RequestMethod.POST)
+	public String validateCampaignToEmail(@RequestParam(value = "email", required = false) String email,
+			@RequestParam(value = "UUID", required = false) String UUID,HttpServletRequest request) throws Exception {
+		
+		String result = "Invalid";
+		UserMailBox userMailBox = userMailBoxService.getUserMailBoxByUUID(UUID);
+		if(userMailBox != null){
+			String[] toEmail = userMailBox.getToMail().split(",");
+			for(int i = 0; i < toEmail.length; i++ ){
+				if(email.equalsIgnoreCase(toEmail[i].replaceAll("\"", ""))){
+					result = "success";
+				}
+			}
+			
+		}
+		
+		return result;
+	}
+	
+	
 
 	 @RequestMapping(value = "/getSignatures", method = RequestMethod.POST)
 		public @ResponseBody String getSignatures(HttpServletRequest request) throws Exception {

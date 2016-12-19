@@ -41,7 +41,7 @@ public class UserMailBoxDaoImpl implements UserMailBoxDao{
 	@Transactional
 	public UserMailBox saveUserMailBox(UserMailBox userMailBox) throws Exception {
 		
-		logger.debug("Storing saveUserSignature");
+		logger.debug("Storing saveUserMailBox");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (userMailBox != null) {
