@@ -17,8 +17,8 @@ public class SourceleadELKTransportClient {
    
     private TransportClient client;
     
-    //ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-	//DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+    ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
     
 	/**
      * Default constructor, initializing the transport client.
@@ -27,12 +27,12 @@ public class SourceleadELKTransportClient {
     /*public SourceleadELKTransportClient() {
 	     try {
 	    	  Settings settings = Settings.settingsBuilder()
-	    			  .put("cluster.name", "elasticsearch")
-	                  .put("node.name", "Eshu")
-	         		  .put("path.home", "/usr/share/elasticsearch")
+	    			  .put("cluster.name", dbconfig.getCluster())
+	                  .put("node.name", dbconfig.getNode())
+	         		  .put("path.home", dbconfig.getPath())
 	                  .build();
 			client = TransportClient.builder().settings(settings).build().
-					addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("192.168.1.125"), 9300));
+			      addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
 	     } catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}
