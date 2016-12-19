@@ -674,6 +674,13 @@ function getCities(){
 		            var option = $("<option>").val(newSkill).text(newSkill);
 		            select.append(option);
 		            select.find(option).prop('selected', true);
+		            
+		            //to doesn't allow duplicates
+                    $("#candidateSkills option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+                    //end
+		            
 	        		$("#candidateSkills").trigger("chosen:updated");
 	        		
 		        }
@@ -694,6 +701,13 @@ function getCities(){
 		            var option = $("<option>").val(newEducation).text(newEducation);
 		            selectone.append(option);
 		            selectone.find(option).prop('selected', true);
+		            
+		            //to doesn't allow duplicates
+                    $("#candidateEducation option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+                    //end
+		            
 	        		$("#candidateEducation").trigger("chosen:updated");
 	        		
 		        }
