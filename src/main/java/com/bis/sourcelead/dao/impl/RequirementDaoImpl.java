@@ -153,8 +153,11 @@ public class RequirementDaoImpl implements RequirementDao {
 			String subQuery4 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
 			params.put("managerUserId",userId);
 			
-			if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" ){
-				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery3+")  or ("+subQuery4+") )";
+			String subQuery5 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) and requirement.requirementSubmissionStatus <> 'DRAFT' ) ";
+			params.put("userId",userId);
+			
+			if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != ""){
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery3+")  or ("+subQuery4+") or ("+subQuery5+")";
 				params.put("orgLocationId",orgLocationId);
 			}
 		}

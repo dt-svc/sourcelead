@@ -79,6 +79,12 @@ public class UserMailBox implements Serializable{
 	@Column(name = "NAME_FIELDS")
 	private String nameFields;
 	
+	@Column(name = "PHONE_NO")
+	private String phno;;
+
+	@Column(name = "COMMENTS")
+	private String comments;
+	
 	@Column(name="STATUS")
 	private Integer status;
 	
@@ -283,6 +289,22 @@ public class UserMailBox implements Serializable{
 
 	public void setNameFields(String nameFields) {
 		this.nameFields = nameFields;
+	}
+
+	public String getPhno() {
+		return phno;
+	}
+
+	public void setPhno(String phno) {
+		this.phno = phno;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 	
 	

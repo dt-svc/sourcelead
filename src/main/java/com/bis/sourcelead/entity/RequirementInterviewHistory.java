@@ -85,12 +85,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	private String clientName;
 	
 	@Transient
-
 	private Long interviewTemplateid;
 	
 	@Transient
 	private String feedbackEndTime;
 
+	@Transient
     private String isNotifyToVendorRequired;
 	
 	@Transient

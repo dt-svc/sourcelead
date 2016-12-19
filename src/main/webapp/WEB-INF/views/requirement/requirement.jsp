@@ -1675,7 +1675,7 @@ function getUserList(teamType){
 		         								localCheckedStatus = "checked";
 		         							}  
 		                    	 });
-		                    	 result = result +'             <td><input id="'+opt.id+'" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
+		                    	 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
 		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
 		                    	 result = result +'             <td>'+opt.email+'</td>';
 		                    	 result = result +'             <td>'+opt.userType+'</td>';
