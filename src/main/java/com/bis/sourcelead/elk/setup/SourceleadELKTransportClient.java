@@ -44,7 +44,7 @@ public class SourceleadELKTransportClient {
 	         		  .put("path.home", "/usr/share/elasticsearch")
 	                  .build();
 			client = TransportClient.builder().settings(settings).build().
-			      addTransportAddress(new InetSocketTransportAddress("192.168.1.125"), 9300));
+					addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("192.168.1.125"), 9300));
 	     } catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}
