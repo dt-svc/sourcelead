@@ -703,7 +703,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		
 		 ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
 		 EmailAttachment emailAttachment = new EmailAttachment();
-		 emailAttachment.setName(UUID);
+		 emailAttachment.setUUID(UUID);
 		 attachmentList.add(emailAttachment);
 		 
 		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,attachmentList);
