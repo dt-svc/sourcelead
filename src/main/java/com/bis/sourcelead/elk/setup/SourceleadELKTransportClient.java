@@ -52,6 +52,6 @@ public class SourceleadELKTransportClient {
     /** {@inheritDoc} */
     public void shutdown() {
 	client.close();
-	client = null;
+	//client = null;
     }
 }
