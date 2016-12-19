@@ -17,8 +17,8 @@ public class SourceleadELKTransportClient {
    
     private TransportClient client;
     
-    ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+    //ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	//DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
     
 	/**
      * Default constructor, initializing the transport client.
