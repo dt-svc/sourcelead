@@ -224,7 +224,7 @@ $(document).ready(function () {
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div>
-   <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
+   <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data'>
     <div class="form-horizontal req-dtls myForm row">
       <div class="clearfix">
         <div class="col-lg-12">
@@ -1199,7 +1199,9 @@ function getCities(){
 		   $("#countryReq").chosen();
 	       $("#state").chosen();
 	       $("#city").chosen();
-	       
+	      
+	       $("#skills").val('').trigger("chosen:updated");
+	       $("#education").val('').trigger("chosen:updated");
 	       
 	       $("#countryReq").on('change', function (e) {
 	    	   getStates();
