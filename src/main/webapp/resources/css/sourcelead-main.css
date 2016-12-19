@@ -533,14 +533,14 @@ margin-bottom: 5px; line-height: normal !important; padding-left: 10px;
 	overflow: hidden;
 }
 /* hide time sheet */
-.timesheet-menu {
+.timesheet-menu, .backoffice-menu {
 	background-color: #23496d;
 	border-left: 2px solid #3081cb;
 	float: left;
 	margin-left: 55px;
 	position: absolute;
 	z-index: 999;
-	top: 410px;
+	top: 260px;
 	border-radius: 0 5px 5px 0;
 	-webkit-transition: all 0.5s ease-in-out 0s;
 	-ms-transition: all 0.5s ease-in-out 0s;
@@ -551,44 +551,49 @@ margin-bottom: 5px; line-height: normal !important; padding-left: 10px;
 	-webkit-transform: translateX(-2000px);
 	-moz-transform: translateX(-2000px);
 }
-.timesheet-menu.timesheet-menu-active {
+.backoffice-menu {
+	top:63%;
+	min-resolution: res;-height: 80px;
+	max-height: 80px;
+}
+.timesheet-menu.timesheet-menu-active, .backoffice-menu.backoffice-menu-active {
 	transform: translateX(0);
 	-ms-transform: translateX(0);
 	-webkit-transform: translateX(0);
 	-moz-transform: translateX(0);
 }
-.timesheet-menu li {
+.timesheet-menu li, .backoffice-menu li {
 	border-bottom: 1px solid #325475;
 	line-height: 39px;
 	position: relative;
 	transition: all 0.5s ease-in-out 0s;
 	padding: 0 18px;
 }
-ul.timesheet-menu li:last-child {
+ul.timesheet-menu li:last-child, .backoffice-menu li:last-child {
 	border-bottom: 0;
 }
-ul.timesheet-menu li a {
+ul.timesheet-menu li a, .backoffice-menu li a {
 	color: #fff;
 }
-ul.timesheet-menu li a::before {
+ul.timesheet-menu li a::before, .backoffice-menu li a::before {
 	color: #f0ad4e;
 	content: "";
 	font-family: fontawesome;
 	padding-right: 5px;
 }
-ul.timesheet-menu li a:hover {
+ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 	color: #f0ad4e;
 }
-.tree-view.tree-view-active {
+.tree-view.tree-view-active, .bakofficetree.bakofficetree-active {
 	display: none !important;
 }
-.tree-view {
+.tree-view, .bakofficetree {
 	display: block;
 }
-.tree-view-new {
+.tree-view-new, .bakofficetree-view {
 	display: none !important;
 }
-.tree-view-new.tree-view-new-active {
+.tree-view-new.tree-view-new-active, .bakofficetree-view.bakofficetree-view-active {
 	display: block !important;
 }
 /* hide time sheet */
@@ -4853,7 +4858,7 @@ a.active-user:hover{
 .deactive-user{
 	color:#5cb85c;	
 }
-edit-status {
+.edit-status {
        position:absolute !important;
        top:25px;
        right: 5px;
@@ -4983,7 +4988,7 @@ display:block; box-shadow:0px 0px 3px rgba(0,0,0,0.3);
 .saluation select {
 	border: none !important;
 	height: 30px;
-	width: 180px;
+	width: 100%;
 	display: block;text-overflow:ellipsis; overflow: hidden; font-size: 13px;
 }
 .field-border{
@@ -4991,7 +4996,7 @@ display:block; box-shadow:0px 0px 3px rgba(0,0,0,0.3);
 }
 .createSign-pop{
 	position: absolute;
-	bottom: 40px;
+	bottom: 85px;
 	width: 550px;
 	background: #f5f5f5;
 	border:1px solid #f5f5f5;
@@ -5002,7 +5007,7 @@ display:block; box-shadow:0px 0px 3px rgba(0,0,0,0.3);
 	z-index: 999;
 	display: none;
 	padding: 10px 15px;
-	left: 0;
+	right: 255px;
 	box-shadow: 0 0 10px #909090;
 }
 .createSign-pop .btn{
@@ -5050,6 +5055,47 @@ margin-right: 10px;
 .viewTemplate.feedbackTemplate .sjfb-field{
     margin-bottom: 0px !important;
 }
+.bg_mask {
+    position:absolute; width:100%; height:100%; background-color:#fff; top:0px; left:0px; z-index:9; display:none;
+    } 
+.showfeedback{
+    position: absolute;
+    top:0;left: 0;
+    width: 100%;
+    z-index: 9999;
+    padding:0 15px 15px;
+    display: none;
+    }
+    
+ .shownofeedback{
+     position: absolute;
+     top:0;left: 0;
+     width: 100%;
+     z-index: 9999;
+     padding:0 15px 15px;
+     display: block;
+ } 
+     
+.closediv {
+    background: #f60 none repeat scroll 0 0;
+    border: 1px solid #f60;
+    border-radius: 25%;
+    color: #fff;
+    cursor: pointer;
+    right: 10px;
+    padding: 1px 3px;
+    position: absolute;
+    top: 10px;
+}
+.demo table tr th{
+    height: 35px !important;
+}
+.demo table tr td{
+    height: 25px !important;
+    text-align: center;
+}
+
+
 
 /*** custom checkboxes ***/
 .star-rating{
@@ -5096,8 +5142,83 @@ padding: 0px 245px 0px 0px !important;
 }
 .hotlist-header ul.chosen-results{
 padding: 0 !important;
-	width: 96%;
+width: 96%;
 }
+.timesheet_week_comm.mail-attach table tr {
+float: left;
+width:40%;
+}
+.mail-tagit .tagit.ui-widget.ui-widget-content.ui-corner-all{
+border: none !important;
+border-bottom: 1px solid #ccc !important;
+border-radius: 0;
+}
+.mailerpopup {
+min-height: 100px;
+max-height: 400px;
+}
+
+/* worked for pav bug */
+.rate-negotiation {
+       padding:10px 50px;
+       box-sizing:border-box;
+}
+#ratehistoryDiv, #campaigncandidatesList {
+       border:1px solid #909090;
+       padding:0 1px 15px 0;
+       background: #fff;
+       clear: both;
+       display: inline-block;
+       width: 100%;
+}
+#ratehistoryDiv .paging_simple_numbers, #campaigncandidatesList .paging_simple_numbers{
+       float: right;
+}
+#ratehistoryDiv .dataTables_info, #campaigncandidatesList .dataTables_info {
+       float: left;
+       padding: 5px 15px !important;
+}
+
+.rate-negotiation table tr th{
+       height: 35px !important;
+}
+.rate-negotiation table tr td{
+       height: 30px !important;
+       border-bottom:1px solid #ccc !important;
+}
+.footer-publicpages {
+       background: #fff;
+       line-height: 40px;
+       height: 40px;
+       position: fixed;
+       bottom:0;
+       width:100%;
+}
+#campaigncandidatesList table tr td{
+padding:5px;
+line-height: 20px;
+text-align: left;
+}
+
+.success-message{
+padding: 20px;
+font-size: 25px;
+color: #ccc;
+}
+.success-message .fa{
+color: #4CAF50;
+width: 100%;
+clear: both;
+display: inline-block;
+font-size: 60px;
+margin-bottom: 20px;
+
+}
+
+ 
+
+/* worked  */
+
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {

@@ -12,5 +12,7 @@ public interface RecommendationsService {
 	Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
 
 	List<Candidate> getRecommendationsWithScore(List<Candidate> candidateList, Requirement requirement)throws Exception;
+	
+    List<Candidate> getRecommendationsWithScoreByUsingElk(Long orgLocationId,Requirement requirement) throws Exception;
 
 }
