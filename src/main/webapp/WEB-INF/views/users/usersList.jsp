@@ -186,7 +186,8 @@ function exportToPdf(){
    
    
    
-   
+ <!--  David
+  Script is used scroll based userList -->   
 <script>
 	$(document).scroll(function(e){
 	    // grab the scroll amount and the window height
@@ -204,9 +205,23 @@ function exportToPdf(){
 	    }
 	});
 </script>
+
+
+<!--  David
+  Script is used search  based on search key if Enter Key is Pressed -->
+  
+ <script type="text/javascript">
    
-   
-      
+    $("#searchByName").keydown(function (e) {
+			  if (e.keyCode == 13) {
+			    $('input[name = searchByName]').click();
+			    getUsersList("manual");
+			  }
+			});
+  </script> 
+ 
+ <!--  David
+  Script is used search  based on search key if Enter Key is Pressed -->    
 <script type="text/javascript">
 	function getUsersList(type){
 		

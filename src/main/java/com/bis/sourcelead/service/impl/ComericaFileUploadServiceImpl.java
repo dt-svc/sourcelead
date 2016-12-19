@@ -29,9 +29,13 @@ import com.bis.sourcelead.entity.AmexUploadFile;
 import com.bis.sourcelead.entity.BOTransactions;
 import com.bis.sourcelead.entity.BoAmexTrans;
 import com.bis.sourcelead.entity.BoComericaTrans;
+import com.bis.sourcelead.entity.BoPaymentTypes;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.BoComericaTransService;
+import com.bis.sourcelead.service.BoPaymentTypesService;
 import com.bis.sourcelead.service.ComericaFileUploadService;
+import com.bis.sourcelead.util.PaymentAnalytics;
+import com.thoughtworks.xstream.mapper.Mapper.Null;
 
 @Service
 public class ComericaFileUploadServiceImpl implements ComericaFileUploadService {
@@ -42,6 +46,8 @@ private static final Logger logger = LoggerFactory.getLogger(ComericaFileUploadS
 	@Autowired
 	BoComericaTransService boComericaTransService;
 	
+	@Autowired
+	PaymentAnalytics paymentAnalytics;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -105,6 +111,12 @@ private static final Logger logger = LoggerFactory.getLogger(ComericaFileUploadS
 						
 						if(!isNullOrEmpty(record.get(2))){
 							boComericaTrans.setTransDesc(record.get(2));
+							//find out the payment type by description
+							BoPaymentTypes boPaymentTypes = paymentAnalytics.paymentAnalytics(record.get(2));
+							if(boPaymentTypes.getId() != null && !boPaymentTypes.getId().equals("")){
+								boComericaTrans.setPaymentTypeId(boPaymentTypes);
+							}
+							
 						}
 						
 						if(!isNullOrEmpty(record.get(3))){
