@@ -396,22 +396,28 @@ public class PdfUtil {
 	}
 	private String[] prepareRequirementToArray(Requirement requirement) {
 		String requirementArray[] = new String[Constants.REQUIREMENT_EXCEL_HEADERS.length];
-		if(requirement.getId() != null){
-			requirementArray[0] = requirement.getId().toString();
+		
+		if(requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())){
+			requirementArray[0] = requirement.getJobId();
+		}else{
+			requirementArray[0] = "--";
 		}
 		if(requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle())){
 			requirementArray[1] = requirement.getJobTitle();
 		}else{
 			requirementArray[1] = "--";
 		}
+		
 		if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
 			requirementArray[2] = requirement.getMinExp()+"-"+requirement.getMaxExp()+" years"; 
-		}else if((requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp())) || (requirement.getMaxExp() ==null)){
-			requirementArray[2] = requirement.getMinExp()+" years";
-		}else if((requirement.getMinExp() == null ) || (requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp()))){
-			requirementArray[2] = requirement.getMaxExp()+" years";
 		}else{
-			requirementArray[2] = "--";
+			if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp())){
+				requirementArray[2] = "0 - "+requirement.getMinExp()+"years";
+			}else{
+				if(requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
+					requirementArray[2] = "0 - "+requirement.getMaxExp()+"years";
+				}
+			}
 		}
 		
 		if(requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()) && requirement.getRateType() != null && !"".equalsIgnoreCase(requirement.getRateType())){
@@ -476,7 +482,7 @@ public class PdfUtil {
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header 
-            int[] columnWidths = new int[]{3, 5, 3,5, 2};
+            int[] columnWidths = new int[]{3, 5, 3,5, 2,5};
             PdfPTable table = getPdfTable(clientHeaders,columnWidths); 
 	        table.completeRow();
 	        java.util.List<String[]> clientList = new ArrayList<>();
@@ -520,8 +526,8 @@ public class PdfUtil {
 		}else{
 			clientArray[1] = "--";
 		}
-		if (orgRelations.getCity() != null && !"".equalsIgnoreCase(orgRelations.getCity())) {
-			clientArray[2] = orgRelations.getWebSite();
+		if (orgRelations.getCountry() != null && !"".equalsIgnoreCase(orgRelations.getCountry())) {
+			clientArray[2] = orgRelations.getCountry();
 		}else{
 			clientArray[2] = "--";
 		}
@@ -534,6 +540,11 @@ public class PdfUtil {
 			clientArray[4] = orgRelations.getNoOfContatcs().toString();
 		}else{
 			clientArray[4] = "--";
+		}
+		if (orgRelations.getCreatedBy() != null) {
+			clientArray[5] = orgRelations.getCreatedBy();
+		}else{
+			clientArray[5] = "--";
 		}
 		return clientArray;
 	}
@@ -627,7 +638,11 @@ public class PdfUtil {
 		}else{
 			contactsArray[4] = "--";
 		}
-		contactsArray[5] = "--";
+		if (orgSpoc.getOwnerUser().getUserType() != null && !"".equalsIgnoreCase(orgSpoc.getOwnerUser().getUserType())) {
+			contactsArray[5] = orgSpoc.getOwnerUser().getUserType();
+		}else{
+			contactsArray[5] = "--";
+		}
 		if (orgSpoc.getSpocStatus() != null && !"".equalsIgnoreCase(orgSpoc.getSpocStatus())) {
 			contactsArray[6] = orgSpoc.getSpocStatus();
 		}else{

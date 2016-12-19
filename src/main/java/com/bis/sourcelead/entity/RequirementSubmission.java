@@ -186,6 +186,9 @@ public class RequirementSubmission implements Serializable{
 	private int totalNoOfInterviews;
 	
 	@Transient
+	private int numofrequestsent;
+	
+	@Transient
 	List<RequirementInterview> requirementInterviewList;
 	
 	@Transient
@@ -682,6 +685,14 @@ public class RequirementSubmission implements Serializable{
 
 	public void setUpDatedStr(String upDatedStr) {
 		this.upDatedStr = upDatedStr;
+	}
+
+	public int getNumofrequestsent() {
+		return numofrequestsent;
+	}
+
+	public void setNumofrequestsent(int numofrequestsent) {
+		this.numofrequestsent = numofrequestsent;
 	}
 	
 

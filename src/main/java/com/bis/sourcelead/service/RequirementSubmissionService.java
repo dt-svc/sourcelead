@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
@@ -86,6 +87,12 @@ public interface RequirementSubmissionService {
 
 	void userNegotiateEmail(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations,
 			RequirementRateSubmissionNegotiation neogtation, StringBuilder tempHTML) throws Exception;
+
+
+	void sendEmailtoClient(Org loginOrg, User users, User pastUser, Requirement requirement, Candidate candidate,
+			StringBuilder tempHTML, OrgLocations loginOrgLocation)throws Exception;
+
+	void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations orgLocations,String submissionsList, Org org, JSONObject jsonObj, Map files)throws Exception;
 
 
 }

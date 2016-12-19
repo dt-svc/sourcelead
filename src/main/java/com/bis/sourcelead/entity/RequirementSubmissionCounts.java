@@ -8,6 +8,7 @@ public class RequirementSubmissionCounts {
 	private int numOfSubmitToClient;
 	private int numOfOffers;
 	private int numOfRejected;
+	private int numOfRequestSent;
 	
 	
 	
@@ -47,6 +48,12 @@ public class RequirementSubmissionCounts {
 	}
 	public void setNumOfRejected(int numOfRejected) {
 		this.numOfRejected = numOfRejected;
+	}
+	public int getNumOfRequestSent() {
+		return numOfRequestSent;
+	}
+	public void setNumOfRequestSent(int numOfRequestSent) {
+		this.numOfRequestSent = numOfRequestSent;
 	}
 	
 }

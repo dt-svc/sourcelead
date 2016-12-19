@@ -1,4 +1,4 @@
-﻿@charset "utf-8";
+@charset "utf-8";
 /* CSS Document */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
 * {
@@ -5055,6 +5055,47 @@ margin-right: 10px;
 .viewTemplate.feedbackTemplate .sjfb-field{
     margin-bottom: 0px !important;
 }
+.bg_mask {
+    position:absolute; width:100%; height:100%; background-color:#fff; top:0px; left:0px; z-index:9; display:none;
+    } 
+.showfeedback{
+    position: absolute;
+    top:0;left: 0;
+    width: 100%;
+    z-index: 9999;
+    padding:0 15px 15px;
+    display: none;
+    }
+    
+ .shownofeedback{
+     position: absolute;
+     top:0;left: 0;
+     width: 100%;
+     z-index: 9999;
+     padding:0 15px 15px;
+     display: block;
+ } 
+     
+.closediv {
+    background: #f60 none repeat scroll 0 0;
+    border: 1px solid #f60;
+    border-radius: 25%;
+    color: #fff;
+    cursor: pointer;
+    right: 10px;
+    padding: 1px 3px;
+    position: absolute;
+    top: 10px;
+}
+.demo table tr th{
+    height: 35px !important;
+}
+.demo table tr td{
+    height: 25px !important;
+    text-align: center;
+}
+
+
 
 /*** custom checkboxes ***/
 .star-rating{
@@ -5158,21 +5199,26 @@ padding:5px;
 line-height: 20px;
 text-align: left;
 }
-/* worked  */
+
 .success-message{
-	padding: 20px;
-	font-size: 25px;
-	color: #ccc;
+padding: 20px;
+font-size: 25px;
+color: #ccc;
 }
 .success-message .fa{
-	color: #4CAF50;
-	width: 100%;
-	clear: both;
-	display: inline-block;
-	font-size: 60px;
-	margin-bottom: 20px;
+color: #4CAF50;
+width: 100%;
+clear: both;
+display: inline-block;
+font-size: 60px;
+margin-bottom: 20px;
 
-	}
+}
+
+ 
+
+/* worked  */
+
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.RequirementInterviewerDao;
+import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 
@@ -23,7 +24,9 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 	public List<RequirementInterviewer> getInterviwersListByInterviewId(Long requirementInterviewId) {
 		return requirementInterviewerDao.getInterviwersListByInterviewId(requirementInterviewId);
 	}
-	
-	
 
+	@Override
+	public RequirementInterviewer getInterviwerstByInterviewId(Long requirementInterviewerId) {
+		return requirementInterviewerDao.getInterviwerstByInterviewId(requirementInterviewerId);
+	}
 }
