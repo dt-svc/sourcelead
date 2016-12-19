@@ -84,4 +84,33 @@ public class UserMailBoxDaoImpl implements UserMailBoxDao{
 		}
    	}
 
+	@Override
+	@Transactional
+	public UserMailBox getUserMailBoxById(String Id) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserMailBox> mailBox = new ArrayList<UserMailBox>();
+		logger.debug("getUserMailBoxById start");
+		mailBox = session.createQuery("from UserMailBox mailBox where mailBox.id = :id" ).setString("id", Id).setCacheable(true).list();
+		logger.debug("getUserMailBoxById end");
+		if (mailBox.size() > 0) {
+			return mailBox.get(0);
+		} else {
+			return null;
+		}
+   	}
+
+	@Override
+	@Transactional
+	public List<UserMailBox> getUserFavouriteMailsByUserIdAndOrgLocationId(Long userId, Long orgLocationId)
+			throws Exception {
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String query = "from UserMailBox mailbox where mailbox.userId.id = :userId and mailbox.orgLocationId.id = :orgLocationId and mailbox.isFavourite = '1'  ";
+		 List<UserMailBox> mailBoxList = session.createQuery(query.toString()).setLong( "userId", userId)
+				 .setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		 return mailBoxList;
+		
+	}
+
 }

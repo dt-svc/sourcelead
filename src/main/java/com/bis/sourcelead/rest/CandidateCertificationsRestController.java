@@ -125,7 +125,7 @@ public class CandidateCertificationsRestController {
 	   * 
 	   * @throws Exception
 	   */
-	 @PreAuthorize("hasAnyRole('ROLE_DELETE_CANDIDATE_CERTIFICATION')")
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION')")
 	   @RequestMapping(value = "/removeCandidateCertificateBycandidateIdandcandidateCertificateId")
 	   public String removeCandidateCertificateBycandidateIdandcandidateCertificateId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateCertificationId", required = false) Long candidateCertificationId,HttpServletRequest request) throws Exception {
 
@@ -133,7 +133,7 @@ public class CandidateCertificationsRestController {
 
 			 CandidateCertifications  candidatesCertificate = candidateCertificationsService.removeCandidateCertificateBycandidateIdandcandidateCertificateId(candidateId, candidateCertificationId);
 			 resultJson = commonUtil.toJSON(candidatesCertificate);
-				SourceLeadSessionManager.setSessionAttribute(request, "deleteCertification", "Certfification deleted");
+			 SourceLeadSessionManager.setSessionAttribute(request, "deleteCertification", "Certfification deleted");
 
 			 return resultJson;
 		}

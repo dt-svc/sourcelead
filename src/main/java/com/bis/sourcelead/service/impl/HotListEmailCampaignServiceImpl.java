@@ -140,7 +140,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 String subject = emailScenerioUtil.bulidSubject(jsonObj.getString("subject"),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 
-		 if(null != signature){
+		 if(null != userSignature){
 			 signature = emailScenerioUtil.buildSignature(userSignature.getSignature(),globalVarsMap);
 		 }
 		 
@@ -152,15 +152,22 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 emailMessage.setMessageBody(emailTemplate);
 		 emailMessage.setOrgLocationId(orgLocation.getId());
 		 
-		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+		 EmailAttachment emailAttachment = new EmailAttachment();
+		 emailAttachment.setName(multiFile.getOriginalFilename());
+		 emailAttachment.setDocFile(multiFile.getBytes());
+		 emailAttachment.setType(multiFile.getContentType());
+		 attachmentList.add(emailAttachment);
 		 
-		 saveUserMailBox(user,orgLocation,emailRecipientList,candidates,subject,table,UUID,jsonObj.getString("bodytext"),userSignature,jsonObj.getString("namefield"));
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),emailRecipientList,attachmentList);
+		 
+		 saveUserMailBox(user,orgLocation,emailRecipientList,candidates,subject,table,UUID,jsonObj.getString("bodytext"),userSignature,jsonObj.getString("namefield"),multiFile);
 		
 	}
 	
 	
-private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailRecipient> emailRecipientList,String candidates,String subject,String table,String UUID,String body,UserSignature userSignature,String nameFields) throws Exception{
+private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailRecipient> emailRecipientList,String candidates,String subject,String table,String UUID,String body,UserSignature userSignature,String nameFields,MultipartFile multiFile) throws Exception{
 	
 	UserMailBox userMailBox = new UserMailBox();
 	StringBuilder toEmails = new StringBuilder();
@@ -179,6 +186,7 @@ private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailR
 	userMailBox.setCampaignTableData(table);
 	userMailBox.setBody(body);
 	userMailBox.setSignatureId(userSignature);
+	userMailBox.setIsFavourite(0);
 	userMailBox.setUuid(UUID);
 	userMailBox.setStatus(1);
 	userMailBox.setNameFields(nameFields);
@@ -186,6 +194,20 @@ private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailR
 	userMailBox.setCreatedDate(new Date());
 	userMailBox.setUpdatedBy(user.getUserCode());
 	userMailBox.setUpdatedDate(new Date());
+	
+	
+	 if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
+   	  try {
+   		userMailBox.setFileContentType(multiFile.getContentType());
+   		userMailBox.setDocFile(multiFile.getBytes());
+   		userMailBox.setFileName(multiFile.getOriginalFilename());
+   	   
+	       }catch (Exception e) {
+   	      	 e.printStackTrace();
+			    }
+       }
+	
+	
 	userMailBoxService.saveUserMailBox(userMailBox);
 	
 }
