@@ -1,4 +1,4 @@
-﻿@charset "utf-8";
+@charset "utf-8";
 /* CSS Document */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
 * {
@@ -5199,6 +5199,24 @@ padding:5px;
 line-height: 20px;
 text-align: left;
 }
+
+.success-message{
+padding: 20px;
+font-size: 25px;
+color: #ccc;
+}
+.success-message .fa{
+color: #4CAF50;
+width: 100%;
+clear: both;
+display: inline-block;
+font-size: 60px;
+margin-bottom: 20px;
+
+}
+
+ 
+
 /* worked  */
 
 /* media 320px */
