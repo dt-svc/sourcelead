@@ -329,6 +329,7 @@ public class RequirementOfferRestController {
 	@RequestMapping(value = "/acceptOrRejectOffer")
     @ResponseBody  String acceptOrRejectOffer(@RequestParam(value="offerStatus", required=false) String offerStatus,
                            @RequestParam(value = "offerId", required = false) Long offerId,
+                           @RequestParam(value="rejectedReason", required=false) String rejectedReason,
                            HttpServletRequest request) throws Exception {
 
 			 String setofferStatus = "";
@@ -365,6 +366,7 @@ public class RequirementOfferRestController {
 				    		}else{
 				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERREJECTED);
 				    		}
+				    		 requirementSubmission.setRejectedReason(rejectedReason);
 							 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 							 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					  }
@@ -372,10 +374,11 @@ public class RequirementOfferRestController {
 			    	  //Changing the status of offerTable 
 					  if(requirementOffers  != null ){
 						    requirementOffers.setOfferStatus("OFFERREJECTED");
+						    requirementOffers.setRejectedReason(rejectedReason);
 						    requirementOffers.setUpdatedDate(commonUtil.currentDate());
 						    requirementOffersService.saveOfferStatus(requirementOffers);
 				      }
-					  setofferStatus ="you have rejected the offer";
+					  setofferStatus ="success";
 			    }
 			 }
 			 
