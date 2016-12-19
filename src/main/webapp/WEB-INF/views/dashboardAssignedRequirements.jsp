@@ -4,7 +4,7 @@
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 
-<div class="content-dashboard clearfix"> 
+<div class="content-dashboard clearfix" id="assignedRequirementsDiv" style="display: none;"> 
       <!-- Assigned Requirements -->
       <div class="clearfix dashboard-widget mb col-md-12">
         <h4 class="clearfix">
@@ -13,7 +13,7 @@
         </span> -->
         </h4>
       <!-- <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-        <div class="clearfix require_wrap_table dashboard-data">
+        <div class="clearfix require_wrap_table dashboard-data"> 
         		 <div id="requirementList"></div>
         </div>
       </div>
@@ -57,8 +57,7 @@ function requirementList(){
 	                	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result = result +"    <th>ID</th>"; 
-	                     result = result +"    <th>Requirement</th>"; 
+	                     result = result +"    <th>ID-Title</th>"; 
 	                     result = result +"    <th>Client</th>"; 
 	                     result = result +"    <th>Rate</th>"; 
 	                     result = result +"    <th>Priority</th>"; 
@@ -76,8 +75,12 @@ function requirementList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
-		                     result = result +"<td><div>"+opt.id+"</div></td>";
-		                     result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobTitle+"</a></div></td>";
+	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
+	                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobId+"-"+opt.jobTitle+"</a></div></td>";
+		                     }else{
+		                    	 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'>"+opt.jobTitle+"</a></div></td>";
+		                     }
+		                     
 		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
 		                    	 result = result +"<td><div>"+opt.clientName+"</div></td>";
 		                     }else{
@@ -107,19 +110,20 @@ function requirementList(){
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
 	                     $("#requirementList").append(result); 
+	                     $("#assignedRequirementsDiv").css("display", "block");
 	                     pagination(); 
 			    	} 
                  }else{
                 	 $("#requirementList").removeAttr("style");
-  	    	         var result ="";
+  	    	      /*    var result ="";
 		    	    
 					 result = result+"			<div class='blank-pages'>";
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 					 result = result+"			        <p>No Requirement Found</p>";
-					 result = result+"			 </div>";
+					 result = result+"			 </div>"; */
 					
 					$("#requirementList").empty();
-				    $("#requirementList").append(result); 
+				    //$("#requirementList").append(result); 
                 }
           },
             

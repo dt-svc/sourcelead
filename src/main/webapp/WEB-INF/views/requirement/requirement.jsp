@@ -1319,6 +1319,7 @@ function setTemplateValues(){
 		    		
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
+			    	$('.selectpicker').selectpicker('refresh');
 			    	$("#jobId").val(json.jobId);
 			    	$("#positions").val(json.positions);
 			    	
@@ -1674,7 +1675,7 @@ function getUserList(teamType){
 		         								localCheckedStatus = "checked";
 		         							}  
 		                    	 });
-		                    	 result = result +'             <td><input id="'+opt.id+'" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' class="myCheckbox" ></td>';
+		                    	 result = result +'             <td><input id="'+opt.id+'" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
 		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
 		                    	 result = result +'             <td>'+opt.email+'</td>';
 		                    	 result = result +'             <td>'+opt.userType+'</td>';
@@ -1697,7 +1698,7 @@ function getUserList(teamType){
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   <div class="modal-footer">';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="assignMembers();">Assign</button>';
+	                 	 result = result +'     <button class="btn btn-primary" type="button" id="assignbtnId" onClick="assignMembers();">Assign</button>';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
 	                 	 result = result +'   </div>'; 
 	                 	 $("#userList").empty(); 
@@ -1839,18 +1840,25 @@ function assignMembers() {
 	var result = "";
 	var oTable = $('#example').dataTable();
 	var rowcollection =  oTable.$(".myCheckbox:checked", {"page": "all"});
+	var totalCount = $("[type='checkbox']:checked").length;
 	var count = 1;
-	rowcollection.each(function(index,elem){
-	    var checkbox_value = $(elem).val();
-	    result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+checkbox_value+"' />";
-	    count++;
-	});
-	result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
-	$("#assignedToSavingDiv").empty();
-	$("#assignedToSavingDiv").append(result);
-	assignedToValidation();
+	if(totalCount == 0){
+		alert("Please Select atleast one Check-Box.")
+	}else{
+		$('#assignbtnId').attr("data-dismiss","modal");
+		rowcollection.each(function(index,elem){
+		    var checkbox_value = $(elem).val();
+		    result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+checkbox_value+"' />";
+		    count++;
+		});
+		result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
+		$("#assignedToSavingDiv").empty();
+		$("#assignedToSavingDiv").append(result);
+		assignedToValidation();
+	}
 }
 </script>
+
 
 <script type="text/javascript">
 	function assignedToValidation() {
@@ -2186,6 +2194,17 @@ function getJobType(jobType){
 }
 </script>
 
+<!-- <script type="text/javascript">
+function checkcheckbox(){
+	var count = $("[type='checkbox']:checked").length;
+	alert(count);
+	if(count==0){
+		alert("please select checkbox");
+	}else{
+		alert("selected checkbox"+count);
+	}
+}
+</script> -->
 
 
 <jsp:include page="../masterFooter.jsp" />
