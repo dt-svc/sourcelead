@@ -148,6 +148,7 @@ public class Constants {
 	
 	public static String APPLICANT_NEGOTIATE_REQUIREMENT = "ApplicantNegotiateRequirement";
 	public static String USER_RATE_NEGOTIATION = "UserRateNegotiation";
+	public static String CLIENT_RATE_NEGOTIATION = "ClientRateNegotiation";
 
 
 
@@ -291,6 +292,8 @@ public class Constants {
 	public static String[] REQUIREMENT_EXCEL_HEADERS = {"Requirement id","Requirement Title","Experience","Rate","Location","Skills","Manager","Priority","Application Form Name","Client Name","Client Contact Name","Client Contact Email"};
     
     public static String[] REQUIREMENT_PIPELINE_EXCEL_HEADERS={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status","Submitted On","Submitted By"};
+    
+    public static String[] REQUIREMENT_PIPELINE_REQUEST_SENT_HEADERS={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status"};
 	
     public static String[] REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS ={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status","ShortListed By","ShortListed On"};
     
@@ -302,7 +305,7 @@ public class Constants {
     
     public static String[] TIMESHEET_EXCEL_HEADERS = {"Projects","Tasks","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Status"};
    
-    public static String[] CLIENT_EXCEL_HEADERS = {"Client Name","Website","Location","Tiers","Number of Contacts"};
+    public static String[] CLIENT_EXCEL_HEADERS = {"Client Name","Website","Location","Tiers","Number of Contacts","Created By"};
     
     public static String[] CLIENT_CONTACTS_EXCEL_HEADERS = {"Client Name","Name","Emailid","Phone Number","Owner","Role","Status"};
     
@@ -337,6 +340,8 @@ public class Constants {
     public static String OFFER_COUNT= "Offer Applicants:";
     public static String REJECTED_COUNT= "Rejected Applicants :";
     public static String SUBMITTED_APPLICANTS_COUNT= "Submitted Applicants :";
+    public static String REQUEST_SENT_COUNT= "Request Sent Applicants :";
+
     
     
     

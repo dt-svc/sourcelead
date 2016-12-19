@@ -478,7 +478,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
 			user.setIsMailSent(userImport.getIsMailChecked());
 			userRole.setUser(user);
-		    userService.addUser(user);
+		    userService.addUser(user);	
 		    userRoleService.addUserRole(userRole);
 			employee.setUser(user);
 			employeesService.addEmployee(employee);
@@ -487,8 +487,10 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			}
 		}else{
 			User user1 = userService.findByEmail(userImport.getEmailId());
-			user1.setPassword(sourceleadPasswordEncoder.encode(password));
-			userService.addUser(user1);
+			if(user1.getUserState() !=null && !"ACTIVE".equalsIgnoreCase(user1.getUserState().toString())){
+				user1.setPassword(sourceleadPasswordEncoder.encode(password));
+				userService.addUser(user1);
+			}
 			userRole.setUser(user1);
 			userRoleService.addUserRole(userRole);
 			employee.setUser(user1);
