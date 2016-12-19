@@ -1,7 +1,13 @@
 package com.bis.sourcelead.elk.setup;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -24,19 +30,19 @@ public class SourceleadELKTransportClient {
      * Default constructor, initializing the transport client.
      * @throws UnknownHostException 
      */
-    /*public SourceleadELKTransportClient() {
+    public SourceleadELKTransportClient() {
 	     try {
 	    	  Settings settings = Settings.settingsBuilder()
-	    			  .put("cluster.name", dbconfig.getCluster())
-	                  .put("node.name", dbconfig.getNode())
-	         		  .put("path.home", dbconfig.getPath())
+	    			  .put("cluster.name", "elasticsearch")
+	                  .put("node.name", "Tundra")
+	         		  .put("path.home", "/usr/share/elasticsearch")
 	                  .build();
 			client = TransportClient.builder().settings(settings).build().
-			      addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
+					addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("192.168.1.125"), 9300));
 	     } catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}
-    }*/
+    }
 
 	/** {@inheritDoc} */
     public Client getClient() {
