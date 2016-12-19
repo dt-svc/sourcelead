@@ -1364,7 +1364,6 @@ function exportToPdf(){
 	  
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
-	  
 	  if(isCandidatesAvailable == ''){
 	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType;	
 	  }else{
@@ -1395,16 +1394,19 @@ function exportToExcel(){
 	  var candFilterRadio = $('input[name=candidateStatus]');
 	  var candidateStatus = candFilterRadio.filter(':checked').val();
 	  if(candidateStatus == 1){
-         $("#canDiv").text("Active Candidates");
-     }else if(candidateStatus == 0){
-   	  $("#canDiv").text("In Active Candidates");
-     }else if(candidateStatus == 'ALL'){
-   	  $("#canDiv").text("All Candidates");
-     }else{
-         $("#canDiv").removeAttr("onClick");
-     }
+       $("#canDiv").text("Active Candidates");
+   }else if(candidateStatus == 0){
+ 	  $("#canDiv").text("In Active Candidates");
+   }else if(candidateStatus == 'ALL'){
+ 	  $("#canDiv").text("All Candidates");
+   }else{
+       $("#canDiv").removeAttr("onClick");
+   }
+	  
+	  var candTypeRadio = $('input[name=candidateType]');
+	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType;	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
