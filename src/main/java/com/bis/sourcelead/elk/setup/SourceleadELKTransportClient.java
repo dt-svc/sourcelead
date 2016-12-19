@@ -1,22 +1,10 @@
 package com.bis.sourcelead.elk.setup;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
-
-import com.bis.sourcelead.db.DatabaseConnectionConfig;
-import com.bis.sourcelead.db.PropertyPathConfiguration;
 
 /**
  * @purpose:Elastic Search Transport Client Configuration
@@ -36,7 +24,7 @@ public class SourceleadELKTransportClient {
      * Default constructor, initializing the transport client.
      * @throws UnknownHostException 
      */
-    public SourceleadELKTransportClient() {
+    /*public SourceleadELKTransportClient() {
 	     try {
 	    	  Settings settings = Settings.settingsBuilder()
 	    			  .put("cluster.name", "elasticsearch")
@@ -48,7 +36,7 @@ public class SourceleadELKTransportClient {
 	     } catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}
-    }
+    }*/
 
 	/** {@inheritDoc} */
     public Client getClient() {
