@@ -267,7 +267,7 @@ $(document).ready(function () {
 	             
 	             <div class="input-group-btn selp-custom-min">
 	             <select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
-	                 <option>Select</option>
+	                 <option value="">Select</option>
 	                 <option  ${requirement.jobType  == 'c2c' ? 'selected' : ''}><a href="#">C2C</a></option>
 	                 <option  ${requirement.jobType  == 'W-2' ? 'selected' : ''}><a href="#">W-2</a></option>
 	                 <option  ${requirement.jobType  == 'C2H' ? 'selected' : ''}><a href="#">C2H</a></option>
@@ -813,7 +813,7 @@ $(document).ready(function () {
         <c:if test="${empty requirement.requirementSubmissionStatus || requirement.requirementSubmissionStatus == 'DRAFT' || requirement.requirementSubmissionStatus == 'REJECTED'}">
         	<input type="button" value="Draft" id="draft" onclick="storeRequirement('draft'); " class="btn btn-danger ml">
         </c:if>
-        <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >    
+        <input type="button" value="Save" id="save" onclick="storeRequirement('save');checkTemplateforDouplicate();" class="btn btn-primary ml" >    
         <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
       </div>
     </div>
@@ -1273,9 +1273,14 @@ function getCities(){
 function getTemplateVal(){
     if(document.getElementById('isTemplate').checked) {
         $("#isTemplate").val('Y');
-        checkTemplateforDouplicate();
+        $('#jobTitle').removeAttr('data-validation-optional');
+		$('#jobTitle').attr("data-validation","required validate_Space validate_length length2-250"); 
+		checkTemplateforDouplicate();
+		
     }else{
         $("#isTemplate").val('N');
+        $('#jobTitle').removeAttr('data-validation');
+		$('#jobTitle').attr("data-validation-optional","true"); 
         $('#jobTitleDiv').find('p.jquery_form_error_message').remove();
 
     }
@@ -2137,27 +2142,33 @@ function minMaxExperience(){
 
 <script type="text/javascript">
 function checkTemplateforDouplicate(){
-var templateName = document.getElementById("jobTitle").value; 
-$('#jobTitleDiv').find('p.jquery_form_error_message').remove();
-var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/validatetemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName, 
-	        success: function(data) {
-	        	if(data == "true"){
-	        		  $('#jobTitleDiv').find('p.jquery_form_error_message').remove();
-					  $("input#jobTitle").after("<p class='jquery_form_error_message'><span>Template Already Exists</span>");
-					  document.getElementById("jobTitle").setAttribute('record-exist','yes');
-					  document.getElementById("jobTitle").setAttribute('record-exist-errorMsg','Template Already Exists'); 
-	        	}
-	        	else{
-	        		 $('input#jobTitle').removeAttr( "record-exist record-exist-errormsg");
-	        		 $('#jobTitleDiv').find('p.jquery_form_error_message').remove(); 
-	        		 $("#requirement_form" ).addClass('button').val('Save');
-                    $("#requirement_form").removeAttr("disabled");
-	        	}
-	        },
-	    });
+	if(document.getElementById('isTemplate').checked) {
+		var templateName = document.getElementById("jobTitle").value; 
+		$('#jobTitleDiv').find('p.jquery_form_error_message').remove();
+		var sourceleadUrl ='${sourceleadUrl}';
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/validatetemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName, 
+			        success: function(data) {
+			        	if(data == "true"){
+			        		  $('#jobTitleDiv').find('p.jquery_form_error_message').remove();
+							  $("input#jobTitle").after("<p class='jquery_form_error_message'><span>Template Already Exists</span>");
+							  document.getElementById("jobTitle").setAttribute('record-exist','yes');
+							  document.getElementById("jobTitle").setAttribute('record-exist-errorMsg','Template Already Exists'); 
+			        	}
+			        	else{
+			        		 $('input#jobTitle').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#jobTitleDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#requirement_form" ).addClass('button').val('Save');
+		                    $("#requirement_form").removeAttr("disabled");
+			        	}
+			        },
+			    });
+	}else{
+		$('input#jobTitle').removeAttr( "record-exist record-exist-errormsg");
+		$('#jobTitleDiv').find('p.jquery_form_error_message').remove();
+	}
+
 }
 </script>
 
