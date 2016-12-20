@@ -281,7 +281,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             			 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
             		 }
             		 if(label == 'Designation' || label == 'Education'){
-            			 datavalidation = 'data-validation="required validate_Space validate_Alphabet length2-50"';
+            			 datavalidation = 'data-validation="required validate_Space validate_Name length2-250"';
             		 }
         			 
         			 datavalidation2 = 'data-validation="required"';
@@ -296,7 +296,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
         				 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
             		 }
             		 if(label == 'Designation' || label == 'Education'){
-            			 datavalidation = 'data-validation="validate_Space validate_Alphabet length2-50"';
+            			 datavalidation = 'data-validation="validate_Space validate_Name length2-250"';
             		 }
         			 novalidation = 'data-validation-optional="true"';
         		 }
