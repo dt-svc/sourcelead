@@ -42,7 +42,9 @@
 						&nbsp;&nbsp;<span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu">
-					  <li><a href="#">Mail</a></li>
+					 <sec:authorize access="hasRole('ROLE_MAIL_BOX')">
+					  <li><a href="${sourceleadUrl}/composeMail">Mail</a></li>
+					  </sec:authorize>
 					  <sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
 					  	<li><a href="${sourceleadUrl}/hotlistMail">Hotlist Campaign</a></li>
 					  </sec:authorize>
@@ -480,8 +482,9 @@ function getEmailDetails(uuid){
 	   			}
 	   			
 	   			
-
-	   			result = result +'<div class="clearfix project_wrap_table mail-table  mb">';
+				if(opt.candidatesList.length > 0 ){
+	   			
+				result = result +'<div class="clearfix project_wrap_table mail-table  mb">';
 	   			result = result +'<table>';
 			  	
 	   			result = result +'<thead>';
@@ -526,6 +529,7 @@ function getEmailDetails(uuid){
 	   			result = result +'</thead>';
 	   			result = result +'</table>';
 	   			result = result +'</div>';
+				}
 	   			
 	   			if(opt.fileName != null && opt.fileName != "" && opt.fileName != 'undefined'){
 	   				result = result +'<div class="require_wrap_details_cta require_uploadfile"><b>Attachment:</b> <span>'+opt.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadMailAttachment?UUID='+opt.uuid+'\"></a> ';

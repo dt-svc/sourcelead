@@ -26,3 +26,14 @@ UPDATE `sourcelead`.`SOURCELEAD_ROLES` SET `ACTION_ID`='102,104,105,150' WHERE `
 UPDATE `sourcelead`.`ROLES` SET `ACTION_ID`='102,104,105,150' WHERE `ID`='2';
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','USER_MAIL_BOX','IS_MAIL_READ','INT NULL AFTER `FILE_NAME`');
+
+
+
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`,`ENTITY_TYPE`) VALUES ('EmailToUsers','Email');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'salutation', '{{EmailToUsers.salutation}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'body', '{{EmailToUsers.body}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'signature', '{{EmailToUsers.signature}}');
+
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES 
+											('EmailToUsers','Email', 'EmailToUsers', 'used for Email to users', 'Email To Users.','org', '{{EmailToUsers.signature}}', '{{EmailToUsers.salutation}},\n\n {{EmailToUsers.body}}\n  ','N', 'SLADMIN', 'sourcelead', 'sourceleadIN');
+

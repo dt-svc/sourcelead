@@ -33,15 +33,18 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UserSignature;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
+import com.bis.sourcelead.service.EmailService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserMailBoxService;
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.UserSignatureService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -74,7 +77,19 @@ public class MailBoxRestController {
 	private CommonUtil commonUtil;
 	
 	@Autowired
-	private CandidateSkillsService candidateSkillsService;
+	CandidateSkillsService candidateSkillsService;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	UserRoleService userRoleService;
+	
+	@Autowired
+	EmailService emailService;
+	
+	
+	
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -118,6 +133,29 @@ public class MailBoxRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		hotListEmailCampaignService.sendHotListEmailCampaign(jsonObj, user, orgLocation, multiFile);
 		
+		
+		
+		return "success";
+	}
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
+	@RequestMapping(value = "/sendEmailToUsers", method = RequestMethod.POST)
+	public String sendEmailToUsers(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+		
+		MultipartFile multiFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if(itrator.hasNext()){
+	        multiFile = request.getFile(itrator.next());
+		}
+		
+		String jsonc = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(jsonc);
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		emailService.sendEmail(jsonObj, user, orgLocation, multiFile);
 		
 		
 		return "success";
@@ -217,6 +255,7 @@ public class MailBoxRestController {
 	    if(userMailbox != null){
 	    	
 	    	List<Long> candidateId = new ArrayList<Long>();
+	    	if(null !=  userMailbox.getCandidateId()){
 			 for (String s : userMailbox.getCandidateId().split(",")){
 				 candidateId.add(Long.parseLong(s));
 			 }
@@ -259,8 +298,9 @@ public class MailBoxRestController {
 					}
 					
 				}
-				
-				userMailbox.setIsMailRead(1);
+	    	  }
+	    	
+		    	userMailbox.setIsMailRead(1);
 				userMailBoxService.saveUserMailBox(userMailbox);
 				
 				Integer inboxUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocation.getId(), "Inbox");
@@ -268,8 +308,8 @@ public class MailBoxRestController {
 				userMailbox.setUnreadInboxCount(inboxUnreadMailsCount);
 				userMailbox.setUnreadRequestedCount(requestedUnreadMailsCount);
 				userMailbox.setTotalUnReadMailsCount(inboxUnreadMailsCount+requestedUnreadMailsCount);
-				
 				userMailbox.setCandidatesList(reqCandidatesList);
+				
 				mailBoxList.add(userMailbox);
 				calculateDays(mailBoxList);
 				
@@ -451,6 +491,26 @@ public class MailBoxRestController {
 			resultJson = toJSON(reqCandidatesList);
 			return resultJson;
 		}
+	 
+	 
+	 
+	 @RequestMapping(value = "/getMailingUserList", method = RequestMethod.POST)
+		public @ResponseBody String getMailingUserList(@RequestParam(value="teamType",required = false) String teamType,HttpServletRequest request) throws Exception {
+			
+			String resultJson;
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<User> usersList = userService.getUsersByTeamType(orgLocation.getId(),teamType);
+			for(User user : usersList){
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocation.getId());
+				if(userRole !=null){
+					user.setUserType(userRole.getUserType());
+				}
+			}
+			resultJson = commonUtil.toJSON(usersList);
+			return resultJson;
+		}
+		
+		
 	 
 	 
 		
