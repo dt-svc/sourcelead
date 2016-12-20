@@ -105,7 +105,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		Map<String, Object> params = new HashMap<String,Object>();
 		
 		if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
-			subQuery = "and (ri.submissionId.requirement.managerUserId.id =:userId OR ri.createdBy =:userCode)";
+			subQuery = "and (rih.submissionId.requirement.managerUserId.id =:userId OR rih.createdBy =:userCode)";
 			params.put("userId",userId);
 			params.put("userCode",userCode);
 			//subQuery = "and ri.submissionId.requirement.managerUserId.id =:userId";

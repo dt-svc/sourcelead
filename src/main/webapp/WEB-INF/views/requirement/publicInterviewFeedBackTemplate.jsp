@@ -337,6 +337,9 @@ function saveInterviewTemplate(){
 		      	  if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
 		      		  inputValue = $this.find('input').val();
 		      	  }
+		      	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+		      		inputValue = $this.find('textarea').val();
+		      	  }
 	     	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
 	     	    	 inputValue = $this.find('select').val();
 	     	      }
