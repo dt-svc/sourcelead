@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -72,7 +73,7 @@ public class MailBoxController {
 		return (str == null || "".equals(str.trim()));
 	}
 	
-	
+	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/mailBox")
  	public ModelAndView mailBox(HttpServletRequest request) {
 		    ModelAndView model = new ModelAndView();
@@ -82,6 +83,7 @@ public class MailBoxController {
  	}
 
 	
+	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/hotlistMail")
  	public ModelAndView hotlistMail(HttpServletRequest request) {
 		    ModelAndView model = new ModelAndView();
@@ -102,7 +104,7 @@ public class MailBoxController {
  			return model;
  	}
 	
-	
+	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/getClientContacts")
 	public @ResponseBody String getClientContacts(HttpServletRequest request) throws Exception {
 
@@ -115,7 +117,7 @@ public class MailBoxController {
 		return resultJson;
 	}
 	
-	
+	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/getUserMails")
 	public @ResponseBody String getUserMails(@RequestParam(value = "type", required = false) String type,
 			HttpServletRequest request) throws Exception {
@@ -123,9 +125,15 @@ public class MailBoxController {
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    String resultJson;
+	    List<UserMailBox> mailBoxList = null;
 	    
-	    List<UserMailBox> mailBoxList = userMailBoxService.getUserMailBoxByUserIdAndOrgLocationIdAndMailStatus(user.getId(), orgLocations.getId(), type);
-	    if(mailBoxList!=null){
+	    if(!type.equalsIgnoreCase("Starred")){
+	    	mailBoxList = userMailBoxService.getUserMailBoxByUserIdAndOrgLocationIdAndMailStatus(user.getId(), orgLocations.getId(), type);
+	    }else if(type.equalsIgnoreCase("Starred")){
+	    	mailBoxList = userMailBoxService.getUserFavouriteMailsByUserIdAndOrgLocationId(user.getId(), orgLocations.getId());
+	    }
+	     
+	    if(mailBoxList != null){
 			calculateDays(mailBoxList);
 		}
 	    resultJson = commonUtil.toJSON(mailBoxList);
@@ -133,7 +141,7 @@ public class MailBoxController {
 	}
 	
 	
-	
+	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/getClientsListForHotlist")
 	public @ResponseBody String getClientsListForHotlist(HttpServletRequest request) throws Exception {
 
@@ -146,6 +154,7 @@ public class MailBoxController {
 		return resultJson;
 	}
 	
+	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/getCandidatesForCampaign")
 	public @ResponseBody String getCandidatesForCampaign(@RequestParam(value = "candidatesListType", required = false) String candidatesListType,
 			HttpServletRequest request) throws Exception {
@@ -170,11 +179,14 @@ public class MailBoxController {
 	    		}else{
 	    			teamList = teamService.getUserAssignedTeamListByOrgLocationId(user.getId(), orgLocations.getId());
 	    		}
-	    		if(candidatesListType.equalsIgnoreCase("hotlistConsultants")){
-	    			candidatesList = candidateService.getAllCandidatesForCampaignByTeam(teamList,"Consultant");
-	    		}else if(candidatesListType.equalsIgnoreCase("hotlistCandidates")){
-	    			candidatesList = candidateService.getAllCandidatesForCampaignByTeam(teamList,"Candidate");
+	    		if(null != teamList && teamList.size() > 0){
+	    			if(candidatesListType.equalsIgnoreCase("hotlistConsultants")){
+		    			candidatesList = candidateService.getAllCandidatesForCampaignByTeam(teamList,"Consultant");
+		    		}else if(candidatesListType.equalsIgnoreCase("hotlistCandidates")){
+		    			candidatesList = candidateService.getAllCandidatesForCampaignByTeam(teamList,"Candidate");
+		    		}
 	    		}
+	    		
 	    		
 	    	}
 	    	

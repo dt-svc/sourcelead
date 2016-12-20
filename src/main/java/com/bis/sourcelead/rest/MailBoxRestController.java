@@ -1,14 +1,26 @@
 package com.bis.sourcelead.rest;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Writer;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +33,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserSignature;
@@ -39,6 +52,8 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
 public class MailBoxRestController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(MailBoxRestController.class);
 	
 	@Autowired
 	OrgSpocService orgSpocService;
@@ -66,7 +81,7 @@ public class MailBoxRestController {
 		return (str == null || "".equals(str.trim()));
 	}
 	
-	
+	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/getClientContactsEmailsByOrgRelationId", method = RequestMethod.POST)
 	@ResponseBody String getClientContactsEmailsByOrgRelationId(@RequestParam(value = "orgRelationIds", required = false) String orgRelationIds) throws Exception {
 		
@@ -86,7 +101,7 @@ public class MailBoxRestController {
 		return commonUtil.toJSON(spocEmails);
 	}
 	
-	
+	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/sendHotListCampaign", method = RequestMethod.POST)
 	public String sendHotListCampaign(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
 		
@@ -108,7 +123,7 @@ public class MailBoxRestController {
 		return "success";
 	}
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/saveUserSignature", method = RequestMethod.POST)
 	public String saveUserSignature(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
 		
@@ -142,6 +157,146 @@ public class MailBoxRestController {
 	}
 	
 	
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	@RequestMapping(value = "/saveMailAsFavourite", method = RequestMethod.POST)
+	public String saveMailAsFavourite(@RequestParam(value = "mailboxId", required = false) String mailboxId) throws Exception {
+		
+		
+		UserMailBox mailBox = userMailBoxService.getUserMailBoxById(mailboxId);
+		if(null != mailBox){
+			if(mailBox.getIsFavourite().equals(1)){
+				mailBox.setIsFavourite(0);
+			}else{
+				mailBox.setIsFavourite(1);
+			}
+			
+			userMailBoxService.saveUserMailBox(mailBox);
+		}
+		
+		return "success";
+	}
+	
+	
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	@RequestMapping(value = "/sendMailsToTrash", method = RequestMethod.POST)
+	public String sendMailsToTrash(@RequestParam(value = "mailIds", required = false) String mailIds,HttpServletRequest request) throws Exception {
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		String[] mailBoxIds = mailIds.split(",");
+		for(int i=0; i < mailBoxIds.length; i++){
+			
+			UserMailBox userMailBox = userMailBoxService.getUserMailBoxById(mailBoxIds[i]);
+			userMailBox.setIsFavourite(0);
+			userMailBox.setMailStatus("Trash");
+			userMailBox.setUpdatedBy(user.getCreatedBy());
+			userMailBox.setUpdatedDate(new Date());
+			userMailBoxService.saveUserMailBox(userMailBox);
+		}
+		
+		
+		
+		
+		return "success";
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	@RequestMapping(value = "/getEmailDetails")
+	public @ResponseBody String getEmailDetails(@RequestParam(value = "UUID", required = false) String UUID,
+			HttpServletRequest request) throws Exception {
+
+	    String resultJson;
+	    
+	    UserMailBox userMailbox = userMailBoxService.getUserMailBoxByUUID(UUID);
+	    List<Candidate> reqCandidatesList = new ArrayList<Candidate>();
+	    List<UserMailBox> mailBoxList = new ArrayList<UserMailBox>();
+	    
+	    if(userMailbox != null){
+	    	
+	    	List<Long> candidateId = new ArrayList<Long>();
+			 for (String s : userMailbox.getCandidateId().split(",")){
+				 candidateId.add(Long.parseLong(s));
+			 }
+				
+				List<Candidate> candidatesList = candidateService.getAllRequestedCandidatesForCampaign(candidateId);
+				if(null != candidatesList){
+					
+					for(Candidate candidate : candidatesList){
+						
+						 String candidateName = null;
+						 String experienceInYears = null;
+						 String experienceInMonths = null;
+						 String totalExp = null;
+						 
+						 if(!isNullOrEmpty(candidate.getLastName())){
+							 candidateName = candidate.getFirstName()+" "+candidate.getLastName();
+					   	 }else{
+					   		candidateName = candidate.getFirstName();
+					   	 }
+						
+						 if(!isNullOrEmpty(candidate.getExperienceYears())){
+							 experienceInYears = candidate.getExperienceYears();
+						 }
+						 
+						 if(!isNullOrEmpty(candidate.getExperienceMonths())){
+							 experienceInMonths = candidate.getExperienceMonths();
+						 }else{
+							 experienceInMonths = "0";
+						 }
+						 
+						 if(isNullOrEmpty(candidate.getExperienceMonths()) && isNullOrEmpty(candidate.getExperienceMonths())){
+							 totalExp = "-----";
+						 }else{
+							 totalExp = experienceInYears+" Years "+experienceInMonths+" Months";
+						 }
+						 
+						 candidate.setCandidateName(candidateName);
+						 candidate.setTotalExp(totalExp);
+						 reqCandidatesList.add(candidate);
+					}
+					
+				}
+				
+				userMailbox.setCandidatesList(reqCandidatesList);
+				mailBoxList.add(userMailbox);
+				calculateDays(mailBoxList);
+	    	
+		}
+	    resultJson = commonUtil.toJSON(mailBoxList);
+		return resultJson;
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	@RequestMapping(value = "/downloadMailAttachment", method = RequestMethod.GET)
+    public void downloadMailAttachment(@RequestParam(value="UUID", required=false) String UUID ,HttpServletResponse response) throws Exception {
+		
+		 UserMailBox userMailbox = userMailBoxService.getUserMailBoxByUUID(UUID);
+		    
+		    response.setContentType("application/octet-stream");
+	        response.setHeader("Content-Disposition",
+	                "attachment;filename="+userMailbox.getFileName());
+		    
+			InputStream inputStream = new ByteArrayInputStream(userMailbox.getDocFile());
+			try {
+				OutputStream outStream = response.getOutputStream();
+
+				byte[] buffer = new byte[4096];
+				int bytesRead = -1;
+
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+
+				inputStream.close();
+				outStream.close();
+
+			} catch (FileNotFoundException e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			} 
+ }
+	
+	
+	
 
 	@RequestMapping(value = "/validateCampaignToEmail", method = RequestMethod.POST)
 	public String validateCampaignToEmail(@RequestParam(value = "email", required = false) String email,
@@ -163,7 +318,7 @@ public class MailBoxRestController {
 	}
 	
 	
-
+	 @PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
 	 @RequestMapping(value = "/getSignatures", method = RequestMethod.POST)
 		public @ResponseBody String getSignatures(HttpServletRequest request) throws Exception {
 			String resultJson = null;
@@ -282,6 +437,31 @@ public class MailBoxRestController {
 			
 			resultJson = toJSON(reqCandidatesList);
 			return resultJson;
+		}
+	 
+	 
+		
+		public void calculateDays(List<UserMailBox> mailBoxList) throws ParseException {
+			for (UserMailBox userMailBox : mailBoxList) {
+				// differentiating date and time
+				Date date = userMailBox.getCreatedDate();
+				String[] parts = date.toString().split(" ");
+				userMailBox.setDateValue(parts[0]);
+				final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
+				final Date dateObj = sdf.parse(parts[1].toString());
+				userMailBox.setTime(new SimpleDateFormat("K:mm a").format(dateObj));
+				// calculating days b/w dates
+				Date currentDate = new Date();
+				Date d1 = userMailBox.getCreatedDate();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+				String strDate = dateFormat.format(currentDate);
+				Date d2 = dateFormat.parse(strDate);
+				long diff = d2.getTime() - d1.getTime();
+				long diffDays = diff / (24 * 60 * 60 * 1000);
+				userMailBox.setCalDays(diffDays);
+
+			}
+
 		}
 
 	 

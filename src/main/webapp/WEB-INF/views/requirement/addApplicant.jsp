@@ -184,6 +184,10 @@ $('body').on('submit', '#addApplicant_form', function(e){
      	    	 inputValue = $this.find('select').val();
      	      }
      	      
+     	     if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+     	    	 inputValue = $this.find('textarea').val();
+     	      }
+     	      
      	    
      	     
      	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
@@ -210,8 +214,9 @@ $('body').on('submit', '#addApplicant_form', function(e){
             });
        });
       var con = JSON.stringify(fields);
-      con = encodeURIComponent(con);
       
+      con = encodeURIComponent(con);
+     
       
 		
        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
