@@ -186,6 +186,7 @@ private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailR
 	userMailBox.setCampaignTableData(table);
 	userMailBox.setBody(body);
 	userMailBox.setSignatureId(userSignature);
+	userMailBox.setIsMailRead(0);
 	userMailBox.setIsFavourite(0);
 	userMailBox.setUuid(UUID);
 	userMailBox.setStatus(1);

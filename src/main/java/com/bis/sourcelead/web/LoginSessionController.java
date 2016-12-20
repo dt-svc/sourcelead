@@ -46,6 +46,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -92,6 +93,9 @@ public class LoginSessionController {
 	
 	@Autowired 
 	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired 
+	private UserMailBoxService userMailBoxService;
 	
 	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
 	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication) throws Exception {
@@ -279,6 +283,10 @@ public class LoginSessionController {
 		SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
 		SourceLeadSessionManager.setSessionAttribute(request, "notificationList",notificationList);
 		
+		Integer inboxUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Inbox");
+		Integer requestedUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Requested");
+		Integer totalUnReadMailsCount = inboxUnreadMailsCount+requestedUnreadMailsCount;
+		SourceLeadSessionManager.setSessionAttribute(request, "unReadMailsCount", totalUnReadMailsCount);
 		
 	}
 	
