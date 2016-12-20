@@ -359,8 +359,9 @@ public class CandidateServiceImpl implements CandidateService {
 	       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,candidate);
 	       	 column++;
 	        }
-	        
-	        File file = new File(orgName+"_candidates_"+dateFormat.format(new Date())+".xls");
+	        File file = File.createTempFile(orgName+"_candidates_"+dateFormat.format(new Date()),".xls");
+	        file.setReadable(true);
+	        /*File file = new File(orgName+"_candidates_"+dateFormat.format(new Date())+".xls");*/
 			 FileOutputStream fos = new FileOutputStream(file);
 			 try {
 				 createExcelworkbook.write(fos);

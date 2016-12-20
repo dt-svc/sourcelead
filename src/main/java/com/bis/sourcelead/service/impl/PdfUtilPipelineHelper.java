@@ -58,7 +58,9 @@ public class PdfUtilPipelineHelper  {
 		if(submissionType.equals("REQUEST_SENT")){
 			String[] headers = Constants.REQUIREMENT_PIPELINE_REQUEST_SENT_HEADERS;
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-		    File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");
+		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
+		    File file = File.createTempFile(orgName+"_Requirements_"+dateFormat.format(new Date()),".pdf");
+		    file.setReadable(true);
 		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getNumOfRequestSent(),Constants.REQUEST_SENT_COUNT,file);
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5};
@@ -92,7 +94,9 @@ public class PdfUtilPipelineHelper  {
 		}else if(submissionType.equals("SHORTLIST")){
 			String[] headers = Constants.REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS;
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-		    File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");
+		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
+		    File file = File.createTempFile(orgName+"_Requirements_"+dateFormat.format(new Date()),".pdf");
+		    file.setReadable(true);
 		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getNumOfShortList(),Constants.SHORTLIST_COUNT,file);
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,5,3};
@@ -126,7 +130,9 @@ public class PdfUtilPipelineHelper  {
 		}else if(submissionType.equals("INTERVIEW")){
 			String[] headers = Constants.REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS;
 		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-		    File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");
+		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
+		    File file = File.createTempFile(orgName+"_Requirements_"+dateFormat.format(new Date()),".pdf");
+		    file.setReadable(true);
 		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getNumOfInterview(),Constants.INTERVIEW_COUNT,file);
 		    try {
 		    	int [] width = new int[]{3,5, 3,5};
@@ -160,7 +166,10 @@ public class PdfUtilPipelineHelper  {
 		}else if(submissionType.equals("OFFERMADE")){
 			String[] headers = Constants.REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS;
 		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-		    File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");
+		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
+		    File file = File.createTempFile(orgName+"_Requirements_"+dateFormat.format(new Date()),".pdf");
+		    file.setReadable(true);
+		    
 		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getNumOfOffers(),Constants.OFFER_COUNT,file);
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5};
@@ -194,7 +203,9 @@ public class PdfUtilPipelineHelper  {
 		}else if(submissionType.equals("REJECTED")){
 			String[] headers = Constants.REQUIREMENT_PIPELINE_REJECTED_EXCEL_HEADERS;
 		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-		    File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");
+		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
+		    File file = File.createTempFile(orgName+"_Requirements_"+dateFormat.format(new Date()),".pdf");
+		    file.setReadable(true);
 		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getNumOfRejected(),Constants.REJECTED_COUNT,file);
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,5};
@@ -228,7 +239,9 @@ public class PdfUtilPipelineHelper  {
 		}else{
 			String[] headers = Constants.REQUIREMENT_PIPELINE_EXCEL_HEADERS;
 		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-		    File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");
+		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
+		    File file = File.createTempFile(orgName+"_Requirements_"+dateFormat.format(new Date()),".pdf");
+		    file.setReadable(true);
 		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getSubmittedCount(),Constants.SUBMITTED_APPLICANTS_COUNT,file);
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,5,5};
