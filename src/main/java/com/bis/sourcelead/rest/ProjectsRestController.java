@@ -5,8 +5,6 @@ import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -45,7 +43,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @PropertySource("${propertyLocation:app.properties}")
 public class ProjectsRestController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ProjectsRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;

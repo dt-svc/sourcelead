@@ -38,7 +38,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 public class CandidateCommentsRestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(CandidateCommentsRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -112,7 +111,6 @@ public class CandidateCommentsRestController {
 	public @ResponseBody String getAllCommentsOnCandidateByCandidateIdAndOrgLocation(String candidateId, HttpServletRequest request) throws Exception {
 
 
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		if(StringUtils.isNotEmpty(candidateId)){

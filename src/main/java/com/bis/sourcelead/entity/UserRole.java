@@ -21,7 +21,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.bis.sourcelead.enums.Status;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * @author bis113

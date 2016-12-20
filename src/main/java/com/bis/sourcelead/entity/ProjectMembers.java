@@ -27,12 +27,9 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.bis.sourcelead.enums.Primary;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import com.bis.sourcelead.enums.Status;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "PROJECT_MEMBERS")

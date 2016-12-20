@@ -326,7 +326,6 @@ public class CandidateRestController {
 	    public @ResponseBody String getConsultantUserDetailsById(@RequestParam(value="userId", required=false) Long userId) {
 			
 		   ArrayList<String> userList = new ArrayList<String>();
-		   UserRole userRole = null;
 		   User user = null;
 			try {
 				user = userService.getUserById(userId);
