@@ -483,7 +483,7 @@ function closeCertificatePopup(){
 									}if(window.candidateStatusGlobal == '0'){
 										result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
 									}else{
-										result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\')"><i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></sec:authorize></div></td>';
+										result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_EMPLOYEER\')"><i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></sec:authorize></div></td>';
 									}
 									result = result + '</tr>';
 								}
@@ -497,8 +497,7 @@ function closeCertificatePopup(){
 							var result = "";
 							result = result + "   <div class='row'>";
 							result = result + "	<div class='col-lg-12'>";
-							result = result
-									+ "		<div class='content-area clearfix'>";
+							result = result + "		<div class='content-area clearfix'>";
 							result = result + "			<div class='blank-pages'>";
 							result = result
 									+ "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
@@ -547,7 +546,6 @@ function employeePagination(){
 	function removeEmployer(candidateemployerId, candidateId) {
 
 		var sourceleadUrl = '${sourceleadUrl}';
-		
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?${_csrf.parameterName}=${_csrf.token}&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
@@ -559,8 +557,7 @@ function employeePagination(){
 							} else if (data.indexOf('exception') >= 0) {
 								location.replace(sourceleadUrl + "/errorPage");
 							} else {
-								$("#popUpDivEmp").removeClass(
-										"edit-details-active");
+								$("#popUpDivEmp").removeClass("edit-details-active");
 								candidateEmployersList(candidateId);
 							}
 						}

@@ -11,4 +11,8 @@ public interface UserMailBoxDao {
 	List<UserMailBox> getUserMailBoxByUserIdAndOrgLocationIdAndMailStatus(Long userId,Long orgLocationId,String mailStatus) throws Exception;
 	
 	UserMailBox getUserMailBoxByUUID(String UUID);
+	
+	UserMailBox getUserMailBoxById(String Id) throws Exception;
+	
+	List<UserMailBox> getUserFavouriteMailsByUserIdAndOrgLocationId(Long userId,Long orgLocationId) throws Exception;
 }
