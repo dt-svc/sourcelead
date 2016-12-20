@@ -1116,7 +1116,7 @@ function requirementPipeline(requirementId,submissionType){
 							
 				           // result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
 				            //result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
-				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary">';
+				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix">';
 				            result = result +'  <ul>';
 				            result = result +'    <li class="li-vendor">';
 				          //  result = result +'      <input type="text" class="vendorfild" placeholder="Search">';
@@ -2046,6 +2046,9 @@ function requirementStatusBar(requirementId){
   	   var interview = 'INTERVIEW';
   	   var rejected = 'REJECTED';
        var submitToClient = 'SUBMIT_TO_CLIENT';
+       var clientSubmissions = '${clientSubmissions}';
+		
+       
        var offerMade = 'OFFERMADE';
 	     result = result + '  <div class="clearfix pipeline-count">';
 		 result = result + '    <ul class="list-unstyled list-inline">';
@@ -2060,9 +2063,11 @@ function requirementStatusBar(requirementId){
 		 result = result + '      <li id="shortListli" class="tabActivation" onclick="filterReq('+requirementId+',\''+shortList+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Shortlisted">';
 		 result = result + '       <label><strong>Shortlisted</strong></label>';
 		 result = result + '     </a> <span class="label label-warning" id="shortlistCount">0</span></li>';
+		if(clientSubmissions == 'Y'){
 		 result = result + '    <li id="submitToClientli" class="tabActivation" onclick="filterReq('+requirementId+',\''+submitToClient+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Submit to Client">';
 		 result = result + '       <label><strong>Submit to Client</strong></label>';
 		 result = result + '       </a> <span class="label label-info" id="submitToClientCount">0</span> </li>';
+		}
 		 result = result + '    <li id="interviewli" class="tabActivation" onclick="filterReq('+requirementId+',\''+interview+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Interviews">';
 		 result = result + '      <label><strong>Interviews</strong></label>';
 		 result = result + '      </a><span class="label label-primary" id="interviewCount">0</span></li>';

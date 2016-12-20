@@ -205,6 +205,15 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		     return candidateEducationDao.storeCandidateEducation(can);
 	}
 	
+	/**
+	 * @author Prasad Salina
+	 * @param candidateId
+	 * @throws Exception 
+	 */
+	@Override
+	public CandidateEducation getCandidateEducationByCandidateId(Long candidateId) throws Exception {
+		return candidateEducationDao.getCandidateEducationByCandidateId(candidateId);
+	}
 	
 
 	/**
