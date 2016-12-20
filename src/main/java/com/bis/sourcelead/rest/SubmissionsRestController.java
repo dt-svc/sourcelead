@@ -1,10 +1,7 @@
 package com.bis.sourcelead.rest;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,16 +33,13 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
-import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateResumesService;
@@ -337,7 +331,7 @@ public class SubmissionsRestController {
  		requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
  		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST);
  		 submission.setUpdatedBy(user.getUserCode());
- 		 submission.setUpdatedDate(new Date());
+ 		 submission.setUpdatedDate(commonUtil.currentDate());
  		RequirementSubmission requirementSubmission = requirementSubmissionService.storeRequirementSubmission(submission);
  		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
  		
@@ -389,7 +383,7 @@ public class SubmissionsRestController {
 	public @ResponseBody String rejectApplicant(@RequestParam(value="requirementId", required=false) Long requirementId,@RequestParam(value="submissionId", required=false) Long submissionId,
 			                                              @RequestParam(value="reason", required=false) String reason,
 			                                              HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+    	
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);

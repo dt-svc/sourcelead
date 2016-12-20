@@ -42,7 +42,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
@@ -107,11 +107,11 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "IS_CLIENT_JOB")
 	private String isClientJob;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations clientId;
 	    
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name="SPOC_ID", nullable=false )        
     private OrgSpoc spocId;
 	
@@ -125,15 +125,15 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String clientRateType;
 	
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name="SUBMISSION_TEMPLATE_ID" )        
     private SubmissionTemplate submissionTemplateId;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name="CLIENT_SUBMISSION_TEMPLATE_ID" )        
     private SubmissionTemplate clientSubmissionTemplateId;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name="MANAGER_USER_ID", nullable=false )        
     private User managerUserId;
 	
@@ -192,7 +192,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String msg;
 	
-	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementAssignTo> requirementAssignTo = new HashSet<RequirementAssignTo>(0);
 	

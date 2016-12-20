@@ -37,7 +37,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @Table(name = "PROJECT_MEMBERS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectMembers")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ProjectMembers implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

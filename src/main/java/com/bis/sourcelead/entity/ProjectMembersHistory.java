@@ -16,12 +16,9 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 @Entity
 @Table(name = "PROJECT_MEMBERS_HISTORY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectMembersHistory")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ProjectMembersHistory implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

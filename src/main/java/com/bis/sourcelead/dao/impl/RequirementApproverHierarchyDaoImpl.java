@@ -175,7 +175,11 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 		
 	Session session = this.sessionFactory.getCurrentSession();
 	String query = "from RequirementApproverHierarchy hierarchy left join fetch hierarchy.requirementId where hierarchy.approverUserId.id = :userId and hierarchy.requirementId.orgLocationId.id = :orgLocationId";
-	return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
+	return session.createQuery(query)
+				  .setLong("userId", userId)
+				  .setLong("orgLocationId", orgLocationId)
+				  .setCacheable(true)
+				  .list();
 
 }
 	

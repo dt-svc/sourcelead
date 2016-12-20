@@ -37,7 +37,7 @@ public class Candidate implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
@@ -158,21 +158,21 @@ public class Candidate implements Serializable{
 	@Transient
 	private String candidateName;
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateSkills> candidateSkills = new HashSet<CandidateSkills>(0);
 	
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateResumes> candidateResumes = new HashSet<CandidateResumes>(0);
 	
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);
 	

@@ -37,7 +37,6 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
-import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
@@ -77,8 +76,6 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	@Autowired
 	private RequirementSubmissionService requirementSubmissionService;
 	
-	@Autowired
-	private RequirementInterviewerService requirementInterviewerService;
 	
 	@Autowired
 	private RequirementInterviewHistoryService requirementInterviewHistoryService;

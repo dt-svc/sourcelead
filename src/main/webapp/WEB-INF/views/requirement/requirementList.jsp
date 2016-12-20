@@ -1405,7 +1405,6 @@ function changeStatus(requirementId){
           success :function(data) { 
         	  $("#changeStatusId" +requirementId).val('');
         	  location.replace(sourceleadUrl+"/requirementList");
-        	  requirementListIndividualStatusCounts();
           }
 }); 
 }

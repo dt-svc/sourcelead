@@ -47,7 +47,6 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateResumesService;
@@ -58,8 +57,8 @@ import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementOffersService;
-import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementPipelineExportService;
+import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -227,6 +226,8 @@ public class RequirementListRestController {
 	 public @ResponseBody  String getRequirementById(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
 			String resultJson = null;
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+
 			if(requirementId !=null && !requirementId.isEmpty()){
 				Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
 				
@@ -472,7 +473,8 @@ public class RequirementListRestController {
 		 
 		 @RequestMapping(value = "/saveChangedStatus" , method = RequestMethod.POST)
 		 @ResponseBody  String saveChangedStatus(@RequestParam(value="requirementId", required=false) Long  requirementId,
-				 @RequestParam(value="status", required=false) String  status,HttpServletRequest request) throws Exception {
+				                                 @RequestParam(value="status", required=false) String  status,
+				                                 HttpServletRequest request) throws Exception {
 			
 			 
 			 
@@ -877,7 +879,6 @@ public class RequirementListRestController {
 		 public @ResponseBody  String getRequirementTemplateByRequirementId(@RequestParam(value="requirementId", required=false) Long  requirementId,
 				 HttpServletRequest request) throws Exception {
 			 
-				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				Requirement requirement = requirementService.getRequirementTemplateByRequirementId(requirementId,loginOrgLocation.getId());
 			    String resultJson;
