@@ -67,8 +67,14 @@ public class QuickBooksCustomerRestController {
 		    return outPut;
 	    
 	}
-		
 	
+	@RequestMapping(value = "/saveCustomer", method = RequestMethod.GET)
+	public @ResponseBody void saveCustomer() throws Exception{
+    
+		quickBookCustomerService.saveCustomer();
+		
+		
+	}
 
 	 
 }
