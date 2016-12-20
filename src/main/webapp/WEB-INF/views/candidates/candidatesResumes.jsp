@@ -55,7 +55,6 @@ function candidateResume(candidateId){
 		result = result  +' </div>  ';
 		result  = result + '<div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		result  = result + ' <div id="resumesList" ></div>';
-		result  = result + '</div>';
 		result = result+'</div>';
 
 	
@@ -271,8 +270,9 @@ function addResume(candidateId) {
 			type : "POST",
 			url : sourceleadUrl+"/candidateResumesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 			success : function(data) {
-				var json = JSON.parse(data);
-				if( data.indexOf('Sign In') >= 0){
+				if (data != null && data != 'undefined' && data != "" && data != '[]') {
+					var json = JSON.parse(data);
+					if (data.indexOf('Sign In') >= 0) {
 		    		location.replace(sourceleadUrl);
 		    	 }
         		 else if (data.indexOf('exception') >= 0) {
@@ -290,18 +290,6 @@ function addResume(candidateId) {
                                  $("#msgDiv3").empty();
                                  $("#msgDiv3").append(opt);
                          }
-					if(json.length<=0 || (data == null && data == 'undefined' && data == "")){
-							result = result+"   <div class='row'>"; 
-						 	result = result+"	<div class='col-lg-12'>"; 
-						 	result = result+"		<div class='content-area clearfix'>"; 
-						 	result = result+"			<div class='blank-pages'>";
-						 	result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-						 	result = result+"			        <p>No Resumes Found</p>";
-						 	result = result+"			 </div>";
-						 	result = result+"		</div>"; 
-						 	result = result+"	</div>"; 
-						 	result = result+"  </div> "; 
-						}else{
 							result = result+'	      <table>';
 							result = result+'	        <tbody>';
 							result = result+'	          <tr>';
@@ -360,7 +348,23 @@ function addResume(candidateId) {
 					$("#resumesList").empty();
 					$("#resumesList").append(result);
 					  msgFadein2(); 
-        		}
+				}else{
+				result = result + "   <div class='row'>";
+				result = result + "	<div class='col-lg-12'>";
+				result = result + "		<div class='content-area clearfix'>";
+				result = result + "			<div class='blank-pages'>";
+				result = result
+						+ "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+				result = result
+						+ "			        <p>No resumes Found</p>";
+				result = result + "			 </div>";
+				result = result + "		</div>";
+				result = result + "	</div>";
+				result = result + "  </div> ";
+				$("#resumesList").empty();
+				$("#resumesList").append(result);
+			}
+	
 				},
 		});
   }
@@ -381,8 +385,10 @@ function deleteResume(candidateId, resumeId){
 	if (message == true) {
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&resumeId="+resumeId, 	   
+		    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, 	   
    		    success: function(data) {
+   		    	
+   		    	if(data != null && data != 'undefined' && data != ""){
    		    	if( data.indexOf('Sign In') >= 0){
 		    		location.replace(sourceleadUrl);
 		    	 }
@@ -390,12 +396,13 @@ function deleteResume(candidateId, resumeId){
         			 location.replace(sourceleadUrl+"/errorPage");
         		 }
         		 else{
-        			 candidateResume(candidateId);
+        			 $("#popUpDivResume").removeClass("edit-details-active");
         		     candidateResumesList(candidateId);
         		 }
-   		    }
+   		    	}
+   		    },
 	     });
-	}
+}
 }
 </script>
 
@@ -412,7 +419,7 @@ function getResume(candidateId, resumeId){
 	var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getResume?${_csrf.parameterName}=${_csrf.token}&resumeId="+resumeId, 	   
+		    url: sourceleadUrl+"/getResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, 	   
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    		    	if( data.indexOf('Sign In') >= 0){
