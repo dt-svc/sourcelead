@@ -100,7 +100,7 @@ public class EmailServiceImpl implements EmailService {
 			 globalVarsMap.put("salutation", jsonObj.getString("saluation"));
 			 globalVarsMap.put("body", jsonObj.getString("bodytext"));
 			 
-			 EmailScenario emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.EMIAL_TO_USERS,Constants.ENTITY_TYPE_EMAIL);
+			 EmailScenario emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.EMAIL_TO_USERS,Constants.ENTITY_TYPE_EMAIL);
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidSubject(jsonObj.getString("subject"),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
