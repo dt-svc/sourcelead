@@ -10,13 +10,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
-
-import com.bis.sourcelead.db.DatabaseConnectionConfig;
-import com.bis.sourcelead.db.PropertyPathConfiguration;
 
 /**
  * @purpose:Elastic Search Transport Client Configuration
@@ -40,11 +34,11 @@ public class SourceleadELKTransportClient {
 	     try {
 	    	  Settings settings = Settings.settingsBuilder()
 	    			  .put("cluster.name", "elasticsearch")
-	                  .put("node.name", "Eshu")
+	                  .put("node.name", "Tundra")
 	         		  .put("path.home", "/usr/share/elasticsearch")
 	                  .build();
 			client = TransportClient.builder().settings(settings).build().
-			      addTransportAddress(new InetSocketTransportAddress("http://192.168.1.125:9200", 9300));
+					addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("192.168.1.125"), 9300));
 	     } catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}
@@ -58,6 +52,6 @@ public class SourceleadELKTransportClient {
     /** {@inheritDoc} */
     public void shutdown() {
 	client.close();
-	client = null;
+	//client = null;
     }
 }

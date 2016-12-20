@@ -260,11 +260,11 @@ function candidateCertificateList(candidateId){
 	                    	 }
 	                    	 
 	                    	 if(window.candidateStatusGlobal == '0'){
-	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_CERTIFICATION\')"> ';
+	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\')"> ';
 	                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i>';
 	                    		 result = result +' </sec:authorize>';
 	                    	}else{
-	                    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\')"> ';
+	                    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\')"> ';
 	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate"></i>';
 	                    		 result = result +' </sec:authorize>';
 	                    	}

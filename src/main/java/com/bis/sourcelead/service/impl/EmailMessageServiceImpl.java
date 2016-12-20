@@ -181,22 +181,43 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 
 			if (attachmentList.size() > 0) {
 				for (EmailAttachment attachment : attachmentList) {
-					UUID = attachment.getName();
-
+					
+					DataSource dataSource = null;
+					MimeMultipart mimeMultipart = null;
+					if(null != attachment.getUUID()){
+						UUID = attachment.getUUID();
+					}
+					
 					SubmissionXls xls = submissionXlsService.getSubmissionXlsByUUID(UUID);
 
-					DataSource dataSource = new ByteArrayDataSource(xls.getDocFile(), "application/pdf");
-					MimeMultipart mimeMultipart = new MimeMultipart();
+					if(null != xls){
+						dataSource = new ByteArrayDataSource(xls.getDocFile(), "application/pdf");
+						mimeMultipart = new MimeMultipart();
 
-					BodyPart messageBodyPart = new MimeBodyPart();
-					messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
-					mimeMultipart.addBodyPart(messageBodyPart);
+						BodyPart messageBodyPart = new MimeBodyPart();
+						messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
+						mimeMultipart.addBodyPart(messageBodyPart);
 
-					MimeBodyPart xlsBodyPart = new MimeBodyPart();
-					xlsBodyPart.setDataHandler(new DataHandler(dataSource));
-					xlsBodyPart.setFileName(xls.getFileName());
+						MimeBodyPart xlsBodyPart = new MimeBodyPart();
+						xlsBodyPart.setDataHandler(new DataHandler(dataSource));
+						xlsBodyPart.setFileName(xls.getFileName());
 
-					mimeMultipart.addBodyPart(xlsBodyPart);
+						mimeMultipart.addBodyPart(xlsBodyPart);
+					}else{
+						
+						dataSource = new ByteArrayDataSource(attachment.getDocFile(), "application/pdf");
+						mimeMultipart = new MimeMultipart();
+
+						BodyPart messageBodyPart = new MimeBodyPart();
+						messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
+						mimeMultipart.addBodyPart(messageBodyPart);
+
+						MimeBodyPart bodyPart = new MimeBodyPart();
+						bodyPart.setDataHandler(new DataHandler(dataSource));
+						bodyPart.setFileName(attachment.getName());
+						mimeMultipart.addBodyPart(bodyPart);
+					}
+					
 
 					message.setContent(mimeMultipart);
 					Transport.send(message);

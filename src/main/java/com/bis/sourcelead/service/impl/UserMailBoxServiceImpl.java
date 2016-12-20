@@ -53,6 +53,7 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 			userMailBox.setCandidateId(candidatesIds);
 			userMailBox.setUserId(mailBox.getUserId());
 			userMailBox.setOrgLocationId(mailBox.getOrgLocationId());
+			userMailBox.setIsFavourite(0);
 			userMailBox.setUuid(SourceLeadRandomCodeHelper.generateUUID());
 			userMailBox.setSubject("Request For Candidates / Consultants Profiles");
 			
@@ -70,6 +71,17 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 			userMailBoxDao.saveUserMailBox(userMailBox);
 		}
 		
+	}
+
+	@Override
+	public UserMailBox getUserMailBoxById(String Id) throws Exception{
+		return userMailBoxDao.getUserMailBoxById(Id);
+	}
+
+	@Override
+	public List<UserMailBox> getUserFavouriteMailsByUserIdAndOrgLocationId(Long userId, Long orgLocationId)
+			throws Exception {
+		return userMailBoxDao.getUserFavouriteMailsByUserIdAndOrgLocationId(userId, orgLocationId);
 	}
 
 	
