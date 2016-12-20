@@ -223,12 +223,16 @@ public class PdfUtil {
 	
 	
 	
-	public  File createCandidatePdfTable(java.util.List<Candidate> candidatesList, String orgName) {
+	public  File createCandidatePdfTable(java.util.List<Candidate> candidatesList, String orgName) throws IOException {
 
 		String[] headers = Constants.CANDIDATE_EXCEL_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-	    File file = new File(orgName+"_Candidate_"+dateFormat.format(new Date())+".pdf");
+	    
+	    /*File file = new File(orgName+"_Candidate_"+dateFormat.format(new Date())+".pdf");*/
+	    File file = File.createTempFile(orgName+"_Candidate_"+dateFormat.format(new Date()),".pdf");
+	    file.setReadable(true);
+	    
 	    try {
 	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
@@ -355,13 +359,15 @@ public class PdfUtil {
 		return candidateArray;
 		
 	}
-	public File getRequirementPdf(java.util.List<Requirement> requirementList, String orgName, TimeSheetSubmissionCount requirementSubCount) {
+	public File getRequirementPdf(java.util.List<Requirement> requirementList, String orgName, TimeSheetSubmissionCount requirementSubCount) throws IOException {
 
 
 		String[] headers = Constants.REQUIREMENT_EXCEL_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-	    File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");
+	    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
+	    File file = File.createTempFile(orgName+"_Requirements_"+dateFormat.format(new Date()),".pdf");
+	    file.setReadable(true);
 	    try {
 	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
@@ -497,10 +503,12 @@ public class PdfUtil {
 		}
 		return requirementArray;
 	}
-	public File getClientVendorPdfFile(java.util.List<OrgRelations> clientsList, String orgName, String[] clientHeaders, String vendorType) throws DocumentException {
+	public File getClientVendorPdfFile(java.util.List<OrgRelations> clientsList, String orgName, String[] clientHeaders, String vendorType) throws DocumentException, IOException {
 		Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-	    File file = new File(orgName+"_"+vendorType+"_"+dateFormat.format(new Date())+".pdf");
+	    /*File file = new File(orgName+"_"+vendorType+"_"+dateFormat.format(new Date())+".pdf");*/
+	    File file = File.createTempFile(orgName+"_"+vendorType+"_"+dateFormat.format(new Date()),".pdf");
+	    file.setReadable(true);
 	    try {
 	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
@@ -593,10 +601,12 @@ public class PdfUtil {
 		}
 		return table;
 	}
-	public File getClientVendorContactsPdfFile(java.util.List<OrgSpoc> vandorsContactList, String orgName,String vendorType, String[] headers) throws DocumentException {
+	public File getClientVendorContactsPdfFile(java.util.List<OrgSpoc> vandorsContactList, String orgName,String vendorType, String[] headers) throws DocumentException, IOException {
 		Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-	    File file = new File(orgName+"_"+vendorType+" Contacts_"+dateFormat.format(new Date())+".pdf");
+	    /*File file = new File(orgName+"_"+vendorType+" Contacts_"+dateFormat.format(new Date())+".pdf");*/
+		  File file = File.createTempFile(orgName+"_"+vendorType+" Contacts_"+dateFormat.format(new Date()),".pdf");
+		  file.setReadable(true);
 	    try {
 	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
@@ -677,11 +687,13 @@ public class PdfUtil {
 		return contactsArray;
 	}
 	public File getProjectEmployeesExportPdf(java.util.List<ProjectMembers> employeeList, String projectName,
-			Projects project, String projectManager) throws DocumentException {
+			Projects project, String projectManager) throws DocumentException, IOException {
 		String[] headers = Constants.PROJECT_ASSIGNED_EMPLOYEES;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-	    File file = new File(projectName+"_"+dateFormat.format(new Date())+".pdf");
+	    /*File file = new File(projectName+"_"+dateFormat.format(new Date())+".pdf");*/
+	    File file = File.createTempFile(projectName+"_"+dateFormat.format(new Date()),".pdf");
+	    file.setReadable(true);
 	    try {
 	    	// Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));

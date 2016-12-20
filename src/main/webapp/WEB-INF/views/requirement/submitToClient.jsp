@@ -299,6 +299,7 @@ function addEmailtemplate(requirementId){
 		        success: function(data) {
 		        	 var json = JSON.parse(data);
 		        	result = result +'<section class="clearfix">';
+		        	result = result +'<div id="loading"></div>';
 		        	result = result +'<form id="submitToClientMailTemplate" name="submitToClient" enctype="multipart/form-data">';
 		        	result = result +'<section class="content-header clearfix">';	
 					result = result +'  <div class="pull-left">';
@@ -376,8 +377,8 @@ function addEmailtemplate(requirementId){
 					result = result +'						<button type="button" id="sendMail"';
 					result = result +'							class="btn btn-sm btn-success" onclick="submitToClientMail(\''+selectedShortlists+'\',\''+json.id+'\');">';
 					result = result +'							<i class="fa fa-envelope-o"></i>&nbsp;Send</button>';
-					result = result +'						<button type="button" class="btn btn-sm btn-default">';
-					result = result +'							<i class="fa fa-times"></i>&nbsp;Cancel';
+					result = result +'						<button type="button" class="btn btn-sm btn-default" onclick="cancelSubmit();">';
+					result = result +'							<i class="fa fa-times" ></i>&nbsp;Cancel';
 					result = result +'						</button>';
 					result = result +'					</div>';
 					result = result +'				</div>';
@@ -522,8 +523,9 @@ function submitToClientMail(selectedIds,requirementId){
 			var jsonData = encodeURIComponent(con);
 			var form = $('#submitToClientMailTemplate')[0];
     		var formData = new FormData(form); 
-    		
 			var sourceleadUrl = '${sourceleadUrl}';
+			$("#sendMail").addClass('button').val('Processing..');
+     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 				$.ajax({
 					 type : "POST",
 					 data: formData,
@@ -540,6 +542,18 @@ function submitToClientMail(selectedIds,requirementId){
 	 }
 }
 </script>
+
+
+<script>
+function cancelSubmit(){
+    	$("#submitToClientDiv").empty();
+    	$("#emailTemplateDiv").empty();
+    	$(".submitnew-wrap").removeClass("submitnew-wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+}
+</script>
+
 
 <script src="js/jquery-1.11.3.min.js"></script>
   <script src="js/bootstrap3-wysihtml5.all.min.js"></script> 
