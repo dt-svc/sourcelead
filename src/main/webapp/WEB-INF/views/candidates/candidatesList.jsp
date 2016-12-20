@@ -323,12 +323,25 @@ function candidateSideBar(candidateId){
 			             skills = skillsList.split(",");
 			             
 			            var experienceMonths = '';
+			            var designationType = '';
+			            
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
-         			 		experienceMonths = json.experienceMonths;            			 		
+         			 		experienceMonths = json.experienceMonths+'-'+'Months';            			 		
          			 	}else{
-         			 		experienceMonths = '0';  
+         			 		experienceMonths = ' ';  
          			 	 }
-			             
+         			 	
+         			 	if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
+             			 	designation = 'Designation'+'-'+json.designation;
+             			 	}else{
+             			 		designation = '';
+             			 	}
+         			 	
+         			 	if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
+         			 	designationType = 'DesignationType'+'-'+json.designationType;
+         			 	}else{
+         			 		designationType = '';
+         			 	}
 	                	 var result = "";
 	                	 
 	                	 result = result+'<div id="popUp" ></div>  ';
@@ -385,19 +398,18 @@ function candidateSideBar(candidateId){
                          
 			             result = result+'                       </ul>';
 
-			             
 			             result = result+' <ul class="list-unstyled">';
-                          if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
-						 result = result+'<li>Designation -'+json.designation+'-'+json.designationType+'</li>';
-						                              }else{
-						  result = result+'<li>Designation - ----</li>';  
-						                              }
-						  result = result+'</ul>';
+						 result = result+'<li>'+designation+'</li>';
+						 result = result+'</ul>';
+						 
+			             result = result+' <ul class="list-unstyled">';
+						 result = result+'<li>'+designationType+'</li>';
+						 result = result+'</ul>';
 			             
 			             result = result+'<ul class="list-unstyled">';
 			              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
 			                    	 
-			             result = result+'<li>Experience -'+json.experienceYears+' years '+experienceMonths+' months </li>';
+			             result = result+'<li>Experience -'+json.experienceYears+' years '+experienceMonths+'</li>';
 			             
               		       }else{
               		                                                	  
@@ -1380,7 +1392,6 @@ function exportToPdf(){
 	  
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
-	  
 	  if(isCandidatesAvailable == ''){
 	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType;	
 	  }else{
@@ -1411,16 +1422,19 @@ function exportToExcel(){
 	  var candFilterRadio = $('input[name=candidateStatus]');
 	  var candidateStatus = candFilterRadio.filter(':checked').val();
 	  if(candidateStatus == 1){
-         $("#canDiv").text("Active Candidates");
-     }else if(candidateStatus == 0){
-   	  $("#canDiv").text("In Active Candidates");
-     }else if(candidateStatus == 'ALL'){
-   	  $("#canDiv").text("All Candidates");
-     }else{
-         $("#canDiv").removeAttr("onClick");
-     }
+       $("#canDiv").text("Active Candidates");
+   }else if(candidateStatus == 0){
+ 	  $("#canDiv").text("In Active Candidates");
+   }else if(candidateStatus == 'ALL'){
+ 	  $("#canDiv").text("All Candidates");
+   }else{
+       $("#canDiv").removeAttr("onClick");
+   }
+	  
+	  var candTypeRadio = $('input[name=candidateType]');
+	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType;	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
