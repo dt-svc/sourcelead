@@ -123,9 +123,15 @@ public class MailBoxController {
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    String resultJson;
+	    List<UserMailBox> mailBoxList = null;
 	    
-	    List<UserMailBox> mailBoxList = userMailBoxService.getUserMailBoxByUserIdAndOrgLocationIdAndMailStatus(user.getId(), orgLocations.getId(), type);
-	    if(mailBoxList!=null){
+	    if(!type.equalsIgnoreCase("Starred")){
+	    	mailBoxList = userMailBoxService.getUserMailBoxByUserIdAndOrgLocationIdAndMailStatus(user.getId(), orgLocations.getId(), type);
+	    }else if(type.equalsIgnoreCase("Starred")){
+	    	mailBoxList = userMailBoxService.getUserFavouriteMailsByUserIdAndOrgLocationId(user.getId(), orgLocations.getId());
+	    }
+	     
+	    if(mailBoxList != null){
 			calculateDays(mailBoxList);
 		}
 	    resultJson = commonUtil.toJSON(mailBoxList);
@@ -170,11 +176,14 @@ public class MailBoxController {
 	    		}else{
 	    			teamList = teamService.getUserAssignedTeamListByOrgLocationId(user.getId(), orgLocations.getId());
 	    		}
-	    		if(candidatesListType.equalsIgnoreCase("hotlistConsultants")){
-	    			candidatesList = candidateService.getAllCandidatesForCampaignByTeam(teamList,"Consultant");
-	    		}else if(candidatesListType.equalsIgnoreCase("hotlistCandidates")){
-	    			candidatesList = candidateService.getAllCandidatesForCampaignByTeam(teamList,"Candidate");
+	    		if(null != teamList && teamList.size() > 0){
+	    			if(candidatesListType.equalsIgnoreCase("hotlistConsultants")){
+		    			candidatesList = candidateService.getAllCandidatesForCampaignByTeam(teamList,"Consultant");
+		    		}else if(candidatesListType.equalsIgnoreCase("hotlistCandidates")){
+		    			candidatesList = candidateService.getAllCandidatesForCampaignByTeam(teamList,"Candidate");
+		    		}
 	    		}
+	    		
 	    		
 	    	}
 	    	

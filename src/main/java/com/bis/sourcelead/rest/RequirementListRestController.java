@@ -546,7 +546,7 @@ public class RequirementListRestController {
 			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			File file =null;
 			
-			TimeSheetSubmissionCount requirementSubCount = getRequirementCount(org,userRole,user);
+			TimeSheetSubmissionCount requirementSubCount = getRequirementCount(requirementList);
 			for(Requirement requirement : requirementList){
 				if(requirement.getClientId() != null){
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
@@ -636,7 +636,7 @@ public class RequirementListRestController {
 		 * @return TimeSheetSubmissionCount pojo
 		 * @throws Exception
 		 */
-		 private TimeSheetSubmissionCount getRequirementCount(Org loginOrgLocations, String userRole, User user) throws Exception {
+		 private TimeSheetSubmissionCount getRequirementCount(List<Requirement> requirementList) throws Exception {
 			 TimeSheetSubmissionCount  timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 				
 				Integer newCount = 0;
@@ -645,8 +645,6 @@ public class RequirementListRestController {
 				Integer openCount = 0;
 				Integer onholdCount = 0;
 				Integer cancelCount = 0;
-				
-				List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocations.getId(),null,null,user.getId());
 		        	
 		        		  for(Requirement req :requirementList){
 		        			  if("NEW".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())){

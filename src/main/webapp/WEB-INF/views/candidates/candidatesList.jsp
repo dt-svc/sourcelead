@@ -1140,7 +1140,8 @@ function cancel(candidateId){
             <li><i class="fa fa-filter"></i><span id="candidateUpdiv">Updated</span><i class="glyphicon glyphicon-play" id="filter1ApprovePop"></i>|
               	<div id="filter1ApprovedPop" class="approved_pop">
                   	<ul>
-	                    <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="c5">1 Day ago</label></li>
+                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="0"  onclick="candidateList();"  ><label for="c5">All</label></li>
+                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="c5">1 Day ago</label></li>
 						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="c6">3 Day ago</label></li>
 						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7"  onclick="candidateList();"><label for="c7">1 Week ago</label></li>
 						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="21"  onclick="candidateList();"><label for="c7">2 Week ago</label></li>
@@ -1364,7 +1365,6 @@ function exportToPdf(){
 	  
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
-	  
 	  if(isCandidatesAvailable == ''){
 	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType;	
 	  }else{
@@ -1395,16 +1395,19 @@ function exportToExcel(){
 	  var candFilterRadio = $('input[name=candidateStatus]');
 	  var candidateStatus = candFilterRadio.filter(':checked').val();
 	  if(candidateStatus == 1){
-         $("#canDiv").text("Active Candidates");
-     }else if(candidateStatus == 0){
-   	  $("#canDiv").text("In Active Candidates");
-     }else if(candidateStatus == 'ALL'){
-   	  $("#canDiv").text("All Candidates");
-     }else{
-         $("#canDiv").removeAttr("onClick");
-     }
+       $("#canDiv").text("Active Candidates");
+   }else if(candidateStatus == 0){
+ 	  $("#canDiv").text("In Active Candidates");
+   }else if(candidateStatus == 'ALL'){
+ 	  $("#canDiv").text("All Candidates");
+   }else{
+       $("#canDiv").removeAttr("onClick");
+   }
+	  
+	  var candTypeRadio = $('input[name=candidateType]');
+	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType;	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";

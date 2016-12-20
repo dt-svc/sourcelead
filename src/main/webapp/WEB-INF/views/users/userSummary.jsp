@@ -986,7 +986,7 @@ function editUserDetails(userId){
 					result = result + ' <input type="text" value="'+mobilePhone+'" name="PhoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
 					result = result + ' </div>';
 					
-					if(json.user.userState == "NOT_LOGGEDIN"){
+					if(json.userState == "NOT_LOGGEDIN"){
 						
 						result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
 						result = result + ' <label>Emaild Id<span class="text-danger">&nbsp; *</span></label>';

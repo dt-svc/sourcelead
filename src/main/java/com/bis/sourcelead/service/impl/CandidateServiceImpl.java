@@ -118,6 +118,15 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setCreatedDate(commonUtil.currentDate());
 			candidate.setCreatedBy(user.getUserCode());
 			
+			if(jsonObj.has("consultantUser") && jsonObj.getString("consultantUser") !=null){
+				User consultantUser = new User();
+				consultantUser.setId(Long.valueOf(jsonObj.getString("consultantUser")));
+				candidate.setConsultantUser(consultantUser);
+				candidate.setCandidateType("Consultant");
+			}else{
+				candidate.setCandidateType("Candidate");
+			}
+			
 		}
         
 		if(orgLocations != null){
@@ -191,18 +200,6 @@ public class CandidateServiceImpl implements CandidateService {
 		if(jsonObj.has("address") && jsonObj.getString("address") !=null){
 			candidate.setAddress(jsonObj.getString("address"));
 		}
-		
-		if(jsonObj.has("consultantUser") && jsonObj.getString("consultantUser") !=null){
-			User consultantUser = new User();
-			consultantUser.setId(Long.valueOf(jsonObj.getString("consultantUser")));
-			candidate.setConsultantUser(consultantUser);
-			
-			candidate.setCandidateType("Consultant");
-		}else{
-			candidate.setCandidateType("Candidate");
-		}
-		
-		
 		
 		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEducation(candidateEducationList);
