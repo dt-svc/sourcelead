@@ -242,9 +242,6 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	                    
 	                  
 	                  result = result + '<div class="col-md-6">';
-	                  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
-	                  result  = result + '   <div id="internalInterviewsList" ></div>';
-	                  '</sec:authorize>';
 	     			  
 	     			  //Customer Interviews List
 	     			/* '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
@@ -259,6 +256,11 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	     			  result  = result + '   <div id="offerDetails" ></div>';
 	     			 '</sec:authorize>';
 	     			  
+	     			 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
+	                  result  = result + '   <div id="internalInterviewsList" ></div>';
+	                  '</sec:authorize>';
+	     			 
+	     			 
 	     			 result = result + ' </div>';      
 
        

@@ -164,7 +164,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 						    		   client.setPhone(mobileNumer);
 						    	   }
 						    	   if(row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())){
-						    		   client.setOwner(row.getCell(5).toString());   
+						    		   client.setStatus(row.getCell(5).toString());   
 						    	   }
 						    	   if(row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())){
 						    		   client.setOwner(row.getCell(6).toString()); 
@@ -346,9 +346,10 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	   * @throws JSONException
 	   */
 	  private JSONObject populateJsonObject(ClientImportObject clientObject,String isMailSent, List<OrgRelations> vandorsListByOrgLocationId,OrgLocations orgLocation) throws JSONException {
-		  
+		  String roleTypeId  = "";
 		  JSONObject jsonObj = new JSONObject(); 
 		  if(vandorsListByOrgLocationId != null){
+			  jsonObj.put("roleTypeId", roleTypeId);
 		    OrgRelations  orgRelation = vandorsListByOrgLocationId.get(0);
 			  if(orgLocation.getId() == orgRelation.getLocationId().getId() ){
 				  jsonObj.put("vendorName", orgRelation.getId()+","+orgRelation.getResponderLocationId().getId());  

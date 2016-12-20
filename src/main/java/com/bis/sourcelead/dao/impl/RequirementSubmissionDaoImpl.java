@@ -278,18 +278,11 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
     		
     		for (String str : query.getNamedParameters())
             {
-    			if(str.equalsIgnoreCase("orgLocationsId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId") || str.equalsIgnoreCase("managerUserId")){
+    			if(str.equalsIgnoreCase("orgLocationsId")  || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId") || str.equalsIgnoreCase("managerUserId")){
     				query.setLong(str, (long) params.get( str ));
-    			}
-    			if(str.equalsIgnoreCase("level") || str.equalsIgnoreCase("level1") || str.equalsIgnoreCase("level2")){
-    				query.setInteger(str, (int) params.get( str ));
-    			}
-    			/*if(str.equalsIgnoreCase("submissionStatus") ){
-    				query.setParameter(str,ApplicantSubmissionStatus.getNameByValue(submissionStatus));
-    			}
-    			else{
+    			}else{
     				query.setParameter( str, params.get( str ) );
-    			}*/
+    			}
             	
             }
     		

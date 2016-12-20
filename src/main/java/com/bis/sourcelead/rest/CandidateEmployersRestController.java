@@ -145,7 +145,7 @@ public class CandidateEmployersRestController {
 	 * @throws Exception
 	 */
 	
-	@PreAuthorize("hasRole('ROLE_DELETE_EMPLOYEER')")
+	@PreAuthorize("hasRole('ROLE_VIEW_DELETE_EMPLOYEER')")
 	@RequestMapping(value = "/removeCandidateEmployerBycandidateIdandCandidateEmployerID")
 	public String removeCandidateEmployerBycandidateIdandCandidateEmployerID(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateemployerId", required = false) Long candidateemployerId,HttpServletRequest request) throws Exception {
 
