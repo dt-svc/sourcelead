@@ -181,22 +181,43 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 
 			if (attachmentList.size() > 0) {
 				for (EmailAttachment attachment : attachmentList) {
-					UUID = attachment.getName();
-
+					
+					DataSource dataSource = null;
+					MimeMultipart mimeMultipart = null;
+					if(null != attachment.getUUID()){
+						UUID = attachment.getUUID();
+					}
+					
 					SubmissionXls xls = submissionXlsService.getSubmissionXlsByUUID(UUID);
 
-					DataSource dataSource = new ByteArrayDataSource(xls.getDocFile(), "application/pdf");
-					MimeMultipart mimeMultipart = new MimeMultipart();
+					if(null != xls){
+						dataSource = new ByteArrayDataSource(xls.getDocFile(), "application/pdf");
+						mimeMultipart = new MimeMultipart();
 
-					BodyPart messageBodyPart = new MimeBodyPart();
-					messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
-					mimeMultipart.addBodyPart(messageBodyPart);
+						BodyPart messageBodyPart = new MimeBodyPart();
+						messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
+						mimeMultipart.addBodyPart(messageBodyPart);
 
-					MimeBodyPart xlsBodyPart = new MimeBodyPart();
-					xlsBodyPart.setDataHandler(new DataHandler(dataSource));
-					xlsBodyPart.setFileName(xls.getFileName());
+						MimeBodyPart xlsBodyPart = new MimeBodyPart();
+						xlsBodyPart.setDataHandler(new DataHandler(dataSource));
+						xlsBodyPart.setFileName(xls.getFileName());
 
-					mimeMultipart.addBodyPart(xlsBodyPart);
+						mimeMultipart.addBodyPart(xlsBodyPart);
+					}else{
+						
+						dataSource = new ByteArrayDataSource(attachment.getDocFile(), "application/pdf");
+						mimeMultipart = new MimeMultipart();
+
+						BodyPart messageBodyPart = new MimeBodyPart();
+						messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
+						mimeMultipart.addBodyPart(messageBodyPart);
+
+						MimeBodyPart bodyPart = new MimeBodyPart();
+						bodyPart.setDataHandler(new DataHandler(dataSource));
+						bodyPart.setFileName(attachment.getName());
+						mimeMultipart.addBodyPart(bodyPart);
+					}
+					
 
 					message.setContent(mimeMultipart);
 					Transport.send(message);
@@ -211,7 +232,6 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				message.setContent(multipart);
 				Transport.send(message);
 			}
-
 		} catch (MessagingException e) {
 			throw new RuntimeException(e);
 		} catch (UnsupportedEncodingException e) {
@@ -250,6 +270,133 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 
 		emailNotificationService.save(emailNotification);
 
+	}
+
+	@Override
+	@Async
+	public void sendEmailWithAttachment(EmailMessage emailMessage, Long locationsId,
+			ArrayList<EmailRecipient> emailRecipientList, List<EmailAttachment> attachmentList) throws Exception {
+
+
+		logger.info("############## sending mail ###########");
+
+		if (emailMessage != null) {
+			Long emailNotificationId = null;
+
+			// if non prod and send email in non prod is true then call or prod
+			if (environment.equalsIgnoreCase("prod")) {
+				OrgLocations orgLocations = orgLocationService.getOrgLocations(locationsId);
+				if (orgLocations != null && orgLocations.getFromEmail() != null
+						&& orgLocations.getFromEmailPassword() != null) {
+					emailMessage.setUserName(orgLocations.getFromEmail());
+					emailMessage.setPassword(orgLocations.getFromEmailPassword());
+				} else {
+					emailMessage.setUserName(defaultFromEmailAddress);
+					emailMessage.setPassword(defaultFromEmailAddressPwd);
+					logger.info("######## if production email/password not correct then email sent from default email address ###########");
+				}
+				emailNotificationId = storeEmailInfoInDB(emailMessage, emailRecipientList);
+				sendMessageAttachment(emailMessage, emailRecipientList, attachmentList);
+			} else {
+				if (sendMailForNonProd.equalsIgnoreCase("true")) {
+					emailMessage.setUserName(defaultFromEmailAddress);
+					emailMessage.setPassword(defaultFromEmailAddressPwd);
+					emailNotificationId = storeEmailInfoInDB(emailMessage, emailRecipientList);
+					sendMessageAttachment(emailMessage, emailRecipientList, attachmentList);
+				}
+			}
+
+			updateEmailInfoWithDeliveryStatus(emailNotificationId);
+		}
+
+	
+		
+	}
+/**
+ * Send emails with attachment
+ * @param emailMessage
+ * @param emailRecipientList
+ * @param attachmentList
+ */
+	private void sendMessageAttachment(EmailMessage emailMessage, ArrayList<EmailRecipient> emailRecipientList,
+			List<EmailAttachment> attachmentList) {
+
+		Properties props = new Properties();
+		final String username = emailMessage.getUserName();
+		final String password = emailMessage.getPassword();
+
+		props.put("mail.smtp.host", "secure.emailsrvr.com");
+		props.put("mail.smtp.localhost", "localhost");
+		props.put("mail.stmp.user", username);
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.password", "password");
+		props.put("mail.smtp.socketFactory.port", "465");
+		props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.port", "465");
+
+		Session session = Session.getDefaultInstance(props, new Authenticator() {
+			@Override
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(username, password);
+			}
+		});
+
+		try {
+
+			MimeMessage message = new MimeMessage(session);
+			message.setFrom(new InternetAddress(username, emailMessage.getFromName()));
+
+			ArrayList<String> recipientList = new ArrayList<String>();
+			String UUID = null;
+
+			for (EmailRecipient recipient : emailRecipientList) {
+				recipientList.add(recipient.getEmail());
+			}
+			String[] recipients = recipientList.toArray(new String[recipientList.size()]);
+			InternetAddress[] addressTo = new InternetAddress[recipients.length];
+			for (int i = 0; i < recipients.length; i++) {
+				addressTo[i] = new InternetAddress(recipients[i]);
+			}
+			message.setRecipients(Message.RecipientType.TO, addressTo);
+
+			message.setHeader("Content-Type", "text/html; charset=UTF-8");
+			message.setSubject(emailMessage.getSubject());
+			MimeMultipart mimeMultipart = new MimeMultipart();
+			BodyPart messageBodyPart = new MimeBodyPart();
+			if (attachmentList.size() > 0) {
+				messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
+				mimeMultipart.addBodyPart(messageBodyPart);
+				for (EmailAttachment attachment : attachmentList) {
+					UUID = attachment.getName();
+					SubmissionXls xls = submissionXlsService.getSubmissionXlsByUUID(UUID);
+					DataSource dataSource = new ByteArrayDataSource(attachment.getDocFile(), "application/pdf");
+					MimeBodyPart xlsBodyPart = new MimeBodyPart();
+					xlsBodyPart.setDataHandler(new DataHandler(dataSource));
+					xlsBodyPart.setFileName(attachment.getName());
+
+					mimeMultipart.addBodyPart(xlsBodyPart);
+
+					message.setContent(mimeMultipart);
+				}
+				Transport.send(message);
+			} else {
+				
+				messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
+				Multipart multipart = new MimeMultipart();
+				multipart.addBodyPart(messageBodyPart);
+
+				message.setContent(multipart);
+				Transport.send(message);
+			}
+
+		} catch (MessagingException e) {
+			throw new RuntimeException(e);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	
 	}
 
 }

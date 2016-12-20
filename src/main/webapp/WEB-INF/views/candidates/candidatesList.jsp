@@ -5,6 +5,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/chosen.jquery.min.js"></script> 
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 
 <script src="resources/js/formvalidator.js"></script>
@@ -120,6 +122,7 @@
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                    /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
+	                     result = result +"    <th>&nbsp;</th>";
 	                     result = result +"    <th>Name</th>"; 
 	                     result = result +"    <th>Designation</th>"; 
 	                     result = result +"    <th>Position type</th>"; 
@@ -137,6 +140,9 @@
 	                    	 var mobilePhone = "";
 	                    	 var designation ="";
 	                    	 var address="";
+	                    	 var isFavourite = "";
+	                    	 var isFavClass = "";
+	                    	 
 	                    	 if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
 	                    		 mobilePhone = opt.mobilePhone;
 				            	}else{
@@ -157,9 +163,24 @@
 				            	}else{
 				            		candidateUpdateDateToString = "---";
 				            	}
+				            	
+				            	if(opt.isFavourite == 'Y'){
+				            		isFavourite = "checked";
+				            		isFavClass = "activestar-rating";
+				            	}
+				            	
+				            	
 		                     result = result +"<tr>";
+		                     result = result +"<td style='width : 25px;'>";
+		                     result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.id+"'>";
+		                     '<sec:authorize access="hasRole(\'ROLE_ADD_CANDIDATE_HOTLIST\')">'; 
+		                     result = result +"<input type='checkbox' id='fav"+opt.id+"' "+isFavourite+" onclick='addFavourite("+opt.id+")'></input>";
+		                     '</sec:authorize>';
+		                    
+		                     result = result +" <label></label>";
+		                     result = result +"</div>";
+		                     result = result +"</td>";
 
-			                 /* result = result +"  <td><input type='checkbox' id='checkbox12'/></td>"; */
 			                
 			                 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
 			                   result = result +"  <td><div class='proj_show' onclick='candidateSideBar("+opt.id+");'><span title='"+opt.firstName+" "+opt.lastName+"'>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
@@ -286,6 +307,13 @@ function candidateSideBar(candidateId){
 			             var skills = [];
 			             skills = skillsList.split(",");
 			             
+			            var experienceMonths = '';
+         			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
+         			 		experienceMonths = json.experienceMonths;            			 		
+         			 	}else{
+         			 		experienceMonths = '0';  
+         			 	 }
+			             
 	                	 var result = "";
 	                	 
 	                	 result = result+'<div id="popUp" ></div>  ';
@@ -339,32 +367,42 @@ function candidateSideBar(candidateId){
 			             
 			             result = result+'                        <li>Type - '+json.candidateType+'</li>';  
 			             
-			                                                       if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
-			             result = result+'                         <li>Experience - '+json.experienceYears+' years '+json.experienceMonths+' months </li>';
-              		                                                  }else{
-              		                                                	  
-              		     result = result+'                          <li>Experience - ----</li>';  
-              		                                                  }
                          
 			             result = result+'                       </ul>';
 
 			             
 			             result = result+' <ul class="list-unstyled">';
                           if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
-						 result = result+'<li>Designation -'+json.designation+' -Designation Type '+json.designationType+'</li>';
+						 result = result+'<li>Designation -'+json.designation+'-'+json.designationType+'</li>';
 						                              }else{
 						  result = result+'<li>Designation - ----</li>';  
 						                              }
 						  result = result+'</ul>';
 			             
 			             result = result+'<ul class="list-unstyled">';
-			                     if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
-			             result = result+'<li>Experience -'+json.experienceYears+' years '+json.experienceMonths+' months </li>';
-              		                               }else{
+			              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
+			                    	 
+			             result = result+'<li>Experience -'+json.experienceYears+' years '+experienceMonths+' months </li>';
+			             
+              		       }else{
               		                                                	  
-              		     result = result+'<li>Experience - ----</li>';  
-              		                              }
+              		     result = result+'<li>Experience ----</li>';  
+              		     
+              		       }
 			             result = result+'</ul>';
+			             
+			             result = result+'<ul class="list-unstyled">';
+			              if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
+			                    	 
+			             result = result+'<li>Notice Period -'+json.noticePeriod+' </li>';
+			             
+             		       }else{
+             		                                                	  
+             		     result = result+'<li>Notice Period ----</li>';  
+             		     
+             		       }
+			             result = result+'</ul>';
+			             
 			             result = result+'<div class="clearfix">';
 			             result = result+'<div class="professinal-details">';
 			             
@@ -716,6 +754,34 @@ function refreshImageBlock(candidateId){
 </script>
 
 
+<script>
+function addFavourite(candidateId){
+	
+	var checked = document.getElementById("fav"+candidateId).checked;
+	var sourceleadUrl = '${sourceleadUrl}';
+	
+	
+	 	$.ajax({
+			type : "POST",
+			url : sourceleadUrl+"/saveCandidateAsFavourite?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+			success : function(result) {
+				if(checked){
+					 document.getElementById("favourite"+candidateId).removeAttribute("class")
+					 document.getElementById("favourite"+candidateId).className = 'star-rating activestar-rating' 
+				}else{
+					 document.getElementById("favourite"+candidateId).removeAttribute("class")
+					 document.getElementById("favourite"+candidateId).className = 'star-rating' 
+				}
+				
+			},
+		}); 
+		 
+		
+	
+}
+</script>
+
+
 <%-- 
      @author : sarath kumar.
      this script is for validate image for candidate.
@@ -809,6 +875,11 @@ function cancel(candidateId){
 
 <section class="content-wraper">
   <section class="content-header clearfix">
+   <c:if test="${!empty msg}">
+	        <div class="success_pop" id="sucesspop"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
     <div class="pull-left">
       <h2>Candidate List</h2>
     </div>
@@ -816,8 +887,226 @@ function cancel(candidateId){
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
-      <div class="timesheet_head hdr-styles">
+    
+     <div class="pull-left cand-advsrch">
+			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop()">
+			  Advanced Search&nbsp;&nbsp;
+			  <i class="fa fa-search"></i>
+			  </a>
+			  <div class="cand-advsrch-popup">
+				  <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
+				  <div class="row">
+					  <div class="col-md-4">
+						  <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
+						  <div class="clearfix">
+						  	<input type="text" class="form-control input-sm" placeholder="Any of Keyword">
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
+						  <div class="clearfix">
+						  	<input type="text" class="form-control input-sm" placeholder="All Keywords">
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
+						  <div class="clearfix">
+						  	<input type="text" class="form-control input-sm" placeholder="Exclude Keyword">
+						  </div>
+					  </div>
+				  </div>
+				  <div class="row">
+				  <div class="col-md-12">
+					  <h4>Details:</h4>
+				  </div>
+				  <div class="clearfix">
+					  <div class="col-md-4">
+						  <label>Designation</label>
+						  <div class="clearfix">
+						  	<input type="text" class="form-control input-sm" placeholder="Designation">
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>Skills</label>
+						  <div class="clearfix">
+							  <select class="chosen-select"  multiple data-placeholder="Select Skills">
+								  <option>Skill-1</option>
+								  <option>Skill-2</option>
+								  <option>Skill-2</option>
+							  </select>
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>Rate</label>
+						  <div class="clearfix">
+							  <input type="text" class="form-control input-sm" placeholder="Rate">
+						  </div>
+					  </div>
+					  </div>
+					  <div class="clearfix">
+					  <div class="col-md-4">
+						  <label>Experience</label>
+						  <div class="clearfix row">
+						  <div class="col-md-6">
+							  <select class="chosen-select" data-placeholder="Years">
+								  <option selected>Years</option>
+								   <option>1 years</option>
+								  <option>2 years</option>
+								  <option>3 years</option>
+								  <option>4 years</option>
+							  </select>
+						  </div>
+						  <div class="col-md-6">
+							  <select class="chosen-select" data-placeholder="Months">
+								  <option selected>Months</option>
+								  <option>15 Days</option>
+								  <option>one month</option>
+								  <option>Two month</option>
+							  </select>
+						  </div>
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>Notice Period</label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="Notice Period" multiple>
+								  <option>one week</option>
+								  <option>15 Days</option>
+								  <option>one month</option>
+								  <option>Two month</option>
+							  </select>
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>Updated On</label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="Updated On">
+								  <option>All</option>
+								  <option>1 Day Ago</option>
+								  <option>3 Days Ago</option>
+								  <option>1 Week Ago</option>
+								  <option>2 Weeks Ago</option>
+								  <option>1 Month Ago</option>
+								  <option>3 Months Ago</option>
+							  </select>
+						  </div>
+					  </div>
+					  </div>
+					  <div class="clearfix">
+					   <div class="col-md-4">
+						  <label>Country</label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="Country">
+								  <option>India</option>
+								  <option>USA</option>
+								  <option>Germany</option>
+							  </select>
+						  </div>
+					  </div>
+					  
+					  <div class="col-md-4">
+						  <label>State</label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="State">
+								  <option>Andhra Pradesh</option>
+								  <option>Telangana</option>
+								  <option>Punjab</option>
+							  </select>
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>City</label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="City">
+								  <option>India</option>
+								  <option>USA</option>
+								  <option>Germany</option>
+							  </select>
+						  </div>
+					  </div>
+					  </div>
+					  <div class="clearfix">
+				  	<div class="col-md-4">
+						  <label>Education</label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="Education" multiple>
+								  <option>MCA</option>
+								  <option>MBA</option>
+								  <option>B.Sc.(Computers)</option>
+							  </select>
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>Exclude Education<i class="fa fa-info-circle" title="Exclude Education"></i></label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="Exclude Education" multiple>
+								  <option>MCA</option>
+								  <option>MBA</option>
+								  <option>B.Sc.(Computers)</option>
+							  </select>
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>Certification<i class="fa fa-info-circle" title="Certification"></i></label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="Certification" multiple>
+								  <option>MCA</option>
+								  <option>MBA</option>
+								  <option>B.Sc.(Computers)</option>
+							  </select>
+						  </div>
+					  </div>
+					  </div>
+					  <div class="clearfix">
+					  <div class="col-md-4">
+						  <label>Employers<i class="fa fa-info-circle" title="Employers"></i></label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="Employers" multiple>
+								  <option>TCS</option>
+								  <option>IBM</option>
+								  <option>CTS</option>
+							  </select>
+						  </div>
+					  </div>
+					  <div class="col-md-4">
+						  <label>Exclude Employers<i class="fa fa-info-circle" title="Employers"></i></label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="Employers">
+								  <option>TCS</option>
+								  <option>IBM</option>
+								  <option>CTS</option>
+							  </select>
+						  </div>
+					  </div>
+					  
+					   <div class="col-md-4">
+						  <label>Type</label>
+						  <div class="clearfix">
+							  <select class="chosen-select" data-placeholder="Employers">
+								  <option>Candiate</option>
+								  <option>Consultant</option>
+							  </select>
+						  </div>
+					  </div>
+					  </div>
+				  </div>
+				  <div class="row form-footer">
+					  <div class="pull-right mr">
+						  <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a>
+						  <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a>
+					  </div>
+				  </div>
+			  </div>
+  		  </div>
+    
+    
+    
+    
+    
+    
+      <div class="timesheet_head  customtimesheet-head hdr-styles pull-right">
         <ul>
+          <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES')">
           <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="candidate-export"></i>
             <div class="export_pop">
               <ul>
@@ -826,6 +1115,7 @@ function cancel(candidateId){
               </ul>
             </div>
           </li>
+          </sec:authorize>
 	      
            <li><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
@@ -850,7 +1140,8 @@ function cancel(candidateId){
             <li><i class="fa fa-filter"></i><span id="candidateUpdiv">Updated</span><i class="glyphicon glyphicon-play" id="filter1ApprovePop"></i>|
               	<div id="filter1ApprovedPop" class="approved_pop">
                   	<ul>
-	                    <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="c5">1 Day ago</label></li>
+                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="0"  onclick="candidateList();"  ><label for="c5">All</label></li>
+                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="c5">1 Day ago</label></li>
 						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="c6">3 Day ago</label></li>
 						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7"  onclick="candidateList();"><label for="c7">1 Week ago</label></li>
 						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="21"  onclick="candidateList();"><label for="c7">2 Week ago</label></li>
@@ -868,6 +1159,10 @@ function cancel(candidateId){
            
            <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
               <li><a href="<c:url value='/addConsultant'/>" title=""><i class="fa fa-plus"></i>Add Consultant</a></li>
+           </sec:authorize>
+           
+           <sec:authorize access="hasAnyRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')">
+              <li><a href="<c:url value='/assignHotListToTeam'/>" title=""><i class="fa fa-plus"></i>Assign To Team</a></li>
            </sec:authorize>
            </ul>
            </div>
@@ -911,6 +1206,7 @@ function cancel(candidateId){
 <!-- BELOW SCRIPTS ARE USED TO SHOW / HIDE POPUP'S --> 
 <script>
 // Error pop
+$('#sucesspop').delay(2000).fadeOut('slow');
 $(document).ready(function() {
     $(".glyphicon-trash").click(function(){
 		$(".vendor_error").slideToggle(200);
@@ -1269,5 +1565,34 @@ function savedCommentAndCount(candidateId){
       });
 }
 </script>
-    
+
+    <script>
+	// Close Advanced Search
+		function closePop(){
+			$("div.cand-advsrch-popup").hide();
+		}
+		function openPop(){
+			$("div.cand-advsrch-popup").toggle();
+		}
+	</script>
+	
+	
+<script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	       
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+			var $this = $(this);
+			$this.next().css({'width': '100%'});
+			})
+				
+</script> 
 <jsp:include page="../masterFooter.jsp" />

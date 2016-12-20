@@ -13,6 +13,7 @@
 
 		var result = "";
 		result = result	+ '    <div class="project_tabs_inn_head addUser-org">  ';
+		result =result +'<div id = "msgDiv2"></div>';
 		if(window.candidateStatusGlobal == '0'){
 		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\')">'; 	
 		result = result	+ '<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a>';
@@ -417,6 +418,18 @@ function closeCertificatePopup(){
 							} else if (data.indexOf('exception') >= 0) {
 								location.replace(sourceleadUrl + "/errorPage");
 							} else {
+								var json = JSON.parse(data);
+		             			for (var i = 0; i < 1; i++) {
+		                            var val= json[i];
+		                            var opt = "";
+		                                    if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+		                                            opt  = opt + '<div class="success_pop" id="selector3" style="display: block;">';
+		                                            opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+		                                            opt  = opt + '</div>';
+		                                            }
+		                                    $("#msgDiv2").empty();
+		                                    $("#msgDiv2").append(opt);
+		                            }
 								$("#candidateEmployersList").empty();
 								var result = "";
 								result = result	+ "<table id='candidateEmployersPagination' class='display' cellspacing='0' width='100%' >";
@@ -431,7 +444,6 @@ function closeCertificatePopup(){
 								result = result + "  </tr>";
 								result = result + "</thead>";
 								result = result + "<tbody>";
-								var json = JSON.parse(data);
 								for (var i = 0; i < json.length; i++) {
 									var opt = json[i];
 									result = result + '         <tr>';
@@ -471,7 +483,7 @@ function closeCertificatePopup(){
 									}if(window.candidateStatusGlobal == '0'){
 										result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
 									}else{
-										result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\')"><i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></sec:authorize></div></td>';
+										result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_EMPLOYEER\')"><i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></sec:authorize></div></td>';
 									}
 									result = result + '</tr>';
 								}
@@ -479,13 +491,13 @@ function closeCertificatePopup(){
 								result = result + "</table>";
 								$("#candidateEmployersList").append(result);
 								employeePagination();
+								msgFadein2();
 							}
 						} else {
 							var result = "";
 							result = result + "   <div class='row'>";
 							result = result + "	<div class='col-lg-12'>";
-							result = result
-									+ "		<div class='content-area clearfix'>";
+							result = result + "		<div class='content-area clearfix'>";
 							result = result + "			<div class='blank-pages'>";
 							result = result
 									+ "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
@@ -534,7 +546,6 @@ function employeePagination(){
 	function removeEmployer(candidateemployerId, candidateId) {
 
 		var sourceleadUrl = '${sourceleadUrl}';
-		
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?${_csrf.parameterName}=${_csrf.token}&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
@@ -546,8 +557,7 @@ function employeePagination(){
 							} else if (data.indexOf('exception') >= 0) {
 								location.replace(sourceleadUrl + "/errorPage");
 							} else {
-								$("#popUpDivEmp").removeClass(
-										"edit-details-active");
+								$("#popUpDivEmp").removeClass("edit-details-active");
 								candidateEmployersList(candidateId);
 							}
 						}
@@ -733,3 +743,10 @@ function validYearEdit(){
 }
 
 </script>
+
+<script>
+       function msgFadein2() {
+           setTimeout(function(){
+                   $('#selector3').fadeOut('slow'); }, 1000);
+       }
+</script>  

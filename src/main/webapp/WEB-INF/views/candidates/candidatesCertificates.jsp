@@ -21,7 +21,7 @@ function candidateCertificate(candidateId){
 	 
 	var result = "";
 	result  = result + '   <div class="project_tabs_inn_head addUser-org"> ';
-	
+	result = result +'<div id="msgDiv"></div>';
 	if(window.candidateStatusGlobal == '0'){
 		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\')"> ';
 		 result  = result + '   	<a href="javascript:void(0)" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a> ';
@@ -174,8 +174,23 @@ function candidateCertificateList(candidateId){
              			 location.replace(sourceleadUrl+"/errorPage");
              		 }
              		 else{
+             			 
+             			var json = JSON.parse(data);
+	                      for (var i = 0; i < 1; i++) {
+	                             var val= json[i];
+	                             var opt = "";
+	                                     if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+	                                             opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
+	                                             opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+	                                             opt  = opt + '</div>';
+	                                             }
+	                                     $("#msgDiv").empty();
+	                                     $("#msgDiv").append(opt);
+	                             }
+	                      
 	                	 $("#candidateCertificateList").empty();
 	                	 var result = "";
+	                	
 	                	 result = result +"<table id='candidateCertificatePagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
@@ -190,7 +205,7 @@ function candidateCertificateList(candidateId){
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                      var json = JSON.parse(data);
+	                      
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
 	                    	 var score = "";
@@ -245,11 +260,11 @@ function candidateCertificateList(candidateId){
 	                    	 }
 	                    	 
 	                    	 if(window.candidateStatusGlobal == '0'){
-	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_CERTIFICATION\')"> ';
+	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\')"> ';
 	                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i>';
 	                    		 result = result +' </sec:authorize>';
 	                    	}else{
-	                    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\')"> ';
+	                    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\')"> ';
 	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate"></i>';
 	                    		 result = result +' </sec:authorize>';
 	                    	}
@@ -260,6 +275,7 @@ function candidateCertificateList(candidateId){
 	                     result = result +"</table>";
 	                     $("#candidateCertificateList").append(result); 
 	                     certificationPagination(); 
+	                     msgFadein(); 
 			    	} 
                }else{
 	    	         var result ="";
@@ -775,4 +791,12 @@ function clearSearchKey() {
 	   $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
 
 }
-</script>                     
+</script>  
+
+
+<script>
+       function msgFadein() {
+           setTimeout(function(){
+                   $('#selector1').fadeOut('slow'); }, 1000);
+       }
+</script>                   

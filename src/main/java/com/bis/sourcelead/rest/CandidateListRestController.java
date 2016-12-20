@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,17 +41,21 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateHotList;
 import com.bis.sourcelead.entity.CandidateSkills;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.AutoCompleteController;
 
 
 /**
@@ -84,7 +91,11 @@ public class CandidateListRestController {
 	 @Autowired
 	 CandidateSkillsService candidateSkillsService;
 	 
-		
+	 @Autowired	
+	 LookUpDataService lookUpDataService;
+	
+	  @Autowired
+	  CandidateHotListService candidateHotListService;
 	 /**
 	   * @author David and sarath kumar
 	   * @since  aug 30 2016
@@ -110,7 +121,39 @@ public class CandidateListRestController {
 		String resultJson;
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<Candidate> candList = new ArrayList<Candidate>();
 		List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType);
+		
+		if(null != candidatesList){
+			for(Candidate candidate : candidatesList){
+				boolean flag = candidateHotListService.isCandidateIsFavourite(candidate.getId(), loginOrgLocation.getId());
+				if(flag == true){
+					candidate.setIsFavourite(Constants.YES);
+				}else{
+					candidate.setIsFavourite(Constants.NO);
+				}
+				candList.add(candidate);
+			}
+		}
+		
+		resultJson = commonUtil.toJSON(candList);
+		return resultJson;
+	 }
+	 
+	 
+	 
+	 
+	 @PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
+	 @RequestMapping(value = "/getHotListCandidates")
+	 public String getHotListCandidates(@RequestParam(value="candidateType", required=false) String  candidateType,
+			 HttpServletRequest request) throws Exception {
+
+		String resultJson;
+		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<Candidate> candList = new ArrayList<Candidate>();
+		List<Candidate>   candidatesList = candidateService.getHotListCandidatesListByOrgLocationID(loginOrgLocation.getId(), candidateType);
+		
 		resultJson = commonUtil.toJSON(candidatesList);
 		return resultJson;
 	 }
@@ -244,11 +287,26 @@ public class CandidateListRestController {
 						cs.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
 						cs.setOrgLocationID(loginOrgLocation);
 						cs.setName(skill);
+						List<String> skillList = Arrays.asList(skills);
+						lookUpDataService.getSkillsBySkillsName(skillList);
 						candidateSkillsService.storeCandidateSkills(cs);
 				 }
 			}
 			return "success";
 			
+		 }
+	   
+	   
+	   @RequestMapping(value = "/getSkillsExcludeExistingSkills")
+	   public String getSkillsExcludeExistingSkills(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
+
+		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			String resultJson;
+			
+				List<String> candidateSkillNames = candidateSkillsService.getCandidateSkillNamesByCandidateId(candidateId);
+				List<LookUpData> skills = lookUpDataService.getSkillsBySkillsName(candidateSkillNames);
+				resultJson = commonUtil.toJSON(skills);
+				return resultJson;
 		 }
 	   
 	   
@@ -381,7 +439,11 @@ public class CandidateListRestController {
 			JSONObject jsonObj = new JSONObject(jsonc);
 
 			 candidate = candidateService.storeCandidate(jsonObj,loginOrgLocation,user,multiFile);
-			
+				if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
+					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", "Success!!  "+candidate.getFirstName()+" Details Updated");
+
+				}
+
 			return "success";
 			
 		 }
@@ -411,9 +473,83 @@ public class CandidateListRestController {
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidateService.saveOrUpdateCandidate(candidate);
+				
+				SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg",  ""+candidate.getFirstName()+" Removed");
+	
+			
 			}
 			return "success";
 		 }
+	   
+	   
+	   
+	   @PreAuthorize("hasRole('ROLE_ADD_CANDIDATE_HOTLIST')")
+	   @RequestMapping(value = "/saveCandidateAsFavourite", method = RequestMethod.POST)
+		public @ResponseBody String saveCandidateAsFavourite(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Candidate candidate = new Candidate();
+			candidate.setId(candidateId);
+			
+			CandidateHotList hotList = candidateHotListService.getCandidateHotListByCandidateIdAndOrgLocationId(candidateId, orgLocation.getId());
+			if(null != hotList){
+				if(hotList.getStatus().equals(1)){
+					hotList.setStatus(0);
+				}else{
+					hotList.setStatus(1);
+				}
+				hotList.setTeamId(null);
+				hotList.setUpdatedBy(user.getUserCode());
+				hotList.setUpdatedDate(new Date());
+				candidateHotListService.saveCandidateHotList(hotList);
+				
+			}else{
+				hotList = new CandidateHotList();
+				hotList.setCandidateId(candidate);
+				hotList.setOrgLocationId(orgLocation);
+				hotList.setStatus(1);
+				hotList.setCreatedBy(user.getUserCode());
+				hotList.setCreatedDate(new Date());
+				hotList.setUpdatedBy(user.getUserCode());
+				hotList.setUpdatedDate(new Date());
+				candidateHotListService.saveCandidateHotList(hotList);
+			}
+			
+			
+			
+			return "success";
+		}
+	   
+	   
+	   @PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
+	   @RequestMapping(value = "/assignHotListCandiddatesToTeam", method = RequestMethod.POST)
+		public @ResponseBody String assignHotListCandiddatesToTeam(@RequestParam(value = "teamId", required = false) Long teamId,
+				@RequestParam(value = "hotlist", required = false) String hotlist,HttpServletRequest request) throws Exception {
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			String[] candidateIds = hotlist.split(",");
+			Team team =new Team();
+			team.setId(teamId);
+			
+			for(int i = 0; i < candidateIds.length; i++){
+				
+				CandidateHotList hotList = candidateHotListService.getCandidateHotListByCandidateIdAndOrgLocationId(Long.valueOf(candidateIds[i]), orgLocation.getId());
+				hotList.setTeamId(team);
+				hotList.setUpdatedBy(user.getUserCode());
+				hotList.setUpdatedDate(new Date());
+				candidateHotListService.saveCandidateHotList(hotList);
+			}
+			
+			
+			return "success";
+		}
+	   
+	   
+	   
+	 
 	   
 	   
 	   /**

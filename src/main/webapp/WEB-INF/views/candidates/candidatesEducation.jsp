@@ -23,6 +23,7 @@ function candidateEducation(candidateId){
 	
 	var result = "";
 	result = result  +'    <div class="project_tabs_inn_head addUser-org">  ';
+	result =result +'<div id = "msgDiv1"></div>';
 	if(window.candidateStatusGlobal == '0'){
 		
 		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\')">'; 	
@@ -79,6 +80,19 @@ function candidateEducationList(candidateId){
              			 location.replace(sourceleadUrl+"/errorPage");
              		 }
              		 else{
+             			var json = JSON.parse(data);
+             			for (var i = 0; i < 1; i++) {
+                            var val= json[i];
+                            var opt = "";
+                                    if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+                                            opt  = opt + '<div class="success_pop" id="selector2" style="display: block;">';
+                                            opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+                                            opt  = opt + '</div>';
+                                            }
+                                    $("#msgDiv1").empty();
+                                    $("#msgDiv1").append(opt);
+                            }
+             			 
 	                	 $("#candidateEducationList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='candidateEducationPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -96,7 +110,7 @@ function candidateEducationList(candidateId){
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                     var json = JSON.parse(data);
+	                     
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
@@ -159,6 +173,7 @@ function candidateEducationList(candidateId){
 	                     result = result +"</table>";
 	                     $("#candidateEducationList").append(result); 
 	                     educationPagination(); 
+	                     msgFadein1(); 
 			    	} 
                }else{
 	    	         var result ="";
@@ -229,8 +244,8 @@ function addEducation(candidateId) {
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
-	result = result  +'                  <div class="clearfix mb10"> ';
-	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education " name="name" id="name" data-validation=" required">';
+	result = result  +'                  <div class="clearfix mb10" id="nameIdDiv"> ';
+	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education " name="name" id="name" data-validation=" required" onchange="validateEduname('+candidateId+');">';
 	
 											 <c:forEach var="edu" items="${educationsList}">
     result = result  +'	                        <option value="" disabled selected></option>';										 
@@ -390,7 +405,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10"> ';
-	result = result + "<select  class='chosen-select form-control' name='name' id='name' data-validation='validate_Space' data-validation-optional='true'>";
+	result = result + "<select  class='chosen-select form-control' name='name' id='name' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'>";
 	                 for (var j = 0; j < json.educationList.length; j++) {
 							var education = json.educationList[j];
 							   if(education.name == json.name){
@@ -777,3 +792,40 @@ function clearSearchKey() {
 				});
 	}
 </script>
+
+
+
+<script type="text/javascript">
+ function validateEduname(candidateId) {
+	  var name = document.getElementById("name").value; 
+ 	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateEduname?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&name="+name, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+		        		  /* document.getElementById("name").setAttribute('record-exist','yes');
+						  document.getElementById("name").setAttribute('record-exist-errorMsg',name+' is Already Existed'); 
+						   */
+						   $("#name").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+						  $("#save_button").attr('disabled','disabled');
+						 // return false;
+		        	}
+		        	else{
+		        		 $('#nameIdDiv').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#nameIdDiv').find('p.jquery_form_error_message').remove(); 
+                         $("#save_button").removeAttr("disabled");
+		        	}
+		        },
+		    });
+ }
+ </script>     
+ 
+ <script>
+       function msgFadein1() {
+           setTimeout(function(){
+                   $('#selector2').fadeOut('slow'); }, 1000);
+       }
+</script>  

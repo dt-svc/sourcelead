@@ -56,12 +56,21 @@ public class RequirementListController {
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqCreateMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "reqCreateMsg");
+		}
 		
 		return model;
 
 	}
 	
-	
+	private boolean isNullOrEmpty(String msg) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	@RequestMapping(value = "/releaseRequirementToClientOrVendors")
 	public ModelAndView releaseRequirementToClientOrVendors(String requirementId,HttpServletRequest request) throws Exception {
 		
@@ -97,7 +106,6 @@ public class RequirementListController {
 		return model;
 
 	}
-	
 	
 	 
 }

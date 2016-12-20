@@ -72,6 +72,8 @@ public class CandidateCertifications implements Serializable{
 	@Transient
 	private Long candidatecertificateID; 
 	
+	@Transient
+	private String msg;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -232,6 +234,14 @@ public class CandidateCertifications implements Serializable{
 
 	public void setCandidatecertificateID(Long candidatecertificateID) {
 		this.candidatecertificateID = candidatecertificateID;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 
 	

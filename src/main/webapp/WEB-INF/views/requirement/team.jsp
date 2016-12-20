@@ -40,6 +40,9 @@ padding: 0 10px !important;
 border: 1px solid #ccc;
 background:url("resources/images/arrow-w.png") no-repeat 95% center; background-size:10px;
 }
+.vendor_wrap_inn_table table tr:hover .proj_show i {
+    visibility:visible; opacity:1;color:#333;
+    }
 </style>
 
 <!-- end files for autocomplete with tagit -->
@@ -92,7 +95,11 @@ function teamList(){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
 	                    	
-				             result = result +"<td><div><span>"+opt.name+"</span></div></td>";
+				            /*  result = result +"<td><div><span>"+opt.name+"</span></div></td>"; */
+				             
+				             result = result +' <td><div onclick="getCandidateListForTeam('+opt.id+');" class="proj_show"><span class="pull-left">'+opt.name+'</span><i class="fa fa-binoculars"></i></div></td>';
+				             
+				             
 				             if(opt.teamOwnerName != null && opt.teamOwnerName != '' && opt.teamOwnerName != 'undefined'){
 				             result = result +"<td><div><span>"+opt.teamOwnerName+"</span></div></td>";
 				             }else{
@@ -695,7 +702,13 @@ function TeamMemberpagination(){
 
 
 <section class="content-wraper">
+
   <section class="content-header clearfix">
+   <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
     <div class="pull-left">
       <h2>Team</h2>
     </div>
@@ -735,7 +748,7 @@ function TeamMemberpagination(){
     <!-- Compnay details -->
     <div class="side_mask"><div class="proj_close"></div></div>
     <div class="clients_side_wrap">
-      <div class="clients_side_wrap_inn">
+      <div class="clients_side_wrap_inn candidate_wrap_table">
       
       <div id="teamSideDiv">
 	  </div>
@@ -981,6 +994,7 @@ $('body').on('blur', '#teamMember_form', function() {
 });
  		</script> 
 <script>
+$('#selector').delay(2000).fadeOut('slow');
 
 // Error pop
 $(document).ready(function() {
@@ -1118,4 +1132,134 @@ function getTeamMembersListExceptExistedTeamMembersList(teamId){
 	});
 } 
 </script>
- <jsp:include page="../masterFooter.jsp" />
+
+
+
+
+<script>
+function getCandidateListForTeam(teamId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$("#teamSideDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({ 
+	    	type: "POST",
+	    	url: sourceleadUrl+"/getHotCandidateListForTeamByTeamId?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId,
+	    	  success: function(data) {
+	    		  if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	               		 if( data.indexOf('Sign In') >= 0){
+				    		location.replace(sourceleadUrl);
+				    	 }
+	               		 else if (data.indexOf('exception') >= 0) {
+	               			 location.replace(sourceleadUrl+"/errorPage");
+	               		 }
+	               		 else{
+	               			 $("#teamSideDiv").removeAttr("style");
+		                	 $("#teamSideDiv").empty();
+		                	 var result = "";
+		                	 result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
+		                     result = result +"<thead>"; 
+		                     result = result +"  <tr>"; 
+		                    /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
+		                     result = result +"    <th>&nbsp;</th>";
+		                     result = result +"    <th>Name</th>"; 
+		                     result = result +"    <th>Designation</th>"; 
+		                     result = result +"    <th>Position type</th>"; 
+		                     result = result +"    <th>Email</th>"; 
+		                     result = result +"    <th>Mobile</th>"; 
+		                     result = result +"    <th>Type</th>"; 
+		                     result = result +"    <th>Location</th>"; 
+		                     result = result +"  </tr>"; 
+		                     result = result +"</thead>";
+		                     result = result +"<tbody>"; 
+		                     
+		                     var json = JSON.parse(data);
+		                     for (var i = 0; i < json.length; i++) {
+		                    	 var opt = json[i]; 
+		                    	 var candidateFullName = "";
+		                    	 var candidateDesignation = "";
+		                    	 var positionType = "";
+		                    	 var candidateEmail = "";
+		                    	 var candidateMobileNumber = "";
+		                    	 var candidateType = "";
+		                    	 var candidateLocation = "";
+		                    	 if(opt.candidateFullName != null && opt.candidateFullName != 'undefined' && opt.candidateFullName != ""){
+		                    		 candidateFullName = opt.candidateFullName;
+					             }else{
+					            	 candidateFullName = "----";
+					             }
+		                    	 if(opt.candidateDesignation != null && opt.candidateDesignation != 'undefined' && opt.candidateDesignation != ""){
+		                    		 candidateDesignation = opt.candidateDesignation;
+					             }else{
+					            	 candidateDesignation = "----";
+					             }
+		                    	 if(opt.positionType != null && opt.positionType != 'undefined' && opt.positionType != ""){
+		                    		 positionType = opt.positionType;
+					             }else{
+					            	 positionType = "----";
+					             }
+		                    	 if(opt.candidateEmail != null && opt.candidateEmail != 'undefined' && opt.candidateEmail != ""){
+		                    		 candidateEmail = opt.candidateEmail;
+					             }else{
+					            	 candidateEmail = "----";
+					             }
+		                    	 if(opt.candidateMobileNumber != null && opt.candidateMobileNumber != 'undefined' && opt.candidateMobileNumber != ""){
+		                    		 candidateMobileNumber = opt.candidateMobileNumber;
+					             }else{
+					            	 candidateMobileNumber = "----";
+					             }
+		                    	 if(opt.candidateType != null && opt.candidateType != 'undefined' && opt.candidateType != ""){
+		                    		 candidateType = opt.candidateType;
+					             }else{
+					            	 candidateType = "----";
+					             }
+		                    	 if(opt.candidateLocation != null && opt.candidateLocation != 'undefined' && opt.candidateLocation != ""){
+		                    		 candidateLocation = opt.candidateLocation;
+					             }else{
+					            	 candidateLocation = "----";
+					             }
+		                    	 
+		                    	 result = result +"<tr>";
+			                     result = result +"  <td><div><span>"+opt.id+"</span></div></td>";
+				                 result = result +"  <td><div><span title='"+candidateFullName+"'>"+candidateFullName+"</span></div></td>";
+				                 result = result +"  <td><div><span>"+candidateDesignation+"</span></div></td>";
+				                 result = result +"  <td><div><span>"+positionType+"</span></div></td>";
+				                 result = result +"  <td><div><span title='"+candidateEmail+"'>"+candidateEmail+"</span></div></td>";
+				                 result = result +"  <td><div>"+candidateMobileNumber+"</div></td>";
+				                 result = result +"  <td><div>"+candidateType+"</div></td>";
+		                         result = result +"  <td><div>"+candidateLocation+"</div></td>";
+				                 result = result +"</tr>";
+		                     }
+		                     result = result +" </tbody>";
+		                     result = result +"</table>";
+		                     $("#teamSideDiv").append(result);
+		                     /* cpagination();  */
+				    	} 
+	                 }else{
+	                	 $("#teamSideDiv").removeAttr("style");
+	  	    	         var result ="";
+						 result = result+"			<div class='blank-pages'>";
+						 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+						 result = result+"			        <p>No Candidates Found</p>";
+						 result = result+"			 </div>";
+						 $("#teamSideDiv").empty();
+						 $("#teamSideDiv").append(result); 
+	                 }
+	    		  
+	    	  }
+	 });
+ $(".clients_side_wrap").addClass("clients_side_wrap_active");
+ $("#teamSideDiv").show();
+ $(".side_mask").fadeIn(200);
+ $("body").css('overflow-y', 'hidden');
+  
+}
+</script>
+
+<script>
+    $(".viewCandidate_close, .side_mask").click(function() {
+    	$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+	});	
+</script>
+
+<jsp:include page="../masterFooter.jsp" />

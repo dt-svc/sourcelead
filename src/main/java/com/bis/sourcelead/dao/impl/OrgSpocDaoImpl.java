@@ -223,4 +223,89 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			return spocsList;
 			
 		}
+
+		@Override
+		@Transactional
+		public List<Long> getAssignedAsClientOrVendorSpocCountByUserId(Long userId, Long orgLocationId,String type) throws Exception {
+			logger.debug("getAssignedAsClientOrVendorSpocCountByUserId start");
+			Session session = this.sessionFactory.getCurrentSession();
+			List<Long> ownersList = null;;
+				String query = "select spoc.id from OrgSpoc spoc where ((spoc.ownerUser.id = :ownerUserId and spoc.orgRelations.locationId = :orgLocationId and spoc.orgRelations.initiatorType = :initiatorType) "
+						+ "OR (spoc.spocUser.id = :spocUserId and spoc.orgRelations.responderLocationId = :responderLocationId and spoc.orgRelations.responderType = :responderType))";
+			    
+				ownersList = session.createQuery(query).setLong("ownerUserId", userId)
+													   .setLong("orgLocationId", orgLocationId)
+													   .setString("initiatorType", type)
+			    									   .setLong("spocUserId", userId)
+			    									   .setLong("responderLocationId", orgLocationId)
+			    									   .setString("responderType", type)
+			    									   .setCacheable(true).list();
+		    
+	        return ownersList;
+	        
+		}
+
+		@Override
+		@Transactional
+		public List<OrgSpoc> getAssignedAsClientOrVendorSpocByUserId(Long userId, Long orgLocationId, String type)
+				throws Exception {
+			
+			logger.debug("In getAssignedAsClientOrVendorSpocByUserId method");
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			List<OrgSpoc> spocsList;
+			 
+			Query query = session.createQuery("from OrgSpoc spoc where ((spoc.ownerUser.id = :ownerUserId and spoc.orgRelations.locationId = :orgLocationId and spoc.orgRelations.initiatorType = :initiatorType) "
+						+ "OR (spoc.spocUser.id = :spocUserId and spoc.orgRelations.responderLocationId = :responderLocationId and spoc.orgRelations.responderType = :responderType))"); 
+			spocsList = query.setLong("ownerUserId", userId)
+					   .setLong("orgLocationId", orgLocationId)
+					   .setString("initiatorType", type)
+					   .setLong("spocUserId", userId)
+					   .setLong("responderLocationId", orgLocationId)
+					   .setString("responderType", type)
+					   .setCacheable(true).list();
+			return spocsList;
+			
+		}
+
+		@Override
+		@Transactional
+		public List<OrgSpoc> getAllClientContactsListByOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+			
+			logger.debug("In OrgRelations getAllVendorsContactListByOrgLocationId method");
+			Session session = this.sessionFactory.getCurrentSession();
+			
+			
+			Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(userId,orgLocationId);
+			
+			ArrayList<OrgSpoc> finalList = new ArrayList<OrgSpoc>();
+			List<OrgSpoc> spocsList = null;
+			
+			
+			if (isadmin) {
+	            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and spoc.status = '1' ");
+	            spocsList = query.setLong("orgLocationId", orgLocationId).setString("relationType", "Vendor").setCacheable(true).list();
+	            finalList.addAll(spocsList);
+			}else{
+	            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where  (spoc.ownerUser.id = :loginUserId OR spoc.spocUser.id =:loginUserId) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType ))  and spoc.status = '1' ");
+	            spocsList = query.setLong("orgLocationId", orgLocationId).setLong("loginUserId", userId).setString("relationType", "Vendor").setCacheable(true).list();
+	            finalList.addAll(spocsList);
+			}
+			
+			return finalList;
+		}
+
+		@Override
+		@Transactional
+		public List<OrgSpoc> getOrgSpocByOrgRelationId(Long orgRelationId) throws Exception {
+			logger.debug("In OrgSpocDaoImpl getOrgSpocByOrgRelationId method");
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			 
+			Query query= session.createQuery("from OrgSpoc spoc where  spoc.orgRelations.id = :orgRelationId ");
+			List<OrgSpoc> spocsList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+			 
+			return spocsList;
+			
+	   	}
 }

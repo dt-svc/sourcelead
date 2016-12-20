@@ -97,6 +97,9 @@ public class CandidateEmployers implements Serializable{
 	@Transient
 	private Long candidateEmployeeId;
 	
+	@Transient
+	private String msg;
+	
 	public Long getId() {
 		return id;
 	}
@@ -251,6 +254,14 @@ public class CandidateEmployers implements Serializable{
 
 	public void setCandidateEmployeeId(Long candidateEmployeeId) {
 		this.candidateEmployeeId = candidateEmployeeId;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 	
 }

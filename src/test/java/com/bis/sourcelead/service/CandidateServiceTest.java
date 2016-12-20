@@ -26,12 +26,14 @@ import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
- * @author Ajith Matta
+ * @author Ajith Matta,Rakshith
  * @date 31/08/2016
+ * @date 06/12/2016
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -164,5 +166,82 @@ public class CandidateServiceTest {
 			logger.info("saveOrUpdateCandidate successfully " +candidate.getLastName());
 			
 		}
+		
+		@Test
+		public void getCandidatesByOrgLocationID() throws Exception {
+			
+			List<Candidate> candidatesList = candidateService.getCandidatesByOrgLocationID(1l,1l);
+			for(Candidate candidate : candidatesList){
+				candidate.getId();
+				System.out.println("rakshith"+candidate.getId());
+			}
+			logger.info("saveOrUpdateCandidate successfully " +candidatesList.size());
+
+		}
+		
+		@Test
+		public void getAllCandidatesByLocation() throws Exception{
+			
+			Candidate can = new Candidate();
+			can.setId(1l);
+			Long orgLocationId=1l;
+			List<Candidate> candidatesList = candidateService.getAllCandidatesByLocation(orgLocationId);
+			for(Candidate candidate : candidatesList){
+				candidate.getId();
+				System.out.println("rakshith"+candidate.getId());
+			}
+			
+		}
+		
+		@Test
+		public void getCandidateExcelFile() throws Exception{
+			
+			List<Candidate> candidatesList = new ArrayList<>();
+			OrgLocations orgLocationId=new OrgLocations();
+			Candidate can= new Candidate();
+			can.setId(1l);
+			can.setFirstName("rak");
+			can.setFileName("rak");
+			
+			orgLocationId.setId(1l);
+			can.setOrgLocationId(orgLocationId);
+			
+			Candidate can1= new Candidate();
+			can1.setId(1l);
+			can1.setFirstName("rakshith");
+			can1.setFileName("rakshith");
+			
+			candidatesList.add(can);
+			candidatesList.add(can1);
+			
+			String orgName="bis";
+			File file = candidateService.getCandidateExcelFile(candidatesList ,orgName);
+			System.out.println("rakshith"+file.getName());
+		}
+		
+		@Test
+		public void getCandidatePdf() throws Exception{
+			List<Candidate> candidatesList = new ArrayList<>();
+			OrgLocations orgLocationId=new OrgLocations();
+			orgLocationId.setId(1l);
+			Candidate can= new Candidate();
+			can.setId(1l);
+			can.setFileName("pdf");
+			can.setOrgLocationId(orgLocationId);
+			
+			Candidate can1= new Candidate();
+			can1.setId(1l);
+			can1.setFileName("pdf2");
+			
+			candidatesList.add(can);
+			candidatesList.add(can1);
+			
+			String orgName="bis";
+			File file = candidateService.getCandidatePdf(candidatesList, orgName);
+			System.out.println("rakshith"+file.getName());
+			
+
+		}
 	}
+
 
