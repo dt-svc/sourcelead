@@ -63,6 +63,8 @@
 	background-position: 96% center !important;
 	}
 	</style>
+	
+	
 
 <c:if test="${!empty msg}">
 	        <div class="success_pop" id="selector"  style="display: block;">
@@ -210,6 +212,7 @@ function editCandidate(candidateId){
 							result = result + '<option  '+(json.designationType == "Other" ? "selected" : '') +'<a href="#">Other</a></option>';
 							result = result + ' </select>';
 							result = result + '</div>';
+							
 							result = result + '</div>';
 							result = result + '</div>';
 							
@@ -313,15 +316,27 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-							result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths">';
+							if(json.experienceYears == "25+"){
+							result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths" disabled="disabled">';
 							result = result + '<option  disabled>Select Months</option>';
 							
 							<c:forEach var="i" begin="0" end="11" >
-							 result = result  +'<option  value="${i}" '  + (json.experienceMonths == "${i}" ? "selected" : '') +  '>${i}</option>';
-						    </c:forEach>
+							 	result = result  +'<option  value="${i}" '  + (json.experienceMonths == "${i}" ? "selected" : '') +  '>${i}</option>';
+						    </c:forEach> 
 							
 							
 							result = result + '</select>';
+							}else{
+								result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths">';
+								result = result + '<option  disabled>Select Months</option>';
+								
+								<c:forEach var="i" begin="0" end="11" >
+								 result = result  +'<option  value="${i}" '  + (json.experienceMonths == "${i}" ? "selected" : '') +  '>${i}</option>';
+							    </c:forEach>
+								
+								result = result + '</select>';
+							}
+							
 							result = result + '</div>';
 							result = result + '</div>';
 							result = result + '</div>';
@@ -330,11 +345,11 @@ function editCandidate(candidateId){
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							result = result + '<select class="input-sm form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
 							result = result + '<option value="">Select</option>';
-							result = result + ' <option '+(json.noticePeriod == "Immediately" ? "selected" : '') +'><a href="#">Immediately</a></option>';
-							result = result + '<option  '+ (json.noticePeriod == "15 days" ? "selected" : '') +'><a href="#">15 days</a></option>';
-							result = result + '<option  '+(json.noticePeriod == "Month" ? "selected" : '') +'><a href="#">Month</a></option>';
-							result = result + '<option  '+(json.noticePeriod == "2 months" ? "selected" : '') +'><a href="#">2 months</a></option>';
-							result = result + '<option  '+(json.noticePeriod == "3 months" ? "selected" : '') +'<a href="#">3 months</a></option>';
+							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'><a href="#">Immediately available</a></option>';
+							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'><a href="#">15 Days</a></option>';
+							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'><a href="#">1 Month</a></option>';
+							result = result + '<option  '+(json.noticePeriod == "2 Months" ? "selected" : '') +'><a href="#">2 Months</a></option>';
+							result = result + '<option  '+(json.noticePeriod == "3 Months" ? "selected" : '') +'<a href="#">3 Months</a></option>';
 							result = result + ' </select>';
 							result = result + ' </div>';
 							result = result + '</div>';
@@ -869,6 +884,8 @@ function candidateProfile(candidateId){
 									$(".add-skills").css({"display":"block","opacity":"1"});
 									$("#skillName").val('');
 									 
+									 $("#skillName").val('').trigger("chosen:updated");
+									 
 									/* skill auto complete */
 									var config = {
 											  '.chosen-select'           : {},
@@ -1176,6 +1193,10 @@ function candidateSkillsList(candidateId){
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
 	                     $("#candidateSkillList").append(result); 
+	                     
+	                     $("#candidateSkills").trigger("chosen:updated");
+	                     
+	                     
 			    	} 
                }else{
 	    	         var result ="";
@@ -1560,8 +1581,6 @@ $('.selectpicker').selectpicker('refresh');
      
 <script>
  function disableMonths() {
-	 
-	 
 	
          if ($("#experienceYears").val() == "25+"){
              $("#experienceMonths").attr("disabled", true);

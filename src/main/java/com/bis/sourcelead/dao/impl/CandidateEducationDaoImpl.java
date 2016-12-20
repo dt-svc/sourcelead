@@ -132,6 +132,25 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao{
 		return canEMp;
 	}
 	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateEducation getCandidateEducationByCandidateId(Long candidateId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateEducation  cEmp left join fetch cEmp.candidateId where cEmp.candidateId.id = :candidateId and cEmp.status ='1' ";
+		List<CandidateEducation> educationList =  session.createQuery(query.toString()).setLong("candidateId", candidateId)
+				.setCacheable(true).list();
+		
+
+		CandidateEducation canEMp = null;
+		if (educationList != null && educationList.size() > 0) {
+			canEMp = (CandidateEducation) educationList.iterator().next();
+		}
+		return canEMp;
+	}
+	
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Boolean validateEducationName(Long candidateId, String candidateEducation) throws Exception {
