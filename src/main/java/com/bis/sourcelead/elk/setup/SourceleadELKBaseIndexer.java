@@ -45,13 +45,11 @@ public  class SourceleadELKBaseIndexer<T> {
 		try {
 		    entityInJson = toJSON(entityClass);
 			sourceleadELKTransportClient.getClient().prepareUpdate(index, type,id).setDoc(entityInJson).get();
-			sourceleadELKTransportClient.shutdown();
-		    logger.info(type+" has been updated.");
+			logger.info(type+" has been updated.");
 		} 
         catch(DocumentMissingException e){
         	sourceleadELKTransportClient.getClient().prepareIndex(index, type,id)
 		    .setSource(entityInJson).execute().actionGet();
-		    sourceleadELKTransportClient.shutdown();
 		    logger.info(type+" has been indexed.");
 		}
 		catch (Exception e) {

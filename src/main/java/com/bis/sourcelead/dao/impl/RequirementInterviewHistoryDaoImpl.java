@@ -105,7 +105,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		Map<String, Object> params = new HashMap<String,Object>();
 		
 		if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
-			subQuery = "and (ri.submissionId.requirement.managerUserId.id =:userId OR ri.createdBy =:userCode)";
+			subQuery = "and (rih.submissionId.requirement.managerUserId.id =:userId OR rih.createdBy =:userCode)";
 			params.put("userId",userId);
 			params.put("userCode",userCode);
 			//subQuery = "and ri.submissionId.requirement.managerUserId.id =:userId";
@@ -119,9 +119,9 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		
 		String query = "";
         if(dateRange != null && "today".equals(dateRange)){
-            query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and DATE(rih.interviewId.dateOfInterview) = CURDATE() and rih.interviewId.endTime >= NOW() "+subQuery;
+            query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and DATE(rih.interviewId.dateOfInterview) = CURDATE() and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime >= NOW()) "+subQuery;
         }else if(dateRange != null && "previous".equals(dateRange)){
-            query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and DATE(rih.interviewId.dateOfInterview) <= CURDATE() and rih.interviewId.endTime < NOW()"+subQuery;
+            query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and DATE(rih.interviewId.dateOfInterview) <= CURDATE() and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime < NOW())"+subQuery;
         }else if(dateRange != null && "upcoming".equals(dateRange)){
         	query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and DATE(rih.interviewId.dateOfInterview) > CURDATE()"+subQuery;
         }else{

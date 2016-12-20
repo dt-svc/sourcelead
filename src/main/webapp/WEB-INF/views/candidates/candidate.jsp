@@ -182,7 +182,7 @@
              <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
              <div class="input-group-btn selp-custom-min">
              <select class="selectpicker" id="designationType" name="designationType">
-                <option><a href="#">Select</a></option>
+                <option value=""><a href="#">Select</a></option>
                  <option><a href="#">C2C</a></option>
                  <option><a href="#">W-2</a></option>
                  <option><a href="#">Part Time</a></option>
@@ -620,6 +620,8 @@ function getCities(){
 	       $("#state").chosen();
 	       $("#city").chosen();
 	       
+	       $("#candidateSkills").val('').trigger("chosen:updated");
+	       $("#candidateEducation").val('').trigger("chosen:updated");
 	       
 	        //Adding Customized Skills to the list
 	        var select, chosen;
@@ -635,6 +637,11 @@ function getCities(){
 		            var option = $("<option>").val(newSkill).text(newSkill);
 		            select.append(option);
 		            select.find(option).prop('selected', true);
+		          //to doesn't allow duplicates
+                    $("#candidateSkills option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+                    //end
 	        		$("#candidateSkills").trigger("chosen:updated");
 	        		
 		        }
@@ -655,6 +662,11 @@ function getCities(){
 		            var option = $("<option>").val(newEducation).text(newEducation);
 		            selectone.append(option);
 		            selectone.find(option).prop('selected', true);
+		          //to doesn't allow duplicates
+                    $("#candidateEducation option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+                    //end
 	        		$("#candidateEducation").trigger("chosen:updated");
 	        		
 		        }
@@ -746,7 +758,6 @@ function getCities(){
 	     		var form = $('#candidate_form')[0];
 	       		var formData = new FormData(form); 
 	     		var sourceleadUrl = '${sourceleadUrl}';
-	      	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	     		   $.ajax({
 	     					type : "POST",
 	     	        	    data: formData,
@@ -794,6 +805,7 @@ function getCities(){
 	     		        		
 	     		        		$("#candidateEducation").empty();
 	     						 var internalOutput = "";
+	     						 alert("educationsList="+educationsList);
 	     						 <c:forEach var="edu" items="${educationsList}">
 	     						    internalOutput = internalOutput+"<option value='${edu.name}'>${edu.name}</option>";
 	     	                     </c:forEach>
