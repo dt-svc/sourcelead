@@ -40,6 +40,7 @@ import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
@@ -82,6 +83,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	
 	@Autowired
 	private RequirementInterviewHistoryService requirementInterviewHistoryService;
+	
+	@Autowired
+	private SubmissionTemplateService submissionTemplateService;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -152,10 +156,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 									requirementInterview.setRemainedBefore(remainedBefore.toString());
 								}
 								
-							   	if(jsonObj.has("interviewSubmissionTemplate") && jsonObj.getString("interviewSubmissionTemplate") != null){
-							   		SubmissionTemplate submissionTemplate = new SubmissionTemplate();
-									submissionTemplate.setId(Long.parseLong(jsonObj.getString("interviewSubmissionTemplate")));
-								   requirementInterview.setInterviewTemplateId(submissionTemplate);
+							   	if(jsonObj.has("interviewSubmissionTemplate") && jsonObj.getString("interviewSubmissionTemplate") != null && !"".equalsIgnoreCase(jsonObj.getString("interviewSubmissionTemplate"))){
+							   			SubmissionTemplate sub= submissionTemplateService.getSubmissionTemplateById(Long.parseLong(jsonObj.getString("interviewSubmissionTemplate")));
+										   requirementInterview.setInterviewTemplateId(sub);
 							   	}
 							   requirementInterview.setStatus(Constants.RECORD_ACTIVE);
 					           requirementInterview.setCreatedDate(new Date());
