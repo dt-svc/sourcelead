@@ -182,6 +182,7 @@
              <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
              <div class="input-group-btn selp-custom-min">
              <select class="selectpicker" id="designationType" name="designationType">
+                <option value=""><a href="#">Select</a></option>
                  <option><a href="#">C2C</a></option>
                  <option><a href="#">W-2</a></option>
                  <option><a href="#">Part Time</a></option>
@@ -198,8 +199,8 @@
           <div class="col-md-9">
             <div class="row">
              <div class="col-xs-6 col-md-6">
-             		<select class="form-control" id="experienceYears" name="experienceYears" onchange="disableMonths();">
-             		  <option selected disabled>Year</option>
+             		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
+             		  <option selected disabled>Years</option>
              		  <c:forEach begin="0" end="24" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
@@ -208,8 +209,8 @@
              </div>
              
              <div class="col-xs-6 col-md-6">
-             		<select class="form-control" id="experienceMonths" name="experienceMonths">
-             		<option selected disabled>Month</option>
+             		<select class="form-control selectpicker" id="experienceMonths" name="experienceMonths">
+             		<option selected disabled>Months</option>
              		 <c:forEach begin="0" end="11" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
@@ -219,26 +220,7 @@
           </div>
         </div>
        
-         <%-- <div class="form-group">
-         <label class="col-md-3">Current Rate</label>
-         <div class="col-md-9">
-           <div class="input-group ratetype">
-             <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate"  data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
-             <div class="input-group-btn selp-custom-min">
-             <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
-                 
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
-                 
-             </select>
-             </div>
-           </div>
-         </div>
-       </div> --%>
+       
        
        
        <div class="form-group">
@@ -353,6 +335,21 @@
             <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
           </div>
         </div>
+        
+        <div class="form-group">
+         <label class="col-md-3">Notice Period</label>
+          <div class="col-md-9">
+               <select class="form-control valid selectpicker" id="noticePeriod" name="noticePeriod">
+                <option value=""><a href="#">Select</a></option>
+                 <option ${noticePeriod  == 'Immediately' ? 'selected' : ''}><a href="#">Immediately</a></option>
+                 <option ${noticePeriod  == '15 days' ? 'selected' : ''}><a href="#">15 days</a></option>
+                 <option ${noticePeriod  == 'Month' ? 'selected' : ''}><a href="#">Month</a></option>
+                 <option ${noticePeriod  == '2 months' ? 'selected' : ''}><a href="#">2 months</a></option>
+                 <option ${noticePeriod  == '3 months' ? 'selected' : ''}><a href="#">3 months</a></option>
+                </select>
+             
+           </div>
+         </div>
         
         <div class="form-group">
           <label class="col-md-3"></label>
@@ -623,6 +620,8 @@ function getCities(){
 	       $("#state").chosen();
 	       $("#city").chosen();
 	       
+	       $("#candidateSkills").val('').trigger("chosen:updated");
+	       $("#candidateEducation").val('').trigger("chosen:updated");
 	       
 	        //Adding Customized Skills to the list
 	        var select, chosen;
@@ -638,6 +637,11 @@ function getCities(){
 		            var option = $("<option>").val(newSkill).text(newSkill);
 		            select.append(option);
 		            select.find(option).prop('selected', true);
+		          //to doesn't allow duplicates
+                    $("#candidateSkills option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+                    //end
 	        		$("#candidateSkills").trigger("chosen:updated");
 	        		
 		        }
@@ -658,6 +662,11 @@ function getCities(){
 		            var option = $("<option>").val(newEducation).text(newEducation);
 		            selectone.append(option);
 		            selectone.find(option).prop('selected', true);
+		          //to doesn't allow duplicates
+                    $("#candidateEducation option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+                    //end
 	        		$("#candidateEducation").trigger("chosen:updated");
 	        		
 		        }
@@ -749,7 +758,6 @@ function getCities(){
 	     		var form = $('#candidate_form')[0];
 	       		var formData = new FormData(form); 
 	     		var sourceleadUrl = '${sourceleadUrl}';
-	      	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	     		   $.ajax({
 	     					type : "POST",
 	     	        	    data: formData,
@@ -797,6 +805,7 @@ function getCities(){
 	     		        		
 	     		        		$("#candidateEducation").empty();
 	     						 var internalOutput = "";
+	     						 alert("educationsList="+educationsList);
 	     						 <c:forEach var="edu" items="${educationsList}">
 	     						    internalOutput = internalOutput+"<option value='${edu.name}'>${edu.name}</option>";
 	     	                     </c:forEach>

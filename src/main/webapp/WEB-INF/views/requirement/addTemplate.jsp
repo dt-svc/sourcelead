@@ -24,7 +24,15 @@
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script> 
+
 <!-- end files for autocomplete with tagit -->
+
+<style type="text/css">
+.pras.req-title p{
+bottom:-14px;
+}
+</style>
+
 
 <!-- Content Area -->
 <section class="content-wraper">
@@ -59,15 +67,15 @@
                                      <input type="hidden" value="${requirement.id}" name="requirementId">
                                       <input type="hidden" value="Y" name="isTemplate">
 									<div class="input-group-btn selp-custom-min">
-										<select class="selectpicker" id="jobType" name="jobType"
-											onChange="getJobType(this);">
-											<option ${requirement.jobType  == 'c2c' ? 'selected' : ''}><a href="#">C2C</a></option>
-											<option ${requirement.jobType  == 'W-2' ? 'selected' : ''}><a href="#">W-2</a></option>
-											<option ${requirement.jobType  == 'C2H' ? 'selected' : ''}><a href="#">C2H</a></option>
-											<option ${requirement.jobType  == 'Contract' ? 'selected' : ''}><a href="#">Contract</a></option>
-											<option ${requirement.jobType  == 'Part Time' ? 'selected' : ''}><a href="#">Part Time</a></option>
-											<option ${requirement.jobType  == 'Full Time' ? 'selected' : ''}><a href="#">Full Time</a></option>
-											<option ${requirement.jobType  == 'Other' ? 'selected' : ''}><a href="#">Other</a></option>
+										<select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
+											<option value="">Select</option>
+											<option ${requirement.jobType  == "C2C" ? 'selected' : ''}><a href="#">C2C</a></option>
+											<option ${requirement.jobType  == "W-2" ? 'selected' : ''}><a href="#">W-2</a></option>
+											<option ${requirement.jobType  == "C2H" ? 'selected' : ''}><a href="#">C2H</a></option>
+											<option ${requirement.jobType  == "Contract" ? 'selected' : ''}><a href="#">Contract</a></option>
+											<option ${requirement.jobType  == "Part Time" ? 'selected' : ''}><a href="#">Part Time</a></option>
+											<option ${requirement.jobType  == "Full Time" ? 'selected' : ''}><a href="#">Full Time</a></option>
+											<option ${requirement.jobType  == "Other" ? 'selected' : ''}><a href="#">Other</a></option>
 										</select>
 									</div>
 								</div>
@@ -116,7 +124,7 @@
 										<input type="text" class="form-control" placeholder="minExp"
 											id="minExp" name="minExp" value="${requirement.minExp}"
 											field-name="MinExp"
-											data-validation="validate_Space validate_length length1-3 validate_float"
+											data-validation="validate_Space validate_length length1-5 validate_float"
 											data-validation-optional="true" onblur="minMaxExperience();"
 											value="">
 									</div>
@@ -124,7 +132,7 @@
 										<input type="text" class="form-control" id="maxExp"
 											name="maxExp" placeholder="maxExp"
 											value="${requirement.maxExp}" field-name="MaxExp"
-											data-validation="validate_Space validate_length length1-3 validate_float"
+											data-validation="validate_Space validate_length length1-5 validate_float"
 											data-validation-optional="true" onblur="minMaxExperience();"
 											value="">
 									</div>
@@ -152,9 +160,6 @@
 								</select>
 							</div>
 						</div>
-
-
-
 
 						<div class="form-group">
 							<label class="col-md-3">Description</label>
@@ -355,5 +360,22 @@ function minMaxExperience(){
 }
 
 </script>
+<script>
+function getJobType(jobType){
+	var existingJobType = '${requirement.jobType}';
+	if(jobType.value == 'Other'){
+		  document.getElementById("jobTypeDiv").style.display="";
+		  $("#jobOtherType").attr("data-validation", "required validate_Space validate_length length2-250");
+	}else{
+		document.getElementById("jobTypeDiv").style.display="none";
+		  $("#jobOtherType").attr("data-validation-optional", "true");
+		  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
+		  if(existingJobType ==null || existingJobType == "" || existingJobType == "undefined" || existingJobType != 'Other'){
+			  $("#jobOtherType").val('');
+		  }
+	}
+}
+</script>
+
 
 <jsp:include page="../masterFooter.jsp" />

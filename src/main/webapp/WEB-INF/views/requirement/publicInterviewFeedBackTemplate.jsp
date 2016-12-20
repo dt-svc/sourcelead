@@ -85,6 +85,7 @@ window.onload = function () {
 	var requirementInterviewid = '${requirementInterviewid}';
 	var previousInterviewId = '${afterRequirementInterviewid}';
 	var feedbackStatus = '${feedbackStatus}';
+	
 	if(parseInt(requirementInterviewid) == parseInt(previousInterviewId)){
 		if(feedbackStatus == "N"){
 			viewTemplateNo();
@@ -280,14 +281,14 @@ function interviewTemplateForm(){
 		result = result + '</div>';
 		
 		result = result + '<div class="form-horizontal clearfix">';
-		result = result + '<div id="interviewsjfb-fields" class="viewTemplate"> <div id="loading"></div> <div id="emailDiv"></div>';
+		result = result + '<div id="interviewsjfb-fields" class="viewTemplate">';
 		result = result + '</div>';
 		result = result + '</div>';
 		
 		 result = result + '<div class="form-footer clearfix">';
 		result = result + '<div class="pull-right mr">';
 		result = result + '<button type="button"  class="btn btn-sm btn-primary" onclick="saveInterviewTemplate();">Submit</button>';
-		result = result + '<button type="button"  class="btn btn-sm btn-warning ml">Cancel</button>';
+		//result = result + '<button type="button"  class="btn btn-sm btn-warning ml">Cancel</button>';
 		result = result + '</div>';
 		result = result + '</div>';
 		result = result + '</div>';  
@@ -335,6 +336,9 @@ function saveInterviewTemplate(){
 		      	 }
 		      	  if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
 		      		  inputValue = $this.find('input').val();
+		      	  }
+		      	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+		      		inputValue = $this.find('textarea').val();
 		      	  }
 	     	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
 	     	    	 inputValue = $this.find('select').val();
@@ -450,10 +454,10 @@ $('body').on('blur', '#interviewTemplate_form', function() {
 function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
     //empty out the preview area
     $("#interviewsjfb-fields").empty();
-    
+  
     $.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getInterviewFeedbackTemplate?templateId="+templateId, 
+        url: sourceleadUrl+"/getInterviewrsViewFeedbackList?templateId="+templateId, 
         success: function(data) {
         	 var data = eval(data);
         	 

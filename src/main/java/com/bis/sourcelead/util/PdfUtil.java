@@ -3,6 +3,7 @@ package com.bis.sourcelead.util;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -54,11 +56,14 @@ public class PdfUtil {
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtil.class);
 	public File createPdfTable(java.util.List<UserRole> activeList,
 			java.util.List<UserRole> inactiveList, java.util.List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
-			String userState, String orgName){
+			String userState, String orgName) throws IOException{
 		String[] headers = Constants.USER_EXCEL_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-	    File file = new File("users_"+dateFormat.format(new Date())+".pdf");
+	    /*File file = new File("users_"+dateFormat.format(new Date())+".pdf");*/
+	    File file = File.createTempFile("users_"+dateFormat.format(new Date()),".pdf");
+	    file.setReadable(true);
+	    
 	    try {
 	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
@@ -110,76 +115,19 @@ public class PdfUtil {
 	            table.addCell(cell);
 	        }
 	        table.completeRow();
+	        java.util.List<String[]> usersList = new ArrayList<>();
 	        for(UserRole userRole : userRolesList){
-	        	Set<Employees> employeeSet = userRole.getUser().getEmployee();
-	        	String dateOfJoin = "";
-	        	String rate = "";
-	   		 for(Employees emp : employeeSet){
-	   			 if(emp.getEmployeeId() !=null){
-	   				table.addCell(emp.getEmployeeId());
-	   			 }else{
-	   				table.addCell("--");
-	   			 }
-	   			 if(emp.getHireDate() !=null){
-	   				  dateOfJoin = Constants.DF_YMD.format(emp.getHireDate());
-	   			 }else{
-	   				dateOfJoin = "--";
-	   			 }
-	   			 if(emp.getRate() !=null && !"".equalsIgnoreCase(emp.getRate())){
-	   				rate = emp.getRate()+"/"+emp.getRatePer();
-	   			 }else{
-	   				rate = "--";
-	   			 }
-	     	    } 
-	   		 
-	   		   if(userRole.getUser().getFirstName() !=null){
-	   			table.addCell(userRole.getUser().getFirstName());
-	   		   }else{
-	   			table.addCell("--");
-	   		   }
-	   		   if(userRole.getUser().getLastName() != null){
-	   			table.addCell(userRole.getUser().getLastName());
-	   		   }else{
-	   			table.addCell("--");
-	   		   }
-	   		   if(userRole.getUser().getEmail() !=null){
-	   			table.addCell(userRole.getUser().getEmail());
-	   		   }else{
-	   			table.addCell("--");
-	   		   }
-	   		   if(userRole.getUser().getMobilePhone() != null){
-	   			table.addCell(userRole.getUser().getMobilePhone());
-	   		   }else{
-	   			table.addCell("--");
-	   		   }
-	   		   table.addCell(dateOfJoin);
-	   		   table.addCell(rate);
-	   		   if(userRole.getUser().getLocation() !=null){
-	   			table.addCell(userRole.getUser().getLocation());
-	   		   }else{
-	   			table.addCell("--");
-	   		   }
-	   		   if(userRole.getUserType() != null){
-	   			table.addCell(userRole.getUserType());
-	   		   }else{
-	   			table.addCell("--");
-	   		   }
-	   		   if(userRole.getReportingManager() !=null){
-	   			table.addCell(userRole.getReportingManager().getFirstName());
-	   		   }else{
-	   			table.addCell("--");
-	   		   }
-	   		   
-	   		   if(userRole.getUser().getIsMailSent() != null && !"".equalsIgnoreCase(userRole.getUser().getIsMailSent().toString()) && "N".equalsIgnoreCase(userRole.getUser().getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRole.getUserState().toString())){
-	   			table.addCell("Invite");
-	   		   }else if ( (userRole.getUser().getIsMailSent() != null && !"".equalsIgnoreCase(userRole.getUser().getIsMailSent().toString()) && "Y".equalsIgnoreCase(userRole.getUser().getIsMailSent().toString())) &&  (userRole.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRole.getUserState().toString()))){
-	   			table.addCell("Resend");
-	   		   }else if(userRole.getUserState() !=null && "ACTIVE".equalsIgnoreCase(userRole.getUserState().toString())){
-	   			table.addCell("Active");
-	   		   }else if(userRole.getUserState() !=null && "INACTIVE".equalsIgnoreCase(userRole.getUserState().toString())){
-	   			table.addCell("In-active");
-	   		   }
+	        	usersList.add(prepareUserStringArray(userRole,headers));
 	        }
+	        for (String[] userArray: usersList) {
+                for (int i = 0; i < userArray.length; i++) {
+                    String datum = userArray[i];
+                    PdfPCell cell = new PdfPCell();
+                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+                    table.addCell(cell);
+                }
+                table.completeRow();
+            }
 	        document.addTitle("Users Table");
 	        table.setSpacingBefore(15f);
 	        document.add(table);
@@ -193,6 +141,88 @@ public class PdfUtil {
 	    }
 		return file;
 	}
+	/**
+	 * Prepares Array to store data into the Pdf Table
+	 * @param headers 
+	 * @param userRole
+	 * @return
+	 */
+	private String[] prepareUserStringArray(UserRole userRoles, String[] headers) {
+		String userArray[] = new String[headers.length];
+		 Set<Employees> employeeSet = userRoles.getUser().getEmployee();
+		 for(Employees emp : employeeSet){
+			 if(emp.getEmployeeId() !=null){
+				 userArray[0] = emp.getEmployeeId();
+			 }else{
+				 userArray[0] = "--";
+			 }
+			 if(emp.getHireDate() !=null){
+				 String dateOfJoin = Constants.DF_YMD.format(emp.getHireDate());
+				 userArray[5] = dateOfJoin;
+			 }else{
+				 userArray[5] = "--";
+			 }
+			 if(emp.getRate() !=null && !"".equalsIgnoreCase(emp.getRate())){
+				 userArray[6] = emp.getRate()+"/"+emp.getRatePer();
+			 }else{
+				 userArray[6] = "--";
+			 }
+ 	    } 
+		   if(userRoles.getUser().getFirstName() !=null){
+			   userArray[1] = userRoles.getUser().getFirstName();
+		   }else{
+			   userArray[1] = "--";
+		   }
+		   if(userRoles.getUser().getLastName() != null && !"".equalsIgnoreCase(userRoles.getUser().getLastName())){
+			   userArray[2] = userRoles.getUser().getLastName();
+		   }else{
+			   userArray[2] = "--";
+		   }
+		   if(userRoles.getUser().getEmail() !=null){
+			   userArray[3] = userRoles.getUser().getEmail();
+		   }else{
+			   userArray[3] = "--";
+		   }
+		   if(userRoles.getUser().getMobilePhone() != null && !"".equalsIgnoreCase(userRoles.getUser().getMobilePhone())){
+			   userArray[4] = userRoles.getUser().getMobilePhone();
+		   }else{
+			   userArray[4] = "--";
+		   }
+		   if(userRoles.getUser().getLocation() !=null){
+			   userArray[7] = userRoles.getUser().getLocation();
+		   }else{
+			   userArray[7] = "--";
+		   }
+		   if(userRoles.getUserType() != null){
+			   userArray[8] = userRoles.getUserType();
+		   }else{
+			   userArray[8] = "--";
+		   }
+		   if(userRoles.getReportingManager() !=null){
+			   userArray[9] = userRoles.getReportingManager().getFirstName();
+		   }else{
+			   userArray[9] = "--";
+		   }
+		   
+		   if(userRoles.getUser().getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString()) && "N".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
+			   userArray[10] =  "Invite";
+	   		   }else if((userRoles.getUser().getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString()) && "Y".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString())) &&  (userRoles.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRoles.getUserState().toString()))){
+	   		   userArray[10] =  "Resend";
+	   		   }else if(userRoles.getUserState() !=null && "ACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
+	   			 userArray[10] =  "Active";
+	   		   }else if(userRoles.getUserState() !=null && "INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
+	   			userArray[10] =  "In-active";
+	   		   }
+		   
+		return userArray;
+		
+	
+	}
+	
+	
+	
+	
+	
 	public  File createCandidatePdfTable(java.util.List<Candidate> candidatesList, String orgName) {
 
 		String[] headers = Constants.CANDIDATE_EXCEL_HEADERS;
@@ -482,7 +512,7 @@ public class PdfUtil {
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header 
-            int[] columnWidths = new int[]{3, 5, 3,5, 2,5};
+            int[] columnWidths = new int[]{3, 5, 3,5, 2};
             PdfPTable table = getPdfTable(clientHeaders,columnWidths); 
 	        table.completeRow();
 	        java.util.List<String[]> clientList = new ArrayList<>();
@@ -541,11 +571,7 @@ public class PdfUtil {
 		}else{
 			clientArray[4] = "--";
 		}
-		if (orgRelations.getCreatedBy() != null) {
-			clientArray[5] = orgRelations.getCreatedBy();
-		}else{
-			clientArray[5] = "--";
-		}
+	
 		return clientArray;
 	}
 	private PdfPTable getPdfTable(String[] headers, int[] columnWidths) {

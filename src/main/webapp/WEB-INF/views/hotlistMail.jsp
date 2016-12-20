@@ -10,9 +10,11 @@
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+
 <script>
  window.onload = function() {
-	 listChange();
+	 getUserSignature();
 };
 </script>
 
@@ -24,8 +26,12 @@
       </div>
       <div class="pull-right brud-crum">Mail &raquo; Hotlist Mail Box</div>
     </section>
+    
+    
+   
     <div class="content-area clearfix">
       <div class="form-horizontal compose-mail col-md-10 col-md-offset-1">
+       <form:form id="hotlistCampaign_form" name="hotlistCampaign_form"  enctype='multipart/form-data' >
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-muted small">From</label>
           <div class="col-md-10">
@@ -35,9 +41,9 @@
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-10 positionRelative">
-            <select class="chosen-select" multiple data-placeholder="&nbsp;" id="emailsList">
+            <select class="chosen-select" data-validation="required"  field-name="To List" multiple data-placeholder="&nbsp;" id="emailsList" name="Toemails">
             </select>
-            <span class="select-multiple" data-target="#multiplemail" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
+            <span class="select-multiple" data-target="#multiplemail" onclick="listChange();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
             <!-- Modal content Multiple mail -->
             <div role="dialog" id="multiplemail" class="modal fade">
               <div class="modal-dialog modal-lg">
@@ -79,85 +85,42 @@
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-danger small">Subject</label>
           <div class="col-md-10">
-            <input type="text" value="" class="form-control input-sm">
+            <input type="text" name="subject" data-validation="required" field-name="Subject" id="subject" class="form-control input-sm">
           </div>
         </div>
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-success small">Candiates</label>
           <div class="col-md-10">
-            <select class="chosen-select" multiple data-placeholder="&nbsp;">
-              <option>Candiate-1</option>
-              <option>Candiate-2</option>
+            <select class="chosen-select" name="hotlistcandidates" data-validation="required" field-name="Candidates" multiple data-placeholder="&nbsp;" id="selectedCandidates">
             </select>
-            <span class="select-multiple" data-target="#requirement" data-toggle="modal"><i class="fa fa-th-large" title="Select Requirement"></i></span> 
+            <span class="select-multiple" data-target="#requirement" onclick="candidateListChange()" data-toggle="modal"><i class="fa fa-th-large" title="Select Candidates"></i></span> 
             <!-- Modal content Multiple mail -->
             <div role="dialog" id="requirement" class="modal fade custom-modal">
               <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                   <div class="modal-header">
                     <button data-dismiss="modal" class="close" type="button">×</button>
-                    <h4 class="modal-title">Select Requirement</h4>
+                    <h4 class="modal-title">Select Candidates / Consultants</h4>
                   </div>
+                  
                   <div class="modal-body clearfix">
                     <div class="form-horizontal custom-form">
                       <div class="row">
-                        <div class="col-xs-12 col-md-8 col-lg-8">
-                          <div class="input-group">
-                            <input type="search" class="form-control" value="">
-                            <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>
-                        </div>
                         <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field">
-                          <select class="form-control">
-                            <option selected disabled>Select Type</option>
-                            <option value="All">All</option>
-                            <option value="Hostlist">Hostlist</option>
-                            <option value="Consultant">Consultant</option>
-                            <option value="Candidate">Candidate</option>
+                          <select class="form-control" id="candidatesListType" onchange="candidateListChange();">
+                            <option value="consultants" selected>Consultants</option>
+                            <option value="candidates">Candidates</option>
+                            <option value="hotlistConsultants">Hostlist Consultants</option>
+                            <option value="hotlistCandidates">Hostlist Candidates</option>
+                          
                           </select>
                         </div>
                       </div>
                     </div>
-                    <div class="modal-body-custom mt clearfix">
-                      <table cols="0" class="table table-bordered table-striped  clearfix">
-                        <tbody>
-                          <tr>
-                        <thead>
-                        <th><input type="checkbox"></th>
-                          <th>Name</th>
-                          <th>Email</th>
-                          <th>Phone</th>
-                          <th>Designation</th>
-                          <th>Postion Type</th>
-                          <th>Location</th>
-                            </thead>
-                        </tr>
-                        <tr>
-                          <td><input type="checkbox" name="team"></td>
-                          <td><span class="tbldata-dotdot">Murali Krishna</span></td>
-                          <td><span class="tbldata-dotdot" title="muraraikumarmahessrinivas@businessintelli.com"> muraraikumarmahessrinivas@businessintelli.com</span></td>
-                          <td>2244559900112233</td>
-                          <td><span class="tbldata-dotdot-100">UI Developer</span></td>
-                          <td><span class="tbldata-dotdot-100">Contract</span></td>
-                          <td><span class="tbldata-dotdot-100">Hyderabad</span></td>
-                        </tr>
-                          </tbody>
-                        
-                      </table>
+                    <div class="modal-body-custom mailerpopup mt clearfix">
+                     <div id="candidatesList"></div>
                     </div>
-                    <div class="clearfix">
-                      <ul class="pagination pull-right pagination-sm" style="margin:0;">
-                        <li><a href="#">1</a></li>
-                        <li class="active"><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button data-dismiss="modal" class="btn btn-primary" type="button">Assign</button>
-                    <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                  </div>
+                  </div> 
                 </div>
               </div>
             </div>
@@ -165,86 +128,38 @@
           </div>
         </div>
         <div class="clearfix">
-          <div class="col-md-4">
+          <div class="col-md-6">
             <label class="col-md-4 control-label text-info small">Saluation</label>
             <div class="col-md-8 saluation field-border">
-              <select>
-                <option>Select Saluation</option>
-                <option>Hi (First Name)</option>
-                <option>Hi (Last Name)</option>
-                <option>Hi (First Name + Last Name)</option>
-                <option>Hello (First Name)</option>
-                <option>Hello (Last Name)</option>
-                <option>Hello (First Name + Last Name)</option>
+              <select id="saluation" name="saluation">
+               <option value="Dear" selected>Dear</option>
+                <option value="Hai">Hai</option>
+                <option value="Hello">Hello</option>
               </select>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-6">
             <label class="col-md-4 control-label text-info small">Name Fields</label>
             <div class="col-md-8 saluation field-border">
-              <select>
-                <option>First Name</option>
-                <option>Last Name</option>
-                <option>First Name + Last Name</option>
-                <option>1st Letter in the First Name + Last Name</option>
-                <option>First Name + 1st Letter in the Last Name </option>
-                <option>1st Letter in the First Name & Last Name</option>
+              <select id="namefield" name="namefield">
+                <option value="firstname">First Name</option>
+                <option value="firstnameandlastName">First Name + Last Name</option>
+                <option value="1letterfirstnamelastname">1st Letter in the First Name + Last Name</option>
+                <option value="firstname1stletterlastname">First Name + 1st Letter in the Last Name </option>
+                <option value="1letterfirstname1letterlastname">1st Letter in the First Name & Last Name</option>
               </select>
             </div>
           </div>
-          <div class="col-md-4">
-            <label class="col-md-4 control-label text-info small">Hotlist Fields</label>
-            <div class="col-md-8 multiselect-drop field-border">
-              <select id="example-getting-started" multiple="multiple">
-                <option>Name</option>
-                <option>Email</option>
-                <option>Mobile</option>
-                <option>Location </option>
-                <option>Designation </option>
-                <option>Position Type </option>
-                <option>Experience </option>
-                <option>Current Rate </option>
-                <option>Expected Rate </option>
-                <option>Skills </option>
-                <option>Education </option>
-                <option>Employers </option>
-                <option>Summary </option>
-                <option>Resume Attachment </option>
-                <option>Social links </option>
-              </select>
-            </div>
-          </div>
+          
         </div>
         
         <!-- Text Area -->
         <div class="col-md-12 clearfix mb10 mt10">
           <div class="col-md-12">
             <div class="clearfix txt-area">
-              <textarea id="compose-textarea" class="form-control" rows="2" placeholder="Message" style="height: 250px">
-                    <h1><u>Heading Of Message</u></h1>
-                      <h4>Subheading</h4>
-                      <p>But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain
-                        was born and I will give you a complete account of the system, and expound the actual teachings
-                        of the great explorer of the truth, the master-builder of human happiness. No one rejects,
-                        dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know
-                        how to pursue pleasure rationally encounter consequences that are extremely painful. Nor again
-                        is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain,
-                        but because occasionally circumstances occur in which toil and pain can procure him some great
-                        pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise,
-                        except to obtain some advantage from it? But who has any right to find fault with a man who
-                        chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that
-                        produces no resultant pleasure? On the other hand, we denounce with righteous indignation and
-                        dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so
-                        blinded by desire, that they cannot foresee</p>
-                      <ul>
-                        <li>List item one</li>
-                        <li>List item two</li>
-                        <li>List item three</li>
-                        <li>List item four</li>
-                      </ul>
-                      <p>Thank you,</p>
-                      <p>John Doe</p>
-					</textarea>
+              <textarea id="compose-textarea" id="bodytext" name="bodytext" class="form-control" rows="5" placeholder="Message" style="height: 250px">
+                    
+			  </textarea>
             </div>
           </div>
         </div>
@@ -255,7 +170,7 @@
           <div class="col-md-12 attachment">
             <div class="input-group">
               <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-paperclip"></i>
-                <input type="file" style="display: none;" multiple id="attachfileBtn" class="upload">
+                <input type="file" name="attachfile" style="display: none;" multiple id="attachfileBtn" class="upload">
                 </b> </label>
               <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="Files are not selected...">
             </div>
@@ -267,50 +182,218 @@
         <div class="col-md-12 clearfix mt">
           <div class="col-md-6">
             <div class="pull-left select-field">
-              <select class="form-control inpu-sm">
-                <option selected disabled>-Select Signature-</option>
-                <option>mySignature</option>
+              <select class="form-control chosen-select inpu-sm" id="userSignature" name="userSignature">
+                <option selected disabled value="">-Select Signature-</option>
               </select>
             </div>
             <div class="pull-left positionRelative">
               <input type="button" class="btn btn-primary btn-sm ml10" value="New Sign" title="New Sign" onClick="createSign()">
-              <div class="createSign-pop">
-                <div class="clearfix">
-                  <lable>Name of the Signture</lable>
-                  <div class="col-md-12">
-                    <input type="text" class="form-control input-sm" autofocus>
-                  </div>
-                </div>
-                <div class="clearfix mt">
-                  <lable>Create Signture</lable>
-                  <div class="col-md-12">
-                    <textarea data-placeholder="Signature" rows="2" class="form-control" id="create-signature"></textarea>
-                  </div>
-                </div>
-                <div class="clearfix mt">
-                  <div class="pull-right"> <a href="javascript:void(o)" class="btn btn-primary btn-sm">Save</a> <a href="javascript:void(o)" class="ml btn btn-default btn-sm" onClick="closeSign()">Cancel</a> </div>
-                </div>
-              </div>
             </div>
           </div>
           <div class="col-md-6">
             <div class="pull-right"> 
               <!--<input type="button" value="Schedule" class="btn btn-sm btn-primary">-->
-              <button type="button" class="btn btn-sm btn-success"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
-              <a class="btn btn-sm btn-success" href="readmail.html" title="Read Mail"><i class="glyphicon glyphicon-eye-open"></i>&nbsp;Preview</a>
+              <button type="button" class="btn btn-sm btn-success" onclick="sendHotListCampaign();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
+              <!-- <a class="btn btn-sm btn-success" href="readmail.html" title="Read Mail"><i class="glyphicon glyphicon-eye-open"></i>&nbsp;Preview</a> -->
               <button type="button" class="btn btn-sm btn-default"><i class="fa fa-times"></i>&nbsp;Cancel</button>
             </div>
           </div>
         </div>
         <!-- Attachment button --> 
-        
+         </form:form>
       </div>
+      
+      <div class="createSign-pop">
+                
+                <form:form id="signature_form" name="signature_form" method="post" >
+                <div class="clearfix">
+                  <lable>Name of the Signature</lable>
+                  <div class="col-md-12">
+                    <input type="text" name="signatureName" id="signatureName" data-validation="required validate_Space validate_length length2-100" field-name="Signature Name" class="form-control input-sm" autofocus>
+                  </div>
+                </div>
+                <div class="clearfix mt">
+                  <lable>Create Signture</lable>
+                  <div class="col-md-12">
+                    <textarea data-placeholder="Signature" id="signatureText"  data-validation="required" field-name="Signature" name="signatureText" rows="2" class="form-control" ></textarea>
+                  </div>
+                </div>
+                <div class="clearfix mt">
+                  <div class="pull-right"> 
+                  <button type="button" class="btn btn-sm btn-success" onclick="saveSignatrue();">&nbsp;Save</button>
+                   <a href="javascript:void(o)" class="ml btn btn-default btn-sm" onClick="closeSign()">Cancel</a> </div>
+                </div>
+                </form:form>
+                
     </div>
+    </div>
+   
+    
+    
   </section>
   
   
   <script type="text/javascript" src="resources/js/bootstrap-multiselect.js"></script>
   <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script> 
+  
+  
+  
+ <script>
+function getUserSignature(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getSignatures?${_csrf.parameterName}=${_csrf.token}", 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	output = output + "<option value=''>-Select Signatrue-</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.signatureName+"</option>";
+				}
+	        	$("#userSignature").empty();
+		        $("#userSignature").append(output);
+		        $('#userSignature').trigger("chosen:updated");
+	        },
+	    }); 
+}
+</script>  
+
+<script type="text/javascript">
+$(function(){
+	       var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	       
+	       $("#userSignature").chosen();
+	       
+	    
+	       
+	       $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+});
+</script>
+
+  
+  
+  <script type="text/javascript">
+	function sendHotListCampaign() {
+		if ($('#hotlistCampaign_form').validate(false, validationSettings)){ 
+		var sourceleadUrl = '${sourceleadUrl}';
+		var frm = $('#hotlistCampaign_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, ""); 
+	    var jsonData = encodeURIComponent(con);
+	    var form = $('#hotlistCampaign_form')[0];
+  		var formData = new FormData(form)
+  		
+	    
+		$.ajax({
+			type : "POST",
+    	    data: formData,
+    	    contentType : 'application/json; charset=utf-8',
+    	    enctype: 'multipart/form-data',
+	        processData: false,
+	        contentType:false, 
+    	    dataType : 'json',
+			url : sourceleadUrl+"/sendHotListCampaign?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+			success : function(result) {
+					location.replace(sourceleadUrl+"/mailBox");
+			},
+		});
+		 return true
+		 
+		}else{
+			return false;
+		  }
+		
+	}
+	
+	$('body').on('blur', '#hotlistCampaign_form', function() {
+		$("#hotlistCampaign_form").showHelpOnFocus();
+		$("#hotlistCampaign_form").validateOnBlur(false, validationSettings);  
+   });
+</script>
+
+
+
+<script type="text/javascript">
+	function saveSignatrue() {
+		
+	if ($('#signature_form').validate(false, validationSettings)){ 
+		
+	    var sourceleadUrl = '${sourceleadUrl}';
+		var frm = $('#signature_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, ""); 
+	    var jsonData = encodeURIComponent(con);
+	    
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl+"/saveUserSignature?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+			success : function(result) {
+				$("#signatureName").val('');
+				$("#signatureText").val('');
+				$(".createSign-pop").fadeOut(200);
+				getUserSignature();
+			},
+		});
+	    
+	    return true
+		 
+		}else{
+			return false;
+		  }
+		
+	}
+
+   $('body').on('blur', '#signature_form', function() {
+		$("#signature_form").showHelpOnFocus();
+		$("#signature_form").validateOnBlur(false, validationSettings);  
+   });
+</script>
+
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>
+
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+
+        
+</script> 
+  
+  
   
   <script>
   function listChange(){
@@ -556,6 +639,158 @@ function pagination(){
 </script>
 
 
+
+
+
+<script>
+function getCandidates(candidatesListType){
+	
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+           type : "POST",
+           url: sourceleadUrl+"/getCandidatesForCampaign?${_csrf.parameterName}=${_csrf.token}&candidatesListType="+candidatesListType,    
+            success :function(data) {
+            	
+                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+               		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+               		 else if (data.indexOf('exception') >= 0) {
+               			 location.replace(sourceleadUrl+"/errorPage");
+               		 }
+               		 else{
+	                	   
+               			    var result = '';
+	                	    result = result +'<div class="modal-body clearfix">';
+	                		result = result +'     </div>';
+	                		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
+	                	    result = result +'       <table id="candidates" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
+	                		result = result +'           <thead>';
+	                		result = result +'           <tr>';
+	                		result = result +'             <th><input type="checkbox" id="checkAllCandidates" onclick="toggleCandidates(this);"></th>';
+	                		result = result +'             <th>Name</th>';
+	                		result = result +'             <th>Email</th>';
+	                		result = result +'             <th>Phone</th>';
+	                		result = result +'             <th>Designation</th>';
+	                		result = result +'             <th>Position Type</th>';
+	                		result = result +'           </tr>';
+	                		result = result +'           </thead>';
+		                    result = result +"<tbody>"; 
+		                    var json = JSON.parse(data);
+		                    for (var i = 0; i < json.length; i++) { 
+		                    	 var opt = json[i]; 
+		                    	 var name = '';
+		                    	 var mobile = ''
+		                    	 var designation = '';
+		                    	 var designationType = '';
+		                    	 var isFavClass = '';
+		                    	 
+		                    	 if(opt.lastName != null && opt.lastName != 'undefined' && opt.lastName != ""){
+		                    		 name = opt.firstName+" "+opt.lastName ;
+		                    	 }else{
+		                    		 name = opt.firstName;
+		                    	 }
+		                    	 
+		                    	 if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
+		                    		 mobile = opt.mobilePhone ;
+		                    	 }else{
+		                    		 mobile = "&nbsp;&nbsp;-----------";
+		                    	 }
+		                    	 
+		                    	 if(opt.designation != null && opt.designation != 'undefined' && opt.designation != ""){
+		                    		 designation = opt.designation ;
+		                    	 }else{
+		                    		 designation = "&nbsp;&nbsp;-----------";
+		                    	 }
+		                    	 
+		                    	 if(opt.designationType != null && opt.designationType != 'undefined' && opt.designationType != ""){
+		                    		 designationType = opt.designationType ;
+		                    	 }else{
+		                    		 designationType = "&nbsp;&nbsp;-----------";
+		                    	 }
+		                    	 
+	                    	     if(opt.isFavourite != 'Y'){
+				            		isFavClass = "text-muted";
+				            	 }else{
+				            		isFavClass = "text-primary";
+				            	 }
+		                    	 
+		                    	 result = result +'<tr>';
+		                    	 result = result +'<td>&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.id+','+name+'"  type="checkbox" name="candidatesIds[]" class="myCheckbox" >';
+		                    	 result = result +'&nbsp;&nbsp;<i class="fa fa-star '+isFavClass+'"></i>';
+		                    	 result = result +'</td>';
+		                    	 result = result +'<td>'+name+'</td>';
+		                    	 result = result +'<td>'+opt.email+'</td>';
+		                    	 result = result +'<td>'+mobile+'</td>';
+		                    	 result = result +'<td>'+designation+'</td>';
+		                    	 result = result +'<td>'+designationType+'</td>';
+		                    	 result = result +'</tr>';
+		                    	
+	                     }
+		                    
+	                     result = result +" </tbody>";
+	                     result = result +"</table>"; 
+	                     result = result +'     </div>'; 
+	                 	 result = result +'     <div class="clearfix">';
+	                 	
+	                 	 result = result +'       </div>'; 
+	                 	 result = result +'   </div>'; 
+	                 	 result = result +'   <div class="modal-footer">';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="getCheckedCandidates();">Assign</button>';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
+	                 	 result = result +'   </div>'; 
+	                 	 $("#candidatesList").empty(); 
+	                     $("#candidatesList").append(result); 
+	                     candidatePagenation(); 
+			    	} 
+                 }else{
+  	    	         
+                 	var result ="";
+ 	    	        result = result +'<div class="modal-body clearfix">';
+ 	           		result = result +'     </div>';
+ 	           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
+ 	           	    result = result +'       <table id="candidates" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
+ 	           		result = result +'           <thead>';
+ 	           		result = result +'           <tr>';
+ 	           		result = result +'             <th><input type="checkbox" id="checkAll" onclick="toggle(this);"></th>';
+	 	           	result = result +'             <th>Name</th>';
+	        		result = result +'             <th>Email</th>';
+	        		result = result +'             <th>Phone</th>';
+	        		result = result +'             <th>Designation</th>';
+	        		result = result +'             <th>Position Type</th>';
+ 	           		result = result +'           </tr>';
+ 	           		result = result +'           </thead>';
+ 	        		result = result +'           </table>';
+ 	        		result = result +'     </div>';
+ 	        		result = result +'     </div>';
+ 					$("#candidatesList").empty();
+ 				    $("#candidatesList").append(result); 
+ 				    candidatePagenation();  
+                 } 
+          },
+            
+       }); 
+  } 
+</script>
+
+
+
+<script>
+function candidatePagenation(){
+    $("#candidates").DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+</script>
+
+
  <script>
 function toggleClientContacts(source) {
     var checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -587,6 +822,23 @@ $('input:checkbox:not(#checkAllClients)').click(function() {
 });
 }
 </script>
+
+ <script>
+function toggleCandidates(source) {
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i] != source)
+            checkboxes[i].checked = source.checked;
+        
+    }
+$('input:checkbox:not(#checkAllCandidates)').click(function() {
+    if(!this.checked) {
+        $('#checkAllCandidates').removeAttr('checked');
+    }
+});
+}
+</script>
+
 
 
 <script>
@@ -644,6 +896,34 @@ function getContactEmails(){
 }
 
 </script>
+
+
+
+
+<script>
+function getCheckedCandidates(){
+	var candidatesIds = [];
+	var internalOutput = "";
+	 $("input[name='candidatesIds[]']:checked").each( function (i) {
+		 candidatesIds[i] = $(this).val();
+		 var candidate = candidatesIds[i].split(",")
+		 internalOutput = internalOutput+"<option value='" +candidate[0]+ "' selected>"+candidate[1]+"</option>";
+	});
+	 
+	  
+	    $("#selectedCandidates").append(internalOutput);
+		$("#selectedCandidates").trigger("chosen:updated");
+		
+		$("input[name='candidatesIds[]']:checked").removeAttr('checked');
+		$('#checkAllCandidates').removeAttr('checked'); 
+		
+		
+}
+</script>
+
+
+
+
   
   <script type="text/javascript">
 	$(document).ready(function() {
@@ -690,6 +970,22 @@ function getContactEmails(){
 				$this.next().css({'width': '100%'});
 });
 </script> 
+
+
+
+<script>
+function candidateListChange(){
+	
+	
+	  var candidatesListType = document.getElementById("candidatesListType").value;
+	  $("#candidatesList").empty(); 
+	  getCandidates(candidatesListType);
+}
+
+</script>
+
+
+
   <script>
   $(function () {
     //Add text editor

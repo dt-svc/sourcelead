@@ -111,7 +111,7 @@ overflow-y:hidden;
 overflow-y:inherit !important;
 }
 .require_wrap_table {
-overflow-y:visible !important;
+overflow-y:auto !important;
 
 .require_wrap_details_cta.require_uploadfile span{
 width:auto !important;
@@ -123,6 +123,7 @@ float: left !important;
 .require_wrap_details_cta.require_uploadfile .glyphicon-download-alt {
 color:blue;
 }
+
 </style>
  
 <script>
@@ -427,7 +428,7 @@ function sideBar(requirementId){
               			
               			result = result+'    <div class="profile_details requirement_details clearfix">';
               			if(json.jobId != '' && json.jobId != null){
-				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'<i></i></h4></a>';
+				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
               			}
               			else{
     				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
@@ -1297,7 +1298,7 @@ function requirementPipeline(requirementId,submissionType){
 						        	   
 						        	   if(report.totalNoOfInterviews != null && report.totalNoOfInterviews != '' && report.totalNoOfInterviews != 'undefined'){
 						        		   /* ------tooltip---- */
-						        		   result = result +'<td><div class="show-tooltip"><span>'+report.totalNoOfInterviews+'</span>';
+						        		   result = result +'<td><a heref="#"><div class="show-tooltip"><span style="text-decoration: underline;">'+report.totalNoOfInterviews+'</span>';
 						       		   if(report.requirementInterviewHistoryList.length > 0){
 						       		        result = result +'<div class="tooltipint_detilas">';
 						       			    result = result +'<table class="table-bordered table-hover table-striped table-responsive" width="100%;">';
@@ -1323,12 +1324,35 @@ function requirementPipeline(requirementId,submissionType){
 						       			    		endDate = sub.interviewId.endTimeStr;
 						       			    	 }
 						       			    	result = result +'<tr>';
-						       			    	result = result +'<td><span>'+sub.interviewId.interviewType+'</span></td>';
-						       			    	result = result +'<td><span>'+sub.dateOfInterviewStr+'</span></td>';
-						       			    	result = result +'<td><span>'+sub.startTimeStr+'</span></td>';
-						       			    	result = result +'<td><span>'+endDate+'</span></td>';
-						       			    	result = result +'<td><span>'+location+'</span></td>';
-						       			    	result = result +'<td><span>cxmbnv mnbbvnvnbv nbvnbvxnbv nbvcxnbvbnv bnvcxzbvnb  nbxzcvnbz nb vbnxcnbzxcv</span></td>';
+							       			       if(sub.interviewId.interviewType != null && sub.interviewId.interviewType != '' && sub.interviewId.interviewType != 'undefined'){
+							       			    	result = result +'<td><span>'+sub.interviewId.interviewType+'</span></td>';
+							       			       }else{
+							       			    	result = result +'<td><span>--</span></td>';
+							       			       }
+							       			    if(sub.dateOfInterviewStr != null && sub.dateOfInterviewStr != '' && sub.dateOfInterviewStr != 'undefined'){
+							       			    	result = result +'<td><span>'+sub.dateOfInterviewStr+'</span></td>';
+							       			    }else{
+							       			    	result = result +'<td><span>--</span></td>';
+							       			    }
+							       			    
+							       			   if(sub.startTimeStr != null && sub.startTimeStr != '' && sub.startTimeStr != 'undefined'){
+							       			 	result = result +'<td><span>'+sub.startTimeStr+'</span></td>';
+							       			    }else{
+							       			    	result = result +'<td><span>--</span></td>';
+							       			    }
+							       			 
+							       			   if(sub.endTimeStr != null && sub.endTimeStr != '' && sub.endTimeStr != 'undefined'){
+							       				result = result +'<td><span>'+sub.endTimeStr+'</span></td>';
+							       			    }else{
+							       			    	result = result +'<td><span>--</span></td>';
+							       			    }
+							       			if(location != null && location != '' && location != 'undefined'){
+							       				result = result +'<td><span>'+location+'</span></td>';
+							       			    }else{
+							       			    	result = result +'<td><span>--</span></td>';
+							       			    }
+						       			    	
+						       			    	result = result +'<td><span>--</span></td>';
 						       			    	result = result +'<td><span title="'+sub.interviewSourceType+'">'+sub.interviewSourceType+'</span></td>';
 						       			    	result = result +'</tr>';
 						       			    } 
@@ -1336,7 +1360,7 @@ function requirementPipeline(requirementId,submissionType){
 						       			    result = result +' </table>';
 						       			    result = result +' </div>'; 
 						       		    } 
-						       		    result = result +' </div></td>';
+						       		    result = result +' </div></a></td>';
 						        		   /* ----------tooltip end------------- */
 						        		   
 								           }else{

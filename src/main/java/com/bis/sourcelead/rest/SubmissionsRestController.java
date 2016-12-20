@@ -144,7 +144,7 @@ public class SubmissionsRestController {
 	    
     }
     
-    @RequestMapping(value = "/getInterviewFeedbackTemplate" , method = RequestMethod.GET)
+    @RequestMapping(value = "/getInterviewrsViewFeedbackList" , method = RequestMethod.GET)
 	   public String getInterviewFeedbackTemplate(@RequestParam(value="templateId", required=false) Long templateId) throws Exception {
     	    SubmissionTemplate st =  submissionTemplateService.getSubmissionTemplateById(templateId);
 		    return st.getJsonString();
@@ -411,30 +411,6 @@ public class SubmissionsRestController {
 		return "success";
 	}
     
-    
-    
-    @RequestMapping(value = "/saveInterviewFeddbackTemlate" , method = RequestMethod.POST)
-	   public String saveInterviewFeddbackTemlate(@RequestParam(value="jsonData", required=false) String json,
-			   @RequestParam(value="con", required=false) String con,MultipartHttpServletRequest request,
-			   @RequestParam(value="locationMapFile", required=false) CommonsMultipartFile locationMapFileData) throws Exception {
-			
- 	    String json1 = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json1);
-			
-			
-			MultipartFile multiFile = null;
-			Iterator<String> itrator = request.getFileNames();
-			if(itrator.hasNext()){
-		        multiFile = request.getFile(itrator.next());
-			}
-			
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj, user, orgLocations,con,multiFile);
-			return "success";
-	    
-}
-    
 
 	//vendors mail sending the private method
 
@@ -516,6 +492,7 @@ public class SubmissionsRestController {
  * @return Json
  * @throws Exception
  */
+    @PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
 	@RequestMapping(value = "/submitToClient",method = RequestMethod.POST )
 	public @ResponseBody String submitToClient(@RequestParam(value = "jsonData", required = false) String jsonData,@RequestParam(value = "selectedIds", required = false) String submissionsList,@RequestParam(value = "requirementId", required = false) Long requirementId,MultipartHttpServletRequest multPartrequest) throws Exception {
 		String jsonc = "{" + jsonData + "}";
@@ -550,6 +527,7 @@ public class SubmissionsRestController {
 	
 //	/addEmailtemplate
 	
+    @PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
     @RequestMapping(value = "/addEmailtemplate" , method = RequestMethod.GET)
     @ResponseBody
 	   public String addEmailtemplate(@RequestParam(value="requirementId", required=false) Long requirementId,@RequestParam(value="selectedShortlistsCount", required=false) String submissionIds,HttpServletRequest request) throws Exception {

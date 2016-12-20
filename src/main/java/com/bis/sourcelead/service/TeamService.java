@@ -27,4 +27,6 @@ public interface TeamService {
 	
 	public Team saveTeam(Team team)throws Exception;
 	
+	public List<Team> getUserAssignedTeamListByOrgLocationId(Long userId,Long orgLocationId) throws Exception;
+	
 }

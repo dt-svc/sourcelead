@@ -7,12 +7,15 @@
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
+
 <!-- newly added -->
+<link href="resources/css/bootstrap3-wysihtml5.min.css" rel="stylesheet"> 
+<script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script> 
+
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
@@ -48,7 +51,9 @@ function submitToClient(requirementId){
 	var result = "";
 	//var status = "SHORTLIST";
 	/* result = result + '<div class="add_inter_head"> <span>Submissions</span><a href="javascript:void(0)" onclick="clientSubmissions('+requirementId+');" class="sub-btn1">Submit to client</a>'; */
+	'<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
 	result = result + '<div class="add_inter_head"> <span>Submissions</span><a href="javascript:void(0)" onclick="addEmailtemplate('+requirementId+');" class="sub-btn1">Submit to client</a>';
+	'</sec:authorize>';
 	result = result + ' <div class="clearfix"></div>';
 	result = result + ' </div>';
 	
@@ -384,7 +389,8 @@ function addEmailtemplate(requirementId){
                     $("#submitToClientDiv").empty();
                     $("#emailTemplateDiv").empty();
                     $("#emailTemplateDiv").append(result);
-                    
+					$("#compose-textarea").wysihtml5();
+					$("#create-signature").wysihtml5();
                     $('#mailsTagit').tagit({
                         singleField: true,
                         singleFieldNode: $('#othersMailId')
@@ -450,14 +456,14 @@ function checkEmails(){
 </script> 
 
   
- <script>
+<script>
   $(function () {
     //Add text editor
 	  $("#compose-textarea").wysihtml5();
 	  $("#create-signature").wysihtml5();
   });
 
-</script>
+</script> 
  
 <script>
 function addAttachment(){  
