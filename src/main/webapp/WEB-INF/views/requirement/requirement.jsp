@@ -2112,11 +2112,10 @@ function getLevel2Approvers(currentApproverId){
  
  <script>
 function toggle(source) {
-    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    var checkboxes = document.querySelectorAll('input[name="team"]');
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i] != source)
             checkboxes[i].checked = source.checked;
-        
     }
 $('input:checkbox:not(#checkAll)').click(function() {
     if(!this.checked) {
