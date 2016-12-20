@@ -348,12 +348,74 @@ function getCandidateDetails(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	 $("input[name=FirstName]").val(json['firstName']);
-		        	 $("input[name=LastName]").val(json['lastName']);
 		        	 $("input[name=EmailId]").val(json['email']);
-		        	 $("input[name=PhoneNumber]").val(json['mobilePhone']);
+		        	 
+		        	 if(json['lastName'] != null && json['lastName'] != "" && json['lastName'] != 'undefined'){
+		        		 $("input[name=LastName]").val(json['lastName']);
+		        	 }else{
+		        		 $("input[name=LastName]").val(''); 
+		        	 }
+		        	 
+		        	 if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] != 'undefined'){
+		        		 $("input[name=PhoneNumber]").val(json['mobilePhone']);
+		        	 }else{
+		        		 $("input[name=PhoneNumber]").val(''); 
+		        	 }
+		        	 
 		        	 if(json['designation'] != null && json['designation'] != "" && json['designation'] != 'undefined'){
 		        		 $("input[name=Designation]").val(json['designation']);
+		        	 }else{
+		        		 $("input[name=Designation]").val(''); 
 		        	 }
+		        	 
+		        	 if(json['candidateEdu'] != null && json['candidateEdu'] != "" && json['candidateEdu'] != 'undefined'){
+		        		 $("input[name=Education]").val(json['candidateEdu']);
+		        	 }else{
+		        		 $("input[name=Education]").val(''); 
+		        	 }
+		        	 
+		        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
+		        		 $("select[name=country]").val(json['country']);
+		        	 }else{
+		        		 $("select[name=country]").val('');
+		        	 }
+		        	 
+		        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
+		        		 $("select[name=state]").val(json['state']);
+		        	 }else{
+		        		 $("select[name=state]").val('');
+		        	 }
+		        	 
+		        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
+		        		 $("select[name=city]").val(json['city']);
+		        	 }else{
+		        		 $("select[name=city]").val('');
+		        	 }
+		        
+		        	 if(json['noticePeriod'] != null && json['noticePeriod'] != "" && json['noticePeriod'] != 'undefined'){
+		        		 $("select[name=NoticePeriod]").val(json['noticePeriod']);
+		        	 }else{
+		        		 $("select[name=NoticePeriod]").val('');
+		        	 }
+		        	 
+		        	 if(json['experienceYears'] != null && json['experienceYears'] != "" && json['experienceYears'] != 'undefined'){
+		        		 $("select[name=WorkExperience]").val(json['experienceYears']);
+		        	 }else{
+		        		 $("select[name=WorkExperience]").val('');
+		        	 }
+		        	 
+		        	 if(json['expectedRate'] != null && json['expectedRate'] != "" && json['expectedRate'] != 'undefined'){
+		        		 $("input[name=ExpectedCTC]").val(json['expectedRate']);
+		        	 }else{
+		        		 $("input[name=ExpectedCTC]").val(''); 
+		        	 }
+		        	 
+		        	 if(json['currentRate'] != null && json['currentRate'] != "" && json['currentRate'] != 'undefined'){
+		        		 $("input[name=CurrentCTC]").val(json['currentRate']);
+		        	 }else{
+		        		 $("input[name=CurrentCTC]").val(''); 
+		        	 }
+		        	 
 		        },
 		    });
 	 }else{
@@ -361,6 +423,15 @@ function getCandidateDetails(){
     	 $("input[name=LastName]").val('');
     	 $("input[name=EmailId]").val('');
     	 $("input[name=PhoneNumber]").val('');
+    	 $("input[name=Designation]").val('');
+    	 $("select[name=country]").val('');
+    	 $("select[name=state]").val('');
+    	 $("select[name=city]").val('');
+    	 $("select[name=NoticePeriod]").val('');
+    	 $("select[name=WorkExperience]").val('');
+    	 $("input[name=ExpectedCTC]").val('');
+    	 $("input[name=CurrentCTC]").val('');
+    	 $("input[name=Education]").val('');
 	 }
 }
 </script>

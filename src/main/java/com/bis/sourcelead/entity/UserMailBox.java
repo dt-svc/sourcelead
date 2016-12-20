@@ -88,8 +88,21 @@ public class UserMailBox implements Serializable{
 	@Type(type="text")
 	private String comments;
 	
+	@Column(name="IS_MAIL_READ")
+	private Integer isMailRead;
+	
+	
 	@Column(name="STATUS")
 	private Integer status;
+	
+	@Transient
+	private Integer unreadInboxCount;
+	
+	@Transient
+	private Integer unreadRequestedCount;
+	
+	@Transient
+	private Integer totalUnReadMailsCount;
 	
 	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
@@ -356,6 +369,38 @@ public class UserMailBox implements Serializable{
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	public Integer getIsMailRead() {
+		return isMailRead;
+	}
+
+	public void setIsMailRead(Integer isMailRead) {
+		this.isMailRead = isMailRead;
+	}
+
+	public Integer getUnreadInboxCount() {
+		return unreadInboxCount;
+	}
+
+	public void setUnreadInboxCount(Integer unreadInboxCount) {
+		this.unreadInboxCount = unreadInboxCount;
+	}
+
+	public Integer getUnreadRequestedCount() {
+		return unreadRequestedCount;
+	}
+
+	public void setUnreadRequestedCount(Integer unreadRequestedCount) {
+		this.unreadRequestedCount = unreadRequestedCount;
+	}
+
+	public Integer getTotalUnReadMailsCount() {
+		return totalUnReadMailsCount;
+	}
+
+	public void setTotalUnReadMailsCount(Integer totalUnReadMailsCount) {
+		this.totalUnReadMailsCount = totalUnReadMailsCount;
 	}
 
 	
