@@ -1,9 +1,10 @@
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script>
  window.onload = function() {
@@ -16,7 +17,7 @@
       <div class="pull-left">
         <h2>Mailbox</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Mailbox</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Mailbox</div>
     </section>
     <div class="content-dashboard clearfix">
       <section class="action-btns clearfix hidden">
@@ -30,10 +31,24 @@
 		<!-- Mail view area -->
 			<!-- Mail side-bar -->
 			<div class="col-md-3">
-          <a class="btn btn-primary btn-block mb compose" href="${sourceleadUrl}/hotlistMail">
+           <%-- <a class="btn btn-primary btn-block mb compose" href="${sourceleadUrl}/hotlistMail">
 		  <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
 			Compose
-		  </a>
+		  </a>  --%>
+		  
+		  <div class="dropdown mb10 mailBtn">
+					<button class="btn-block btn btn-primary dropdown-toggle display-block" type="button" data-toggle="dropdown"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+					Compose
+						&nbsp;&nbsp;<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu">
+					  <li><a href="#">Mail</a></li>
+					  <sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
+					  	<li><a href="${sourceleadUrl}/hotlistMail">Hotlist Campaign</a></li>
+					  </sec:authorize>
+					  <!-- <li><a href="#">Requirements</a></li> -->
+					</ul>
+				  </div> 
 
           <div class="mail-box">
             <div class="mail-box-header">
@@ -41,10 +56,10 @@
             </div>
             <div>
               <ul class="nav nav-pills nav-stacked">
-                <li id="inboxActive" class=""><a href="#" onclick="getMails('Inbox');"><i class="fa fa-inbox"></i> Inbox
+                <li id="inboxActive" class=""><a href="#" onclick="getMails('Inbox');"><i class="fa fa-inbox"></i> Inbox <span class="label label-primary pull-right" id="inboxUnread">${inboxUnreadMailsCount}</span>
                 <li id="sentActive" class=""><a href="#" onclick="getMails('Sent');"><i class="fa fa-envelope-o"></i> Sent</a></li>
                 <li id="starredActive" class=""><a href="#" onclick="getMails('Starred');"><i class="fa fa-star"></i> Starred</a></li>
-                <li id="requestedActive" class=""><a href="#" onclick="getMails('Requested');"><i class="fa fa-file-text-o"></i> Requested</a></li>
+                <li id="requestedActive" class=""><a href="#" onclick="getMails('Requested');"><i class="fa fa-file-text-o"></i> Requested <span class="label label-info pull-right" id="requestedUnread">${requestedUnreadMailsCount}</span></a></li> 
                 <li id="trashActive" class=""><a href="#" onclick="getMails('Trash');"><i class="fa fa-trash-o"></i> Trash</a></li>
               </ul>
             </div>
@@ -165,15 +180,25 @@
 		                    	 
 		                    	 var isFavourite = "";
 		                    	 var isFavClass = "";
+		                    	 var isMailRead = "";
 		                    	 
 	                    		 if(opt.isFavourite == 1){
 				            		isFavourite = "checked";
 				            		isFavClass = "activestar-rating";
 				            	 }
+	                    		 
+	                    		 if(opt.isMailRead == 1){
+	                    			 isMailRead = "mail-read"
+	                    		 }else{
+	                    			 isMailRead = "mail-unread"
+	                    		 }
 		                    	 
 		                    	result = result +' <tr id="checkbox'+opt.id+'">';
-		              			result = result +'<td>';
-		              			result = result +'<input id="'+opt.id+'" value="'+opt.id+'" onclick="deleteMail();"  type="checkbox" name="mailIds[]" class="myCheckbox mrleft8" ></td>';
+		              			result = result +'<td style="width : 20px;">';
+		              			result = result +'<div class="mrleft8">';
+		              			result = result +'<input id="check'+opt.id+'" value="'+opt.id+'" class="checkbox-custom" onclick="deleteMail();" name="mailIds[]" type="checkbox">';
+		              			result = result +'<label for="check'+opt.id+'" class="checkbox-custom-label"></label>';
+		              			result = result +'</div>';
 		              			result = result +'</td>';
 		              			
 	              			    if(opt.mailStatus != 'Trash'){
@@ -186,7 +211,7 @@
 		                        result = result +"</div>";
 		                        result = result +"</td>";
 		              			
-		              			result = result +'<td class="mailbox-subject"><a href="#" onclick="getEmailDetails(\''+opt.uuid+'\')">'+opt.subject+'</a></td>';
+		              			result = result +'<td class="mailbox-subject '+isMailRead+'"><a href="#" onclick="getEmailDetails(\''+opt.uuid+'\')">'+opt.subject+'</a></td>';
 		              			result = result +'<td class="mailbox-date">'+opt.calDays+' days ago</td>';
 		              			result = result +'</tr>';
 		                    }
@@ -409,6 +434,11 @@ function getEmailDetails(uuid){
 			 var json = JSON.parse(data);
              for (var i = 0; i < json.length; i++) { 
              	 var opt = json[i]; 
+             	 
+           	     $('#inboxUnread').html(opt.unreadInboxCount);
+           	     $('#requestedUnread').html(opt.unreadRequestedCount);
+           	     $('#unreadMailsCount').html(opt.totalUnReadMailsCount);
+            	     
                  var result =""; 
              	 
               	result = result +'<div class="box-tools pull-right">';

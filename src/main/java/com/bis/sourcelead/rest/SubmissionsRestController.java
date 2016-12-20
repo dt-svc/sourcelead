@@ -30,6 +30,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -48,6 +49,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -78,6 +80,9 @@ public class SubmissionsRestController {
 	
 	@Autowired
 	CandidateService candidateService;
+	
+	@Autowired
+	CandidateEducationService candidateEducationService;
 	
 	@Autowired
 	private RequirementService requirementService;
@@ -129,6 +134,10 @@ public class SubmissionsRestController {
     	
     	String resultJson = null;
     	Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+    	CandidateEducation education = candidateEducationService.getCandidateEducationByCandidateId(candidateId);
+    	if(education != null){
+    		candidate.setCandidateEdu(education.getName());
+    	}
     	resultJson = toJSON(candidate);
 		return resultJson;
 		
