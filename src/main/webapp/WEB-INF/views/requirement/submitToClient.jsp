@@ -4,22 +4,14 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
-<!-- newly added -->
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 
 <script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
 
 <script src="resources/js/chosen.jquery.min.js"></script> 
 <script src="resources/js/bootstrap-select.min.js"></script>
@@ -31,14 +23,21 @@
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
-<link rel="stylesheet" href="css/bootstrap3-wysihtml5.min.css">
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="css/bootstrap-select.min.css">
-<link rel="stylesheet" href="css/jquery-ui.css">
-<link rel="stylesheet" href="css/chosen.min.css">
-<link href="css/font-awesome.min.css" rel="stylesheet">
-<link href="css/sourcelead-main.css" rel="stylesheet">
-<link href="css/timesheet.css" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css">
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="resources/css/jquery-ui.css">
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<link href="resources/css/font-awesome.min.css" rel="stylesheet">
+<link href="resources/css/sourcelead-main.css" rel="stylesheet">
+<link href="resources/css/timesheet.css" rel="stylesheet">
+
+
+<script src="resources/js/jquery-1.11.3.min.js"></script>
+  <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script> 
+  <script src="resources/js/bootstrap.min.js"></script> 
+  <script src="resources/js/masterHeaderAction.js"></script> 
+  <script src="resources/js/chosen.jquery.min.js"></script> 
 
 <!-- newly added end -->
 
@@ -536,9 +535,3 @@ function submitToClientMail(selectedIds,requirementId){
 	 }
 }
 </script>
-
-<script src="js/jquery-1.11.3.min.js"></script>
-  <script src="js/bootstrap3-wysihtml5.all.min.js"></script> 
-  <script src="js/bootstrap.min.js"></script> 
-  <script src="js/masterHeaderAction.js"></script> 
-  <script src="js/chosen.jquery.min.js"></script> 

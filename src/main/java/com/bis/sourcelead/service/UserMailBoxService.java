@@ -15,4 +15,8 @@ public interface UserMailBoxService {
 	UserMailBox getUserMailBoxByUUID(String UUID);
 	
 	public void setRequestForResumeDetails(JSONObject jsonObj,String candidatesIds,String UUID) throws Exception;
+	
+	UserMailBox getUserMailBoxById(String Id) throws Exception;
+	
+	List<UserMailBox> getUserFavouriteMailsByUserIdAndOrgLocationId(Long userId,Long orgLocationId) throws Exception;
 }

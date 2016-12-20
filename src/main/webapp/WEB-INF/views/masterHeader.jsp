@@ -119,7 +119,7 @@
 	            </div>
 	          </li>
             </c:if> --%>
-            <li><a href="${sourceleadUrl}/mailBox" title="Notifications" id="notification"><i class="fa fa-envelope"></i> <span class="label label-success">4</span> </a></li>
+            <li><a href="${sourceleadUrl}/mailBox" title="Notifications" id="notification"><i class="fa fa-envelope"></i> <!-- <span class="label label-success">4</span> --> </a></li>
             
             <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
             <li> <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
