@@ -50,6 +50,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
+
 /**
  * Handles requests for the Requirement service.
  * 
@@ -65,239 +66,279 @@ public class RequirementRestController {
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
-	
+
 	@Autowired
 	private RequirementService requirementService;
-	
+
 	@Autowired
 	private RequirementApproverHierarchyService requirementApproverHierarchyService;
-	
+
 	@Autowired
 	UserService userService;
-	
+
 	@Autowired
 	TeamService teamService;
-	
+
 	@Autowired
 	OrgSpocService orgSpocService;
-	
-	 @Autowired
-	 CommonUtil commonUtil;
-	 
-	 @Autowired
-	 private CandidateService candidateService;
-	 
-	 @Autowired
-	 private UserRoleService userRoleService;
-	 
-	 @Autowired
-	 private RecommendationsService recommendationsService;
-	 
-	 @Autowired
-	 private RolesService roleService;
-	 
-	 
-	 
-	
+
+	@Autowired
+	CommonUtil commonUtil;
+
+	@Autowired
+	private UserRoleService userRoleService;
+
+	@Autowired
+	private RecommendationsService recommendationsService;
+
+	@Autowired
+	private RolesService roleService;
+
 	/**
 	 * @author prasad k
-	 * @since  sept 13 2016
+	 * @since sept 13 2016
 	 * @version 0.0.1
 	 * 
-	 * This method is used to store/save Requirement in Requirement table.
-	 *  
-	 * @param jsonObj This is the first paramter to storeRequirement method
-	 * @param orgLocations This is the second paramter to storeRequirement method
-	 * @param user This is the third paramter to storeRequirement method
-	 * @param multiFile This is the fourth paramter to storeRequirement method
+	 *          This method is used to store/save Requirement in Requirement
+	 *          table.
 	 * 
-	 * @return Candidate 
+	 * @param jsonObj
+	 *            This is the first paramter to storeRequirement method
+	 * @param orgLocations
+	 *            This is the second paramter to storeRequirement method
+	 * @param user
+	 *            This is the third paramter to storeRequirement method
+	 * @param multiFile
+	 *            This is the fourth paramter to storeRequirement method
+	 * 
+	 * @return Candidate
 	 * 
 	 * @throws NullPointer
-	*/
-	
+	 */
+
 	@RequestMapping(value = "/storeRequirement", method = RequestMethod.POST)
-	public @ResponseBody String storeRequirement(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request,@RequestParam(value = "saveType", required = false) String saveType) throws Exception {
-		
+	public @ResponseBody String storeRequirement(@RequestParam(value = "json", required = false) String json,
+			MultipartHttpServletRequest request, @RequestParam(value = "saveType", required = false) String saveType)
+			throws Exception {
+
 		MultipartFile multiFile = null;
 		Iterator<String> itrator = request.getFileNames();
-		if(itrator.hasNext()){
-	        multiFile = request.getFile(itrator.next());
+		if (itrator.hasNext()) {
+			multiFile = request.getFile(itrator.next());
 		}
-		json = json + ", saveType : "+saveType;
+		json = json + ", saveType : " + saveType;
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
-		
+
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Requirement requirement = requirementService.storeRequirement(jsonObj,orgLocation,user,multiFile);
-		
+		Requirement requirement = requirementService.storeRequirement(jsonObj, orgLocation, user, multiFile);
+
 		return "success";
-		
+
 	}
-	
+
 	/**
 	 * @author sarath kumaar
-	 * @since  oct 18 2016
+	 * @since oct 18 2016
 	 * @version 0.0.1
 	 * 
-	 * This method is used to accept/Reject Requirement in Requirement table.
-	 *  
-	 * @param jsonObj This is the first paramter to storeRequirement method
-	 * @param orgLocations This is the second paramter to storeRequirement method
-	 * @param user This is the third paramter to storeRequirement method
-	 * @param multiFile This is the fourth paramter to storeRequirement method
+	 *          This method is used to accept/Reject Requirement in Requirement
+	 *          table.
 	 * 
-	 * @return success msg  
+	 * @param jsonObj
+	 *            This is the first paramter to storeRequirement method
+	 * @param orgLocations
+	 *            This is the second paramter to storeRequirement method
+	 * @param user
+	 *            This is the third paramter to storeRequirement method
+	 * @param multiFile
+	 *            This is the fourth paramter to storeRequirement method
+	 * 
+	 * @return success msg
 	 * 
 	 * @throws NullPointer
-	*/
-	
+	 */
+
 	@RequestMapping(value = "/requirementAcceptOrReject", method = RequestMethod.POST)
-	public @ResponseBody String requirementAcceptOrReject(@RequestParam(value = "requirementId", required = false) Long requirementId,@RequestParam(value = "status", required = false)  String status, @RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception {
-		
-		
-	 
+	public @ResponseBody String requirementAcceptOrReject(
+			@RequestParam(value = "requirementId", required = false) Long requirementId,
+			@RequestParam(value = "status", required = false) String status,
+			@RequestParam(value = "reason", required = false) String reason, HttpServletRequest request)
+			throws Exception {
+
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
+
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
-	    
-		// to get  RequirementApproverHierarchy with maximum Level
+		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService
+				.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
+
+		// requirement created user
+		User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
+
+		// to get RequirementApproverHierarchy with maximum Level
 		Integer maxLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirementId);
 
-		if(status.equalsIgnoreCase("APPROVED")){ 
-		    if(maxLevel!=null){
-		    	 if(maxLevel.equals(requirementApproverHierarchy.getLevel())){
-		    		     requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
-		    		     requirement.setUpdatedBy(loginUser.getUserCode());
-				    	 requirement.setUpdatedDate(commonUtil.currentDate());
-				    	 requirementService.addRequirement(requirement);
-				      List<RequirementApproverHierarchy> list1  =  requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
-		    		    for(RequirementApproverHierarchy rah :list1){
-			    		      rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.OPEN);
-			    		      rah.setUpdatedBy(loginUser.getUserCode());
-							  rah.setUpdatedDate(commonUtil.currentDate());
-			    		      requirementApproverHierarchyService.addRequirementApproverHierarchy(rah);
-		            	} 
-		    		    User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
-		    			requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement,orgLocation); 
-				 }else{
-					    requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.OPEN);
-					    requirementApproverHierarchy.setUpdatedBy(loginUser.getUserCode());
-					    requirementApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
-					    requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
-					    
-					    //This For Mailing to approver two 
-					    RequirementApproverHierarchy level2approver  =  requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(requirementId);
-						if(level2approver !=null ){
-							     User approverUser = userService.getUserById(level2approver.getApproverUserId().getId());
-								 requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null,orgLocation);
-						}
-					   
-		          }
-            }
-		}
-		if(status.equalsIgnoreCase("REJECTED")){
-			 if(maxLevel!=null){
-		    	 if(maxLevel.equals(requirementApproverHierarchy.getLevel())){
-		    		     requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
-		    		     requirement.setUpdatedBy(loginUser.getUserCode());
-				    	 requirement.setUpdatedDate(commonUtil.currentDate());
-				    	 requirementService.addRequirement(requirement);
-				      List<RequirementApproverHierarchy> list1  =  requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
-		    		    for(RequirementApproverHierarchy rah :list1){
-			    		      rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
-			    		      rah.setUpdatedBy(loginUser.getUserCode());
-			    		      if(rah.getApproverUserId().getId() == loginUser.getId()){
-			    		    	  requirementApproverHierarchy.setRejectedReason(reason);
-			    		      }
-							  rah.setUpdatedDate(commonUtil.currentDate());
-			    		      requirementApproverHierarchyService.addRequirementApproverHierarchy(rah);
-		            	} 
-		    		    
-		    		    
-					    // Email for Reject requirement  from approver level Two to Initiator.
+		if (maxLevel != null) {
+			if (maxLevel.equals(requirementApproverHierarchy.getLevel())) {
+				if (status.equalsIgnoreCase("APPROVED")) {
+					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+				} else if (status.equalsIgnoreCase("REJECTED")) {
+					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
+				}
+				requirement.setUpdatedBy(loginUser.getUserCode());
+				requirement.setUpdatedDate(commonUtil.currentDate());
+				requirementService.addRequirement(requirement);
+				List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
+				for (RequirementApproverHierarchy rah : list1) {
+					if (status.equalsIgnoreCase("APPROVED")) {
+						rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.OPEN);
+					} else if (status.equalsIgnoreCase("REJECTED")) {
+						rah.setRejectedReason(reason);
+						rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+					}
+					rah.setUpdatedBy(loginUser.getUserCode());
+					rah.setUpdatedDate(commonUtil.currentDate());
+					requirementApproverHierarchyService.addRequirementApproverHierarchy(rah);
+				}
+				// this is for sending email to requirement initiator
+				if (status.equalsIgnoreCase("APPROVED")) {
+					requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement, orgLocation);
+				} else if (status.equalsIgnoreCase("REJECTED")) {
+					requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation);
+				}
+			} else {
 
-		    		    User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
-		    			requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation); 
-				   }else{
-					    requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
-					    requirementApproverHierarchy.setUpdatedBy(loginUser.getUserCode());
-					    requirementApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
-					    requirementApproverHierarchy.setRejectedReason(reason);
-					    requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
-					    
-					    // Email for Reject requirement  from approver level One to Initiator.
-					    User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
-		    			requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation); 
-						//User approverUser = userService.getUserById(requirementApproverHierarchy.getApproverUserId().getId());
-						//requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null,orgLocation);
-				   }
-		    }
+				RequirementApproverHierarchy level2approver = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(requirementId);
+				User approverUser = userService.getUserById(level2approver.getApproverUserId().getId());
+				if (status.equalsIgnoreCase("APPROVED")) {
+					if (level2approver != null) {
+						// this is for sending email to second level approver
+						requirementService.approverTwoEmailScenario(loginUser, approverUser, requirement, null,	orgLocation);
+					}
+					requirementApproverHierarchy
+							.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.OPEN);
+				} else if (status.equalsIgnoreCase("REJECTED")) {
+					// this is for sending email to requirement initiator
+					requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+					requirementApproverHierarchy.setRejectedReason(reason);
+					requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation);
+
+				}
+				requirementApproverHierarchy.setUpdatedBy(loginUser.getUserCode());
+				requirementApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
+				requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
+			}
 		}
-		
-		
+
+		/*
+		 * if(status.equalsIgnoreCase("REJECTED")){ if(maxLevel!=null){
+		 * if(maxLevel.equals(requirementApproverHierarchy.getLevel())){
+		 * requirement.setRequirementSubmissionStatus(
+		 * REQUIREMENT_SUBMISSION_STATUS.REJECTED);
+		 * requirement.setUpdatedBy(loginUser.getUserCode());
+		 * requirement.setUpdatedDate(commonUtil.currentDate());
+		 * requirementService.addRequirement(requirement);
+		 * List<RequirementApproverHierarchy> list1 =
+		 * requirementApproverHierarchyService.
+		 * getRequirementApproverHierarchyListByRequirementId(requirementId);
+		 * for(RequirementApproverHierarchy rah :list1){
+		 * rah.setRequirementApproverStatus(
+		 * REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+		 * rah.setUpdatedBy(loginUser.getUserCode());
+		 * if(rah.getApproverUserId().getId() == loginUser.getId()){
+		 * requirementApproverHierarchy.setRejectedReason(reason); }
+		 * rah.setUpdatedDate(commonUtil.currentDate());
+		 * requirementApproverHierarchyService.addRequirementApproverHierarchy(
+		 * rah); }
+		 * 
+		 * 
+		 * // Email for Reject requirement from approver level Two to Initiator.
+		 * 
+		 * requirementService.rejectedEmailScenario(loginUser, intiatorUser,
+		 * requirement, null, reason,orgLocation); }else{
+		 * requirementApproverHierarchy.setRequirementApproverStatus(
+		 * REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+		 * requirementApproverHierarchy.setUpdatedBy(loginUser.getUserCode());
+		 * requirementApproverHierarchy.setUpdatedDate(commonUtil.currentDate())
+		 * ; requirementApproverHierarchy.setRejectedReason(reason);
+		 * requirementApproverHierarchyService.addRequirementApproverHierarchy(
+		 * requirementApproverHierarchy);
+		 * 
+		 * // Email for Reject requirement from approver level One to Initiator.
+		 * requirementService.rejectedEmailScenario(loginUser, intiatorUser,
+		 * requirement, null, reason,orgLocation); //User approverUser =
+		 * userService.getUserById(requirementApproverHierarchy.
+		 * getApproverUserId().getId());
+		 * //requirementService.approverTwoEmailScenario(loginUser,
+		 * approverUser,requirement,null,orgLocation); } } }
+		 */
+
 		return "success";
-		
+
 	}
-	
-	
+
 	/**
 	 * @author punnana sarath kumar
-	 * @since  sept 13 2016
+	 * @since sept 13 2016
 	 * @version 0.0.1
 	 * 
-	 * This method is used to store/save Requirement in Requirement table.
-	 *  
-	 * @param jsonObj This is the first paramter to storeRequirement method
-	 * @param orgLocations This is the second paramter to storeRequirement method
-	 * @param user This is the third paramter to storeRequirement method
-	 * @param multiFile This is the fourth paramter to storeRequirement method
+	 *          This method is used to store/save Requirement in Requirement
+	 *          table.
 	 * 
-	 * @return Candidate 
+	 * @param jsonObj
+	 *            This is the first paramter to storeRequirement method
+	 * @param orgLocations
+	 *            This is the second paramter to storeRequirement method
+	 * @param user
+	 *            This is the third paramter to storeRequirement method
+	 * @param multiFile
+	 *            This is the fourth paramter to storeRequirement method
+	 * 
+	 * @return Candidate
 	 * 
 	 * @throws NullPointer
-	*/
-	
+	 */
+
 	@RequestMapping(value = "/getUserList", method = RequestMethod.POST)
-	public @ResponseBody String getUserList(@RequestParam(value="teamType",required = false) String teamType,HttpServletRequest request) throws Exception {
-		
+	public @ResponseBody String getUserList(@RequestParam(value = "teamType", required = false) String teamType,
+			HttpServletRequest request) throws Exception {
+
 		String resultJson;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-//		List<User> usersList = userService.getOwnersByOrgLocationId(orgLocation.getId());
-		List<User> usersList = userService.getUsersByTeamType(orgLocation.getId(),teamType);
-		for(User user : usersList){
+		// List<User> usersList =
+		// userService.getOwnersByOrgLocationId(orgLocation.getId());
+		List<User> usersList = userService.getUsersByTeamType(orgLocation.getId(), teamType);
+		for (User user : usersList) {
 			List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId());
-			
+
 			user.setAssignJobCount(assign.size());
 			UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocation.getId());
-			if(userRole !=null){
+			if (userRole != null) {
 				user.setUserType(userRole.getUserType());
 			}
 		}
 		resultJson = commonUtil.toJSON(usersList);
 		return resultJson;
 	}
-	
-	
-	
+
 	@RequestMapping(value = "/getApproverTwoByUserId", method = RequestMethod.POST)
-	public @ResponseBody String getApproverTwoByUserId(@RequestParam(value = "currentApproverId", required = false)  Long currentApproverId,
-		HttpServletRequest request) throws Exception {
+	public @ResponseBody String getApproverTwoByUserId(
+			@RequestParam(value = "currentApproverId", required = false) Long currentApproverId,
+			HttpServletRequest request) throws Exception {
 		String resultJson = null;
-		
+
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
-		List<User> userList = userService.getUsersByTeamTypeAndNoCurrentUser(currentApproverId,orgLocation.getId());
+
+		List<User> userList = userService.getUsersByTeamTypeAndNoCurrentUser(currentApproverId, orgLocation.getId());
 		resultJson = toJSON(userList);
 		return resultJson;
 	}
-	
-	
+
 	/**
-	 * Handles Vendor Contacts 
+	 * Handles Vendor Contacts
+	 * 
 	 * @param json
 	 * @param request
 	 * @return Json
@@ -306,70 +347,76 @@ public class RequirementRestController {
 	@PreAuthorize("hasRole('ROLE_CREATE_CLIENT_CONTACT')")
 	@RequestMapping(value = "/saveClientContact", method = RequestMethod.POST)
 	@ResponseBody
-	public String saveClientContact(@RequestParam(value = "json", required = false) String json, @RequestParam(value="orgRelationId", required=false) String orgRelationId,
-			                        @RequestParam(value="clientLocationId", required=false) String clientLocationId , HttpServletRequest request) throws Exception {
-		
+	public String saveClientContact(@RequestParam(value = "json", required = false) String json,
+			@RequestParam(value = "orgRelationId", required = false) String orgRelationId,
+			@RequestParam(value = "clientLocationId", required = false) String clientLocationId,
+			HttpServletRequest request) throws Exception {
+
 		String responderType = "Client";
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId,responderType,org);
-		
-		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(Long.parseLong(orgRelationId), user.getId(),orgLocations.getId());
+		orgSpocService.addVendorContacts(jsonObj, user, orgLocations, orgRelationId, clientLocationId, responderType,
+				org);
+
+		List<OrgSpoc> orgSpocsList = orgSpocService.getAllSpocsByOrgRelationId(Long.parseLong(orgRelationId),
+				user.getId(), orgLocations.getId());
 		for (OrgSpoc orgSpoc : orgSpocsList) {
 			String ownerLastName = "";
-			if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getLastName() != null){
+			if (orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getLastName() != null) {
 				ownerLastName = orgSpoc.getOwnerUser().getLastName();
 			}
-			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName() + " " + orgSpoc.getSpocUser().getLastName());
 			orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 			orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-			orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+ownerLastName);
+			orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName() + " " + ownerLastName);
 			orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
 			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
 		}
 		return commonUtil.toJSON(orgSpocsList);
 	}
-	
+
 	/**
 	 * @author Venkat Kesav
-	 * @since  sept 21 2016
+	 * @since sept 21 2016
 	 * @version 0.0.1
 	 * 
-	 * This method is used to getTeamsList.
-	 *  
+	 *          This method is used to getTeamsList.
+	 * 
 	 * @param request
-	 * @return resultJson 
+	 * @return resultJson
 	 * 
 	 * @throws NullPointer
-	*/
+	 */
 	@RequestMapping(value = "/getTeamsList", method = RequestMethod.POST)
 	public @ResponseBody String getTeamsList(HttpServletRequest request) throws Exception {
 		String resultJson;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		CombinedList combinedList = new CombinedList();
-		
+
 		Boolean isTeamViewAccess = commonUtil.hasRole("ROLE_VIEW_TEAM");
-		if(isTeamViewAccess){
+		if (isTeamViewAccess) {
 			List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocation.getId());
-			if(teamsList != null){
+			if (teamsList != null) {
 				combinedList.setTeams(teamsList);
 			}
 		}
-		
-		List<Roles> rolesList = roleService.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_REQUIREMENT));
-		if(rolesList != null){
+
+		List<Roles> rolesList = roleService.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocation.getId(),
+				Long.valueOf(Constants.TAB_REQUIREMENT));
+		if (rolesList != null) {
 			combinedList.setRoles(rolesList);
 		}
-		
+
 		resultJson = commonUtil.toJSON(combinedList);
 		return resultJson;
 	}
+
 	/**
-	 * @author Rajashekar
-	 * Recommendations 
+	 * @author Rajashekar Recommendations
 	 * @param requirementId
 	 * @param request
 	 * @return Json
@@ -378,27 +425,29 @@ public class RequirementRestController {
 	@PreAuthorize("hasAnyRole('ROLE_RECOMMENDATIONS')")
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/getRequirementRecommendationsByRequirementId", method = RequestMethod.POST)
-	public @ResponseBody String getRequirementRecommendationsByRequirementId(@RequestParam(value="requirementId",required = false) Long requirementId,HttpServletRequest request) throws Exception {
+	public @ResponseBody String getRequirementRecommendationsByRequirementId(
+			@RequestParam(value = "requirementId", required = false) Long requirementId, HttpServletRequest request)
+			throws Exception {
 		String resultJson;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
-        List<Candidate> candidateList = recommendationsService.getAllCandidatesByLocation(orgLocation.getId());
-		
+
+		List<Candidate> candidateList = recommendationsService.getAllCandidatesByLocation(orgLocation.getId());
+
 		Requirement requirement = recommendationsService.getRequirementByRequirementId(requirementId);
-		
-		List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScore(candidateList,requirement);
-		
+
+		List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScore(candidateList,
+				requirement);
+
 		resultJson = commonUtil.toJSON(candidateListCopy);
 		return resultJson;
-		
-	}
-	
-	
 
-    /**
+	}
+
+	/**
 	 * @David Raju Sammeta
 	 * 
-	 * This Method   getRequirementWhichIsReleasedOrNot  is Used to check whether the requirement is released Or Not 
+	 *        This Method getRequirementWhichIsReleasedOrNot is Used to check
+	 *        whether the requirement is released Or Not
 	 * 
 	 * @param requirementId
 	 * @param request
@@ -407,56 +456,56 @@ public class RequirementRestController {
 	 */
 	@PreAuthorize("hasRole('ROLE_CREAE_OFFER')")
 	@RequestMapping(value = "/getRequirementWhichIsReleasedOrNot", method = RequestMethod.POST)
-	public @ResponseBody String getRequirementWhichIsReleasedOrNot(@RequestParam(value = "requirementId", required = false)  Long requirementId,
-		HttpServletRequest request) throws Exception {
+	public @ResponseBody String getRequirementWhichIsReleasedOrNot(
+			@RequestParam(value = "requirementId", required = false) Long requirementId, HttpServletRequest request)
+			throws Exception {
 		String resultJson = null;
-		
+
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
-		Boolean  flag = requirementService.checkRequirementIsReleasedOrNot(requirementId, orgLocation.getId());
+
+		Boolean flag = requirementService.checkRequirementIsReleasedOrNot(requirementId, orgLocation.getId());
 		resultJson = toJSON(flag);
 		return resultJson;
 	}
 
-
-
-	
-	
 	/**
-	 * prasad K
-	 * This method is check job id duplicate or not
+	 * prasad K This method is check job id duplicate or not
+	 * 
 	 * @param jobId
 	 * @return
 	 * @throws Exception
 	 */
-	 @RequestMapping(value = "/validateJobId",  method = RequestMethod.POST)
-	    public @ResponseBody String validateJobId(@RequestParam(value="jobId", required=false) String jobId,HttpServletRequest request) throws Exception {
-		    	String result;
-				String resultJson;
-				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				Integer jobIdCount = requirementService.validateJobId(jobId,orgLocation.getId());
-				if(jobIdCount>0){
-					result = "duplicate";
-				}
-				else{
-					result = "unique";
-				}
-				resultJson = commonUtil.toJSON(result);
-				return resultJson;
-		    }
-	
-	private String toJSON(Object obj){
-        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-            public HierarchicalStreamWriter createWriter(Writer writer) {
-                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-            }
-        });
-        return xstream.toXML(obj);
-    }
-	 @RequestMapping(value = "/validatetemplateName",  method = RequestMethod.POST)
-	    public @ResponseBody String validatejobName(@RequestParam(value="templateName", required=false) String templateName,HttpServletRequest request) throws Exception {
-				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				Boolean validatejobName = requirementService.validateRequirementTitle(templateName,orgLocation.getId());
-				return validatejobName.toString();
-		    }
+	@RequestMapping(value = "/validateJobId", method = RequestMethod.POST)
+	public @ResponseBody String validateJobId(@RequestParam(value = "jobId", required = false) String jobId,
+			HttpServletRequest request) throws Exception {
+		String result;
+		String resultJson;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Integer jobIdCount = requirementService.validateJobId(jobId, orgLocation.getId());
+		if (jobIdCount > 0) {
+			result = "duplicate";
+		} else {
+			result = "unique";
+		}
+		resultJson = commonUtil.toJSON(result);
+		return resultJson;
+	}
+
+	private String toJSON(Object obj) {
+		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+			public HierarchicalStreamWriter createWriter(Writer writer) {
+				return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+			}
+		});
+		return xstream.toXML(obj);
+	}
+
+	@RequestMapping(value = "/validatetemplateName", method = RequestMethod.POST)
+	public @ResponseBody String validatejobName(
+			@RequestParam(value = "templateName", required = false) String templateName, HttpServletRequest request)
+			throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Boolean validatejobName = requirementService.validateRequirementTitle(templateName, orgLocation.getId());
+		return validatejobName.toString();
+	}
 }

@@ -65,13 +65,18 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 	 */
 
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<TeamMembers> getTeamMembersListByTeamID(Long teamId,Long orgLocationID) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from TeamMembers tm  left join fetch tm.memberUserId   left join fetch tm.teamId team   left join fetch team.ownerUserId where tm.teamId =:teamId and tm.status = '1' and team.orgLocationsId.id=:orgLocationID";
-		return session.createQuery(query).setLong("teamId", teamId).setLong("orgLocationID", orgLocationID).setCacheable(true).list();
+		return session.createQuery(query)
+				.setLong("teamId", teamId)
+				.setLong("orgLocationID", orgLocationID)
+				.setCacheable(true)
+				.list();
 		
 	}
 

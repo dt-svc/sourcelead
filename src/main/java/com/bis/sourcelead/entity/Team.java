@@ -27,7 +27,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "TEAM", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "team")
-
 public class Team implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -40,7 +39,7 @@ public class Team implements Serializable{
 	@Column(name = "NAME")
 	private String name ;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="OWNER_USER_ID", nullable=false )        
     private User ownerUserId;
 	
@@ -65,7 +64,7 @@ public class Team implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ORG_LOCATION_ID")
     private OrgLocations orgLocationsId;
 	

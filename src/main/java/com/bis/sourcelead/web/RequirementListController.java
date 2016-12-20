@@ -6,21 +6,14 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgRelationsService;
-import com.bis.sourcelead.service.RequirementService;
-import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -42,15 +35,16 @@ public class RequirementListController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementList");
 		
-		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
+	    	/*
+		    *  This code is commented as  the client  based requirement   is not in use 
+		    */
 		
-		  List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
-	        for(OrgRelations orgRelations:orgClientList){
-	        	orgRelations.setClientName(orgRelations.getResponderLocationId().getOrg().getOrgName());
-	        }
+		   /* List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
+	         for(OrgRelations orgRelations:orgClientList){
+	         	orgRelations.setClientName(orgRelations.getResponderLocationId().getOrg().getOrgName());
+	         }
 	        model.addObject("add_client", orgClientList);
-	        model.addObject(orgClientList);
+	        model.addObject(orgClientList);*/
 	        
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");

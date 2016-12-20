@@ -3,13 +3,10 @@ package com.bis.sourcelead.dao.impl;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -22,20 +19,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 
 @Repository
@@ -44,21 +37,10 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	@Autowired
 	private SessionFactory sessionFactory;
 	
-
-    @Autowired
-	private ProjectApproverHierarchyDao projectApproverHierarchyDao;
     
     @Autowired
    	private UserRoleDao userRoleDao;
     
-    @Autowired
-    private EmailScenarioService emailScenarioService;
-    
-    @Autowired
-    private EmailScenerioUtil emailScenerioUtil;
-    
-    @Autowired
-    private UserService userService;
     
     @Value("${SourceLead.100}")
 	private String notFound;
@@ -71,10 +53,6 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
     
-    @Autowired
-    
-    private ProjectsService projectsService;
-	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
 
 	/**
