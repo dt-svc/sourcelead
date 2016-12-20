@@ -97,7 +97,7 @@ function teamList(){
 	                    	
 				            /*  result = result +"<td><div><span>"+opt.name+"</span></div></td>"; */
 				             
-				             result = result +' <td><div onclick="getCandidateListForTeam('+opt.id+');" class="proj_show"><span class="pull-left">'+opt.name+'</span><i class="fa fa-binoculars"></i></div></td>';
+				             result = result +' <td><div onclick="getCandidateListForTeam('+opt.id+',\''+opt.name+'\');" class="proj_show"><span class="pull-left">'+opt.name+'</span><i class="fa fa-binoculars"></i></div></td>';
 				             
 				             
 				             if(opt.teamOwnerName != null && opt.teamOwnerName != '' && opt.teamOwnerName != 'undefined'){
@@ -1137,7 +1137,7 @@ function getTeamMembersListExceptExistedTeamMembersList(teamId){
 
 
 <script>
-function getCandidateListForTeam(teamId){
+function getCandidateListForTeam(teamId,teamName){
 	var sourceleadUrl = '${sourceleadUrl}';
 	$("#teamSideDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({ 
@@ -1155,6 +1155,9 @@ function getCandidateListForTeam(teamId){
 	               			 $("#teamSideDiv").removeAttr("style");
 		                	 $("#teamSideDiv").empty();
 		                	 var result = "";
+		                	 result = result +"    <div class='clearfix'>";
+		                	 result = result +"    <p><strong>"+teamName+" (Candidate / Consultant)</strong></p>";
+		                	 result = result +"    </div>";
 		                	 result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
 		                     result = result +"<thead>"; 
 		                     result = result +"  <tr>"; 
@@ -1231,7 +1234,7 @@ function getCandidateListForTeam(teamId){
 		                     result = result +" </tbody>";
 		                     result = result +"</table>";
 		                     $("#teamSideDiv").append(result);
-		                     /* cpagination();  */
+		                     cpagination();
 				    	} 
 	                 }else{
 	                	 $("#teamSideDiv").removeAttr("style");
@@ -1251,6 +1254,21 @@ function getCandidateListForTeam(teamId){
  $(".side_mask").fadeIn(200);
  $("body").css('overflow-y', 'hidden');
   
+}
+</script>
+
+<script>
+function cpagination(){ 
+    $('#candidatePagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
 }
 </script>
 
