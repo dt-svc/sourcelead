@@ -34,6 +34,10 @@ public class InterviewFeedbackTemplate implements Serializable{
     private RequirementInterview requirementInterviewId;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "REQUIREMENT_INTERVIEWER_ID")
+    private RequirementInterviewer requirementInterviewerId;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SUBMISSION_TEMPLATE_ID")
     private SubmissionTemplate submissionTemplateId;
 	
@@ -148,5 +152,13 @@ public class InterviewFeedbackTemplate implements Serializable{
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public RequirementInterviewer getRequirementInterviewerId() {
+		return requirementInterviewerId;
+	}
+
+	public void setRequirementInterviewerId(RequirementInterviewer requirementInterviewerId) {
+		this.requirementInterviewerId = requirementInterviewerId;
 	}
 }

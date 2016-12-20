@@ -38,6 +38,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
@@ -49,6 +50,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -79,11 +81,13 @@ public class InterviewFeedbackRestController {
 	@Autowired
 	RequirementInterviewService requirementInterviewService;
 	
-	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
+	@Autowired
+	RequirementInterviewerService requirementInterviewerService;
   
+	
 	/**
 	 * author Laxman
 	 * this method is used for the getting public page interviewFeedback template list  
@@ -116,17 +120,17 @@ public class InterviewFeedbackRestController {
 	@RequestMapping(value = "/savePublicInterviewFeddbackTemlateReason" , method = RequestMethod.GET)
 	   public String savePublicInterviewFeddbackTemlateReason(@RequestParam(value="jsonData", required=false) String json,
 			   @RequestParam(value="templateId", required=false) String templateId,
-			   @RequestParam(value="requirementInterviewid", required=false) String requirementInterviewid,
+			   @RequestParam(value="requirementInterviewid", required=false) Long requirementInterviewerId,
 			   @RequestParam(value="jsonStringData", required=false) String jsonStringData,HttpServletRequest request) throws Exception {
 		       String json1 = "{" + json + "}";
 		       
 			   JSONObject jsonObj = new JSONObject(json1);
 	           SubmissionTemplate sub =  submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
-		       RequirementInterview rq = requirementInterviewService.getRequirementInterviewById(requirementInterviewid);
+		       RequirementInterviewer rqr = requirementInterviewerService.getInterviwerstByInterviewId(requirementInterviewerId);
 		       User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		       
 			   InterviewFeedbackTemplate ift = new InterviewFeedbackTemplate();
-			   ift.setRequirementInterviewId(rq);
+			   ift.setRequirementInterviewerId(rqr);
 			   ift.setSubmissionTemplateId(sub);
 			   ift.setStatus("N");
 			   ift.setComment(jsonObj.getString("interviewComment"));
@@ -202,17 +206,17 @@ public class InterviewFeedbackRestController {
        @RequestMapping(value = "/savePublicInterviewFeddbackTemlate" , method = RequestMethod.GET)
 	   public String savePublicInterviewFeddbackTemlate(@RequestParam(value="jsonData", required=false) String json,
 			   @RequestParam(value="templateId", required=false) String templateId,
-			   @RequestParam(value="requirementInterviewid", required=false) String requirementInterviewid,
+			   @RequestParam(value="requirementInterviewid", required=false) Long requirementInterviewerId,
 			   @RequestParam(value="jsonStringData", required=false) String jsonStringData,HttpServletRequest request) throws Exception {
 		       String json1 = "{" + json + "}";
 		       
 			   JSONObject jsonObj = new JSONObject(json1);
 	           SubmissionTemplate sub =  submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
-		       RequirementInterview rq = requirementInterviewService.getRequirementInterviewById(requirementInterviewid);
+	           RequirementInterviewer rqr = requirementInterviewerService.getInterviwerstByInterviewId(requirementInterviewerId);
 		       User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		       
 			   InterviewFeedbackTemplate ift = new InterviewFeedbackTemplate();
-			   ift.setRequirementInterviewId(rq);
+			   ift.setRequirementInterviewerId(rqr);
 			   ift.setSubmissionTemplateId(sub);
 			   ift.setStatus("Y");
 			   ift.setComment(jsonObj.getString("interviewComment"));
@@ -240,6 +244,25 @@ public class InterviewFeedbackRestController {
  		
  		return commonUtil.toJSON(submissiontTemplateList);
  	}
+    
+    
+    
+    @RequestMapping(value = "/getInterviewrsFeedbackList" , method = RequestMethod.GET)
+	   public String getInterviewrsFeedbackList(@RequestParam(value="interviewId", required=false) Long interviewId) throws Exception {
+		    String resultJson = null;
+						List<RequirementInterviewer> interviewers = requirementInterviewerService.getInterviwersListByInterviewId(interviewId);
+						
+						for(RequirementInterviewer interviewer: interviewers){
+							interviewer.setInterviewerName(interviewer.getInterviewerUser().getFirstName()+" "+interviewer.getInterviewerUser().getLastName());
+							InterviewFeedbackTemplate feedbackTemplate = interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(interviewer.getId()) ;
+							if(feedbackTemplate != null){
+								interviewer.setFeedbackDate(Constants.DMY.format(feedbackTemplate.getCreatedDate()));
+								interviewer.setFeedbackStatus(feedbackTemplate.getStatus());
+							}
+						}
+		      resultJson = toJSON(interviewers);
+			 return resultJson;
+	   }
     
     private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

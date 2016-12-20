@@ -1,8 +1,13 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -86,6 +91,59 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		 String query ="from RequirementInterviewHistory rih left join fetch rih.interviewId ri left join fetch rih.submissionId submission left join fetch  submission.orgLocations where rih.interviewId.id IN(select interview.id from RequirementInterview interview where interview.status = 1 and interview.startTime > :date and interview.startTime < :triggerTime) and rih.status = 1";
 		List<RequirementInterviewHistory> requirementInterviewList = session.createQuery(query).setString("date",currentTime).setString("triggerTime",triggerTime).setCacheable(true).list();
 		return requirementInterviewList;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQuery = "";
+		String namedParameters = "";
+		
+		Map<String, Object> params = new HashMap<String,Object>();
+		
+		if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
+			subQuery = "and (ri.submissionId.requirement.managerUserId.id =:userId OR ri.createdBy =:userCode)";
+			params.put("userId",userId);
+			params.put("userCode",userCode);
+			//subQuery = "and ri.submissionId.requirement.managerUserId.id =:userId";
+			//namedParameters = ".setLong('userId', userId)";
+			//params.put("userId",userId);
+			params.put("orgLocationsId",orgLocationsId);
+		}else{
+			
+			params.put("orgLocationsId",orgLocationsId);
+		}
+		
+		String query = "";
+        if(dateRange != null && "today".equals(dateRange)){
+            query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and DATE(rih.interviewId.dateOfInterview) = CURDATE() and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime >= NOW()) "+subQuery;
+        }else if(dateRange != null && "previous".equals(dateRange)){
+            query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and DATE(rih.interviewId.dateOfInterview) <= CURDATE() and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime < NOW())"+subQuery;
+        }else if(dateRange != null && "upcoming".equals(dateRange)){
+        	query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and DATE(rih.interviewId.dateOfInterview) > CURDATE()"+subQuery;
+        }else{
+        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        	java.util.Date date = dateFormat.parse(dateRange);
+        	java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
+        	query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and DATE(rih.interviewId.dateOfInterview) = :sqlStartDate"+subQuery;
+        	params.put("sqlStartDate",sqlStartDate);
+        }
+        
+        Query queryExe = session.createQuery(query);
+        for (String str : queryExe.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("orgLocationsId") || str.equalsIgnoreCase("userId")){
+				queryExe.setLong(str, (long) params.get( str ));
+			}
+			else{
+				queryExe.setParameter( str, params.get( str ) );
+			}
+        }
+		
+		return queryExe.setCacheable(true).list();
 	}
 
 	

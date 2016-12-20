@@ -3,6 +3,7 @@ package com.bis.sourcelead.util;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,11 +56,14 @@ public class PdfUtil {
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtil.class);
 	public File createPdfTable(java.util.List<UserRole> activeList,
 			java.util.List<UserRole> inactiveList, java.util.List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
-			String userState, String orgName){
+			String userState, String orgName) throws IOException{
 		String[] headers = Constants.USER_EXCEL_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-	    File file = new File("users_"+dateFormat.format(new Date())+".pdf");
+	    /*File file = new File("users_"+dateFormat.format(new Date())+".pdf");*/
+	    File file = File.createTempFile("users_"+dateFormat.format(new Date()),".pdf");
+	    file.setReadable(true);
+	    
 	    try {
 	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
