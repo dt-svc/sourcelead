@@ -198,7 +198,7 @@ function cancel(){
 							<div class="form-group">
 							<label class="col-md-3">Company<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
-							<input type="text" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-250"  value="${SourceLeadWeb_orgName}" />
+							<input type="text" id="companyName" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-250" onblur="validateCompanyName();"  value="${SourceLeadWeb_orgName}" />
 							</div>
 							</div>
 							<div class="form-group">
@@ -288,6 +288,51 @@ function cancel(){
   <!-- Content Area Ends-->
 
 </body>
+
+<script type="text/javascript">
+function validateCompanyName(){
+	var con = document.getElementById("companyName").value;
+	var company = document.getElementById("companyName").value;
+	var companyName = encodeURIComponent(con);
+	var sourceleadUrl ='${sourceleadUrl}';
+	 if(companyName != null && companyName != ''){
+		 $("#save_button").attr("disabled", "disabled");
+		 $( "#save_button" ).addClass('button').val('Processing..');
+			 $.ajax({
+				    type: "GET",
+       	            url: sourceleadUrl+"/validateCompanyName?companyName="+companyName,
+			        success: function(data) {
+			        	 var result = data;
+			        		if(result == "Company Duplicated") {
+		        			//Existed company
+		    	    		$('#companyNameDiv').find('p.jquery_form_error_message').remove(); 
+		    	    		$('input#companyName').attr('class','error form-control');
+		    	    		$("input#companyName").closest('b').after("<p class='jquery_form_error_message'> "+company+" "+result+"</p>");
+		    				$('input#companyName').attr('record-exist','yes');
+		    				$('input#companyName').attr('record-exist-errorMsg',company+' '+result+''); 
+		    				$( "#save_button" ).addClass('btn btn-primary mr').val('Save');
+		    				$("#save_button").removeAttr("disabled");
+			        	}
+			        	else{
+			        		//New company
+			        		$("#save_button").removeAttr("disabled");
+				    		$('input#companyName').removeAttr( "class record-exist record-exist-errormsg");
+							$('#companyNameDiv').find('p.jquery_form_error_message').remove();
+							$('input#companyName').attr('class','valid form-control');
+							$( "#save_button" ).removeAttr("style");
+							$( "#save_button" ).addClass('btn btn-primary mr').val('Save');
+							$( "#save_button" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+			        	}  
+			       },
+			        
+		   }); 
+		 
+	 }
+}
+</script>
 
     
 

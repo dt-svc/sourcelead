@@ -5281,6 +5281,12 @@ border-bottom: none !important;
 #mailBoxList .table{
 	margin-bottom: 0 !important;
 }
+.mail-read a{
+	color:#909090;
+}
+.mail-unread a{
+	color:#333;
+}
 
 /* media 320px */
 @media (max-width: 320px) {

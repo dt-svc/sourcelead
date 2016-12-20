@@ -17,3 +17,5 @@ UPDATE `sourcelead`.`ROLES` SET `ACTION_ID`='1,2,3,4,5,6,7,8,10,11,12,13,14,15,1
 
 UPDATE `sourcelead`.`SOURCELEAD_ROLES` SET `ACTION_ID`='102,104,105,150' WHERE `ID`='2';
 UPDATE `sourcelead`.`ROLES` SET `ACTION_ID`='102,104,105,150' WHERE `ID`='2';
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','USER_MAIL_BOX','IS_MAIL_READ','INT NULL AFTER `FILE_NAME`');
