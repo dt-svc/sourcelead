@@ -884,6 +884,8 @@ function candidateProfile(candidateId){
 									$(".add-skills").css({"display":"block","opacity":"1"});
 									$("#skillName").val('');
 									 
+									 $("#skillName").val('').trigger("chosen:updated");
+									 
 									/* skill auto complete */
 									var config = {
 											  '.chosen-select'           : {},
@@ -1191,6 +1193,10 @@ function candidateSkillsList(candidateId){
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
 	                     $("#candidateSkillList").append(result); 
+	                     
+	                     $("#candidateSkills").trigger("chosen:updated");
+	                     
+	                     
 			    	} 
                }else{
 	    	         var result ="";
