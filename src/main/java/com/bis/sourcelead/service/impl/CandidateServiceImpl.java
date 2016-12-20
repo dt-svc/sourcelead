@@ -189,13 +189,17 @@ public class CandidateServiceImpl implements CandidateService {
 		if(jsonObj.has("experienceYears") && jsonObj.getString("experienceYears") !=null){
 		candidate.setExperienceYears(jsonObj.getString("experienceYears"));
 		}
+		
+		
 		if(jsonObj.has("experienceMonths") && jsonObj.getString("experienceMonths") !=null){
-		candidate.setExperienceMonths(jsonObj.getString("experienceMonths"));	
+			candidate.setExperienceMonths(jsonObj.getString("experienceMonths"));	
+		}else{
+			candidate.setExperienceMonths("");
 		}
 		
 		if(jsonObj.has("noticePeriod") && jsonObj.getString("noticePeriod") !=null){
 			candidate.setNoticePeriod(jsonObj.getString("noticePeriod"));	
-			}
+		}
 		
 		if(jsonObj.has("address") && jsonObj.getString("address") !=null){
 			candidate.setAddress(jsonObj.getString("address"));
