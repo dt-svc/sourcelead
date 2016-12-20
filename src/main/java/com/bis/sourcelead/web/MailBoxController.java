@@ -75,10 +75,19 @@ public class MailBoxController {
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/mailBox")
- 	public ModelAndView mailBox(HttpServletRequest request) {
+ 	public ModelAndView mailBox(HttpServletRequest request) throws Exception {
 		    ModelAndView model = new ModelAndView();
+		   
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    
+		    Integer inboxUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Inbox");
+			Integer requestedUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Requested");
+			
  			model.setViewName("mailBox");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			model.addObject("inboxUnreadMailsCount", inboxUnreadMailsCount);
+ 			model.addObject("requestedUnreadMailsCount", requestedUnreadMailsCount);
  			return model;
  	}
 

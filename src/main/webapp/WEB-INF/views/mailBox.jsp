@@ -56,10 +56,10 @@
             </div>
             <div>
               <ul class="nav nav-pills nav-stacked">
-                <li id="inboxActive" class=""><a href="#" onclick="getMails('Inbox');"><i class="fa fa-inbox"></i> Inbox
+                <li id="inboxActive" class=""><a href="#" onclick="getMails('Inbox');"><i class="fa fa-inbox"></i> Inbox <span class="label label-primary pull-right" id="inboxUnread">${inboxUnreadMailsCount}</span>
                 <li id="sentActive" class=""><a href="#" onclick="getMails('Sent');"><i class="fa fa-envelope-o"></i> Sent</a></li>
                 <li id="starredActive" class=""><a href="#" onclick="getMails('Starred');"><i class="fa fa-star"></i> Starred</a></li>
-                <li id="requestedActive" class=""><a href="#" onclick="getMails('Requested');"><i class="fa fa-file-text-o"></i> Requested</a></li>
+                <li id="requestedActive" class=""><a href="#" onclick="getMails('Requested');"><i class="fa fa-file-text-o"></i> Requested <span class="label label-info pull-right" id="requestedUnread">${requestedUnreadMailsCount}</span></a></li> 
                 <li id="trashActive" class=""><a href="#" onclick="getMails('Trash');"><i class="fa fa-trash-o"></i> Trash</a></li>
               </ul>
             </div>
@@ -180,11 +180,18 @@
 		                    	 
 		                    	 var isFavourite = "";
 		                    	 var isFavClass = "";
+		                    	 var isMailRead = "";
 		                    	 
 	                    		 if(opt.isFavourite == 1){
 				            		isFavourite = "checked";
 				            		isFavClass = "activestar-rating";
 				            	 }
+	                    		 
+	                    		 if(opt.isMailRead == 1){
+	                    			 isMailRead = "mail-read"
+	                    		 }else{
+	                    			 isMailRead = "mail-unread"
+	                    		 }
 		                    	 
 		                    	result = result +' <tr id="checkbox'+opt.id+'">';
 		              			result = result +'<td style="width : 20px;">';
@@ -204,7 +211,7 @@
 		                        result = result +"</div>";
 		                        result = result +"</td>";
 		              			
-		              			result = result +'<td class="mailbox-subject"><a href="#" onclick="getEmailDetails(\''+opt.uuid+'\')">'+opt.subject+'</a></td>';
+		              			result = result +'<td class="mailbox-subject '+isMailRead+'"><a href="#" onclick="getEmailDetails(\''+opt.uuid+'\')">'+opt.subject+'</a></td>';
 		              			result = result +'<td class="mailbox-date">'+opt.calDays+' days ago</td>';
 		              			result = result +'</tr>';
 		                    }
@@ -427,6 +434,11 @@ function getEmailDetails(uuid){
 			 var json = JSON.parse(data);
              for (var i = 0; i < json.length; i++) { 
              	 var opt = json[i]; 
+             	 
+           	     $('#inboxUnread').html(opt.unreadInboxCount);
+           	     $('#requestedUnread').html(opt.unreadRequestedCount);
+           	     $('#unreadMailsCount').html(opt.totalUnReadMailsCount);
+            	     
                  var result =""; 
              	 
               	result = result +'<div class="box-tools pull-right">';

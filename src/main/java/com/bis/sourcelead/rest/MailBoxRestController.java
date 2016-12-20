@@ -205,6 +205,9 @@ public class MailBoxRestController {
 	public @ResponseBody String getEmailDetails(@RequestParam(value = "UUID", required = false) String UUID,
 			HttpServletRequest request) throws Exception {
 
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
 	    String resultJson;
 	    
 	    UserMailBox userMailbox = userMailBoxService.getUserMailBoxByUUID(UUID);
@@ -257,9 +260,19 @@ public class MailBoxRestController {
 					
 				}
 				
+				userMailbox.setIsMailRead(1);
+				userMailBoxService.saveUserMailBox(userMailbox);
+				
+				Integer inboxUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocation.getId(), "Inbox");
+				Integer requestedUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocation.getId(), "Requested");
+				userMailbox.setUnreadInboxCount(inboxUnreadMailsCount);
+				userMailbox.setUnreadRequestedCount(requestedUnreadMailsCount);
+				userMailbox.setTotalUnReadMailsCount(inboxUnreadMailsCount+requestedUnreadMailsCount);
+				
 				userMailbox.setCandidatesList(reqCandidatesList);
 				mailBoxList.add(userMailbox);
 				calculateDays(mailBoxList);
+				
 	    	
 		}
 	    resultJson = commonUtil.toJSON(mailBoxList);
