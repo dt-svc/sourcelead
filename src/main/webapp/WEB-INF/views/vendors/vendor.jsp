@@ -69,7 +69,7 @@ window.onload = function () {
 			<div class="form-group " id="companyWebsiteDiv">
 				<label class="col-md-3">Website</label>
 				<div class="col-md-9">
-				<input type="text" class="form-control" id="webSite" name="webSite" value="" field-name="Vendor Website" onblur="validateWebsite();" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
+				<input type="text" class="form-control" id="webSite" name="webSite" value="" field-name="Vendor Website" onkeyup="validateWebsite();" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
 				</div>
 			</div>
 						
@@ -139,7 +139,7 @@ window.onload = function () {
             <div class="form-group" id="EmailIdDiv">
 				<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
-					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateWebsite();getSpocUserDetails();">
+					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="getSpocUserDetails();">
 	                            <span class="hidden">Valid Email</span>
 				</div>
 			</div>
@@ -460,12 +460,6 @@ function getRolesList(){
 
 <script type="text/javascript">
 	function saveVendor() {
-		var validationSettings = {
-			errorMessagePosition : 'element',
-			borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd'
-		};
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
 			var frm = $('#client_form').serializeFormJSON();
@@ -654,10 +648,10 @@ function validateClientName(){
 						$('input#webSite').attr('class','valid form-control');
 						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 				
-						$("#save_client").click(function() {
+						/* $("#save_client").click(function() {
 							if ($(this).validate(false, validationSettings)) {
 							}
-						});
+						}); */
 					}
 				},
 

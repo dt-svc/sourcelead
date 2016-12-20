@@ -9,6 +9,9 @@
  <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
  
  <style type="text/css">
+ .overflow-data {
+  min-height: 250px;
+ }
 .show-tooltip {
 	position:relative;
 	font-size:13px !important;
@@ -17,12 +20,12 @@
 	color:#333;
 	background: #e1e6fa;
     border-radius: 3px;
-    display: none;
+    display:none;
     padding:5px;
     position: absolute;
     top: 25px;
 	left:-48px;
-    width: 415px;
+    width: 450px;
 	box-sizing:border-box;
 	z-index:999;
 	transition: all 0.5s ease;
@@ -31,15 +34,21 @@
 	color:#333;
 	background: #e1e6fa;
     border-radius: 3px;
-    display: none;
+     display:none;
     padding:5px;
     position: absolute;
     top: 20px;
 	right:0;
     width: auto;
+    min-height:50px;
+    max-height:150px;
+    overflow-y:scroll;
 	box-sizing:border-box;
 	z-index:999;
 	transition: all 0.5s ease;
+}
+.tooltipint_detilas table tr th, .tooltipint_detilas table tr td {
+height: 25px;
 }
 .show-tooltip .tooltip_div:after{
 	bottom: 100%;
@@ -1171,7 +1180,7 @@ function requirementPipeline(requirementId,submissionType){
 				           result = result + '<div class="clearfix"></div>';
 				           result = result + '</div>';
 				           result = result + '<div class="require_wrap_table overflow-data">';
-				           result = result + '<div class="table-overflow-hide">';
+				           result = result + '<div class="clerfix">';
 				           result = result + '<table id="requirementsPagination" class="display" cellspacing="0" width="100%"">';
 				           result = result + '<thead>';
 				           result = result + '<tr>';
@@ -1303,9 +1312,9 @@ function requirementPipeline(requirementId,submissionType){
 						       		        result = result +'<div class="tooltipint_detilas">';
 						       			    result = result +'<table class="table-bordered table-hover table-striped table-responsive" width="100%;">';
 						       			    result = result +' <thead><tr>';
-						       			 	result = result +'<th>Interview Type</th>';
-						       			    result = result +'<th>Interview Date</th>';
-						       			    result = result +'<th>Start Time</th>';
+						       			 	result = result +'<th>Interview&nbsp;Type</th>';
+						       			    result = result +'<th>Interview&nbsp;Date</th>';
+						       			    result = result +'<th>Start&nbsp;Time</th>';
 						       			    result = result +'<th>End Time</th>';
 						       			    result = result +'<th>Location</th>';
 						       			    result = result +'<th>Feedback</th>';

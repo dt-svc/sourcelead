@@ -431,12 +431,6 @@ function getRolesList(){
 
 <script type="text/javascript">
 	function saveClient() {
-		var validationSettings = {
-			errorMessagePosition : 'element',
-			borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd'
-		};
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
 			var frm = $('#client_form').serializeFormJSON();
@@ -685,10 +679,10 @@ function validateClientName(){
 						$('input#webSite').attr('class','valid form-control');
 						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 				
-						$("#save_client").click(function() {
+						/* $("#save_client").click(function() {
 							if ($(this).validate(false, validationSettings)) {
 							}
-						});
+						}); */
 					}
 				},
 
