@@ -92,6 +92,15 @@ public class MailBoxController {
  	}
 
 	
+	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
+	@RequestMapping(value = "/composeMail")
+ 	public ModelAndView composeMail(HttpServletRequest request) {
+		    ModelAndView model = new ModelAndView();
+ 			model.setViewName("composeMail");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			return model;
+ 	}
+	
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/hotlistMail")
  	public ModelAndView hotlistMail(HttpServletRequest request) {
