@@ -3,6 +3,7 @@
 
 <link rel="stylesheet" href="resources/css/bootstrap-multiselect.css" type="text/css">
 <link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css" type="text/css">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <script src="resources/js/chosen.jquery.min.js"></script> 
@@ -24,7 +25,8 @@
       <div class="pull-left">
         <h2>Hotlist Mail Box</h2>
       </div>
-      <div class="pull-right brud-crum">Mail &raquo; Hotlist Mail Box</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/mailBox'/>"> Mailbox</a>
+			&raquo; Hotlist Campaign</div>
     </section>
     
     
@@ -182,7 +184,7 @@
         <div class="col-md-12 clearfix mt">
           <div class="col-md-6">
             <div class="pull-left select-field">
-              <select class="form-control chosen-select inpu-sm" id="userSignature" name="userSignature">
+              <select class="form-control inpu-sm" id="userSignature" name="userSignature">
                 <option selected disabled value="">-Select Signature-</option>
               </select>
             </div>
@@ -255,7 +257,6 @@ function getUserSignature(){
 				}
 	        	$("#userSignature").empty();
 		        $("#userSignature").append(output);
-		        $('#userSignature').trigger("chosen:updated");
 	        },
 	    }); 
 }
@@ -271,7 +272,6 @@ $(function(){
 			  '.chosen-select-width'     : {width:"95%"}
 			}
 	       
-	       $("#userSignature").chosen();
 	       
 	    
 	       

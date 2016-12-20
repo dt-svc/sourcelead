@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -72,7 +73,7 @@ public class MailBoxController {
 		return (str == null || "".equals(str.trim()));
 	}
 	
-	
+	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/mailBox")
  	public ModelAndView mailBox(HttpServletRequest request) {
 		    ModelAndView model = new ModelAndView();
@@ -82,6 +83,7 @@ public class MailBoxController {
  	}
 
 	
+	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/hotlistMail")
  	public ModelAndView hotlistMail(HttpServletRequest request) {
 		    ModelAndView model = new ModelAndView();
@@ -102,7 +104,7 @@ public class MailBoxController {
  			return model;
  	}
 	
-	
+	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/getClientContacts")
 	public @ResponseBody String getClientContacts(HttpServletRequest request) throws Exception {
 
@@ -115,7 +117,7 @@ public class MailBoxController {
 		return resultJson;
 	}
 	
-	
+	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/getUserMails")
 	public @ResponseBody String getUserMails(@RequestParam(value = "type", required = false) String type,
 			HttpServletRequest request) throws Exception {
@@ -139,7 +141,7 @@ public class MailBoxController {
 	}
 	
 	
-	
+	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/getClientsListForHotlist")
 	public @ResponseBody String getClientsListForHotlist(HttpServletRequest request) throws Exception {
 
@@ -152,6 +154,7 @@ public class MailBoxController {
 		return resultJson;
 	}
 	
+	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/getCandidatesForCampaign")
 	public @ResponseBody String getCandidatesForCampaign(@RequestParam(value = "candidatesListType", required = false) String candidatesListType,
 			HttpServletRequest request) throws Exception {

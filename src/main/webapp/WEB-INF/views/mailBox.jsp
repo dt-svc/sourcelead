@@ -1,9 +1,10 @@
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script>
  window.onload = function() {
@@ -16,7 +17,7 @@
       <div class="pull-left">
         <h2>Mailbox</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Mailbox</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Mailbox</div>
     </section>
     <div class="content-dashboard clearfix">
       <section class="action-btns clearfix hidden">
@@ -30,10 +31,24 @@
 		<!-- Mail view area -->
 			<!-- Mail side-bar -->
 			<div class="col-md-3">
-          <a class="btn btn-primary btn-block mb compose" href="${sourceleadUrl}/hotlistMail">
+           <%-- <a class="btn btn-primary btn-block mb compose" href="${sourceleadUrl}/hotlistMail">
 		  <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
 			Compose
-		  </a>
+		  </a>  --%>
+		  
+		  <div class="dropdown mb10 mailBtn">
+					<button class="btn-block btn btn-primary dropdown-toggle display-block" type="button" data-toggle="dropdown"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+					Compose
+						&nbsp;&nbsp;<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu">
+					  <li><a href="#">Mail</a></li>
+					  <sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
+					  	<li><a href="${sourceleadUrl}/hotlistMail">Hotlist Campaign</a></li>
+					  </sec:authorize>
+					  <!-- <li><a href="#">Requirements</a></li> -->
+					</ul>
+				  </div> 
 
           <div class="mail-box">
             <div class="mail-box-header">
@@ -172,8 +187,11 @@
 				            	 }
 		                    	 
 		                    	result = result +' <tr id="checkbox'+opt.id+'">';
-		              			result = result +'<td>';
-		              			result = result +'<input id="'+opt.id+'" value="'+opt.id+'" onclick="deleteMail();"  type="checkbox" name="mailIds[]" class="myCheckbox mrleft8" ></td>';
+		              			result = result +'<td style="width : 20px;">';
+		              			result = result +'<div class="mrleft8">';
+		              			result = result +'<input id="check'+opt.id+'" value="'+opt.id+'" class="checkbox-custom" onclick="deleteMail();" name="mailIds[]" type="checkbox">';
+		              			result = result +'<label for="check'+opt.id+'" class="checkbox-custom-label"></label>';
+		              			result = result +'</div>';
 		              			result = result +'</td>';
 		              			
 	              			    if(opt.mailStatus != 'Trash'){
