@@ -659,6 +659,8 @@ function getCities(){
 	       $("#state").chosen();
 	       $("#city").chosen();
 	       
+	       $("#candidateSkills").val('').trigger("chosen:updated");
+	       $("#candidateEducation").val('').trigger("chosen:updated");
 	       
 	        //Adding Customized Skills to the list
 	        var select, chosen;
@@ -946,7 +948,9 @@ function getUsersByRole(){
     $("#email").val('');
     $("#mobilePhone").val('');
     $("#uploadFile").val('');
-   
+    
+    /* Clear the skills */
+    $("#candidateSkills").val('').trigger("chosen:updated");
 }
 
 </script>
