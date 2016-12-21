@@ -436,12 +436,13 @@ function sideBar(requirementId){
               			var result = '';
               			
               			result = result+'    <div class="profile_details requirement_details clearfix">';
-              			if(json.jobId != '' && json.jobId != null){
+              			if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined'){
 				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
               			}
-              			else{
+              			else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined'){
     				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
-	
+              			}else{
+              				result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'<i></i></h4></a>';
               			}
 				        result = result+'<div class="hide-row">';
 				        
@@ -496,11 +497,11 @@ function sideBar(requirementId){
   
 				       }
 				       
-				        if(json.state !='' && json.state != 'undefined' && json.city !='' && json.city != 'undefined')
+				        if(json.state != null && json.state !='' && json.state != 'undefined' && json.city != null && json.city !='' && json.city != 'undefined')
 				        	{
 				        result = result+'<li><i class="fa fa-map-marker"></i><span title="'+json.country+', '+json.state+', '+json.city+'">'+json.country+', '+json.state+', '+json.city+'</span></li>';
 				        	}
-				        else if(json.state !='' && json.state != 'undefined')
+				        else if(json.state != null && json.state !='' && json.state != 'undefined')
 				        	{
 
 					    result = result+' <li><i class="fa fa-map-marker"></i><span title="'+json.country+', '+json.state+'">'+json.country+', '+json.state+'</span></li>';
@@ -1410,7 +1411,7 @@ function requirementPipeline(requirementId,submissionType){
 							    	     } 
 						           }
 
-						           if(submissionType == 'all' || submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'SUBMIT_TO_CLIENT'|| submissionType == 'REQUEST_SENT'){
+						           if(submissionType == 'all' || submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'REQUEST_SENT'){
 						        	   
 						        	   if(submissionType != 'INTERVIEW' && submissionType != 'REJECTED'){
 						        		   if(report.score != null && report.score != '' && report.score != 'undefined'){
@@ -1456,7 +1457,7 @@ function requirementPipeline(requirementId,submissionType){
 							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 							        	   result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
 							           }else{
-							        	   result = result + '<td><div class="tblwidth-150"><select><option>'+report.submissionStatus+'</option><option onClick="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";>Reject</option></select>';
+							        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelect" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
 								           result = result + '</div></td>';
 							           }
 							           
@@ -1533,18 +1534,28 @@ function documentpagination(){
 <div id="popUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
-	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Applicant reject message here</p>";
-	result = result +"		<textarea  id='reasonForReject' name='reasonForReject'  placeholder='Comments here'></textarea>";
-	result = result + ' <div id="reasonForApplicantDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveRejectApplicantReason("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelRejectApplicant();'></b>";
-	result = result +"	</div>";
-	$("#popUp").append(result);
-	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	var selectBox = document.getElementById("rejectApplicantSelect");
+	var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+    if(selectedValue != "Status"){
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Applicant reject message here</p>";
+		result = result +"		<textarea  id='reasonForReject' name='reasonForReject'  placeholder='Comments here'></textarea>";
+		result = result + ' <div id="reasonForApplicantDiv"/>';
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveRejectApplicantReason("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelRejectApplicant();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#remove_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+    }
 }
+</script>
+
+<script type="text/javascript">
+function cancelRejectApplicant(){ 
+	$("#remove_user_pop, .project_inn_mask").fadeOut(200);
+};
 </script>
 
 <script>
