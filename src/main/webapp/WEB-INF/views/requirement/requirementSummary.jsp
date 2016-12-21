@@ -435,12 +435,20 @@ function sideBar(requirementId){
               		 else{
               			var result = '';
               			
+              			var jobType = '';
+              			if(json.jobType != null && json.jobType != '' && json.jobType != 'undefined'){
+              				jobType = '-'+json.jobType;
+             			 	}else{
+             			 		jobType = '';
+             			 	}
+              			
+              			
               			result = result+'    <div class="profile_details requirement_details clearfix">';
               			if(json.jobId != '' && json.jobId != null){
 				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
               			}
               			else{
-    				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
+    				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+''+jobType+'<i></i></h4></a>';
 	
               			}
 				        result = result+'<div class="hide-row">';
