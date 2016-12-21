@@ -1684,7 +1684,7 @@ function getUserList(teamType){
 		         								localCheckedStatus = "checked";
 		         							}  
 		                    	 });
-		                    	 result = result +'             <td><input id="'+opt.id+'" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
+		                    	 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
 		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
 		                    	 result = result +'             <td>'+opt.email+'</td>';
 		                    	 result = result +'             <td>'+opt.userType+'</td>';
@@ -2112,11 +2112,10 @@ function getLevel2Approvers(currentApproverId){
  
  <script>
 function toggle(source) {
-    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    var checkboxes = document.querySelectorAll('input[name="team"]');
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i] != source)
             checkboxes[i].checked = source.checked;
-        
     }
 $('input:checkbox:not(#checkAll)').click(function() {
     if(!this.checked) {
