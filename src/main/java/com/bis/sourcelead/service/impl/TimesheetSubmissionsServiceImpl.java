@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
@@ -1095,9 +1094,20 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
  * 
  */
 		@Override
-		public HashSet<TimesheetSubmissions> getWeekFrequency(Long userId,Long locationsId) throws Exception {
-			return timesheetSubmissionsDao.getWeekFrequency(userId,locationsId);
+		public HashSet<TimesheetSubmissions> getWeekFrequency(Long projectId,Long locationsId,Long userId) throws Exception {
+			return timesheetSubmissionsDao.getWeekFrequency(projectId,locationsId,userId);
 		}
+
+
+	@Override
+	public HashSet<TimesheetSubmissions> getWeekFrequencyByProjMemId(Long projectId) throws Exception {
+		return timesheetSubmissionsDao.getWeekFrequencyByProjMemId(projectId);
+	}
+
+	@Override
+	public List<TimesheetSubmissions> getTimeSheetSubmissionByProjectMemberId(Long pojectMemberId) throws Exception {
+		return timesheetSubmissionsDao.getTimeSheetSubmissionByProjectMemberId(pojectMemberId);
+	}
 
 
 		

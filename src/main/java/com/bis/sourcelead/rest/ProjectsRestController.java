@@ -5,8 +5,6 @@ import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -45,7 +43,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @PropertySource("${propertyLocation:app.properties}")
 public class ProjectsRestController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ProjectsRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -98,16 +95,25 @@ public class ProjectsRestController {
 	  */
 	 
 	 @RequestMapping(value = "/storeProject" , method = RequestMethod.POST)
-	 public @ResponseBody  String storeProject(@RequestParam(value="json", required=false) String json) throws Exception {
+	 public @ResponseBody  String storeProject(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		   
 		    String json1 = "{"+json+"}";
 		    JSONObject jsonObj = new JSONObject(json1);
+		 	/*OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");*/
 		    String outPut =  projectsService.storeProject(jsonObj);
+/*		    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Successfully you have created a project");*/
 		    return outPut;		
 			 
 	   }
 	 
-	 @RequestMapping(value = "/saveProject" , method = RequestMethod.POST)
+	 
+	 /**
+	 * @author shivayogi. 
+	 * @Description : this is duplicate method, this method is not used anywhere.This method is same as storeProject() .
+	 */
+	@RequestMapping(value = "/saveProject" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 		   
 		String json1 = "{" + json + "}";

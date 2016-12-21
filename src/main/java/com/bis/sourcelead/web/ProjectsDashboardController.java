@@ -1,6 +1,5 @@
 package com.bis.sourcelead.web;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,12 +15,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
-import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -35,9 +30,6 @@ public class ProjectsDashboardController {
 	 @Value("${sourceleadUrl}")
 	 private String sourceleadUrl;
 	
-	 @Autowired
-	 private ProjectsService projectsService; 
-	 
 	 @Autowired
 	 public ProjectApproverHierarchyService projectApproverHierarchyService;
 	 
@@ -58,7 +50,7 @@ public class ProjectsDashboardController {
 	@RequestMapping(value = "/projectDashboard")
 	public ModelAndView projectDashboard(HttpServletRequest request) throws Exception {
            logger.debug("projectDashboard");
-		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+           
 		ModelAndView model = new ModelAndView();
 		model.setViewName("project/projectDashboard");
 		String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");

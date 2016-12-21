@@ -60,7 +60,7 @@ public class ProjectApproverHierarchy implements Serializable{
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     
-    @OneToMany(mappedBy="projects",cascade = CascadeType.ALL,fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="projects",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectMembers> projectMembers;
     

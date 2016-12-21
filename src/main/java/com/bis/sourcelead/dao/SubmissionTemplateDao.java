@@ -21,4 +21,8 @@ public interface SubmissionTemplateDao {
 	List<SubmissionTemplate> getOrgSubmissionTemplatesByOrgLocationIdAndTemplateType(Long orgLocationId,String templateType) throws Exception;
 	
 	SubmissionTemplate getSubmissionTemplateByTemplateNameByOrg(Long orgLocationId,String templateName) throws Exception;
+	
+	List<SubmissionTemplate> getInterviewFeedbackTemplatesByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	
 }

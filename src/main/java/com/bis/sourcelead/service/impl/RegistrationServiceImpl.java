@@ -35,17 +35,14 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.Registration;
-import com.bis.sourcelead.service.ActionRolesService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
-import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
-import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RoleHierarchyService;
@@ -110,15 +107,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	@Autowired
 	private PasswordResetsSevice passwordResetsSevice;
-	
-	@Autowired
-	private ProjectTasksService projectTasksService;
-	
-	@Autowired
-	private ActionRolesService actionRolesService;
-	
-	@Autowired
-	private ModulesService modulesService;
 	
 	@Autowired
 	private SubmissionTemplateService  submissionTemplateService;

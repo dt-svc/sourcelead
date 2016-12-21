@@ -123,33 +123,39 @@ public class RequirementDaoImpl implements RequirementDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		User user = userDao.getUserById(userId);
 		
+		UserRole userRole = userRoleDao.getUserRoleByUserIdAndLocationId(userId, orgLocationId);
+				
 		Map<String, Object> params = new HashMap<String,Object>();
 		
 		String from = "from Requirement requirement"; 
-		
-		String subQuery1 = "requirement.createdBy =:loginUserCode";
-		params.put("loginUserCode",user.getUserCode());
-		
-		String subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level and  requirement.requirementSubmissionStatus <> 'DRAFT'  ) or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) ) ";
-		params.put("userId",userId);
-		params.put("level",1);
-		
-		String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2  and  requirement.requirementSubmissionStatus <> 'DRAFT' and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'OPEN'))  or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) )  )";
-		params.put("approverUserId",userId);
-		params.put("level1",1);
-		params.put("level2",2);
-		
-		
-		String subQuery4 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
-		params.put("managerUserId",userId);
-		
-		
-		
 		String subQuery = "";
-		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" ){
-			subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery3+")  or ("+subQuery4+") )";
+		
+		if(userRole != null && userRole.getRoles().getRoleName() != null && "ROLE_ADMIN".equalsIgnoreCase(userRole.getRoles().getRoleName()) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole.getRoles().getRoleName())){
+			subQuery = "where requirement.orgLocationId.id =:orgLocationId and (requirement.isTemplate IS NULL OR requirement.isTemplate <> 'Y') ";
 			params.put("orgLocationId",orgLocationId);
+		}else{
+			String subQuery1 = "requirement.createdBy =:loginUserCode and (requirement.isTemplate IS NULL OR requirement.isTemplate <> 'Y') ";
+			params.put("loginUserCode",user.getUserCode());
+			
+			String subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level and  requirement.requirementSubmissionStatus <> 'DRAFT'  ) or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) ) ";
+			params.put("userId",userId);
+			params.put("level",1);
+			
+			String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2  and  requirement.requirementSubmissionStatus <> 'DRAFT' and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'OPEN'))  or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) )  )";
+			params.put("approverUserId",userId);
+			params.put("level1",1);
+			params.put("level2",2);
+			
+			String subQuery4 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			params.put("managerUserId",userId);
+			
+			if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" ){
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery3+")  or ("+subQuery4+") )";
+				params.put("orgLocationId",orgLocationId);
+			}
 		}
+		
+		
 		String whereCondition = subQuery;
 		
 		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
@@ -249,7 +255,8 @@ public class RequirementDaoImpl implements RequirementDao {
 	public List<Requirement> getJobTitleByJobTemplateStatusAndOrgLocationId(Long orgLocationId)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Requirement req where isTemplate = 'Y' and req.orgLocationId =:orgLocationId";
+
+		String query = "from Requirement req where isTemplate = 'Y' and req.orgLocationId =:orgLocationId and req.status<>'0'";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		
 	}
@@ -293,6 +300,7 @@ public class RequirementDaoImpl implements RequirementDao {
 				params.put("orgLocationId",orgLocationId);
 			}
 		}else{
+			subQuery = "where requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT')  and requirement.orgLocationId.id =:orgLocationId  ";
 			params.put("orgLocationId",orgLocationId);
 		}
 		
@@ -330,11 +338,11 @@ public class RequirementDaoImpl implements RequirementDao {
 		String subQuery = "";
 		if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
 			
-			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level and  requirement.requirementSubmissionStatus <> 'DRAFT'  ) ";
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level and  (requirement.requirementSubmissionStatus <> 'DRAFT' AND requirement.requirementSubmissionStatus <> 'APPROVED' ) ) ";
 			params.put("userId",userId);
 			params.put("level",1);
 			
-			String subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2  and  requirement.requirementSubmissionStatus <> 'DRAFT' and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'OPEN')) )";
+			String subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2  and  (requirement.requirementSubmissionStatus <> 'DRAFT' AND requirement.requirementSubmissionStatus <> 'APPROVED' ) and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'OPEN')) )";
 			params.put("approverUserId",userId);
 			params.put("level1",1);
 			params.put("level2",2);
@@ -344,6 +352,7 @@ public class RequirementDaoImpl implements RequirementDao {
 				params.put("orgLocationId",orgLocationId);
 			}
 		}else{
+			subQuery = "where requirement.id IN (select rah.requirementId from RequirementApproverHierarchy rah where (requirement.requirementSubmissionStatus <> 'DRAFT' AND requirement.requirementSubmissionStatus <> 'APPROVED' )) and requirement.orgLocationId.id =:orgLocationId ";
 			params.put("orgLocationId",orgLocationId);
 		}
 		
@@ -424,7 +433,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public List<Requirement> getRequirementListById(Long requirementId) {
 		Session session = sessionFactory.getCurrentSession();
 		String query = "from Requirement requ  left join fetch requ.spocId spoc   left join fetch spoc.spocUser left join fetch requ.parentRequirement where requ.parentRequirement.id =:requirementId";
-		return session.createQuery(query).setLong("requirementId", requirementId).list();
+		return session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
 		
 	}
 
@@ -522,8 +531,80 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 	
 	}
-	
 
-	
+	/**
+	 * prasad K
+	 * This Method for to get All Template Requirements
+	 */
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getAllRequirementTeplateJobsByOrgLocationId(Long orgLocationId, User user)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Requirement req where req.isTemplate = 'Y' and req.orgLocationId.id =:orgLocationId and req.status <>'0'";
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Requirement getRequirementTemplateByRequirementId(Long requirementId,Long orgLocationId) throws Exception {
+        
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "from Requirement requirement  where requirement.id =:requirementId and requirement.isTemplate = 'Y' and requirement.orgLocationId.id =:orgLocationId ";
+		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+		Requirement requirement = null;
+		if(requirementList != null && !requirementList.isEmpty())
+		{
+			requirement = (Requirement) requirementList.iterator().next();
+		}
+		return requirement;
+	}
+
+
+	@Override
+	@Transactional
+	public Integer getManagerAssignedRequirementsCount(Long userId, Long orgLocationId) throws Exception {
+		logger.debug("getManagerAssignedRequirementsCount start");
+		Session session = this.sessionFactory.getCurrentSession();
+			String query = "select count(requirement.id) from Requirement requirement "
+					+ "where requirement.managerUserId.id = :userId and requirement.orgLocationId.id = :orgLocationId ";
+			
+			List<Long> jobCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			Integer count = 0;
+			if(jobCount != null && !jobCount.isEmpty()){
+					count = jobCount.get(0).intValue();
+			}
+			return count;
+        
+	}
+
+	@Override
+	@Transactional
+	public Integer getRequirementsCountAsApprover(Long userId,Long orgLocationId) throws Exception {
+		logger.debug("getRequirementsCountAsApprover start");
+		Session session = this.sessionFactory.getCurrentSession();
+			String query = "select count(requirement.id) from Requirement requirement "
+					+ "where requirement.id IN (select hierarchy.requirementId.id from RequirementApproverHierarchy hierarchy where hierarchy.approverUserId.id = :userId) and requirement.orgLocationId.id = :orgLocationId ";
+			
+			List<Long> jobCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			Integer count = 0;
+			if(jobCount != null && !jobCount.isEmpty()){
+					count = jobCount.get(0).intValue();
+			}
+			return count;
+        
+	}
+
+	@Override
+	@Transactional
+	public List<Requirement> getManagerAssignedRequirementsList(Long userId, Long orgLocationId) throws Exception {
+		Session session = sessionFactory.getCurrentSession();
+		String query = "from Requirement requirement "
+					+ "where requirement.managerUserId.id = :userId and requirement.orgLocationId.id = :orgLocationId";
+		return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+	}
 	
 }

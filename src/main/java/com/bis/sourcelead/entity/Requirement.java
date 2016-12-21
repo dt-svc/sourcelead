@@ -42,7 +42,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
@@ -107,11 +107,11 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "IS_CLIENT_JOB")
 	private String isClientJob;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations clientId;
 	    
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name="SPOC_ID", nullable=false )        
     private OrgSpoc spocId;
 	
@@ -125,15 +125,15 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String clientRateType;
 	
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name="SUBMISSION_TEMPLATE_ID" )        
     private SubmissionTemplate submissionTemplateId;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name="CLIENT_SUBMISSION_TEMPLATE_ID" )        
     private SubmissionTemplate clientSubmissionTemplateId;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name="MANAGER_USER_ID", nullable=false )        
     private User managerUserId;
 	
@@ -188,6 +188,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	@Transient
 	private  Long  requirementId;
+	
+	@Transient
+	private String msg;
 	
 	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
@@ -264,6 +267,17 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String isLoginUserAsManager;
 	
+	@Transient
+	private String mailBody;
+	
+	@Transient
+	private String submitToClientFromMailId;
+	
+	@Transient
+	private String submitToClientToMailId;
+	
+	@Transient
+	private String submitToClientMailSubject;
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -801,6 +815,15 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public String getIsLoginUserAsManager() {
 		return isLoginUserAsManager;
 	}
+	
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
 
 	public void setIsLoginUserAsManager(String isLoginUserAsManager) {
 		this.isLoginUserAsManager = isLoginUserAsManager;
@@ -821,4 +844,38 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setOtherJobType(String otherJobType) {
 		this.otherJobType = otherJobType;
 	}
+
+	public String getMailBody() {
+		return mailBody;
+	}
+
+	public void setMailBody(String mailBody) {
+		this.mailBody = mailBody;
+	}
+
+	public String getSubmitToClientFromMailId() {
+		return submitToClientFromMailId;
+	}
+
+	public void setSubmitToClientFromMailId(String submitToClientFromMailId) {
+		this.submitToClientFromMailId = submitToClientFromMailId;
+	}
+
+	public String getSubmitToClientToMailId() {
+		return submitToClientToMailId;
+	}
+
+	public void setSubmitToClientToMailId(String submitToClientToMailId) {
+		this.submitToClientToMailId = submitToClientToMailId;
+	}
+
+	public String getSubmitToClientMailSubject() {
+		return submitToClientMailSubject;
+	}
+
+	public void setSubmitToClientMailSubject(String submitToClientMailSubject) {
+		this.submitToClientMailSubject = submitToClientMailSubject;
+	}
+	
+	
 }

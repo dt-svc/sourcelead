@@ -1,24 +1,16 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.Collection;
-
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
-
 import java.util.List;
-
+import java.util.Set;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.OrgRelationsDao;
-
 import com.bis.sourcelead.entity.OrgLocations;
-
-import com.bis.sourcelead.entity.Employees;
-
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
@@ -335,6 +327,59 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	@Override
 	public List<OrgRelations> getAllClientsByOrgNameOrgLocationId(String orgName, Long orgLocationId) throws Exception {
 		return orgRelationsDao.getAllClientsByOrgNameOrgLocationId(orgName,orgLocationId);
+	}
+
+	@Override
+	public List<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId, Long loginUserId) throws Exception {
+		List<OrgRelations> orgRelationsList =  orgRelationsDao.getAllClientsByOrgLocationId(orgLocationId);
+		List<OrgRelations> clientsList = new ArrayList<OrgRelations>();
+		
+		if(orgRelationsList != null && !orgRelationsList.isEmpty()){
+			for (OrgRelations orgRelation : orgRelationsList) {
+				 //to fetch user details by usercode 
+				User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
+				if(user != null){
+					orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());
+				}
+				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(),loginUserId,orgLocationId);
+				orgRelation.setNoOfContatcs(orgSpocs.size());
+				if(orgRelation.getLocationId().getId() == orgLocationId){
+					
+					orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
+					orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+					orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
+					orgRelation.setState(orgRelation.getResponderLocationId().getState());
+					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
+					orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
+					if(orgRelation.getInitiatorLevel()!=null){
+						orgRelation.setLevel(orgRelation.getInitiatorLevel());
+					}
+					else{
+						orgRelation.setLevel("");
+					}
+				}
+				
+				if(orgRelation.getResponderLocationId().getId() == orgLocationId){
+					orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
+					orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
+					orgRelation.setCountry(orgRelation.getLocationId().getCountry());
+					orgRelation.setState(orgRelation.getLocationId().getState());
+					orgRelation.setCity(orgRelation.getLocationId().getCity());
+					orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
+					if(orgRelation.getInitiatorLevel()!=null){
+						orgRelation.setLevel(orgRelation.getInitiatorLevel());
+					}
+					else{
+						orgRelation.setLevel("");
+					}
+				}
+				
+				clientsList.add(orgRelation);
+				
+			}
+		}
+		
+		return clientsList;
 	}
 	
 }

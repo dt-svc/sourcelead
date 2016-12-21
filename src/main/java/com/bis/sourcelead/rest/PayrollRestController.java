@@ -2,8 +2,6 @@ package com.bis.sourcelead.rest;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,8 +24,6 @@ import com.bis.sourcelead.util.CommonUtil;
 
 @RestController
 public class PayrollRestController {
-
-	private static final Logger logger = LoggerFactory.getLogger(PayrollRestController.class);
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;

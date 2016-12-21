@@ -13,10 +13,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,10 +28,7 @@ import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellRangeAddressList;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.DataValidation;
-import org.apache.poi.ss.usermodel.DataValidationConstraint;
-import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -45,7 +40,6 @@ import org.apache.poi.xssf.usermodel.XSSFDataValidationConstraint;
 import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,11 +48,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.UploadFileDao;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -70,7 +62,6 @@ import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
  * 
@@ -91,6 +82,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 
 	@Autowired
 	private RolesService rolesService;
+	
+	@Autowired
+	private UserRoleService userRoleService;
 	
 	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
@@ -219,11 +213,18 @@ public class UploadFileServiceImpl implements UploadFileService {
  */
 	private boolean validateDuplicateUser(String email, String EmployeeId, UsersImport userImport, OrgLocations orgLocations) throws Exception {
 		boolean isUserFound = false;
-		User user = userService.findByEmailAndOrgLocationsId(email,orgLocations.getId());
+		User user = userService.findByEmail(email);
 		if(user != null){
-			isUserFound = true;
-			userImport.setReason("duplicate data");
-		}else{
+			User user1 = userService.findByEmailAndOrgLocationsId(email,orgLocations.getId());
+			if(user1 !=null){
+				isUserFound = true;
+				userImport.setReason("duplicate data");
+			}else{
+				isUserFound = false;
+				userImport.setReason("INSERT");
+			}
+		}
+		else{
 			if(EmployeeId!=null && !"".equalsIgnoreCase(EmployeeId)){
 				Boolean flag = employeesService.validateEmployeeId(EmployeeId, orgLocations.getId());
 				userImport.setReason("duplicate data");
@@ -437,53 +438,58 @@ private String getCellValueAsString(Cell cell, String fileName) {
  * @throws Exception
  */
 	private void saveBulkUser(UsersImport userImport, OrgLocations orgLocations, User loginUser, String isMailChecked) throws Exception {
-		User user = new User();
+		User user = null;
 		UserRole userRole = new UserRole();
 		Employees employee = new Employees();
-
 		Roles role = rolesService.getRolesByRoleDisplayNameAndOrgLocationId(userImport.getRole(), orgLocations.getId());
-
-		user.setFirstName(userImport.getFirstName());
-		user.setLastName(userImport.getLastName());
-		user.setEmail(userImport.getEmailId());
-		user.setMobilePhone(userImport.getMobileNumber());
-		user.setCreatedDate(new Date());
-		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
-		user.setUserName(userImport.getEmailId());
-		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
-		user.setPassword(sourceleadPasswordEncoder.encode(password));
-		user.setIsMailSent(userImport.getIsMailChecked());
-		employee.setEmployeeId(userImport.getEmployeeId());
-		employee.setRate(userImport.getRate());
-		employee.setRatePer(userImport.getRatePer());
-		/*if(userImport.getInvoiceFrequency() !=null && !"".equalsIgnoreCase(userImport.getInvoiceFrequency())){
-			employee.setInvoiceFrequency(userImport.getInvoiceFrequency());
-		}else{
-			employee.setInvoiceFrequency("Weekly");
-		}*/
-		employee.setDailyHours(userImport.getDayHours());
-		employee.setOrgLocations(orgLocations);
-		
-		employee.setHireDate(userImport.getDateOfJoin());
-
-		userRole.setUser(user);
 		userRole.setIsPrimary(1);
 		userRole.setRoles(role);
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		userRole.setUserType(role.getDisplayName());
 		userRole.setCreatedDate(new Date());
 		userRole.setOrgLocations(orgLocations);
-
-		Set<UserRole> userRoles = new HashSet<UserRole>();
-		userRoles.add(userRole);
-		user.setUserRole(userRoles);
-		userService.addUser(user);
-		employee.setUser(user);
-		employeesService.addEmployee(employee);
-		if(isMailChecked !=null){
-			userService.sendEmail(user, loginUser, password,orgLocations.getId());
-		}
+		employee.setEmployeeId(userImport.getEmployeeId());
+		employee.setRate(userImport.getRate());
+		employee.setRatePer(userImport.getRatePer());
+		employee.setDailyHours(userImport.getDayHours());
+		employee.setOrgLocations(orgLocations);
 		
+		employee.setHireDate(userImport.getDateOfJoin());
+		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+		if(!"INSERT".equalsIgnoreCase(userImport.getReason())){
+			user = new User();
+			user.setFirstName(userImport.getFirstName());
+			user.setLastName(userImport.getLastName());
+			user.setEmail(userImport.getEmailId());
+			user.setMobilePhone(userImport.getMobileNumber());
+			user.setCreatedDate(new Date());
+			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+			user.setUserName(userImport.getEmailId());
+			
+			user.setPassword(sourceleadPasswordEncoder.encode(password));
+			user.setIsMailSent(userImport.getIsMailChecked());
+			userRole.setUser(user);
+		    userService.addUser(user);	
+		    userRoleService.addUserRole(userRole);
+			employee.setUser(user);
+			employeesService.addEmployee(employee);
+			if(isMailChecked !=null){
+				userService.sendEmail(user, loginUser, password,orgLocations.getId());
+			}
+		}else{
+			User user1 = userService.findByEmail(userImport.getEmailId());
+			if(user1.getUserState() !=null && !"ACTIVE".equalsIgnoreCase(user1.getUserState().toString())){
+				user1.setPassword(sourceleadPasswordEncoder.encode(password));
+				userService.addUser(user1);
+			}
+			userRole.setUser(user1);
+			userRoleService.addUserRole(userRole);
+			employee.setUser(user1);
+			employeesService.addEmployee(employee);
+			if(isMailChecked !=null){
+				userService.sendEmail(user1, loginUser, password,orgLocations.getId());
+			}
+		}
 
 	}
 /**

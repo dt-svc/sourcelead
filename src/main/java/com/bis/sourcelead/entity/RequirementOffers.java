@@ -53,12 +53,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Column(name = "POSITION_TYPE")
 	private String positionType;
 	
-	@Column(name = "Notify_To_Vendor")
-	private String notifyToVendor;
-	
-	@Column(name = "Notify_To_Applicant")
-	private String notifyToApplicant;
-	
 	@Column(name = "Rejected_Reason" , columnDefinition = "TEXT default NULL")
 	private String rejectedReason;
 	
@@ -151,22 +145,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 	public void setPositionType(String positionType) {
 		this.positionType = positionType;
-	}
-
-	public String getNotifyToVendor() {
-		return notifyToVendor;
-	}
-
-	public void setNotifyToVendor(String notifyToVendor) {
-		this.notifyToVendor = notifyToVendor;
-	}
-
-	public String getNotifyToApplicant() {
-		return notifyToApplicant;
-	}
-
-	public void setNotifyToApplicant(String notifyToApplicant) {
-		this.notifyToApplicant = notifyToApplicant;
 	}
 
 	public String getRejectedReason() {

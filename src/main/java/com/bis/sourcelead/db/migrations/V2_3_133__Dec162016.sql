@@ -1,0 +1,2 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','USER_MAIL_BOX','PHONE_NO','VARCHAR(20) NULL AFTER `NAME_FIELDS`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','USER_MAIL_BOX','COMMENTS','VARCHAR(20) NULL AFTER `PHONE_NO`');

@@ -37,9 +37,6 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.google.gson.Gson;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -84,7 +81,8 @@ public class CandidateResumeRestController {
 	
 	@PreAuthorize("hasRole('ROLE_ADD_CANDIDATE_RESUMES')")
 	@RequestMapping(value = "/saveCandidateResume", method = RequestMethod.POST)
-	public @ResponseBody String saveCandidateResume(@RequestParam(value = "json", required = false) String json, String candidateId, String resumeId, MultipartHttpServletRequest request) throws Exception {
+	public @ResponseBody String saveCandidateResume(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "candidateId", required = false) String candidateId,
+			@RequestParam(value = "resumeId", required = false) String resumeId,MultipartHttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
@@ -103,9 +101,17 @@ public class CandidateResumeRestController {
 			
 			candidateResumesService.storeCandidateResume(jsonObj, user, candidate, resumeId, orgLocation, multiFile);
 
-			SourceLeadSessionManager.setSessionAttribute(request, "resumeAddMessage",
-					"Successfully you have added");
-
+			
+			if(resumeId != null && !"null".equalsIgnoreCase(resumeId)){
+				SourceLeadSessionManager.setSessionAttribute(request, "editResume", "Resume details updated");
+			}else{
+				SourceLeadSessionManager.setSessionAttribute(request, "addResume", "New Resume added for "+candidate.getFirstName()+"");
+				
+			}
+			
+			
+			
+			
 			return "success";
 		}else{
 			return "exception";
@@ -125,8 +131,9 @@ public class CandidateResumeRestController {
 	* @throws Exception
 	*/
 	@RequestMapping(value = "/candidateResumesListByCandidateId", method = RequestMethod.POST)
-	public @ResponseBody String candidateResumesListByCandidateId(String candidateId) throws Exception {
+	public @ResponseBody String candidateResumesListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
 
+		String msg = "";
 		String resultJson = null;
 		Integer status = Constants.CANDIDATE_ACTIVE;
 		if(candidateId != null){
@@ -136,6 +143,19 @@ public class CandidateResumeRestController {
 				if(createdUser != null){
 					candidateResume.setCreatedBy(createdUser.getFirstName()+" "+createdUser.getLastName());
 				}
+				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addResume");
+				 if(msg == null){
+						msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editResume");
+					}
+					if(msg == null){
+						msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "deleteResume");
+					}
+					if(msg !=null && msg != ""){
+						candidateResume.setMsg(msg);
+					}
+					 	SourceLeadSessionManager.removeSessionAttribute(request, "addResume");
+					    SourceLeadSessionManager.removeSessionAttribute(request, "editResume");
+					    SourceLeadSessionManager.removeSessionAttribute(request, "deleteResume");
 			}
 			resultJson = commonUtil.toJSON(candidateResumesList);
 		}
@@ -156,9 +176,11 @@ public class CandidateResumeRestController {
 	* @throws Exception
 	*/
 	
-	 @PreAuthorize("hasRole('ROLE_DELETE_CANDIDATE_RESUMES')")
+	 @PreAuthorize("hasRole('ROLE_VIEW_DELETE_CANDIDATE_RESUMES')")
 	@RequestMapping(value = "/terminateResume", method = RequestMethod.POST)
-	public @ResponseBody String terminateResume(String resumeId, HttpServletRequest request) throws Exception {
+	public @ResponseBody String terminateResume(@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "resumeId", required = false) String resumeId, 
+			HttpServletRequest request) throws Exception {
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
@@ -168,6 +190,7 @@ public class CandidateResumeRestController {
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(commonUtil.currentDate());
 			candidateResumesService.updateCandidateResume(candidateResume);
+			SourceLeadSessionManager.setSessionAttribute(request, "deleteResume", "Resume deleted");
 		}
 		return "success";
 	}
@@ -186,9 +209,10 @@ public class CandidateResumeRestController {
 	* @throws Exception
 	*/
 	
-	@PreAuthorize("hasRole('ROLE_EDIT_CANDIDATE_RESUMES')")
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_CANDIDATE_RESUMES')")
 	@RequestMapping(value = "/getResume", method = RequestMethod.POST)
-	public @ResponseBody String getResume(String resumeId, HttpServletRequest request) throws Exception {
+	public @ResponseBody String getResume(@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "resumeId", required = false) String resumeId, HttpServletRequest request) throws Exception {
 		String resultJson = null;
 		CandidateResumes candidateResume =  candidateResumesService.getCandidateResumeByResumeId(Long.parseLong(resumeId));
 		if(candidateResume != null){

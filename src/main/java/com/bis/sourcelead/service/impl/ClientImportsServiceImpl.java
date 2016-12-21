@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,7 +55,6 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
-import com.bis.sourcelead.service.UserService;
 /**
  * 
  * @author Rajashekar
@@ -164,7 +162,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 						    		   client.setPhone(mobileNumer);
 						    	   }
 						    	   if(row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())){
-						    		   client.setOwner(row.getCell(5).toString());   
+						    		   client.setStatus(row.getCell(5).toString());   
 						    	   }
 						    	   if(row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())){
 						    		   client.setOwner(row.getCell(6).toString()); 
@@ -346,9 +344,10 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	   * @throws JSONException
 	   */
 	  private JSONObject populateJsonObject(ClientImportObject clientObject,String isMailSent, List<OrgRelations> vandorsListByOrgLocationId,OrgLocations orgLocation) throws JSONException {
-		  
+		  String roleTypeId  = "";
 		  JSONObject jsonObj = new JSONObject(); 
 		  if(vandorsListByOrgLocationId != null){
+			  jsonObj.put("roleTypeId", roleTypeId);
 		    OrgRelations  orgRelation = vandorsListByOrgLocationId.get(0);
 			  if(orgLocation.getId() == orgRelation.getLocationId().getId() ){
 				  jsonObj.put("vendorName", orgRelation.getId()+","+orgRelation.getResponderLocationId().getId());  

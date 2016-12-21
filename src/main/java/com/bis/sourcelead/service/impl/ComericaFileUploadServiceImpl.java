@@ -27,15 +27,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.AmexUploadFile;
 import com.bis.sourcelead.entity.BOTransactions;
-import com.bis.sourcelead.entity.BoAmexTrans;
 import com.bis.sourcelead.entity.BoComericaTrans;
 import com.bis.sourcelead.entity.BoPaymentTypes;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.BoComericaTransService;
-import com.bis.sourcelead.service.BoPaymentTypesService;
 import com.bis.sourcelead.service.ComericaFileUploadService;
 import com.bis.sourcelead.util.PaymentAnalytics;
-import com.thoughtworks.xstream.mapper.Mapper.Null;
 
 @Service
 public class ComericaFileUploadServiceImpl implements ComericaFileUploadService {

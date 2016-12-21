@@ -1,13 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.service.QuickBookPaymentService;
-import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.QuickBookOAuthAuthentication;
 
 /**
@@ -17,10 +14,6 @@ import com.bis.sourcelead.util.QuickBookOAuthAuthentication;
 @Service
 public class QuickBookPaymentServiceImpl implements QuickBookPaymentService {
 	
-	private static final Logger logger = LoggerFactory.getLogger(QuickBookPaymentServiceImpl.class);
-	
-	@Autowired
-	private CommonUtil commonUtil;
 	
 	@Autowired
 	private QuickBookOAuthAuthentication quickBookOAuthAuthentication;

@@ -28,6 +28,6 @@ public interface CandidateCommentsService {
 	 */
 	public CandidateComments storeCandidateComments(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocation) throws JSONException,Exception;
 	
-	public List<CandidateComments> getAllCommentsOnCandidateByCandidateIdAndOrgLocation(Candidate candidate, OrgLocations orgLocation) throws Exception;
+	public List<CandidateComments> getAllCommentsOnCandidateByCandidateIdAndOrgLocation(Long candidateId, OrgLocations orgLocation) throws Exception;
 	
 }

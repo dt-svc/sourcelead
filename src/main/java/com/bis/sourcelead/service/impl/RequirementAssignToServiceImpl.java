@@ -17,7 +17,6 @@ import com.bis.sourcelead.service.RequirementAssignToService;
 @Service
 public class RequirementAssignToServiceImpl implements RequirementAssignToService{
 	
-	private static final Logger logger = LoggerFactory.getLogger(RequirementAssignToServiceImpl.class);
 
 	
 	@Value("${sourceleadUrl}")

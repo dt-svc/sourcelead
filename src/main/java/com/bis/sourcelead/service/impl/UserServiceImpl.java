@@ -8,8 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.RolesDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -65,8 +62,6 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserDao userDao;
 	
-	@Autowired
-	private RolesDao rolesDao;
 	
 	@Autowired
 	private UserRoleService userRoleService;
@@ -98,8 +93,6 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	CommonUtil commonUtil;
 	
-	@Autowired
-	private HttpServletRequest request;
 
 	@Override
 	public User findByUserName(String username) {
@@ -820,6 +813,18 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> getUsersForConsultantsByUserRoleIdAndOrgLocationId(Long roleId, Long orgLocationsId) throws Exception {
 		return userDao.getUsersForConsultantsByUserRoleIdAndOrgLocationId(roleId, orgLocationsId);
+	}
+
+	@Override
+	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(Long orgLocationsId, List<Long> userIds,
+			Long tabId) throws Exception {
+		return userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(orgLocationsId, userIds, tabId);
+	}
+
+	@Override
+	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(Long orgLocationsId, Long userId, Long tabId)
+			throws Exception {
+		return userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(orgLocationsId, userId, tabId);
 	}
 	
 	

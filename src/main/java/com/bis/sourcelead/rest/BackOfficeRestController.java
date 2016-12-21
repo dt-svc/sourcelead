@@ -35,9 +35,7 @@ import com.bis.sourcelead.entity.BoComericaTrans;
 import com.bis.sourcelead.entity.BoJmpcTrans;
 import com.bis.sourcelead.entity.BoUploadedFiles;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetService;
@@ -496,7 +494,6 @@ public class BackOfficeRestController {
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		assetCategoryService.addAssetCategory(jsonObj,orgLocation,user,categoryId,catLocationId);
 			return "success";
@@ -508,8 +505,6 @@ public class BackOfficeRestController {
 	 @ResponseBody String getCategoryById(@RequestParam(value = "categoryId", required = false) Long categoryId,
 			 @RequestParam(value = "catLocationId", required = false) Long catLocationId,
 			 HttpServletRequest request) throws Exception{
-		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	         OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 
 	       AssetCategory assetCategory = assetCategoryService.getAssetCategoryListByLocationIdAndCatId(catLocationId,categoryId);
 	         
@@ -519,7 +514,6 @@ public class BackOfficeRestController {
 	@RequestMapping(value = "/addCategoryAssets" , method = RequestMethod.POST)
 	   public String addCategoryAssets(@RequestParam(value="json", required=false) String json,@RequestParam(value="assetId", required=false) String assetId,MultipartHttpServletRequest request) throws Exception {
 			
-		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    
@@ -536,9 +530,7 @@ public class BackOfficeRestController {
 	@RequestMapping(value = "/validateCategoryName" , method = RequestMethod.GET)
 	   public Boolean validateCategoryName(@RequestParam(value="categoryName", required=false) String categoryName,HttpServletRequest request) throws Exception {
 			
-		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    
 			
 			Boolean flag = assetCategoryService.validateCategoryName(categoryName,orgLocations.getId());
@@ -553,8 +545,6 @@ public class BackOfficeRestController {
 	 @ResponseBody String terminateCategory(@RequestParam(value = "categoryId", required = false) String categoryId,
 			HttpServletRequest request) throws Exception {
 
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		AssetCategory assetCategory = assetCategoryService.getAssetCategoryListByLocationIdAndCatId(orgLocation.getId(),Long.parseLong(categoryId));
 		assetCategory.setId(Long.parseLong(categoryId));

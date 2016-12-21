@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -17,8 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -48,7 +51,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public HashSet<UserRole> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
+	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
@@ -63,21 +66,23 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		
 		Date currentWeekMondayDate = CalendarUtil.getCurrentWeekDay("MON");
 		java.sql.Date  currentMondayDate = new java.sql.Date(currentWeekMondayDate.getTime());
-		List<UserRole> userList = null;
+		List<ProjectMembers> projectMemberList = null;
 		if(invoiceFrequency !=null && !"".equalsIgnoreCase(invoiceFrequency)){
-			String query = "from UserRole userRole left join fetch userRole.user user left join fetch userRole.orgLocations orglocation where user.id IN (select emp.user from Employees emp where emp.InvoiceFrequency = :invoiceFrequency and emp.id IN(select pm.employee from ProjectMembers pm where pm.projects.orgLocationsId.id = orglocation.id and pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where  (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
-			userList = session.createQuery(query).setDate("startDate", previousDayDate).setDate("endDate", currentMondayDate).setString("invoiceFrequency", invoiceFrequency).setCacheable(true).list(); 
+			//String query = "from UserRole userRole left join fetch userRole.user user left join fetch userRole.orgLocations orglocation where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.projects.invoiceFrequency = :invoiceFrequency and pm.projects.orgLocationsId.id = orglocation.id and pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where  (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
+			String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.employee emp where proj.invoiceFrequency = :invoiceFrequency and pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where  (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))";
+			projectMemberList = session.createQuery(query).setDate("startDate", previousDayDate).setDate("endDate", currentMondayDate).setString("invoiceFrequency", invoiceFrequency).setCacheable(true).list(); 
 		}else{
-			String query = "from UserRole userRole left join fetch userRole.user user left join fetch userRole.orgLocations orglocation where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.projects.orgLocationsId.id = orglocation.id and pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
-			userList = session.createQuery(query).setDate("startDate", previousDayDate).setDate("endDate", currentMondayDate).setCacheable(true).list(); 
+			String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.employee emp where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where  (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))";
+			//String query = "from UserRole userRole left join fetch userRole.user user left join fetch userRole.orgLocations orglocation where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.projects.orgLocationsId.id = orglocation.id and pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
+			projectMemberList = session.createQuery(query).setDate("startDate", previousDayDate).setDate("endDate", currentMondayDate).setCacheable(true).list(); 
 		}
 		
-		logger.debug("The Total Employees which are not submitted the Time sheets within a week are : ***********************"+userList.size());
-		 HashSet<UserRole> userSet  = null;
-		 if(userList != null && !userList.isEmpty()){
-				userSet = new HashSet<>(userList);
+		logger.debug("The Total Employees which are not submitted the Time sheets within a week are : ***********************"+projectMemberList.size());
+		 HashSet<ProjectMembers> projectMemberSet  = null;
+		 if(projectMemberList != null && !projectMemberList.isEmpty()){
+			 projectMemberSet = new HashSet<>(projectMemberList);
 			}
-			return userSet;
+			return projectMemberSet;
 	}
 	
 	@Override
@@ -523,6 +528,64 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		cal.setLenient(false);
+		cal.setTime(new Date());
+		
+		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+		
+		Calendar previousFriday = CalendarUtil.getDateIncrementByincrement(startMonday,-3);
+		Date previousDateFri = previousFriday.getTime();
+		java.sql.Date  previousDayDateFri = new java.sql.Date(previousDateFri.getTime());
+		
+		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
+		Date previousDate = previousMonday.getTime();
+		java.sql.Date  previousDayDate = new java.sql.Date(previousDate.getTime());
+		
+//		Date currentWeekMondayDate = CalendarUtil.getCurrentWeekDay("MON");
+//		java.sql.Date  currentMondayDate = new java.sql.Date(currentWeekMondayDate.getTime());
+		List<ProjectMembers> projectMemberList = null;
+		if(invoiceFrequency !=null && !"".equalsIgnoreCase(invoiceFrequency)){
+			//String query = "from UserRole userRole left join fetch userRole.user user left join fetch userRole.orgLocations orglocation where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.projects.invoiceFrequency = :invoiceFrequency and pm.projects.orgLocationsId.id = orglocation.id and pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where  (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
+			String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.employee emp where proj.invoiceFrequency = :invoiceFrequency and pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where  (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))";
+			projectMemberList = session.createQuery(query).setDate("startDate", previousDayDate).setDate("endDate", previousDateFri).setString("invoiceFrequency", invoiceFrequency).setCacheable(true).list(); 
+		}else{
+			String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.employee emp where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where  (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))";
+			//String query = "from UserRole userRole left join fetch userRole.user user left join fetch userRole.orgLocations orglocation where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.projects.orgLocationsId.id = orglocation.id and pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
+			projectMemberList = session.createQuery(query).setDate("startDate", previousDayDate).setDate("endDate", previousDateFri).setCacheable(true).list(); 
+		}
+		
+		logger.debug("The Total Employees which are not submitted the Time sheets within a week are : ***********************"+projectMemberList.size());
+		 HashSet<ProjectMembers> projectMemberSet  = null;
+		 if(projectMemberList != null && !projectMemberList.isEmpty()){
+			 projectMemberSet = new HashSet<>(projectMemberList);
+			}
+			return projectMemberSet;
+	}
+    
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getAllAssignedUsersIdsByReportingManagerId(Long reportingManagerId,Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select userRole.user.id from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.orgLocations.id = :locationId  " ;
+	    List<Long> userIds = session.createQuery(query).setLong( "reportingManagerId", reportingManagerId).setLong("locationId", orgLocationId).setCacheable(true).list();
+        return userIds;
+        
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<UserRole> getAllAssignedUsersByReportingManagerId(Long reportingManagerId, Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.orgLocations.id = :locationId ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong( "reportingManagerId", reportingManagerId).setLong("locationId", orgLocationId).setCacheable(true).list();
+		return userRoleList;
 	}
 
 	

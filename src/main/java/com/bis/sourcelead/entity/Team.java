@@ -64,7 +64,7 @@ public class Team implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name = "ORG_LOCATION_ID")
     private OrgLocations orgLocationsId;
 	
