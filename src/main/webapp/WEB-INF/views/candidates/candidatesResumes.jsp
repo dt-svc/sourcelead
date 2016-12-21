@@ -38,6 +38,11 @@ function candidateResume(candidateId){
 	var result ="";
 	
 	result = result+'	    <div class="project_tabs_inn_head addUser-org">';
+	
+	result  = result + '<div class="success_pop" id="selector2" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="resMsgDiv"></span>';
+    result  = result + '</div>';
+    
 	result = result +' <div id="msgDiv3" ></div>';
 	
 	if(window.candidateStatusGlobal == '0'){
@@ -69,6 +74,15 @@ function candidateResume(candidateId){
     
 }
 </script>
+
+<!-- Show success message after form submission script -->
+<script>
+	function resMsgFadein() {
+		$("#selector2").fadeIn(200);
+        $('#selector2').delay(2000).fadeOut('slow');
+	}
+</script> 
+<!-- End -->
 
 
 <%-- 
@@ -234,8 +248,16 @@ function addResume(candidateId) {
 		            			 location.replace(sourceleadUrl+"/errorPage");
 		            		 }
 		            		 else{
-						 		$("#popUpDivResume").removeClass("edit-details-active");
+							 	$("#popUpDivResume").removeClass("edit-details-active");
+		             			$("#selector2").removeAttr("style");
+		             			$("#selector2").css({ display: "block" });
+		             			if(resumeId != null){
+		             				$("#resMsgDiv").html("Resume details updated");
+		             			}else{
+		             				$("#resMsgDiv").html("Success!! New Resume added");
+		             			}		             			
 						 		candidateResumesList(candidateId);
+						 		resMsgFadein();
 		            		 }
 							 /* $("#conMsg").fadeIn(200);
 							 $('#conMsg').delay(2000).fadeOut('slow'); */
@@ -279,17 +301,17 @@ function addResume(candidateId) {
         			 location.replace(sourceleadUrl+"/errorPage");
         		 }
         		 else{
-        			 for (var i = 0; i < 1; i++) {
+        			 /* for (var i = 0; i < 1; i++) {
                          var val= json[i];
                          var opt = "";
-                                 if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-                                         opt  = opt + '<div class="success_pop" id="selector3" style="display: block;">';
-                                         opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-                                         opt  = opt + '</div>';
-                                         }
+                         if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
+                             opt  = opt + '<div class="success_pop" id="selector2" style="display: block;">';
+                             opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
+                             opt  = opt + '</div>';
+                             }                                
                                  $("#msgDiv3").empty();
                                  $("#msgDiv3").append(opt);
-                         }
+                         } */
 							result = result+'	      <table>';
 							result = result+'	        <tbody>';
 							result = result+'	          <tr>';
@@ -347,7 +369,6 @@ function addResume(candidateId) {
 					}
 					$("#resumesList").empty();
 					$("#resumesList").append(result);
-					  msgFadein2(); 
 				}else{
 				result = result + "   <div class='row'>";
 				result = result + "	<div class='col-lg-12'>";
@@ -396,8 +417,12 @@ function deleteResume(candidateId, resumeId){
         			 location.replace(sourceleadUrl+"/errorPage");
         		 }
         		 else{
+        			 $("#selector2").removeAttr("style");
+         			 $("#selector2").css({ display: "block" });
+         			 $("#resMsgDiv").html("Resume deleted");
         			 $("#popUpDivResume").removeClass("edit-details-active");
         		     candidateResumesList(candidateId);
+        		     resMsgFadein();
         		 }
    		    	}
    		    },
@@ -482,9 +507,3 @@ function removeResumeNameDiv(){
 		};
 	})(jQuery);
 </script>
-<script>
-       function msgFadein2() {
-           setTimeout(function(){
-                   $('#selector3').fadeOut('slow'); }, 1000);
-       }
-</script>  
