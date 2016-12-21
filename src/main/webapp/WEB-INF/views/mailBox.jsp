@@ -58,11 +58,11 @@
             </div>
             <div>
               <ul class="nav nav-pills nav-stacked">
-                <li id="inboxActive" class=""><a href="#" onclick="getMails('Inbox');"><i class="fa fa-inbox"></i> Inbox <span class="label label-primary pull-right" id="inboxUnread">${inboxUnreadMailsCount}</span>
-                <li id="sentActive" class=""><a href="#" onclick="getMails('Sent');"><i class="fa fa-envelope-o"></i> Sent</a></li>
-                <li id="starredActive" class=""><a href="#" onclick="getMails('Starred');"><i class="fa fa-star"></i> Starred</a></li>
-                <li id="requestedActive" class=""><a href="#" onclick="getMails('Requested');"><i class="fa fa-file-text-o"></i> Requested <span class="label label-info pull-right" id="requestedUnread">${requestedUnreadMailsCount}</span></a></li> 
-                <li id="trashActive" class=""><a href="#" onclick="getMails('Trash');"><i class="fa fa-trash-o"></i> Trash</a></li>
+                <li id="inboxActive" class=""><a href="#inbox" onclick="getMails('Inbox');"><i class="fa fa-inbox"></i> Inbox <span class="label label-primary pull-right" id="inboxUnread">${inboxUnreadMailsCount}</span>
+                <li id="sentActive" class=""><a href="#sent" onclick="getMails('Sent');"><i class="fa fa-envelope-o"></i> Sent</a></li>
+                <li id="starredActive" class=""><a href="#starred" onclick="getMails('Starred');"><i class="fa fa-star"></i> Starred</a></li>
+                <li id="requestedActive" class=""><a href="#requested" onclick="getMails('Requested');"><i class="fa fa-file-text-o"></i> Requested <span class="label label-info pull-right" id="requestedUnread">${requestedUnreadMailsCount}</span></a></li> 
+                <li id="trashActive" class=""><a href="#trash" onclick="getMails('Trash');"><i class="fa fa-trash-o"></i> Trash</a></li>
               </ul>
             </div>
             <!-- /.box-body -->
@@ -103,7 +103,7 @@
 			<input id="checkAllEmails" class="checkbox-custom" onclick="toggleEmails(this);deleteMail();" name="checkAllEmails" type="checkbox">
 			<label for="checkAllEmails" class="checkbox-custom-label"></label>
 			</div>
-				<button class="btn btn-danger mailbtn-custom" type="button" onclick="getMailBoxIds();" id="trashBtn" style="display: none;"><i class="fa fa-trash-o"></i></button>
+				<button class="btn btn-danger mailbtn-custom" type="button" onclick="getMailBoxIds();" id="trashBtn" style="display: none;"><i class="fa fa-trash-o" id="trashtype"></i></button>
                 <button class="btn btn-default mailbtn-custom" type="button" onclick="refreshList();"><i class="fa fa-refresh"></i></button>
                
                <!--  <div class="pull-right">
@@ -153,7 +153,15 @@
 	  
 	  document.getElementById("inbox").style.display="";
 	  document.getElementById("details").style.display="none";
+	  document.getElementById("trashBtn").style.display="none";
+	  $('#checkAllEmails').removeAttr('checked');
 	  $('#mailboxLabel').html(type);
+	  
+	  if(type == "Trash"){
+		  $('#trashtype').html(' <b>Delete For Ever</b>');
+	  }else{
+		  $('#trashtype').html('');
+	  }
 	  
 	  setActiveTab(type)
 	  

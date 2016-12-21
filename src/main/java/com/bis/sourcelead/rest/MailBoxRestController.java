@@ -221,18 +221,24 @@ public class MailBoxRestController {
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
-		String[] mailBoxIds = mailIds.split(",");
-		for(int i=0; i < mailBoxIds.length; i++){
-			
-			UserMailBox userMailBox = userMailBoxService.getUserMailBoxById(mailBoxIds[i]);
-			userMailBox.setIsFavourite(0);
-			userMailBox.setMailStatus("Trash");
-			userMailBox.setUpdatedBy(user.getCreatedBy());
-			userMailBox.setUpdatedDate(new Date());
-			userMailBoxService.saveUserMailBox(userMailBox);
+		if(!isNullOrEmpty(mailIds)){
+			String[] mailBoxIds = mailIds.split(",");
+			for(int i=0; i < mailBoxIds.length; i++){
+				
+				UserMailBox userMailBox = userMailBoxService.getUserMailBoxById(mailBoxIds[i]);
+				userMailBox.setIsFavourite(0);
+				if(!userMailBox.getMailStatus().equalsIgnoreCase("Trash")){
+					userMailBox.setMailStatus("Trash");
+				}else{
+					userMailBox.setMailStatus("Deleted");
+					userMailBox.setStatus(0);
+				}
+				
+				userMailBox.setUpdatedBy(user.getCreatedBy());
+				userMailBox.setUpdatedDate(new Date());
+				userMailBoxService.saveUserMailBox(userMailBox);
+			}
 		}
-		
-		
 		
 		
 		return "success";
