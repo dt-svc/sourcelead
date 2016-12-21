@@ -26,8 +26,12 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementOfferHistory;
+import com.bis.sourcelead.entity.RequirementOffers;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -35,10 +39,13 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.service.RequirementOfferHistoryService;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -80,6 +87,15 @@ public class RequirementController {
 	
 	@Autowired
 	RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	CommonUtil commonUtil;
+	
+	@Autowired
+	RequirementOffersService requirementOffersService;
+	
+	@Autowired
+	RequirementOfferHistoryService requirementOfferHistoryService;
 	
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/requirement")
@@ -370,6 +386,46 @@ public class RequirementController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 
+	}
+	
+	@RequestMapping(value = "/acceptOrRejectRequirementOffer")
+	public ModelAndView acceptOrRejectRequirementOffer(HttpServletRequest request,@RequestParam(value="offerStatus", required=false)String offerStatus,@RequestParam(value="offerId", required=false)Long offerId) throws Exception {
+		 
+		RequirementOffers requirementOffers  = requirementOffersService.getRequirementOfferId(offerId);
+		List<RequirementOfferHistory> requirementOfferHistories = requirementOfferHistoryService.getAllRequirementOfferHistoriesByOfferId(offerId);
+		
+		ModelAndView model = new ModelAndView();
+		model.setViewName("requirement/offerAcceptOrReject");
+		model.addObject("offerStatus",offerStatus);
+		model.addObject("offerId",offerId);
+		model.addObject("requirementOffers",requirementOffers);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		if(offerStatus.equalsIgnoreCase("Accepted")){
+			
+		    if(requirementOfferHistories != null && !requirementOfferHistories.isEmpty() ){  
+			    if(offerStatus.equalsIgnoreCase("Accepted")){
+			    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
+			    		   RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
+				    		if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
+				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+				    		}else{
+				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);
+				    		}
+							 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+							 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+					  }
+			    	
+			    	  //Changing the status of offerTable 
+				      if(requirementOffers  != null){
+						    requirementOffers.setOfferStatus("OFFERACCEPTED");
+						    requirementOffers.setUpdatedDate(commonUtil.currentDate());
+						    requirementOffersService.saveOfferStatus(requirementOffers);
+				     }
+			    }
+		    }
+		}
+		return model;
 	}
 	
 

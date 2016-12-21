@@ -212,6 +212,7 @@ function templatepagination(){
 		           
 		           result = result + '<div id="popUp"></div>';
 		           result = result + '<div id="choicepopUp"></div>';
+		           result = result +"	<div class='project_inn_mask'></div>";
 		           
 		            $("#templateList").empty(); 
 		           $("#templateList").append(result); 
@@ -225,11 +226,11 @@ function templatepagination(){
 <script type="text/javascript">
 function alertMessage(message){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	//result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelPop();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPop();'></b>";
 	result = result +"	</div>";
 	$("#choicepopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -239,7 +240,7 @@ function alertMessage(message){
 </script>
 
 <script type="text/javascript">
-function cancel(){
+function cancelPop(){
 	$("#choicepopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }
@@ -281,11 +282,7 @@ function cancel(){
             		alertMessage("Provide choice for "+fieldLabel)
             	}
             }
-            
-           
             myArray.push(fieldLabel);
-            
-            
 
             //check if this field has choices
             if($this.find('.choices li').length >= 1) {
@@ -311,10 +308,6 @@ function cancel(){
 
                 });
             }
-            
-            
-            
-                   
             fields.push({
                 type: fieldType,
                 label: fieldLabel,

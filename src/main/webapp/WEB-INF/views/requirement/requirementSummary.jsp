@@ -9,6 +9,9 @@
  <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
  
  <style type="text/css">
+ .overflow-data {
+  min-height: 250px;
+ }
 .show-tooltip {
 	position:relative;
 	font-size:13px !important;
@@ -17,12 +20,12 @@
 	color:#333;
 	background: #e1e6fa;
     border-radius: 3px;
-    display: none;
+    display:none;
     padding:5px;
     position: absolute;
     top: 25px;
 	left:-48px;
-    width: 415px;
+    width: 450px;
 	box-sizing:border-box;
 	z-index:999;
 	transition: all 0.5s ease;
@@ -31,15 +34,21 @@
 	color:#333;
 	background: #e1e6fa;
     border-radius: 3px;
-    display: none;
+     display:none;
     padding:5px;
     position: absolute;
     top: 20px;
 	right:0;
     width: auto;
+    min-height:50px;
+    max-height:150px;
+    overflow-y:scroll;
 	box-sizing:border-box;
 	z-index:999;
 	transition: all 0.5s ease;
+}
+.tooltipint_detilas table tr th, .tooltipint_detilas table tr td {
+height: 25px;
 }
 .show-tooltip .tooltip_div:after{
 	bottom: 100%;
@@ -1116,7 +1125,7 @@ function requirementPipeline(requirementId,submissionType){
 							
 				           // result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
 				            //result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
-				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary">';
+				            result = result +'<div class="timesheet_head candidateHead recruitmentHead headersummary clearfix">';
 				            result = result +'  <ul>';
 				            result = result +'    <li class="li-vendor">';
 				          //  result = result +'      <input type="text" class="vendorfild" placeholder="Search">';
@@ -1171,7 +1180,7 @@ function requirementPipeline(requirementId,submissionType){
 				           result = result + '<div class="clearfix"></div>';
 				           result = result + '</div>';
 				           result = result + '<div class="require_wrap_table overflow-data">';
-				           result = result + '<div class="table-overflow-hide">';
+				           result = result + '<div class="clerfix">';
 				           result = result + '<table id="requirementsPagination" class="display" cellspacing="0" width="100%"">';
 				           result = result + '<thead>';
 				           result = result + '<tr>';
@@ -1303,9 +1312,9 @@ function requirementPipeline(requirementId,submissionType){
 						       		        result = result +'<div class="tooltipint_detilas">';
 						       			    result = result +'<table class="table-bordered table-hover table-striped table-responsive" width="100%;">';
 						       			    result = result +' <thead><tr>';
-						       			 	result = result +'<th>Interview Type</th>';
-						       			    result = result +'<th>Interview Date</th>';
-						       			    result = result +'<th>Start Time</th>';
+						       			 	result = result +'<th>Interview&nbsp;Type</th>';
+						       			    result = result +'<th>Interview&nbsp;Date</th>';
+						       			    result = result +'<th>Start&nbsp;Time</th>';
 						       			    result = result +'<th>End Time</th>';
 						       			    result = result +'<th>Location</th>';
 						       			    result = result +'<th>Feedback</th>';
@@ -2046,6 +2055,9 @@ function requirementStatusBar(requirementId){
   	   var interview = 'INTERVIEW';
   	   var rejected = 'REJECTED';
        var submitToClient = 'SUBMIT_TO_CLIENT';
+       var clientSubmissions = '${clientSubmissions}';
+		
+       
        var offerMade = 'OFFERMADE';
 	     result = result + '  <div class="clearfix pipeline-count">';
 		 result = result + '    <ul class="list-unstyled list-inline">';
@@ -2060,9 +2072,11 @@ function requirementStatusBar(requirementId){
 		 result = result + '      <li id="shortListli" class="tabActivation" onclick="filterReq('+requirementId+',\''+shortList+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Shortlisted">';
 		 result = result + '       <label><strong>Shortlisted</strong></label>';
 		 result = result + '     </a> <span class="label label-warning" id="shortlistCount">0</span></li>';
+		if(clientSubmissions == 'Y'){
 		 result = result + '    <li id="submitToClientli" class="tabActivation" onclick="filterReq('+requirementId+',\''+submitToClient+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Submit to Client">';
 		 result = result + '       <label><strong>Submit to Client</strong></label>';
 		 result = result + '       </a> <span class="label label-info" id="submitToClientCount">0</span> </li>';
+		}
 		 result = result + '    <li id="interviewli" class="tabActivation" onclick="filterReq('+requirementId+',\''+interview+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Interviews">';
 		 result = result + '      <label><strong>Interviews</strong></label>';
 		 result = result + '      </a><span class="label label-primary" id="interviewCount">0</span></li>';
@@ -2132,6 +2146,22 @@ function getRateListDiv(submissionId, candidateId){
           			     var result = "";
       			         result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
          			     result = result + '<section class="tbl-scroll">';
+         			     /*result = result + ' <ul class="nav nav-tabs">';
+	         			  result = result + ' <li class="active"><a data-toggle="tab" href="#tab1">Tab1</a></li>';
+	         			  result = result + ' <li><a data-toggle="tab" href="#tab2">Tab2</a></li>';
+	         			  result = result + ' </ul>';
+	         			  result = result + ' <div class="tab-content">';
+		         			  
+	         			 //Tab1 Data    
+	         			  result = result + ' <div id="tab1" class="tab-pane fade in active">';
+		         			 
+		         			  result = result + ' <h3>HOME</h3>';
+		         			  result = result + ' <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+		         			  
+		         			  result = result + ' </div>';
+			         			
+		         			  //Tab2 Data  
+		         			  result = result + ' <div id="tab2" class="tab-pane fade">';*/
 	                     result = result + '  <table>';
 	                     result = result + '    <thead>';
 	                     result = result + '      <tr>';
@@ -2172,6 +2202,8 @@ function getRateListDiv(submissionId, candidateId){
 			   				}
 	                     result = result + '    </tbody>';
 	                     result = result + '  </table>';
+	                     /*  result = result + ' </div>';
+    			  		 result = result + ' </div>'; */
 	                     result = result + '</section>';
 	                     if(isLastNegotiator=="false"){
 	                    	 

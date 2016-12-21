@@ -340,7 +340,7 @@ function addCertification(candidateId) {
 		result  = result + '                 <div class="clearfix mb10">';
 		result  = result + '                   <div class="col-md-12">';
 		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="provider" placeholder="Provider *" id="candidateProvider"';
-		result  = result + '                      data-validation="required validate_Name validate_length length2-100" field-name="Provider">';
+		result  = result + '                      data-validation="required validate_Orgname validate_length length2-100" field-name="Provider">';
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		
@@ -475,7 +475,7 @@ function addCertification(candidateId) {
 								result  = result + '                 <div class="clearfix mb10">';
 								result  = result + '                   <div class="col-md-12">';
 								result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.provider+ '" name="provider" placeholder="Provider *" id="candidateProvider"';
-								result  = result + '                      data-validation="required validate_Name validate_length length2-100" field-name="Provider">';
+								result  = result + '                      data-validation="required validate_Orgname validate_length length2-100" field-name="Provider">';
 								result  = result + '                   </div>';
 								result  = result + '                 </div>';
 								

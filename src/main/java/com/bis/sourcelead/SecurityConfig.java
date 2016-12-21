@@ -98,6 +98,7 @@ public class SecurityConfig  {
     			.antMatchers("/acceptClientOrVendorInvitation").permitAll() 
     			.antMatchers("/acceptOrRejectInterview").permitAll() 
     			.antMatchers("/acceptOrRejectOffer").permitAll()
+    			.antMatchers("/acceptOrRejectRequirementOffer").permitAll()
     			.antMatchers("/downloadOfferAttachment").permitAll()
     			.antMatchers("/publicInterviewFeedBackTemplate").permitAll()
     			.antMatchers("/downloadRequirementAttachment").permitAll()
