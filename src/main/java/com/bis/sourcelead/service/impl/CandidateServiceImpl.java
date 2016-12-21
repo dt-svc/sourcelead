@@ -118,6 +118,15 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setCreatedDate(commonUtil.currentDate());
 			candidate.setCreatedBy(user.getUserCode());
 			
+			if(jsonObj.has("consultantUser") && jsonObj.getString("consultantUser") !=null){
+				User consultantUser = new User();
+				consultantUser.setId(Long.valueOf(jsonObj.getString("consultantUser")));
+				candidate.setConsultantUser(consultantUser);
+				candidate.setCandidateType("Consultant");
+			}else{
+				candidate.setCandidateType("Candidate");
+			}
+			
 		}
         
 		if(orgLocations != null){
@@ -180,29 +189,21 @@ public class CandidateServiceImpl implements CandidateService {
 		if(jsonObj.has("experienceYears") && jsonObj.getString("experienceYears") !=null){
 		candidate.setExperienceYears(jsonObj.getString("experienceYears"));
 		}
+		
+		
 		if(jsonObj.has("experienceMonths") && jsonObj.getString("experienceMonths") !=null){
-		candidate.setExperienceMonths(jsonObj.getString("experienceMonths"));	
+			candidate.setExperienceMonths(jsonObj.getString("experienceMonths"));	
+		}else{
+			candidate.setExperienceMonths("");
 		}
 		
 		if(jsonObj.has("noticePeriod") && jsonObj.getString("noticePeriod") !=null){
 			candidate.setNoticePeriod(jsonObj.getString("noticePeriod"));	
-			}
+		}
 		
 		if(jsonObj.has("address") && jsonObj.getString("address") !=null){
 			candidate.setAddress(jsonObj.getString("address"));
 		}
-		
-		if(jsonObj.has("consultantUser") && jsonObj.getString("consultantUser") !=null){
-			User consultantUser = new User();
-			consultantUser.setId(Long.valueOf(jsonObj.getString("consultantUser")));
-			candidate.setConsultantUser(consultantUser);
-			
-			candidate.setCandidateType("Consultant");
-		}else{
-			candidate.setCandidateType("Candidate");
-		}
-		
-		
 		
 		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEducation(candidateEducationList);
@@ -213,13 +214,13 @@ public class CandidateServiceImpl implements CandidateService {
 		HashSet<CandidateSkills> candidateSkillsList = candidateSkillsService.getCandidateSkillsDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateSkills(candidateSkillsList);
 		
-		HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
+		/*HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
 		candidate.setCandidateResumes(candidateResumesList);
 		if(multiFile != null){
 			if(multiFile.getOriginalFilename()!=null){
 				candidate.setFileName(multiFile.getOriginalFilename());
 			}
-		}
+		}*/
 		
 		candidate.setUpdatedBy(user.getUserCode());
 		candidate.setUpdatedDate(commonUtil.currentDate());
@@ -362,8 +363,9 @@ public class CandidateServiceImpl implements CandidateService {
 	       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,candidate);
 	       	 column++;
 	        }
-	        
-	        File file = new File(orgName+"_candidates_"+dateFormat.format(new Date())+".xls");
+	        File file = File.createTempFile(orgName+"_candidates_"+dateFormat.format(new Date()),".xls");
+	        file.setReadable(true);
+	        /*File file = new File(orgName+"_candidates_"+dateFormat.format(new Date())+".xls");*/
 			 FileOutputStream fos = new FileOutputStream(file);
 			 try {
 				 createExcelworkbook.write(fos);
