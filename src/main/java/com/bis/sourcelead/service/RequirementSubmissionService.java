@@ -55,6 +55,14 @@ public interface RequirementSubmissionService {
 	
 	RequirementSubmission getVendorSubmissionByClientSubmissionIdAndCLientLocationId(Long sourceSubmissionId, Long vendorLocationID);
 	
+	/**
+	 * @author Prasad Salina
+	 * @param email
+	 * @param requirementId
+	 * @param orgLocationsId
+	 * @return
+	 */
+	RequirementSubmission validateRequirementCandidateEmail(String email, Long requirementId, Long orgLocationsId) throws Exception;
 	
 	RequirementSubmission getSubmissionsBySourceSubmissionId(Long sourceSubmissionId, Long orgLocationsId);
 	

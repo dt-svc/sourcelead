@@ -143,6 +143,27 @@ public class SubmissionsRestController {
 		return resultJson;
 
 	}
+	
+	/**@author Prasad Salina
+	  * To  validate candidate email
+	  * @param EmailId
+	  * @return
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/validateRequirementCandidateEmail" , method = RequestMethod.POST)
+	 public @ResponseBody  String validateRequirementCandidateEmail(@RequestParam(value="email", required=false) String email,@RequestParam(value="requirementId", required=false) Long requirementId,HttpServletRequest request) throws Exception {
+		 	
+		 	String result = null;
+		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	RequirementSubmission requirementSubmission = requirementSubmissionService.validateRequirementCandidateEmail(email,requirementId,orgLocation.getId());
+		 	
+		 	if (requirementSubmission != null) {
+				result = "true";
+			}else{
+				result = "false";
+			}
+			return result;
+	   }
 
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_SUBMISSION_TEMPLATE','ROLE_ADD_APPLICANT')")
 	@RequestMapping(value = "/getRequirmentOrgSubmissionTemplate", method = RequestMethod.GET)
