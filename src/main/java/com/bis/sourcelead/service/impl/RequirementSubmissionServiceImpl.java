@@ -175,9 +175,12 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("candidateId")));
 			 candidate.setId(Long.parseLong(jsonObj.getString("candidateId")));
 			 requirementSubmission.setCandidate(candidate);
-		 }else{
-			 
-			 
+		 }else if(candidate == null && jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
+			 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),orgLocations.getId());
+			 if(candidate != null){
+				 requirementSubmission.setCandidate(candidate);
+			 }
+		 }if(candidate == null){
 			       candidate = new Candidate();
 			       candidate.setOrgLocationId(orgLocations);
 					
@@ -759,6 +762,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	   
 }
 	
+
+	@Override
+	public RequirementSubmission validateRequirementCandidateEmail(String email, Long requirementId,
+			Long orgLocationsId) throws Exception {
+		return requirementSubmissionDao.validateRequirementCandidateEmail(email,requirementId,orgLocationsId);
+	}
 
 	@Override
 	public RequirementSubmission getSubmissionsBySourceSubmissionId(Long sourceSubmissionId,Long orgLocationsId) {
@@ -1756,6 +1765,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 	}
+
+	
 
 }
 
