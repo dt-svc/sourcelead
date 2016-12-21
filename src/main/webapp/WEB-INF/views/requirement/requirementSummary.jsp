@@ -2099,6 +2099,7 @@ function requirementStatusBar(requirementId){
          result = result + '      </a><span class="label label-warning" id="rejectedCount">0</span></li>';
          
          result = result + '   </ul>';
+         result = result +' <div> <i class="ratepop" id="ratepop"></div>';
          result = result + ' </div>';
        $("#status-div").empty();
       $("#status-div").prepend(result);
@@ -2156,7 +2157,8 @@ function getRateListDiv(submissionId, candidateId){
           		 }else{
           			     var result = "";
       			         result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
-         			     result = result + '<section class="tbl-scroll">';
+      			         result = result + '<p><strong>Rate Negotiation History</strong></p>';
+         			     result = result + '<section class="tbl-scroll require_wrap_table">';
          			     /*result = result + ' <ul class="nav nav-tabs">';
 	         			  result = result + ' <li class="active"><a data-toggle="tab" href="#tab1">Tab1</a></li>';
 	         			  result = result + ' <li><a data-toggle="tab" href="#tab2">Tab2</a></li>';
@@ -2262,6 +2264,7 @@ function getRateListDiv(submissionId, candidateId){
         	 		$("#ratepop").removeAttr("style");
 		    	     var result ="";
 		    	     result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
+		    	     result = result + '<p><strong>Rate Negotiation History</strong></p>';
 		    	     result = result+"   <div class='row'>"; 
 					 result = result+"	<div class='col-lg-12'>"; 
 					 result = result+"		<div class='clearfix'>"; 
