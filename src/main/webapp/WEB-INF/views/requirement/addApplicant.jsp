@@ -634,11 +634,12 @@ function validate_fileupload(fileName)
 	 var email =   $("input[name=EmailId]").val();
 	$('#emailDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var requirementId = $("#requirementId").val();
 	 if(email != null && email != ""){
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email, 
+		        url: sourceleadUrl+"/validateRequirementCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId, 
 		        success: function(data) {
 		         	if(data == 'true'){
 		         		  $("#save_button").attr("disabled", "disabled");
