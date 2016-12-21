@@ -1,8 +1,10 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -186,12 +188,13 @@ public class RequirementReleaseRestController {
 	    String resultJson;
 	    
 	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),vendorStatus);
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		CopyOnWriteArrayList<OrgRelations> vandorsListByOrgLocationIdDuplicate = new CopyOnWriteArrayList<>(vandorsListByOrgLocationId);
+	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    //List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
  
-		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
+		    for (OrgRelations orgRelation : vandorsListByOrgLocationIdDuplicate) {
 				
-				if(orgRelation.getLocationId().getId() == orgLocations.getId()){
+				if(orgRelation.getLocationId().getId().equals(orgLocations.getId())){
 					orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
 					orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
 					orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
@@ -199,25 +202,31 @@ public class RequirementReleaseRestController {
 					orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
 					orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
 					//List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
-					List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
+					//List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
+					List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgIdAndInvitationStatusAndSpocStatus(orgRelation.getId(),"Accepted","Active");
 					int nonAssignedCount = 0;
-					for(OrgSpoc orgSpoc : contactsList){
-						Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), orgSpoc.getId());
-						if(isJobReleased.toString().equalsIgnoreCase("false")){
-							nonAssignedCount = nonAssignedCount + 1;
+					orgRelation.setNoOfContatcs(0); 
+					if(!contactsList.isEmpty()){
+						orgRelation.setNoOfContatcs(contactsList.size());
+						for(OrgSpoc orgSpoc : contactsList){
+							Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), orgSpoc.getId());
+							if(isJobReleased.toString().equalsIgnoreCase("false")){
+								nonAssignedCount = nonAssignedCount + 1;
+							}
 						}
-					}
-					orgRelation.setNoOfNonReleasedContacts(nonAssignedCount);
-					orgRelation.setNoOfContatcs(contactsList.size()); 
-					if(orgRelation.getInitiatorLevel()!=null){
-						orgRelation.setLevel(orgRelation.getInitiatorLevel());
-					}
-					else{
-						orgRelation.setLevel("");
+						orgRelation.setNoOfNonReleasedContacts(nonAssignedCount);
+						if(orgRelation.getInitiatorLevel()!=null){
+							orgRelation.setLevel(orgRelation.getInitiatorLevel());
+						}
+						else{
+							orgRelation.setLevel("");
+						}
+					}else{
+						vandorsListByOrgLocationIdDuplicate.remove(orgRelation);
 					}
 				}
 				
-				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
+				if(orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
 					orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
 					orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
 					orgRelation.setCountry(orgRelation.getLocationId().getCountry());
@@ -225,27 +234,33 @@ public class RequirementReleaseRestController {
 					orgRelation.setCity(orgRelation.getLocationId().getCity());
 					orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
 					//List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
-					List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
+					//List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
+					List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgIdAndInvitationStatusAndSpocStatus(orgRelation.getId(),"Accepted","Active");
 					int nonAssignedCount = 0;
-					for(OrgSpoc orgSpoc : contactsList){
-						Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), orgSpoc.getId());
-						if(isJobReleased.toString().equalsIgnoreCase("false")){
-							nonAssignedCount = nonAssignedCount + 1;
+					orgRelation.setNoOfContatcs(0); 
+					if(!contactsList.isEmpty()){
+						orgRelation.setNoOfContatcs(contactsList.size()); 
+						for(OrgSpoc orgSpoc : contactsList){
+							Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), orgSpoc.getId());
+							if(isJobReleased.toString().equalsIgnoreCase("false")){
+								nonAssignedCount = nonAssignedCount + 1;
+							}
 						}
-					}
-					orgRelation.setNoOfNonReleasedContacts(nonAssignedCount);
-					orgRelation.setNoOfContatcs(contactsList.size()); 
-					if(orgRelation.getResponderLevel()!=null){
-						orgRelation.setLevel(orgRelation.getResponderLevel());
-					}
-					else{
-						orgRelation.setLevel("");
+						orgRelation.setNoOfNonReleasedContacts(nonAssignedCount);
+						if(orgRelation.getResponderLevel()!=null){
+							orgRelation.setLevel(orgRelation.getResponderLevel());
+						}
+						else{
+							orgRelation.setLevel("");
+						}
+					}else{
+						vandorsListByOrgLocationIdDuplicate.remove(orgRelation);
 					}
 				}
 			}
-		    
-			 resultJson = commonUtil.toJSON(vandorsListByOrgLocationId);
-			 return resultJson;
+		    List<OrgRelations> vandorsList = new ArrayList<OrgRelations>(vandorsListByOrgLocationIdDuplicate);
+			resultJson = commonUtil.toJSON(vandorsList);
+			return resultJson;
 		}
 	
 	

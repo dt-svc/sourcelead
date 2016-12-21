@@ -112,7 +112,7 @@ function addField(fieldType,value,labelValue,sourceleadUrl,templateId,labelValid
             fieldName = "Radio Button";
             break;
         case 'checkbox':
-            hasRequired = false;
+            hasRequired = true;
             hasChoices = true;
             fieldName = "Check Box";
             break;
