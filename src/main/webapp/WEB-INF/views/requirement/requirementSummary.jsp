@@ -504,11 +504,11 @@ function sideBar(requirementId){
   
 				       }
 				       
-				        if(json.state !='' && json.state != 'undefined' && json.city !='' && json.city != 'undefined')
+				        if(json.state != null && json.state !='' && json.state != 'undefined' && json.city !=null && json.city !='' && json.city != 'undefined')
 				        	{
 				        result = result+'<li><i class="fa fa-map-marker"></i><span title="'+json.country+', '+json.state+', '+json.city+'">'+json.country+', '+json.state+', '+json.city+'</span></li>';
 				        	}
-				        else if(json.state !='' && json.state != 'undefined')
+				        else if(json.state !=null && json.state !='' && json.state != 'undefined')
 				        	{
 
 					    result = result+' <li><i class="fa fa-map-marker"></i><span title="'+json.country+', '+json.state+'">'+json.country+', '+json.state+'</span></li>';
