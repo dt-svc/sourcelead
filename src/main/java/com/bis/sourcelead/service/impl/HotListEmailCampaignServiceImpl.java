@@ -151,12 +151,17 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 emailMessage.setMessageBody(emailTemplate);
 		 emailMessage.setOrgLocationId(orgLocation.getId());
 		 
-		 ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+		 ArrayList<EmailAttachment> attachmentList = null;
 		 EmailAttachment emailAttachment = new EmailAttachment();
-		 emailAttachment.setName(multiFile.getOriginalFilename());
-		 emailAttachment.setDocFile(multiFile.getBytes());
-		 emailAttachment.setType(multiFile.getContentType());
-		 attachmentList.add(emailAttachment);
+		 
+		 if(multiFile.getSize() > 0){
+			 attachmentList =  new ArrayList<EmailAttachment>();
+			 emailAttachment.setName(multiFile.getOriginalFilename());
+			 emailAttachment.setDocFile(multiFile.getBytes());
+			 emailAttachment.setType(multiFile.getContentType());
+			 attachmentList.add(emailAttachment);
+		 }
+		
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),emailRecipientList,attachmentList);
@@ -238,45 +243,49 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 			 skills.toString();
 			 String candidateSkills =  skills.substring(0,skills.length()-2);
 			 
-			 String candidateName = null;
+			 StringBuilder candidateName = new StringBuilder();
 			 String experienceInYears = null;
 			 String experienceInMonths = null;
-			 String totalExp = null;
-			 String rate = null;
+			 StringBuilder totalExp = new StringBuilder();
+			 StringBuilder rate = new StringBuilder();
+			 
+			 StringBuilder nameBuilder = new StringBuilder();
+			 StringBuilder expBuilder = new StringBuilder();
+			 StringBuilder rateBuilder = new StringBuilder();
 			
 			 Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(hotlistedCandidates[i]));
 			 
 			 if(nameField.equalsIgnoreCase("firstname")){
-				 candidateName = candidate.getFirstName();
+				 candidateName = nameBuilder.append(candidate.getFirstName());
 			 }
 		 	 else if(nameField.equalsIgnoreCase("firstnameandlastName")){
 				 if(!isNullOrEmpty(candidate.getLastName())){
-					 candidateName = candidate.getFirstName()+" "+candidate.getLastName();
+					 candidateName = nameBuilder.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
 			   	 }else{
-			   		candidateName = candidate.getFirstName();
+			   		candidateName = nameBuilder.append(candidate.getFirstName());
 			   	 }
 			 }
 		 	 else if(nameField.equalsIgnoreCase("firstname1stletterlastname")){
 		 		 if(!isNullOrEmpty(candidate.getLastName())){
-		 			candidateName = candidate.getFirstName()+" "+String.valueOf(candidate.getLastName().charAt(0));
+		 			candidateName = nameBuilder.append(candidate.getFirstName()).append(" ").append(String.valueOf(candidate.getLastName().charAt(0)));
 		 		 }else{
-		 			candidateName = candidate.getFirstName();
+		 			candidateName = nameBuilder.append(candidate.getFirstName());
 		 		 }
 		 		
 		 	 }
 		 	 else if(nameField.equalsIgnoreCase("1letterfirstnamelastname")){
 		 		 if(!isNullOrEmpty(candidate.getLastName())){
-		 			candidateName = String.valueOf(candidate.getFirstName().charAt(0))+" "+candidate.getLastName();
+		 			candidateName = nameBuilder.append(String.valueOf(candidate.getFirstName().charAt(0))).append(" ").append(candidate.getLastName());
 		 		 }else{
-		 			candidateName = String.valueOf(candidate.getFirstName().charAt(0));
+		 			candidateName = nameBuilder.append(String.valueOf(candidate.getFirstName().charAt(0)));
 		 		 }
 		 		
 		 	 }
 		 	else if(nameField.equalsIgnoreCase("1letterfirstname1letterlastname")){
 		 		 if(!isNullOrEmpty(candidate.getLastName())){
-		 			candidateName = String.valueOf(candidate.getFirstName().charAt(0))+" "+String.valueOf(candidate.getLastName().charAt(0));
+		 			candidateName = nameBuilder.append(String.valueOf(candidate.getFirstName().charAt(0))).append(" ").append(String.valueOf(candidate.getLastName().charAt(0)));
 		 		 }else{
-		 			candidateName = String.valueOf(candidate.getFirstName().charAt(0));
+		 			candidateName = nameBuilder.append(String.valueOf(candidate.getFirstName().charAt(0)));
 		 		 }
 		 		
 		 	 }
@@ -292,21 +301,21 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 			 }
 			 
 			 if(isNullOrEmpty(candidate.getExperienceMonths()) && isNullOrEmpty(candidate.getExperienceMonths())){
-				 totalExp = "-----";
+				 totalExp = expBuilder.append("-----");
 			 }else{
-				 totalExp = experienceInYears+" Years "+experienceInMonths+" Months";
+				 totalExp = expBuilder.append(experienceInYears).append(" Years ").append(experienceInMonths).append(" Months");
 			 }
 			 
 			 if(!isNullOrEmpty(candidate.getExpectedRate())){
-				 rate = candidate.getExpectedRate()+" /"+candidate.getRateType();
+				 rate = rateBuilder.append(candidate.getExpectedRate()).append(" /").append(candidate.getRateType());
 			 }else{
-				 rate = "-----";
+				 rate = rateBuilder.append("-----");
 			 }
 			 
 			 tempHTML = tempHTML+"<tr align='center'>";
-			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+candidateName+"</td>";
-			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+totalExp+"</td>";
-			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+rate+"</td>";
+			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+candidateName.toString()+"</td>";
+			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+totalExp.toString()+"</td>";
+			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+rate.toString()+"</td>";
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+candidateSkills+"</td>";
 			 
 			 tempHTML = tempHTML+"</tr>";
