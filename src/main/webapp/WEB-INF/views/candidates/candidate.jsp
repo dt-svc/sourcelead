@@ -620,8 +620,7 @@ function getCities(){
 	       $("#state").chosen();
 	       $("#city").chosen();
 	       
-	       $("#candidateSkills").val('').trigger("chosen:updated");
-	       $("#candidateEducation").val('').trigger("chosen:updated");
+	       
 	       
 	        //Adding Customized Skills to the list
 	        var select, chosen;
@@ -687,6 +686,9 @@ function getCities(){
 			var $this = $(this);
 			$this.next().css({'width': '100%'});
 			})
+			
+			$("#candidateSkills").val('').trigger("chosen:updated");
+	       $("#candidateEducation").val('').trigger("chosen:updated");
 				
 				
 </script> 
@@ -801,11 +803,10 @@ function getCities(){
 	     						}
 	     						$("#candidateSkills").append(internalOutput);
 	     		        		$("#candidateSkills").trigger("chosen:updated");
-	     		        		
+	     		        		$("#candidateEducation").trigger("chosen:updated");
 	     		        		
 	     		        		$("#candidateEducation").empty();
 	     						 var internalOutput = "";
-	     						 alert("educationsList="+educationsList);
 	     						 <c:forEach var="edu" items="${educationsList}">
 	     						    internalOutput = internalOutput+"<option value='${edu.name}'>${edu.name}</option>";
 	     	                     </c:forEach>
@@ -818,7 +819,7 @@ function getCities(){
 	     							}
 	     						}
 	     						$("#candidateEducation").append(internalOutput);
-	     		        		$("#candidateEducation").trigger("chosen:updated");
+	     		        		
 	     		        		
 	     		        		
 	     						$("#loading").removeAttr("style");
