@@ -21,6 +21,11 @@ function candidateCertificate(candidateId){
 	 
 	var result = "";
 	result  = result + '   <div class="project_tabs_inn_head addUser-org"> ';
+	
+	result  = result + '<div class="success_pop" id="selector5" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="cerMsgDiv"></span>';
+    result  = result + '</div>';
+    
 	result = result +'<div id="msgDiv"></div>';
 	if(window.candidateStatusGlobal == '0'){
 		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\')"> ';
@@ -51,6 +56,16 @@ function candidateCertificate(candidateId){
     
 }
 </script>
+
+<!-- Show success message after form submission script -->
+<script>
+	function cerMsgFadein() {
+		$("#selector5").fadeIn(200);
+        $('#selector5').delay(2000).fadeOut('slow');
+	}
+</script> 
+<!-- End -->
+
 <%-- 
      @author : Ajith Matta, Shiva yogi.
      this script is for validationSettings.
@@ -109,8 +124,12 @@ function storeCertificate(candidateId){
 									location.replace(sourceleadUrl+ "/errorPage");
 								}
 								else{
-				               			$("#popUpDivEmp").removeClass("edit-details-active");
-				               			candidateCertificateList(candidateId);
+									$("#popUpDivEmp").removeClass("edit-details-active");
+			            			$("#selector5").removeAttr("style");
+			            			$("#selector5").css({ display: "block" });
+			            			$("#cerMsgDiv").html("Success!! New Certification added");
+				               		candidateCertificateList(candidateId);
+				               		cerMsgFadein();
 							    	}
 							   }
 						},
@@ -284,7 +303,7 @@ function candidateCertificateList(candidateId){
 					 result = result+"		<div class='content-area clearfix'>"; 
 					 result = result+"			<div class='blank-pages'>";
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No CandidatesCertifications Found</p>";
+					 result = result+"			        <p>No Candidate Certifications Found</p>";
 					 result = result+"			 </div>";
 					 result = result+"		</div>"; 
 					 result = result+"	</div>"; 
@@ -654,7 +673,11 @@ function addCertification(candidateId) {
 								+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateCertificationId"+ candidateCertificationId,
 						success : function(data) {
 							closeCertificatePopup();
+	            			$("#selector5").removeAttr("style");
+	            			$("#selector5").css({ display: "block" });
+	            			$("#cerMsgDiv").html("Certification details updated");
 							candidateCertificateList(candidateId);
+							cerMsgFadein();
 						},
 					});
 			return true;
@@ -695,8 +718,12 @@ function removeCertification(candidateCertificationId,candidateId){
              			 location.replace(sourceleadUrl+"/errorPage");
              		}
              		else{
-             			 $("#popUpDivEmp").removeClass("edit-details-active");
+             		     $("#popUpDivEmp").removeClass("edit-details-active");
+            			 $("#selector5").removeAttr("style");
+             			 $("#selector5").css({ display: "block" });
+             			 $("#cerMsgDiv").html("Certification deleted");
              			candidateCertificateList(candidateId);
+             			cerMsgFadein();
 			    	}
                } 
         },
