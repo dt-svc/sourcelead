@@ -17,6 +17,8 @@ public interface QuickBookCustomerService {
 	 * @throws Exception
 	 */
 	public String getCustomerByCustomerId(Long customerId) throws Exception;
+	
+	public void saveCustomer() throws Exception ;
 	 
 	 
 }
