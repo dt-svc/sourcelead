@@ -1,8 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.File;
-
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -10,12 +8,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.sis.internal.jaxb.metadata.EX_Extent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Requirement;

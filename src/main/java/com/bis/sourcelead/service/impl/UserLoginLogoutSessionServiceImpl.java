@@ -19,7 +19,6 @@ import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 @Service
 public class UserLoginLogoutSessionServiceImpl implements UserLoginLogoutSessionService {
 
-	private static final Logger logger = LoggerFactory.getLogger(UserLoginLogoutSessionServiceImpl.class);
 
 	@Autowired
 	private UserLoginLogoutSessionDao userLoginLogoutSessionDao;

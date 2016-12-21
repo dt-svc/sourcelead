@@ -29,15 +29,12 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.entity.ProjectApproverHierarchy;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -76,9 +73,6 @@ public class ClientServiceImpl implements ClientService{
 
 	@Autowired
 	private OrgRelationsService orgRelationsService;
-
-	@Autowired
-	private ProjectsService projectsService;
 
 	@Autowired
 	ProjectApproverHierarchyService projectApproverHierarchyService;
@@ -396,6 +390,8 @@ public class ClientServiceImpl implements ClientService{
 		}
 		
 		
+		
+		// This method is not in use  so commented by David S
 		/**
 		 * populating OrgLocations Data
 		 * @param jsonObj
@@ -405,7 +401,7 @@ public class ClientServiceImpl implements ClientService{
 		 * @return OrgLocations
 		 * @throws JSONException
 		 */
-			private OrgLocations populateOrgLocations(JSONObject jsonObj, Org addOrg, String locationCode, String loginUserCode)
+			/*private OrgLocations populateOrgLocations(JSONObject jsonObj, Org addOrg, String locationCode, String loginUserCode)
 					throws JSONException {
 				OrgLocations orgLocations = new OrgLocations();
 				orgLocations.setOrg(addOrg);
@@ -435,8 +431,13 @@ public class ClientServiceImpl implements ClientService{
 				orgLocations.setUpdatedDate(new Date());
 				return orgLocations;
 			}
+			*/
 			
-			
+		
+		
+		// This method is not in use  so commented by David S
+		
+		
 			/**
 			 * populate OrgRelations Data
 			 * @param orgLocations
@@ -444,7 +445,7 @@ public class ClientServiceImpl implements ClientService{
 			 * @param loginUserCode
 			 * @return
 			 */
-				private OrgRelations populateOrgRelations(OrgLocations clientOrgLocation, OrgLocations orgLocations,String loginUserCode) {
+			/*	private OrgRelations populateOrgRelations(OrgLocations clientOrgLocation, OrgLocations orgLocations,String loginUserCode) {
 
 					OrgRelations orgRelations = new OrgRelations();
 					orgRelations.setResponderLocationId(clientOrgLocation);
@@ -455,7 +456,7 @@ public class ClientServiceImpl implements ClientService{
 					orgRelations.setCreatedBy(loginUserCode);
 					orgRelations.setCreatedDate(new Date());
 					return orgRelations;
-				}
+				}*/
 		
 		
 
@@ -477,13 +478,15 @@ public class ClientServiceImpl implements ClientService{
 		    return host;
 		}
 		
+		
+		// This method is not in use  so commented by David S
 		/**
 		 * Returns Date
 		 * 
 		 * @param startDateString
 		 * @return
 		 */
-		private Date getDateFormat(String startDateString) {
+	/*	private Date getDateFormat(String startDateString) {
 
 			Date formatedDate = null;
 			try {
@@ -494,7 +497,7 @@ public class ClientServiceImpl implements ClientService{
 				e.printStackTrace();
 			}
 			return formatedDate;
-		}
+		}*/
 
 		/**
 		 * check given string empty or null

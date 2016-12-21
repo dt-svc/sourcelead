@@ -182,8 +182,6 @@ public class CandidateEducationRestController {
 			JSONObject jsonObj = new JSONObject(jsonc);
 			
 			candidateEdu = candidateEducationService.storeCandidateEducation(jsonObj,candidateId,loginOrgLocation.getId(),user);
-			SourceLeadSessionManager.setSessionAttribute(request, "editEducation", "Education details updated");
-
 			return "success";
 	}
 	

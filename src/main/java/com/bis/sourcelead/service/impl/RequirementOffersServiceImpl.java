@@ -31,9 +31,6 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementAssignTo;
-import com.bis.sourcelead.entity.RequirementInterview;
-import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -42,7 +39,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
-import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
@@ -81,9 +77,6 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     private String sourceleadUrl;
 	
 	@Autowired
-	private RequirementAssignToService requirementAssignToService;
-	
-	@Autowired
 	RequirementOfferHistoryService requirementOfferHistoryService;
 	
 	@Autowired
@@ -100,7 +93,6 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		
 		String maxAdminTimeTypeRowNum = jsonObj.getString("maxOfferRowNum");
 		int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
-		RequirementInterview requirementInterview  = null;
 		
 		RequirementOffers requirementOffers = null;
 		
@@ -353,8 +345,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             try {
     			
                 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
-                String actionLink="";
-               OrgLocations vendorLocation = clientrequirement.getOrgLocationId();
+                 String actionLink="";
+                 OrgLocations vendorLocation = clientrequirement.getOrgLocationId();
 				//emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getSpocUser(), vendorLocation, notificationScenario);
         		}catch (MessagingException e) {
         			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));

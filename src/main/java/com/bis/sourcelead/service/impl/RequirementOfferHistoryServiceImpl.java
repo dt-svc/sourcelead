@@ -2,15 +2,12 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementOfferHistoryDao;
 import com.bis.sourcelead.dao.RequirementOffersDao;
-import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -20,7 +17,6 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 @Service
 public class RequirementOfferHistoryServiceImpl implements RequirementOfferHistoryService{
 	
-	private static final Logger logger = LoggerFactory.getLogger(RequirementOfferHistoryServiceImpl.class);
 
     @Autowired
     RequirementOfferHistoryDao requirementOfferHistoryDao;

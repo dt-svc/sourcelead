@@ -63,8 +63,6 @@ public class CandidateCertificationsRestController {
 		String json1 = "{"+json+"}";
 		JSONObject jsonObject = new JSONObject(json1);
 		candidateCertificationsService.storeCandidateCertifications(jsonObject,users,loginOrgLocation,candidateId);
-		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		SourceLeadSessionManager.setSessionAttribute(request, "addCertification", "New Certification added for "+candidate.getFirstName()+" ");
 		
 		return json;
 	 }

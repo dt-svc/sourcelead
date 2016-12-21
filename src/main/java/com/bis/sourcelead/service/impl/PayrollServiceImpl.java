@@ -2,15 +2,12 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.PayrollDao;
 import com.bis.sourcelead.entity.Payroll;
 import com.bis.sourcelead.service.PayrollService;
-import com.bis.sourcelead.util.CommonUtil;
 
 /**
  * @author Ajith Matta
@@ -19,10 +16,7 @@ import com.bis.sourcelead.util.CommonUtil;
 @Service
 public class PayrollServiceImpl implements PayrollService {
 	
-	private static final Logger logger = LoggerFactory.getLogger(PayrollServiceImpl.class);
-	
-	@Autowired
-	private CommonUtil commonUtil;
+
 	
 	@Autowired
 	private PayrollDao payrollDao;

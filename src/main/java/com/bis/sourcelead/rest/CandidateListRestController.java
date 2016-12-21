@@ -142,7 +142,7 @@ public class CandidateListRestController {
 		String resultJson;
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
-		// UnUsed Code 
+		      // UnUsed Code 
 			   /*	Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 				List<Candidate> candList = new ArrayList<Candidate>();*/
 		

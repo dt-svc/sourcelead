@@ -14,8 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -60,7 +58,6 @@ import com.google.gson.GsonBuilder;
 @Service
 public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	
-	private static final Logger logger = LoggerFactory.getLogger(TimesheetEntriesServiceImpl.class);
 	@Autowired
 	TimesheetEntriesDao timesheetEntriesDao;
 	
