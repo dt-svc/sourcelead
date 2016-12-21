@@ -1,14 +1,22 @@
 package com.bis.sourcelead.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.service.QuickBookCustomerService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.QuickBookOAuthAuthentication;
 
 @Service
 public class QuickBookCustomerServiceImpl implements QuickBookCustomerService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(QuickBookCustomerServiceImpl.class);
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Autowired
 	private QuickBookOAuthAuthentication quickBookOAuthAuthentication;
