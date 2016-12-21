@@ -182,6 +182,16 @@
               			var result = '';
               			result = result +'<input type="hidden" id="emailListType" value='+type+'>';
               			result = result +'<table id="mails" class="table table-hover table-striped">';
+              			
+                		result = result +'<thead>';
+                		result = result +'<tr>';
+                		result = result +'<th></th>';
+                		result = result +'<th></th>';
+                		result = result +'<th></th>';
+                		result = result +'<th></th>';
+                		result = result +'</tr>';
+                		result = result +'</thead>';
+                		
               			result = result +'<tbody>';
               			
               			 var json = JSON.parse(data);
@@ -215,18 +225,25 @@
 	              			    	result = result +"<td style='width : 25px;'>";
 			                        result = result +"<div class='star-rating mailbox-rating positionRelative "+isFavClass+"' id='favourite"+opt.id+"'>";
 			                        result = result +"<input type='checkbox' id='fav"+opt.id+"' "+isFavourite+" onclick='addFavourite("+opt.id+")'></input>";
-	              			    }
 		              			
 		                        result = result +" <label></label>";
 		                        result = result +"</div>";
 		                        result = result +"</td>";
+	              			  }
+		                        
+		                        if(opt.mailStatus == 'Trash'){
+		                        	result = result +'<td></td>';
+		              			 }
+			              			
 		              			
 		              			result = result +'<td class="mailbox-subject '+isMailRead+'"><a href="#" onclick="getEmailDetails(\''+opt.uuid+'\')">'+opt.subject+'</a></td>';
 		              			result = result +'<td class="mailbox-date">'+opt.calDays+' days ago</td>';
 		              			result = result +'</tr>';
 		                    }
 		                    
-		                    
+		                     result = result +"</tbody>";
+		                     result = result +"</table>"; 
+		                     result = result +'</div>'; 
               			
 	                 	 $("#mailBoxList").empty(); 
 	                 	 $("#mailDetails").empty(); 
@@ -240,7 +257,7 @@
 	    	        result = result +'<div class="modal-body clearfix">';
 	           		result = result +'     </div>';
 	           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
-	           		result = result +'<table id="mails" class="table table-hover table-striped">';
+	           		result = result +'<table class="table table-hover table-striped">';
 	           		result = result +'           <thead>';
 	           		result = result +'           <p class="text-center text-muted"><i class="fa fa-envelope fa-3x"></i><br/><br/>No Mails In Your '+type+' </p>';
 	           		result = result +'           </thead>';
@@ -250,7 +267,6 @@
 					$("#mailBoxList").empty();
 					$("#mailDetails").empty(); 
 				    $("#mailBoxList").append(result); 
-				    pagination();  
                }
          },
            
@@ -264,7 +280,7 @@
 function pagination(){
     $("#mails").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+    	"lengthMenu": [[20, 10, 15, -1], [20, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
