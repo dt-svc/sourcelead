@@ -579,8 +579,9 @@ function validateClientName(){
 	if(clientName.match(/^[^\s-](.*)*$/) != null){
 		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
 	if (clientName != null && clientName != '') {
-		//$("#save_client").attr("disabled", "disabled");
-		// $( "#save_client" ).addClass('button').val('Processing..');
+		
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName+"&responderType=Vendor",
@@ -607,6 +608,8 @@ function validateClientName(){
 						} */
 					});
 				}
+				
+				$("#loading").removeAttr("style");
 			},
 
 		});

@@ -214,9 +214,9 @@ public class CandidateServiceImpl implements CandidateService {
 		HashSet<CandidateSkills> candidateSkillsList = candidateSkillsService.getCandidateSkillsDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateSkills(candidateSkillsList);
 		
-		/*HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
+		HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
 		candidate.setCandidateResumes(candidateResumesList);
-		if(multiFile != null){
+		/*if(multiFile != null){
 			if(multiFile.getOriginalFilename()!=null){
 				candidate.setFileName(multiFile.getOriginalFilename());
 			}
