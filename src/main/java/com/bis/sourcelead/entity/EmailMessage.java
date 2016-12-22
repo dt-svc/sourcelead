@@ -35,6 +35,8 @@ public class EmailMessage implements Serializable {
 	private Map<String, Object> model;
 	
 	private String[] attachmentFiles;
+	
+	private String sendResumes;
 
 	public String getFirstName() {
 		return firstName;
@@ -146,5 +148,13 @@ public class EmailMessage implements Serializable {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public String getSendResumes() {
+		return sendResumes;
+	}
+
+	public void setSendResumes(String sendResumes) {
+		this.sendResumes = sendResumes;
 	}
 }
