@@ -102,12 +102,12 @@ public class CandidateResumeRestController {
 			candidateResumesService.storeCandidateResume(jsonObj, user, candidate, resumeId, orgLocation, multiFile);
 
 			
-			if(resumeId != null && !"null".equalsIgnoreCase(resumeId)){
+			/*if(resumeId != null && !"null".equalsIgnoreCase(resumeId)){
 				SourceLeadSessionManager.setSessionAttribute(request, "editResume", "Resume details updated");
 			}else{
 				SourceLeadSessionManager.setSessionAttribute(request, "addResume", "New Resume added for "+candidate.getFirstName()+"");
 				
-			}
+			}*/
 			
 			
 			
@@ -143,7 +143,7 @@ public class CandidateResumeRestController {
 				if(createdUser != null){
 					candidateResume.setCreatedBy(createdUser.getFirstName()+" "+createdUser.getLastName());
 				}
-				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addResume");
+				/*msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addResume");
 				 if(msg == null){
 						msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editResume");
 					}
@@ -155,7 +155,7 @@ public class CandidateResumeRestController {
 					}
 					 	SourceLeadSessionManager.removeSessionAttribute(request, "addResume");
 					    SourceLeadSessionManager.removeSessionAttribute(request, "editResume");
-					    SourceLeadSessionManager.removeSessionAttribute(request, "deleteResume");
+					    SourceLeadSessionManager.removeSessionAttribute(request, "deleteResume");*/
 			}
 			resultJson = commonUtil.toJSON(candidateResumesList);
 		}
@@ -190,7 +190,7 @@ public class CandidateResumeRestController {
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(commonUtil.currentDate());
 			candidateResumesService.updateCandidateResume(candidateResume);
-			SourceLeadSessionManager.setSessionAttribute(request, "deleteResume", "Resume deleted");
+			//SourceLeadSessionManager.setSessionAttribute(request, "deleteResume", "Resume deleted");
 		}
 		return "success";
 	}

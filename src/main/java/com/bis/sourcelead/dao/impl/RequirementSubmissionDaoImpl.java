@@ -23,6 +23,7 @@ import com.bis.sourcelead.dao.TeamDao;
 import com.bis.sourcelead.dao.TeamMemberDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -158,7 +159,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
 		}
 		
-		if(requirement.getManagerUserId().getId()== user.getId()){
+		if(requirement.getManagerUserId().getId() == user.getId()){
 			String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId ";
 			requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
 		}
@@ -169,7 +170,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				if(requirementAssignTo.getTeamId()!=null){
 					Team team = teamDao.getTeamByTeamId(requirementAssignTo.getTeamId().getId());
 					if(team.getOwnerUserId()!=null){
-						if(team.getOwnerUserId().getId()==user.getId()){
+						if((long)team.getOwnerUserId().getId() == (long)user.getId()){
 							List<TeamMembers> teamMembers =  teamMemberDao.getTeamMembersListByTeamID(requirementAssignTo.getTeamId().getId(),loginOrgLocation.getId());
 							List<String> userCodes = new ArrayList<>();
 							userCodes.add(user.getUserCode());
@@ -334,6 +335,29 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	     return shortListCandidatesList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementSubmission validateRequirementCandidateEmail(String email, Long requirementId, Long orgLocationsId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RequirementSubmission> submission = new ArrayList<RequirementSubmission>();
+		logger.debug("findByEmail start");
+		try{
+			submission = session.createQuery("from RequirementSubmission rs where rs.candidate.email = :email and rs.requirement.id = :requirementId and rs.orgLocations.id = :orgLocationsId " )
+					.setString( "email", email ).setLong("requirementId", requirementId ).setLong("orgLocationsId", orgLocationsId ).setCacheable(true).list();
+			
+			logger.debug("findByEmail end");
+			if (submission.size() > 0) {
+				return submission.get(0);
+			} else {
+				return null;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public RequirementSubmission getSubmissionsBySourceSubmissionId(Long sourceSubmissionId,Long orgLocationsId) {
