@@ -390,5 +390,10 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		
 		return clientsList;
 	}
+
+	@Override
+	public List<OrgRelations> getClientOrVendorListByOrgLocationId(Long orgLocationId, String type) {
+		return orgRelationsDao.getClientOrVendorListByOrgLocationId(orgLocationId, type);
+	}
 	
 }

@@ -395,8 +395,8 @@ function getUserList(teamType){
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   <div class="modal-footer">';
-	                 	 result = result +'     <button class="btn btn-primary" type="button" id="assignbtnId" onClick="getEmails();">Assign</button>';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
+	                 	 result = result +'     <button class="btn btn-primary" type="button" id="assignbtnId" onClick="getEmails();">Add</button>';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
 	                 	 result = result +'   </div>'; 
 	                 	 $("#userList").empty(); 
 	                     $("#userList").append(result); 
@@ -489,7 +489,6 @@ function getTeamsList(teamType){
 <script type="text/javascript">
 function filterTeamMembers(){
 	var teamType = $("#rolesDiv").val();
-	$('#rolesDiv').html("zxcvzxvc");
 	getUserList(teamType);
 }
 </script>
@@ -541,7 +540,7 @@ function getEmails(){
 		$("#emailsList").trigger("chosen:updated");
 		
 		$("input[name='emails[]']:checked").removeAttr('checked');
-		$('#checkAllContacts').removeAttr('checked');
+		$('#checkAllUsers').removeAttr('checked');
 		
 		
 }
