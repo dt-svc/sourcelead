@@ -221,18 +221,24 @@ public class MailBoxRestController {
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
-		String[] mailBoxIds = mailIds.split(",");
-		for(int i=0; i < mailBoxIds.length; i++){
-			
-			UserMailBox userMailBox = userMailBoxService.getUserMailBoxById(mailBoxIds[i]);
-			userMailBox.setIsFavourite(0);
-			userMailBox.setMailStatus("Trash");
-			userMailBox.setUpdatedBy(user.getCreatedBy());
-			userMailBox.setUpdatedDate(new Date());
-			userMailBoxService.saveUserMailBox(userMailBox);
+		if(!isNullOrEmpty(mailIds)){
+			String[] mailBoxIds = mailIds.split(",");
+			for(int i=0; i < mailBoxIds.length; i++){
+				
+				UserMailBox userMailBox = userMailBoxService.getUserMailBoxById(mailBoxIds[i]);
+				userMailBox.setIsFavourite(0);
+				if(!userMailBox.getMailStatus().equalsIgnoreCase("Trash")){
+					userMailBox.setMailStatus("Trash");
+				}else{
+					userMailBox.setMailStatus("Deleted");
+					userMailBox.setStatus(0);
+				}
+				
+				userMailBox.setUpdatedBy(user.getCreatedBy());
+				userMailBox.setUpdatedDate(new Date());
+				userMailBoxService.saveUserMailBox(userMailBox);
+			}
 		}
-		
-		
 		
 		
 		return "success";
@@ -413,45 +419,49 @@ public class MailBoxRestController {
 					 skills.toString();
 					 String candidateSkills =  skills.substring(0,skills.length()-2);
 					 
-					 String candidateName = null;
+					
+					 StringBuilder candidateName = new StringBuilder();
 					 String experienceInYears = null;
 					 String experienceInMonths = null;
-					 String totalExp = null;
-					 String rate = null;
-					
+					 StringBuilder totalExp = new StringBuilder();
+					 StringBuilder rate = new StringBuilder();
+					 
+					 StringBuilder nameBuilder = new StringBuilder();
+					 StringBuilder expBuilder = new StringBuilder();
+					 StringBuilder rateBuilder = new StringBuilder();
 					 
 					 if(userMailbox.getNameFields().equalsIgnoreCase("firstname")){
-						 candidateName = candidate.getFirstName();
+						 candidateName = nameBuilder.append(candidate.getFirstName());
 					 }
 				 	 else if(userMailbox.getNameFields().equalsIgnoreCase("firstnameandlastName")){
-						 if(!isNullOrEmpty(candidate.getLastName())){
-							 candidateName = candidate.getFirstName()+" "+candidate.getLastName();
+				 		if(!isNullOrEmpty(candidate.getLastName())){
+							 candidateName = nameBuilder.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
 					   	 }else{
-					   		candidateName = candidate.getFirstName();
+					   		candidateName = nameBuilder.append(candidate.getFirstName());
 					   	 }
 					 }
 				 	 else if(userMailbox.getNameFields().equalsIgnoreCase("firstname1stletterlastname")){
-				 		 if(!isNullOrEmpty(candidate.getLastName())){
-				 			candidateName = candidate.getFirstName()+" "+String.valueOf(candidate.getLastName().charAt(0));
+				 		if(!isNullOrEmpty(candidate.getLastName())){
+				 			candidateName = nameBuilder.append(candidate.getFirstName()).append(" ").append(String.valueOf(candidate.getLastName().charAt(0)));
 				 		 }else{
-				 			candidateName = candidate.getFirstName();
+				 			candidateName = nameBuilder.append(candidate.getFirstName());
 				 		 }
 				 		
 				 	 }
 				 	 else if(userMailbox.getNameFields().equalsIgnoreCase("1letterfirstnamelastname")){
 				 		 if(!isNullOrEmpty(candidate.getLastName())){
-				 			candidateName = String.valueOf(candidate.getFirstName().charAt(0))+" "+candidate.getLastName();
-				 		 }else{
-				 			candidateName = String.valueOf(candidate.getFirstName().charAt(0));
-				 		 }
+					 			candidateName = nameBuilder.append(String.valueOf(candidate.getFirstName().charAt(0))).append(" ").append(candidate.getLastName());
+					 		 }else{
+					 			candidateName = nameBuilder.append(String.valueOf(candidate.getFirstName().charAt(0)));
+					 		 }
 				 		
 				 	 }
 				 	else if(userMailbox.getNameFields().equalsIgnoreCase("1letterfirstname1letterlastname")){
 				 		 if(!isNullOrEmpty(candidate.getLastName())){
-				 			candidateName = String.valueOf(candidate.getFirstName().charAt(0))+" "+String.valueOf(candidate.getLastName().charAt(0));
-				 		 }else{
-				 			candidateName = String.valueOf(candidate.getFirstName().charAt(0));
-				 		 }
+					 			candidateName = nameBuilder.append(String.valueOf(candidate.getFirstName().charAt(0))).append(" ").append(String.valueOf(candidate.getLastName().charAt(0)));
+					 		 }else{
+					 			candidateName = nameBuilder.append(String.valueOf(candidate.getFirstName().charAt(0)));
+					 		 }
 				 		
 				 	 }
 					 
@@ -466,20 +476,19 @@ public class MailBoxRestController {
 					 }
 					 
 					 if(isNullOrEmpty(candidate.getExperienceMonths()) && isNullOrEmpty(candidate.getExperienceMonths())){
-						 totalExp = "-----";
+						 totalExp = expBuilder.append("-----");
 					 }else{
-						 totalExp = experienceInYears+" Years "+experienceInMonths+" Months";
+						 totalExp = expBuilder.append(experienceInYears).append(" Years ").append(experienceInMonths).append(" Months");
 					 }
 					 
 					 if(!isNullOrEmpty(candidate.getExpectedRate())){
-						 rate = candidate.getExpectedRate()+" /"+candidate.getRateType();
+						 rate = rateBuilder.append(candidate.getExpectedRate()).append(" /").append(candidate.getRateType());
 					 }else{
-						 rate = "-----";
+						 rate = rateBuilder.append("-----");
 					 }
-					 
-					 candidate.setCandidateName(candidateName);
-					 candidate.setTotalExp(totalExp);
-					 candidate.setRate(rate);
+					 candidate.setCandidateName(candidateName.toString());
+					 candidate.setTotalExp(totalExp.toString());
+					 candidate.setRate(rate.toString());
 					 candidate.setSkills(candidateSkills);
 					 
 					 reqCandidatesList.add(candidate);

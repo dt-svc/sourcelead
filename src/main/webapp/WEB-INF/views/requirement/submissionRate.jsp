@@ -314,7 +314,7 @@ function pagination(){
 function isShowForm(actionUsertype){
 	 var lastProposedBy = $("#lastProposedBy").val();
      if(lastProposedBy != null && lastProposedBy != "" && lastProposedBy !='undefined' && lastProposedBy == actionUsertype){
-    	 $('#negotiationDivId').append("<span><center>Rate submitted successfully !! Kindly wait for the Response...</center></span>");
+    	 $('#negotiationDivId').append("<span>Rate submitted successfully !! Kindly wait for the Response...</span>");
     	 document.getElementById("fieldsDiv").style.display="none";
      }else{
     	 document.getElementById("fieldsDiv").style.display="";

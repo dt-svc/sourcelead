@@ -599,7 +599,21 @@ public class ClientRestController {
 		List<Org> org =orgService.getOrgs();
 	    boolean flag = false;
 		
-			flag = orgService.isClientNameValid(clientName,orgLocation.getId(),responderType);
+			List<OrgRelations> relationsList = orgRelationsService.getClientOrVendorListByOrgLocationId(orgLocation.getId(), responderType);
+			for(OrgRelations orgRelations : relationsList){
+				if(orgRelations.getLocationId().getId() == orgLocation.getId()){
+					if(clientName.equalsIgnoreCase(orgRelations.getResponderLocationId().getOrg().getOrgName())){
+						flag = true;
+					}
+				}	
+				else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
+					if(clientName.equalsIgnoreCase(orgRelations.getLocationId().getOrg().getOrgName())){
+						flag = true;
+					}
+					
+				}
+				
+			}
 		
 		
 		return flag;
