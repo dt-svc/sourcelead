@@ -9,6 +9,7 @@
  <jsp:include page="certificationSubmissionDetails.jsp" />
  <jsp:include page="submissionCandidateProfile.jsp" />
  <jsp:include page="submissionCandidateResume.jsp" />
+ <jsp:include page="../candidates/candidatesCommentsList.jsp"></jsp:include>
  
  <style type="text/css">
  .brder-int {padding:2px 10px; margin-right:5px;}
@@ -33,6 +34,7 @@
 <script>
 function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
 	$.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,
@@ -177,12 +179,36 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 				
 				result = result + '</ul>';
 				result = result + '</div>';
+				
+				/* New comments div creation Nov 8th, 2016 */ 
+	            result = result+'<div class="comments-div clearfix" id="latestMessage">';
+	            result = result+'    <div class="commentsimg">';
+	            result = result+'    <i class="fa fa-comments"></i>';
+	            result = result+'        <div class="commentsimg-inner">';
+	            
+	            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
+	            result = result+'        </div>';
+	            result = result+'    </div>';
+	            result = result+'     <div class="comments-content">';
+	            result = result+'         <div class="pull-left">';
+	            result = result+'         <p class="comment-by"></p>';
+	            result = result+'         <p class="comment-text"></p>';
+	            result = result+'         </div>';
+	            result = result+'         <div class="pull-right cmt-button">';
+	            result = result+'          <span class="comments-button">';
+	            
+	            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+','+submissionId+')">';
+	            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
+	            result = result+'            </button>';
+	            result = result+'            <div class="add-comment">';
+	            result = result+'            </div>';
+	            result = result+'          </span>';
+	            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+','+submissionId+');">View more <span class="label label-warning">0</span></a>';
+	 			result = result+'		</div>';
+	            result = result+'     </div>';
+	            result = result+'</div>';
+	 		    /* New comments div creation Nov 8th, 2016 */
 			
-			
-			
-			
-		       
-		       
 		       result = result + '</div>';
 		       result = result + '</div>';
        		
@@ -194,6 +220,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + '<li><a href="#tabb-4" onclick="employeeSubmissionDetails('+candidateId+');">Employer</a></li>';
 		       result = result + '<li><a href="#tabb-5" onclick="educationSubmissionDetails('+candidateId+');">Education</a></li>';
 		       result = result + '<li><a href="#tabb-6" onclick="certificationSubmissionDetails('+candidateId+');">Certifications</a></li>';
+               result = result + '<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+','+submissionId+');">Comments</a></li>';
 		       result = result + '<div class="clearfix"></div>';
 		       result = result + '</ul>';
 		       result = result + '<div class="project_tabs">';
@@ -212,6 +239,9 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       
 		       result = result + '<div id="tabb-3" class="new-tabs_inn" style="display: block;">';
 		       result = result + '</div>';
+		       
+		       result = result + '<div id="tab-7" class="new-tabs_inn">';
+			   result = result + '</div>';
 		       
 		       result = result + '<div id="tabb-1" class="new-tabs_inn" style="display: block;">';
 
@@ -286,15 +316,10 @@ $(".new-tabs a").click(function(event) {
 	    	  }
 	 });
 				   
-	 			 
-  
  $(".clients_side_wrap").addClass("clients_side_wrap_active");
  $(".side_mask").fadeIn(200);
  $("body").css('overflow-y', 'hidden');
   
- 
-	
-
 }
 </script>
 
@@ -1247,6 +1272,136 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 	});
 </script>
 
+<script>
+function showComment(candidateId,submissionId){
+	var result = "";
+		result = result+'	        <form role="form" id="candidateComments_form" name="candidateComments_form" method="post">';
+	    result = result+'              <textarea rows="1" class="form-control clearfix mb10" placeholder="Comments here..." id="comment" name="comment" data-validation="required validate_length length2-500" field-name="Comment"></textarea>';
+	    result = result+'              <span class="clearfix pull-right">';
+	    result = result+'              		<input type="button" id="submit_comment" value="Add" class="btn btn-sm btn-success" onClick="addComment('+candidateId+','+submissionId+')">';
+	    result = result+'              		<input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="closeComment()">';
+	    result = result+'              </span>';
+		result = result+'	        </form>';
+	$('.add-comment').empty();
+	$('.add-comment').append(result);
+	$('.add-comment').toggle(200);
+}
+function closeComment(){
+	$('.add-comment').toggle(200);
+}
+</script>
+
+<%-- 
+     @author : Venkat Kesav
+     this script is for saving Comment
+     1.usage     : onclick
+     2.parameter : candidateId.
+     3.ajax url implementation in CandidateResumeRestController.
+--%>
+<script type="text/javascript">
+	function addComment(candidateId,submissionId){
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			        borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+		         }; 
+			 if ($('#candidateComments_form').validate(false, validationSettings)){
+				var frm = $('#candidateComments_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, "");
+				var form = $('#candidateComments_form')[0];
+	      		var formData = new FormData(form); 
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#submit_comment").attr("disabled", "disabled");
+         		$("#submit_comment" ).addClass('button').val('Processing..');
+				//It will escape all the special characters
+		        var jsonData = encodeURIComponent(con);
+				$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/saveCandidateComment?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&submissionId="+submissionId,
+						success : function(result) {
+							savedCommentAndCount(candidateId,submissionId);
+						},
+					});
+					$('.add-comment').toggle(200);
+					return true;
+			 }else{ 
+					return false;
+			 }
+		}
+		$('body').on('blur', '#candidateComments_form', function() {
+		$("#candidateComments_form").showHelpOnFocus();
+		$("#candidateComments_form").validateOnBlur(false, validationSettings);
+		
+	});
+</script>
+
+<script>
+function savedCommentAndCount(candidateId,submissionId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&submissionId="+submissionId,        
+         success :function(data) {
+        	 var result = "";
+              if(data != null && data != 'undefined' && data != ""){
+              	 	 var json = JSON.parse(data);
+            		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+            		 else if (data.indexOf('exception') >= 0) {
+            			 location.replace(sourceleadUrl+"/errorPage");
+            		 }
+            		 else{
+            			 var totalComments = 0;
+            			 if(json.length>0){
+            				totalComments = json.length;
+         	            	var report = json[0];
+	 			            
+	 			            result = result+'    <div class="commentsimg">';
+				            result = result+'    <i class="fa fa-comments"></i>';
+				            result = result+'        <div class="commentsimg-inner">';
+				            
+				            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
+				            result = result+'        </div>';
+				            result = result+'    </div>';
+				            result = result+'     <div class="comments-content">';
+				            result = result+'         <div class="pull-left" id="latestMessage">';
+				            result = result+'         <p class="comment-by">';
+				            result = result+'            By <span class="text-danger">'+report.commentAuthor+'</span>';
+				            result = result+'            <span class="small">('+report.commentTime+')</span></p>';
+				            result = result+'         <p class="comment-text">'+report.comment+'</p>';
+				            result = result+'         </div>';
+				            result = result+'         <div class="pull-right cmt-button">';
+				            result = result+'          <span class="comments-button">';
+				            
+				            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+','+submissionId+')">';
+				            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
+				            result = result+'            </button>';
+				            result = result+'            <div class="add-comment">';
+				            result = result+'            </div>';
+				            result = result+'          </span>';
+				            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+','+submissionId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
+				 			result = result+'		</div>';
+				            result = result+'     </div>';
+	 			           
+	 			           $("#latestMessage").empty();
+	 			           $("#latestMessage").append(result);
+            			 }
+            			 
+            		 }
+              }
+			},
+      });
+}
+</script>
 
 
 <!-- this script using for interview feedback Start -->
