@@ -38,7 +38,7 @@
 		</div>
 	</section>
 		      <div class="content-area">
-		      				<div id="viewReqTemplateDiv" class="mt">
+		      				<div id="viewReqTemplateDiv" class="mt clearfix">
 						     </div>  
 		      </div>
           </div>
@@ -95,38 +95,50 @@
 					result = result + ' </div>';
 				 }
 				 
-				 if(json.minExp != null && json.minExp != "" && json.minExp != 'undefined'){
-						result = result + ' 		<div class="project_details_cta">';
-						result = result + '				 <strong>Min Experience :</strong><span class="fix">'+json.minExp+'</span><div class="clearfix"></div>';
-						result = result + ' 		</div>';
-					 }
 				 
-				 if(json.maxExp != null && json.maxExp != "" && json.maxExp != 'undefined'){
-						result = result + ' 		<div class="project_details_cta">';
-						result = result + '				 <strong>Min Experience :</strong><span class="fix">'+json.maxExp+'</span><div class="clearfix"></div>';
-						result = result + ' 		</div>';
-					 }
+						result = result + '<div class="project_details_cta clearfix">';
+						result = result + '<strong>Min Experience :</strong>';
+						if(json.minExp != null && json.minExp != "" && json.minExp != 'undefined'){
+						result = result + '<span class="fix">'+json.minExp+'</span><div class="clearfix"></div>';
+						 }
+						result = result + '</div>';
+					
 				 
-				 if(json.skills != null && json.skills != "" && json.skills != 'undefined'){
-						result = result + ' 		<div class="project_details_cta">';
-						result = result + '				 <strong>Skills :</strong><span class="fix" title="'+json.skills+'">'+json.skills+'</span><div class="clearfix"></div>';
-						result = result + ' 		</div>';
-					 }
 				 
-				 if(json.education != null && json.education != "" && json.education != 'undefined'){
-						result = result + ' 		<div class="project_details_cta">';
-						result = result + '				 <strong>Education :</strong><span class="fix" title="'+json.education+'">'+json.education+'</span><div class="clearfix"></div>';
-						result = result + ' 		</div>';
-					 }
+						result = result + '<div class="project_details_cta clearfix">';
+						result = result + '	<strong>Max Experience :</strong>';
+						if(json.maxExp != null && json.maxExp != "" && json.maxExp != 'undefined'){
+						result = result + '<span class="fix">'+json.maxExp+'</span><div class="clearfix"></div>';
+						 }
+						result = result + ' </div>';
+					
+						result = result + '<div class="project_details_cta clearfix">';
+				      if(json.skills != null && json.skills != "" && json.skills != 'undefined'){
+						result = result + '	<strong>Skills :</strong>';
+						result = result + '<span class="fix" title="'+json.skills+'">'+json.skills+'</span><div class="clearfix"></div>';
+				       }
+						result = result + ' </div>';
+					 
 				 
-				 if(json.description != null && json.description != "" && json.description != 'undefined'){
-						result = result + ' 		<div class="project_details_cta">';
-						result = result + '				 <strong>Description :</strong><span class="fix" title="'+json.description+'">'+json.description+'</span><div class="clearfix"></div>';
-						result = result + ' 		</div>';
-					 }
 				 
+						result = result + ' <div class="project_details_cta clearfix">';
+						result = result + '	<strong>Education :</strong>';
+						if(json.education != null && json.education != "" && json.education != 'undefined'){
+						result = result + '<span class="fix" title="'+json.education+'">'+json.education+'</span><div class="clearfix"></div>';
+						 }
+						result = result + ' </div>';
+					
+				 
+				 
+						result = result + ' <div class="project_details_cta clearfix">';
+						result = result + '	<strong>Description :</strong>';
+						if(json.description != null && json.description != "" && json.description != 'undefined'){
+						result = result + '	<span class="fix" title="'+json.description+'">'+json.description+'</span><div class="clearfix"></div>';
+						 }
+						result = result + '</div>';
+					
+						result = result + '	<div class="clearfix"></div>';
 				result = result + '	</div>';
-				result = result + '</div>';
 				$("#viewReqTemplateDiv").empty();  
    	    	    $("#viewReqTemplateDiv").append(result);
 				

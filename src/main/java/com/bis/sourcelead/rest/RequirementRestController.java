@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -505,6 +504,29 @@ public class RequirementRestController {
 				Boolean validatejobName = requirementService.validateRequirementTitle(templateName,orgLocation.getId());
 				return validatejobName.toString();
 		    }
+	 
+	 
+	 @RequestMapping(value = "/terminateRequirementTemplate", method = RequestMethod.POST)
+		public @ResponseBody String terminateRequirementTemplate(String requirementId, String status, HttpServletRequest request) throws Exception {
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			Requirement rt =  requirementService.getRequirementTemplateByRequirementId(Long.parseLong(requirementId),orgLocation.getId());
+			if(rt != null){
+				
+				if(status.equalsIgnoreCase("remove")){
+					rt.setStatus(Constants.MEMBER_IN_ACTIVE);
+				}else if(status.equalsIgnoreCase("reActive")){
+					rt.setStatus(Constants.MEMBER_ACTIVE);
+				}
+				
+				rt.setUpdatedBy(user.getUserCode());
+				rt.setUpdatedDate(commonUtil.currentDate());
+				requirementService.updateRequirementTemplate(rt);
+			}
+			return "success";
+		}
 	 
 		
 }
