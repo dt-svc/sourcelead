@@ -70,6 +70,9 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			    	 String hours = requirementInterview.getStartTime().getHours()+"";
 			    	 String minutes = requirementInterview.getStartTime().getMinutes()+"";
 			    	 interviewHistory.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
+			    	 if(requirementInterview.getStartTime().compareTo(new Date())<0){
+			    		 interviewHistory.setFeedbackStartTime("feedbackStartTime");
+			    	 }
 			    }
 			    
 			    if(requirementInterview.getEndTime() != null){
