@@ -438,7 +438,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			    	         
 					    	 int i= 0;
 					    	 for(CandidateResumes wte : candidateResumesList){
-			    	        	  addToZipFile(wte.getDocFile(), outZip , wte.getFileName()+""+i);
+			    	        	  addToZipFile(wte.getDocFile(), outZip , wte.getFileName());
 			    	        	  i++;
 			    	         }
 					    	 
