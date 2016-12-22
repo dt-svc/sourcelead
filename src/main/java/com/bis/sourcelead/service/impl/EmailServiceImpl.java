@@ -117,12 +117,16 @@ public class EmailServiceImpl implements EmailService {
 			 emailMessage.setMessageBody(emailTemplate);
 			 emailMessage.setOrgLocationId(orgLocation.getId());
 			 
-			 ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
-			 EmailAttachment emailAttachment = new EmailAttachment();
-			 emailAttachment.setName(multiFile.getOriginalFilename());
-			 emailAttachment.setDocFile(multiFile.getBytes());
-			 emailAttachment.setType(multiFile.getContentType());
-			 attachmentList.add(emailAttachment);
+			 ArrayList<EmailAttachment> attachmentList = null;
+			 if(multiFile.getSize() > 0){
+				 attachmentList = new ArrayList<EmailAttachment>();
+				 EmailAttachment emailAttachment = new EmailAttachment();
+				 emailAttachment.setName(multiFile.getOriginalFilename());
+				 emailAttachment.setDocFile(multiFile.getBytes());
+				 emailAttachment.setType(multiFile.getContentType());
+				 attachmentList.add(emailAttachment);
+			 }
+			 
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),emailRecipientList,attachmentList);

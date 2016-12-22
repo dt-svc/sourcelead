@@ -38,6 +38,15 @@ public interface RequirementSubmissionDao {
 	
 	RequirementSubmission getRequirementSubmissionByIdAndSubmissionStatus(Long submissionId,String submissionStatus)throws Exception;
 
+	/**
+	 * @author Prasad Salina
+	 * @param email
+	 * @param requirementId
+	 * @param orgLocationsId
+	 * @return
+	 */
+	RequirementSubmission validateRequirementCandidateEmail(String email, Long requirementId, Long orgLocationsId) throws Exception;
+	
 	RequirementSubmission getSubmissionsBySourceSubmissionId(Long sourceSubmissionId, Long orgLocationsId);
 	
 	Integer getAllSubmissionCountByRequirementIdAndSubmissionStage(Long orgLocationsId, Long requirementId,String submissionStatus);
