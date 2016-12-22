@@ -43,6 +43,10 @@ public class CandidateComments implements Serializable{
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
 	private Candidate candidateId;
 	
+	@ManyToOne
+	@JoinColumn(name = "SUBMISSION_ID", nullable=false)
+	private RequirementSubmission submissionId;
+	
 	@Column(name = "COMMENT", columnDefinition = "TEXT default NULL")
 	private String comment;
 	
@@ -89,6 +93,14 @@ public class CandidateComments implements Serializable{
 		this.candidateId = candidateId;
 	}
 	
+	public RequirementSubmission getSubmissionId() {
+		return submissionId;
+	}
+
+	public void setSubmissionId(RequirementSubmission submissionId) {
+		this.submissionId = submissionId;
+	}
+
 	public String getComment() {
 		return comment;
 	}
