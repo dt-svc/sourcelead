@@ -23,7 +23,9 @@ function candidateEducation(candidateId){
 	
 	var result = "";
 	result = result  +'    <div class="project_tabs_inn_head addUser-org">  ';
-	result =result +'<div id = "msgDiv1"></div>';
+	result  = result + '<div class="success_pop" id="selector4" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>';
+    result  = result + '</div>';
 	if(window.candidateStatusGlobal == '0'){
 		
 		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\')">'; 	
@@ -58,6 +60,17 @@ function candidateEducation(candidateId){
 }
 </script>
 
+
+<!-- Show success message after form submission script -->
+<script>
+	function eduMsgFadein() {
+		$("#selector4").fadeIn(200);
+        $('#selector4').delay(2000).fadeOut('slow');
+	}
+</script> 
+<!-- End -->
+
+
 <%-- 
      @author : sarath kumar.
      this script is for get candidateEducationList.
@@ -81,17 +94,17 @@ function candidateEducationList(candidateId){
              		 }
              		 else{
              			var json = JSON.parse(data);
-             			for (var i = 0; i < 1; i++) {
+             			/* for (var i = 0; i < 1; i++) {
                             var val= json[i];
                             var opt = "";
                                     if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-                                            opt  = opt + '<div class="success_pop" id="selector2" style="display: block;">';
+                                            opt  = opt + '<div class="success_pop" id="selector4" style="display: block;">';
                                             opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
                                             opt  = opt + '</div>';
                                             }
                                     $("#msgDiv1").empty();
                                     $("#msgDiv1").append(opt);
-                            }
+                            } */
              			 
 	                	 $("#candidateEducationList").empty();
 	                	 var result = "";
@@ -173,7 +186,6 @@ function candidateEducationList(candidateId){
 	                     result = result +"</table>";
 	                     $("#candidateEducationList").append(result); 
 	                     educationPagination(); 
-	                     msgFadein1(); 
 			    	} 
                }else{
 	    	         var result ="";
@@ -182,7 +194,7 @@ function candidateEducationList(candidateId){
 					 result = result+"		<div class='content-area clearfix'>"; 
 					 result = result+"			<div class='blank-pages'>";
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No CandidatesCertifications Found</p>";
+					 result = result+"			        <p>No Candidate Educations Found</p>";
 					 result = result+"			 </div>";
 					 result = result+"		</div>"; 
 					 result = result+"	</div>"; 
@@ -610,8 +622,12 @@ function candidateEducationStore(candidateId){
 				               			 location.replace(sourceleadUrl+"/errorPage");
 				               		}
 				               		else{
-				               			 $("#popUpDiv").removeClass("edit-details-active");
-				               			 candidateEducationList(candidateId);
+				               		    $("#popUpDiv").removeClass("edit-details-active");
+				            			$("#selector4").removeAttr("style");
+				            			$("#selector4").css({ display: "block" });
+			            				$("#eduMsgDiv").html("Success!! New Education added");
+				               			candidateEducationList(candidateId);
+				               			eduMsgFadein();
 							    	}
 				                 }   
 				      }, 
@@ -674,8 +690,12 @@ function removeEducation(candidateEducationId,candidateId){
 			    	}else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
              		}else{
+           			 	 $("#selector4").removeAttr("style");
+            			 $("#selector4").css({ display: "block" });
+            			 $("#eduMsgDiv").html("Education deleted");
              			 $("#popUpDiv").removeClass("edit-details-active");
-             			candidateEducationList(candidateId);
+             			 candidateEducationList(candidateId);
+             			 eduMsgFadein();
 			    	}
                } 
         },
@@ -777,7 +797,11 @@ function clearSearchKey() {
 								+ "/upDateCandidateEducationByCandidateIdAndCandidateEducationId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId ,
 						success : function(result) {
 							closePopup();
+		            			$("#selector4").removeAttr("style");
+		            			$("#selector4").css({ display: "block" });
+		            			$("#eduMsgDiv").html("Education details updated");
 							candidateEducationList(candidateId)
+							eduMsgFadein();
 						},
 					});
 			return true;
@@ -823,9 +847,3 @@ function clearSearchKey() {
  }
  </script>     
  
- <script>
-       function msgFadein1() {
-           setTimeout(function(){
-                   $('#selector2').fadeOut('slow'); }, 1000);
-       }
-</script>  

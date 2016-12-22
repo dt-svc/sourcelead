@@ -30,6 +30,9 @@ overflow-x: auto;
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
+	     <div class="success_pop" id="selector1" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv1"></span>
+       </div>
           <div class="pull-left">
             <h2>Vendors<span class="select-fild">
                 	<select id="listOfVendors" onchange="listChange(this);">
@@ -1105,7 +1108,11 @@ function acceptInvitation(spocId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Accepted",	    	   
 		    success: function(data) {
+		    	$("#selector1").removeAttr("style");
+    			$("#selector1").css({ display: "block" });
+    			$("#msgDiv1").html("Accept Invitation Successfully");
 		    	getVendorContactLists();
+		    	msgFadein();
 		    }
 	   });
 }
@@ -1118,7 +1125,11 @@ function rejectInvitation(spocId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Rejected",
 		    success: function(data) {
+		    	$("#selector1").removeAttr("style");
+    			$("#selector1").css({ display: "block" });
+    			$("#msgDiv1").html("Reject Invitation Successfully");
 		    	getVendorContactLists();
+		    	msgFadein();
 		    }
 	   });
 }
@@ -1285,7 +1296,8 @@ function exportVendorContactToExcel(){
 <!-- Show success message after form submission script -->
 <script>
 	function msgFadein() {
-	    setTimeout(function(){ 
+		$("#selector1").fadeIn(200);
+    setTimeout(function(){ 
 	    	$('#selector1').fadeOut('slow'); }, 300);
 	}
 </script> 

@@ -482,7 +482,7 @@ public class DashboardRestController {
 			if(status.equalsIgnoreCase("APPROVED")){ 
 			    if(maxLevel!=null){
 			    	 if(maxLevel == requirementApproverHierarchy.getLevel()){
-			    		 requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.APPROVED);
+			    		 requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
 					   }else{
 					    	List<RequirementApproverHierarchy> list1  =  requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
 					    	for(RequirementApproverHierarchy rah :list1){
