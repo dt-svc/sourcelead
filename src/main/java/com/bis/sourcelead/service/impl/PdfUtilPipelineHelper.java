@@ -395,7 +395,22 @@ public class PdfUtilPipelineHelper  {
 	            List orderedList = new List(List.ORDERED);
 		        orderedList.add(new ListItem("Requirement Name :"+requirement.getJobTitle()));
 		        orderedList.add(new ListItem("Location :"+requirement.getCountry()));
-		        orderedList.add(new ListItem("Experience :"+requirement.getMaxExp()+"-"+requirement.getMinExp()));
+		        if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
+					
+			        orderedList.add(new ListItem("Experience :"+requirement.getMaxExp()+"-"+requirement.getMinExp()));
+					
+				}else if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp())){
+					
+			        orderedList.add(new ListItem("Experience :" +"0 -" +requirement.getMinExp() + "years"));
+					
+					}else if(requirement.getMaxExp() != null && !"".equalsIgnoreCase(requirement.getMaxExp())){
+						
+				        orderedList.add(new ListItem("Experience :" +"0 -" +requirement.getMaxExp() + "years"));
+						
+					}else{
+				        orderedList.add(new ListItem("--"));
+						}
+		        
 		        orderedList.add(new ListItem(headerName+" "+count));
 
 		        document.add(orderedList);

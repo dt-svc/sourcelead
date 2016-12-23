@@ -445,8 +445,25 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		cell5.setCellStyle(style);
 
 		Cell cell6 = writeRow.createCell(1);
-		cell6.setCellValue(requirement.getMaxExp() + " " + requirement.getMinExp());
-		cell6.setCellStyle(style);
+		if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
+			
+			cell6.setCellValue(requirement.getMinExp() + "-" + requirement.getMaxExp());
+			cell6.setCellStyle(style);
+			
+		}else if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp())){
+			
+			cell6.setCellValue("0 -" +requirement.getMinExp() + "years");
+			cell6.setCellStyle(style);	
+			
+			}else if(requirement.getMaxExp() != null && !"".equalsIgnoreCase(requirement.getMaxExp())){
+				
+				cell6.setCellValue("0 -" +requirement.getMaxExp() + "years");
+				cell6.setCellStyle(style);
+				
+			}else{
+					cell6.setCellValue("--");
+					cell6.setCellStyle(style);
+				}
 
 		writeRow = createExcelsheet.createRow(4);
 		createExcelsheet.setColumnWidth(0, 10000);

@@ -256,8 +256,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 		   if(userRoles.getUser().getMobilePhone() != null){
 			   writeRow.createCell(4).setCellValue(userRoles.getUser().getMobilePhone());
 		   }
-		   if(userRoles.getUserType() != null){
-			   writeRow.createCell(8).setCellValue(userRoles.getUserType());
+		   if(userRoles.getRoles() != null){
+			   writeRow.createCell(8).setCellValue(userRoles.getRoles().getDisplayName());
 		   }
 		   if(userRoles.getUser().getLocation() !=null){
 			   writeRow.createCell(7).setCellValue(userRoles.getUser().getLocation());
