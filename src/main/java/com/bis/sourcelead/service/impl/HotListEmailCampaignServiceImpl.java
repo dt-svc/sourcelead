@@ -150,9 +150,11 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 emailMessage.setOrgLocationId(orgLocation.getId());
+		 emailMessage.setEmailType(Constants.EMAIL_CAMPAIGN);
 		 
 		 ArrayList<EmailAttachment> attachmentList = null;
 		 EmailAttachment emailAttachment = new EmailAttachment();
+		 
 		 
 		 if(multiFile.getSize() > 0){
 			 attachmentList =  new ArrayList<EmailAttachment>();

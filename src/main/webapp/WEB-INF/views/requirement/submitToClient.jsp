@@ -361,6 +361,12 @@ function addEmailtemplate(requirementId){
 					result = result +'                 <div class="col-md-3">';
 					result = result +'	                  <lable><input type="checkbox" name="sendTracker" checked>&nbsp;Send tracker</label>';
 					result = result +'	                  </div>';
+					
+					result = result +'                 <div class="col-md-3">';
+					result = result +'	                  <lable><input type="checkbox" name="sendResumes" checked>&nbsp;Send resumes</label>';
+					result = result +'	                  </div>';
+					
+					
 					result = result +'	                  </div>';
 					result = result +'			<div class="col-md-12 clearfix mt">';
 					result = result +'				<div class="col-md-6">';

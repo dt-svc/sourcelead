@@ -239,6 +239,8 @@ $(document).ready(function() {
 $(document).ready(function() {
     $("#export-pop").click(function(){
 		$(".export_pop").slideToggle(200);
+		 $(".action-pop").slideUp(200);
+		
 	});
     $("html").click(function() {
         $(".export_pop").slideUp(200);
@@ -1838,6 +1840,7 @@ function recommendationpagination(){
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
+	$(".export_pipline").slideUp(200);
 	$("html").click(function(){
 		$(".action-pop").slideUp(200);
 	});
@@ -2132,6 +2135,7 @@ function tabEnable(local){
 //piplineexportpop 
 function piplineexport(){
 	$(".export_pipline").toggle();
+	 $(".action-pop").slideUp(200);	
 };
 /* $("#pipline-exportpop").click(function(){
 	$("#export_pipline").show();

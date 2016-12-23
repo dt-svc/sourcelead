@@ -180,6 +180,12 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 		 return candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
 	}
 	
+	@Override
+	public List<CandidateResumes> getCandidateResumesByIds(List<Long> submissionResumeIds) {
+		return candidateResumesDao.getCandidateResumesByIds(submissionResumeIds);
+	}
+	
+	
 	/**
 	 * @author Venkat Kesav
 	 * @since  aug 30 2016
