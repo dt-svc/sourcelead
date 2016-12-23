@@ -33,8 +33,8 @@ public class SourceleadELKTransportClient {
     public SourceleadELKTransportClient() {
 	     try {
 	    	  Settings settings = Settings.settingsBuilder()
-	    			  .put("cluster.name", "elasticsearch")
-	                  .put("node.name", "Tundra")
+	    			  .put("cluster.name", "sourcelead")
+	                  .put("node.name", "sourcelead_node")
 	         		  .put("path.home", "/usr/share/elasticsearch")
 	                  .build();
 			client = TransportClient.builder().settings(settings).build().

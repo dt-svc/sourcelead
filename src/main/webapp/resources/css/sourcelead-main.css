@@ -1652,7 +1652,7 @@ custom scroll bar ends*/
 	font-size: 13px;
 	margin: 10px 0 0;
 	color: #909090;
-	word-wrap:break-word;
+	word-wrap: break-word;
 }
 .notificatons {
 	background: #ffffff;
@@ -5221,7 +5221,6 @@ display: inline-block;
 font-size: 60px;
 margin-bottom: 20px;
 }
-
 .mail-widget{
 padding:10px 15px;
 position: relative;
@@ -5245,7 +5244,6 @@ border-bottom: none !important;
 }
 .checkbox-custom-label, .radio-custom-label {
     position: relative;
-    margin-bottom: 0;
 }
 .checkbox-custom + .checkbox-custom-label:before, .radio-custom + .radio-custom-label:before {
     content: '';
@@ -5272,14 +5270,15 @@ border-bottom: none !important;
 	padding: 0px 5px !important;
 }
 /* check boc custom styels */
-
-
-.mrleft8
-{
-	margin-left: 8px !important;
+.margnleft8{
+	margin-left: 8px;
 }
 #mailBoxList .table{
 	margin-bottom: 0 !important;
+}
+.mrleft8
+{
+	margin-left: 8px !important;
 }
 .mail-read a{
 	color:#909090;
@@ -5287,7 +5286,13 @@ border-bottom: none !important;
 .mail-unread a{
 	color:#333;
 }
-
+.project_wrap_table.mail-table table tr td {
+border-left: none !important;
+}
+.mail-table table{
+border:none;
+border-bottom: 1px solid #ccc !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {

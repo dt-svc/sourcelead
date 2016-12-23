@@ -329,7 +329,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             // getting the current EmailScenario by EmailScenario unique name and
             // entity type
             EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_MAIL_TO_VENDORS, Constants.ENTITY_TYPE_EMAIL);
-           // EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_MAIL_TO_VENDORS, Constants.ENTITY_TYPE_NOTIFICATION);
+            EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_MAIL_TO_VENDORS, Constants.ENTITY_TYPE_NOTIFICATION);
 
 
             // covert subject,body and signature
@@ -338,13 +338,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
             String url = "";
             
-            //String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
-           // notificationScenario.setBody(notificationbody);
+            String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+           notificationScenario.setBody(notificationbody);
 
 
             // construct HTML template using required data
-            String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-                            signature, url, new Org());
+            String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, new Org());
             emailMessage.setSubject(subject);
             emailMessage.setMessageBody(emailTemplate);
 
@@ -355,7 +354,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
                 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
                 String actionLink="";
                OrgLocations vendorLocation = clientrequirement.getOrgLocationId();
-				//emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getSpocUser(), vendorLocation, notificationScenario);
+				emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getSpocUser(), vendorLocation, notificationScenario);
         		}catch (MessagingException e) {
         			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
         		} catch (UnsupportedEncodingException e) {
@@ -423,8 +422,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
        /* globalVarsMap.put("acceptLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOffer?offerStatus=Accepted&submissionId="+applicant.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
         globalVarsMap.put("rejectLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOffer?offerStatus=Rejected&submissionId="+applicant.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");*/
 
-         globalVarsMap.put("acceptLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOffer?offerStatus=Accepted&offerId="+requirementOffers.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
-         globalVarsMap.put("rejectLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOffer?offerStatus=Rejected&offerId="+requirementOffers.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
+         globalVarsMap.put("acceptLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectRequirementOffer?offerStatus=Accepted&offerId="+requirementOffers.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
+         globalVarsMap.put("rejectLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectRequirementOffer?offerStatus=Rejected&offerId="+requirementOffers.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
         
         
         if(requirementOffers.getFileName() != null && !requirementOffers.getFileName().isEmpty() ){

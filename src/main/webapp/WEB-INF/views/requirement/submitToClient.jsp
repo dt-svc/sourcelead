@@ -1,7 +1,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
 
@@ -10,17 +10,9 @@
 
 
 <!-- newly added -->
-<link href="resources/css/bootstrap3-wysihtml5.min.css" rel="stylesheet"> 
-<script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script> 
-
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
 
 <script src="resources/js/jquery-fun.js"></script> 
-
-<script src="resources/js/chosen.jquery.min.js"></script> 
 <script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -555,9 +547,3 @@ function cancelSubmit(){
 }
 </script>
 
-
-<script src="js/jquery-1.11.3.min.js"></script>
-  <script src="js/bootstrap3-wysihtml5.all.min.js"></script> 
-  <script src="js/bootstrap.min.js"></script> 
-  <script src="js/masterHeaderAction.js"></script> 
-  <script src="js/chosen.jquery.min.js"></script> 
