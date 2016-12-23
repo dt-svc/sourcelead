@@ -24,17 +24,24 @@ function getAddApplicant(requirementId){
 	var result = "";
 	result = result + '<form id="addApplicant_form" name="addApplicant_form" enctype="multipart/form-data" method="post">';
 	result = result + '<h3>Add Applicant</h3>';
-	result = result + '<div class="form-horizontal clearfix">';
+	result = result + '<div class="form-horizontal clearfix select-field">';
 	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 	
 	result = result + '<div class="row">';
 	result = result + '<div class="venk clearfix">';
-	result = result + '<div class="col-md-5">';
-	result = result + '<label>Select Candiate</label>';
-	result = result + '<select  onchange="getCandidateResumes();" onclick="getCandidateDetails();" name="candidateId" id="candidateId" field-name="Candidate" class="form-control  block">';
+	result = result + '<div class="col-md-5 radioInline">';
+	
+	result = result + '<label class="mr"><input type="radio" checked="checked" value="Candidates" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Candidate\');">Candidates</label>';
+	result = result + '<label class="mr"><input type="radio" value="Consultants" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Consultant\');">Consultants</label>';
+	result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');">Add new candidate</label>';
+	
+	/* result = result + '<label>Select Candiate</label>'; */
+	result = result + '<div id="selectCandidateDiv" style="display: block;">';
+	result = result + '<select  onchange="getCandidateResumes();" onclick="getCandidateDetails();" name="candidateId" id="candidateId" field-name="Candidate" class="form-control  block mt10">';
 	result = result + '<option value="">--Select Candidate--</option>';
 	result = result + '</select>';
-	result = result + '</div>';		
+	result = result + '</div>';	
+	result = result + '</div>';	
 	result = result + '<div id="orConditionDiv" class="text-center text-info col-md-2" style="display: block;">';
 	result = result + '------- ( OR ) -------';
 	result = result + '</div>';
@@ -74,7 +81,7 @@ function getAddApplicant(requirementId){
 	result = result + '</div>';  
 	result = result + '</form>';
 	 
-	getCandidatesList(requirementId);
+	getCandidatesList(requirementId,'Candidate');
 	
 	$("#addApplicantDiv").empty();
 	$("#addApplicantDiv").append(result);
@@ -98,33 +105,50 @@ function ApplicantPermit(){
 
 
 <script type="text/javascript">
- function getCandidatesList(requirementId) {
+ function getCandidatesList(requirementId,candidateType) {
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 if(requirementId != null && requirementId != "" && requirementId != 'undefined'){
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidatesList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var output = "";
-		        	output = output + "<option value=''>-- Select Candidate --</option>"; 
-		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
-					}
-		        	$("#candidateId").empty();
-			        $("#candidateId").append(output);
-			        $('#candidateId').trigger("chosen:updated");
-		        },
-		    });
+	
+	 if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType != 'New'){
+		 $("#selectCandidateDiv").css("display","block");
+		 if(requirementId != null && requirementId != "" && requirementId != 'undefined'){
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/getCandidatesList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&candidateType="+candidateType, 
+			        success: function(data) {
+			        	var json = JSON.parse(data);
+			        	var output = "";
+			        	output = output + "<option value=''>-- Select "+candidateType+" --</option>"; 
+			        	for (var i=0; i<json.length; i++)
+						{
+				        		var opt = json[i];
+				        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+						}
+			        	$("#candidateId").empty();
+				        $("#candidateId").append(output);
+				        $('#candidateId').trigger("chosen:updated");
+			        },
+			    });
+		 }else{
+			 var output = "";
+	     	 output = output + "<option value=''>-- Select Candidate --</option>"; 
+	     	 $("#candidateId").empty();
+		     $("#candidateId").append(output);
+		     $('#candidateId').trigger("chosen:updated");
+		 }
 	 }else{
 		 var output = "";
      	 output = output + "<option value=''>-- Select Candidate --</option>"; 
      	 $("#candidateId").empty();
 	     $("#candidateId").append(output);
 	     $('#candidateId').trigger("chosen:updated");
+	     $("#selectCandidateDiv").css("display","none");
+	     
+	     document.getElementById("browseDiv").style.display="";
+		 document.getElementById("orConditionDiv").style.display="none";
+		 $("#uploadFile").attr("data-validation", "required");
 	 }
+	 
+	 
 	
  }
 </script>
@@ -339,6 +363,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 
 <script type="text/javascript">
 function getCandidateDetails(){
+	
 	var candidateId = document.getElementById("candidateId").value
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
@@ -349,6 +374,7 @@ function getCandidateDetails(){
 		        	var json = JSON.parse(data);
 		        	 $("input[name=FirstName]").val(json['firstName']);
 		        	 $("input[name=EmailId]").val(json['email']);
+		        	 $("input[name=EmailId]").attr('readonly', 'readonly');
 		        	 
 		        	 if(json['lastName'] != null && json['lastName'] != "" && json['lastName'] != 'undefined'){
 		        		 $("input[name=LastName]").val(json['lastName']);
@@ -422,6 +448,9 @@ function getCandidateDetails(){
 		 $("input[name=FirstName]").val('');
     	 $("input[name=LastName]").val('');
     	 $("input[name=EmailId]").val('');
+    	 $("input[name=EmailId]").removeAttr("readonly");
+    	 
+    	 
     	 $("input[name=PhoneNumber]").val('');
     	 $("input[name=Designation]").val('');
     	 $("select[name=country]").val('');
