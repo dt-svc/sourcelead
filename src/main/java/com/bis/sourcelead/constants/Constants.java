@@ -198,6 +198,8 @@ public class Constants {
 	public static  String Finance = "Finance";
 	public static  String AssetManagement = "AssetManagement";
 	
+	public static  String TimeSheet_Approval = "Timesheet Approval";
+	
 	public static  String Requirement = "Requirement";
 	public static  String Vendors = "Vendors";
 	public static  String Candidates = "Candidates";

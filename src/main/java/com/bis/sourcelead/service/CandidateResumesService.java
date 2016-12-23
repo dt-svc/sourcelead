@@ -50,6 +50,15 @@ public interface CandidateResumesService {
 	 */
 	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, Integer status) throws Exception;
 	
+	
+	/**
+	 * @author Prasad Salina
+	 * @param submissionResumeIds
+	 * @return
+	 * To get List of CandidateResumes by resumeIds
+	 */
+	public List<CandidateResumes> getCandidateResumesByIds(List<Long> submissionResumeIds);
+	
 	/**
 	 * @param candidateResumes
 	 * @return

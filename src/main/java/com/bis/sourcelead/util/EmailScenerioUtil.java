@@ -138,8 +138,8 @@ public void sendNotification(String actionLink,User loginUser,User toUser, OrgLo
 	
 	}
 
-public void sendWithAttachmentEmail(EmailMessage emailMessage, Long locationsId, ArrayList<EmailRecipient> emailRecipientList,List<EmailAttachment> attachmentList) throws Exception{
-	emailMessageService.sendEmailWithAttachment(emailMessage,locationsId,emailRecipientList,attachmentList);
+public void sendWithAttachmentEmail(EmailMessage emailMessage, Long locationsId, ArrayList<EmailRecipient> emailRecipientList,List<EmailAttachment> attachmentList, String[] submissionIds) throws Exception{
+	emailMessageService.sendEmailWithAttachment(emailMessage,locationsId,emailRecipientList,attachmentList,submissionIds);
 	
 }
 
