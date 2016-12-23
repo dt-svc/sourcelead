@@ -38,7 +38,7 @@ function getAddApplicant(requirementId){
 	
 	result = result + '<div class="col-md-5">';
 	result = result + '<div id="selectCandidateDiv" style="display: block;">';
-	result = result + '<select  onchange="getCandidateResumes();" onclick="getCandidateDetails();" name="candidateId" id="candidateId" data-validation="required" field-name="Candidate" class="form-control  block mt10">';
+	result = result + '<select  onchange="getCandidateResumes();" onclick="getCandidateDetails();" name="candidateId" id="candidateId" data-validation="required" field-name="Applicant" class="form-control  block mt10">';
 	result = result + '<option value="">--Select Candidate--</option>';
 	result = result + '</select>';
 	result = result + '</div>';	
@@ -47,8 +47,8 @@ function getAddApplicant(requirementId){
 	result = result + '------- ( OR ) -------';
 	result = result + '</div>';
 	
-	result = result + '<div class="col-md-12">';
-	result = result + '<div class="panel-border col-md-offset-3 col-md-6">';
+	result = result + '<div class="col-md-5 pull-right">';
+	result = result + '<div class="panel-border col-md-12">';
 	result = result + '<div class="" id="browseDiv"  style="display: none;">';
 
 	result = result + '<div class="input-group" id="uploadFileGroup">';
@@ -246,6 +246,7 @@ function ApplicantPermit(){
 	 $("input[name=Education]").val('');
 	 
 	 $("#newUploadFile").val('');
+	 $("#uploadFile").val('');
 	
  }
 </script>
