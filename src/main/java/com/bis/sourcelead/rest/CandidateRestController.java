@@ -183,7 +183,7 @@ public class CandidateRestController {
 	 
 	 
 	 @RequestMapping(value = "/getCandidatesList", method = RequestMethod.POST)
-		public @ResponseBody String getCandidatesList(
+		public @ResponseBody String getCandidatesList( 
 				  @RequestParam(value = "requirementId", required = false) Long requirementId, 
 				  @RequestParam(value="candidateType", required=false) String  candidateType, HttpServletRequest request) throws Exception {
 			String resultJson = null;

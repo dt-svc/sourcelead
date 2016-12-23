@@ -127,7 +127,7 @@ function ApplicantPermit(){
 				        $("#candidateId").append(output);
 				        $('#candidateId').trigger("chosen:updated");
 			        },
-			    });
+			    }); 
 		 }else{
 			 var output = "";
 	     	 output = output + "<option value=''>-- Select Candidate --</option>"; 

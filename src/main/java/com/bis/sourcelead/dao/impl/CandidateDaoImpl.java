@@ -289,7 +289,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	}
 
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
+	@Transactional(rollbackFor = { Exception.class }) 
 	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId, String candidateType) throws Exception {
 		logger.debug("In getCandidatesByOrgLocationID method");
 		Session session = this.sessionFactory.getCurrentSession();
