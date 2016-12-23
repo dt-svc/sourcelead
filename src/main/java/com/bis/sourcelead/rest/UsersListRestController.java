@@ -437,7 +437,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 				json = "{"+json+"}";
 			    JSONObject jsonObj = new JSONObject(json);
 			    
-				if(userRole != null){
+				if(null != userRole){
 					
 					if(jsonObj.has("assignReportingManagers") && !isNullOrEmpty("assignReportingManagers")){
 						List<UserRole> userRolesList = userRoleService.getAllAssignedUsersByReportingManagerId(userId, orgLocations.getId());
