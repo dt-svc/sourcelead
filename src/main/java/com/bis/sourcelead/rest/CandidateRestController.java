@@ -183,13 +183,12 @@ public class CandidateRestController {
 	 
 	 
 	 @RequestMapping(value = "/getCandidatesList", method = RequestMethod.POST)
-		public @ResponseBody String getCandidatesList( 
-				  @RequestParam(value = "requirementId", required = false) Long requirementId, 
-				  @RequestParam(value="candidateType", required=false) String  candidateType, HttpServletRequest request) throws Exception {
+		public @ResponseBody String getCandidatesList(
+				@RequestParam(value = "requirementId", required = false) Long requirementId, HttpServletRequest request) throws Exception {
 			String resultJson = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
-			List<Candidate> candidatesList = candidateService.getCandidatesByOrgLocationID(orgLocations.getId(),requirementId,candidateType);
+			List<Candidate> candidatesList = candidateService.getCandidatesByOrgLocationID(orgLocations.getId(),requirementId);
 			
 			resultJson = toJSON(candidatesList);
 			return resultJson;

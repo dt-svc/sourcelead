@@ -289,15 +289,15 @@ public class CandidateDaoImpl implements CandidateDao {
 	}
 
 	@Override
-	@Transactional(rollbackFor = { Exception.class }) 
-	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId, String candidateType) throws Exception {
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId) throws Exception {
 		logger.debug("In getCandidatesByOrgLocationID method");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Candidate> candidatesList = null;
-		Query candidateListQuery= session.createQuery("from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.candidateType = :candidateType "
+		Query candidateListQuery= session.createQuery("from Candidate candidate where candidate.orgLocationId.id = :orgLocationId "
 				+ "and candidate.status = '1' and candidate.id NOT IN (select submission.candidate.id from RequirementSubmission submission "
 				+ "where submission.requirement.id = :requirementId) ORDER BY candidate.id DESC ");
-		candidatesList = candidateListQuery.setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setString("candidateType", candidateType).setCacheable(true).list();
+		candidatesList = candidateListQuery.setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setCacheable(true).list();
 		return candidatesList;
 	}
 

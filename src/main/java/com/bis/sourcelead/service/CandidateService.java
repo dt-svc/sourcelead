@@ -72,7 +72,7 @@ public interface CandidateService {
 	public Candidate saveOrUpdateCandidate(Candidate candidate) throws Exception;
 	
 	
-	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId,String candidateType) throws Exception;
+	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId) throws Exception;
 
 	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId)throws Exception;
 
