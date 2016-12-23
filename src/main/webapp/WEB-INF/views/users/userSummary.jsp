@@ -207,7 +207,7 @@ $(document).ready(function(){
 										result = result + '<div class="clearfix mb10">';
 										result = result + '<div class="col-md-6">';
 										    result = result + '<div class="user_badg">';
-											    result = result + '<p>Assigned as Client Owner and Spoc<strong class="label label-info">'+json.assignedAsClientOwnerOrSpocCount+'</strong></p>';
+											    result = result + '<p>Assigned as Vendor Owner and Spoc<strong class="label label-info">'+json.assignedAsClientOwnerOrSpocCount+'</strong></p>';
 													result = result + '</div>';
 									            result = result + '</div>';
 											result = result + '<div class="col-md-6" id="clientUserDiv">';
@@ -231,7 +231,7 @@ $(document).ready(function(){
 										result = result + '<div class="clearfix mb10">';
 										result = result + '<div class="col-md-6">';
 										    result = result + '<div class="user_badg">';
-											    result = result + '<p>Assigned as Vendor Owner and Spoc<strong class="label label-primary">'+json.assignedAsVendorOwnerOrSpocCount+'</strong></p>';
+											    result = result + '<p>Assigned as Client Owner and Spoc<strong class="label label-primary">'+json.assignedAsVendorOwnerOrSpocCount+'</strong></p>';
 													result = result + '</div>';
 									            result = result + '</div>';
 											result = result + '<div class="col-md-6" id="vendorUserDiv">';
@@ -621,7 +621,7 @@ function getChangeRole(userId,userRoleId){
 					result = result + '<div class="clearfix mb10">';
 					result = result + '<div class="col-md-6">';
 					    result = result + '<div class="user_badg">';
-						    result = result + '<p>Assigned as Client Owner and Spoc<strong class="label label-info">'+json.assignedAsClientOwnerOrSpocCount+'</strong></p>';
+						    result = result + '<p>Assigned as Vendor Owner and Spoc<strong class="label label-info">'+json.assignedAsClientOwnerOrSpocCount+'</strong></p>';
 								result = result + '</div>';
 				            result = result + '</div>';
 						result = result + '<div class="col-md-6" id="clientUserDiv">';
@@ -645,7 +645,7 @@ function getChangeRole(userId,userRoleId){
 					result = result + '<div class="clearfix mb10">';
 					result = result + '<div class="col-md-6">';
 					    result = result + '<div class="user_badg">';
-						    result = result + '<p>Assigned as Vendor Owner and Spoc<strong class="label label-primary">'+json.assignedAsVendorOwnerOrSpocCount+'</strong></p>';
+						    result = result + '<p>Assigned as Client Owner and Spoc<strong class="label label-primary">'+json.assignedAsVendorOwnerOrSpocCount+'</strong></p>';
 								result = result + '</div>';
 				            result = result + '</div>';
 						result = result + '<div class="col-md-6" id="vendorUserDiv">';

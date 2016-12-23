@@ -85,6 +85,7 @@ function teamList(){
 	                     result = result +"    <th>Team Name</th>"; 
 	                     result = result +"    <th>Team Leader</th>"; 
 	                     result = result +"    <th>Members</th>"; 
+	                     result = result +"    <th>Assigned Hotlist</th>";
 	                     result = result +"    <th>Action</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -97,7 +98,7 @@ function teamList(){
 	                    	
 				            /*  result = result +"<td><div><span>"+opt.name+"</span></div></td>"; */
 				             
-				             result = result +' <td><div onclick="getCandidateListForTeam('+opt.id+',\''+opt.name+'\');" class="proj_show"><span class="pull-left">'+opt.name+'</span><i class="fa fa-binoculars"></i></div></td>';
+				             result = result +' <td><div>'+opt.name+'</div></td>';
 				             
 				             
 				             if(opt.teamOwnerName != null && opt.teamOwnerName != '' && opt.teamOwnerName != 'undefined'){
@@ -106,6 +107,7 @@ function teamList(){
 				            	 result = result +"<td>-----</td>";
 				             }
 		            	     result = result +"<td><div><span>"+opt.teamMembersCount+"</span></div></td>";
+		            	     result = result +' <td><div onclick="getCandidateListForTeam('+opt.id+',\''+opt.name+'\');" class="proj_show"><span class="pull-left">'+opt.candidateHotlistCount+'</span><i class="fa fa-binoculars"></i></div></td>';
 				             result = result +"<td><div class='tblicons'>";
 				             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_TEAM\')">'; 
 				             	result = result +"<i class='glyphicon glyphicon-pencil' onclick='sideBar("+opt.id+");'></i>";

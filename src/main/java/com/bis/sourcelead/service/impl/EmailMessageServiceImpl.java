@@ -193,12 +193,18 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			for (int i = 0; i < recipients.length; i++) {
 				addressTo[i] = new InternetAddress(recipients[i]);
 			}
-			message.setRecipients(Message.RecipientType.TO, addressTo);
+			
+			
+			if(null != emailMessage.getEmailType() && emailMessage.getEmailType().equalsIgnoreCase(Constants.EMAIL_CAMPAIGN)){
+				message.setRecipients(Message.RecipientType.BCC, addressTo);
+			}else{
+				message.setRecipients(Message.RecipientType.TO, addressTo);
+			}
 
 			message.setHeader("Content-Type", "text/html; charset=UTF-8");
 			message.setSubject(emailMessage.getSubject());
 
-			if (null != attachmentList) {
+			if (null != attachmentList && attachmentList.size() > 0) {
 				for (EmailAttachment attachment : attachmentList) {
 					
 					DataSource dataSource = null;
@@ -237,6 +243,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 						mimeMultipart.addBodyPart(bodyPart);
 					}
 					
+				
 
 					message.setContent(mimeMultipart);
 					Transport.send(message);

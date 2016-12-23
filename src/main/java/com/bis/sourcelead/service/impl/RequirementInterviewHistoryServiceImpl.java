@@ -67,14 +67,17 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			    }
 			    
 			    if(requirementInterview.getStartTime() != null){
-			    	 String hours = requirementInterview.getStartTime().getHours()+"";
-			    	 String minutes = requirementInterview.getStartTime().getMinutes()+"";
+			    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
+			    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
 			    	 interviewHistory.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
+			    	 if(requirementInterview.getStartTime().compareTo(new Date())<0){
+			    		 interviewHistory.setFeedbackStartTime("feedbackStartTime");
+			    	 }
 			    }
 			    
 			    if(requirementInterview.getEndTime() != null){
-			    	 String hours = requirementInterview.getEndTime().getHours()+"";
-			    	 String minutes = requirementInterview.getEndTime().getMinutes()+"";
+			    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
+			    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
 			    	 interviewHistory.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
 			    	 if(requirementInterview.getEndTime().compareTo(new Date())<0){
 			    		 interviewHistory.setFeedbackEndTime("feedbackEndTime");
