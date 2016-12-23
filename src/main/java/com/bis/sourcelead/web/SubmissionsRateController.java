@@ -104,7 +104,7 @@ public class SubmissionsRateController {
 		model.addObject("requirementSubmission",requirementSubmission);
 		model.setViewName("requirement/submissionRate");
 		
-		if("Accepted".equalsIgnoreCase(rateStatus) && permission.equalsIgnoreCase("YES")){
+		if("Accepted".equalsIgnoreCase(rateStatus) && "YES".equalsIgnoreCase(permission)){
 			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 			UserRole userRole =userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), requirementSubmission.getOrgLocations().getId());
 			
