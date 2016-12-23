@@ -15,6 +15,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.SecurityConfig;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -55,4 +56,20 @@ public class RoleServicesTest {
 		List<Roles> roles = roleservice.getMoudleRoles(3l,1l);
 		logger.info("getMoudleRoles"+roles.size());
 	}
+	
+	@Test
+	public void getSourceleadRoles()throws Exception{
+		List<Roles> list = roleservice.getSourceleadRoles(2l);
+		logger.info("Sourcelead Roles size is..."+list.size());
+	}
+	
+	/*@Test
+	public void storeRoles()throws Exception{
+		Roles roles = new Roles();
+		roles.setRoleName("admin");
+		roles.setDisplayName("roleadmin");
+		OrgLocations orgLoc = new OrgLocations();
+		orgLoc.setId(3l);
+		roles.setOrgLocations(orgLoc);
+	}*/
 }
