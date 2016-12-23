@@ -146,6 +146,7 @@ $(document).ready(function(){
 			    var approversUsers = "";
 			    var teamOwnerUsers = "";
 			    var projectApproverUsers = "";
+			    var roles = "";
 			    
 			    if(isTimeSheetEnrolled == 'Y'){
 			    	
@@ -163,18 +164,18 @@ $(document).ready(function(){
 				result = result + '  <div class="project_details">';
 				if(json.userState != null && json.userState != "" && json.userState != 'INACTIVE'){
 				    result = result + ' <div class="useredit">';
-						
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_USER\')">'
-				        result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+				    result = result + ' <a id="edit-userRole" onclick="getRoles('+json.roles.id+');" href="javascript:editUserRole();"><i class="fa fa-edit"></i>Edit Role</a>';
+				    '</sec:authorize>';
+				    
+				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_USER\')">'
+				        result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit User</a>';
 				    '</sec:authorize>';
 				      
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\')">'
 						result = result + ' <a id="remove-user" href="javascript:removeUser();"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
 						result = result + ' <form id="deleteUser_form"  name="deleteUser_form" method="post">';	
 						result = result + ' <div id="remove_user_id" class="remove_user_pop" >';
-									/* result = result +'<textarea placeholder="Comments here" id="reason" name="reason"/></textarea>';
-									result = result + ' <div id="reasonDiv"/>';
-									result = result + ' <b><input id="save_reason" value="Submit" onClick="terminateUser('+userId+');" type="button"/><input class="u_can_color" onclick="cancelUser();" value="Cancel" type="button"></b>'; */
 									
 									result = result + '<div class="clearfix assignroles">';
 									result = result + ' <div id="deleteLoading" ></div>';
@@ -206,7 +207,7 @@ $(document).ready(function(){
 										result = result + '<div class="clearfix mb10">';
 										result = result + '<div class="col-md-6">';
 										    result = result + '<div class="user_badg">';
-											    result = result + '<p>Assigned as Client Owner and Spoc<strong class="label label-info">'+json.assignedAsClientOwnerOrSpocCount+'</strong></p>';
+											    result = result + '<p>Assigned as Vendor Owner and Spoc<strong class="label label-info">'+json.assignedAsClientOwnerOrSpocCount+'</strong></p>';
 													result = result + '</div>';
 									            result = result + '</div>';
 											result = result + '<div class="col-md-6" id="clientUserDiv">';
@@ -230,7 +231,7 @@ $(document).ready(function(){
 										result = result + '<div class="clearfix mb10">';
 										result = result + '<div class="col-md-6">';
 										    result = result + '<div class="user_badg">';
-											    result = result + '<p>Assigned as Vendor Owner and Spoc<strong class="label label-primary">'+json.assignedAsVendorOwnerOrSpocCount+'</strong></p>';
+											    result = result + '<p>Assigned as Client Owner and Spoc<strong class="label label-primary">'+json.assignedAsVendorOwnerOrSpocCount+'</strong></p>';
 													result = result + '</div>';
 									            result = result + '</div>';
 											result = result + '<div class="col-md-6" id="vendorUserDiv">';
@@ -369,6 +370,30 @@ $(document).ready(function(){
 									
 				    '</sec:authorize>';	     
 				     result = result + ' </div>';
+				     
+				     
+				     
+				     
+				     result = result + ' <div id="edit_role_pop" class="edit_role_pop" >';
+				     result = result + ' <div id="editRoleLoading" ></div>';
+				     result = result + ' <div class="user_summary_edit_cta">';
+				     result = result + ' <form id="editRole_form"  name="editRole_form" method="post">';
+				     result = result + ' <label>Change Role</label>';
+						 result = result + '<select class="chosen-select" id="userChangeRole"  onchange="getChangeRole('+userId+','+json.roles.id+');" data-validation="required" field-name="Role" name="userChangeRole"  >';
+						 result = result + '</select>';
+						
+					     result = result + ' <div id="editRoleDetailsList"></div>';
+						 result = result + ' </div>';
+						
+						  result = result + '<div class="clearfix mb10 mt">';
+						  result = result + '</div>';
+					      result = result + '<div class="clearfix"></div>';
+						  result = result + '<div class="user_summary_edit_cta">';
+						  result = result + '<input class="us-btn us-btn_a " type="button" value="Update" type="button" onclick="updateRole('+userId+');"/>';
+						  result = result + '&nbsp;<input class="us-btn" onclick="cancelEditRole();" type="button" value="Cancel"/>';
+						  result = result + '</div>';
+						result = result + ' </form>';
+					 result = result + ' </div>';
 				}
 				
 				else{
@@ -517,6 +542,261 @@ function firstname(name)
 		}else{
 			Name.innerHTML = name;	
 		}
+	
+}
+</script>
+
+<script>
+function getRoles(roleId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(roleId != null && roleId != "" && roleId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getRolesExpectSelectedRole?${_csrf.parameterName}=${_csrf.token}&roleId="+roleId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Role --</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.displayName+"</option>";
+					}
+		        	$("#userChangeRole").empty();
+			        $("#userChangeRole").append(output);
+			        $('#userChangeRole').trigger("chosen:updated");
+		        },
+		    });
+	}
+}
+</script>
+
+<script>
+function getChangeRole(userId,userRoleId){
+	var changeRoleId = document.getElementById("userChangeRole").value; 
+	var sourceleadUrl ='${sourceleadUrl}';
+	var result = "";
+				
+	if(changeRoleId){
+	 $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getUserPermissionByRole?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&userRoleId="+userRoleId+"&changeRoleId="+changeRoleId, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var reportingManagers = "";
+			    var clientOwnerAndSpoc = "";
+			    var vendorOwnerAndSpoc = "";
+			    var managerUsers = "";
+			    var approversUsers = "";
+			    var teamOwnerUsers = "";
+			    var projectApproverUsers = "";
+			    
+	        	
+        	 result = result + '<div class="clearfix assignroles changeRole">';
+	        	if(json.assignedUsersCountToReportingManager > 0){
+					result = result + '<div class="clearfix mb10">';
+					result = result + '<div class="col-md-6">';
+					    result = result + '<div class="user_badg">';
+						    result = result + '<p>Assigned Users as a Manager<strong class="label label-default">'+json.assignedUsersCountToReportingManager+'</strong></p>';
+								result = result + '</div>';
+				            result = result + '</div>';
+						result = result + '<div class="col-md-6" id="changeReportingManagerDiv">';
+						if(json.reportingManagers != null && json.reportingManagers != "" && json.reportingManagers != 'undefined' && json.reportingManagers.length > 0){
+							result = result + '<select class="chosen-select" id="assignReportingManagers" data-validation="required" field-name="Assign To" name="assignReportingManagers"  >';
+							    result = result + '<option value="">Assign to</option>';
+							    for (var i=0; i<json.reportingManagers.length; i++)
+		    					{ 
+							    	reportingManagers = json.reportingManagers[i];
+							    	result = result+"<option value='"+reportingManagers.id+"'>"+reportingManagers.firstName+" "+reportingManagers.lastName+"&nbsp;("+reportingManagers.userType+")</option>"; 
+									
+		    					}
+							    result = result + '</select>';
+						}
+						result = result + '</div>';
+						result = result + '</div>';	
+					  }
+	        	
+	        	
+	        	if(json.assignedAsClientOwnerOrSpocCount > 0){
+					result = result + '<div class="clearfix mb10">';
+					result = result + '<div class="col-md-6">';
+					    result = result + '<div class="user_badg">';
+						    result = result + '<p>Assigned as Vendor Owner and Spoc<strong class="label label-info">'+json.assignedAsClientOwnerOrSpocCount+'</strong></p>';
+								result = result + '</div>';
+				            result = result + '</div>';
+						result = result + '<div class="col-md-6" id="clientUserDiv">';
+						if(json.clientUsersList != null && json.clientUsersList != "" && json.clientUsersList != 'undefined' && json.clientUsersList.length > 0){
+						       result = result + '<select class="chosen-select" data-validation="required" field-name="Assign To" id="clientUsers" name="clientUsers" >';
+							    result = result + '<option value="">Assign to</option>';
+							    for (var i=0; i<json.clientUsersList.length; i++)
+		    					{
+							    	clientOwnerAndSpoc = json.clientUsersList[i];
+							    	result = result+"<option value='"+clientOwnerAndSpoc.id+"'>"+clientOwnerAndSpoc.firstName+" "+clientOwnerAndSpoc.lastName+"&nbsp;("+clientOwnerAndSpoc.userType+")</option>"; 
+									
+		    					}
+							    result = result + '</select>';
+						}
+						result = result + '</div>';
+						result = result + '</div>';	
+					  }	
+				
+				
+				if(json.assignedAsVendorOwnerOrSpocCount > 0){
+					result = result + '<div class="clearfix mb10">';
+					result = result + '<div class="col-md-6">';
+					    result = result + '<div class="user_badg">';
+						    result = result + '<p>Assigned as Client Owner and Spoc<strong class="label label-primary">'+json.assignedAsVendorOwnerOrSpocCount+'</strong></p>';
+								result = result + '</div>';
+				            result = result + '</div>';
+						result = result + '<div class="col-md-6" id="vendorUserDiv">';
+						if(json.vendorUsersList != null && json.vendorUsersList != "" && json.vendorUsersList != 'undefined' && json.vendorUsersList.length > 0){
+						       result = result + '<select class="chosen-select" data-validation="required" field-name="Assign To" id="vendorUsers" name="vendorUsers">';
+							    result = result + '<option value="">Assign to</option>';
+							    for (var i=0; i<json.vendorUsersList.length; i++)
+		    					{
+							    	vendorOwnerAndSpoc = json.vendorUsersList[i];
+							    	result = result+"<option value='"+vendorOwnerAndSpoc.id+"'>"+vendorOwnerAndSpoc.firstName+" "+vendorOwnerAndSpoc.lastName+"&nbsp;("+vendorOwnerAndSpoc.userType+")</option>"; 
+									
+		    					}
+							    result = result + '</select>';
+						}
+						result = result + '</div>';
+						result = result + '</div>';	
+					  }	
+				
+				
+				if(json.requirementsCountAsManager > 0){
+					result = result + '<div class="clearfix mb10">';
+					result = result + '<div class="col-md-6">';
+					    result = result + '<div class="user_badg">';
+						    result = result + '<p>Assigned as Manager to Requirements<strong class="label label-success">'+json.requirementsCountAsManager+'</strong></p>';
+								result = result + '</div>';
+				            result = result + '</div>';
+						result = result + '<div class="col-md-6" id="managerUserDiv">';
+						if(json.requirementManagersList != null && json.requirementManagersList != "" && json.requirementManagersList != 'undefined' && json.requirementManagersList.length > 0){
+						       result = result + '<select class="chosen-select" data-validation="required" field-name="Assign To" id="managerUsers" name="managerUsers">';
+							    result = result + '<option value="">Assign to</option>';
+							    for (var i=0; i<json.requirementManagersList.length; i++)
+		    					{
+							    	managerUsers = json.requirementManagersList[i];
+							    	result = result+"<option value='"+managerUsers.id+"'>"+managerUsers.firstName+" "+managerUsers.lastName+"&nbsp;("+managerUsers.userType+")</option>"; 
+									
+		    					}
+							    result = result + '</select>';
+						}
+						result = result + '</div>';
+						result = result + '</div>';	
+					  }	
+					
+				if(json.requirementsCountAsApprover > 0){
+					result = result + '<div class="clearfix mb10">';
+					result = result + '<div class="col-md-6">';
+					    result = result + '<div class="user_badg">';
+						    result = result + '<p>Assigned as Approver to Requirements<strong class="label label-warning">'+json.requirementsCountAsApprover+'</strong></p>';
+								result = result + '</div>';
+				            result = result + '</div>';
+						result = result + '<div class="col-md-6" id="approverUserDiv">';
+						if(json.requirementApproversList != null && json.requirementApproversList != "" && json.requirementApproversList != 'undefined' && json.requirementApproversList.length > 0){
+						       result = result + '<select class="chosen-select" data-validation="required" field-name="Assign To" name="approverUser" id="approverUser">';
+							    result = result + '<option value="">Assign to</option>';
+							    for (var i=0; i<json.requirementApproversList.length; i++)
+		    					{
+							    	approversUsers = json.requirementApproversList[i];
+							    	result = result+"<option value='"+approversUsers.id+"'>"+approversUsers.firstName+" "+approversUsers.lastName+"&nbsp;("+approversUsers.userType+")</option>"; 
+									
+		    					}
+							    result = result + '</select>';
+						}
+						result = result + '</div>';
+						result = result + '</div>';	
+					  }	
+				
+				
+					
+				if(json.teamsCountAsOwner > 0){
+					result = result + '<div class="clearfix mb10">';
+					result = result + '<div class="col-md-6">';
+					    result = result + '<div class="user_badg">';
+						    result = result + '<p>Assigned as Team Owner for Requirements<strong class="label label-info">'+json.teamsCountAsOwner+'</strong></p>';
+								result = result + '</div>';
+				            result = result + '</div>';
+						result = result + '<div class="col-md-6" id="teamOwnerUserDiv">';
+						if(json.teamOwnersList != null && json.teamOwnersList != "" && json.teamOwnersList != 'undefined' && json.teamOwnersList.length > 0){
+						       result = result + '<select class="chosen-select" data-validation="required" field-name="Assign To" id="teamOwnerUser" name="teamOwnerUser">';
+							    result = result + '<option value="">Assign to</option>';
+							    for (var i=0; i<json.teamOwnersList.length; i++)
+		    					{
+							    	teamOwnerUsers = json.teamOwnersList[i];
+							    	result = result+"<option value='"+teamOwnerUsers.id+"'>"+teamOwnerUsers.firstName+" "+teamOwnerUsers.lastName+"&nbsp;("+teamOwnerUsers.userType+")</option>"; 
+									
+		    					}
+							    result = result + '</select>';
+						}
+						result = result + '</div>';
+						result = result + '</div>';	
+					  }	
+				
+				
+				
+				if(json.projectApproverCount > 0){
+					result = result + '<div class="clearfix mb10">';
+					result = result + '<div class="col-md-6">';
+					    result = result + '<div class="user_badg">';
+						    result = result + '<p>Assigned as Project Approver<strong class="label label-success">'+json.projectApproverCount+'</strong></p>';
+								result = result + '</div>';
+				            result = result + '</div>';
+						result = result + '<div class="col-md-6" id="teamOwnerUserDiv">';
+						if(json.projectApproversList != null && json.projectApproversList != "" && json.projectApproversList != 'undefined' && json.projectApproversList.length > 0){
+						       result = result + '<select class="chosen-select" data-validation="required" field-name="Assign To" id="projectApproverUser" name="projectApproverUser">';
+							    result = result + '<option value="">Assign to</option>';
+							    for (var i=0; i<json.projectApproversList.length; i++)
+		    					{
+							    	projectApproverUsers = json.projectApproversList[i];
+							    	result = result+"<option value='"+projectApproverUsers.id+"'>"+projectApproverUsers.firstName+" "+projectApproverUsers.lastName+"&nbsp;("+projectApproverUsers.userType+")</option>"; 
+									
+		    					}
+							    result = result + '</select>';
+						}
+						result = result + '</div>';
+						result = result + '</div>';	
+					  }	
+				
+				 result = result + '<div class="col-md-12" id="reasonDiv">';
+				  result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required" field-name="Reason" placeholder="Change Reason"></textarea>';
+				  	result = result + '</div>';
+	        	
+	        	result = result + '</div>';	
+	        	
+	        	$("#editRoleDetailsList").empty(); 
+	    	    $("#editRoleDetailsList").append(result);  
+	    	    
+	    	    var config = {
+				  		  '.chosen-select'           : {},
+				  		  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  		  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  		  '.chosen-select-width'     : {width:"95%"}
+				  		}
+				  		for (var selector in config) {
+				  		  $(selector).chosen(config[selector]);
+				  		}
+				  		$('.chosen-select').each(function() {
+				  			var $this = $(this);
+				  			$this.next().css({'width': '100%'});
+
+				           });
+	        }
+	 
+	        
+	 });
+	 
+	}else{
+		
+		$("#editRoleDetailsList").empty(); 
+	}
+		
+	 
+	
 	
 }
 </script>
@@ -855,6 +1135,53 @@ function firstname(name)
 	});
 </script>
 
+
+
+
+<script type="text/javascript">
+ function updateRole(userId) {
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+		   }; 
+	 if ($('#editRole_form').validate(false, validationSettings)){ 
+		 
+		 var frm = $('#editRole_form').serializeFormJSON();
+         var con = JSON.stringify(frm);
+         con = con.replace(/[{}]/g, "");
+         //It will escape all the special characters
+         var jsonData = encodeURIComponent(con);
+         var sourceleadUrl ='${sourceleadUrl}';
+         
+         
+        $("#editRoleLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+          
+         $.ajax({
+             type: "POST",
+             url: sourceleadUrl+"/editUserRole?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&json="+jsonData,
+             success: function(data) {
+                 if(data == "success"){
+                	 location.replace(sourceleadUrl+"/usersList");
+                 }
+                 
+             }
+             }); 
+         
+		 
+		 return true;
+	 }else{
+		 return false;
+	 }
+    }
+ 
+ $('body').on('blur', '#editRole_form', function() {
+		$("#editRole_form").showHelpOnFocus();;
+		$("#editRole_form").validateOnBlur(false, validationSettings);  
+	});
+</script>
+
 <script type="text/javascript">
         var validationSettings = {
             errorMessagePosition : 'element',
@@ -868,6 +1195,8 @@ function firstname(name)
 
 <script>
 function editUserDetails(userId){
+$("#editRoleDetailsList").empty(); 
+
  var sourceleadUrl ='${sourceleadUrl}';
 	 
 	 $.ajax({
@@ -1070,6 +1399,7 @@ function editUserDetails(userId){
 			  
 				$(".user_summary_edit").slideToggle(100);
 				$("#remove_user_id").slideUp(100);
+				$(".edit_role_pop").slideUp(100);
 				$(".error").removeClass("error");
 				$('#editUserDiv').find('p.jquery_form_error_message').remove();
 			    $("#editUserDiv").empty(); 
@@ -1091,9 +1421,11 @@ function getCalendar(){
 
 <script>
 function removeUser(){
+	$("#editRoleDetailsList").empty(); 
 	$("#reason").val('');
 	$("#remove_user_id").slideToggle(100);
 	$(".user_summary_edit").slideUp(100);
+	$(".edit_role_pop").slideUp(100);
 	
 	$('#reportingManagerDiv').find('p.jquery_form_error_message').remove();
 	$('#clientUserDiv').find('p.jquery_form_error_message').remove();
@@ -1107,9 +1439,24 @@ function removeUser(){
 	
 }
 </script>
+
+
+<script>
+function editUserRole(){
+	$(".edit_role_pop").slideToggle(100);
+	$("#remove_user_id").slideUp(100);
+	$(".user_summary_edit").slideUp(100);
+}
+</script>
 <script>
 function cancelUser(){
 	$("#remove_user_id").slideUp(100);
+}
+</script>
+
+<script>
+function cancelEditRole(){
+	$("#edit_role_pop").slideToggle(100);
 }
 </script>
 

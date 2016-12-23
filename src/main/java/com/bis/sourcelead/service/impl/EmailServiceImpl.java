@@ -93,7 +93,7 @@ public class EmailServiceImpl implements EmailService {
 			 emailMessage.setCreatedBy(user.getUserCode());
 			 emailMessage.setFromEmail(user.getEmail());
 			 emailMessage.setFromName(fullName);
-			
+			 emailMessage.setEmailType(Constants.EMAIL_CAMPAIGN);
 			 
 			 
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
