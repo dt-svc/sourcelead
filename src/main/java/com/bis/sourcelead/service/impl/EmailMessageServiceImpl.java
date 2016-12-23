@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailNotification;
@@ -174,7 +175,13 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			for (int i = 0; i < recipients.length; i++) {
 				addressTo[i] = new InternetAddress(recipients[i]);
 			}
-			message.setRecipients(Message.RecipientType.TO, addressTo);
+			
+			
+			if(null != emailMessage.getEmailType() && emailMessage.getEmailType().equalsIgnoreCase(Constants.EMAIL_CAMPAIGN)){
+				message.setRecipients(Message.RecipientType.BCC, addressTo);
+			}else{
+				message.setRecipients(Message.RecipientType.TO, addressTo);
+			}
 
 			message.setHeader("Content-Type", "text/html; charset=UTF-8");
 			message.setSubject(emailMessage.getSubject());
@@ -218,6 +225,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 						mimeMultipart.addBodyPart(bodyPart);
 					}
 					
+				
 
 					message.setContent(mimeMultipart);
 					Transport.send(message);

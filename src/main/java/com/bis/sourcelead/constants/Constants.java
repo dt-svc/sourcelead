@@ -75,6 +75,7 @@ public class Constants {
 	
 	public static String HOT_LIST_CAMPAIGN = "HotListCampaign";
 	public static String EMAIL_TO_USERS = "EmailToUsers";
+	public static String EMAIL_CAMPAIGN = "EmailCampaign";
 	
 	public static String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static String ADD_OFFER_MAIL ="Forward the Mail";
