@@ -1242,11 +1242,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations loginOrgLocation,String submissionIds, Org org, JSONObject jsonData,Map files) throws Exception {
+	public void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations loginOrgLocation,String submissionIds, Org org, JSONObject jsonData,Map files,String selectedShortlistsRate) throws Exception {
 		
 		 String requirementName = null;
 		 String fullName = null;
 		 String[] submissionId = submissionIds.split(",");
+		 String[] clientShortlistsRate = selectedShortlistsRate.split(",");
    	     Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
 		 requirement.setId(requirementId);
 		 if(requirement.getParentRequirement() != null){
@@ -1293,6 +1294,23 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 clientSubmission.setCreatedDate(new Date());
    		 clientSubmission.setCreatedBy(user.getUserCode());
    		 clientSubmission = requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
+   		 
+   		 
+   		 String clientRate = clientShortlistsRate[i];
+		 RequirementRateSubmissionNegotiation rateNegotiation = new RequirementRateSubmissionNegotiation();
+		 rateNegotiation.setRequirementsubmissionId(clientSubmission);
+		 rateNegotiation.setExpectedRate(clientRate);
+		 rateNegotiation.setExpectedRateType("Yearly");
+			 rateNegotiation.setRateInitiatorType(SubmissionRateStatus.VENDOR);
+			 rateNegotiation.setInitiatorOrgLocationId(loginOrgLocation);
+			 rateNegotiation.setRateReason("");
+			 rateNegotiation.setRateStage(SubmissionRateStatus.NEWRATE);
+			 rateNegotiation.setStatus(Constants.RECORD_ACTIVE);
+			 rateNegotiation.setCreatedDate(commonUtil.currentDate());
+			 rateNegotiation.setCreatedBy(user.getUserCode());
+			 rateNegotiation.setUpdatedDate(commonUtil.currentDate());
+			 rateNegotiation.setUpdatedBy(user.getUserCode());
+		 requirementRateSubmissionNegotiationService.saveRateNegotiation(rateNegotiation);
    		 
    		 RequirementSubmissionTemplateFields templateFields = requirementSubmissionTemplateFieldsDao.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submission.getId());
    		 
@@ -1391,6 +1409,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		     e.printStackTrace();
    		 }
    	 }
+   	 
    	 
    	SubmissionXls submissionXls =  saveSubmissionTracker(dateFormat,createExcelworkbook,requirement,user);
     

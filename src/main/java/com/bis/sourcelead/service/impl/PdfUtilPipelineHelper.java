@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionCounts;
@@ -55,6 +56,43 @@ public class PdfUtilPipelineHelper  {
 	public File getRequirementPipelenePdf(java.util.List<RequirementSubmission> requirementStatusList, String orgName,
 			String requirementId,String submissionType,RequirementSubmissionCounts requirementSubmissionCounts) throws NumberFormatException, Exception {
 		
+		if(submissionType.equals("SUBMIT_TO_CLIENT")){
+			String[] headers = Constants.REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS;
+			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
+		    File file = File.createTempFile(orgName+"_Requirements_"+dateFormat.format(new Date()),".pdf");
+		    file.setReadable(true);
+		    Document document =  prepareHeadres(orgName,requirementId,requirementSubmissionCounts.getNumOfSubmitToClient(),Constants.SUBMIT_TO_CLIENT_COUNT,file);
+		    try {
+		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,3,5,5,5};
+		    	PdfPTable table = getPdfTable(headers,width);
+		        table.completeRow();
+		        java.util.List<String[]> requirements = new ArrayList<>();
+		        for(RequirementSubmission requirementsub : requirementStatusList){
+		        	requirements.add(prepareRequirementPipelineToArraySubmitClient(requirementsub));
+		        }
+		        
+		        for (String[] reqArray: requirements) {
+	                for (int i = 0; i < reqArray.length; i++) {
+	                    String datum = reqArray[i];
+	                    PdfPCell cell = new PdfPCell();
+	                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+	                    table.addCell(cell);
+	                }
+	                table.completeRow();
+	            }
+		        
+		        document.addTitle("Candiate List Table");
+		        table.setSpacingBefore(15f);
+		        document.add(table);
+		        logger.info("Pdf table created !!");
+		    } catch (DocumentException e) {
+		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+		    } finally {
+		        document.close();
+		    }
+			return file;
+		}
 		if(submissionType.equals("REQUEST_SENT")){
 			String[] headers = Constants.REQUIREMENT_PIPELINE_REQUEST_SENT_HEADERS;
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
@@ -276,6 +314,93 @@ public class PdfUtilPipelineHelper  {
 		}
 		
 	
+	private String[] prepareRequirementPipelineToArraySubmitClient(RequirementSubmission requirementsub) {
+		String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS.length];
+		
+		
+		
+		if(requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())){
+			requirementArray[0] = requirementsub.getCandidateName();
+		}else{
+			requirementArray[0] = "--";
+		}
+		
+		if(requirementsub.getCandidateEmail() != null && !"".equalsIgnoreCase(requirementsub.getCandidateEmail())){
+			requirementArray[1] = requirementsub.getCandidateEmail();
+		}else{
+			requirementArray[1] = "--";
+		}
+		if(requirementsub.getPhoneNumber() != null && !"".equalsIgnoreCase(requirementsub.getPhoneNumber())){
+			requirementArray[2] = requirementsub.getPhoneNumber();
+
+		}else{
+			requirementArray[2] = "--";
+		}
+		if(requirementsub.getResumeName() != null && !"".equalsIgnoreCase(requirementsub.getResumeName())){
+			requirementArray[3] = requirementsub.getResumeName();
+
+		}else{
+			requirementArray[3] = "--";
+		}
+		if(requirementsub.getCreatedDate() != null && !"".equalsIgnoreCase(requirementsub.getCreatedDate().toString())){
+			requirementArray[4] = requirementsub.getCreatedDate().toString();
+
+		}else{
+			requirementArray[4] = "--";
+		}
+		
+		if(requirementsub.getCandidate().getExpectedRate() != null && !"".equalsIgnoreCase(requirementsub.getCandidate().getExpectedRate())){
+			requirementArray[5] = requirementsub.getCandidate().getExpectedRate();
+		}else{
+			requirementArray[5] = "--";
+		}
+//		proposedSubmissionRate
+		if(requirementsub.getProposedSubmissionRate() != null && !"".equalsIgnoreCase(requirementsub.getProposedSubmissionRate())){
+			requirementArray[6] = requirementsub.getProposedSubmissionRate();
+		}else{
+			requirementArray[6] = "--";
+		}
+		if(requirementsub.getUserName() != null && !"".equalsIgnoreCase(requirementsub.getUserName())){
+			requirementArray[7] = requirementsub.getUserName();
+		}else{
+			requirementArray[7] = "--";
+		}
+		if(requirementsub.getScore() != null && !"".equalsIgnoreCase(requirementsub.getScore())){
+			requirementArray[8] = requirementsub.getScore();
+		}else{
+			requirementArray[8] = "--";
+		}
+		if(requirementsub.getWorkExperience() != null && !"".equalsIgnoreCase(requirementsub.getWorkExperience())){
+			requirementArray[9] = requirementsub.getWorkExperience()+" years";
+		}else{
+			requirementArray[9] = "--";
+		}
+		if(requirementsub.getStatus() != null){
+			requirementArray[10] = requirementsub.getStatus().toString();
+		}else{
+			requirementArray[10] = "--";
+		}
+		if(requirementsub.getSubmittedOn() != null){
+			requirementArray[11] = requirementsub.getSubmittedOn();
+		}else{
+			requirementArray[11] = "--";
+		}
+		if(requirementsub.getSubmittedBy() != null){
+			requirementArray[12] = requirementsub.getSubmittedBy();
+		}else{
+			requirementArray[12] = "--";
+		}
+		if(requirementsub.getRequirement().getSpocId().getSpocUser().getMobilePhone() != null){
+			requirementArray[13] = requirementsub.getRequirement().getSpocId().getSpocUser().getMobilePhone();
+		}else{
+			requirementArray[13] = "--";
+		}
+		
+		
+		return requirementArray;
+	}
+
+
 	private String[] prepareRequirementPipelineToArrayRequestSent(RequirementSubmission requirementsub) {
 		String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_REQUEST_SENT_HEADERS.length];
 		
@@ -397,7 +522,7 @@ public class PdfUtilPipelineHelper  {
 		        orderedList.add(new ListItem("Location :"+requirement.getCountry()));
 		        if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
 					
-			        orderedList.add(new ListItem("Experience :"+requirement.getMaxExp()+"-"+requirement.getMinExp()));
+			        orderedList.add(new ListItem("Experience :"+requirement.getMinExp()+"-"+requirement.getMaxExp()));
 					
 				}else if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp())){
 					
@@ -408,7 +533,7 @@ public class PdfUtilPipelineHelper  {
 				        orderedList.add(new ListItem("Experience :" +"0 -" +requirement.getMaxExp() + "years"));
 						
 					}else{
-				        orderedList.add(new ListItem("--"));
+				        orderedList.add(new ListItem("Experience : --"));
 						}
 		        
 		        orderedList.add(new ListItem(headerName+" "+count));
