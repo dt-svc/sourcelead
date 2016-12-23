@@ -38,8 +38,8 @@ public class QuickBookCustomerServiceImpl implements QuickBookCustomerService {
 	@Autowired
 	private QuickBookOAuthAuthentication quickBookOAuthAuthentication;
 	
-	@Value("${quickBoxUrl }")
-	private String quickBoxUrl ;
+	@Value("${quickBoxUrl}")
+	private String quickBoxUrl;
 	
 	
 

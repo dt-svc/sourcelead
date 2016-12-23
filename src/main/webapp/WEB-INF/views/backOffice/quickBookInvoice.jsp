@@ -148,7 +148,7 @@ function getAllCustomers(){
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
 	                    	 if(opt.DisplayName != null && opt.DisplayName!= '' && opt.DisplayName!= 'undefined'){
-		                    	 result = result +"<td><div> <a href='#' onClick='customerInvoice();''>"+opt.DisplayName+"</a></div></td>";
+		                    	 result = result +"<td><div> <a href='#' onClick='customerInvoice();' >"+opt.DisplayName+"</a></div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }

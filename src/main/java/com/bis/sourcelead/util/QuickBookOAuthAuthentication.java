@@ -41,8 +41,8 @@ public class QuickBookOAuthAuthentication {
 	@Value("${accessSecret}")
 	private String accessSecret;
 	
-	@Value("${sandBoxUrl}")
-	private String sandBoxUrl;
+	@Value("${quickBoxUrl}")
+	private String quickBoxUrl;
 	
 	
 	public String oAuthSignIn(String uri) throws ClientProtocolException, IOException{
