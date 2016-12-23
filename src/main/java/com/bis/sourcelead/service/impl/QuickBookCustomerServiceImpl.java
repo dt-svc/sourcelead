@@ -38,8 +38,8 @@ public class QuickBookCustomerServiceImpl implements QuickBookCustomerService {
 	@Autowired
 	private QuickBookOAuthAuthentication quickBookOAuthAuthentication;
 	
-	@Value("${sandBoxUrl}")
-	private String sandBoxUrl;
+	@Value("${quickBoxUrl }")
+	private String quickBoxUrl ;
 	
 	
 
@@ -69,7 +69,7 @@ public class QuickBookCustomerServiceImpl implements QuickBookCustomerService {
 	@Override
 	public String getAllCustomers() throws Exception {
 		  
-		  String uri = sandBoxUrl+"/query?query=SELECT%20%2A%20FROM%20Customer%20STARTPOSITION%201%20MAXRESULTS%201000&minorversion=4";
+		  String uri = quickBoxUrl+"/query?query=SELECT%20%2A%20FROM%20Customer%20STARTPOSITION%201%20MAXRESULTS%201000&minorversion=4";
 		  
 		  String outPut = quickBookOAuthAuthentication.oAuthSignIn(uri);
 		  return outPut;  
@@ -86,7 +86,7 @@ public class QuickBookCustomerServiceImpl implements QuickBookCustomerService {
 	@Override
 	public String getCustomerByCustomerId(Long customerId) throws Exception {
 
-		  String uri = sandBoxUrl+"/customer/"+customerId+"?minorversion=4";
+		  String uri = quickBoxUrl+"/customer/"+customerId+"?minorversion=4";
 		  String outPut = quickBookOAuthAuthentication.oAuthSignIn(uri);
 		  return outPut;  
 		  

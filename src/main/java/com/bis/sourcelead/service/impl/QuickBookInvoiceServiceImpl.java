@@ -12,8 +12,8 @@ public class QuickBookInvoiceServiceImpl implements QuickBookInvoiceService {
 	
 	
 	
-	@Value("${sandBoxUrl}")
-	private String sandBoxUrl;
+	@Value("${quickBoxUrl}")
+	private String quickBoxUrl;
 	
 	@Autowired
 	private QuickBookOAuthAuthentication quickBookOAuthAuthentication;
@@ -28,7 +28,7 @@ public class QuickBookInvoiceServiceImpl implements QuickBookInvoiceService {
 	@Override
 	public String getInvoiceByInvoiceId(Long invoiceId) throws Exception {
 		
-		  String uri = sandBoxUrl+"/invoice/"+invoiceId+"?minorversion=4";
+		  String uri = quickBoxUrl+"/invoice/"+invoiceId+"?minorversion=4";
 		  String outPut = quickBookOAuthAuthentication.oAuthSignIn(uri);
 		  return outPut;  
 	}
@@ -43,7 +43,7 @@ public class QuickBookInvoiceServiceImpl implements QuickBookInvoiceService {
 	@Override
 	public String getAllInvoice() throws Exception {
 		 	
-		  String uri = sandBoxUrl+"/query?query=SELECT%20%2A%20FROM%20Invoice&minorversion=4";
+		  String uri = quickBoxUrl+"/query?query=SELECT%20%2A%20FROM%20Invoice&minorversion=4";
 		  String outPut = quickBookOAuthAuthentication.oAuthSignIn(uri);
 		  return outPut;
 	}

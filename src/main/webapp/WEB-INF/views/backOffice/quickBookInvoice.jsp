@@ -20,7 +20,7 @@
 
 
 <script>
-function getInvoiceDetails(){  
+function getAllInvoice(){  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",
@@ -29,7 +29,7 @@ function getInvoiceDetails(){
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
 	                	 var result = "";
-	                	 result = result +"<table id='invoicePagination1' class='display' cellspacing='0' width='100%' >"; 
+	                	 result = result +"<table id='invoicePagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                     result = result +"    <th>Date</th>"; 
@@ -148,7 +148,7 @@ function getAllCustomers(){
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
 	                    	 if(opt.DisplayName != null && opt.DisplayName!= '' && opt.DisplayName!= 'undefined'){
-		                    	 result = result +"<td><div>"+opt.DisplayName+"</div></td>";
+		                    	 result = result +"<td><div> <a href='#' onClick='customerInvoice();''>"+opt.DisplayName+"</a></div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
@@ -225,36 +225,7 @@ function check(){
 }
 
 </script>
-<script language="javascript" type="text/javascript">
- function checkFile()
-    {
-     var fsize = $('#uploadBtn')[0].files[0].size;
-     $('#browseDiv').find('p.jquery_form_error_message').remove();
-     var res_field = document.upload_form.elements["uploadFile"].value;   
-     var extension = res_field.substr(res_field.lastIndexOf('.') + 1).toLowerCase();
-     var allowedExtensions = ['csv'];
-     if (res_field.length > 0)
-        {
-             if (allowedExtensions.indexOf(extension) === -1) 
-                {
-                   $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
-               	   document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
-               	   document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"Invalid file Format. Only " + allowedExtensions.join(', ') + " is allowed.");
-                    return false;
-                }
-                	
-                
-       }
-		$('input#uploadBtn').removeAttr("class record-exist record-exist-errormsg");
-		$('input#uploadBtn').attr('class','valid form-control');
-		$('#browseDiv').find('p.jquery_form_error_message').remove();
-		$("#abc_form").click(function() {
-			if ($(this).validate(false, validationSettings)) {
-			}
-		});
-	   
-    }
-</script> 
+
 <script type="text/javascript">
 	(function($) {
 		$.fn.serializeFormJSON = function() {
@@ -308,7 +279,7 @@ function check(){
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Requirement List</h2>
+      <h2>QuickBooks</h2>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement List</div>
   </section>
@@ -316,11 +287,20 @@ function check(){
   <div class="timesheet_out">
     <div class="vendor_wrap">
       <div class="timesheet_head">
-          	<a href="#" onClick="getAllCustomers();">getAllCustomers</a></li>
-          	
-          	<!--  <li> <a href="#" onClick="getPayroll();">payroll</a></li>-->
-          <div class="clearfix"></div>
-        <div class="clearfix"></div>
+          		<a href="#" onClick="getAllCustomers();">Customers</a> || 
+          		
+          		<a href="#" onClick="getAllInvoice();">Invoices</a> ||
+          		
+          		<a href="#" onClick="getAllVendors();">Vendors</a> ||
+          		
+          		<a href="#" onClick="getAllEmployees();">Employees</a> ||
+          		
+          		<a href="#" onClick="getAllEmployees();">Transactions</a> 
+          		
+          		
+          		<!--  <li> <a href="#" onClick="getPayroll();">payroll</a></li>-->
+           <div class="clearfix"></div>
+        	<div class="clearfix"></div>
       </div>
       
       <!-- list requirement -->

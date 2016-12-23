@@ -18,8 +18,8 @@ public class QuickBookPaymentServiceImpl implements QuickBookPaymentService {
 	@Autowired
 	private QuickBookOAuthAuthentication quickBookOAuthAuthentication;
 	
-	@Value("${sandBoxUrl}")
-	private String sandBoxUrl;
+	@Value("${quickBoxUrl}")
+	private String quickBoxUrl;
 	
 	/**
 	 * @author Ajith Matta and sarath kumar punnana
@@ -31,7 +31,7 @@ public class QuickBookPaymentServiceImpl implements QuickBookPaymentService {
 	@Override
 	public String getAllPayments() throws Exception {
 		  
-		  String uri = sandBoxUrl+"/query?query=select%20%2A%20from%20payment&minorversion=4";
+		  String uri = quickBoxUrl+"/query?query=select%20%2A%20from%20payment&minorversion=4";
 		  
 		  String outPut = quickBookOAuthAuthentication.oAuthSignIn(uri);
 		  return outPut;  
@@ -49,7 +49,7 @@ public class QuickBookPaymentServiceImpl implements QuickBookPaymentService {
 	@Override
 	public String getPaymentById(Long paymentId) throws Exception {
 
-		  String uri = sandBoxUrl+"/payment/"+paymentId+"?minorversion=4";
+		  String uri = quickBoxUrl+"/payment/"+paymentId+"?minorversion=4";
 		  String outPut = quickBookOAuthAuthentication.oAuthSignIn(uri);
 		  return outPut;  
 		  
