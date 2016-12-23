@@ -125,7 +125,7 @@
 	                     result = result +"    <th>&nbsp;</th>";
 	                     result = result +"    <th>Name</th>"; 
 	                     result = result +"    <th>Designation</th>"; 
-	                     result = result +"    <th>Position type</th>"; 
+	                     result = result +"    <th>Employment type</th>"; 
 	                     result = result +"    <th>Email</th>"; 
 	                     result = result +"    <th>Mobile</th>"; 
 	                     result = result +"    <th>Type</th>"; 
@@ -338,7 +338,7 @@ function candidateSideBar(candidateId){
              			 	}
          			 	
          			 	if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
-         			 	designationType = 'DesignationType'+'-'+json.designationType;
+         			 	designationType = 'Employment type'+ ' - '+json.designationType;
          			 	}else{
          			 		designationType = '';
          			 	}
@@ -1181,7 +1181,7 @@ function cancel(candidateId){
           <div id="addmorepop" class="approved_pop">
            <ul>
              <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
-              <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
+              <li><a  onClick="addCandidate();" ><i class="fa fa-plus"></i>Add Candidate</a></li>
            </sec:authorize>
            
            <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
@@ -1630,4 +1630,61 @@ function savedCommentAndCount(candidateId){
 			})
 				
 </script> 
+<!-- Add candidate Popup -->
+      <div class="addcandidate-popup">
+				  <div class="row">
+                      <div class="col-md-offset-2 col-md-8">
+				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
+                          <div class="col-md-6 mt">
+                        <div class="small-widget bg-purple">
+                            <a href="<c:url value='/candidate'/>"  title="Parse Resume">
+                                <div class="clearfix mb10">
+                                <i class="fa fa-file-text-o fa-4x"></i>
+                                    <span class="fa fa-arrow-right"></span>
+                                </div>
+                                <strong class="clearfix">Parse Resume</strong>
+                                </a>
+                        </div>
+					  </div>
+					  <div class="col-md-6 mt">
+                          <div class="small-widget bg-yellow">
+                              <a href="<c:url value='/addCandidate'/>" title="Add Candidate">
+                                  <div class="clearfix mb10">
+                                      <i class="fa fa-user-circle fa-4x"></i>
+                                      <span class="fa fa-plus"></span>
+                                  </div>
+                                  <strong class="clearfix">Add Candidate</strong>
+                                </a>
+                                
+                          </div>
+					  </div>
+                      </div>
+                          <div class="col-md-4 hidden">
+                          <div class="small-widget bg-green">
+                              <a href="import-candidate.html" title="Import Candidate">
+                                  <div class="clearfix mb10">
+                                <i class="fa fa-user-circle fa-4x"></i>
+                                      <span class="fa fa-download"></span>
+                                  </div>
+                                  <strong class="clearfix">Import Candidate</strong>
+                                </a>
+                          </div>
+                      </div>
+				  </div>
+			  </div>
+      <div class="pop_mask"></div>
+    
+    
+    <script>
+    //addcandidate-popup script
+    function addCandidate(){
+        $('.addcandidate-popup').fadeIn(200);
+        $('.pop_mask').fadeIn(200);
+        $('#addmorepop').slideUp(200);
+    };
+       function closeCandidate(){
+        $('.addcandidate-popup').fadeOut(200);
+        $('.pop_mask').fadeOut(200);
+       }
+    </script>
 <jsp:include page="../masterFooter.jsp" />
