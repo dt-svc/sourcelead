@@ -5219,6 +5219,22 @@ margin-bottom: 20px;
 
 /* worked  */
 
+/* QuickBooks styles */
+.quickBooks-head {
+	min-height: 50px;
+	border-bottom: 1px solid #F5F5E9;
+margin-bottom: 10px;
+}
+.timesheet_head.quickBooks-head a{
+	color: #333;
+    line-height: 50px;
+    padding: 0 15px;
+    font-weight: 600px !important;
+}
+.quickBooks-head a:hover{
+	color:#ccc;
+}
+
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {

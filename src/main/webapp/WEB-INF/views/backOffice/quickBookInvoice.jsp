@@ -22,6 +22,8 @@
 <script>
 function getAllInvoice(){  
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  $("#requirementList").empty();
+	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAllInvoice?${_csrf.parameterName}=${_csrf.token}",    
@@ -29,6 +31,7 @@ function getAllInvoice(){
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
 	                	 var result = "";
+	                	 result = result +"Invoice List";
 	                	 result = result +"<table id='invoicePagination1' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
@@ -119,6 +122,8 @@ function getAllInvoice(){
 <script>
 function getAllCustomers(){  
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  $("#requirementList").empty();
+	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAllCustomers?${_csrf.parameterName}=${_csrf.token}",    
@@ -126,6 +131,7 @@ function getAllCustomers(){
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
 	                	 var result = "";
+	                	 result = result +"<h4 class='ml'>Customer List</h4>";
 	                	 result = result +"<table id='invoicePagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
@@ -180,6 +186,8 @@ function getAllCustomers(){
 <script>
 function getAllVendors(){  
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  $("#requirementList").empty();
+	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAllvendors?${_csrf.parameterName}=${_csrf.token}",    
@@ -187,6 +195,7 @@ function getAllVendors(){
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
 	                	 var result = "";
+	                	 result = result +"Vendors List";
 	                	 result = result +"<table id='invoicePagination2' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
@@ -240,6 +249,8 @@ function getAllVendors(){
 <script>
 function getAllEmployees(){  
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  $("#requirementList").empty();
+	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAllEmoloyees?${_csrf.parameterName}=${_csrf.token}",    
@@ -247,6 +258,7 @@ function getAllEmployees(){
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
 	                	 var result = "";
+	                	 result = result +"Employee List";
 	                	 result = result +"<table id='invoicePagination3' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
@@ -439,7 +451,7 @@ function check(){
   <form id="abc_form" name="abc_form"  enctype='multipart/form-data' method="post">
   <div class="timesheet_out">
     <div class="vendor_wrap">
-      <div class="timesheet_head">
+      <div class="timesheet_head quickBooks-head">
           		<a href="#" onClick="getAllCustomers();">Customers</a> || 
           		
           		<a href="#" onClick="getAllInvoice();">Invoices</a> ||
