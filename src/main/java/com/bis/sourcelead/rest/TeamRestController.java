@@ -101,8 +101,8 @@ public class TeamRestController {
 			team.setTeamOwnerName(team.getOwnerUserId().getFirstName()+""+team.getOwnerUserId().getLastName());
 			Collection<TeamMembers>	teamMembersList  = teamMembersService.getTeamMembersListByTeamID(team.getId(),loginOrgLocation.getId());
 			team.setTeamMembersCount(teamMembersList.size());
-			
-			 
+			List<CandidateHotList> candidateHotList = candidateHotListService.getHotCandidateListForTeamByTeamId(team.getId(), loginOrgLocation.getId());
+			team.setCandidateHotlistCount(candidateHotList.size());
 		}
 		resultJson = commonUtil.toJSON(teamList);
 		return resultJson;
