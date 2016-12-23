@@ -36,4 +36,15 @@ public class TabsServiceImpl implements TabsService {
 		return tabsDao.getTabsListByOrgLocationId(modulesId, roleId, orgLocationId);
 	}
 
+	@Override
+	public List<Long> getTabsIdsListByUserRoleIdAndOrgLocationId(Long roleId, Long orgLocationId)
+			throws Exception {
+		return tabsDao.getTabsIdsListByUserRoleIdAndOrgLocationId(roleId, orgLocationId);
+	}
+
+	@Override
+	public List<Tabs> getTabsListByIds(List<Long> tabIds) throws Exception {
+		return tabsDao.getTabsListByIds(tabIds);
+	}
+
 }

@@ -328,5 +328,13 @@ public class RolesDaoImpl implements RolesDao{
         
 	}
 
+	@Override
+	@Transactional
+	public List<Roles> getRolesListExpcetCurrentUserRole(Long roleId, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		return session.createQuery("from Roles roles where roles.id <> :roleId and roles.orgLocations.id = :orgLocationId")
+				.setLong("roleId", roleId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	}
+
 
 }

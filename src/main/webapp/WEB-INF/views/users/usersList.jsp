@@ -208,6 +208,7 @@ function exportToPdf(){
 	 			    	mobilePhone = "No Data"
 	 			    }
 	 				
+	 				
 	       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
 	       	    	result = result +"<div class='user-profile'>";
 	       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
