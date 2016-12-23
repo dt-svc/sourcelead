@@ -973,7 +973,7 @@ $(document).ready(function() {
     
     $("#filter1ApprovePop").click(function(){
 		$("#filter1ApprovedPop").slideToggle(200);
-		$("#filter2ApprovedPop, #filter3ApprovedPop, #filter4ApprovedPop").slideUp(200);
+		$("#filter3ApprovedPop, #filter4ApprovedPop, .export_pop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter1ApprovedPop").slideUp(200);
@@ -984,7 +984,7 @@ $(document).ready(function() {
     
     $("#filter2ApprovePop").click(function(){
 		$("#filter2ApprovedPop").slideToggle(200);
-		$("#filter1ApprovedPop, #filter3ApprovedPop, #filter4ApprovedPop").slideUp(200);
+		$(".export_pop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter2ApprovedPop").slideUp(200);
@@ -995,7 +995,7 @@ $(document).ready(function() {
     
     $("#filter3ApprovePop").click(function(){
 		$("#filter3ApprovedPop").slideToggle(200);
-		$("#filter1ApprovedPop, #filter2ApprovedPop, #filter4ApprovedPop").slideUp(200);
+		$("#filter1ApprovedPop, #filter4ApprovedPop, .export_pop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter3ApprovedPop").slideUp(200);
@@ -1006,7 +1006,7 @@ $(document).ready(function() {
     
     $("#filter4ApprovePop").click(function(){
 		$("#filter4ApprovedPop").slideToggle(200);
-		$("#filter2ApprovedPop, #filter3ApprovedPop, #filter1ApprovedPop").slideUp(200);
+		$("#filter3ApprovedPop, #filter1ApprovedPop, .export_pop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter4ApprovedPop").slideUp(200);
@@ -1020,7 +1020,7 @@ $(document).ready(function() {
 // Export Popup
 $(document).ready(function() {
     $("#export-pop").click(function(){
-		$(".export_pop").slideToggle(200);
+    	$(".export_pop").slideToggle(200);
 	});
     $("html").click(function() {
         $(".export_pop").slideUp(200);
@@ -1141,9 +1141,10 @@ function rejectInvitation(spocId){
   $(document).ready(function() {
 	   $("#export-popcon").click(function(){
 	               $(".export_pop").toggle();
+	               $("#filter4ApprovedPop, #filter1ApprovedPop, #filter3ApprovedPop").slideUp();
 	       });
 	   $("html").click(function() {
-	       $(".export_pop").hide();
+	       $(".export_pop").slideUp();
 	   });
 	   $(".export_pop, #export-popcon").click(function(e) {
 	       e.stopPropagation();
@@ -1155,9 +1156,10 @@ function rejectInvitation(spocId){
   $(document).ready(function() {
 	   $("#vendor-imports").click(function(){
 	    $(".export_pop").toggle();
+	    $("#filter2ApprovedPop").slideUp();
 	       });
 	   $("html").click(function() {
-	       $(".export_pop").hide();
+	       $(".export_pop").slideUp();
 	   });
 	   $(".export_pop, #vendor-imports").click(function(e) {
 	       e.stopPropagation();

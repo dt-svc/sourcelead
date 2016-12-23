@@ -91,5 +91,7 @@ public interface CandidateService {
 	public void saveOrUpdateCandidateElkDocument(Candidate candidate) throws Exception;
 	
 	public Long getCandidatesCountByOrgLocationID(Long orgLocationId);
+	
+	public List<Candidate> getAllHotlistCandidatesAndNotAssignedToTeamByLocation(Long orgLocationId)throws Exception;
 
 }

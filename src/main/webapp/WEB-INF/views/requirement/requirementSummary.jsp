@@ -239,6 +239,8 @@ $(document).ready(function() {
 $(document).ready(function() {
     $("#export-pop").click(function(){
 		$(".export_pop").slideToggle(200);
+		 $(".action-pop").slideUp(200);
+		
 	});
     $("html").click(function() {
         $(".export_pop").slideUp(200);
@@ -1465,7 +1467,7 @@ function requirementPipeline(requirementId,submissionType){
 							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 							        	   result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
 							           }else{
-							        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelect" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+							        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
 								           result = result + '</div></td>';
 							           }
 							           
@@ -1542,10 +1544,9 @@ function documentpagination(){
 <div id="popUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
-	var selectBox = document.getElementById("rejectApplicantSelect");
-	var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-    if(selectedValue != "Status"){
-		var result = "";
+	var selectBox = $('#rejectApplicantSelect'+submissionId).val();
+    if(selectBox != "Status"){
+    	var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Applicant reject message here</p>";
@@ -1838,6 +1839,7 @@ function recommendationpagination(){
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
+	$(".export_pipline").slideUp(200);
 	$("html").click(function(){
 		$(".action-pop").slideUp(200);
 	});
@@ -2132,6 +2134,7 @@ function tabEnable(local){
 //piplineexportpop 
 function piplineexport(){
 	$(".export_pipline").toggle();
+	 $(".action-pop").slideUp(200);	
 };
 /* $("#pipline-exportpop").click(function(){
 	$("#export_pipline").show();
