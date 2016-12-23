@@ -36,6 +36,8 @@ public class EmailMessage implements Serializable {
 	
 	private String[] attachmentFiles;
 	
+	private String emailType;
+
 	private String sendResumes;
 
 	public String getFirstName() {
@@ -148,6 +150,14 @@ public class EmailMessage implements Serializable {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public String getEmailType() {
+		return emailType;
+	}
+
+	public void setEmailType(String emailType) {
+		this.emailType = emailType;
 	}
 
 	public String getSendResumes() {
