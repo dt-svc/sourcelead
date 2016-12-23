@@ -21,6 +21,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateComments;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCommentsService;
 import com.bis.sourcelead.service.UserService;
@@ -62,13 +63,16 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 	 * @throws NullPointer
 	 */
 	@Override
-	public CandidateComments storeCandidateComments(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocations) throws Exception {
+	public CandidateComments storeCandidateComments(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocations, RequirementSubmission submission) throws Exception {
 		CandidateComments candidateComments = new CandidateComments();
 			if(jsonObj.has("comment")){
 				candidateComments.setComment(jsonObj.getString("comment"));
 			}
 			if(candidate != null){
 				candidateComments.setCandidateId(candidate);
+			}
+			if(submission != null){
+				candidateComments.setSubmissionId(submission);
 			}
 			if(orgLocations != null){
 				candidateComments.setOrgLocationId(orgLocations);
@@ -135,6 +139,47 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 			//candidateComments.setCommentTime(candidateComments.getUpdatedDate().toString());
 		}
 		
+		return candidateCommentsList;
+	}
+
+
+	@Override
+	public List<CandidateComments> getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId(Long candidateId,
+			Long submissionId, OrgLocations orgLocation) throws Exception {
+		
+		List<CandidateComments> candidateCommentsList = candidateCommentsDao.getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId(candidateId, submissionId, orgLocation.getId());
+		for(CandidateComments candidateComments: candidateCommentsList){
+			
+			User user = userService.getUserByUserCode(candidateComments.getUpdatedBy());
+			if(null != user){
+				String authorLastName = "";
+				if(StringUtils.isNotEmpty(user.getFirstName())){
+					authorLastName = user.getLastName();
+				}
+				candidateComments.setCommentAuthor(user.getFirstName()+" "+authorLastName);
+				candidateComments.setCommentAuthorUserId(user.getId());
+			}
+			
+			long diff = commonUtil.currentDate().getTime() - candidateComments.getUpdatedDate().getTime();
+			long diffSeconds = diff / 1000 % 60;
+			long diffMinutes = diff / (60 * 1000) % 60;
+			long diffHours = diff / (60 * 60 * 1000) % 24;
+			long diffDays = diff / (24 * 60 * 60 * 1000);
+			
+			if(diffDays == 0 && diffHours == 0 && diffMinutes == 0){
+				candidateComments.setCommentTime(diffSeconds + " seconds ago");
+			}else if(diffDays == 0 && diffHours == 0){
+				candidateComments.setCommentTime(diffMinutes + " minutes ago");
+			}else if(diffDays == 0){
+				candidateComments.setCommentTime(diffHours + " hours "+diffMinutes+ " minutes ago");
+			}else if(diffDays < 7){
+				candidateComments.setCommentTime(diffDays + " days "+diffHours+ " hours ago");
+			}else{
+				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
+				String commonDateFormat = standardFormat.format(candidateComments.getUpdatedDate());
+				candidateComments.setCommentTime(commonDateFormat.toString());
+			}
+		}
 		return candidateCommentsList;
 	}
 	

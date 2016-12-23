@@ -168,6 +168,21 @@
 				            		isFavourite = "checked";
 				            		isFavClass = "activestar-rating";
 				            	}
+				            	if(opt.lastName != null && opt.lastName != "" && opt.lastName != 'undefined'){
+				            		lastName = opt.lastName;
+				            	}else{
+				            		lastName = "";
+				            	}
+				            	if(opt.state != null && opt.state != "" && opt.state != 'undefined'){
+				            		state = opt.state;
+				            	}else{
+				            		state = "";
+				            	}
+				            	if(opt.city != null && opt.city != "" &&  opt.city != 'undefined'){
+				            		city = opt.city;
+				            	}else{
+				            		city = "";
+				            	}
 				            	
 				            	
 		                     result = result +"<tr>";
@@ -183,11 +198,11 @@
 
 			                
 			                 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
-			                   result = result +"  <td><div class='proj_show' onclick='candidateSideBar("+opt.id+");'><span title='"+opt.firstName+" "+opt.lastName+"'>"+opt.firstName+" "+opt.lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+			                   result = result +"  <td><div class='proj_show' onclick='candidateSideBar("+opt.id+");'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
 			                 '</sec:authorize>';
 			                 
 			                 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
-			                  result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+opt.lastName+"'>"+opt.firstName+" "+opt.lastName+"</span></div></td>";
+			                  result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span></div></td>";
 			                 '</sec:authorize>';
 
 			                 result = result +"  <td><div><span>"+designation+"</span></div></td>";
@@ -200,11 +215,11 @@
 			                 result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 			                 result = result +"  <td><div>"+mobilePhone+"</div></td>";
 			                 result = result +"  <td><div>"+opt.candidateType+"</div></td>";
-			                 if(opt.state !='' && opt.state != 'undefined' && opt.city !='' && opt.city != 'undefined'){
-	                             result = result +"  <td><div><span title='"+opt.country+", "+opt.state+", "+opt.city+"'>"+opt.country+", "+opt.state+", "+opt.city+"</span></div></td>";
-	                              } else if(opt.state !='' && opt.state != 'undefined')
+			                 if(state !='' && state != 'undefined' && city !='' && city != 'undefined'){
+	                             result = result +"  <td><div><span title='"+opt.country+", "+state+", "+city+"'>"+opt.country+", "+state+", "+city+"</span></div></td>";
+	                              } else if(state !='' && state != 'undefined')
 	                            {
-	                             result = result +"  <td><div><span title='"+opt.country+", "+opt.state+"'>"+opt.country+", "+opt.state+"</span></div></td>";
+	                             result = result +"  <td><div><span title='"+opt.country+", "+state+"'>"+opt.country+", "+state+"</span></div></td>";
 	                            }
 	                            else{
 	                            result = result +"  <td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
@@ -308,12 +323,25 @@ function candidateSideBar(candidateId){
 			             skills = skillsList.split(",");
 			             
 			            var experienceMonths = '';
+			            var designationType = '';
+			            
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
-         			 		experienceMonths = json.experienceMonths;            			 		
+         			 		experienceMonths = json.experienceMonths+'-'+'Months';            			 		
          			 	}else{
-         			 		experienceMonths = '0';  
+         			 		experienceMonths = ' ';  
          			 	 }
-			             
+         			 	
+         			 	if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
+             			 	designation = 'Designation'+'-'+json.designation;
+             			 	}else{
+             			 		designation = '';
+             			 	}
+         			 	
+         			 	if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
+         			 	designationType = 'DesignationType'+'-'+json.designationType;
+         			 	}else{
+         			 		designationType = '';
+         			 	}
 	                	 var result = "";
 	                	 
 	                	 result = result+'<div id="popUp" ></div>  ';
@@ -335,7 +363,7 @@ function candidateSideBar(candidateId){
 						 result = result+'  <label class="btn btn-sm btn-primary">';
 					     result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
 					     result = result+'  </label>';
-					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
+					     if(json.fileContentType != null && json.fileContentType != '' && json.fileContentType != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
 							 result = result+'  <i class="fa fa-trash"></i></button>';
 					     } 
@@ -370,19 +398,18 @@ function candidateSideBar(candidateId){
                          
 			             result = result+'                       </ul>';
 
-			             
 			             result = result+' <ul class="list-unstyled">';
-                          if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
-						 result = result+'<li>Designation -'+json.designation+'-'+json.designationType+'</li>';
-						                              }else{
-						  result = result+'<li>Designation - ----</li>';  
-						                              }
-						  result = result+'</ul>';
+						 result = result+'<li>'+designation+'</li>';
+						 result = result+'</ul>';
+						 
+			             result = result+' <ul class="list-unstyled">';
+						 result = result+'<li>'+designationType+'</li>';
+						 result = result+'</ul>';
 			             
 			             result = result+'<ul class="list-unstyled">';
 			              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
 			                    	 
-			             result = result+'<li>Experience -'+json.experienceYears+' years '+experienceMonths+' months </li>';
+			             result = result+'<li>Experience -'+json.experienceYears+' years '+experienceMonths+'</li>';
 			             
               		       }else{
               		                                                	  

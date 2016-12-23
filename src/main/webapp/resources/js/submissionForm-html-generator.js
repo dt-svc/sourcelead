@@ -265,10 +265,12 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             	 var datavalidation = '';	
             	 var novalidation = '';
             	 var datavalidation2 = '';
+            	 var onBlurEvent = '';
             	 
         		 if(required == 1){
         			 if(label == 'Email Id'){
         				 datavalidation = 'data-validation="required validate_email validate_Space validate_length length2-50"';
+        				 onBlurEvent = 'onblur="validateCandidateEmail();"';
         				 
         			 }else if(label == 'Phone Number'){
         				 datavalidation = 'data-validation="required validate_phone validate_Space validate_length length9-20"';
@@ -281,7 +283,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             			 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
             		 }
             		 if(label == 'Designation' || label == 'Education'){
-            			 datavalidation = 'data-validation="required validate_Space validate_Alphabet length2-50"';
+            			 datavalidation = 'data-validation="required validate_Space validate_Name length2-250"';
             		 }
         			 
         			 datavalidation2 = 'data-validation="required"';
@@ -296,7 +298,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
         				 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
             		 }
             		 if(label == 'Designation' || label == 'Education'){
-            			 datavalidation = 'data-validation="validate_Space validate_Alphabet length2-50"';
+            			 datavalidation = 'data-validation="validate_Space validate_Name length2-250"';
             		 }
         			 novalidation = 'data-validation-optional="true"';
         		 }
@@ -325,7 +327,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
+                             '<input type="text" '+onBlurEvent+' '+datavalidation+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
                              '</div>';
 
                      case 'textarea':

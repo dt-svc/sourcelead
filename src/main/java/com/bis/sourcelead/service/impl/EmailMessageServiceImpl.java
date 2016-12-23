@@ -179,7 +179,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			message.setHeader("Content-Type", "text/html; charset=UTF-8");
 			message.setSubject(emailMessage.getSubject());
 
-			if (attachmentList.size() > 0) {
+			if (null != attachmentList) {
 				for (EmailAttachment attachment : attachmentList) {
 					
 					DataSource dataSource = null;

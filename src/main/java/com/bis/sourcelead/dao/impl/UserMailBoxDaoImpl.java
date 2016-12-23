@@ -62,7 +62,7 @@ public class UserMailBoxDaoImpl implements UserMailBoxDao{
 			String mailStatus) throws Exception {
 		
 		 Session session = this.sessionFactory.getCurrentSession();
-		 String query = "from UserMailBox mailbox where mailbox.userId.id = :userId and mailbox.orgLocationId.id = :orgLocationId and mailbox.mailStatus = :mailStatus  ";
+		 String query = "from UserMailBox mailbox where mailbox.userId.id = :userId and mailbox.orgLocationId.id = :orgLocationId and mailbox.mailStatus = :mailStatus and mailbox.status = '1' ";
 		 List<UserMailBox> mailBoxList = session.createQuery(query.toString()).setLong( "userId", userId)
 				 .setLong( "orgLocationId", orgLocationId).setString("mailStatus", mailStatus).setCacheable(true).list();
 		 return mailBoxList;
@@ -106,11 +106,26 @@ public class UserMailBoxDaoImpl implements UserMailBoxDao{
 			throws Exception {
 		
 		 Session session = this.sessionFactory.getCurrentSession();
-		 String query = "from UserMailBox mailbox where mailbox.userId.id = :userId and mailbox.orgLocationId.id = :orgLocationId and mailbox.isFavourite = '1'  ";
+		 String query = "from UserMailBox mailbox where mailbox.userId.id = :userId and mailbox.orgLocationId.id = :orgLocationId and mailbox.isFavourite = '1' and mailbox.status = '1' ";
 		 List<UserMailBox> mailBoxList = session.createQuery(query.toString()).setLong( "userId", userId)
 				 .setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
 		 return mailBoxList;
 		
+	}
+
+	@Override
+	@Transactional
+	public Integer getUnReadMessagesByUserIdAndLocationIdAndType(Long userId, Long orgLocationId, String type)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="select count(*) from UserMailBox mailbox where mailbox.userId.id = :userId and mailbox.orgLocationId.id = :orgLocationId and mailbox.mailStatus = :mailStatus and mailbox.isMailRead = '0' ";
+		List<Long> unreadMailsCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setString("mailStatus", type).list();
+			Integer count = 0;
+			if(unreadMailsCount != null && !unreadMailsCount.isEmpty()){
+					count = unreadMailsCount.get(0).intValue();
+			}
+			return count;
 	}
 
 }

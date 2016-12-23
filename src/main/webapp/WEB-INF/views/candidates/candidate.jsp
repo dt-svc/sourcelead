@@ -341,11 +341,11 @@
           <div class="col-md-9">
                <select class="form-control valid selectpicker" id="noticePeriod" name="noticePeriod">
                 <option value=""><a href="#">Select</a></option>
-                 <option ${noticePeriod  == 'Immediately' ? 'selected' : ''}><a href="#">Immediately</a></option>
-                 <option ${noticePeriod  == '15 days' ? 'selected' : ''}><a href="#">15 days</a></option>
-                 <option ${noticePeriod  == 'Month' ? 'selected' : ''}><a href="#">Month</a></option>
-                 <option ${noticePeriod  == '2 months' ? 'selected' : ''}><a href="#">2 months</a></option>
-                 <option ${noticePeriod  == '3 months' ? 'selected' : ''}><a href="#">3 months</a></option>
+                 <option ${noticePeriod  == 'Immediately available' ? 'selected' : ''}><a href="#">Immediately available</a></option>
+                 <option ${noticePeriod  == '15 Days' ? 'selected' : ''}><a href="#">15 Days</a></option>
+                 <option ${noticePeriod  == '1 Month' ? 'selected' : ''}><a href="#">1 Month</a></option>
+                 <option ${noticePeriod  == '2 Months' ? 'selected' : ''}><a href="#">2 Months</a></option>
+                 <option ${noticePeriod  == '3 Months' ? 'selected' : ''}><a href="#">3 Months</a></option>
                 </select>
              
            </div>
@@ -620,8 +620,7 @@ function getCities(){
 	       $("#state").chosen();
 	       $("#city").chosen();
 	       
-	       $("#candidateSkills").val('').trigger("chosen:updated");
-	       $("#candidateEducation").val('').trigger("chosen:updated");
+	       
 	       
 	        //Adding Customized Skills to the list
 	        var select, chosen;
@@ -687,6 +686,9 @@ function getCities(){
 			var $this = $(this);
 			$this.next().css({'width': '100%'});
 			})
+			
+			$("#candidateSkills").val('').trigger("chosen:updated");
+	       $("#candidateEducation").val('').trigger("chosen:updated");
 				
 				
 </script> 
@@ -801,11 +803,10 @@ function getCities(){
 	     						}
 	     						$("#candidateSkills").append(internalOutput);
 	     		        		$("#candidateSkills").trigger("chosen:updated");
-	     		        		
+	     		        		$("#candidateEducation").trigger("chosen:updated");
 	     		        		
 	     		        		$("#candidateEducation").empty();
 	     						 var internalOutput = "";
-	     						 alert("educationsList="+educationsList);
 	     						 <c:forEach var="edu" items="${educationsList}">
 	     						    internalOutput = internalOutput+"<option value='${edu.name}'>${edu.name}</option>";
 	     	                     </c:forEach>
@@ -818,7 +819,7 @@ function getCities(){
 	     							}
 	     						}
 	     						$("#candidateEducation").append(internalOutput);
-	     		        		$("#candidateEducation").trigger("chosen:updated");
+	     		        		
 	     		        		
 	     		        		
 	     						$("#loading").removeAttr("style");

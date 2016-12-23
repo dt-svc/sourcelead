@@ -75,7 +75,9 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 				sheet = createXlsSheet(sheet, writeRow, orgRelations);
 				row++;
 			}
-			 file = new File(orgName + "_Clients_" + dateFormat.format(new Date()) + ".xls");
+			 /*file = new File(orgName + "_Clients_" + dateFormat.format(new Date()) + ".xls");*/
+			 file = File.createTempFile(orgName + "_Clients_" + dateFormat.format(new Date()),".xls");
+			 file.setReadable(true);
 			FileOutputStream fos = new FileOutputStream(file);
 			try {
 				wb.write(fos);
@@ -142,7 +144,9 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 				sheet = createContactXlsSheet(sheet, writeRow, OrgSpoc);
 				row++;
 			}
-			 file = new File(orgName + "_Clients Contact_" + dateFormat.format(new Date()) + ".xls");
+			/* file = new File(orgName + "_Clients Contact_" + dateFormat.format(new Date()) + ".xls");*/
+			file = File.createTempFile(orgName + "_Clients Contact_" + dateFormat.format(new Date()),".xls");
+			file.setReadable(true);
 			FileOutputStream fos = new FileOutputStream(file);
 			try {
 				wb.write(fos);
@@ -215,7 +219,9 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 				sheet = createXlsSheet(sheet, writeRow, orgRelations);
 				row++;
 			}
-			 file = new File(orgName + "_Vendor_" + dateFormat.format(new Date()) + ".xls");
+			 file = File.createTempFile(orgName + "_Vendor_" + dateFormat.format(new Date()),".xls");
+			 file.setReadable(true);
+			/* file = new File(orgName + "_Vendor_" + dateFormat.format(new Date()) + ".xls");*/
 			FileOutputStream fos = new FileOutputStream(file);
 			try {
 				wb.write(fos);
@@ -255,7 +261,9 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 				sheet = createContactXlsSheet(sheet, writeRow, OrgSpoc);
 				row++;
 			}
-			 file = new File(orgName + "_Vendor Contact_" + dateFormat.format(new Date()) + ".xls");
+			 file = File.createTempFile(orgName + "_Vendor Contact_" + dateFormat.format(new Date()),".xls");
+			 file.setReadable(true);
+			 /*file = new File(orgName + "_Vendor Contact_" + dateFormat.format(new Date()) + ".xls");*/
 			FileOutputStream fos = new FileOutputStream(file);
 			try {
 				wb.write(fos);
@@ -298,7 +306,9 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 				sheet = createprojectMembersXlsSheet(sheet, writeRow, projectMembers);
 				row++;
 			}
-			 file = new File(projectName +"_" + dateFormat.format(new Date()) + ".xls");
+			 file = File.createTempFile(projectName +"_" + dateFormat.format(new Date()),".xls");
+			 file.setReadable(true);
+			 /*file = new File(projectName +"_" + dateFormat.format(new Date()) + ".xls");*/
 			FileOutputStream fos = new FileOutputStream(file);
 			try {
 				wb.write(fos);

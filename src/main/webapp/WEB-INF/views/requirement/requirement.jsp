@@ -813,7 +813,7 @@ $(document).ready(function () {
         <c:if test="${empty requirement.requirementSubmissionStatus || requirement.requirementSubmissionStatus == 'DRAFT' || requirement.requirementSubmissionStatus == 'REJECTED'}">
         	<input type="button" value="Draft" id="draft" onclick="storeRequirement('draft'); " class="btn btn-danger ml">
         </c:if>
-        <input type="button" value="Save" id="save" onclick="storeRequirement('save');checkTemplateforDouplicate();" class="btn btn-primary ml" >    
+        <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >    
         <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
       </div>
     </div>
@@ -877,6 +877,7 @@ $(document).ready(function () {
 <script type="text/javascript">
 	function storeRequirement(saveType) {
 		validateJobId();
+		checkTemplateforDouplicate();
 		$('#addClient').empty();
 		$('#addContact').empty();
 		$('#addTeam').empty();
@@ -1223,6 +1224,11 @@ function getCities(){
                    var option = $("<option>").val(newSkill).text(newSkill);
                    select.append(option);
                    select.find(option).prop('selected', true);
+                   //to doesn't allow duplicates
+                   $("#skills option").each(function(){
+                         $(this).siblings("[value='"+ this.value+"']").remove();
+                   });
+                   //end
                    $("#skills").trigger("chosen:updated");
                }
            });
@@ -1242,6 +1248,13 @@ function getCities(){
 		            var option = $("<option>").val(newEducation).text(newEducation);
 		            selectone.append(option);
 		            selectone.find(option).prop('selected', true);
+		            
+		          //to doesn't allow duplicates
+	                   $("#education option").each(function(){
+	                         $(this).siblings("[value='"+ this.value+"']").remove();
+	                   });
+	                   //end
+		            
 	        		$("#education").trigger("chosen:updated");
 	        		
 		        }
@@ -1684,7 +1697,7 @@ function getUserList(teamType){
 		         								localCheckedStatus = "checked";
 		         							}  
 		                    	 });
-		                    	 result = result +'             <td><input id="'+opt.id+'" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
+		                    	 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
 		                    	 result = result +'             <td>'+opt.firstName+' '+opt.lastName+'</td>';
 		                    	 result = result +'             <td>'+opt.email+'</td>';
 		                    	 result = result +'             <td>'+opt.userType+'</td>';
@@ -2112,11 +2125,10 @@ function getLevel2Approvers(currentApproverId){
  
  <script>
 function toggle(source) {
-    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    var checkboxes = document.querySelectorAll('input[name="team"]');
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i] != source)
             checkboxes[i].checked = source.checked;
-        
     }
 $('input:checkbox:not(#checkAll)').click(function() {
     if(!this.checked) {
