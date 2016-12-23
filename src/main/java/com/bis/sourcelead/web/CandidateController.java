@@ -60,6 +60,8 @@ public class CandidateController {
 	 * @throws Exception
 	 */
 	
+	//Note this method is ResumeParsing Candidate method
+	
 	 @PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE')")
 	 @RequestMapping(value = "/candidate")
 		public ModelAndView candidate(HttpServletRequest request) throws Exception {
@@ -82,6 +84,33 @@ public class CandidateController {
 			
 			return model;
 	    }
+	 
+	   //Note this method is ResumeParsing Candidate method
+		
+		 @PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE')")
+		 @RequestMapping(value = "/addCandidate")
+			public ModelAndView addCandidate(HttpServletRequest request) throws Exception {
+			 	logger.debug("Display the candiade page");
+			 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				ModelAndView model = new ModelAndView();
+				model.setViewName("candidates/addCandidate");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				
+				Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+	            model.addObject("loginCountryName", countries.getName());
+	            model.addObject("currencyCode", countries.getCurrency());
+	            
+	            List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+				model.addObject("educationsList", educationsList);
+				
+				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+				
+				model.addObject("skillsList", skillsList);
+				
+				return model;
+		    }
+		 
+		 
 	
 	
 	@RequestMapping(value = "/candidatesList")
