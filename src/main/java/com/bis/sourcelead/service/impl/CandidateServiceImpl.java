@@ -476,4 +476,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public Long getCandidatesCountByOrgLocationID(Long orgLocationId) {
 		return candidateDao.getCandidatesCountByOrgLocationID(orgLocationId);
 	}
+
+	@Override
+	public List<Candidate> getAllHotlistCandidatesAndNotAssignedToTeamByLocation(Long orgLocationId) throws Exception {
+		return candidateDao.getAllHotlistCandidatesAndNotAssignedToTeamByLocation(orgLocationId);
+	}
 }
