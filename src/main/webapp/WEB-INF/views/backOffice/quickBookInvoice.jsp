@@ -29,7 +29,7 @@ function getAllInvoice(){
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
 	                	 var result = "";
-	                	 result = result +"<table id='invoicePagination' class='display' cellspacing='0' width='100%' >"; 
+	                	 result = result +"<table id='invoicePagination1' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                     result = result +"    <th>Date</th>"; 
@@ -177,6 +177,127 @@ function getAllCustomers(){
 </script>
 
 
+<script>
+function getAllVendors(){  
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+           type : "POST",
+           url: sourceleadUrl+"/getAllvendors?${_csrf.parameterName}=${_csrf.token}",    
+            success :function(data) {
+			    	     $("#requirementList").removeAttr("style");
+	                	 $("#requirementList").empty();
+	                	 var result = "";
+	                	 result = result +"<table id='invoicePagination2' class='display' cellspacing='0' width='100%' >"; 
+	                     result = result +"<thead>"; 
+	                     result = result +"  <tr>"; 
+	                     result = result +"    <th>Id</th>"; 
+	                     result = result +"    <th>Vendor Name</th>"; 
+	                     result = result +"    <th>Balance</th>"; 
+	                     result = result +"    <th>Mobile</th>"; 
+	                     result = result +"  </tr>"; 
+	                     result = result +"</thead>";
+	                     result = result +"<tbody>"; 
+	                     
+	                     var json = JSON.parse(data);
+	                     for (var i = 0; i < json.QueryResponse.Vendor.length; i++) {
+	                    	 var opt = json.QueryResponse.Vendor[i]; 
+	                    	 result = result +"<tr>"; 
+	                    	 
+	                    	 if(opt.Id != null && opt.Id != '' && opt.Id != 'undefined'){
+		                    	 result = result +"<td><div>"+opt.Id+"</div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
+	                    	 if(opt.DisplayName != null && opt.DisplayName!= '' && opt.DisplayName!= 'undefined'){
+		                    	 result = result +"<td><div> <a href='#' onClick='customerInvoice();''>"+opt.DisplayName+"</a></div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
+	                    	 if(opt.Balance != null && opt.Balance != '' && opt.Balance != 'undefined'){
+		                    	 result = result +"<td><div>$"+opt.Balance+"</div></td>"; 
+		                     }else{
+		                    	 result = result +"<td><div>$0.0</div></td>";
+		                     }
+	                    	 if(opt.PrimaryPhone != null && opt.PrimaryPhone != '' && opt.PrimaryPhone != 'undefined'){
+		                    	 result = result +"<td><div>"+opt.PrimaryPhone.FreeFormNumber+"</div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
+	                    	 result = result +"</tr>"; 
+ 							
+ 						 } 
+	                     result = result +" </tbody>";
+	                     result = result +"</table>"; 
+	                     $("#noReq").val('');
+	                     $("#requirementList").append(result); 
+	                     pagination2(); 
+			    	     
+          },
+       });  
+  } 
+</script>
+
+<script>
+function getAllEmployees(){  
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+           type : "POST",
+           url: sourceleadUrl+"/getAllEmoloyees?${_csrf.parameterName}=${_csrf.token}",    
+            success :function(data) {
+			    	     $("#requirementList").removeAttr("style");
+	                	 $("#requirementList").empty();
+	                	 var result = "";
+	                	 result = result +"<table id='invoicePagination3' class='display' cellspacing='0' width='100%' >"; 
+	                     result = result +"<thead>"; 
+	                     result = result +"  <tr>"; 
+	                     result = result +"    <th>Id</th>"; 
+	                     result = result +"    <th>Employee Name</th>"; 
+	                     result = result +"    <th>HiredDate</th>"; 
+	                     result = result +"    <th>Mobile</th>"; 
+	                     result = result +"  </tr>"; 
+	                     result = result +"</thead>";
+	                     result = result +"<tbody>"; 
+	                     
+	                     var json = JSON.parse(data);
+	                     for (var i = 0; i < json.QueryResponse.Employee.length; i++) {
+	                    	 var opt = json.QueryResponse.Employee[i]; 
+	                    	 result = result +"<tr>"; 
+	                    	 
+	                    	 if(opt.Id != null && opt.Id != '' && opt.Id != 'undefined'){
+		                    	 result = result +"<td><div>"+opt.Id+"</div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
+	                    	 if(opt.DisplayName != null && opt.DisplayName!= '' && opt.DisplayName!= 'undefined'){
+		                    	 result = result +"<td><div> <a href='#' onClick='customerInvoice();''>"+opt.DisplayName+"</a></div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
+	                    	 if(opt.HiredDate != null && opt.HiredDate != '' && opt.HiredDate != 'undefined'){
+		                    	 result = result +"<td><div>"+opt.HiredDate+"</div></td>"; 
+		                     }else{
+		                    	 result = result +"<td><div>---</div></td>";
+		                     }
+	                    	 if(opt.PrimaryPhone != null && opt.PrimaryPhone != '' && opt.PrimaryPhone != 'undefined'){
+		                    	 result = result +"<td><div>"+opt.PrimaryPhone.FreeFormNumber+"</div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
+	                    	 result = result +"</tr>"; 
+ 							
+ 						 } 
+	                     result = result +" </tbody>";
+	                     result = result +"</table>"; 
+	                     $("#noReq").val('');
+	                     $("#requirementList").append(result); 
+	                     pagination3(); 
+			    	     
+          },
+       });  
+  } 
+</script>
+
+
 
 <%-- 
      @author : sarath kumar.
@@ -202,6 +323,38 @@ function pagination(){
 <script>
 function pagination1(){ 
     $('#invoicePagination1').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+            "sSearch": ""
+       }
+    } );
+}
+</script>
+
+
+<script>
+function pagination2(){ 
+    $('#invoicePagination2').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+            "sSearch": ""
+       }
+    } );
+}
+</script>
+
+
+<script>
+function pagination3(){ 
+    $('#invoicePagination3').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
