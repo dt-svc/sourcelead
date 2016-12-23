@@ -38,6 +38,8 @@ public class EmailMessage implements Serializable {
 	
 	private String emailType;
 
+	private String sendResumes;
+
 	public String getFirstName() {
 		return firstName;
 	}
@@ -156,5 +158,13 @@ public class EmailMessage implements Serializable {
 
 	public void setEmailType(String emailType) {
 		this.emailType = emailType;
+	}
+
+	public String getSendResumes() {
+		return sendResumes;
+	}
+
+	public void setSendResumes(String sendResumes) {
+		this.sendResumes = sendResumes;
 	}
 }

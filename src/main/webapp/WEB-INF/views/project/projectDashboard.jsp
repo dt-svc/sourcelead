@@ -291,6 +291,7 @@ $(document).ready(function() {
 $(document).ready(function() {
     $("#filter1ApprovePop").click(function(){
 		$("#filter1ApprovedPop").slideToggle(200);
+		 $("#filter2ApprovedPop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter1ApprovedPop").slideUp(200);
@@ -302,6 +303,7 @@ $(document).ready(function() {
     
     $("#filter2ApprovePop").click(function(){
 		$("#filter2ApprovedPop").slideToggle(200);
+		$("#filter1ApprovedPop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter2ApprovedPop").slideUp(200);
