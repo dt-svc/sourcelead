@@ -554,6 +554,11 @@ public class UserServiceImpl implements UserService {
 		user.setMobilePhone(userProfile.getMobilePhone());
 		user.setJobTitle(userProfile.getJobTitle());
 		user.setLocation(userProfile.getLocation());
+		user.setLinkedIn(userProfile.getLinkedIn());
+		user.setFacebook(userProfile.getFacebook());
+		user.setTwitter(userProfile.getTwitter());
+		user.setGooglePlus(userProfile.getGooglePlus());
+		
         if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
     	  try {
     	   		user.setFileContentType(multiFile.getContentType());
