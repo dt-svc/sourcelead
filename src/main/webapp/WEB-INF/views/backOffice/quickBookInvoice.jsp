@@ -31,7 +31,7 @@ function getAllInvoice(){
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
 	                	 var result = "";
-	                	 result = result +"Invoice List";
+	                	 result = result +"<h4 class='ml'>Invoice List</h4>";
 	                	 result = result +"<table id='invoicePagination1' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
@@ -182,6 +182,11 @@ function getAllCustomers(){
   } 
 </script>
 
+<script>
+function customerInvoice(){  
+ 	alert("hai");
+}
+</script>
 
 <script>
 function getAllVendors(){  
@@ -195,7 +200,7 @@ function getAllVendors(){
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
 	                	 var result = "";
-	                	 result = result +"Vendors List";
+	                	 result = result +"<h4 class='ml'>Vendors List</h4>";
 	                	 result = result +"<table id='invoicePagination2' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
@@ -258,7 +263,7 @@ function getAllEmployees(){
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
 	                	 var result = "";
-	                	 result = result +"Employee List";
+	                	 result = result +"<h4 class='ml'>Employee List</h4>";
 	                	 result = result +"<table id='invoicePagination3' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 

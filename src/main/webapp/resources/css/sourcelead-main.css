@@ -5222,7 +5222,7 @@ margin-bottom: 20px;
 /* QuickBooks styles */
 .quickBooks-head {
 	min-height: 50px;
-	border-bottom: 1px solid #F5F5E9;
+	border-bottom: 1px solid #ddd;
 margin-bottom: 10px;
 }
 .timesheet_head.quickBooks-head a{
