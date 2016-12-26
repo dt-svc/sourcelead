@@ -139,6 +139,7 @@ function getAllCustomers(){
 	                     result = result +"    <th>Customer Name</th>"; 
 	                     result = result +"    <th>Balance</th>"; 
 	                     result = result +"    <th>Mobile</th>"; 
+	                     result = result +"    <th>Created Date</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -165,6 +166,11 @@ function getAllCustomers(){
 		                     }
 	                    	 if(opt.PrimaryPhone != null && opt.PrimaryPhone != '' && opt.PrimaryPhone != 'undefined'){
 		                    	 result = result +"<td><div>"+opt.PrimaryPhone.FreeFormNumber+"</div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
+	                    	 if(opt.MetaData != null && opt.MetaData != '' && opt.MetaData != 'undefined'){
+		                    	 result = result +"<td><div>"+opt.MetaData.CreateTime+"</div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
@@ -208,6 +214,7 @@ function getAllVendors(){
 	                     result = result +"    <th>Vendor Name</th>"; 
 	                     result = result +"    <th>Balance</th>"; 
 	                     result = result +"    <th>Mobile</th>"; 
+	                     result = result +"    <th>Created Date</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -234,6 +241,11 @@ function getAllVendors(){
 		                     }
 	                    	 if(opt.PrimaryPhone != null && opt.PrimaryPhone != '' && opt.PrimaryPhone != 'undefined'){
 		                    	 result = result +"<td><div>"+opt.PrimaryPhone.FreeFormNumber+"</div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>-----</div></td>";
+		                     }
+	                    	 if(opt.MetaData != null && opt.MetaData != '' && opt.MetaData != 'undefined'){
+		                    	 result = result +"<td><div>"+opt.MetaData.CreateTime+"</div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
