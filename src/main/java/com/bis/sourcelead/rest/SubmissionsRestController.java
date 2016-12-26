@@ -286,8 +286,7 @@ public class SubmissionsRestController {
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
 
 		for (RequirementSubmission requirementSubmission : shortlistedList) {
-			CandidateResumes candidateResumes = candidateResumesService
-					.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+			CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
 					.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 			if (requirementSubmissionTemplateFields.getLastName() != null) {
@@ -571,6 +570,7 @@ public class SubmissionsRestController {
 	public @ResponseBody String submitToClient(@RequestParam(value = "jsonData", required = false) String jsonData,
 			@RequestParam(value = "selectedIds", required = false) String submissionsList,
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
+			@RequestParam(value = "selectedShortlistsRate", required = false) String selectedShortlistsRate,
 			MultipartHttpServletRequest multPartrequest) throws Exception {
 		String jsonc = "{" + jsonData + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
@@ -581,7 +581,7 @@ public class SubmissionsRestController {
 		final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) multPartrequest;
 		final Map<String, MultipartFile> files = multiRequest.getFileMap();
 		requirementSubmissionService.storeClientSubmissionWithEmailPreview(requirementId, user, orgLocations,
-				submissionsList, org, jsonObj, files);
+				submissionsList, org, jsonObj, files,selectedShortlistsRate);
 		return "success";
 	}
 
