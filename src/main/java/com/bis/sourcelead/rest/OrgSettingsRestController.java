@@ -182,7 +182,8 @@ public class OrgSettingsRestController {
    
    @RequestMapping(value = "/roleActions/{roleId}" , method = RequestMethod.GET)
 	 public @ResponseBody void roleActions(@PathVariable Long roleId,HttpServletRequest request,HttpServletResponse response) throws Exception {
-			response.sendRedirect("/sourcelead/enrollRoleActions?roleId="+roleId);
+			StringBuilder redirectUrl = new StringBuilder();
+			response.sendRedirect(redirectUrl.append("/sourcelead/enrollRoleActions?roleId=").append(roleId).toString());
 			
 	   }
    
@@ -231,7 +232,8 @@ public class OrgSettingsRestController {
 	 	
 	 	 Roles roles = new Roles();
 	 	if(jsonObj.has("roleName") && !isNullOrEmpty(jsonObj.getString("roleName"))){
-	 		roles.setRoleName("ROLE_"+jsonObj.getString("roleName").replaceAll(" ", "_").toUpperCase());
+	 		StringBuilder role = new StringBuilder();
+	 		roles.setRoleName(role.append("ROLE_").append(jsonObj.getString("roleName")).toString().replaceAll(" ", "_").toUpperCase());
 	 		roles.setDisplayName(jsonObj.getString("roleName"));
 	 		roles.setOrg(org);
 	 		roles.setOrgLocations(orgLocations);

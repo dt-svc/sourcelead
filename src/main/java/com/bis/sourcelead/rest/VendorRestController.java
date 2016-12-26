@@ -283,7 +283,7 @@ public class VendorRestController {
 			for (OrgSpoc orgSpoc : vandorsContactListByOrgLocationId) {
 				if(orgSpoc.getSpocUser().getId() == loginUser.getId() || orgSpoc.getOwnerUser().getId() == loginUser.getId()){
 					//if login user is spoc
-					if(orgSpoc.getSpocUser().getId() == loginUser.getId()){
+					if(orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue()){
 	    				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
 	    				 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
 	    				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
@@ -293,7 +293,7 @@ public class VendorRestController {
 	    				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
 					}
 					//if login user is Owner
-					else if(orgSpoc.getOwnerUser().getId() == loginUser.getId()){
+					else if(orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue()){
 						if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
 							orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
 						}else{
@@ -310,7 +310,7 @@ public class VendorRestController {
 						
 					 
 				}else{
-					if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
+					if(orgSpoc.getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
 						if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
 							orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
 						}else{
@@ -323,7 +323,7 @@ public class VendorRestController {
 						 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
 						 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
 					 }
-					if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
+					if(orgSpoc.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
 					 orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName()+" "+orgSpoc.getOwnerUser().getLastName());
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
@@ -332,11 +332,11 @@ public class VendorRestController {
 					 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
 					}
 				}
-				if(orgSpoc.getResponderLocationId().getId() == orgLocations.getId()){
+				if(orgSpoc.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
 					orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
 				}
-				if(orgSpoc.getInitiatorLocationId().getId() == orgLocations.getId() ){
+				if(orgSpoc.getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
 					orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
 					orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
 				}
