@@ -97,8 +97,8 @@ public class TeamRestController {
 		List<Team> teamList = teamService.getTeamListByOrgLocationID(loginOrgLocation.getId());
 		String teamMembers="";
 		for(Team team : teamList){
-			
-			team.setTeamOwnerName(team.getOwnerUserId().getFirstName()+""+team.getOwnerUserId().getLastName());
+			StringBuilder ownerNameSB = new StringBuilder();
+			team.setTeamOwnerName(ownerNameSB.append(team.getOwnerUserId().getFirstName()).append(" ").append(team.getOwnerUserId().getLastName()).toString());
 			Collection<TeamMembers>	teamMembersList  = teamMembersService.getTeamMembersListByTeamID(team.getId(),loginOrgLocation.getId());
 			team.setTeamMembersCount(teamMembersList.size());
 			List<CandidateHotList> candidateHotList = candidateHotListService.getHotCandidateListForTeamByTeamId(team.getId(), loginOrgLocation.getId());
@@ -156,11 +156,11 @@ public class TeamRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByTeamID(Long.parseLong(teamId),orgLocation.getId());
 		for(TeamMembers  teamMembers : teamMembersList){
-			
-			
+			 StringBuilder ownerNameSB = new StringBuilder();
+			 StringBuilder memberNameSB = new StringBuilder();
  			 teamMembers.setTeamName(teamMembers.getTeamId().getName());
-			 teamMembers.setOwnerName(teamMembers.getTeamId().getOwnerUserId().getFirstName() +""+teamMembers.getTeamId().getOwnerUserId().getLastName() );
-			 teamMembers.setMemberName(teamMembers.getMemberUserId().getFirstName()+""+teamMembers.getMemberUserId().getLastName());
+			 teamMembers.setOwnerName(ownerNameSB.append(teamMembers.getTeamId().getOwnerUserId().getFirstName()).append(" ").append(teamMembers.getTeamId().getOwnerUserId().getLastName()).toString());
+			 teamMembers.setMemberName(memberNameSB.append(teamMembers.getMemberUserId().getFirstName()).append(" ").append(teamMembers.getMemberUserId().getLastName()).toString());
 			 teamMembers.setEmail(teamMembers.getMemberUserId().getEmail());
 			 UserRole userRole = userRoleService.getUserRoleByUserId(teamMembers.getMemberUserId().getId());
 			 teamMembers.setUserType(userRole.getUserType());
@@ -322,8 +322,8 @@ public class TeamRestController {
 			  String  resultJson =null;
 			  
 			  Team team  = teamService.getTeamByTeamId(teamId);
-			  team.setTeamOwnerName(team.getOwnerUserId().getFirstName()+" "+team.getOwnerUserId().getLastName());
-			  
+			  StringBuilder ownerNameSB = new StringBuilder();
+			  team.setTeamOwnerName(ownerNameSB.append(team.getOwnerUserId().getFirstName()).append(" ").append(team.getOwnerUserId().getLastName()).toString());
 			  resultJson = commonUtil.toJSON(team);
 			  return resultJson;
 		  }
@@ -379,7 +379,8 @@ public class TeamRestController {
 					  if(hotCandidate.getCandidateId().getFirstName() != null){
 						  hotCandidate.setCandidateFullName(hotCandidate.getCandidateId().getFirstName());
 						  if(StringUtils.isNotEmpty(hotCandidate.getCandidateId().getLastName())){
-							  hotCandidate.setCandidateFullName(hotCandidate.getCandidateFullName() +" "+ hotCandidate.getCandidateId().getLastName());
+							  StringBuilder canNameSB = new StringBuilder();
+							  hotCandidate.setCandidateFullName(canNameSB.append(hotCandidate.getCandidateFullName()).append(" ").append(hotCandidate.getCandidateId().getLastName()).toString());
 						  }
 					  }
 					  
@@ -392,9 +393,11 @@ public class TeamRestController {
 					  if(StringUtils.isNotEmpty(hotCandidate.getCandidateId().getCountry())){
 						  hotCandidate.setCandidateLocation(hotCandidate.getCandidateId().getCountry());
 						  if(StringUtils.isNotEmpty(hotCandidate.getCandidateId().getState())){
-							  hotCandidate.setCandidateLocation(hotCandidate.getCandidateLocation() +", "+ hotCandidate.getCandidateId().getState());
+							  StringBuilder canStateSB = new StringBuilder();
+							  hotCandidate.setCandidateLocation(canStateSB.append(hotCandidate.getCandidateLocation()).append(", ").append(hotCandidate.getCandidateId().getState()).toString());
 							  if(StringUtils.isNotEmpty(hotCandidate.getCandidateId().getCity())){
-								  hotCandidate.setCandidateLocation(hotCandidate.getCandidateLocation() +", "+ hotCandidate.getCandidateId().getCity());
+								  StringBuilder canCitySB = new StringBuilder();
+								  hotCandidate.setCandidateLocation(canCitySB.append(hotCandidate.getCandidateLocation()).append(", ").append(hotCandidate.getCandidateId().getCity()).toString());
 							  }
 						  }
 					  }
