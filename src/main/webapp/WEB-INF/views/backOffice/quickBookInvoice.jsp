@@ -36,13 +36,11 @@ function getAllInvoice(){
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                     result = result +"    <th>Date</th>"; 
-	                     result = result +"    <th>Type</th>"; 
-	                     result = result +"    <th>No</th>"; 
+	                     result = result +"    <th>Name</th>"; 
+	                     result = result +"    <th>Email</th>"; 
 	                     result = result +"    <th>Due date</th>"; 
 	                     result = result +"    <th>Balance</th>"; 
-	                     result = result +"    <th>Total</th>"; 
-	                     result = result +"    <th>Status</th>"; 
-	                     result = result +"    <th>Action</th>"; 
+	                     result = result +"    <th>Total Balance</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -87,22 +85,6 @@ function getAllInvoice(){
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
-		                     
-		                     
-		                     if(opt.TotalAmt != null && opt.TotalAmt != '' && opt.TotalAmt != 'undefined'){
-		                    	 result = result +"<td><div>"+opt.TotalAmt+"</div></td>";
-		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
-		                     }
-		                     
-		                     
-		                     if(opt.TotalAmt != null && opt.TotalAmt != '' && opt.TotalAmt != 'undefined'){
-		                    	 result = result +"<td><div>"+opt.TotalAmt+"</div></td>";
-		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
-		                     }
-		                     
-		                     
 		                     
 	                     } 
 	                     result = result +" </tbody>";
@@ -463,7 +445,7 @@ function check(){
     <div class="pull-left">
       <h2>QuickBooks</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; QuickBooks List</div>
   </section>
   <form id="abc_form" name="abc_form"  enctype='multipart/form-data' method="post">
   <div class="timesheet_out">
@@ -475,9 +457,9 @@ function check(){
           		
           		<a href="#" onClick="getAllVendors();">Vendors</a> ||
           		
-          		<a href="#" onClick="getAllEmployees();">Employees</a> ||
+          		<a href="#" onClick="getAllEmployees();">Employees</a> 
           		
-          		<a href="#" onClick="getAllEmployees();">Transactions</a> 
+          		<!-- <a href="#" onClick="getAllEmployees();">Transactions</a>  -->
           		
           		
           		<!--  <li> <a href="#" onClick="getPayroll();">payroll</a></li>-->
