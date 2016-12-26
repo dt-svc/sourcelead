@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.compress.utils.IOUtils;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +40,8 @@ import com.bis.sourcelead.util.CommonUtil;
  * @date 31/08/2016
  * @author shivayogi
  * @date 02/12/2016
+ * @author rakshith
+ * @date 21/12/2016
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -54,7 +56,7 @@ public class RequirementServiceTest {
 		@Autowired
 		CommonUtil commonUtil;
 		
-		@Test
+		//@Test
 		public void storeRequirement() throws Exception{
 			Requirement requirement = new Requirement();
 			requirement.setId(1l);
@@ -458,22 +460,11 @@ public class RequirementServiceTest {
 		@Test
 		public void getRecommendationsWithScore() throws Exception{
 			List<Candidate> candidateList= new ArrayList<Candidate>();
-			Candidate candi= new Candidate();
-			candi.setFirstName("rakshith");
-			candi.setId(1l);
-			candi.setFirstName("ajith");
-			candi.setCandidateResume("resume");
-			candi.setId(2l);
-			candi.setCandidateResume("resume");
-			candi.setFirstName("shiva");
-			candi.setId(3l);
-			candi.setCandidateResume("resume");
-			candidateList.add(candi);
 			Requirement requirement = new Requirement();
 			requirement.setId(1l);
 			List<Candidate> RequirementApprover = requirementService.getRecommendationsWithScore(candidateList, requirement);
 			for(Candidate candidate:RequirementApprover){
-				candidate.getId();
+				logger.info("Successfully updated!!!!"+candidate.getId());
 			}
 		}
 		
@@ -499,15 +490,15 @@ public class RequirementServiceTest {
 			requirementService.validateJobId(id, orgLocation);
 		}
 		
-		@Test
+		//@Test
 		public void getExportRequirementFile() throws Exception{
+			String orgName="TCS";
+			String exportType="xls";
 			List<Requirement> requirementList= new ArrayList<>();
 			for (Requirement requirement : requirementList) {
 				requirement.setId(1l);
 			}
-			String orgName="TCS";
-			String exportType="xls";
-			TimeSheetSubmissionCount requirementSubCount= new TimeSheetSubmissionCount();
+			TimeSheetSubmissionCount requirementSubCount = new TimeSheetSubmissionCount();
 			requirementSubCount.setSavedTimesheetSubmissionCount(1f);
 			requirementService.getExportRequirementFile(requirementList, orgName, exportType, requirementSubCount);
 		}
@@ -537,5 +528,124 @@ public class RequirementServiceTest {
 			requirementService.getAllReleasedJobsForVendor(orgLocationId, orgRelationId, user, orgLocations);
 		}
 		
+		@Test
+		public void getAllRequirementTeplateJobsByOrgLocationId() throws Exception{
+			Long orgLocationId=1l;
+			User user=new User();
+			user.setId(1l);
+			List<Requirement> RequirementApprover = requirementService.getAllRequirementTeplateJobsByOrgLocationId(orgLocationId, user);
+			logger.info("Successfully retrived!!!!"+RequirementApprover.size());
+
+		}
+		
+		//@Test
+		public void storeRequirementTemplate() throws Exception{
+			
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("jobTitle","exp");
+			jsonObject.put("jobType", "FullTime");
+			jsonObject.put("jobId","1");
+			jsonObject.put("positions", "1");
+			jsonObject.put("country","India");
+			jsonObject.put("state", "Telangana");
+			jsonObject.put("city","Warangal");
+			jsonObject.put("maxExp", "5");
+			jsonObject.put("minExp","1");
+			jsonObject.put("rate","12");
+			jsonObject.put("rateType", "1hr");
+			jsonObject.put("description","hello test");
+			jsonObject.put("currencyCode","INR");
+			jsonObject.put("isTemplate", "Y");
+			jsonObject.put("skills","Java");
+			jsonObject.put("education","ssc");
+			jsonObject.put("parallelApprover",1);
+			jsonObject.put("assignedToMaxCount",1);
+			jsonObject.put("assignUserId1",1);
+			jsonObject.put("manager",1);
+			jsonObject.put("isClient","Y");
+			jsonObject.put("selectClient",1l);
+			jsonObject.put("selectContact",1l);
+			jsonObject.put("clientCurrencyCode","INR");
+			jsonObject.put("clientRate","200000");
+			jsonObject.put("clientSubmissionForm","1");
+			jsonObject.put("applicationFrom","1");
+			Requirement reqtemplate = new Requirement();
+			reqtemplate.setId(3l);
+			OrgLocations orgLocations=new OrgLocations();
+			orgLocations.setId(2l);
+			User user = new User();
+			user.setId(1l);
+			
+			requirementService.storeRequirementTemplate(jsonObject, orgLocations, user );
 		}
 
+		@Test
+		public void getApproverRequirementApproverListByOrgLocationIDAndUserId() throws Exception{
+			Long orgLocationId=1l;
+			String userType="";
+			Long userId=1l;
+			String userCode="";
+			List<Requirement> reqList =requirementService.getApproverRequirementApproverListByOrgLocationIDAndUserId(orgLocationId, userType, userId, userCode);
+			for(Requirement req : reqList){
+				req.getId();
+			}
+			logger.info("Successfully retrived!!!!"+reqList.size());
+		}
+		
+		
+		@Test
+		public void getManagerAssignedRequirementsCount() throws Exception{
+			Long userId=1l;
+			Long orgLocationId=1l;
+			Integer req = requirementService.getManagerAssignedRequirementsCount(userId, orgLocationId);
+			logger.info("Successfully retrived!!!!"+req);
+		}
+		
+		@Test
+		public void getManagerAssignedRequirementsList() throws Exception{
+			Long userId=3l;
+			Long orgLocationId=1l;
+			List<Requirement> reqList = requirementService.getManagerAssignedRequirementsList(userId, orgLocationId);
+			for(Requirement req : reqList){
+				req.getId();
+			}
+			logger.info("Successfully retrived!!!!"+reqList.size());
+		}
+		
+		@Test
+		public void getRequirementsCountAsApprover() throws Exception{
+			Long userId=3l;
+			Long orgLocationId=1l;
+			Integer req = requirementService.getRequirementsCountAsApprover(userId, orgLocationId);
+			logger.info("Successfully retrived!!!!"+req);
+		}
+		
+		@Test
+		public void getRequirementTemplateByRequirementId() throws Exception{
+			Long requirementId=3l;
+			Long orgLocationId=1l;
+			Requirement req = requirementService.getRequirementTemplateByRequirementId(requirementId, orgLocationId);
+			logger.info("Successfully retrived!!!!"+req.getJobTitle());
+		}
+		
+		@Test
+		public void updateRequirementTemplate() throws Exception{
+			Requirement requirement = new Requirement();
+			requirement.setId(3l);
+			requirement.setJobTitle("this is the test job");
+			OrgRelations orgRelation = new OrgRelations();
+			orgRelation.setId(2l);
+			User user = new User();
+			user.setId(3l);
+			requirement.setClientId(orgRelation);
+			requirement.setManagerUserId(user);
+			OrgLocations orgLocations = new OrgLocations();
+			orgLocations.setId(3l);
+			requirement.setOrgLocationId(orgLocations);
+			OrgSpoc spoc = new OrgSpoc();
+			spoc.setId(1l);
+			requirement.setSpocId(spoc);
+			requirementService.updateRequirementTemplate(requirement);
+			logger.info("Successfully updated!!!!");
+		}
+}
