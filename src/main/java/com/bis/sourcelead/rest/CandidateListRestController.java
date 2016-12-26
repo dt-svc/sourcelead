@@ -174,30 +174,21 @@ public class CandidateListRestController {
 	 public @ResponseBody  String getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 			String resultJson;
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			Org loginOrgCode = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			 
 			Candidate can = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),loginOrgLocation.getId());
-			logger.info("=================================="+can.getCountry());
-			String skillsList = "";
-			//Set<CandidateSkills> candidateSkills = can.getCandidateSkills();
+			StringBuilder skillsList = new StringBuilder();
 			List<CandidateSkills> candidateSkills = candidateSkillsService.getCandidateSkillsByCandidateId(candidateId);
-			
 			int i = 0;
 			for(CandidateSkills skilss: candidateSkills){
 				if(i <= 5){
-				
-					
-					skillsList = skillsList+skilss.getName();
+					skillsList = skillsList.append(skilss.getName());
 					if(i != candidateSkills.size()-1){
-						skillsList = skillsList+",";
+						skillsList = skillsList.append(",");
 					}
 				}
-				
 				i++;
 			}
-			
-			can.setSkillsList(skillsList);
+			can.setSkillsList(skillsList.toString());
 			resultJson = commonUtil.toJSON(can);
 			return resultJson;
      }
@@ -437,10 +428,11 @@ public class CandidateListRestController {
 			Candidate candidate ;
 			String jsonc = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(jsonc);
-
-			 candidate = candidateService.storeCandidate(jsonObj,loginOrgLocation,user,multiFile);
+			
+			StringBuilder candidateCreateMsg = new StringBuilder();
+			candidate = candidateService.storeCandidate(jsonObj,loginOrgLocation,user,multiFile);
 				if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
-					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", "Success!!  "+candidate.getFirstName()+" Details Updated");
+					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", candidateCreateMsg.append("Success!!  ").append(candidate.getFirstName()).append(" Details Updated").toString());
 
 				}
 
@@ -473,8 +465,8 @@ public class CandidateListRestController {
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidateService.saveOrUpdateCandidate(candidate);
-				
-				SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg",  ""+candidate.getFirstName()+" Removed");
+				StringBuilder candidateRemoveMsg = new StringBuilder();
+				SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", candidateRemoveMsg.append("").append(candidate.getFirstName()).append(" Removed").toString());
 	
 			
 			}
@@ -634,7 +626,10 @@ public class CandidateListRestController {
 				mimeType = "application/octet-stream";
 			}
 			response.setContentType(mimeType);
-			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			
+			StringBuilder filename = new StringBuilder();
+			//changed string to StringBuilder(Prasad Salina)
+			response.setHeader("Content-Disposition", filename.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
 			response.setContentLength((int) file.length());
 			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 			FileCopyUtils.copy(inputStream, response.getOutputStream());
