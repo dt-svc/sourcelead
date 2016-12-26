@@ -30,10 +30,6 @@ public class RequirementSubmissionHistory implements Serializable{
     @JoinColumn(name="REQUIREMENT_SUBMISSION_ID", nullable=false )        
     private RequirementSubmission submissionId;
 	
-	@ManyToOne
-    @JoinColumn(name="CANDIDATE_ID", nullable=false )        
-    private Candidate candidateId;
-	
 	@Column(name = "FROM_STAGE")
 	private String fromStage;
 	
@@ -66,14 +62,6 @@ public class RequirementSubmissionHistory implements Serializable{
 
 	public void setSubmissionId(RequirementSubmission submissionId) {
 		this.submissionId = submissionId;
-	}
-	
-	public Candidate getCandidateId() {
-		return candidateId;
-	}
-
-	public void setCandidateId(Candidate candidateId) {
-		this.candidateId = candidateId;
 	}
 
 	public String getFromStage() {
