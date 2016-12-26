@@ -628,9 +628,6 @@ public class CandidateListRestController {
 			response.setContentType(mimeType);
 			
 			StringBuilder filename = new StringBuilder();
-			
-			//response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
-			
 			//changed string to StringBuilder(Prasad Salina)
 			response.setHeader("Content-Disposition", filename.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
 			response.setContentLength((int) file.length());
