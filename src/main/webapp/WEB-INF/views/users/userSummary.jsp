@@ -148,6 +148,25 @@ $(document).ready(function(){
 			    var projectApproverUsers = "";
 			    var roles = "";
 			    
+			    var socialLinks = "";
+			    
+			    
+			    if(json.user.linkedIn != null && json.user.linkedIn != "" && json.user.linkedIn != 'undefined' ){
+			    	socialLinks =  socialLinks + '&nbsp;&nbsp;<a href='+json.user.linkedIn+' title="linkedIn" target="_new"><i class="fa fa-linkedin-square text-primary fa-2x"></i></a>';
+			    }
+			    
+			    if(json.user.facebook != null && json.user.facebook != "" && json.user.facebook != 'undefined' ){
+			    	socialLinks =  socialLinks +  '&nbsp;&nbsp;<a href='+json.user.facebook+' title="facebook" target="_new"><i class="fa fa-facebook-square text-info fa-2x"></i></a>';
+			    }
+			    
+			    if(json.user.twitter != null && json.user.twitter != "" && json.user.twitter != 'undefined' ){
+			    	socialLinks =  socialLinks +  '&nbsp;&nbsp;<a href='+json.user.twitter+' title="twitter" target="_new"><i class="fa fa-twitter-square text-info fa-2x"></i></a>';
+			    }
+			    
+			    if(json.user.googlePlus != null && json.user.googlePlus != "" && json.user.googlePlus != 'undefined' ){
+			    	socialLinks =  socialLinks +  '&nbsp;&nbsp;<a href='+json.user.googlePlus+' title="google+" target="_new"><i class="fa fa-google-plus-square text-danger fa-2x"></i></a>';
+			    }
+			    
 			    if(isTimeSheetEnrolled == 'Y'){
 			    	
 			    	    submissionCountsResult = '<p>Projects<strong class="label label-default">'+projectsCount+'</strong></p>';
@@ -157,6 +176,7 @@ $(document).ready(function(){
 		            	submissionCountsResult = submissionCountsResult +'<p>Open Timesheets<strong class="label label-info">'+totalOpenTimeSheetCount+'</strong></p>';
 					    
 			    }
+			   
 			   
 				result = result + '<div class="project_tabs_inn_table">';
 				firstname(json.user.firstName);
@@ -408,6 +428,7 @@ $(document).ready(function(){
 				result = result + ' 		  </div>';
 				result = result + '             <span>'+json.user.firstName+"&nbsp"+json.user.lastName+'</span>';
 				result = result + ' <div class="user_badg" id="counts">';
+				result = result +socialLinks;
 				result = result +submissionCountsResult;
 				result = result + '	</div>';
 				result = result + '		 </div>';
@@ -467,6 +488,7 @@ $(document).ready(function(){
 					result = result + '				 <strong>Manager:</strong><span class="fix">'+json.reportingManager.firstName+' '+json.reportingManager.lastName+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
 				}
+				
 				
 				if(json.InvoiceFrequency != null && json.InvoiceFrequency != "" && json.InvoiceFrequency != 'undefined'){
 					result = result + ' 		<div class="project_details_cta">';
