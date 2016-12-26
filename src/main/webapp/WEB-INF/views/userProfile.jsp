@@ -130,6 +130,43 @@
 							</div>
 						</div>
 					</div>
+			
+			
+			
+			<div class="col-md-12 clearfix">
+			<h4>Social Links</h4>
+			</div>
+					
+			<div class="col-md-6">
+					<div class="form-group">
+					<label class="col-md-4">LinkedIn</label>
+					<div class="col-md-8">
+					  <input type="text" name="linkedIn" value="${SourceLeadWeb_user.linkedIn}" field-name="Linked In" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" >
+					</div>
+					</div>
+				   <div class="form-group">
+					<label class="col-md-4">Facebook</label>
+					<div class="col-md-8">
+					  <input type="text" name="facebook" value="${SourceLeadWeb_user.facebook}" field-name="Facebook" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" />
+					</div>
+				   </div>
+				</div>
+				
+				<div class="col-md-6">
+					<div class="form-group">
+					<label class="col-md-4">Twitter</label>
+					<div class="col-md-8">
+					  <input type="text" name="twitter" value="${SourceLeadWeb_user.twitter}" field-name="Twiter" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" >
+					</div>
+					</div>
+				   <div class="form-group">
+					<label class="col-md-4">Google+</label>
+					<div class="col-md-8">
+					  <input type="text" name="googlePlus" value="${SourceLeadWeb_user.googlePlus}" field-name="Google+" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" />
+					</div>
+				   </div>
+		
+				</div>
 					 <div class="col-md-12">
 						 <hr>
 							<div class="pull-right">

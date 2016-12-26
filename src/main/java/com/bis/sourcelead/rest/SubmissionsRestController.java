@@ -194,11 +194,19 @@ public class SubmissionsRestController {
 		JSONObject jsonObj = new JSONObject(json1);
 
 		MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if (itrator.hasNext()) {
-			multiFile = request.getFile(itrator.next());
+		//to get parse resume
+		if(locationMapFileData != null && locationMapFileData.getSize() > 0 ){
+			Iterator<String> itrator = request.getFileNames();
+			if (itrator.hasNext()) {
+				multiFile = request.getFile(itrator.next());
+			}
 		}
-
+		//to get the manually uploaded resume
+		else{
+			final Map files = request.getFileMap();
+		    multiFile = (MultipartFile)files.get("newUploadBtn");
+		}
+		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");

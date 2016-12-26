@@ -125,7 +125,7 @@
 	                     result = result +"    <th>&nbsp;</th>";
 	                     result = result +"    <th>Name</th>"; 
 	                     result = result +"    <th>Designation</th>"; 
-	                     result = result +"    <th>Position type</th>"; 
+	                     result = result +"    <th>Employment type</th>"; 
 	                     result = result +"    <th>Email</th>"; 
 	                     result = result +"    <th>Mobile</th>"; 
 	                     result = result +"    <th>Type</th>"; 
@@ -338,7 +338,7 @@ function candidateSideBar(candidateId){
              			 	}
          			 	
          			 	if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
-         			 	designationType = 'DesignationType'+'-'+json.designationType;
+         			 	designationType = 'Employment type'+ ' - '+json.designationType;
          			 	}else{
          			 		designationType = '';
          			 	}
@@ -1134,7 +1134,7 @@ function cancel(candidateId){
       <div class="timesheet_head  customtimesheet-head hdr-styles pull-right">
         <ul>
           <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES')">
-          <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="candidate-export"></i>
+          <li><i class="glyphicon glyphicon-export"></i><span>Export</span>&nbsp;<i class="glyphicon glyphicon-play" id="candidate-export"></i>
             <div class="export_pop">
               <ul>
                 <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
@@ -1177,11 +1177,11 @@ function cancel(candidateId){
                     </ul>
                   </div>                	
           </li>  
-          <li><i class="fa fa-plus"></i>&nbsp;<span>Add</span><i class="glyphicon glyphicon-play" id="addmore"></i>
+          <li><i class="fa fa-plus"></i>&nbsp;<span>Add</span>&nbsp;<i class="glyphicon glyphicon-play" id="addmore"></i>
           <div id="addmorepop" class="approved_pop">
            <ul>
              <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
-              <li><a href="<c:url value='/candidate'/>" title=""><i class="fa fa-plus"></i>Add Candidate</a></li>
+              <li><a  onClick="addCandidate();" ><i class="fa fa-plus"></i>Add Candidate</a></li>
            </sec:authorize>
            
            <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
@@ -1248,6 +1248,7 @@ $(document).ready(function() {
 // Approved Popup
     $("#appro-pop").click(function(){
 		$(".approved_pop").toggle(200);
+		
 	});
     $("html").click(function() {
         $(".approved_pop").hide(200);
@@ -1259,6 +1260,7 @@ $(document).ready(function() {
 // Export Popup
     $("#candidate-export").click(function(){
 		$(".export_pop").toggle();
+		$("#filter2ApprovedPop, #filter3ApprovedPop, #filter1ApprovedPop, #addmorepop").slideUp();
 	});
     $("html").click(function() {
         $(".export_pop").hide(200);
@@ -1271,6 +1273,7 @@ $(document).ready(function() {
 $("#addmore").click(function(){
 	$(this).next(".approved_pop").toggle();
 		//$(".approved_pop").toggle(200);
+	$("#filter2ApprovedPop, #filter3ApprovedPop, #filter1ApprovedPop, #filter4ApprovedPop").slideUp();
 	});
 $("html").click(function() {
     $(".approved_pop").hide(200);
@@ -1323,6 +1326,7 @@ $(document).ready(function() {
 	
     $("#filter1ApprovePop").click(function(){
 		$("#filter1ApprovedPop").slideToggle(200);
+		$(".export_pop, #filter3ApprovedPop, #addmorepop, #filter2ApprovedPop").slideUp();
 	});
     $("html").click(function() {
         $("#filter1ApprovedPop").slideUp(200);
@@ -1334,6 +1338,7 @@ $(document).ready(function() {
     
     $("#filter2ApprovePop").click(function(){
 		$("#filter2ApprovedPop").slideToggle(200);
+		$(".export_pop, #filter3ApprovedPop, #filter1ApprovedPop, #addmorepop").slideUp();
 	});
     $("html").click(function() {
         $("#filter2ApprovedPop").slideUp(200);
@@ -1344,6 +1349,7 @@ $(document).ready(function() {
     
     $("#filter3ApprovePop").click(function(){
 		$("#filter3ApprovedPop").slideToggle(200);
+		$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, #addmorepop").slideUp();
 	});
     $("html").click(function() {
         $("#filter3ApprovedPop").slideUp(200);
@@ -1624,4 +1630,61 @@ function savedCommentAndCount(candidateId){
 			})
 				
 </script> 
+<!-- Add candidate Popup -->
+      <div class="addcandidate-popup">
+				  <div class="row">
+                      <div class="col-md-offset-2 col-md-8">
+				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
+                          <div class="col-md-6 mt">
+                        <div class="small-widget bg-purple">
+                            <a href="<c:url value='/candidate'/>"  title="Parse Resume">
+                                <div class="clearfix mb10">
+                                <i class="fa fa-file-text-o fa-4x"></i>
+                                    <span class="fa fa-arrow-right"></span>
+                                </div>
+                                <strong class="clearfix">Parse Resume</strong>
+                                </a>
+                        </div>
+					  </div>
+					  <div class="col-md-6 mt">
+                          <div class="small-widget bg-yellow">
+                              <a href="<c:url value='/addCandidate'/>" title="Add Candidate">
+                                  <div class="clearfix mb10">
+                                      <i class="fa fa-user-circle fa-4x"></i>
+                                      <span class="fa fa-plus"></span>
+                                  </div>
+                                  <strong class="clearfix">Add Candidate</strong>
+                                </a>
+                                
+                          </div>
+					  </div>
+                      </div>
+                          <div class="col-md-4 hidden">
+                          <div class="small-widget bg-green">
+                              <a href="import-candidate.html" title="Import Candidate">
+                                  <div class="clearfix mb10">
+                                <i class="fa fa-user-circle fa-4x"></i>
+                                      <span class="fa fa-download"></span>
+                                  </div>
+                                  <strong class="clearfix">Import Candidate</strong>
+                                </a>
+                          </div>
+                      </div>
+				  </div>
+			  </div>
+      <div class="pop_mask"></div>
+    
+    
+    <script>
+    //addcandidate-popup script
+    function addCandidate(){
+        $('.addcandidate-popup').fadeIn(200);
+        $('.pop_mask').fadeIn(200);
+        $('#addmorepop').slideUp(200);
+    };
+       function closeCandidate(){
+        $('.addcandidate-popup').fadeOut(200);
+        $('.pop_mask').fadeOut(200);
+       }
+    </script>
 <jsp:include page="../masterFooter.jsp" />

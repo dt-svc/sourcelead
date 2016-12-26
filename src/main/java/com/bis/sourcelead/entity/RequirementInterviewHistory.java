@@ -89,6 +89,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Transient
 	private String feedbackEndTime;
+	
+	@Transient
+	private String feedbackStartTime;
 
 	@Transient
     private String isNotifyToVendorRequired;
@@ -309,4 +312,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 		this.interviewStartDateTimeStr = interviewStartDateTimeStr;
 	}
 
+	public String getFeedbackStartTime() {
+		return feedbackStartTime;
+	}
+
+	public void setFeedbackStartTime(String feedbackStartTime) {
+		this.feedbackStartTime = feedbackStartTime;
+	}
 }

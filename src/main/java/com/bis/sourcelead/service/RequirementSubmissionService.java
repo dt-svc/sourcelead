@@ -66,6 +66,14 @@ public interface RequirementSubmissionService {
 	
 	RequirementSubmission getSubmissionsBySourceSubmissionId(Long sourceSubmissionId, Long orgLocationsId);
 	
+	/**
+	 * @author Prasad Salina
+	 * @param submissionIds
+	 * To get candidate resume ids of submissions
+	 */
+	List<Long> getResumeIdsByRequirementSubmissionId(List<Long> submissionIds) throws Exception;
+	
+	
 	RequirementSubmission getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(Long sourceSubmissionId, Long vendorLocationID);
 	
 	Integer getAllSubmissionCountByRequirementIdAndSubmissionStage(Long orgLocationsId, Long requirementId, String submissionStatus);

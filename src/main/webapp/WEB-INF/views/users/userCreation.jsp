@@ -60,7 +60,7 @@
                  <div class="form-group" id="EmailIdDiv">
                   <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmailId" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onKeyUp="validateUserEmail();" onblur="validateUserEmail();" onblur="getUserByUserEmail();">
+                    <input type="text" class="form-control" id="EmailId" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email"  onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();" >
                   </div>
                   </div>
                   
