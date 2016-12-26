@@ -120,7 +120,8 @@ public class DashboardRestController {
 	
 	@RequestMapping(value = "/totalTimesheetList/{status}")
 	public @ResponseBody void tiesheetStatusList(@PathVariable("status") String status,HttpServletResponse response) throws Exception {
-		response.sendRedirect("/sourcelead/timesheetlistByStatus?status=" + status);
+		 StringBuilder redirectUrl = new StringBuilder();
+		 response.sendRedirect(redirectUrl.append("/sourcelead/timesheetlistByStatus?status=").append(status).toString());
 	}
 	
 	
@@ -134,7 +135,8 @@ public class DashboardRestController {
    			    userRole.setUserState(Status.ACTIVE);
    			    userRoleService.addUserRole(userRole);
    		      }
-		     response.sendRedirect("/sourcelead/dashboardLinks?orgLocationId="+orgLocationId);
+		     StringBuilder redirectUrl = new StringBuilder();
+		     response.sendRedirect(redirectUrl.append("/sourcelead/dashboardLinks?orgLocationId=").append(orgLocationId).toString());
 			
 	}
 	
@@ -391,6 +393,7 @@ public class DashboardRestController {
 				String candidateFirstName = "";
 				String candidateLastName = "";
 				String requirementTitle = "";
+				StringBuilder candidateName = new StringBuilder();
 				if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getCandidate() != null){
 					if(interviewHistory.getSubmissionId().getCandidate().getFirstName() != null){
 						
@@ -406,7 +409,7 @@ public class DashboardRestController {
 					requirementTitle = interviewHistory.getSubmissionId().getRequirement().getJobTitle();
 				}
 				
-				interviewHistory.setCandidateName(candidateFirstName+" "+candidateLastName);
+				interviewHistory.setCandidateName(candidateName.append(candidateFirstName).append(" ").append(candidateLastName).toString());
 				
 				interviewHistory.setRequirementTitle(requirementTitle);
 				

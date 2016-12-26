@@ -721,7 +721,9 @@ public class ClientRestController {
 	
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	       clientService.updateVendorDetails(jsonObj, orgRelationId,vendorLocationId, orgLocation.getId());
-	       SourceLeadSessionManager.setSessionAttribute(request, "editVendor","Success !! "+jsonObj.getString("vendorName")+" details updated.");
+	       
+	       StringBuilder editVendorMsg = new StringBuilder();
+		   SourceLeadSessionManager.setSessionAttribute(request, "editVendor", editVendorMsg.append("Success !! ").append(jsonObj.getString("vendorName")).append(" details updated.").toString());
 
 		return "success";
 	}
@@ -745,7 +747,8 @@ public class ClientRestController {
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	       OrgSpoc orgSpoc = clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation);
 	       
-	       SourceLeadSessionManager.setSessionAttribute(request, "editSpocMsg",	"Success !! "+orgSpoc.getSpocUser().getFirstName()+" details updated.");
+	       StringBuilder editSpocMsg = new StringBuilder();
+		   SourceLeadSessionManager.setSessionAttribute(request, "editSpocMsg", editSpocMsg.append("Success !! ").append(orgSpoc.getSpocUser().getFirstName()).append(" details updated.").toString());
 
 		return jsonObj.getString("owner");
 	}
@@ -914,7 +917,8 @@ public class ClientRestController {
 				mimeType = "application/octet-stream";
 			}
 			response.setContentType(mimeType);
-			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"" ).append(file.getName()).append("\"").toString());
 			response.setContentLength((int) file.length());
 			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 			FileCopyUtils.copy(inputStream, response.getOutputStream());
@@ -950,7 +954,8 @@ public class ClientRestController {
 				mimeType = "application/octet-stream";
 			}
 			response.setContentType(mimeType);
-			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"" ).append(file.getName()).append( "\"").toString());
 			response.setContentLength((int) file.length());
 			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 			FileCopyUtils.copy(inputStream, response.getOutputStream());
