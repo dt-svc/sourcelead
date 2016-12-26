@@ -43,7 +43,9 @@ public class QuickBookInvoiceServiceImpl implements QuickBookInvoiceService {
 	@Override
 	public String getAllInvoice() throws Exception {
 		 	
-		  String uri = quickBoxUrl+"/query?query=SELECT%20%2A%20FROM%20Invoice&minorversion=4";
+		  String uri = quickBoxUrl+"/query?query=SELECT%20%2A%20FROM%20Invoice%20STARTPOSITION%201%20MAXRESULTS%201000&minorversion=4";
+		  
+		  
 		  String outPut = quickBookOAuthAuthentication.oAuthSignIn(uri);
 		  return outPut;
 	}
