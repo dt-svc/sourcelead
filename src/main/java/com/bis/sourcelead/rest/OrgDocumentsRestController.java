@@ -142,7 +142,8 @@ public class OrgDocumentsRestController {
 		//to fetch client contact list
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId());
 		for (OrgSpoc orgSpoc : orgSpocsList) {
-			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+			StringBuilder name = new StringBuilder();
+			orgSpoc.setSpocName(name.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
 			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
 		}
 		
@@ -168,7 +169,8 @@ public class OrgDocumentsRestController {
 		//to fetch client contact list
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId());
 		for (OrgSpoc orgSpoc : orgSpocsList) {
-			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+			StringBuilder name = new StringBuilder();
+			orgSpoc.setSpocName(name.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
 			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
 		}
 		
@@ -196,7 +198,8 @@ public class OrgDocumentsRestController {
 		    OrgDocuments orgDocument =  orgDocumentsService.getOrgDocumentsById(Long.parseLong(docId));
 		    
 		    response.setContentType("application/octet-stream");
-	        response.setHeader("Content-Disposition", "attachment;filename="+orgDocument.getFileName());
+		    StringBuilder fileName = new StringBuilder();
+	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(orgDocument.getFileName()).append("\"").toString());
 		    
 			InputStream inputStream = new ByteArrayInputStream(orgDocument.getDocFile());
 			try {
@@ -276,7 +279,8 @@ public class OrgDocumentsRestController {
 			orgDocument.setUpdatedBy(user.getUserCode());
 			orgDocument.setUpdatedDate(commonUtil.currentDate());
 			orgDocumentsService.updateDocumnet(orgDocument);
-			SourceLeadSessionManager.setSessionAttribute(request, "deleteDocument", ""+orgDocument.getDocName()+" removed.");
+			StringBuilder deleteDocumentMsg = new StringBuilder();
+			SourceLeadSessionManager.setSessionAttribute(request, "deleteDocument", deleteDocumentMsg.append("").append(orgDocument.getDocName()).append(" removed.").toString());
 		}
 		return "success";
 	}

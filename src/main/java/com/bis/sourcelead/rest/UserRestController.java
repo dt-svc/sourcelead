@@ -175,7 +175,8 @@ public class UserRestController {
 		 		ph = projectApproverHierarchyService.getLevelOneProjectApproverByProjectId(Long.parseLong(projectId));
 		 	}
 		 	if(ph.getApproverUserId().getId()!=null){
-		 		ph.setFullName(ph.getApproverUserId().getFirstName() +" "+ph.getApproverUserId().getLastName());
+		 		StringBuilder nameSB = new StringBuilder();
+		 		ph.setFullName(nameSB.append(ph.getApproverUserId().getFirstName()).append(" ").append(ph.getApproverUserId().getLastName()).toString());
 		 	}
 		 	
 		 	resultJson = toJSON(ph);
@@ -469,7 +470,6 @@ public class UserRestController {
 				    } catch (Exception e) {
 				   }
 				
-				logger.info("updated records" + updatedCount);
 				return "success";
 			}
 		 

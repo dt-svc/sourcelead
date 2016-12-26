@@ -131,9 +131,8 @@ public class TimesheetSubmissionsRestController {
 		    //TimesheetSubmissions timesheetSubmissions =    timesheetSubmissionsService.getTimesheetSubmissions(submissionId.toString());
 		    
 		    response.setContentType("application/octet-stream");
-	        response.setHeader("Content-Disposition",
-	                "attachment;filename="+timesheetSubmissionsDocuments.getFileName());
-		    
+		    StringBuilder fileName = new StringBuilder();
+	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(timesheetSubmissionsDocuments.getFileName()).append("\"").toString());
 			InputStream inputStream = new ByteArrayInputStream(timesheetSubmissionsDocuments.getDocFile());
 			try {
 				OutputStream outStream = response.getOutputStream();
@@ -205,8 +204,10 @@ public class TimesheetSubmissionsRestController {
 		 	 emailMessage.setLastName(emp.getUser().getLastName());
 		 	 emailMessage.setToEmail(emp.getUser().getEmail());
 		 	 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
-		 	emailMessage.setCreatedBy(loginUser.getUserCode());
-		 	 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 	 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 	 
+		 	 StringBuilder userNameSB = new StringBuilder();
+		 	 emailMessage.setFromName(userNameSB.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 	
 			 //setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<>();
@@ -215,19 +216,27 @@ public class TimesheetSubmissionsRestController {
 			 globalVarsMap.put("employeeFirstName",emp.getUser().getFirstName());
 			 globalVarsMap.put("employeeLastName",emp.getUser().getLastName());
 			 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
-			 globalVarsMap.put("timeFrequency",startDate+" to "+endDate);
+			 
+			 StringBuilder timeFrequencySB = new StringBuilder();
+			 globalVarsMap.put("timeFrequency",timeFrequencySB.append(startDate).append(" to ").append(endDate).toString());
+			 
 			 globalVarsMap.put("managerFirstName", loginUser.getFirstName());
 			 globalVarsMap.put("managerLastName", loginUser.getLastName());
 			 if("REJECTED".equalsIgnoreCase(status)){
 				 globalVarsMap.put("rejectedReason",rejectedReason);
 			 }
-			 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+			 
+			 StringBuilder loginURLSB = new StringBuilder();
+			 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadUrl).append("/").append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			 
 			 //setting the Recipient information
 			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<>();
 			 EmailRecipient emailRecipient = new EmailRecipient();
 			 emailRecipient.setEmail(emailMessage.getToEmail());
-			 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+			 
+			 StringBuilder nameSB = new StringBuilder();
+			 emailRecipient.setName(nameSB.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+			 
 			 emailRecipientList.add(emailRecipient);
 			 
 			 //getting the current EmailScenario by EmailScenario unique name and entity type

@@ -154,10 +154,8 @@ public class TimesheetPdfRestController {
 			table.addCell(cell);
 
 			for (TimesheetEntries te : timesheetEntriesList) {
-
 				cell = new PdfPCell(
-						getPhrase(te.getTimesheetSubmissions().getProjectMembers().getProjects().getProjectName() + "",
-								DocumentFonts.NORMAL));
+						getPhrase(te.getTimesheetSubmissions().getProjectMembers().getProjects().getProjectName() ,DocumentFonts.NORMAL));
 				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(cell);
 

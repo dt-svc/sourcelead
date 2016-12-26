@@ -66,9 +66,10 @@ public class UserProfileRestController {
 			UserProfile userProfile =  gson.fromJson(json,UserProfile.class);
 			   try {
 				user = userService.saveUserProfile(userProfile, multiFile, user);
-				
 				SourceLeadSessionManager.setSessionAttribute(request, "user", user);
-				SourceLeadSessionManager.setSessionAttribute(request, "userName", user.getFirstName()+" "+user.getLastName());
+				
+				StringBuilder userNameSB = new StringBuilder();
+				SourceLeadSessionManager.setSessionAttribute(request, "userName", userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

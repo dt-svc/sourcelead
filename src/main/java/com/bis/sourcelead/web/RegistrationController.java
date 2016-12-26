@@ -196,7 +196,9 @@ public class RegistrationController {
 			if(null == actionLink){
 				return "redirect:/login";
 			}else{
-				return "redirect:/dashboard/"+respondingPartyOrgLocationId+"";
+				 StringBuilder redirectUrl = new StringBuilder();
+				//return "redirect:/dashboard/"+respondingPartyOrgLocationId+"";
+				 return redirectUrl.append("redirect:/dashboard/").append(respondingPartyOrgLocationId).toString();
 			}
 			
 		}
