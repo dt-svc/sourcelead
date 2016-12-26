@@ -100,6 +100,7 @@ public class OrgSettingsRestController {
 			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 		    SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 		    SourceLeadSessionManager.setSessionAttribute(request, "orgName", org.getOrgName());
+		    SourceLeadSessionManager.setSessionAttribute(request, "address", org.getOrgAddress());
 			
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e)); 

@@ -29,8 +29,11 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.UserProfile;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
@@ -50,6 +53,9 @@ public class UserProfileRestController {
 	
 	@Autowired
     private SourceleadPasswordEncoder sourceleadPasswordEncoder;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	    
 
 	   @RequestMapping(value = "/saveUserProfile" , method = RequestMethod.POST)
@@ -60,6 +66,8 @@ public class UserProfileRestController {
 	        MultipartFile multiFile = request.getFile(itrator.next());
 		
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    
 		    json = "{"+json+"}";
 			JSONObject jsonObj = new JSONObject(json);
 			Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
@@ -67,9 +75,15 @@ public class UserProfileRestController {
 			   try {
 				user = userService.saveUserProfile(userProfile, multiFile, user);
 				
+				UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				userRole.setDesignation(userProfile.getDesignation());
+				userRoleService.addUserRole(userRole);
+				
 				SourceLeadSessionManager.setSessionAttribute(request, "user", user);
 				SourceLeadSessionManager.setSessionAttribute(request, "userName", user.getFirstName()+" "+user.getLastName());
-			} catch (Exception e) {
+				SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
+				
+			   } catch (Exception e) {
 				e.printStackTrace();
 			}
 			   return "home";

@@ -159,6 +159,14 @@ function cancel(){
     <div class="content-area clearfix">
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
       <div id="loading"></div> 
+        <!-- Tab Pills navbar -->
+      <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#orgsetting">Settings</a></li>
+        <li><a data-toggle="tab" href="#emailSign">Email Signature</a></li>
+      </ul>
+      <!-- Tab Pills navbar -->
+      <div class="tab-content">
+        <div id="orgsetting" class="tab-pane fade in active">   
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		    <!-- Tab for Profile setting-area -->
@@ -231,6 +239,14 @@ function cancel(){
 								     <select  class="chosen-select form-control" name="city" id="city" field-name="City"  ></select>
 								</div>
 							</div>
+							
+							<div class="form-group">
+							<label class="col-md-3">Address</label>
+							<div class="col-md-9">
+							<input type="text" id="address" name="address" class="form-control"  field-name="Address" data-validation="validate_Space" data-validation-optional="true" value="${SourceLeadWeb_address}" />
+							</div>
+							</div>
+							
 							<input type="hidden" id="existingCity" value="${SourceLeadWeb_orgLocations.city}" >
 				   </div>
 				
@@ -257,7 +273,7 @@ function cancel(){
 						<div class="form-group comp-textarea">
 						  <label class="col-md-3">About</label>
 							<div class="col-md-9">
-							   <textarea rows="2" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_Space validate_length length5-5000" class="form-control">${SourceLeadWeb_org.orgDescription}</textarea>
+							   <textarea rows="6" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_Space validate_length length5-5000" class="form-control">${SourceLeadWeb_org.orgDescription}</textarea>
 							</div>
 						</div>
 							
@@ -280,6 +296,14 @@ function cancel(){
 			</div>
 		   </div>
 		</div>
+		</div>
+		
+		<div id="emailSign" class="tab-pane fade form-horizontal"> 
+		
+		</div>
+		</div>
+		
+		
 			<!-- Tab for Profile setting-area ends -->
 		  </div>
 		  </div>
