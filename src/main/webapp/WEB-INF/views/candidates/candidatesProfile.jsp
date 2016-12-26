@@ -248,7 +248,7 @@ function editCandidate(candidateId){
 							result = result + ' <option '+(json.currentRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
 							result = result + '<option  '+ (json.currentRateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
 							result = result + '<option  '+(json.currentRateType == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
-							result = result + '<option  '+(json.currentRateType == "SemiMonthly" ? "selected" : '') +'>Semi-Monthly</option>';
+							result = result + '<option  '+(json.currentRateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
 							result = result + '<option  '+(json.currentRateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
 							result = result + '<option  '+(json.currentRateType == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
 							result = result + '<option '+(json.currentRateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
@@ -284,7 +284,7 @@ function editCandidate(candidateId){
 							result = result + ' <option '+(json.rateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
 							result = result + '<option  '+ (json.rateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
 							result = result + '<option  '+(json.rateType == "Biweekly" ? "selected" : '') +'>Bi-weekly</option>';
-							result = result + '<option  '+(json.rateType == "SemiMonthly" ? "selected" : '') +'>Semi-Monthly</option>';
+							result = result + '<option  '+(json.rateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
 							result = result + '<option  '+(json.rateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
 							result = result + '<option  '+(json.rateType == "BiMonthly" ? "selected" : '') +'>Bi-Monthly</option>';
 							result = result + '<option '+(json.rateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
