@@ -126,7 +126,8 @@ public class RequirementController {
 				List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
 				for(RequirementAssignTo rat : requirementAssignToList){
 					if(requirementAssignedIds != null && !requirementAssignedIds.isEmpty()  && requirementAssignedIds != "" ){
-						requirementAssignedIds = requirementAssignedIds +"&"+rat.getAssignUserId().getId().toString();
+						StringBuilder assignUserIdsSB = new StringBuilder();
+						requirementAssignedIds = assignUserIdsSB.append(requirementAssignedIds).append("&").append(rat.getAssignUserId().getId().toString()).toString();
 					}else{
 						requirementAssignedIds =   rat.getAssignUserId().getId().toString();
 					}
@@ -172,7 +173,8 @@ public class RequirementController {
 				if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty()){
 					for(RequirementApproverHierarchy requirementApproverHierarchy :requirementApproverHierarchyList){
 						if(parallelApproverIds != null && parallelApproverIds != ""){
-							parallelApproverIds =  parallelApproverIds +","+ requirementApproverHierarchy.getApproverUserId().getId().toString();
+							StringBuilder parallelApproverIdsSB = new StringBuilder();
+							parallelApproverIds =  parallelApproverIdsSB.append(parallelApproverIds).append(",").append(requirementApproverHierarchy.getApproverUserId().getId().toString()).toString();
 						}else{
 							parallelApproverIds =  requirementApproverHierarchy.getApproverUserId().getId().toString();
 						}
@@ -298,7 +300,8 @@ public class RequirementController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String fullName = null;
    	      if(!"".equalsIgnoreCase(user.getLastName()) && user.getLastName() !=null){
-   		 fullName = user.getFirstName()+" "+user.getLastName();
+   	    	     StringBuilder userNameSB = new StringBuilder();
+   		         fullName = userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
 		   	 }else{
 		   		 fullName = user.getFirstName();
 		   	 }
@@ -309,10 +312,11 @@ public class RequirementController {
 		Requirement req =requirementService.getRequirementByRequirementId(requirementId);
 	    if(req != null && req.getParentRequirement() !=null){
 			 model.addObject("toEmailId",req.getParentRequirement().getManagerUserId().getEmail());
-			 model.addObject("toFullName",req.getParentRequirement().getManagerUserId().getFirstName() +"" +req.getParentRequirement().getManagerUserId().getLastName());
-			 sb.append("Hi,"+req.getParentRequirement().getManagerUserId().getFirstName() +"" +req.getParentRequirement().getManagerUserId().getLastName());
+			 StringBuilder toFullNameSB = new StringBuilder();
+			 model.addObject("toFullName",toFullNameSB.append(req.getParentRequirement().getManagerUserId().getFirstName()).append(" ").append(req.getParentRequirement().getManagerUserId().getLastName()).toString());
+			 sb.append("Hi,").append(req.getParentRequirement().getManagerUserId().getFirstName()).append("").append(req.getParentRequirement().getManagerUserId().getLastName()).toString();
 			 sb.append("\n");
-			 sb.append(fullName+" submitted the applicants for the"+req.getJobTitle()+".\n");
+			 sb.append(fullName).append(" submitted the applicants for the").append(req.getJobTitle()).append(".\n");
 			 sb.append("Best Regards,\n");
 			 sb.append(fullName);
 			 model.addObject("body",sb.toString());

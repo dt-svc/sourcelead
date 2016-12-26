@@ -275,9 +275,9 @@ public class MailBoxRestController {
 						 String experienceInYears = null;
 						 String experienceInMonths = null;
 						 String totalExp = null;
-						 
 						 if(!isNullOrEmpty(candidate.getLastName())){
-							 candidateName = candidate.getFirstName()+" "+candidate.getLastName();
+							 StringBuilder name = new StringBuilder();
+							 candidateName = name.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString();
 					   	 }else{
 					   		candidateName = candidate.getFirstName();
 					   	 }
@@ -295,7 +295,8 @@ public class MailBoxRestController {
 						 if(isNullOrEmpty(candidate.getExperienceMonths()) && isNullOrEmpty(candidate.getExperienceMonths())){
 							 totalExp = "-----";
 						 }else{
-							 totalExp = experienceInYears+" Years "+experienceInMonths+" Months";
+							 StringBuilder exp = new StringBuilder();
+							 totalExp = exp.append(experienceInYears).append(" Years ").append(experienceInMonths).append(" Months").toString();
 						 }
 						 
 						 candidate.setCandidateName(candidateName);
@@ -332,8 +333,8 @@ public class MailBoxRestController {
 		 UserMailBox userMailbox = userMailBoxService.getUserMailBoxByUUID(UUID);
 		    
 		    response.setContentType("application/octet-stream");
-	        response.setHeader("Content-Disposition",
-	                "attachment;filename="+userMailbox.getFileName());
+		    StringBuilder fileName = new StringBuilder();
+	        response.setHeader("Content-Disposition",  fileName.append("attachment; filename=\"").append(userMailbox.getFileName()).append("\"").toString());
 		    
 			InputStream inputStream = new ByteArrayInputStream(userMailbox.getDocFile());
 			try {

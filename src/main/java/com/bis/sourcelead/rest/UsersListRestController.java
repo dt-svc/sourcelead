@@ -208,7 +208,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 	 */
 	 @RequestMapping(value = "/userSummary/{userId}" , method = RequestMethod.GET)
 	 public @ResponseBody void userSummary(@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response) throws Exception {
-			response.sendRedirect("/sourcelead/userSummaryDetails?userId="+userId);
+			 StringBuilder redirectUrl = new StringBuilder();
+		     response.sendRedirect(redirectUrl.append("/sourcelead/userSummaryDetails?userId=").append(userId).toString());
 			
 	   }
 	 

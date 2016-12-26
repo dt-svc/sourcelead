@@ -129,10 +129,12 @@ public class CandidateRestController {
 		Candidate candidate = candidateService.storeCandidate(jsonObj,orgLocation,user,multiFile);
 		
 		if(candidate.getCandidateType().equalsIgnoreCase("Candidate")){
-		SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", "Success !!"+candidate.getFirstName()+" "+candidate.getLastName()+" Candidate Added");
+			StringBuilder candidateCreateMsg = new StringBuilder();
+		    SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", candidateCreateMsg.append("Success !! ").append(candidate.getFirstName()).append(" Candidate Added").toString());
 		}
 		else{
-			SourceLeadSessionManager.setSessionAttribute(request, "consultantCreateMsg", "Success !!"+candidate.getFirstName()+" "+candidate.getLastName()+" Consultant Added");
+			StringBuilder consultantCreateMsg = new StringBuilder();
+			SourceLeadSessionManager.setSessionAttribute(request, "consultantCreateMsg", consultantCreateMsg.append("Success !! ").append(candidate.getFirstName()).append(" Consultant Added").toString());
 		}
 		return "success";
 	}
@@ -233,9 +235,10 @@ public class CandidateRestController {
 	 public @ResponseBody  void downloadCandidateResume(@RequestParam(value="candidateId", required=false) Long candidateId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		 	CandidateResumes candidateResume = candidateResumesService.getCandidateLatesResumes(candidateId, 1);
 		 	
-		 	 response.setContentType("application/octet-stream");
-		        response.setHeader("Content-Disposition",
-		                "attachment;filename="+candidateResume.getFileName());
+		 	  response.setContentType("application/octet-stream");
+		 	 
+		 	  StringBuilder fileName = new StringBuilder();
+		      response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(candidateResume.getFileName()).append("\"").toString());
 			    
 				InputStream inputStream = new ByteArrayInputStream(candidateResume.getDocFile());
 				try {
