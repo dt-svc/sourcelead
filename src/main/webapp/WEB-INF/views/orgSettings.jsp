@@ -28,7 +28,9 @@ z-index: 9999999999 !important;
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<link href="resources/css/bootstrap-colorpicker.min.css" rel="stylesheet">
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/bootstrap-colorpicker.min.js"></script> 
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -36,6 +38,8 @@ z-index: 9999999999 !important;
 <script type="text/javascript">
 window.onload = function () {
 	getAllCountries();
+	loadSignature();
+	colourpicker();
  };
 </script>
 
@@ -299,8 +303,587 @@ function cancel(){
 		</div>
 		
 		<div id="emailSign" class="tab-pane fade form-horizontal"> 
-		
-		</div>
+                <!-- Tab for Profile setting-area -->
+                    <div class="accountsettings-tab">
+                        <div class="tab-content panel-body">
+                            <div class="clearfix mb">
+                                <div class="pull-left">
+                                    <h4>Create Default Signature</h4>
+                                </div>
+                                <div class="pull-right">
+                                     <button type="reset" class="btn btn-default btm-sm"><i class="fa fa-refresh"></i>
+                                         &nbsp;&nbsp;Reset</button></div>
+                            </div>
+                            
+                <div id="campaignSignatrue"></div>            
+                            
+               <!--  <div class="form-group"> 
+                    <label class="control-label col-md-2"><strong>Sign Off</strong></label>
+                    <div class="col-md-10 colpadding">
+                        <div class="row">
+                        <div class="col-md-3" title="Text Box"><input type="text" class="form-control input-sm" placeholder="Text Box"></div>
+                        <div class="col-md-2 select-field">
+                        <select class="form-control input-sm">
+                            <option selected disabled>Font Family</option>
+                            <option>Arial</option>
+                            <option>Comisc</option>
+                            <option>Comic Sans MS</option>
+                            <option>Courier New</option>
+                            <option>Georgia</option>
+                            <option>Monotype Corsiva</option>
+                            <option>Tahoma</option>
+                            <option>Times New Roman</option>
+                            <option>Trebuchet MS</option>
+                            <option>Verdana</option>
+                            <option>Impace</option>
+                        </select>
+                        </div>
+                        <div class="col-md-2 select-field">
+                            <select class="form-control input-sm"><option selected disabled>Size</option>
+                                <option>8px</option>
+                                <option>9px</option>
+                                <option>10px</option>
+                                <option>11px</option>
+                                <option>12px</option>
+                                <option>13px</option>
+                                <option>14px</option>
+                                <option>15px</option>
+                                <option>16px</option>
+                                <option>17px</option>
+                                <option>18px</option>
+                                <option>19px</option>
+                                <option>20px</option>
+                                <option>21px</option>
+                                <option>22px</option>
+                                <option>23px</option>
+                                <option>24px</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2" title="Color Picker">
+                            <div id="cp2" class="input-group colorpicker-component">
+                            <input type="text" value="#00AABB" class="form-control" />
+                            <span class="input-group-addon"><i></i></span>
+                            </div>
+                        </div>
+                            <div class="col-md-2">
+                                <div class="btn-group email-button">
+                                    <button type="button" class="btn btn-default" title="Bold"><i class="fa fa-bold"></i></button>
+                                    <button type="button" class="btn btn-default" title="Underline"><i class="fa fa-underline"></i></button>
+                                    <button type="button" class="btn btn-default" title="Italic"><i class="fa fa-italic"></i></button>
+                                    </div>
+                            </div>
+                        <div class="col-md-1 email-switch" title="On/Off">
+                            On or Off Check button
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <div class="slider"></div>
+                            </label>
+                            On or Off Check button
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+      <div class="form-group"> 
+                    <label class="control-label col-md-2"><strong>Name</strong></label>
+                    <div class="col-md-10 colpadding">
+                        <div class="row">
+                        <div class="col-md-3" title="Text Box"><input type="text" class="form-control input-sm" placeholder="Text Box"></div>
+                        <div class="col-md-2 select-field">
+                        <select class="form-control input-sm">
+                            <option selected disabled>Font Family</option>
+                            <option>Arial</option>
+                            <option>Comisc</option>
+                            <option>Comic Sans MS</option>
+                            <option>Courier New</option>
+                            <option>Georgia</option>
+                            <option>Monotype Corsiva</option>
+                            <option>Tahoma</option>
+                            <option>Times New Roman</option>
+                            <option>Trebuchet MS</option>
+                            <option>Verdana</option>
+                            <option>Impace</option>
+                        </select>
+                        </div>
+                        <div class="col-md-2 select-field">
+                            <select class="form-control input-sm"><option selected disabled>Size</option>
+                                <option>8px</option>
+                                <option>10px</option>
+                                <option>12px</option>
+                                <option>14px</option>
+                                <option>18px</option>
+                                <option>24px</option>
+                                <option>36px</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2" title="Color Picker">
+                            <div id="cp3" class="input-group colorpicker-component">
+                            <input type="text" value="#00AABB" class="form-control" />
+                            <span class="input-group-addon"><i></i></span>
+                            </div>
+                        </div>
+                            <div class="col-md-2">
+                                <div class="btn-group email-button">
+                                    <button type="button" class="btn btn-default" title="Bold"><i class="fa fa-bold"></i></button>
+                                    <button type="button" class="btn btn-default" title="Underline"><i class="fa fa-underline"></i></button>
+                                    <button type="button" class="btn btn-default" title="Italic"><i class="fa fa-italic"></i></button>
+                                    </div>
+                            </div>
+                        <div class="col-md-1 email-switch" title="On/Off">
+                            On or Off Check button
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <div class="slider"></div>
+                            </label>
+                            On or Off Check button
+                            </div>
+                        </div>
+                    </div>
+        </div>
+<div class="form-group"> 
+                    <label class="control-label col-md-2"><strong>Designation</strong></label>
+                    <div class="col-md-10 colpadding">
+                       <div class="row">
+                        <div class="col-md-3" title="Text Box"><input type="text" class="form-control input-sm" placeholder="Text Box"></div>
+                        <div class="col-md-2 select-field">
+                        <select class="form-control input-sm">
+                            <option selected disabled>Font Family</option>
+                            <option>Arial</option>
+                            <option>Comisc</option>
+                            <option>Comic Sans MS</option>
+                            <option>Courier New</option>
+                            <option>Georgia</option>
+                            <option>Monotype Corsiva</option>
+                            <option>Tahoma</option>
+                            <option>Times New Roman</option>
+                            <option>Trebuchet MS</option>
+                            <option>Verdana</option>
+                            <option>Impace</option>
+                        </select>
+                        </div>
+                        <div class="col-md-2 select-field">
+                            <select class="form-control input-sm"><option selected disabled>Size</option>
+                                <option>8px</option>
+                                <option>10px</option>
+                                <option>12px</option>
+                                <option>14px</option>
+                                <option>18px</option>
+                                <option>24px</option>
+                                <option>36px</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2" title="Color Picker">
+                            <div id="cp2" class="input-group colorpicker-component">
+                            <input type="text" value="#00AABB" class="form-control" />
+                            <span class="input-group-addon"><i></i></span>
+                            </div>
+                        </div>
+                            <div class="col-md-2">
+                                <div class="btn-group email-button">
+                                    <button type="button" class="btn btn-default" title="Bold"><i class="fa fa-bold"></i></button>
+                                    <button type="button" class="btn btn-default" title="Underline"><i class="fa fa-underline"></i></button>
+                                    <button type="button" class="btn btn-default" title="Italic"><i class="fa fa-italic"></i></button>
+                                    </div>
+                            </div>
+                        <div class="col-md-1 email-switch" title="On/Off">
+                            On or Off Check button
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <div class="slider"></div>
+                            </label>
+                            On or Off Check button
+                            </div>
+                        </div>
+                    </div>
+        </div>
+<div class="form-group"> 
+                    <label class="control-label col-md-2"><strong>Email</strong></label>
+                    <div class="col-md-10 colpadding">
+                        <div class="row">
+                        <div class="col-md-3" title="Text Box"><input type="text" class="form-control input-sm" placeholder="Text Box"></div>
+                        <div class="col-md-2 select-field">
+                        <select class="form-control input-sm">
+                            <option selected disabled>Font Family</option>
+                            <option>Arial</option>
+                            <option>Comisc</option>
+                            <option>Comic Sans MS</option>
+                            <option>Courier New</option>
+                            <option>Georgia</option>
+                            <option>Monotype Corsiva</option>
+                            <option>Tahoma</option>
+                            <option>Times New Roman</option>
+                            <option>Trebuchet MS</option>
+                            <option>Verdana</option>
+                            <option>Impace</option>
+                        </select>
+                        </div>
+                        <div class="col-md-2 select-field">
+                            <select class="form-control input-sm"><option selected disabled>Size</option>
+                                <option>8px</option>
+                                <option>10px</option>
+                                <option>12px</option>
+                                <option>14px</option>
+                                <option>18px</option>
+                                <option>24px</option>
+                                <option>36px</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2" title="Color Picker">
+                            <div id="cp2" class="input-group colorpicker-component">
+                            <input type="text" value="#00AABB" class="form-control" />
+                            <span class="input-group-addon"><i></i></span>
+                            </div>
+                        </div>
+                            <div class="col-md-2">
+                                <div class="btn-group email-button">
+                                    <button type="button" class="btn btn-default" title="Bold"><i class="fa fa-bold"></i></button>
+                                    <button type="button" class="btn btn-default" title="Underline"><i class="fa fa-underline"></i></button>
+                                    <button type="button" class="btn btn-default" title="Italic"><i class="fa fa-italic"></i></button>
+                                    </div>
+                            </div>
+                        <div class="col-md-1 email-switch" title="On/Off">
+                            On or Off Check button
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <div class="slider"></div>
+                            </label>
+                            On or Off Check button
+                            </div>
+                        </div>
+                    </div>
+        </div>
+<div class="form-group"> 
+                    <label class="control-label col-md-2"><strong>Phone</strong></label>
+                    <div class="col-md-10 colpadding">
+                        <div class="row">
+                        <div class="col-md-3" title="Text Box"><input type="text" class="form-control input-sm" placeholder="Text Box"></div>
+                        <div class="col-md-2 select-field">
+                        <select class="form-control input-sm">
+                            <option selected disabled>Font Family</option>
+                            <option>Arial</option>
+                            <option>Comisc</option>
+                            <option>Comic Sans MS</option>
+                            <option>Courier New</option>
+                            <option>Georgia</option>
+                            <option>Monotype Corsiva</option>
+                            <option>Tahoma</option>
+                            <option>Times New Roman</option>
+                            <option>Trebuchet MS</option>
+                            <option>Verdana</option>
+                            <option>Impace</option>
+                        </select>
+                        </div>
+                        <div class="col-md-2 select-field">
+                            <select class="form-control input-sm"><option selected disabled>Size</option>
+                                <option>8px</option>
+                                <option>10px</option>
+                                <option>12px</option>
+                                <option>14px</option>
+                                <option>18px</option>
+                                <option>24px</option>
+                                <option>36px</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2" title="Color Picker">
+                            <div id="cp2" class="input-group colorpicker-component">
+                            <input type="text" value="#00AABB" class="form-control" />
+                            <span class="input-group-addon"><i></i></span>
+                            </div>
+                        </div>
+                            <div class="col-md-2">
+                                <div class="btn-group email-button">
+                                    <button type="button" class="btn btn-default" title="Bold"><i class="fa fa-bold"></i></button>
+                                    <button type="button" class="btn btn-default" title="Underline"><i class="fa fa-underline"></i></button>
+                                    <button type="button" class="btn btn-default" title="Italic"><i class="fa fa-italic"></i></button>
+                                    </div>
+                            </div>
+                        <div class="col-md-1 email-switch" title="On/Off">
+                            On or Off Check button
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <div class="slider"></div>
+                            </label>
+                            On or Off Check button
+                            </div>
+                        </div>
+                    </div>
+        </div>                            
+    <div class="form-group"> 
+        <label class="control-label col-md-2"><strong>Company Logo</strong></label>
+        <div class="col-md-10 colpadding">
+        <div class="row">
+                        <div class="col-md-3" title="Text Box"><input type="text" class="form-control input-sm" placeholder="Place Existed Company icon"></div>
+
+                        <div class="col-md-1 email-switch col-md-offset-8" title="On/Off">
+                            On or Off Check button
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <div class="slider"></div>
+                            </label>
+                            On or Off Check button
+                            </div>
+                        </div>
+        </div>
+    </div>                                  
+<div class="form-group"> 
+                    <label class="control-label col-md-2"><strong>Company Name</strong></label>
+                    <div class="col-md-10 colpadding">
+                        <div class="row">
+                        <div class="col-md-3" title="Text Box"><input type="text" class="form-control input-sm" placeholder="Text Box"></div>
+                        <div class="col-md-2 select-field">
+                        <select class="form-control input-sm">
+                            <option selected disabled>Font Family</option>
+                            <option>Arial</option>
+                            <option>Comisc</option>
+                            <option>Comic Sans MS</option>
+                            <option>Courier New</option>
+                            <option>Georgia</option>
+                            <option>Monotype Corsiva</option>
+                            <option>Tahoma</option>
+                            <option>Times New Roman</option>
+                            <option>Trebuchet MS</option>
+                            <option>Verdana</option>
+                            <option>Impace</option>
+                        </select>
+                        </div>
+                        <div class="col-md-2 select-field">
+                            <select class="form-control input-sm"><option selected disabled>Size</option>
+                                <option>8px</option>
+                                <option>10px</option>
+                                <option>12px</option>
+                                <option>14px</option>
+                                <option>18px</option>
+                                <option>24px</option>
+                                <option>36px</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2" title="Color Picker">
+                            <div id="cp2" class="input-group colorpicker-component">
+                            <input type="text" value="#00AABB" class="form-control" />
+                            <span class="input-group-addon"><i></i></span>
+                            </div>
+                        </div>
+                            <div class="col-md-2">
+                                <div class="btn-group email-button">
+                                    <button type="button" class="btn btn-default" title="Bold"><i class="fa fa-bold"></i></button>
+                                    <button type="button" class="btn btn-default" title="Underline"><i class="fa fa-underline"></i></button>
+                                    <button type="button" class="btn btn-default" title="Italic"><i class="fa fa-italic"></i></button>
+                                    </div>
+                            </div>
+                        <div class="col-md-1 email-switch" title="On/Off">
+                            On or Off Check button
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <div class="slider"></div>
+                            </label>
+                            On or Off Check button
+                            </div>
+                        </div>
+                    </div>
+        </div>                                                          
+<div class="form-group"> 
+                    <label class="control-label col-md-2"><strong>Address</strong></label>
+                    <div class="col-md-10 colpadding">
+                        <div class="row">
+                        <div class="col-md-3" title="Text Box"><input type="text" class="form-control input-sm" placeholder="Text Box"></div>
+                        <div class="col-md-2 select-field">
+                        <select class="form-control input-sm">
+                            <option selected disabled>Font Family</option>
+                            <option>Arial</option>
+                            <option>Comisc</option>
+                            <option>Comic Sans MS</option>
+                            <option>Courier New</option>
+                            <option>Georgia</option>
+                            <option>Monotype Corsiva</option>
+                            <option>Tahoma</option>
+                            <option>Times New Roman</option>
+                            <option>Trebuchet MS</option>
+                            <option>Verdana</option>
+                            <option>Impace</option>
+                        </select>
+                        </div>
+                        <div class="col-md-2 select-field">
+                            <select class="form-control input-sm"><option selected disabled>Size</option>
+                                <option>8px</option>
+                                <option>10px</option>
+                                <option>12px</option>
+                                <option>14px</option>
+                                <option>18px</option>
+                                <option>24px</option>
+                                <option>36px</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2" title="Color Picker">
+                            <div id="cp2" class="input-group colorpicker-component">
+                            <input type="text" value="#00AABB" class="form-control" />
+                            <span class="input-group-addon"><i></i></span>
+                            </div>
+                        </div>
+                            <div class="col-md-2">
+                                <div class="btn-group email-button">
+                                    <button type="button" class="btn btn-default" title="Bold"><i class="fa fa-bold"></i></button>
+                                    <button type="button" class="btn btn-default" title="Underline"><i class="fa fa-underline"></i></button>
+                                    <button type="button" class="btn btn-default" title="Italic"><i class="fa fa-italic"></i></button>
+                                    </div>
+                            </div>
+                        <div class="col-md-1 email-switch" title="On/Off">
+                            On or Off Check button
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <div class="slider"></div>
+                            </label>
+                            On or Off Check button
+                            </div>
+                        </div>
+                    </div>
+        </div>     
+<div class="form-group"> 
+<label class="control-label col-md-2"><strong>Fax</strong></label>
+<div class="col-md-10 colpadding">
+<div class="row">
+                        <div class="col-md-3" title="Text Box"><input type="text" class="form-control input-sm" placeholder="Text Box"></div>
+                        <div class="col-md-2 select-field">
+                        <select class="form-control input-sm">
+                            <option selected disabled>Font Family</option>
+                            <option>Arial</option>
+                            <option>Comisc</option>
+                            <option>Comic Sans MS</option>
+                            <option>Courier New</option>
+                            <option>Georgia</option>
+                            <option>Monotype Corsiva</option>
+                            <option>Tahoma</option>
+                            <option>Times New Roman</option>
+                            <option>Trebuchet MS</option>
+                            <option>Verdana</option>
+                            <option>Impace</option>
+                        </select>
+                        </div>
+                        <div class="col-md-2 select-field">
+                            <select class="form-control input-sm"><option selected disabled>Size</option>
+                                <option>8px</option>
+                                <option>10px</option>
+                                <option>12px</option>
+                                <option>14px</option>
+                                <option>18px</option>
+                                <option>24px</option>
+                                <option>36px</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2" title="Color Picker">
+                            <div id="cp2" class="input-group colorpicker-component">
+                            <input type="text" value="#00AABB" class="form-control" />
+                            <span class="input-group-addon"><i></i></span>
+                            </div>
+                        </div>
+                            <div class="col-md-2">
+                                <div class="btn-group email-button">
+                                    <button type="button" class="btn btn-default" title="Bold"><i class="fa fa-bold"></i></button>
+                                    <button type="button" class="btn btn-default" title="Underline"><i class="fa fa-underline"></i></button>
+                                    <button type="button" class="btn btn-default" title="Italic"><i class="fa fa-italic"></i></button>
+                                    </div>
+                            </div>
+                        <div class="col-md-1 email-switch" title="On/Off">
+                            On or Off Check button
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <div class="slider"></div>
+                            </label>
+                            On or Off Check button
+                            </div>
+                        </div>
+</div>
+</div>     
+ 
+ 
+<div class="form-group"> 
+<label class="control-label col-md-2"><strong>Website</strong></label>
+<div class="col-md-10 colpadding">
+<div class="row">
+                        <div class="col-md-3" title="Text Box"><input type="text" class="form-control input-sm" placeholder="Text Box"></div>
+                        <div class="col-md-2 select-field">
+                        <select class="form-control input-sm">
+                            <option selected disabled>Font Family</option>
+                            <option>Arial</option>
+                            <option>Comisc</option>
+                            <option>Comic Sans MS</option>
+                            <option>Courier New</option>
+                            <option>Georgia</option>
+                            <option>Monotype Corsiva</option>
+                            <option>Tahoma</option>
+                            <option>Times New Roman</option>
+                            <option>Trebuchet MS</option>
+                            <option>Verdana</option>
+                            <option>Impace</option>
+                        </select>
+                        </div>
+                        <div class="col-md-2 select-field">
+                            <select class="form-control input-sm"><option selected disabled>Size</option>
+                                <option>8px</option>
+                                <option>10px</option>
+                                <option>12px</option>
+                                <option>14px</option>
+                                <option>18px</option>
+                                <option>24px</option>
+                                <option>36px</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2" title="Color Picker">
+                            <div id="cp2" class="input-group colorpicker-component">
+                            <input type="text" value="#00AABB" class="form-control" />
+                            <span class="input-group-addon"><i></i></span>
+                            </div>
+                        </div>
+                            <div class="col-md-2">
+                                <div class="btn-group email-button">
+                                    <button type="button" class="btn btn-default" title="Bold"><i class="fa fa-bold"></i></button>
+                                    <button type="button" class="btn btn-default" title="Underline"><i class="fa fa-underline"></i></button>
+                                    <button type="button" class="btn btn-default" title="Italic"><i class="fa fa-italic"></i></button>
+                                    </div>
+                            </div>
+                        <div class="col-md-1 email-switch" title="On/Off">
+                            On or Off Check button
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <div class="slider"></div>
+                            </label>
+                            On or Off Check button
+                            </div>
+                        </div>
+</div>
+</div>     
+<div class="form-group"> 
+<label class="control-label col-md-2"><strong>Social Links</strong></label>
+<div class="col-md-10 colpadding">
+<div class="row">
+    <div class="col-md-2 radioInline email-social">
+        <label><input type="checkbox" name="sociallinks"><i class="fa fa-facebook-square fa-2x text-primary"></i></label>
+    </div>
+    <div class="col-md-2 radioInline email-social">
+        <label><input type="checkbox" name="sociallinks"><i class="fa fa-linkedin-square fa-2x text-info"></i></label>
+    </div>
+    <div class="col-md-2 radioInline email-social">
+        <label><input type="checkbox" name="sociallinks"><i class="fa fa-twitter-square fa-2x text-info"></i></label>
+    </div>
+    <div class="col-md-2 radioInline email-social">
+        <label><input type="checkbox" name="sociallinks"><i class="fa fa-google-plus-square fa-2x text-danger"></i></label>
+    </div>
+    
+<div class="col-md-1 email-switch col-md-offset-3" title="On/Off">
+On or Off Check button
+<label class="switch">
+<input type="checkbox">
+<div class="slider"></div>
+</label>
+On or Off Check button
+</div>
+</div>
+</div>
+</div>  -->                                
+                        </div>
+        </div>
+    </div>
+  </div>
+  </div>
 		</div>
 		
 		
@@ -583,6 +1166,183 @@ $(function(){
 				$this.next().css({'width': '100%'});
 		  })
 });
+</script>
+
+
+<script>
+function loadSignature(){
+	
+	$("#campaignSignatrue").empty(); 
+
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getOrgSignature?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(data) {
+		        	
+		        	 var json = JSON.parse(data);
+					 var result = "";
+					 
+					for (var i=0; i<json.signatureList.length; i++)
+ 					{
+						var opt = json.signatureList[i];
+						var name = opt.labelName.replace(/\s+/g, '');
+						var checked = "";
+						var readonly = "";
+						
+						if(opt.status == '1'){
+							checked = "checked";
+						}
+						
+						var labelText = "";
+						
+						if(opt.labelName == 'Sign Off'){
+							labelText = opt.labelText;
+						}else{
+							
+							if(opt.labelName == 'Name'){
+								if('${SourceLeadWeb_user.lastName}' != null){
+									labelText = '${SourceLeadWeb_user.firstName}'+" "+'${SourceLeadWeb_user.lastName}'
+								}else{
+									labelText = '${SourceLeadWeb_user.firstName}'
+								}
+								
+							}else if(opt.labelName == 'Designation'){
+								if('${SourceLeadWeb_designation}' != null){
+									labelText = '${SourceLeadWeb_designation}';
+								}
+								
+							}
+							else if(opt.labelName == 'Email'){
+								if('${SourceLeadWeb_user.email}' != null){
+									labelText = '${SourceLeadWeb_user.email}';
+								}
+								
+							}
+							
+							else if(opt.labelName == 'Phone'){
+								if('${SourceLeadWeb_user.mobilePhone}' != null){
+									labelText = '${SourceLeadWeb_user.mobilePhone}';
+								}
+								
+							}
+							
+							else if(opt.labelName == 'Company Name'){
+								if('${SourceLeadWeb_orgName}' != null){
+									labelText = '${SourceLeadWeb_orgName}';
+								}
+								
+							}
+							
+							else if(opt.labelName == 'Address'){
+								if('${SourceLeadWeb_address}' != null){
+									labelText = '${SourceLeadWeb_address}';
+								}
+								
+							}
+							
+							else if(opt.labelName == 'Fax'){
+								if('${SourceLeadWeb_orgLocations.fax}' != null){
+									labelText = '${SourceLeadWeb_orgLocations.fax}';
+								}
+								
+							}
+							
+							else if(opt.labelName == 'Website'){
+								if('${SourceLeadWeb_website}' != null){
+									labelText = '${SourceLeadWeb_website}';
+								}
+								
+							}
+							
+							readonly = "readonly";
+						}
+						
+						result = result + ' <form id="signature_form"  name="signature_form" method="post">';	
+						result = result + '<div class="form-group">';
+						result = result + '<label class="control-label col-md-2"><strong>'+opt.labelName+'</strong></label>';
+						result = result + '<div class="col-md-10 colpadding">';
+						result = result + '<div class="row">';
+						if(opt.labelName != 'Logo'){
+						result = result + '<div class="col-md-3" title="Text Box"><input type="text" name=\''+name+'\' '+readonly+' value="'+labelText+'" class="form-control input-sm" placeholder="Text Box"></div>';
+						result = result + '<div class="col-md-2 select-field">';
+						result = result + '<select name="fontFamily'+opt.id+'" class="form-control input-sm">';
+						for (var j=0; j<json.fontFamilyList.length; j++)
+	 					{
+							var fontFamily = json.fontFamilyList[j];
+							result = result + '<option value="'+fontFamily+'"';
+							if(opt.fontFamily == fontFamily){
+								result = result+' selected';
+							}
+							result = result + '>'+fontFamily+'</option>';
+	 					}
+						result = result + '</select>';
+						result = result + '</div>';
+						
+						result = result + '<div class="col-md-2 select-field">';
+						result = result + '<select name="fontsize'+opt.id+'" class="form-control input-sm">';
+						for (var k=0; k<json.fontFamilyList.length; k++)
+	 					{
+							var fontSize = json.fontSizeList[k];
+							result = result + '<option value="'+fontSize+'"';
+							
+							if(opt.fontSize == fontSize){
+								result = result+' selected';
+							}
+							
+							result = result + '>'+fontSize+'</option>';
+	 					}
+						result = result + '</select>';
+						result = result + '</div>';
+						result = result + '<div class="col-md-2" title="Color Picker">';
+						result = result + '<div id="cp'+opt.id+'"  class="input-group colorpicker-component">';
+						result = result + '<input type="text" name="fontcolor'+opt.id+'" value="'+opt.fontColor+'" readonly="readonly" class="form-control" />';
+						result = result + '<span class="input-group-addon"><i></i></span>';
+						result = result + '</div>';
+						result = result + '</div>';
+						result = result + '<div class="col-md-2">';
+						result = result + '<div class="btn-group email-button">';
+						result = result + '<button type="button" class="btn btn-default" title="Bold"><i class="fa fa-bold"></i></button>';
+						result = result + '<button type="button" class="btn btn-default" title="Underline"><i class="fa fa-underline"></i></button>';
+						result = result + '<button type="button" class="btn btn-default" title="Italic"><i class="fa fa-italic"></i></button>';
+						result = result + '</div>';
+						result = result + '</div>';
+						}else{
+							result = result + '<div class="col-md-3" title="Text Box"><img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value="/displayOrgImage/${SourceLeadWeb_orgCode}"/>" alt="Org Image" style="height:60px; width: 100px;"></div>';
+							result = result + '<div class="col-md-8 select-field">';
+							result = result + '</div>';
+						}
+						result = result + '<div class="col-md-1 email-switch" title="On/Off">';
+						result = result + '<label class="switch">';
+						result = result + '<input type="checkbox" '+checked+'>';
+						result = result + '<div class="slider"></div>';
+						result = result + ' </label>';
+						result = result + '</div>';
+						result = result + '</div>';
+						result = result + '</div>';
+						result = result + '</div>';
+ 					} 
+					result = result + '<div class="pull-right">';
+					result = result + '<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">';
+					result = result + '</div>';
+					result = result + ' </form>';
+					
+					$("#campaignSignatrue").append(result);  
+					for (var i=1; i<=json.signatureList.length; i++)
+ 					{
+						$('#cp'+i+'').colorpicker();
+ 					}
+					
+		        },
+		 });
+}
+</script>
+
+<script>
+function colourpicker(){
+	$('#cp2, #cp3').colorpicker();
+}
 </script>
 
 <jsp:include page="masterFooter.jsp" />

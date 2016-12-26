@@ -3,6 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -18,12 +19,14 @@ import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UserSignature;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmailService;
+import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserSignatureService;
@@ -50,6 +53,9 @@ public class EmailServiceImpl implements EmailService {
 	
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	SourceleadSignatureService sourceleadSignatureService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -95,10 +101,13 @@ public class EmailServiceImpl implements EmailService {
 			 emailMessage.setFromName(fullName);
 			 emailMessage.setEmailType(Constants.EMAIL_CAMPAIGN);
 			 
+			 String mailsignature = getSignature(user,orgLocation);
+			 
 			 
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("salutation", jsonObj.getString("saluation"));
-			 globalVarsMap.put("body", jsonObj.getString("bodytext"));
+			 //globalVarsMap.put("body", jsonObj.getString("bodytext"));
+			 globalVarsMap.put("body", mailsignature);
 			 
 			 EmailScenario emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.EMAIL_TO_USERS,Constants.ENTITY_TYPE_EMAIL);
 			 //covert subject,body and signature
@@ -136,6 +145,274 @@ public class EmailServiceImpl implements EmailService {
 			 saveToUserMailBox(user,orgLocation,emailRecipientList,subject,jsonObj.getString("bodytext"),userSignature,multiFile);
 		
 	}
+	
+	
+	
+	private String getSignature(User user,OrgLocations orgLocations) throws Exception{
+		
+		 String signatureHTML = null;
+		 UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocations.getId());
+	    
+		 List<SourceleadSignature> signatureList = sourceleadSignatureService.getSourceLeadSignature();
+	     for(SourceleadSignature signature : signatureList){
+	    	 if(signature.getLabelName().equalsIgnoreCase("Sign Off") && signature.getStatus() == 1){
+	    		 String fontWeight = "";
+	    		 String underline = "";
+	    		 String startem ="";
+	    		 String endem ="";
+	    		 
+	    		 if(!isNullOrEmpty(signature.getFontStyle())){
+		    		 String[] fontStyle = signature.getFontStyle().split(",");
+		    		 for(int i = 0; i < fontStyle.length; i++){
+		    			 if(fontStyle[i].equalsIgnoreCase("Bold")){
+		    				 fontWeight = "font-weight:bold;";
+		    			 }
+		    			 else if(fontStyle[i].equalsIgnoreCase("Underline")){
+		    				 underline = "text-decoration: underline;";
+		    			 }
+		    			 else if(fontStyle[i].equalsIgnoreCase("Italic")){
+		    				 startem = "<em>";
+		    				 endem = "</em>";
+		    			 }
+		    		 }
+	    		 }
+	    		 
+	    		 signatureHTML = "<p>"+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>"+signature.getLabelText()+",</span></span>"+endem+"</p>"; 
+	    	 }
+	    	 
+	    	 if(signature.getLabelName().equalsIgnoreCase("Name") && signature.getStatus() == 1){
+	    		 
+	    		 StringBuilder nameBuilder = new StringBuilder();
+	    		 StringBuilder name = new StringBuilder();
+	    		 if(!isNullOrEmpty(user.getLastName())){
+	    			 name = nameBuilder.append(user.getFirstName()).append(" ").append(user.getLastName());
+			   	 }else{
+			   		name = nameBuilder.append(user.getFirstName());
+			   	 }
+	    		 
+	    		 String fontWeight = "";
+	    		 String underline = "";
+	    		 String startem ="";
+	    		 String endem ="";
+	    		 
+	    		 if(!isNullOrEmpty(signature.getFontStyle())){
+		    		 String[] fontStyle = signature.getFontStyle().split(",");
+		    		 for(int i = 0; i < fontStyle.length; i++){
+		    			 if(fontStyle[i].equalsIgnoreCase("Bold")){
+		    				 fontWeight = "font-weight:bold;";
+		    			 }
+		    			 else if(fontStyle[i].equalsIgnoreCase("Underline")){
+		    				 underline = "text-decoration: underline;";
+		    			 }
+		    			 else if(fontStyle[i].equalsIgnoreCase("Italic")){
+		    				 startem = "<em>";
+		    				 endem = "</em>";
+		    			 }
+		    		 }
+	    		 }
+	    		 signatureHTML = signatureHTML+ "<p>"+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>"+name+"</span></span>"+endem+"</p>";
+	    	 }
+	    	 
+	    	 
+	    	 if(signature.getLabelName().equalsIgnoreCase("Designation") && signature.getStatus() == 1 && !isNullOrEmpty(userRole.getDesignation())){
+	    		 
+	    		 String fontWeight = "";
+	    		 String underline = "";
+	    		 String startem ="";
+	    		 String endem ="";
+	    		 
+	    		 if(!isNullOrEmpty(signature.getFontStyle())){
+		    		 String[] fontStyle = signature.getFontStyle().split(",");
+		    		 for(int i = 0; i < fontStyle.length; i++){
+		    			 if(fontStyle[i].equalsIgnoreCase("Bold")){
+		    				 fontWeight = "font-weight:bold;";
+		    			 }
+		    			 else if(fontStyle[i].equalsIgnoreCase("Underline")){
+		    				 underline = "text-decoration: underline;";
+		    			 }
+		    			 else if(fontStyle[i].equalsIgnoreCase("Italic")){
+		    				 startem = "<em>";
+		    				 endem = "</em>";
+		    			 }
+		    		 }
+	    		 }
+	    		 signatureHTML = signatureHTML+ "<p>"+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>"+userRole.getDesignation()+"</span></span>"+endem+"</p>";
+	    	 }
+	    	 
+	    	 if(signature.getLabelName().equalsIgnoreCase("Logo") && signature.getStatus() == 1 && !isNullOrEmpty(orgLocations.getOrg().getFileContentType())){
+	    		 
+	    		 signatureHTML = signatureHTML+ "<p><img src='"+sourceleadUrl+"/"+"displayOrgImageInMail?orgCode="+orgLocations.getOrg().getOrgCode()+"'  style='height:60px; width: 100px; '></p>";
+	    	 
+	    	 }
+	     
+	    	 if(signature.getLabelName().equalsIgnoreCase("Company Name") && signature.getStatus() == 1){
+	    		 
+	    		 String fontWeight = "";
+	    		 String underline = "";
+	    		 String startem ="";
+	    		 String endem ="";
+	    		 
+	    		 if(!isNullOrEmpty(signature.getFontStyle())){
+		    		 String[] fontStyle = signature.getFontStyle().split(",");
+		    		 for(int i = 0; i < fontStyle.length; i++){
+		    			 if(fontStyle[i].equalsIgnoreCase("Bold")){
+		    				 fontWeight = "font-weight:bold;";
+		    			 }
+		    			 else if(fontStyle[i].equalsIgnoreCase("Underline")){
+		    				 underline = "text-decoration: underline;";
+		    			 }
+		    			 else if(fontStyle[i].equalsIgnoreCase("Italic")){
+		    				 startem = "<em>";
+		    				 endem = "</em>";
+		    			 }
+		    		 }
+	    		 }
+	    		 signatureHTML = signatureHTML+ "<p>"+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>"+orgLocations.getOrg().getOrgName()+"</span></span>"+endem+"</p>";
+	    	 }
+	    	 
+	    	 if(signature.getLabelName().equalsIgnoreCase("Address") && signature.getStatus() == 1 && !isNullOrEmpty(orgLocations.getOrg().getOrgAddress())){
+	    		 
+	    		 String fontWeight = "";
+	    		 String underline = "";
+	    		 String startem ="";
+	    		 String endem ="";
+	    		 
+	    		 if(!isNullOrEmpty(signature.getFontStyle())){
+		    		 String[] fontStyle = signature.getFontStyle().split(",");
+		    		 for(int i = 0; i < fontStyle.length; i++){
+		    			 if(fontStyle[i].equalsIgnoreCase("Bold")){
+		    				 fontWeight = "font-weight:bold;";
+		    			 }
+		    			 else if(fontStyle[i].equalsIgnoreCase("Underline")){
+		    				 underline = "text-decoration: underline;";
+		    			 }
+		    			 else if(fontStyle[i].equalsIgnoreCase("Italic")){
+		    				 startem = "<em>";
+		    				 endem = "</em>";
+		    			 }
+		    		 }
+	    		 }
+	    		 signatureHTML = signatureHTML+ "<p>"+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>"+orgLocations.getOrg().getOrgAddress()+"</span></span>"+endem+"</p>";
+	    	 }
+	     
+	    	 
+	    	 if(signature.getLabelName().equalsIgnoreCase("Phone") && signature.getStatus() == 1 && !isNullOrEmpty(user.getMobilePhone())){
+	    		 
+	    		 
+	    		 String fontWeight = "";
+	    		 String underline = "";
+	    		 String startem ="";
+	    		 String endem ="";
+	    		 
+		    		 if(!isNullOrEmpty(signature.getFontStyle())){
+			    		 String[] fontStyle = signature.getFontStyle().split(",");
+			    		 for(int i = 0; i < fontStyle.length; i++){
+			    			 if(fontStyle[i].equalsIgnoreCase("Bold")){
+			    				 fontWeight = "font-weight:bold;";
+			    			 }
+			    			 else if(fontStyle[i].equalsIgnoreCase("Underline")){
+			    				 underline = "text-decoration: underline;";
+			    			 }
+			    			 else if(fontStyle[i].equalsIgnoreCase("Italic")){
+			    				 startem = "<em>";
+			    				 endem = "</em>";
+			    			 }
+			    		 }
+		    		 }
+		    		 signatureHTML = signatureHTML+ ""+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>Phone: "+user.getMobilePhone()+"</span></span>"+endem+" | ";	    		
+	    		
+	    	 }
+	    	 
+	    	 if(signature.getLabelName().equalsIgnoreCase("Fax") && signature.getStatus() == 1 && !isNullOrEmpty(orgLocations.getFax())){
+	    		 
+	    		 
+	    		 String fontWeight = "";
+	    		 String underline = "";
+	    		 String startem ="";
+	    		 String endem ="";
+	    		 
+		    		 if(!isNullOrEmpty(signature.getFontStyle())){
+			    		 String[] fontStyle = signature.getFontStyle().split(",");
+			    		 for(int i = 0; i < fontStyle.length; i++){
+			    			 if(fontStyle[i].equalsIgnoreCase("Bold")){
+			    				 fontWeight = "font-weight:bold;";
+			    			 }
+			    			 else if(fontStyle[i].equalsIgnoreCase("Underline")){
+			    				 underline = "text-decoration: underline;";
+			    			 }
+			    			 else if(fontStyle[i].equalsIgnoreCase("Italic")){
+			    				 startem = "<em>";
+			    				 endem = "</em>";
+			    			 }
+			    		 }
+		    		 }
+		    		 signatureHTML = signatureHTML+ ""+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>Fax: "+orgLocations.getFax()+"</span></span>"+endem+"";	    		
+	    		
+	    	 }
+	    	 
+	    	 
+ if(signature.getLabelName().equalsIgnoreCase("Email") && signature.getStatus() == 1){
+	    		 
+	    		 
+	    		 String fontWeight = "";
+	    		 String underline = "";
+	    		 String startem ="";
+	    		 String endem ="";
+	    		 
+		    		 if(!isNullOrEmpty(signature.getFontStyle())){
+			    		 String[] fontStyle = signature.getFontStyle().split(",");
+			    		 for(int i = 0; i < fontStyle.length; i++){
+			    			 if(fontStyle[i].equalsIgnoreCase("Bold")){
+			    				 fontWeight = "font-weight:bold;";
+			    			 }
+			    			 else if(fontStyle[i].equalsIgnoreCase("Underline")){
+			    				 underline = "text-decoration: underline;";
+			    			 }
+			    			 else if(fontStyle[i].equalsIgnoreCase("Italic")){
+			    				 startem = "<em>";
+			    				 endem = "</em>";
+			    			 }
+			    		 }
+		    		 }
+		    		 signatureHTML = signatureHTML+ "<p>"+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>Email: "+user.getEmail()+"</span></span>"+endem+" | ";	    		
+	    		
+	    	 }
+ 
+ 
+ if(signature.getLabelName().equalsIgnoreCase("Website") && signature.getStatus() == 1 && !isNullOrEmpty(orgLocations.getOrg().getWebSite())){
+	 
+	 
+	 String fontWeight = "";
+	 String underline = "";
+	 String startem ="";
+	 String endem ="";
+	 
+		 if(!isNullOrEmpty(signature.getFontStyle())){
+    		 String[] fontStyle = signature.getFontStyle().split(",");
+    		 for(int i = 0; i < fontStyle.length; i++){
+    			 if(fontStyle[i].equalsIgnoreCase("Bold")){
+    				 fontWeight = "font-weight:bold;";
+    			 }
+    			 else if(fontStyle[i].equalsIgnoreCase("Underline")){
+    				 underline = "text-decoration: underline;";
+    			 }
+    			 else if(fontStyle[i].equalsIgnoreCase("Italic")){
+    				 startem = "<em>";
+    				 endem = "</em>";
+    			 }
+    		 }
+		 }
+		 signatureHTML = signatureHTML+ ""+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>Website: www."+orgLocations.getOrg().getWebSite()+"</span></span>"+endem+" ";	    		
+	
+ 		}
+	    	 
+	     }
+	     
+		 
+		 return signatureHTML;
+			
+	}
+
 
 	private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailRecipient> emailRecipientList,String subject,String body,UserSignature userSignature,MultipartFile multiFile) throws Exception{
 		
