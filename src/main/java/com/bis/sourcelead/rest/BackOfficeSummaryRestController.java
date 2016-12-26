@@ -205,10 +205,11 @@ public class BackOfficeSummaryRestController {
 	    public void downloadTransactionFile(@RequestParam(value="fileId", required=false) String fileId ,HttpServletResponse response) throws Exception {
 			
 		        BoUploadedFiles boUploadedFiles =  boUploadedFilesService.getBoUploadedFileById(Long.parseLong(fileId));
-			    
+		        StringBuilder filename = new StringBuilder();
+		        
 			    response.setContentType("application/octet-stream");
-		        response.setHeader("content-disposition", "attachment; filename=\"" + boUploadedFiles.getFileName() + "\"");
-			    
+		        response.setHeader("content-disposition", filename.append("attachment; filename=\"").append(boUploadedFiles.getFileName()).append("\"").toString());
+		        
 				InputStream inputStream = new ByteArrayInputStream(boUploadedFiles.getDocFile());
 				try {
 					OutputStream outStream = response.getOutputStream();
