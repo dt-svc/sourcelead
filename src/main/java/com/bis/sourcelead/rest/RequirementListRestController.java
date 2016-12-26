@@ -980,6 +980,29 @@ public class RequirementListRestController {
 							requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
 							requirementSubmission.setTotalNoOfInterviews(numberOfInterviews.size());
 							requirementSubmission.setRequirementInterviewList(numberOfInterviews);
+							
+							RequirementSubmission clientSubmission = requirementSubmissionService.getClientSubmissionsBySubmissionIdAndOrgLocationId(requirementSubmission.getId(), requirementSubmission.getOrgLocations().getId());
+							
+							if(clientSubmission != null){
+								requirementSubmission.setClientSubmissionId(clientSubmission.getId().toString());
+								RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(clientSubmission.getId());
+								if(pastRequirementRateSubmissionNegotiation != null){
+									requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+								}
+							}else{
+								RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
+								if(pastRequirementRateSubmissionNegotiation != null){
+									if(pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.VENDOR) || pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.CLIENT)){
+										requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+									}else{
+										requirementSubmission.setExpectedCTC(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+									}
+									
+								}
+							}
+							
+							
+							
 							if(requirementSubmission.getCreatedDate() != null){
 								requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 							}
