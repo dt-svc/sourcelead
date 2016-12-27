@@ -281,11 +281,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	projects.setEndDate(endDate);
     	}
     	
-    	if(jsonObj.has("invoiceFrequency")){
-			if(jsonObj.getString("invoiceFrequency") != null && !"".equalsIgnoreCase(jsonObj.getString("invoiceFrequency"))){
-				projects.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
-		}
-    	}
+    	
+		if(jsonObj.has("invoiceFrequency") && jsonObj.getString("invoiceFrequency") != null && !"".equalsIgnoreCase(jsonObj.getString("invoiceFrequency"))){
+			projects.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+	    }else{
+	    	projects.setInvoiceFrequency(Constants.WEEKLY);
+	    }
+    	
     	
     	if((jsonObj.has("Satatus"))){
     	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));
@@ -584,7 +586,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    for(Projects projects :projectsSet){
 		    	 User fromUser = null;
 		    	List<ProjectApproverHierarchy> pahList = projectApproverHierarchyService.getApproverUsersByProjectId(projects.getId());
-		    	for(ProjectApproverHierarchy pah :pahList){
+//		    	for(ProjectApproverHierarchy pah :pahList){
+		    	ProjectApproverHierarchy pah = pahList.get(0);
 		    		if(pah.getLevel()==1){
 		    			fromUser = pah.getApproverUserId();
 		    		}else{
@@ -603,7 +606,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 					   loginOrgLocation.setLocationCode(emp.getOrgLocations().getLocationCode());
 					   loginOrgLocation.setOrg(emp.getOrgLocations().getOrg());
 					   emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario);
-		    	}
+//		    	}
 		    }
 		}
 	}

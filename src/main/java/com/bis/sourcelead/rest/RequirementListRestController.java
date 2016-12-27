@@ -407,10 +407,21 @@ public class RequirementListRestController {
 					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 					if(requirementId !=null && !requirementId.isEmpty()){
 						List<RequirementSubmission> requirementStatusList = null;
-						if(!"all".equalsIgnoreCase(submissionType)){
-							 requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);	
-						}else{
-							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
+						// commented by @Rajashekar I will remove once task Done
+//						if(!"all".equalsIgnoreCase(submissionType)){
+//							 requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);	
+//						}else{
+//							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
+//						}
+						if(Constants.All_APPLICANTS.equalsIgnoreCase(submissionType)){
+							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+						}else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(submissionType)){
+							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
+//							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+						}
+						else{
+							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
+//							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
 						}
 						if(requirementStatusList != null){
 							for (RequirementSubmission requirementSubmission : requirementStatusList) {

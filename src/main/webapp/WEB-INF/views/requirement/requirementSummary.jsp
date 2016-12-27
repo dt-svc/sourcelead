@@ -2077,6 +2077,7 @@ function requirementStatusBar(requirementId){
   	   var rejected = 'REJECTED';
        var submitToClient = 'SUBMIT_TO_CLIENT';
        var clientSubmissions = '${clientSubmissions}';
+       var duplicateApplicantCount = 'DUPLICATE_APPLICANTS';
 		
        
        var offerMade = 'OFFERMADE';
@@ -2085,6 +2086,10 @@ function requirementStatusBar(requirementId){
 		 result = result + '     <li id="applicantli" class="pipeline-active tabActivation" onclick="filterReq('+requirementId+',\''+all+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Applicants">';
 		 result = result + '       <label><strong>Applicants</strong></label>';
 		 result = result + '       </a> <span class="label label-default" id="applicantsCount">0</span> </li>';
+		 
+		 result = result + '     <li id="duplicataplctli" class="tabActivation" onclick="filterReq('+requirementId+',\''+duplicateApplicantCount+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Duplicate Applicants">';
+		 result = result + '       <label><strong>Duplicate Applicants</strong></label>';
+		 result = result + '       </a> <span class="label label-default" id="duplicateApplicantsCount">0</span> </li>';
 		 
 		 result = result + '   <li id="requestSentli" class="tabActivation" onclick="filterReq('+requirementId+',\''+requestSent+'\');tabEnable(this);"> <a href="javascript:void(0)" title="RequestSent">';
          result = result + '     <label><strong>RequestSent</strong></label>';

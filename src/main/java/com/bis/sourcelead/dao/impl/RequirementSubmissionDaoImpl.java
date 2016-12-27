@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.TeamDao;
@@ -509,6 +510,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		}else if(submissionType != null && "OFFERMADE".equalsIgnoreCase(submissionType)){
 			subQuery = " and (reqSub.submissionStatus = 'OFFERMADE' OR reqSub.submissionStatus = 'OFFERACCEPTED' OR reqSub.submissionStatus = 'OFFERREJECTED' "
 					+ " OR reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED') "; 
+		}else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(submissionType)){
+			subQuery = " and reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+			//subQuery = " and reqSub.submissionStatus = '"+submissionType+"' ";
 		}else{
 			subQuery = " and reqSub.submissionStatus = '"+submissionType+"' ";
 		}
