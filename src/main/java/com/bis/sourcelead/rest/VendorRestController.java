@@ -145,7 +145,7 @@ public class VendorRestController {
 			
 		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
 				
-				if(orgRelation.getLocationId().getId() == orgLocations.getId()){
+				if(orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
 					orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
 					orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
@@ -167,7 +167,7 @@ public class VendorRestController {
 					
 				}
 				
-				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
+				if(orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
 					orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
 					orgRelation.setCountry(orgRelation.getLocationId().getCountry());
@@ -215,7 +215,7 @@ public class VendorRestController {
 			
 		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
 				
-				if(orgRelation.getLocationId().getId() == orgLocations.getId()){
+				if(orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
 					orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
 					orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
@@ -233,7 +233,7 @@ public class VendorRestController {
 					
 				}
 				
-				if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
+				if(orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
 					orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
 					orgRelation.setCountry(orgRelation.getLocationId().getCountry());
@@ -408,7 +408,7 @@ public class VendorRestController {
 				
 			    for (OrgRelations orgRelation : vandorsList) {
 					
-					if(orgRelation.getLocationId().getId() == orgLocations.getId()){
+					if(orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 						orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
 						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
 						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
@@ -430,7 +430,7 @@ public class VendorRestController {
 						
 					}
 					
-					if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
+					if(orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 						orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
 						orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
 						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
