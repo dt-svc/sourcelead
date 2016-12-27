@@ -168,6 +168,13 @@ public class RequirementListRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
 		for(Requirement requirement : requirementList){
+			
+			int totalApplicatsCountForRequirement = 0;
+			totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(loginOrgLocation.getId(),requirement.getId());
+			if(totalApplicatsCountForRequirement > 0){
+				requirement.setTotalApplicantsForRequirement(totalApplicatsCountForRequirement); ;
+			}
+			
 			if(requirement.getClientId() != null){
 				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
 					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());

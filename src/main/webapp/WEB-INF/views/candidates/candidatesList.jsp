@@ -946,49 +946,70 @@ function cancel(candidateId){
 				  <div class="col-md-12">
 					  <h4>Details:</h4>
 				  </div>
-				  <div class="clearfix">
+					<div class="clearfix">
 					  <div class="col-md-4">
-						  <label>Designation</label>
-						  <div class="clearfix">
-						  	<input type="text" class="form-control input-sm" placeholder="Designation">
-						  </div>
-					  </div>
-					  <div class="col-md-4">
-						  <label>Skills</label>
-						  <div class="clearfix">
-							  <select class="chosen-select"  multiple data-placeholder="Select Skills">
-								  <option>Skill-1</option>
-								  <option>Skill-2</option>
-								  <option>Skill-2</option>
-							  </select>
-						  </div>
-					  </div>
-					  <div class="col-md-4">
-						  <label>Rate</label>
-						  <div class="clearfix">
-							  <input type="text" class="form-control input-sm" placeholder="Rate">
-						  </div>
-					  </div>
-					  </div>
+					    <label>Designation</label>
+					     <div class="clearfix">
+					            <input type="text" class="form-control input-sm" placeholder="Designation">
+					    </div>
+					</div>
+					<div class="col-md-8">
+						<div class="row">
+							<div class="col-md-6">
+								<label>Rate</label>
+								 <div class="input-group">
+									<div class="input-group-btn selp-custom-min custommin">
+										<select class="selectpicker">
+											<option selected disabled>INR</option>
+											<option>AUD</option>
+											<option>USD</option>
+											<option>GPB</option>
+											<option>SGD</option>
+											<option>EUR</option>
+										</select>
+									</div>
+								   <input type="text" class="form-control input-sm" value="" placeholder="Min Rate">
+							    </div>
+							</div>
+						<div class="col-md-6">
+							<label>&nbsp;</label>
+							<div class="input-group">
+								<input type="text" class="form-control input-sm" value="" placeholder="Max Rate">
+								<div class="input-group-btn selp-custom-min custommin">
+									<select class="selectpicker">
+										<option selected disabled>Per</option>
+										<option>Hourly</option>
+										<option>Weekly</option>
+										<option>Bi-weekly</option>
+										<option>Semi-Monthly</option>
+										<option>Monthly</option>
+										<option>Bi-Monthly</option>
+										<option>Yearly</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					 </div>
+					 </div>
+					 </div>
 					  <div class="clearfix">
 					  <div class="col-md-4">
 						  <label>Experience</label>
 						  <div class="clearfix row">
 						  <div class="col-md-6">
-							  <select class="chosen-select" data-placeholder="Years">
-								  <option selected>Years</option>
-								   <option>1 years</option>
-								  <option>2 years</option>
-								  <option>3 years</option>
-								  <option>4 years</option>
+							  <select class="chosen-select"  id="minExpYears" name="minExpYears" data-placeholder="Years">
+								  <option selected>Min</option>
+								 <c:forEach begin="0" end="24" varStatus="loop">
+								    <option value="${loop.index}">${loop.index} Years</option>
+								</c:forEach>
 							  </select>
 						  </div>
 						  <div class="col-md-6">
-							  <select class="chosen-select" data-placeholder="Months">
-								  <option selected>Months</option>
-								  <option>15 Days</option>
-								  <option>one month</option>
-								  <option>Two month</option>
+							  <select class="chosen-select" id="maxExpYears" name="maxExpYears" data-placeholder="Months">
+								  <option selected>Max</option>
+								  <c:forEach begin="0" end="24" varStatus="loop">
+								    <option value="${loop.index}">${loop.index} Years</option>
+								</c:forEach>
 							  </select>
 						  </div>
 						  </div>
@@ -1116,8 +1137,20 @@ function cancel(candidateId){
 						  </div>
 					  </div>
 					  </div>
+					    <div class="clearfix">
+						    <div class="col-md-12">
+							  <label>Skills</label>
+							  <div class="clearfix">
+								  <select class="chosen-select"  multiple data-placeholder="Select Skills">
+									  <option>Skill-1</option>
+									  <option>Skill-2</option>
+									  <option>Skill-2</option>
+								  </select>
+							  </div>
+						  </div>
+					    </div>
 				  </div>
-				  <div class="row form-footer">
+				  <div class="row form-footer mt">
 					  <div class="pull-right mr">
 						  <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a>
 						  <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a>
@@ -1687,4 +1720,4 @@ function savedCommentAndCount(candidateId){
         $('.pop_mask').fadeOut(200);
        }
     </script>
-<jsp:include page="../masterFooter.jsp" />
+<jsp:include page="../masterFooter.jsp" /> 

@@ -757,6 +757,7 @@ function getCities(){
 	     			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
 	     			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
 	     	      }else{
+	     	    	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	     	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
 	        		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
 	     		var form = $('#candidate_form')[0];
