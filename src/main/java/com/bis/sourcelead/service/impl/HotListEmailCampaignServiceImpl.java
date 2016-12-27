@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UserSignature;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
@@ -31,6 +32,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.service.UserMailBoxService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserSignatureService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -61,6 +63,9 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	
 	@Autowired
 	SourceleadSignatureService sourceleadSignatureService;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	
 	
@@ -132,7 +137,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		String table =  getHotListCandidatesTable(hotlistedCandidates,jsonObj.getString("namefield"));
 		String UUID = SourceLeadRandomCodeHelper.generateUUID();
 		
-		String mailsignature = getSignature(user,orgLocation);
+		signature = sourceleadSignatureService.buildSignature(user, orgLocation);
 		 
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("salutation", jsonObj.getString("saluation"));
@@ -147,9 +152,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 String subject = emailScenerioUtil.bulidSubject(jsonObj.getString("subject"),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 
-		 if(null != userSignature){
-			 signature = emailScenerioUtil.buildSignature(userSignature.getSignature(),globalVarsMap);
-		 }
+		
 		 
 		 String url = sourceleadUrl;
 		 
@@ -225,31 +228,6 @@ private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailR
 	
 	userMailBoxService.saveUserMailBox(userMailBox);
 	
-}
-
-
-private String getSignature(User user,OrgLocations orgLocations) throws Exception{
-	
-	 String signatureHTML = null;
-    
-	 List<SourceleadSignature> signatureList = sourceleadSignatureService.getSourceLeadSignature();
-     for(SourceleadSignature signature : signatureList){
-    	 if(signature.getLabelName().equalsIgnoreCase("Sign Off") && signature.getStatus() == 1){
-    		 signatureHTML = "<p><span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; font-weight:bold; font-size: "+signature.getFontSize()+";'>Thanks &amp; Regards,</span></span></p>"; 
-    	 }
-     }
-	
-	
-	 
-	 signatureHTML = signatureHTML+ "<p><span style='font-size: 13px; font-family: Arial;'><strong>Venkat Idapalapati | </strong>Direct : +91-7799545821</span></p>";
-	 signatureHTML = signatureHTML+ "<p><span style='font-size: 13px; font-family: Arial;'>Sr Software Engineer</span></p>";
-	 signatureHTML = signatureHTML+ "<p><span style='font-size: 13px; font-family: Arial;'><strong>Business Intelli Solutions</strong></span></p>";
-	 signatureHTML = signatureHTML+ "<p dir='ltr'><span style='font-size: 13px; font-family: Arial;'>3535 Victory Group Way, Building 4, Frisco, TX 75034.</span></p>";
-	 signatureHTML = signatureHTML+ "<p dir='ltr'><span style='font-size: 13px; font-family: Arial;'>Phone: +91-7799545821 Extn: 107 |&nbsp;Fax: 1-972-559-3641|</span></p>";
-	 signatureHTML = signatureHTML+ "<p dir='ltr'><span style='font-size: 13px; font-family: Arial;'>Email: venkat.idapalapati@businessintelli.com&nbsp;|&nbsp;<a href='http://www.businessintelli.com/'>www.businessintelli.com</a>|</span></p>";
-	 
-	 return signatureHTML;
-		
 }
 
 

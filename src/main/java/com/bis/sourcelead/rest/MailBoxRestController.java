@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateSkills;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -87,6 +89,9 @@ public class MailBoxRestController {
 	
 	@Autowired
 	EmailService emailService;
+	
+	@Autowired
+	SourceleadSignatureService sourceleadSignatureService;
 	
 	
 	
@@ -518,8 +523,50 @@ public class MailBoxRestController {
 			resultJson = commonUtil.toJSON(usersList);
 			return resultJson;
 		}
+	 
+	 
+	 
+	    @PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+		@RequestMapping(value = "/saveOrgSignature", method = RequestMethod.POST)
+		public String saveOrgSignature(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
+			
+			String jsonc = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(jsonc);
+			
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			sourceleadSignatureService.saveOrgSignatrue(jsonObj, orgLocation, user);
+			
+			return "success";
+		}
 		
+	    
 		
+	        @PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	  		@RequestMapping(value = "/getSignaturePreview", method = RequestMethod.POST)
+	  		public String getSignaturePreview(HttpServletRequest request) throws Exception {
+	  			
+	  			
+	  			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	  			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	  			String signature = sourceleadSignatureService.buildSignature(user, orgLocation);
+	  			
+	  			return signature;
+	  		}
+	        
+	        
+	        @PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	  		@RequestMapping(value = "/restoreSignature", method = RequestMethod.POST)
+	  		public String restoreSignature(HttpServletRequest request) throws Exception {
+	  			
+	  			
+	  			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	  			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	  			sourceleadSignatureService.restoreSignature(user, orgLocation);
+	  			
+	  			return "success";
+	  		}
 	 
 	 
 		

@@ -290,7 +290,14 @@ public class OrgSettingsRestController {
 		
 	 	String resultJson = null;
 	 	SourceleadSignature signature = new SourceleadSignature();
-		List<SourceleadSignature> signatureList = sourceleadSignatureService.getSourceLeadSignature();
+	 	
+	 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	List<SourceleadSignature> signatureList = null;
+	 	 signatureList = sourceleadSignatureService.getSourceLeadSignatureByLocationId(orgLocations.getId());
+	 	 if(signatureList.size() == 0){
+	 		 signatureList = sourceleadSignatureService.getSourceLeadSignature();
+	 	 }
+	   
 		String[] fontFamily = Constants.FONT_FAMILY;
 		String[] fontSize = Constants.FONT_SIZE;
 		
