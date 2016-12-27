@@ -407,7 +407,6 @@ public class RequirementListRestController {
 					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 					if(requirementId !=null && !requirementId.isEmpty()){
 						List<RequirementSubmission> requirementStatusList = null;
-						// commented by @Rajashekar I will remove once task Done
 //						if(!"all".equalsIgnoreCase(submissionType)){
 //							 requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);	
 //						}else{
@@ -957,10 +956,15 @@ public class RequirementListRestController {
 			RequirementSubmissionCounts requirementSubmissionCounts = getRequirementSubmissionsCount(Long.valueOf(requirementId),user,loginOrgLocation);
 			if(requirementId !=null && !requirementId.isEmpty()){
 				List<RequirementSubmission> requirementStatusList = null;
-				if(!"all".equalsIgnoreCase(submissionType)){
-					 requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);	
-				}else{
-					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
+				if(Constants.All_APPLICANTS.equalsIgnoreCase(submissionType)){
+					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+				}else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(submissionType)){
+					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
+//					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+				}
+				else{
+					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
+//					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
 				}
 				
 				if(requirementStatusList != null){
@@ -970,7 +974,7 @@ public class RequirementListRestController {
 							RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 							List<RequirementInterview> numberOfInterviews = requirementInterviewService.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(requirementSubmission.getId(),loginOrgLocation.getId());
 							List<RequirementOffers> requirementOffersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(requirementSubmission.getId(),loginOrgLocation.getId());
-							if("all".equalsIgnoreCase(submissionType)){
+							if(Constants.All_APPLICANTS.equalsIgnoreCase(submissionType)){
 								submissionType = "SUBMISSION";
 							}
 							List<RequirementSubmissionHistory> requirementSubmissionHistoryServiceList = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndStage(loginOrgLocation.getId(),submissionType,requirementSubmission.getId());
