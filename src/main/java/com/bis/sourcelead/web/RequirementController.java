@@ -256,12 +256,17 @@ public class RequirementController {
 	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementId", required=false)Long requirementId) throws Exception {
 		 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		
 		ModelAndView model = new ModelAndView();
 		model.setViewName("requirement/requirementSummary");
 		model.addObject("requirementId",requirementId);
+		
+		Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
+		model.addObject("isTeamMember",isTeamMember);
 		
 		//to get time zone list
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());

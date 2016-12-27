@@ -1226,23 +1226,47 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	
 	@Override
 	public RequirementSubmission acceptRejectCandidate(JSONObject jsonObj, User user,
-			RequirementSubmission requirementSubmission, String decision, MultipartFile multiFile) throws Exception {
+			RequirementSubmission requirementSubmission, String decision, MultipartFile multiFile,Org loginOrg,  OrgLocations loginOrgLocation) throws Exception {
 		if(requirementSubmission != null){
-			if(jsonObj.has("comment")){
-				requirementSubmission.setSubmissionRateComment(jsonObj.getString("comment"));
-			}
+			
 			if(StringUtils.equalsIgnoreCase(decision, "accept")){
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
-			}else if(StringUtils.equalsIgnoreCase(decision, "reject")){
+				if(jsonObj.has("comment")){
+					requirementSubmission.setSubmissionRateComment(jsonObj.getString("comment"));
+				}
+				if(multiFile != null){
+					requirementSubmission.setSubmissionRateDocFile(multiFile.getBytes());
+					requirementSubmission.setSubmissionRateFileContentType(multiFile.getOriginalFilename());
+					requirementSubmission.setSubmissionRateFileName(multiFile.getContentType());
+				}
+			}
+			else if(StringUtils.equalsIgnoreCase(decision, "reject")){
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
+				if(jsonObj.has("comment")){
+					requirementSubmission.setSubmissionRateComment(jsonObj.getString("comment"));
+				}
+			}
+			else if(StringUtils.equalsIgnoreCase(decision, "request")){
+				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REQUEST);
+				if(multiFile != null){
+					requirementSubmission.setSubmissionRequestDocFile(multiFile.getBytes());
+					requirementSubmission.setSubmissionRequestFileContentType(multiFile.getOriginalFilename());
+					requirementSubmission.setSubmissionRequestFileName(multiFile.getContentType());
+				}
+				if(jsonObj.has("comment")){
+					requirementSubmission.setSubmissionRequestComment(jsonObj.getString("comment"));
+				}
+				requirementSubmission.setSubmissionRequestUser(user.getUserCode());
+				
+				//send mail to requirement manager.
+				sendEmailtoRequirementManager(loginOrg, user,requirementSubmission,loginOrgLocation);
+				//send notification to requirement manager.
+				
+				
 			}
 			requirementSubmission.setUpdatedBy(user.getUserCode());
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
-			if(multiFile != null){
-				requirementSubmission.setSubmissionRateDocFile(multiFile.getBytes());
-				requirementSubmission.setSubmissionRateFileContentType(multiFile.getOriginalFilename());
-				requirementSubmission.setSubmissionRateFileName(multiFile.getContentType());
-			 }
+			
 		}
 		requirementSubmissionDao.storeRequirementSubmission(requirementSubmission);
 		
@@ -1846,6 +1870,89 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.duplicateCandidateCountList(requirementId, user, loginOrgLocation) ;
 	}
 
+	public void sendEmailtoRequirementManager(Org loginOrg, User users,RequirementSubmission requirementSubmission,
+			 OrgLocations loginOrgLocation) throws Exception {
+		
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(requirementSubmission.getRequirement().getManagerUserId().getFirstName());
+		 emailMessage.setLastName(requirementSubmission.getRequirement().getManagerUserId().getFirstName());
+		 emailMessage.setToEmail(requirementSubmission.getRequirement().getManagerUserId().getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(users.getUserCode());
+		 emailMessage.setFromName(users.getFirstName()+" "+users.getLastName());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 if(requirementSubmission.getCandidate().getFirstName()!= null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getFirstName()) && requirementSubmission.getCandidate().getLastName()!= null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getLastName())){
+			 globalVarsMap.put("AssignedUser", requirementSubmission.getCandidate().getFirstName()+" "+requirementSubmission.getCandidate().getLastName());
+		 }else{
+			 globalVarsMap.put("AssignedUser","--");
+		 }
+		 
+		 
+		 if(requirementSubmission.getRequirement().getManagerUserId().getFirstName() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getManagerUserId().getLastName())){
+			 globalVarsMap.put("ManagerName", requirementSubmission.getRequirement().getManagerUserId().getFirstName() +""+requirementSubmission.getRequirement().getManagerUserId().getLastName() );
+		 }else{
+			 globalVarsMap.put("ManagerName","--");
+		 }
+		 
+		 if(requirementSubmission.getCandidate().getFirstName() != null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getLastName())){
+			 globalVarsMap.put("ApplicantName", requirementSubmission.getCandidate().getFirstName()+""+requirementSubmission.getCandidate().getLastName());
+		 }else{
+			 globalVarsMap.put("ApplicantName","--");
+		 }
+		 if(requirementSubmission.getRequirement().getJobTitle() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobTitle())){
+			 globalVarsMap.put("RequirementName", requirementSubmission.getRequirement().getJobTitle());
+		 }else{
+			 globalVarsMap.put("RequirementName","--");
+		 }
+		 
+		 if(loginOrgLocation.getCountry() != null && !"".equalsIgnoreCase(loginOrgLocation.getCountry())){
+			 globalVarsMap.put("RequirementLocation", loginOrgLocation.getCountry());
+		 }else{
+			 globalVarsMap.put("RequirementLocation","--");
+		 }
+		 
+		 if(requirementSubmission.getCandidate().getRate() != null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getRate())){
+			 globalVarsMap.put("ApplicantRate", requirementSubmission.getCandidate().getRate());
+		 }else{
+			 globalVarsMap.put("ApplicantRate","--");
+		 }
+		 
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Applicant_Acceptance_By_Manager_Of_Requirement,Constants.ENTITY_TYPE_EMAIL);
+
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		/*String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		notificationScenario.setBody(notificationbody);*/
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		  
+		 String actionLink="";
+		//calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+		 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+		 emailScenerioUtil.sendNotification(actionLink, users,requirementSubmission.getRequirement().getManagerUserId(), loginOrgLocation, notificationScenario);
+		 
+	}
 	
 
 }

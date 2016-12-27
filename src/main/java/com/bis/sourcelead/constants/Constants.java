@@ -242,10 +242,9 @@ public class Constants {
 	public static String SALES_MANAGER = "ROLE_SALES_MANAGER";
 	public static String RECRUITER = "ROLE_RECRUITER";
 	public static String ROLE_MANAGER = "ROLE_MANAGER";
-
-
 	
-	
+	public static String Applicant_Acceptance_By_Manager_Of_Requirement = "ApplicantAcceptanceByManagerOfRequirement";
+
 	
 	public static String[] RATEPER_LIST = {"Daily","Hourly","Weekly","Bi-Weekly","Semi-Monthly","Monthly","Yearly"};
 	
