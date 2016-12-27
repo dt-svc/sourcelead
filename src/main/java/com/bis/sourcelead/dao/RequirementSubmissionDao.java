@@ -34,6 +34,8 @@ public interface RequirementSubmissionDao {
 
 	Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus, String dateRange,String userType,User user);
 	
+	Integer getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(Long orgLocationsId,Long requirementId);
+	
 	List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(Long id,Long requirementId) throws Exception;
 	
 	RequirementSubmission getRequirementSubmissionByIdAndSubmissionStatus(Long submissionId,String submissionStatus)throws Exception;
@@ -41,13 +43,21 @@ public interface RequirementSubmissionDao {
 	/**
 	 * @author Prasad Salina
 	 * @param email
-	 * @param requirementId
+	 * @param requirementId 
 	 * @param orgLocationsId
 	 * @return
 	 */
 	RequirementSubmission validateRequirementCandidateEmail(String email, Long requirementId, Long orgLocationsId) throws Exception;
 	
 	RequirementSubmission getSubmissionsBySourceSubmissionId(Long sourceSubmissionId, Long orgLocationsId);
+	
+	
+	/**
+	 * @author Prasad Salina
+	 * @param submissionIds
+	 * To get candidate resume ids of submissions
+	 */
+	List<Long> getResumeIdsByRequirementSubmissionId(List<Long> submissionIds) throws Exception;
 	
 	Integer getAllSubmissionCountByRequirementIdAndSubmissionStage(Long orgLocationsId, Long requirementId,String submissionStatus);
 	

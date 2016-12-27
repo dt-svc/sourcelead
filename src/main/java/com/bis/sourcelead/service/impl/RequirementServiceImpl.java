@@ -551,15 +551,12 @@ public class RequirementServiceImpl implements RequirementService {
 				String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
 						Long teamId = 0L;
 						Team team = null;
-						if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId"))){
+						if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId")) && !"undefined".equalsIgnoreCase(jsonObj.getString("assignedTeamId"))){
 							String assignedTeamId = jsonObj.getString("assignedTeamId");
-						    if (jsonObj.has("assignedTeamId") && !"undefined".equalsIgnoreCase(assignedTeamId) && !"All".equalsIgnoreCase(assignedTeamId)
-								&& !"Account Manager".equalsIgnoreCase(assignedTeamId)
-								&& !"HR Manager".equalsIgnoreCase(assignedTeamId) && !"Recruiter".equalsIgnoreCase(assignedTeamId)
-								&& !"Admin".equalsIgnoreCase(assignedTeamId)) {
-							    teamId = Long.parseLong(assignedTeamId);
+					    	if(!assignedTeamId.contains("role")){
+					    		teamId = Long.parseLong(assignedTeamId);
 							    team = teamService.getTeamByTeamId(teamId);
-							}
+					    	}
 						}   
 					    // User roleUser = team.getOwnerUserId();
 						if(StringUtils.isNotEmpty(assignedToMaxCount)){

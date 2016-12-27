@@ -23,7 +23,6 @@ import com.bis.sourcelead.dao.TeamDao;
 import com.bis.sourcelead.dao.TeamMemberDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -32,7 +31,6 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.RequirementAssignToService;
 
@@ -316,6 +314,27 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		    
 	}
 	
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(Long orgLocationsId, Long requirementId) {
+		
+        Session session = this.sessionFactory.getCurrentSession();
+        
+        String submissionStages = "";
+        
+    		String query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId and rs.requirement.id =:requirementId";
+    		
+    		List<Long> reqSubmsCount  = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("requirementId", requirementId).list();
+    		Integer count = 0;
+			if(reqSubmsCount != null && !reqSubmsCount.isEmpty()){
+					count = reqSubmsCount.get(0).intValue();
+			}
+			return count;
+	}
+	
+	
 	//to get candidates for submit to client
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -370,6 +389,15 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			}
 			return null;
 	   	     	     
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getResumeIdsByRequirementSubmissionId(List<Long> submissionIds) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select rs.candidateResumes.id from RequirementSubmission rs where rs.id IN (:submissionIds) " ;
+	    List<Long> resumeIds = session.createQuery(query).setParameterList( "submissionIds", submissionIds).setCacheable(true).list();
+        return resumeIds;
 	}
 	
 	

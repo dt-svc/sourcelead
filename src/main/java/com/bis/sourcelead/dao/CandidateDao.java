@@ -20,7 +20,7 @@ public interface CandidateDao {
 	
 	public Candidate findByCandidateEmail(String email,Long orgLocationId) throws Exception;
 	
-	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId) throws Exception;
+	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId, String candidateType) throws Exception;
 
 	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId);
 	
@@ -32,4 +32,5 @@ public interface CandidateDao {
 	
 	public List<Candidate> getAllRequestedCandidatesForCampaign(List<Long> candidateId)throws Exception;
 	
+	public List<Candidate> getAllHotlistCandidatesAndNotAssignedToTeamByLocation(Long orgLocationId)throws Exception;
 }

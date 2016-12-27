@@ -2,6 +2,9 @@ package com.bis.sourcelead.form;
 
 import java.io.File;
 
+import javax.persistence.Column;
+
+import org.hibernate.annotations.Type;
 import org.springframework.web.multipart.MultipartFile;
 
 public class UserProfile {
@@ -23,6 +26,14 @@ public class UserProfile {
 	private String password;
 	
 	private String currentPassword;
+	
+	private String linkedIn;
+	
+	private String facebook;
+	
+	private String twitter;
+	
+	private String googlePlus;
 	
 	
 	
@@ -97,6 +108,38 @@ public class UserProfile {
 
 	public void setCurrentPassword(String currentPassword) {
 		this.currentPassword = currentPassword;
+	}
+
+	public String getLinkedIn() {
+		return linkedIn;
+	}
+
+	public void setLinkedIn(String linkedIn) {
+		this.linkedIn = linkedIn;
+	}
+
+	public String getFacebook() {
+		return facebook;
+	}
+
+	public void setFacebook(String facebook) {
+		this.facebook = facebook;
+	}
+
+	public String getTwitter() {
+		return twitter;
+	}
+
+	public void setTwitter(String twitter) {
+		this.twitter = twitter;
+	}
+
+	public String getGooglePlus() {
+		return googlePlus;
+	}
+
+	public void setGooglePlus(String googlePlus) {
+		this.googlePlus = googlePlus;
 	}
 	
 	

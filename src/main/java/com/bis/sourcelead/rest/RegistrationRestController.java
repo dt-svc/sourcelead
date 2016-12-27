@@ -133,7 +133,8 @@ public class RegistrationRestController {
 			    }
 			   
 				registrationService.addRegistration(registration,user,modulesList,submodulesList, orgLocations.getId() );
-				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", registration.getCompanyName()+" Org has created sucessfully.");
+				 StringBuilder orgCreateMsg = new StringBuilder();
+				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", orgCreateMsg.append(registration.getCompanyName()).append(" Org has created sucessfully.").toString());
 			} catch (Exception e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
@@ -471,7 +472,8 @@ public class RegistrationRestController {
 	   @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")	   
 	   @RequestMapping(value = "/orgSummary/{orgId}" , method = RequestMethod.GET)
 		 public @ResponseBody void orgSummary(@PathVariable Long orgId,HttpServletRequest request,HttpServletResponse response) throws Exception {
-				response.sendRedirect("/sourcelead/enrolledOrgSummary?orgId="+orgId);
+				StringBuilder redirectUrl = new StringBuilder();
+				response.sendRedirect(redirectUrl.append("/sourcelead/enrolledOrgSummary?orgId=").append(orgId).toString());
 				
 		   }
 	   

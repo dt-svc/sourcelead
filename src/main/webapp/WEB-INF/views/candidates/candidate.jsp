@@ -75,7 +75,7 @@
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Add Candidate Details</h2>
+      <h2>Parse Resume</h2>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Create Candidate</div>
   </section>
@@ -177,20 +177,22 @@
         
         <div class="form-group">
          <label class="col-md-3">Designation</label>
-         <div class="col-md-9">
-          <div class="input-group ratetype">
+         <div class="col-md-9 ratetype">
              <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
-             <div class="input-group-btn selp-custom-min">
-             <select class="selectpicker" id="designationType" name="designationType">
-                <option value="">--Select--</option>
-                 <option>C2C</option>
-                 <option>W-2</option>
-                 <option>Part Time</option>
-                 <option>Full Time</option>
-                 <option>Other</option>
+         </div>
+       </div>
+       
+        <div class="form-group">
+         <label class="col-md-3">Employment type</label>
+         <div class="col-md-9">
+             <select class="selectpicker form-control" id="designationType" name="designationType">
+                <option value=""><a href="#">Select</a></option>
+                 <option><a href="#">C2C</a></option>
+                 <option><a href="#">W-2</a></option>
+                 <option><a href="#">Part Time</a></option>
+                 <option><a href="#">Full Time</a></option>
+                 <option><a href="#">Other</a></option>
              </select>
-             </div>
-           </div>
          </div>
        </div>
 

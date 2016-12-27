@@ -279,11 +279,16 @@ function cancel(){
 
 <script>
 function addEmailtemplate(requirementId){
- 	var result ="";
+ 	
+	var result ="";
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 var selectedShortlists = [];
+		 var selectedShortlistsRate = [];
 		 $("input[name='shortlist[]']:checked").each( function (i) {
 			 selectedShortlists[i] = $(this).val();
+			 var rateId = $(this).val();
+			 var selectedRate = $("#submissionRate"+rateId).val();
+			 selectedShortlistsRate[i] = selectedRate;
 		});
 		 if(selectedShortlists.length >0){
 		 $.ajax({ 
@@ -361,6 +366,12 @@ function addEmailtemplate(requirementId){
 					result = result +'                 <div class="col-md-3">';
 					result = result +'	                  <lable><input type="checkbox" name="sendTracker" checked>&nbsp;Send tracker</label>';
 					result = result +'	                  </div>';
+					
+					result = result +'                 <div class="col-md-3">';
+					result = result +'	                  <lable><input type="checkbox" name="sendResumes" checked>&nbsp;Send resumes</label>';
+					result = result +'	                  </div>';
+					
+					
 					result = result +'	                  </div>';
 					result = result +'			<div class="col-md-12 clearfix mt">';
 					result = result +'				<div class="col-md-6">';
@@ -368,7 +379,7 @@ function addEmailtemplate(requirementId){
 					result = result +'				<div class="col-md-6">';
 					result = result +'					<div class="pull-right">';
 					result = result +'						<button type="button" id="sendMail"';
-					result = result +'							class="btn btn-sm btn-success" onclick="submitToClientMail(\''+selectedShortlists+'\',\''+json.id+'\');">';
+					result = result +'							class="btn btn-sm btn-success" onclick="submitToClientMail(\''+selectedShortlists+'\',\''+json.id+'\',\''+selectedShortlistsRate+'\');">';
 					result = result +'							<i class="fa fa-envelope-o"></i>&nbsp;Send</button>';
 					result = result +'						<button type="button" class="btn btn-sm btn-default" onclick="cancelSubmit();">';
 					result = result +'							<i class="fa fa-times" ></i>&nbsp;Cancel';
@@ -508,7 +519,7 @@ function addAttachment(){
 
 
 <script>
-function submitToClientMail(selectedIds,requirementId){
+function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate){
 	 if ($('#submitToClientMailTemplate').validate(false, validationSettings)){ 
 			var frm = $('#submitToClientMailTemplate').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -527,7 +538,7 @@ function submitToClientMail(selectedIds,requirementId){
 	      	         processData: false,
 	      	         contentType:false,
 	          	     dataType : 'json',
-					url : sourceleadUrl+"/submitToClient?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId,
+					url : sourceleadUrl+"/submitToClient?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate,
 					success : function(result) {
 							location.replace(sourceleadUrl+"/requirementList");
 					},

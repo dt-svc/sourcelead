@@ -99,6 +99,12 @@ public class RolesServiceImpl implements RolesService{
 	public List<Roles> getTabAccessRolesListByOrgLocationIdAndTabId(Long orgLocationsId, Long tabId) throws Exception {
 		return rolesDao.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocationsId, tabId);
 	}
+
+
+	@Override
+	public List<Roles> getRolesListExpcetCurrentUserRole(Long roleId, Long orgLocationId) throws Exception {
+		return rolesDao.getRolesListExpcetCurrentUserRole(roleId, orgLocationId);
+	}
 	
 
 }

@@ -381,7 +381,7 @@ $(document).ready(function () {
                     <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
                     <option ${requirement.rateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
-                    <option ${requirement.rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
                     <option ${requirement.rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
                     <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
@@ -739,9 +739,11 @@ $(document).ready(function () {
             <div class="col-md-9">
            
               <select  class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager" id="managerId">
-                       <option value="">Select Manager</option>
+                       <option selected="selected" value="${SourceLeadWeb_user.id}">${SourceLeadWeb_user.firstName}&nbsp;${SourceLeadWeb_user.lastName}</option>
                        <c:forEach var="report" items="${approverList}">
-		                    <option value="${report.id}" ${report.id  == requirement.managerUserId.id ? 'selected' : ''}>${report.firstName}&nbsp;${report.lastName}</option>
+                       	<c:if test="${SourceLeadWeb_user.id != report.id}">
+                       		<option value="${report.id}" ${report.id  == requirement.managerUserId.id ? 'selected' : ''}>${report.firstName}&nbsp;${report.lastName}</option>
+                       	</c:if>
 		               </c:forEach>   
               </select>
             </div>
@@ -750,11 +752,11 @@ $(document).ready(function () {
              
             <div id="assignedToSavingDiv"></div>
 													
-            <label class="col-md-3">Assign To <span class="text-danger">*</span></label>
+            <label class="col-md-3">Assign To</label>
             <div class="col-md-9">
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-                  <input type="text" id="assignedTo" placeholder="Assign Team" data-validation = "required" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
+                  <input type="text" id="assignedTo" placeholder="Assign Team" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getUserList();">
                   </span>
                   <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
                   </div>
@@ -778,11 +780,10 @@ $(document).ready(function () {
             <label class="col-md-3">Priority<span class="text-danger">*</span></label>
             <div class="col-md-9">
               <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" field-name = "priority">
-                <option value="">Select Priority</option>
-                <option ${requirement.priority  == 'Urgent' ? 'selected' : ''}>Urgent</option>
-                <option ${requirement.priority  == 'High' ? 'selected' : ''}>High</option>
                 <option ${requirement.priority  == 'Medium' ? 'selected' : ''}>Medium</option>
                 <option ${requirement.priority  == 'Low' ? 'selected' : ''}>Low</option>
+                <option ${requirement.priority  == 'Urgent' ? 'selected' : ''}>Urgent</option>
+                <option ${requirement.priority  == 'High' ? 'selected' : ''}>High</option>
               </select>
             </div>
           </div>
@@ -791,7 +792,6 @@ $(document).ready(function () {
             <div class="col-md-9">
                
                <select class="chosen-select form-control select-bg" name="applicationFrom" id="applicationFrom"  data-validation="required"  field-name = "Application Form">
-                    	<option value="">-- Select Form --</option>
 		                <c:forEach var="report" items="${submissionTempletesList}">
 					                  <option value="${report.id}" ${report.id  == requirement.submissionTemplateId.id ? 'selected' : ''}>${report.templateName}</option>
 						</c:forEach>
@@ -937,7 +937,6 @@ $(document).ready(function () {
 			 $('#clientRateType').removeAttr('data-validation');
 			 $('#ratePer').attr("data-validation-optional","true"); 
 		 }
-		 
 		   if ($('#requirement_form').validate(false, validationSettings)){   
 			
 			var frm = $('#requirement_form').serializeFormJSON();
@@ -966,6 +965,7 @@ $(document).ready(function () {
 								location.replace(sourceleadUrl+"/requirementList");
 						},
 					});
+			
 			return true;
 		   }else{ 
 				return false;
@@ -1865,9 +1865,9 @@ function assignMembers() {
 	var rowcollection =  oTable.$(".myCheckbox:checked", {"page": "all"});
 	var totalCount = $("[type='checkbox']:checked").length;
 	var count = 1;
-	if(totalCount == 0){
+	/* if(totalCount == 0){
 		alert("Please Select atleast one Check-Box.")
-	}else{
+	}else{ */
 		$('#assignbtnId').attr("data-dismiss","modal");
 		rowcollection.each(function(index,elem){
 		    var checkbox_value = $(elem).val();
@@ -1878,7 +1878,7 @@ function assignMembers() {
 		$("#assignedToSavingDiv").empty();
 		$("#assignedToSavingDiv").append(result);
 		assignedToValidation();
-	}
+	/* } */
 }
 </script>
 

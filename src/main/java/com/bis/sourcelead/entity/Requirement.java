@@ -278,6 +278,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private String submitToClientMailSubject;
+	
+	@Transient
+	private Integer totalApplicantsForRequirement;
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -876,6 +879,13 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setSubmitToClientMailSubject(String submitToClientMailSubject) {
 		this.submitToClientMailSubject = submitToClientMailSubject;
 	}
-	
+
+	public Integer getTotalApplicantsForRequirement() {
+		return totalApplicantsForRequirement;
+	}
+
+	public void setTotalApplicantsForRequirement(Integer totalApplicantsForRequirement) {
+		this.totalApplicantsForRequirement = totalApplicantsForRequirement;
+	}
 	
 }
