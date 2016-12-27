@@ -215,8 +215,8 @@ public class SubmissionsRestController {
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
 		requirementSubmissionHistory.setFromStage("NEW");
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
-				requirementSubmissionHistory);
+//		requirementSubmission.get
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
 		return "success";
 
 	}
