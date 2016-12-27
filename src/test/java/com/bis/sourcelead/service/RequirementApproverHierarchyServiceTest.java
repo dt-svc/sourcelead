@@ -115,8 +115,10 @@ public class RequirementApproverHierarchyServiceTest {
 	//@Test
 		public void deleteTheRequirementApproverByRequirementIdAndApproverId() throws Exception{
 			RequirementApproverHierarchy requirementApproverHierarchy= new RequirementApproverHierarchy();
+			Requirement  req = new Requirement();
+			req.setId(1l);
 			requirementApproverHierarchy.setId(1l);
-			requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(requirementApproverHierarchy);
+			requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(req.getId(),requirementApproverHierarchy.getId());
 			logger.info("success");
 		}
 }

@@ -64,9 +64,10 @@ public class RequirementApproverHierarchyServiceImpl implements RequirementAppro
 	}
 
 	@Override
-	public Boolean deleteTheRequirementApproverByRequirementIdAndApproverId(RequirementApproverHierarchy requirementApproverHierarchy)
+	public Boolean deleteTheRequirementApproverByRequirementIdAndApproverId(Long userId,Long requirementId)
 			throws Exception {
-		return requirementApproverHierarchyDao.deleteTheRequirementApproverByRequirementIdAndApproverId(requirementApproverHierarchy);
+		RequirementApproverHierarchy rah = requirementApproverHierarchyDao.getRequirementApproverHierarchyByRequirementId(requirementId, userId);
+		return requirementApproverHierarchyDao.deleteTheRequirementApproverByRequirementIdAndApproverId(rah);
 	}
 
 	@Override
