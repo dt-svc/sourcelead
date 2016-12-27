@@ -67,9 +67,9 @@ public class EmailServiceImpl implements EmailService {
 		 String emails = null;
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 
-		 
+		 	StringBuilder lastName=new StringBuilder();
 		   	 if(!isNullOrEmpty(user.getLastName())){
-		   		 fullName = user.getFirstName()+" "+user.getLastName();
+		   		 fullName = lastName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
 		   	 }else{
 		   		 fullName = user.getFirstName();
 		   	 }
