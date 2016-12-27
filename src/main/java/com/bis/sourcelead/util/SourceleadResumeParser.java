@@ -9,25 +9,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.service.LookUpDataService;
-import com.bis.sourcelead.service.impl.LookUpDataServiceImpl;
 import com.google.i18n.phonenumbers.PhoneNumberMatch;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
+
+@Component
 public class SourceleadResumeParser {
 	
 /**@param
@@ -38,14 +36,9 @@ public class SourceleadResumeParser {
  * @throws GateException 
  *  @date: 17-October-2016
  */
-	@Configuration
-	static class LookUpDataServiceContextConfiguration {
-		@Bean
-		public LookUpDataService lookUpDataService() {
-			return new LookUpDataServiceImpl();
-		}
-	}
-	
+@Autowired
+LookUpDataService lookUpDataService;
+ 
 public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest request)
 				throws Exception {
 				
@@ -86,9 +79,6 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 	  String[] totalLines = parsedString.split(System.getProperty("line.separator"));
 	  HashSet<String> skills = new HashSet<String>();
 	  HashSet<String> duplicateSkills = new HashSet<String>();
-	  HttpSession session = request.getSession();
-		ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(session.getServletContext());
-		LookUpDataService lookUpDataService = (LookUpDataService) ctx.getBean("lookUpDataService");
 	    List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 		for(String sLine : totalLines) 
 		{

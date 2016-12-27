@@ -282,7 +282,7 @@ public class SubmissionsRateRestController {
 					requirementRateSubmissionNegotiation.setProposeByName(candidate.getFirstName());
 				}
 			}*/
-			DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
+			DateFormat standardFormat = new SimpleDateFormat( "yyyy-MM-dd");
 			String commonDateFormat = standardFormat.format(requirementRateSubmissionNegotiation.getCreatedDate());
 			requirementRateSubmissionNegotiation.setCreatedDateStr(commonDateFormat.toString());
 			
