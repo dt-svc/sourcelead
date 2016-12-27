@@ -100,8 +100,7 @@ public class CandidateCommentsDaoImpl implements CandidateCommentsDao {
 		logger.debug("get Candidate comments");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CandidateComments> candidateCommentsList = null;
-		Query candidateCommentsListQuery= session.createQuery("from CandidateComments comments where comments.orgLocationId.id = :orgLocationId "
-				+ "and comments.status = '1' and comments.candidateId.id = :candidateId ORDER BY comments.updatedDate DESC");
+		Query candidateCommentsListQuery= session.createQuery("from CandidateComments comments where comments.orgLocationId.id = :orgLocationId and comments.status = '1' and comments.candidateId.id = :candidateId ORDER BY comments.updatedDate DESC");
 		candidateCommentsList = candidateCommentsListQuery.setLong("orgLocationId", orgLocationId).setLong("candidateId", candidateId).setCacheable(true).list();
 		return candidateCommentsList;
 	}
@@ -114,8 +113,7 @@ public class CandidateCommentsDaoImpl implements CandidateCommentsDao {
 		logger.debug("get Candidate comments");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CandidateComments> candidateCommentsList = null;
-		Query candidateCommentsListQuery= session.createQuery("from CandidateComments comments where comments.orgLocationId.id = :orgLocationId "
-				+ "and comments.status = '1' and comments.candidateId.id = :candidateId and (comments.submissionId IS NULL OR comments.submissionId.id = :submissionId) ORDER BY comments.updatedDate DESC");
+		Query candidateCommentsListQuery= session.createQuery("from CandidateComments comments where comments.orgLocationId.id = :orgLocationId and comments.status = '1' and comments.candidateId.id = :candidateId and (comments.submissionId IS NULL OR comments.submissionId.id = :submissionId) ORDER BY comments.updatedDate DESC");
 		candidateCommentsList = candidateCommentsListQuery.setLong("orgLocationId", orgLocationId).setLong("candidateId", candidateId).setLong("submissionId", submissionId).setCacheable(true).list();
 		return candidateCommentsList;
 	}
