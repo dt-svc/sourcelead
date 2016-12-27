@@ -86,6 +86,9 @@ public class CandidateRestController {
 	@Autowired
 	private TeamService teamService;
 	
+	@Autowired
+	private SourceleadResumeParser sourceleadResumeParser;
+	
 	/**
 	 * @author prasad k
 	 * @since  sep 1 2016
@@ -145,10 +148,9 @@ public class CandidateRestController {
 		if(itrator.hasNext()){
 	        multiFile = request.getFile(itrator.next());
 		}
-		SourceleadResumeParser resumeParser = new SourceleadResumeParser();
 		String resumeDetails = null;
 		if(multiFile != null){
-			resumeDetails = resumeParser.getCandidateDetailsFromResume(multiFile.getBytes(),request);
+			resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(),request);
 		}
 		return resumeDetails;
 	}

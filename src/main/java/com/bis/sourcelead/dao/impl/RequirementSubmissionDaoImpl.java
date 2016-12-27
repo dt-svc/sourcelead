@@ -314,6 +314,27 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		    
 	}
 	
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(Long orgLocationsId, Long requirementId) {
+		
+        Session session = this.sessionFactory.getCurrentSession();
+        
+        String submissionStages = "";
+        
+    		String query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId and rs.requirement.id =:requirementId";
+    		
+    		List<Long> reqSubmsCount  = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("requirementId", requirementId).list();
+    		Integer count = 0;
+			if(reqSubmsCount != null && !reqSubmsCount.isEmpty()){
+					count = reqSubmsCount.get(0).intValue();
+			}
+			return count;
+	}
+	
+	
 	//to get candidates for submit to client
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
