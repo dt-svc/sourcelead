@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,7 +23,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -42,6 +42,7 @@ import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -96,6 +97,9 @@ public class RequirementRestController {
 	 
 	 @Autowired
 	 private RolesService roleService;
+	 
+	 @Autowired
+	 private SourceleadRolesService sourceleadRolesService;
 	 
 	 
 	 
@@ -306,8 +310,36 @@ public class RequirementRestController {
 		
 		String resultJson;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-//		List<User> usersList = userService.getOwnersByOrgLocationId(orgLocation.getId());
+      //		List<User> usersList = userService.getOwnersByOrgLocationId(orgLocation.getId());
+		
+	    // This is made static as requirment action id is 146
+		
+		String requirementActionId = "146";
+		ArrayList<User> mynewList =  new ArrayList<User>();
 		List<User> usersList = userService.getUsersByTeamType(orgLocation.getId(),teamType);
+        
+		// adding team owner as  a Team Member
+		if(!teamType.equalsIgnoreCase("") && !teamType.equalsIgnoreCase("undefined") && !teamType.contains("role") && !teamType.contains("All")){
+			Team team = teamService.getTeamByTeamId(Long.parseLong(teamType));
+			usersList.add(team.getOwnerUserId());
+		}
+		for(User user : usersList){
+	            List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId());
+	            user.setAssignJobCount(assign.size());
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocation.getId());
+				if(userRole !=null){
+					user.setUserType(userRole.getUserType());
+					 boolean requirementAction  = sourceleadRolesService.roleHaveActionAccessOrNot(requirementActionId,userRole.getUserType());
+					 if (requirementAction){
+						 mynewList.add(user);
+					    }
+				}
+		   }
+		
+		resultJson = commonUtil.toJSON(mynewList);
+		return resultJson;
+		
+		/*List<User> usersList = userService.getUsersByTeamType(orgLocation.getId(),teamType);
 		for(User user : usersList){
 			List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId());
 			
@@ -318,7 +350,7 @@ public class RequirementRestController {
 			}
 		}
 		resultJson = commonUtil.toJSON(usersList);
-		return resultJson;
+		return resultJson;*/
 	}
 	
 	
