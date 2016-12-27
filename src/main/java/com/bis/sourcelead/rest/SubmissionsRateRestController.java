@@ -294,8 +294,8 @@ public class SubmissionsRateRestController {
 			}
 			
 			requirementRateSubmissionNegotiation.setInitiatorOrgLocationIdStr(requirementRateSubmissionNegotiation.getInitiatorOrgLocationId().getId().toString());
-			
-			requirementRateSubmissionNegotiation.setRateAndType(requirementRateSubmissionNegotiation.getExpectedRate()+" "+requirementRateSubmissionNegotiation.getExpectedRateType());
+			StringBuilder rateTypeSB = new StringBuilder();
+			requirementRateSubmissionNegotiation.setRateAndType(rateTypeSB.append(requirementRateSubmissionNegotiation.getExpectedRate()).append(" ").append(requirementRateSubmissionNegotiation.getExpectedRateType()).toString());
 		}
 		
 		String resultJson = commonUtil.toJSON(allSubmissionRateHistory);

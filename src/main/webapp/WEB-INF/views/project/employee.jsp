@@ -142,7 +142,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 			result = result + '<input type="hidden" name="assignEndDateStr" id="assignEndDateStr" value="'+endDateStr+'" >';
         	result = result + '<input type="hidden" name="assignStatus" id="assignStatus" value="'+status+'" >';
 
-        	result = result + '    	<div class="project_tabs_inn_head timesheet_head" style="min-height:35px">';
+        	result = result + '    	<div class="timesheet_head clearfix">';
     		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
     		result = result	+ '<ul>';
 

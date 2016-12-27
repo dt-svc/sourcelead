@@ -23,6 +23,7 @@
 $(document).ready(function() {
     $("#filter2ApprovePop").click(function(){
 		$("#filter2ApprovedPop").slideToggle(200);
+		$(".export_pop, .action-pop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter2ApprovedPop").slideUp(200);
@@ -1299,21 +1300,6 @@ $(document).ready(function() {
     });	
 });
 
-// Export Popup
-$(document).ready(function() {
-    $("#export-pop").click(function(){
-		$(".export_pop").slideToggle(200);
-	});
-    $("html").click(function() {
-        $(".export_pop").slideUp(200);
-    });
-    $(".export_pop, #export-pop").click(function(e) {
-        e.stopPropagation();
-    });	
-});
-
-
-	
 // project side bar
 $(document).ready(function() {
     $(".proj_show").click(function(){
@@ -1447,6 +1433,7 @@ function changeStatus(requirementId){
 <script>
     $("#export-pop").click(function(){
 		$(".export_pop").slideToggle(200);
+		$(" #filter2ApprovedPop, .action-pop").slideUp(200);
 	});
     $("html").click(function() {
         $(".export_pop").slideUp(200);
@@ -1537,6 +1524,8 @@ function cancel(){
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
+	$(".export_pop, #filter2ApprovedPop").slideUp(200);
+	
 	$("html").click(function(){
 		$(".action-pop").slideUp(200);
 	});

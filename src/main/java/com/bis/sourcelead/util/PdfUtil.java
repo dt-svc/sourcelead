@@ -193,8 +193,8 @@ public class PdfUtil {
 		   }else{
 			   userArray[7] = "--";
 		   }
-		   if(userRoles.getUserType() != null){
-			   userArray[8] = userRoles.getUserType();
+		   if(userRoles.getRoles() != null){
+			   userArray[8] = userRoles.getRoles().getDisplayName();
 		   }else{
 			   userArray[8] = "--";
 		   }

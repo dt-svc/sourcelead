@@ -86,7 +86,6 @@ public class CandidateEducationRestController {
 
 		candidateEducationService.storeCandidateEducation(jsonObject,Long.parseLong(candidateId),loginOrgLocation.getId(), user);
 		Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
-		//SourceLeadSessionManager.setSessionAttribute(request, "addEducation", "New Education added for "+candidate.getFirstName()+" ");
 		return "success";
 	}
 	

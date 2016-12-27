@@ -3813,7 +3813,7 @@ position:absolute;
 bottom:-20px;
 background:#ccc;
 z-index:999;
-right:0px;
+left:0px;
 text-wrap:none;
 font-style:normal;
 display:none;
@@ -3844,7 +3844,7 @@ margin-bottom: 10px;
   overflow-y:visible !important;
 }
 .ratepop:after{
-	bottom:10%;
+	top:52%;
 	left:100%;
 	border: solid transparent;
 	content: " ";
@@ -4645,6 +4645,13 @@ import-tranhd  [class*="col-md-"]{
 	-moz-box-shadow: 0 8px 6px -8px #505050;
 	box-shadow: 0 8px 6px -8px #505050;
 }
+.pending-user{
+    background-color:#ffb74d;
+	border: 1px solid #ffa726;
+	-webkit-box-shadow: 0 8px 6px -8px #505050;
+	-moz-box-shadow: 0 8px 6px -8px #505050;
+	box-shadow: 0 8px 6px -8px #505050;
+}
 .reason-msg {
 	font-size: 25px;
 	text-align: center;
@@ -5292,6 +5299,100 @@ border-left: none !important;
 .mail-table table{
 border:none;
 border-bottom: 1px solid #ccc !important;
+}
+mail-content .table-responsive{
+overflow: visible;
+}
+.mail-content .dataTables_wrapper thead{
+display: none;
+}
+.mail-content table.dataTable.no-footer {
+border-bottom: 1px solid #ccc;
+}
+.addcandidate-popup {
+    display: none;
+    position:absolute;
+    padding: 15px;
+    left: 15%;
+    width: 70%;
+    z-index: 99999;
+    top: 30%;
+    border-radius: 5px;
+}
+.small-widget {
+    padding:20px 10px;
+    border-radius: 5px;
+    text-align: center;
+    box-sizing: border-box;
+    position: relative;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.8);
+    
+    -webkit-transition: all 200ms ease-in;
+    -webkit-transform: scale(1); 
+    -ms-transition: all 200ms ease-in;
+    -ms-transform: scale(1); 
+    -moz-transition: all 200ms ease-in;
+    -moz-transform: scale(1);
+    transition: all 200ms ease-in;
+    transform: scale(1);
+}
+.small-widget:hover{
+    
+    -webkit-transition: background-color 2s ease-out;
+  -moz-transition: background-color 2s ease-out;
+  -o-transition: background-color 2s ease-out;
+  transition: background-color 2s ease-out;
+    background: #efebe9;
+-webkit-transition: all 200ms ease-in;
+    -webkit-transform: scale(1.3);
+    -ms-transition: all 200ms ease-in;
+    -ms-transform: scale(1.3);   
+    -moz-transition: all 200ms ease-in;
+    -moz-transform: scale(1.3);
+    transition: all 200ms ease-in;
+    transform: scale(1.3);
+    z-index: 9999;
+}
+.small-widget a {
+    color: #333;
+ }
+.bg-purple {
+    background: #d1c4e9;
+}
+.bg-green {
+    background: #b2ebf2;
+}
+.bg-yellow {
+    background: #ffecb3;
+}
+.close-popdiv{
+	background-color: #d94747;
+    color: #fff;
+    left: -10px;
+    padding: 4px 5px;
+    position: absolute;
+    top: -5px;
+	border-radius:3px;
+	cursor:pointer;
+}
+.pop_mask {
+    position:fixed; width:100%; height:100%; background-color:rgba(0,0,0,0.6); top:0px; left:0px; z-index:9999; display:none;
+    background-image:"../images/cancel.png"; background-repeat:no-repeat; background-position:10% 40px;
+}
+.edit_role_pop {
+position:absolute; width:60%; min-height:150px; background-color:#FFF; box-sizing:border-box; right:125px; top:45px;
+padding:10px 10px; display:none; box-shadow:0px 0px 3px rgba(0,0,0,0.3); z-index: 999;
+}
+.assignroles.changeRole{
+	position: relative;
+	width: 600px;
+	margin-top: 10px;
+	height: auto !important;
+	overflow: visible;
+}
+.changeRole .chosen-container-single .chosen-drop {
+	width: 100%;
+	margin-left:0px;
 }
 /* media 320px */
 @media (max-width: 320px) {

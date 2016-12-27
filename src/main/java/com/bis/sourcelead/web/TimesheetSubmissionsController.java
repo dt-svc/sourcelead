@@ -55,7 +55,8 @@ public class TimesheetSubmissionsController {
 			
 			List<TimesheetSubmissions> thslist = timesheetSubmissionsService.getSubmissionApproverHierarchyForEmployeeList(user.getId());
 			for(TimesheetSubmissions ths : thslist ){
-				ths.setFullName(ths.getProjectMembers().getEmployee().getUser().getFirstName() +""+ths.getProjectMembers().getEmployee().getUser().getLastName());
+				StringBuilder fullNameSB = new StringBuilder();
+				ths.setFullName(fullNameSB.append(ths.getProjectMembers().getEmployee().getUser().getFirstName()).append(" ").append(ths.getProjectMembers().getEmployee().getUser().getLastName()).toString());
 				ths.setEmployeeId(ths.getProjectMembers().getEmployee().getId().toString());
 			}
 			model.addObject("thslist",thslist);

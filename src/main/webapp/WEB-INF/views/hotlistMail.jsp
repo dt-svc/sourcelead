@@ -113,6 +113,7 @@
                           <select class="form-control" id="candidatesListType" onchange="candidateListChange();">
                             <option value="consultants" selected>Consultants</option>
                             <option value="candidates">Candidates</option>
+                             <option value="openHotlist">Open Hotlist</option>
                             <option value="hotlistConsultants">Hostlist Consultants</option>
                             <option value="hotlistCandidates">Hostlist Candidates</option>
                           
@@ -132,7 +133,7 @@
         </div>
         <div class="clearfix">
           <div class="col-md-6">
-            <label class="col-md-4 control-label text-info small">Saluation</label>
+            <label class="col-md-4 control-label text-info small">Salutation</label>
             <div class="col-md-8 saluation field-border">
               <select id="saluation" name="saluation">
                <option value="Dear" selected>Dear</option>
@@ -673,7 +674,10 @@ function getCandidates(candidatesListType){
 	                		result = result +'             <th>Email</th>';
 	                		result = result +'             <th>Phone</th>';
 	                		result = result +'             <th>Designation</th>';
-	                		result = result +'             <th>Position Type</th>';
+	                		if(candidatesListType == 'openHotlist'){
+	                			result = result +'<th>Type</th>';
+	                		}
+	                		result = result +'             <th>Employment Type</th>';
 	                		result = result +'           </tr>';
 	                		result = result +'           </thead>';
 		                    result = result +"<tbody>"; 
@@ -684,7 +688,6 @@ function getCandidates(candidatesListType){
 		                    	 var mobile = ''
 		                    	 var designation = '';
 		                    	 var designationType = '';
-		                    	 var isFavClass = '';
 		                    	 
 		                    	 if(opt.lastName != null && opt.lastName != 'undefined' && opt.lastName != ""){
 		                    		 name = opt.firstName+" "+opt.lastName ;
@@ -709,21 +712,18 @@ function getCandidates(candidatesListType){
 		                    	 }else{
 		                    		 designationType = "&nbsp;&nbsp;-----------";
 		                    	 }
-		                    	 
-	                    	     if(opt.isFavourite != 'Y'){
-				            		isFavClass = "text-muted";
-				            	 }else{
-				            		isFavClass = "text-primary";
-				            	 }
+		                    	
 		                    	 
 		                    	 result = result +'<tr>';
 		                    	 result = result +'<td>&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.id+','+name+'"  type="checkbox" name="candidatesIds[]" class="myCheckbox" >';
-		                    	 result = result +'&nbsp;&nbsp;<i class="fa fa-star '+isFavClass+'"></i>';
 		                    	 result = result +'</td>';
 		                    	 result = result +'<td>'+name+'</td>';
 		                    	 result = result +'<td>'+opt.email+'</td>';
 		                    	 result = result +'<td>'+mobile+'</td>';
 		                    	 result = result +'<td>'+designation+'</td>';
+		                    	 if(candidatesListType == 'openHotlist'){
+		                    		 result = result +'<td>'+opt.candidateType+'</td>'; 
+		                    	 }
 		                    	 result = result +'<td>'+designationType+'</td>';
 		                    	 result = result +'</tr>';
 		                    	
@@ -758,7 +758,10 @@ function getCandidates(candidatesListType){
 	        		result = result +'             <th>Email</th>';
 	        		result = result +'             <th>Phone</th>';
 	        		result = result +'             <th>Designation</th>';
-	        		result = result +'             <th>Position Type</th>';
+	        		if(candidatesListType == 'openHotlist'){
+            			result = result +'<th>Type</th>';
+            		}
+	        		result = result +'             <th>Employment Type</th>';
  	           		result = result +'           </tr>';
  	           		result = result +'           </thead>';
  	        		result = result +'           </table>';

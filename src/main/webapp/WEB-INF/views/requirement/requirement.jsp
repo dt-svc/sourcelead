@@ -381,7 +381,7 @@ $(document).ready(function () {
                     <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
                     <option ${requirement.rateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
-                    <option ${requirement.rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
                     <option ${requirement.rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
                     <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
@@ -937,7 +937,6 @@ $(document).ready(function () {
 			 $('#clientRateType').removeAttr('data-validation');
 			 $('#ratePer').attr("data-validation-optional","true"); 
 		 }
-		 
 		   if ($('#requirement_form').validate(false, validationSettings)){   
 			
 			var frm = $('#requirement_form').serializeFormJSON();
@@ -966,6 +965,7 @@ $(document).ready(function () {
 								location.replace(sourceleadUrl+"/requirementList");
 						},
 					});
+			
 			return true;
 		   }else{ 
 				return false;
