@@ -1164,7 +1164,6 @@ function getCandidateListForTeam(teamId,teamName){
 		                     result = result +"<thead>"; 
 		                     result = result +"  <tr>"; 
 		                    /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
-		                     result = result +"    <th>&nbsp;</th>";
 		                     result = result +"    <th>Name</th>"; 
 		                     result = result +"    <th>Designation</th>"; 
 		                     result = result +"    <th>Position type</th>"; 
@@ -1223,7 +1222,6 @@ function getCandidateListForTeam(teamId,teamName){
 					             }
 		                    	 
 		                    	 result = result +"<tr>";
-			                     result = result +"  <td><div><span>"+opt.id+"</span></div></td>";
 				                 result = result +"  <td><div><span title='"+candidateFullName+"'>"+candidateFullName+"</span></div></td>";
 				                 result = result +"  <td><div><span>"+candidateDesignation+"</span></div></td>";
 				                 result = result +"  <td><div><span>"+positionType+"</span></div></td>";

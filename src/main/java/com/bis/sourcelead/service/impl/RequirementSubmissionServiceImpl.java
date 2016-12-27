@@ -800,6 +800,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			String submissionStatus) {
 		return requirementSubmissionDao.getAllSubmissionCountByRequirementIdAndSubmissionStage(orgLocationsId, requirementId, submissionStatus);
 	}
+	
+	@Override
+	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(Long orgLocationsId, Long requirementId) {
+		return requirementSubmissionDao.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(orgLocationsId, requirementId);
+	}
 
 	@Override
 	public RequirementSubmission getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(Long sourceSubmissionId,
