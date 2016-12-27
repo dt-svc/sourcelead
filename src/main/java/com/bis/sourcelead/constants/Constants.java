@@ -349,6 +349,9 @@ public class Constants {
     public static String SUBMITTED_APPLICANTS_COUNT= "Submitted Applicants :";
     public static String REQUEST_SENT_COUNT= "Request Sent Applicants :";
     public static String SUBMIT_TO_CLIENT_COUNT= "Submit to Client Applicants :";
+    
+    public static String All_APPLICANTS = "all";
+    public static String DUPLICATE_APPLICANTS = "DUPLICATE_APPLICANTS";
 
 
     
