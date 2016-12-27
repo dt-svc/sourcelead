@@ -976,6 +976,8 @@ $(document).ready(function () {
 		$("#requirement_form").showHelpOnFocus();
 		$("#requirement_form").validateOnBlur(false, validationSettings);
 	});
+	
+	
 </script>
 <script type="text/javascript">
         var validationSettings = {
@@ -1201,9 +1203,7 @@ function getCities(){
 	       $("#state").chosen();
 	       $("#city").chosen();
 	      
-	       $("#skills").val('').trigger("chosen:updated");
-	       $("#education").val('').trigger("chosen:updated");
-	       
+	      
 	       $("#countryReq").on('change', function (e) {
 	    	   getStates();
 	       });
@@ -1260,7 +1260,8 @@ function getCities(){
 		        }
 		    }); 
 		    //Adding Customized Educations to the list
-           
+            
+	        
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
@@ -1294,8 +1295,8 @@ function getTemplateVal(){
 		
     }else{
         $("#isTemplate").val('N');
-        $('#jobTitle').removeAttr('data-validation');
-		$('#jobTitle').attr("data-validation-optional","true"); 
+       /*  $('#jobTitle').removeAttr('data-validation');
+		$('#jobTitle').attr("data-validation-optional","true");  */
         $('#jobTitleDiv').find('p.jquery_form_error_message').remove();
 
     }
