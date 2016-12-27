@@ -224,7 +224,7 @@ public class RequirementServiceImpl implements RequirementService {
 					location.append(jsonObj.getString("state"));
 					location.append(",");
 				}else{
-					location.append("--"+",");
+					location.append("--").append(",");
 				}
 			
 			}
@@ -235,7 +235,7 @@ public class RequirementServiceImpl implements RequirementService {
 					location.append(jsonObj.getString("city"));
 					location.append(",");
 				} else {
-					location.append("--"+".");
+					location.append("--").append(".");
 				}
 			}
 			
@@ -752,7 +752,8 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setToEmail(approverUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -801,11 +802,15 @@ public class RequirementServiceImpl implements RequirementService {
 			}else{
 				globalVarsMap.put("userEmailId","--");
 		}
-		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
-		 if(loginUser.getFirstName()+" "+loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()+" "+loginUser.getLastName())){
-			 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
+	
+	     StringBuilder linkBuild = new StringBuilder();
+		 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		
+		 if(loginUser.getFirstName() != null && loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("loginUserName",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("loginUserName","--");
+				 globalVarsMap.put("loginUserName",loginUser.getFirstName());
 			}
 		 if(loginUser.getUserType()!=null && !"".equalsIgnoreCase(loginUser.getUserType())){
 			 globalVarsMap.put("role", loginUser.getUserType());
@@ -814,16 +819,19 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 		 
 		 if(requirement.getFileName() != null && !requirement.getFileName().isEmpty() ){
-	            globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"downloadRequirementAttachment?requirementId="+requirement.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment"+"<br/></div></a>");
+			 StringBuilder attachmentBuild = new StringBuilder();
+	            globalVarsMap.put("attachment",attachmentBuild.append("<a href='").append(sourceleadUrl).append("/").append("downloadRequirementAttachment?requirementId=").append(requirement.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment<br/></div></a>").toString());
          }else{
-            globalVarsMap.put(" ","<a href='"+sourceleadUrl+"/"+"downloadRequirementAttachment?requirementId="+requirement.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment"+"<br/></div></a>");
+        	 StringBuilder attachmentBuild = new StringBuilder();
+            globalVarsMap.put(" ",attachmentBuild.append("<a href='").append(sourceleadUrl).append("/").append("downloadRequirementAttachment?requirementId=").append(requirement.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment<br/></div></a>").toString());
          }
 		 
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder recipBuild = new StringBuilder();
+		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -863,7 +871,8 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setToEmail(approverUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -893,21 +902,22 @@ public class RequirementServiceImpl implements RequirementService {
 		 }else{
 		 globalVarsMap.put("jobInitiatorName", loginUser.getFirstName());	 
 		 }
-		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
-		 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
+		 StringBuilder linkBuild = new StringBuilder();
+		 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 StringBuilder userBuild = new StringBuilder();
+		 globalVarsMap.put("loginUserName",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 globalVarsMap.put("role", loginUser.getUserType());
 		 globalVarsMap.put("approverOne", loginUser.getFirstName());
 		 
-		 
-		 globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>");
+		 StringBuilder attachBuild = new StringBuilder();
+		 globalVarsMap.put("attachment",attachBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>").toString());
 
-		 
-		 
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder recipBuild = new StringBuilder();
+		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -948,7 +958,8 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setToEmail(intiatorUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -972,10 +983,11 @@ public class RequirementServiceImpl implements RequirementService {
 		 }else{
 		 globalVarsMap.put("jobInitiatorName","--"); 
 		 }
-		 if(loginUser.getFirstName()+" "+loginUser.getLastName()!= null  && !"".equalsIgnoreCase( loginUser.getFirstName()+" "+loginUser.getLastName())){
-		 globalVarsMap.put("loginUserName",loginUser.getFirstName()+" "+loginUser.getLastName());
+		 if(loginUser.getFirstName() != null && loginUser.getLastName()!= null  && !"".equalsIgnoreCase( loginUser.getFirstName()) && !"".equalsIgnoreCase( loginUser.getLastName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("loginUserName",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 }else{
-		 globalVarsMap.put("loginUserName","--"); 
+		 globalVarsMap.put("loginUserName",loginUser.getFirstName()); 
 		 }
 		 if(loginUser.getUserType()!= null  && !"".equalsIgnoreCase(loginUser.getUserType())){
 		 globalVarsMap.put("role", loginUser.getUserType());
@@ -987,7 +999,8 @@ public class RequirementServiceImpl implements RequirementService {
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder recipBuild = new StringBuilder();
+		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -1175,7 +1188,8 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setToEmail(managerUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1205,7 +1219,8 @@ public class RequirementServiceImpl implements RequirementService {
 				 globalVarsMap.put("RequirementRate","--"); 
 			 }
 		 if((requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp()))){
-			 globalVarsMap.put("Experience", requirement.getMinExp()+"-"+requirement.getMaxExp());
+			 StringBuilder expBuild = new StringBuilder();
+			 globalVarsMap.put("Experience", expBuild.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString());
 			 }else if(requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())){
 				 globalVarsMap.put("Experience", requirement.getMinExp());
 			 }else if(requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp())){
@@ -1213,8 +1228,9 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("Experience","--"); 
 			 }
-		 if(loginUser.getFirstName()+" "+loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()+" "+loginUser.getLastName())){
-			 globalVarsMap.put("LoginUser",loginUser.getFirstName()+" "+loginUser.getLastName());
+		 if(loginUser.getFirstName() != null && loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 			 }else{
 				 globalVarsMap.put("LoginUser","--"); 
 			 }
@@ -1223,16 +1239,18 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("Role","--"); 
 			 }
-		 
-		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
-		 globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>");
+		 StringBuilder linkBuild = new StringBuilder();
+		 StringBuilder attachBuild = new StringBuilder();
+		 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("attachment",attachBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>").toString());
 
 
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder recipBuild = new StringBuilder();
+		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -1274,7 +1292,8 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setToEmail(assUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1299,7 +1318,8 @@ public class RequirementServiceImpl implements RequirementService {
 				 globalVarsMap.put("RequirementRate","--"); 
 			 }
 		 if((requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp()))){
-			 globalVarsMap.put("Experience", requirement.getMinExp()+"-"+requirement.getMaxExp());
+			 StringBuilder expBuild = new StringBuilder();
+			 globalVarsMap.put("Experience", expBuild.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString());
 			 }else if(requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())){
 				 globalVarsMap.put("Experience", requirement.getMinExp());
 			 }else if(requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp())){
@@ -1307,25 +1327,30 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("Experience","--"); 
 			 }
-		 if( loginUser.getFirstName()+" "+loginUser.getLastName()!= null ||!"".equalsIgnoreCase( loginUser.getFirstName()+" "+loginUser.getLastName())){
-			 globalVarsMap.put("LoginUser",loginUser.getFirstName()+" "+loginUser.getLastName());
+		 if( loginUser.getFirstName() != null && loginUser.getLastName()!= null ||!"".equalsIgnoreCase( loginUser.getFirstName()) || !"".equalsIgnoreCase(loginUser.getLastName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("LoginUser","--"); 
+				 globalVarsMap.put("LoginUser",loginUser.getFirstName()); 
 			 }
 		 if( loginUser.getUserType() != null && !"".equalsIgnoreCase(loginUser.getUserType())){
 			 globalVarsMap.put("Role", loginUser.getUserType());
 			 }else{
 				 globalVarsMap.put("Role","--"); 
 			 }
-		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
-		 globalVarsMap.put("attachment","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>");
+		 
+		 StringBuilder linkBuild = new StringBuilder();
+		 StringBuilder attachBuild = new StringBuilder();
+		 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("attachment",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>").toString());
 
 
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder recipBuild = new StringBuilder();
+		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -1366,7 +1391,8 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setToEmail(initiatorUser.getEmail());
 		emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		emailMessage.setCreatedBy(loginUser.getUserCode());
-		emailMessage.setFromName(loginUser.getFirstName() + " " + loginUser.getLastName());
+		StringBuilder msgBuild = new StringBuilder();
+		emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1380,9 +1406,10 @@ public class RequirementServiceImpl implements RequirementService {
 		} else {
 			globalVarsMap.put("loginUserName", "--");
 		}
-		if (loginUser.getFirstName() + " " + loginUser.getLastName() != null
-				&& !"".equalsIgnoreCase(loginUser.getFirstName() + " " + loginUser.getLastName()))  {
-			globalVarsMap.put("approverName", loginUser.getFirstName() + " " + loginUser.getLastName());
+		if (loginUser.getFirstName() != null && loginUser.getLastName() != null
+				&& !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName()))  {
+			StringBuilder userBuild = new StringBuilder();
+			globalVarsMap.put("approverName", userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		} else {
 			globalVarsMap.put("approverName", "--");
 		}
@@ -1411,7 +1438,8 @@ public class RequirementServiceImpl implements RequirementService {
 		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		EmailRecipient emailRecipient = new EmailRecipient();
 		emailRecipient.setEmail(emailMessage.getToEmail());
-		emailRecipient.setName(emailMessage.getFirstName() + " " + emailMessage.getLastName());
+		StringBuilder recipBuild = new StringBuilder();
+		emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		emailRecipientList.add(emailRecipient);
 
 		// getting the current EmailScenario by EmailScenario unique name and
@@ -1441,16 +1469,6 @@ public class RequirementServiceImpl implements RequirementService {
 		emailScenerioUtil.sendNotification(actionLink, loginUser, initiatorUser, loginOrgLocation, notificationScenario);
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 	@Override
 	public void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc,OrgLocations loginOrgLocation,String releasetype,StringBuilder location) throws Exception {
 		User  vendorContactUser = null;
@@ -1468,7 +1486,8 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setToEmail(vendorContactUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1492,13 +1511,15 @@ public class RequirementServiceImpl implements RequirementService {
 			 } else {
 				 globalVarsMap.put("clientname", "--");
 			}
-		 if (vendorContactUser.getFirstName() +""+vendorContactUser.getLastName()!= null && !"".equalsIgnoreCase(vendorContactUser.getFirstName() +""+vendorContactUser.getLastName())) {
-			 globalVarsMap.put("contactname", vendorContactUser.getFirstName() +""+vendorContactUser.getLastName());
+		 if (vendorContactUser.getFirstName() != null && vendorContactUser.getLastName()!= null && !"".equalsIgnoreCase(vendorContactUser.getFirstName()) && !"".equalsIgnoreCase(vendorContactUser.getLastName())) {
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("contactname", userBuild.append(vendorContactUser.getFirstName()).append("").append(vendorContactUser.getLastName()).toString());
 			 } else {
-				 globalVarsMap.put("contactname", "--");
+				 globalVarsMap.put("contactname", vendorContactUser.getFirstName());
 			}
 		 if((requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp()))){
-			 globalVarsMap.put("Experience", requirement.getMinExp()+"-"+requirement.getMaxExp());
+			 StringBuilder expBuild = new StringBuilder();
+			 globalVarsMap.put("Experience", expBuild.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString());
 			 }else if(requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())){
 				 globalVarsMap.put("Experience", requirement.getMinExp());
 			 }else if(requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp())){
@@ -1506,12 +1527,14 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("Experience","--"); 
 			 }
-		 globalVarsMap.put("link","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+		 StringBuilder linkBuild = new StringBuilder();
+		 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
-		 if (loginUser.getFirstName()+" "+loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()+" "+loginUser.getLastName())) {
-			 globalVarsMap.put("LoginUser",loginUser.getFirstName()+" "+loginUser.getLastName());
+		 if (loginUser.getFirstName() != null && loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())) {
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 			 } else {
-				 globalVarsMap.put("LoginUser", "--");
+				 globalVarsMap.put("LoginUser", loginUser.getFirstName());
 			}
 		 
 		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
@@ -1524,7 +1547,8 @@ public class RequirementServiceImpl implements RequirementService {
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder recipBuild = new StringBuilder();
+		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -1641,19 +1665,23 @@ public class RequirementServiceImpl implements RequirementService {
 			 writeRow.createCell(1).setCellValue(requirement.getJobTitle()); 
 		}
 		if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
-			writeRow.createCell(2).setCellValue(requirement.getMinExp()+"-"+requirement.getMaxExp()+" years");
+			StringBuilder sb = new StringBuilder();
+			writeRow.createCell(2).setCellValue(sb.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).append(" years").toString());
 		}else{
 			if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp())){
-				writeRow.createCell(2).setCellValue("0 - "+requirement.getMinExp()+"years");
+				StringBuilder sb = new StringBuilder();
+				writeRow.createCell(2).setCellValue(sb.append("0 - ").append(requirement.getMinExp()).append("years").toString());
 			}else{
 				if(requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
-					writeRow.createCell(2).setCellValue("0 - "+requirement.getMaxExp()+"years");
+					StringBuilder sb = new StringBuilder();
+					writeRow.createCell(2).setCellValue(sb.append("0 - ").append(requirement.getMaxExp()).append("years").toString());
 				}
 			}
 		}
 		
 		if(requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()) && requirement.getRateType() != null && !"".equalsIgnoreCase(requirement.getRateType())){
-			 writeRow.createCell(3).setCellValue(requirement.getRate()+" / "+requirement.getRateType()); 
+			StringBuilder sb = new StringBuilder(); 
+			writeRow.createCell(3).setCellValue(sb.append(requirement.getRate()).append(" / ").append(requirement.getRateType()).toString()); 
 		}
 		if(requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())){
 			 writeRow.createCell(4).setCellValue(requirement.getCity()); 
