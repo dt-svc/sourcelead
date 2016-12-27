@@ -9,7 +9,7 @@ public class RequirementSubmissionCounts {
 	private int numOfOffers;
 	private int numOfRejected;
 	private int numOfRequestSent;
-	
+	private int duplicateCount;
 	
 	
 	
@@ -54,6 +54,12 @@ public class RequirementSubmissionCounts {
 	}
 	public void setNumOfRequestSent(int numOfRequestSent) {
 		this.numOfRequestSent = numOfRequestSent;
+	}
+	public int getDuplicateCount() {
+		return duplicateCount;
+	}
+	public void setDuplicateCount(int duplicateCount) {
+		this.duplicateCount = duplicateCount;
 	}
 	
 }

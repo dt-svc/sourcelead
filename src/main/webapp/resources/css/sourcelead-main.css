@@ -2363,11 +2363,11 @@ ul.tree-checkbox::before {
 .close-div {
 	background: #f60 none repeat scroll 0 0;
 	border: 1px solid #f60;
-	border-radius: 50%;
+	border-radius: 20%;
 	color: #fff;
 	cursor: pointer;
 	left: -15px;
-	padding: 6px 7px;
+	padding: 4px 7px;
 	position: absolute;
 	top: -15px;
 }
@@ -2780,6 +2780,10 @@ ul.can-perdt li a {
 	background-color: white;
 	-webkit-transition: .4s;
 	transition: .4s;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    box-shadow: 1px 1px 2px #333;
 }
 input:checked + .slider {
 	background-color: #4CAF50;
@@ -4270,8 +4274,6 @@ inst-search .col-md-9{
 .instsearch{
 	background: #ccc;
 	padding: 10px 10px;
-	
-	
 }
 .require_wrap_details_cta.require_education{
        width:100%;
@@ -4776,12 +4778,17 @@ import-tranhd  [class*="col-md-"]{
 	position: absolute;
 	top: 30px;
 	left: 0;
+	min-height:100px;
+	max-height:450px;
+	overflow:auto;
 	display: none;
 	z-index: 999;
 }
 .cand-advsrch-popup .close-div{
 	right: 0;
 	left: auto;
+	top:2px;
+	z-index: 9999;
 }
 .cand-advsrch-popup .col-md-4{
 	/*margin-bottom: 10px;*/
@@ -5393,6 +5400,73 @@ padding:10px 10px; display:none; box-shadow:0px 0px 3px rgba(0,0,0,0.3); z-index
 .changeRole .chosen-container-single .chosen-drop {
 	width: 100%;
 	margin-left:0px;
+}
+.clients_side_wrap select {
+    background-position: 96%;
+}
+.email-switch .switch {
+    width: 35px;
+    height: 29px;
+}
+.email-switch .slider::before {
+    height: 20px;
+    width: 15px;
+    left: 4px;
+    bottom: 5px;
+}
+.email-switch input:checked + .slider {
+    background-color: #8D6E63;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
+}
+.email-switch .slider {
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+}
+.email-button .btn {
+    padding: 4px 16px;
+}
+.colpadding [class*="col-md-"] {
+padding:0 5px;	
+/*padding: 5px 9px;*/
+}
+
+.radioInline input[type="radio"], .radioInline input[type="checkbox"]{
+    top:2px;
+    margin-right: 5px;
+    position: relative;
+}
+
+.btn.colorpicker{
+    padding: 2px;
+}
+.upresume .col-md-4{
+    width: 29%;
+}
+.upresume .col-md-8{
+    width: 71%;
+}
+.email-social .fa
+{
+    position: relative;
+    top: 5px;
+}
+.signature-area {
+    min-height: 150px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.btn-active{
+ color:#f60 !important;   
+}
+.selp-custom-min.custommin > .bootstrap-select .btn-default {
+    height: 30px;
 }
 /* media 320px */
 @media (max-width: 320px) {

@@ -240,23 +240,22 @@ public class ProjectsServiceTest {
 		}
 	}
 
-	//@Test
+	@Test
 	public void getPreviousWeekTimeShhetSubmissionStatus() throws Exception{
-		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY);
+		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus("");
 		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+ProjectMembersList.size());
-		Map<UserRole,HashSet<TimesheetSubmissions>> timesheetSubmissionsMap = new HashMap<>();
 		if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
 			for(ProjectMembers projectMember : ProjectMembersList){
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
 				if("Admin".equalsIgnoreCase(userRole.getUserType()))
 					continue;
 				HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),userRole.getOrgLocations().getId(),userRole.getUser().getId());
-				timesheetSubmissionsMap.put(userRole, timesheetSubmissions);
-				//projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions);
-				logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
+				//				if(projectApproverHierarchyList.size() == 0){
+					String level ="";
+					projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions,level);	
+					logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
+//				}
 			}
-			int level =1;
-//			projectsService.userEmailNotificationForTimeSheetSubmissionToManagers(timesheetSubmissionsMap,level);
 		}
 		
 	}
@@ -436,7 +435,7 @@ public class ProjectsServiceTest {
 	 * Junit test for Admin 
 	 * @throws Exception
 	 */
-	@Test
+	//@Test
 	public void sendMailAdmin() throws Exception{
 		logger.info("******************  Notification Job Scheduler FRIDAY of every week of the month started..!For Admin **********");
 		try {
@@ -496,7 +495,7 @@ public class ProjectsServiceTest {
 		
 	}
 
-	@Test
+	//@Test
 	public void saveAllProjects() throws Exception{
 		List<Projects> projectsList=new ArrayList<>();
 		Projects pro = new Projects();
