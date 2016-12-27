@@ -84,7 +84,8 @@ public class AssetServiceImpl implements AssetService{
 	  			 shiftAEmpName = asset.getShiftAEmployee().getUser().getFirstName();
 	  		   }
 	  		   if(StringUtils.isNotEmpty(asset.getShiftAEmployee().getUser().getLastName()) && StringUtils.isNotBlank(asset.getShiftAEmployee().getUser().getLastName())){
-	  			 shiftAEmpName = shiftAEmpName+" "+asset.getShiftAEmployee().getUser().getLastName();
+	  			 StringBuilder shiftABuilder = new StringBuilder();
+	  			 shiftAEmpName = shiftABuilder.append(shiftAEmpName).append(" ").append(asset.getShiftAEmployee().getUser().getLastName()).toString();
 	  		   }
 	  		   asset.setShiftAEmpName(shiftAEmpName);
 		 }
@@ -95,7 +96,8 @@ public class AssetServiceImpl implements AssetService{
 	  			 shiftBEmpName = asset.getShiftBEmployee().getUser().getFirstName();
 	  		   }
 	  		   if(StringUtils.isNotEmpty(asset.getShiftBEmployee().getUser().getLastName()) && StringUtils.isNotBlank(asset.getShiftBEmployee().getUser().getLastName())){
-	  			 shiftBEmpName = shiftBEmpName+" "+asset.getShiftBEmployee().getUser().getLastName();
+	  			 StringBuilder shiftBBuilder = new StringBuilder();
+	  		     shiftBEmpName=shiftBBuilder.append(shiftBEmpName).append(" ").append(asset.getShiftBEmployee().getUser().getLastName()).toString();
 	  		   }
 	  		   asset.setShiftBEmpName(shiftBEmpName);
 		 }
