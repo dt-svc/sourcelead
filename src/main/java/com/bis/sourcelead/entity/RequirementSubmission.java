@@ -220,7 +220,10 @@ public class RequirementSubmission implements Serializable{
 
 	@Transient
 	private String submittedOn;
-
+	
+	@Transient
+	private int duplicateCount;
+	
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
 	}
@@ -694,6 +697,16 @@ public class RequirementSubmission implements Serializable{
 	public void setNumofrequestsent(int numofrequestsent) {
 		this.numofrequestsent = numofrequestsent;
 	}
-	
 
+	public int getDuplicateCount() {
+		return duplicateCount;
+	}
+
+	public void setDuplicateCount(int duplicateCount) {
+		this.duplicateCount = duplicateCount;
+	}
+
+	
+	
+	
 }

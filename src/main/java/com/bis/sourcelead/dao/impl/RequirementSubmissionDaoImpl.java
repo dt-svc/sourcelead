@@ -599,6 +599,35 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
     OFFERREJECTED("offer_rejected"),
     OFFERHIRED("hired");
 	*/
-    
+	
+	
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<RequirementSubmission> duplicateCandidateCountList(Long requirementId, User user,
+				OrgLocations loginOrgLocation) throws Exception {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			String subQuery = "";
+			List<RequirementSubmission>  requirementSubmission = null;
+
+		 		subQuery = " and reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+				
+		 		Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
+				
+		 		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(user.getId(),loginOrgLocation.getId());
+				if (isadmin && requirement.getManagerUserId().getId()!=user.getId()) {
+					String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId "+subQuery+" ";
+					 requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
+				}
+				
+				if(requirement.getManagerUserId().getId()== user.getId()){
+					String query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId "+subQuery+" ";
+					requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).list();
+				}
+			return requirementSubmission;
+		}
   }
+
+
+
 

@@ -824,7 +824,7 @@ public class RequirementListRestController {
 		 * @throws Exception
 		 */
 		@RequestMapping(value = "/getSubmissionsCountBySubmissionStatus" , method = RequestMethod.POST)
-		 @ResponseBody  String getSubmissionsCountBySubmissionStatus(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
+		 @ResponseBody  String getSubmissionsCountBySubmissionStatus(@RequestParam(value="requirementId", required=false) String  requirementId,@RequestParam(value="submissionType", required=false) String submissionType,HttpServletRequest request) throws Exception {
 				String resultJson = null;
 				int numOfShortList = 0;
 				int numOfInterview = 0;
@@ -833,11 +833,15 @@ public class RequirementListRestController {
 				int numOfRejected = 0;
 				int numofrequestsent = 0;
 				
+
+				
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				
 				if(requirementId !=null && !requirementId.isEmpty()){
 					List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+					
+					List<RequirementSubmission> duplicatecount = requirementSubmissionService.duplicateCandidateCountList(Long.parseLong(requirementId), user, loginOrgLocation);
 					
 					for(RequirementSubmission rmentSubmission :requirementSubmissions){
 						
@@ -874,8 +878,10 @@ public class RequirementListRestController {
 						rmentSubmission.setNumOfOffers(numOfOffers);
 						rmentSubmission.setNumOfRejected(numOfRejected);
 						rmentSubmission.setNumofrequestsent(numofrequestsent);
-						
+						if(duplicatecount.size()!= 0 && duplicatecount != null){
+						rmentSubmission.setDuplicateCount(duplicatecount.size());
 						}
+					}
 					resultJson = commonUtil.toJSON(requirementSubmissions);
 				}
 				return resultJson;
@@ -1086,6 +1092,8 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 	int numOfRejected = 0;
 	int numOfRequestSent = 0;
 	
+	 List<RequirementSubmission>duplicatecount =requirementSubmissionService.duplicateCandidateCountList(requirementId, user, loginOrgLocation);
+	
 	RequirementSubmissionCounts requirementSubmissionCounts = new RequirementSubmissionCounts();
 	if(requirementId !=null){
 		List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
@@ -1116,10 +1124,12 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 		requirementSubmissionCounts.setNumOfRejected(numOfRejected);
 		requirementSubmissionCounts.setSubmittedCount(requirementSubmissions.size());
 		requirementSubmissionCounts.setNumOfRequestSent(numOfRequestSent);
-		
-
+		if(duplicatecount.size()!= 0 && duplicatecount != null){
+		requirementSubmissionCounts.setDuplicateCount(duplicatecount.size());
+		}
 	}
 	return requirementSubmissionCounts;
+	
 	
 }
 }
