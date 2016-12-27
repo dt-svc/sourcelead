@@ -590,8 +590,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    	ProjectApproverHierarchy pah = pahList.get(0);
 		    		if(pah.getLevel()==1){
 		    			fromUser = pah.getApproverUserId();
-		    		}else{
-		    			fromUser = pah.getApproverUserId();
 		    		}
 		    		 logger.info("Aprover for the Employee "+user.getFirstName()+" is :"+fromUser.getFirstName()+"("+fromUser.getUserType()+")");
 				        EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
