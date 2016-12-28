@@ -1232,6 +1232,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					requirementSubmission.setSubmissionRateFileContentType(multiFile.getOriginalFilename());
 					requirementSubmission.setSubmissionRateFileName(multiFile.getContentType());
 				}
+				sendEmailtoApplicant(loginOrg, user,requirementSubmission,loginOrgLocation);
 			}
 			else if(StringUtils.equalsIgnoreCase(decision, "reject")){
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
@@ -1253,7 +1254,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				
 				//send mail to requirement manager.
 				sendEmailtoRequirementManager(loginOrg, user,requirementSubmission,loginOrgLocation);
-				//send notification to requirement manager.
 				
 				
 			}
@@ -1944,6 +1944,76 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);
 		 emailScenerioUtil.sendNotification(actionLink, users,requirementSubmission.getRequirement().getManagerUserId(), loginOrgLocation, notificationScenario);
+		 
+	}
+	
+	
+	public void sendEmailtoApplicant(Org loginOrg, User users,RequirementSubmission requirementSubmission,
+			 OrgLocations loginOrgLocation) throws Exception {
+		
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(requirementSubmission.getCandidate().getFirstName());
+		 emailMessage.setLastName(requirementSubmission.getCandidate().getLastName());
+		 emailMessage.setToEmail(requirementSubmission.getCandidate().getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(users.getUserCode());
+		 emailMessage.setFromName(requirementSubmission.getRequirement().getManagerUserId().getFirstName()+" "+requirementSubmission.getRequirement().getManagerUserId().getLastName());
+		 
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 if(requirementSubmission.getRequirement().getJobTitle() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobTitle())){
+			 globalVarsMap.put("RequirementName", requirementSubmission.getRequirement().getJobTitle());
+		 }else{
+			 globalVarsMap.put("RequirementName","--");
+		 }
+		 
+		 if(requirementSubmission.getCandidate().getFirstName() != null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getLastName())){
+			 globalVarsMap.put("ApplicantName", requirementSubmission.getCandidate().getFirstName()+""+requirementSubmission.getCandidate().getLastName());
+		 }else{
+			 globalVarsMap.put("ApplicantName","--");
+		 }
+		 
+		 if(loginOrgLocation.getCountry() != null && !"".equalsIgnoreCase(loginOrgLocation.getCountry())){
+			 globalVarsMap.put("RequirementLocation", loginOrgLocation.getCountry());
+		 }else{
+			 globalVarsMap.put("RequirementLocation","--");
+		 }
+		 
+		 if(loginOrgLocation.getCountry() != null && !"".equalsIgnoreCase(loginOrgLocation.getCountry())){
+			 globalVarsMap.put("EmploymentType", loginOrgLocation.getCountry());
+		 }else{
+			 globalVarsMap.put("EmploymentType","--");
+		 }
+		 
+		 if(requirementSubmission.getCandidate().getRate() != null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getRate())){
+			 globalVarsMap.put("Rate", requirementSubmission.getCandidate().getRate());
+		 }else{
+			 globalVarsMap.put("Rate","--");
+		 }
+		 
+		 if(requirementSubmission.getCandidate().getFirstName()!= null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getFirstName()) && requirementSubmission.getCandidate().getLastName()!= null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getLastName())){
+			 globalVarsMap.put("AssignedUser", requirementSubmission.getCandidate().getFirstName()+" "+requirementSubmission.getCandidate().getLastName());
+		 }else{
+			 globalVarsMap.put("AssignedUser","--");
+		 }
+		 
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipientList.add(emailRecipient);
+		
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Applicant_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_EMAIL);
+
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		  
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 		 
 	}
 	
