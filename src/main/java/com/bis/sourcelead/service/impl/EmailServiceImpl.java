@@ -74,11 +74,11 @@ public class EmailServiceImpl implements EmailService {
 		 UserSignature userSignature = null;
 		 String signature = "";
 		 String emails = null;
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();	 
+		 	StringBuilder lastName=new StringBuilder();
 		 Set<String> recipantsList = new HashSet<String>();
-		 
 		   	 if(!isNullOrEmpty(user.getLastName())){
-		   		 fullName = user.getFirstName()+" "+user.getLastName();
+		   		 fullName = lastName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
 		   	 }else{
 		   		 fullName = user.getFirstName();
 		   	 }

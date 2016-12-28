@@ -332,13 +332,16 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	private void sendEmailToTeamMembers(Projects projects, Employees emp, User loginUser, ProjectApproverHierarchy projectApproverHierarchy, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
 	  	 User projectManager = userService.getUserById(projectApproverHierarchy.getApproverUserId().getId());
 	  	
+	  	 StringBuilder fromNameSB=new StringBuilder();
+	  	 StringBuilder loginURLSB=new StringBuilder();
+	  	 StringBuilder nameSB=new StringBuilder();
 	     EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(emp.getUser().getFirstName());
 		 emailMessage.setLastName(emp.getUser().getLastName());
 		 emailMessage.setToEmail(emp.getUser().getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 emailMessage.setFromName(fromNameSB.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 
 		 //setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -350,13 +353,13 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		 globalVarsMap.put("employeeLastName",emailMessage.getLastName());
 		 globalVarsMap.put("projectName", projects.getProjectName());
 		 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
-		 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+		 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipient.setName(nameSB.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -456,8 +459,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 								projectMemberList.add(pm);
 								
 								/*commonUtil.storeTimesheetSubmissionRecords(emp.getUser());*/
-								
-								pm.setEmpName(emp.getUser().getFirstName()+" "+emp.getUser().getLastName());
+								StringBuilder nameStringBuilder=new StringBuilder();
+								pm.setEmpName(nameStringBuilder.append(emp.getUser().getFirstName()).append(" ").append(emp.getUser().getLastName()).toString());
 								/*String teamMember = "";
 								teamMember = emp.getUser().getFirstName()+" "+emp.getUser().getLastName();
 								teamMembersList = teamMembersList+teamMember+"<br/>";*/

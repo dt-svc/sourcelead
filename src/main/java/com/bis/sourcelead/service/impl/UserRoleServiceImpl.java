@@ -267,7 +267,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 				 writeRow.createCell(5).setCellValue(dateOfJoin); 
 			 }
 			 if(emp.getRate() !=null && !"".equalsIgnoreCase(emp.getRate())){
-				 writeRow.createCell(6).setCellValue(emp.getRate()+"/"+emp.getRatePer());
+				 StringBuilder sb = new StringBuilder();
+				 writeRow.createCell(6).setCellValue(sb.append(emp.getRate()).append("/").append(emp.getRatePer()).toString());
 			 }
   	    } 
 		   if(userRoles.getUser().getFirstName() !=null){

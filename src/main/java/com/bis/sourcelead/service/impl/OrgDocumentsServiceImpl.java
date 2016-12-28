@@ -144,6 +144,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		
          List<OrgDocuments> documentsList = orgDocumentsDao.getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(responderLocationId, loginUserId, managerUserIds, orgLocationId,sourceType);
 		
+        
 		for(OrgDocuments documents :documentsList){
 			if(documents.getStartDate() != null){
 			    documents.setStartDateStr(Constants.DF_YMD.format(documents.getStartDate()));
@@ -152,10 +153,12 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 			   documents.setEndDateStr(Constants.DF_YMD.format(documents.getEndDate()));
 			}
 			if(documents.getSpocUser() != null){
-				documents.setSpocName(documents.getSpocUser().getFirstName()+" "+documents.getSpocUser().getLastName());
+				StringBuilder docSB=new StringBuilder();
+				documents.setSpocName(docSB.append(documents.getSpocUser().getFirstName()).append(" ").append(documents.getSpocUser().getLastName()).toString());
 			}
 			if(documents.getOwnerUser() != null){
-				documents.setOwnerName(documents.getOwnerUser().getFirstName()+" "+documents.getOwnerUser().getLastName());
+				StringBuilder ownerSB=new StringBuilder();
+				documents.setOwnerName(ownerSB.append(documents.getOwnerUser().getFirstName()).append(" ").append(documents.getOwnerUser().getLastName()).toString());
 			}
 		}
 		return documentsList;
@@ -166,6 +169,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 	public List<OrgDocuments> getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(Long responderLocationId,
 			Long orgLocationId, Long spocUserId) {
 		 List<OrgDocuments> documentsList = orgDocumentsDao.getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(responderLocationId, orgLocationId,spocUserId);
+		  StringBuilder documentsSB=new StringBuilder();
 		 for(OrgDocuments documents :documentsList){
 				if(documents.getStartDate() != null){
 				    documents.setStartDateStr(Constants.DF_YMD.format(documents.getStartDate()));
@@ -174,10 +178,10 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 				   documents.setEndDateStr(Constants.DF_YMD.format(documents.getEndDate()));
 				}
 				if(documents.getSpocUser() != null){
-					documents.setSpocName(documents.getSpocUser().getFirstName()+" "+documents.getSpocUser().getLastName());
+					documents.setSpocName(documentsSB.append(documents.getSpocUser().getFirstName()).append(" ").append(documents.getSpocUser().getLastName()).toString());
 				}
 				if(documents.getOwnerUser() != null){
-					documents.setOwnerName(documents.getOwnerUser().getFirstName()+" "+documents.getOwnerUser().getLastName());
+					documents.setOwnerName(documentsSB.append(documents.getOwnerUser().getFirstName()).append(" ").append(documents.getOwnerUser().getLastName()).toString());
 				}
 			}
 		 return documentsList;
