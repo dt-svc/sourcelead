@@ -201,7 +201,7 @@ public class SourceleadSignatureServiceImpl implements SourceleadSignatureServic
 		    			 }
 		    		 }
 	    		 }
-	    		 signatureHTML.append(signatureHTML+ "<p style='margin:0'>"+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>"+name+"</span></span>"+endem+" ");
+	    		 signatureHTML.append("<p style='margin:0'>"+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>"+name+"</span></span>"+endem+" ");
 	    	 }
 	    	 
            if(signature.getLabelName().equalsIgnoreCase("Mobile") && signature.getStatus() == 1 && !isNullOrEmpty(user.getMobilePhone())){
@@ -419,14 +419,14 @@ public class SourceleadSignatureServiceImpl implements SourceleadSignatureServic
 	   			 }
 	   		 }
 			 }
-			 signatureHTML.append("<span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" font-size: "+signature.getFontSize()+";'>Website:<span> "+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>www."+orgLocations.getOrg().getWebSite()+"</span></span>"+endem+" ");	    		
+			 signatureHTML.append("<span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" font-size: "+signature.getFontSize()+";'>Website:<span> "+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>www."+orgLocations.getOrg().getWebSite()+"</span></span>"+endem+"<p>");	    		
 		
 			}
 		    	 
 		     }
 	     
 	   if(!isNullOrEmpty(user.getFacebook())){
-       	 signatureHTML.append("<p><a href="+user.getFacebook()+"><img src='"+sourceleadUrl+"/resources/images/fb.png'</img></a> ");
+       	 signatureHTML.append("<a href="+user.getFacebook()+"><img src='"+sourceleadUrl+"/resources/images/fb.png'</img></a> ");
        }
        if(!isNullOrEmpty(user.getLinkedIn())){
       	 signatureHTML.append("<a href="+user.getLinkedIn()+"><img src='"+sourceleadUrl+"/resources/images/linked.png'</img></a>  ");

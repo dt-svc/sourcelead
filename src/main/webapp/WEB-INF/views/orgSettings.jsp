@@ -701,9 +701,16 @@ function loadSignature(){
 								
 							}
 							
-							else if(opt.labelName == 'Phone'){
+							else if(opt.labelName == 'Mobile'){
 								if('${SourceLeadWeb_user.mobilePhone}' != null){
 									labelText = '${SourceLeadWeb_user.mobilePhone}';
+								}
+								
+							}
+							
+							else if(opt.labelName == 'Phone'){
+								if('${SourceLeadWeb_orgLocations.phone}' != null){
+									labelText = '${SourceLeadWeb_orgLocations.phone}';
 								}
 								
 							}

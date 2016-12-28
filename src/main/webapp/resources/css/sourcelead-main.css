@@ -1760,7 +1760,6 @@ custom scroll bar ends*/
 	min-height: 180px;
 }
 .org-settings-area .tab-content {
-	border-top: 1px solid #ddd;
 	padding-top: 25px;
 	padding-bottom: 25px;
 }
@@ -5425,6 +5424,9 @@ padding:10px 10px; display:none; box-shadow:0px 0px 3px rgba(0,0,0,0.3); z-index
 .email-button .btn {
     padding: 4px 16px;
 }
+.email-button div.positionRelative{
+	margin-right: 26px;
+}
 .colpadding [class*="col-md-"] {
 padding:0 5px;	
 /*padding: 5px 9px;*/
@@ -5499,7 +5501,7 @@ padding:0 5px;
     height: 30px;
 }
 label.btn-styles{
-    margin-right: 30px;margin-bottom: 0;
+    margin-right: 0px;margin-bottom: 0;
 }
 .btn-styles input[type="checkbox"] {
     border: 1px solid red;
@@ -5509,8 +5511,9 @@ label.btn-styles{
 .btn-styles .btn{
     position: absolute;
     top: 0;
-    padding: 7px 15px;
+    padding: 7px 0px !important;
     left: 0;
+    width: 38px;
 }
 .mail-body{
 padding: 0 15px !important;
