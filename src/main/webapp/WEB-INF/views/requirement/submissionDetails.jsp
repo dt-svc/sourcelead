@@ -178,21 +178,25 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 						result = result + '	</li>';
 						result = result + '</ul>';
 						result = result + '<ul>';
-						<c:if test="${isTeamMember == true}">
 									if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
 											result = result + '	<li>';
-												result = result + json.submissionRequestFileName;
+												result = result + "Request sent to Manager";
 											result = result + '	</li>';
 											result = result + '	<li>';
-												result = result + json.submissionRequestComment;
+												result = result + "<a href='#'>"+json.submissionRequestFileName+"</a>";
+											result = result + '	</li>';
+											result = result + '	<li>';
+												result = result + "comment: "+json.submissionRequestComment;
 											result = result + '	</li>';
 									}else{
+										<c:if test="${isTeamMember == true && isManager == false}">
 											result = result + '	<li><i class="fa fa-check labelsuccess" title="Request" onClick="requestFun('+submissionId+');"></i>';
 											result = result + '		<div class="acceptreject-pop" id="request">';
 											result = result + '		</div>';
 											result = result + '	</li>';
+										</c:if>	
 									}
-						</c:if>
+						
 						result = result + '</ul>';
 				result = result + '</div>';
 				
@@ -1191,6 +1195,10 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result + '		    <div class="row">';
 		result = result + '				<div class="col-md-8">';
 		result = result + '					<input type="file" multiple id="docFile" name="docFile" class="mt10" data-validation="required validate_Space validatedoc" field-name="Attachment">';
+		result = result + '				</div>';
+		result = result + '			</div>';
+		result = result + '			<div class="row">';
+		result = result + '				<div class="col-md-12"><input type="button" id="request_candidate" value="Submit" title="Sibmit" class="pull-right btn btn-primary mt10 btn-sm ml10" onclick="requestCandidate(\''+submissionId+'\',\'request\');">';
 		result = result + '				</div>';
 		result = result + '			</div>';
 		result = result + '</form>';

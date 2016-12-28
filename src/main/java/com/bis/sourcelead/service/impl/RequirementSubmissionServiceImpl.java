@@ -15,12 +15,6 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.util.ByteArrayDataSource;
-
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -40,7 +34,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.beust.jcommander.internal.Lists;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateEducationDao;
@@ -1250,8 +1243,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REQUEST);
 				if(multiFile != null){
 					requirementSubmission.setSubmissionRequestDocFile(multiFile.getBytes());
-					requirementSubmission.setSubmissionRequestFileContentType(multiFile.getOriginalFilename());
-					requirementSubmission.setSubmissionRequestFileName(multiFile.getContentType());
+					requirementSubmission.setSubmissionRequestFileContentType(multiFile.getContentType());
+					requirementSubmission.setSubmissionRequestFileName(multiFile.getOriginalFilename());
 				}
 				if(jsonObj.has("comment")){
 					requirementSubmission.setSubmissionRequestComment(jsonObj.getString("comment"));

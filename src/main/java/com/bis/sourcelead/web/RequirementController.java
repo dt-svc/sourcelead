@@ -268,6 +268,9 @@ public class RequirementController {
 		Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
 		model.addObject("isTeamMember",isTeamMember);
 		
+		Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirementId, loginUser.getId());
+		model.addObject("isManager",isManager);
+		
 		//to get time zone list
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(countries != null){
