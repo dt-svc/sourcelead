@@ -168,7 +168,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    result = result + '<div class="acceptreject-actions">';
 				result = result + '<ul class="list-unstyled list-inline">';
 						result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept" onClick="acceptFun('+submissionId+');"></i>';
-						result = result + '		<div class="acceptreject-pop" id="accpet">';
+						result = result + '		<div class="acceptreject-pop" id="accpet-div">';
 						result = result + '		</div>';
 						result = result + '	</li>';
 						
@@ -177,27 +177,26 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 						result = result + '		</div>';
 						result = result + '	</li>';
 						result = result + '</ul>';
-						result = result + '<ul>';
-									if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
-											result = result + '	<li>';
-												result = result + "Request sent to Manager";
-											result = result + '	</li>';
-											result = result + '	<li>';
-												result = result + '<a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a>';
-											result = result + '	</li>';
-											result = result + '	<li>';
-												result = result + "comment: "+json.submissionRequestComment;
-											result = result + '	</li>';
-									}else{
-										<c:if test="${isTeamMember == true && isManager == false}">
-											result = result + '	<li><i class="fa fa-check labelsuccess" title="Request" onClick="requestFun('+submissionId+');"></i>';
-											result = result + '		<div class="acceptreject-pop" id="request">';
-											result = result + '		</div>';
-											result = result + '	</li>';
-										</c:if>	
-									}
-						
-						result = result + '</ul>';
+						result = result + '<ul class="list-unstyled">';
+						if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
+								result = result + '	<li>';
+									result = result + "Request sent to Manager";
+								result = result + '	</li>';
+								result = result + '	<li>';
+									result = result + '<a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a>';
+								result = result + '	</li>';
+								result = result + '	<li>';
+									result = result + "comment: "+json.submissionRequestComment;
+								result = result + '	</li>';
+					   }else{
+							<c:if test="${isTeamMember == true && isManager == false}">
+								result = result + '	<li><i class="fa fa-check labelsuccess" title="Request" onClick="requestFun('+submissionId+');"></i>';
+								result = result + '		<div class="acceptreject-pop" id="request">';
+								result = result + '		</div>';
+								result = result + '	</li>';
+							</c:if>	
+					   }
+					  result = result + '</ul>';
 				result = result + '</div>';
 				
 				/* New comments div creation Nov 8th, 2016 */ 
@@ -1131,7 +1130,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 <script>
 		// Accept function
 	function acceptFun(submissionId){
-		$('#accpet').empty();
+		$('#accpet-div').empty();
 		$('#reject').empty();
 		var result = "";	
 		result = result + '	        <form id="accept_form" name="accept_form" action="upload" enctype="multipart/form-data" method="post">';
@@ -1148,18 +1147,20 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result + '			</div>';
 		result = result + '			</div>';
 		result = result + '	        </form>';
-		$('#accpet').fadeIn();
-		$('#accpet').append(result);
+		$('#accpet-div').toggle();
+		$('#accpet-div').append(result);
 		$('#reject').fadeOut();
 		$('#request').fadeOut();
 	};
-	$("#accpet, .acceptreject-pop, .labelsuccess, .col-md-6, .acceptreject-actions").click(function(e){
+	/* $("#accpet-div, .clients_side_wrap, .clients_side_wrap_active, .fa, .fa-check, .labelsuccess").click(function(e){
 		 e.stopPropagation();
 	 });
-	
+	$("html").click(function(e){
+		 $('#accpet-div').fadeOut();
+	 }); */
 	function rejectFun(submissionId){
 		$('#reject').empty();
-		$('#accpet').empty();
+		$('#accpet-div').empty();
 		var result = "";
 		result = result + '	        <form id="reject_form" name="reject_form" action="upload" enctype="multipart/form-data" method="post">';
 		result = result + '			<div class="row">';
@@ -1172,9 +1173,9 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result + '				</div>';
 		result = result + '			</div>';
 		result = result + '	        </form>';
-		$('#reject').fadeIn();
+		$('#reject').toggle();
 		$('#reject').append(result);
-		$('#accpet').fadeOut();
+		$('#accpet-div').fadeOut();
 		$('#request').fadeOut();
 	};
 	$("#reject, .acceptreject-pop, .labelsuccess").click(function(e){
@@ -1183,7 +1184,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 	
 	function requestFun(submissionId){
 		$('#reject').empty();
-		$('#accpet').empty();
+		$('#accpet-div').empty();
 		$('#request').empty();
 		var result = "";
 		result = result + '<form id="request_form" name="request_form" action="upload" enctype="multipart/form-data" method="post">';
@@ -1202,9 +1203,9 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result + '				</div>';
 		result = result + '			</div>';
 		result = result + '</form>';
-		$('#request').fadeIn();
+		$('#request').toggle();
 		$('#request').append(result);
-		$('#accpet').fadeOut();
+		$('#accpet-div').fadeOut();
 		$('#reject').fadeOut();
 	};
 	$("#request, .acceptreject-pop, .labelsuccess").click(function(e){
@@ -1258,7 +1259,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		            		 else{
 						 		/* $("#popUpDivResume").removeClass("edit-details-active");
 						 		candidateResumesList(candidateId); */
-		            			 $('#accpet').fadeOut();
+		            			 $('#accpet-div').fadeOut();
 		            			 $('#reject').fadeOut();
 		            		 }
 						},
@@ -1319,7 +1320,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		            			 location.replace(sourceleadUrl+"/errorPage");
 		            		 }
 		            		 else{
-		            			 $('#accpet').fadeOut();
+		            			 $('#accpet-div').fadeOut();
 		            			 $('#reject').fadeOut();
 		            			 $('#request').fadeOut();
 		            		 }
@@ -1375,7 +1376,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		            		 else{
 						 		/* $("#popUpDivResume").removeClass("edit-details-active");
 						 		candidateResumesList(candidateId); */
-		            			 $('#accpet').fadeOut();
+		            			 $('#accpet-div').fadeOut();
 		            			 $('#reject').fadeOut();
 		            		 }
 						},
