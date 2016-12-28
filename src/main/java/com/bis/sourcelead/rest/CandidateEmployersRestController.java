@@ -84,8 +84,6 @@ public class CandidateEmployersRestController {
 		JSONObject jsonObject = new JSONObject(json1);
 	    candidateEmployersService.storeCandidateEmployers(jsonObject,users,loginOrgLocation,candidateId);
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		//SourceLeadSessionManager.setSessionAttribute(request, "addExep", "New Employer added for "+candidate.getFirstName()+" ");
-
 		return json;
 	}
 	

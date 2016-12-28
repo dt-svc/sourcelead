@@ -282,7 +282,7 @@ public class SubmissionsRateRestController {
 					requirementRateSubmissionNegotiation.setProposeByName(candidate.getFirstName());
 				}
 			}*/
-			DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
+			DateFormat standardFormat = new SimpleDateFormat( "yyyy-MM-dd");
 			String commonDateFormat = standardFormat.format(requirementRateSubmissionNegotiation.getCreatedDate());
 			requirementRateSubmissionNegotiation.setCreatedDateStr(commonDateFormat.toString());
 			
@@ -294,8 +294,8 @@ public class SubmissionsRateRestController {
 			}
 			
 			requirementRateSubmissionNegotiation.setInitiatorOrgLocationIdStr(requirementRateSubmissionNegotiation.getInitiatorOrgLocationId().getId().toString());
-			
-			requirementRateSubmissionNegotiation.setRateAndType(requirementRateSubmissionNegotiation.getExpectedRate()+" "+requirementRateSubmissionNegotiation.getExpectedRateType());
+			StringBuilder rateTypeSB = new StringBuilder();
+			requirementRateSubmissionNegotiation.setRateAndType(rateTypeSB.append(requirementRateSubmissionNegotiation.getExpectedRate()).append(" ").append(requirementRateSubmissionNegotiation.getExpectedRateType()).toString());
 		}
 		
 		String resultJson = commonUtil.toJSON(allSubmissionRateHistory);

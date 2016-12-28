@@ -183,6 +183,7 @@ function requirementList(){
 	                     result = result +"    <th>Position type</th>"; 
 	                     result = result +"    <th>Location</th>"; 
 	                     result = result +"    <th>No.of<br> Positions</th>"; 
+	                     result = result +"    <th>Applicants</th>"; 
 	                     result = result +"    <th>Owner</th>"; 
 	                     result = result +"    <th>Status</th>"; 
 	                     result = result +"    <th>Release</th>"; 
@@ -243,6 +244,11 @@ function requirementList(){
 		                    	 result = result +"<td><div>"+opt.positions+"</div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
+		                     }
+		                     if(opt.totalApplicantsForRequirement!=null && opt.totalApplicantsForRequirement!='' && opt.totalApplicantsForRequirement!='undefined'){
+		                    	 result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div>"+opt.totalApplicantsForRequirement+"</div></a></td>";
+		                     }else{
+		                    	 result = result +"<td><div>0</div></td>";
 		                     }
 		                     if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
 		                    	 result = result +"<td><div>"+opt.manager+"</div></td>";

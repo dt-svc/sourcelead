@@ -89,7 +89,8 @@ public class RequirementInterviewRestController {
 		for (RequirementSubmission sub : shortListCandidatesList) {
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(sub.getId());
 			if(requirementSubmissionTemplateFields.getLastName() != null){
-				sub.setCandidateName(requirementSubmissionTemplateFields.getFirstName()+" "+requirementSubmissionTemplateFields.getLastName());
+				StringBuilder name = new StringBuilder();
+				sub.setCandidateName(name.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
 			}else{
 				sub.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
 			}

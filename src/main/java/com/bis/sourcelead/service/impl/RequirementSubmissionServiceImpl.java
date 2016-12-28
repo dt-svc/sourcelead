@@ -800,6 +800,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			String submissionStatus) {
 		return requirementSubmissionDao.getAllSubmissionCountByRequirementIdAndSubmissionStage(orgLocationsId, requirementId, submissionStatus);
 	}
+	
+	@Override
+	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(Long orgLocationsId, Long requirementId) {
+		return requirementSubmissionDao.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(orgLocationsId, requirementId);
+	}
 
 	@Override
 	public RequirementSubmission getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(Long sourceSubmissionId,
@@ -1833,6 +1838,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+	}
+
+	@Override
+	public List<RequirementSubmission> duplicateCandidateCountList(Long requirementId, User user,
+			OrgLocations loginOrgLocation) throws Exception {
+		return requirementSubmissionDao.duplicateCandidateCountList(requirementId, user, loginOrgLocation) ;
 	}
 
 	

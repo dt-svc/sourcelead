@@ -78,6 +78,8 @@ public interface RequirementSubmissionService {
 	
 	Integer getAllSubmissionCountByRequirementIdAndSubmissionStage(Long orgLocationsId, Long requirementId, String submissionStatus);
 	
+	Integer getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(Long orgLocationsId, Long requirementId);
+	
 	public Integer getApplicantCountByrequirementIdandAssignedUsercode(Long requirementId, String userCode) throws Exception;
 	
 	/*public void applicantReceiveMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
@@ -110,5 +112,6 @@ public interface RequirementSubmissionService {
 
 	void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations orgLocations,String submissionsList, Org org, JSONObject jsonObj, Map files, String selectedShortlistsRate)throws Exception;
 
-
+	List<RequirementSubmission> duplicateCandidateCountList(Long requirementId, User user,
+			OrgLocations loginOrgLocation)throws Exception;
 }

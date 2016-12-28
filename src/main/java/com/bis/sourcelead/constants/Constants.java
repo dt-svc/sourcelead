@@ -21,6 +21,11 @@ public class Constants {
 	
 	public static final String[] CHASE_FILE_HEADER_MAPPING = { "Details", "Posting Date", "Description", "Amount", "Type", "Balance", "Check Or Slip#" };
 
+	
+	public static final String[] FONT_FAMILY = { "Arial", "Comisc", "Comic Sans MS", "Courier New", "Georgia", "Monotype", "Tahoma", "Times New Roman", "Trebuchet MS", "Verdana", "Impace" };
+	
+	public static final String[] FONT_SIZE = { "8px", "9px", "10px", "11px", "12px", "13px", "14px", "15px", "16px", "17px", "18px", "19px", "20px", "21px", "221px", "23px", "24px" };
+	
 	public static final String EMPLOYEE_ID = "Employee ID";
 	public static final String FIRST_NAME = "First Name*";
 	public static final String LAST_NAME = "Last Name";
@@ -349,6 +354,9 @@ public class Constants {
     public static String SUBMITTED_APPLICANTS_COUNT= "Submitted Applicants :";
     public static String REQUEST_SENT_COUNT= "Request Sent Applicants :";
     public static String SUBMIT_TO_CLIENT_COUNT= "Submit to Client Applicants :";
+    
+    public static String All_APPLICANTS = "all";
+    public static String DUPLICATE_APPLICANTS = "DUPLICATE_APPLICANTS";
 
 
     

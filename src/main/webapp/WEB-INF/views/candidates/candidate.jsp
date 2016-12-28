@@ -233,12 +233,12 @@
                   
                   <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
                  
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
                 </select>
                 
@@ -271,12 +271,12 @@
                   
                   <select class="selectpicker" id="expectedRateCurrencey" name="expectedRateCurrencey">
                  
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
+                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
                 </select>
                 
@@ -306,6 +306,31 @@
             <input type="text" class="form-control" id="candidateEmployers" name="candidateEmployers" value="${candidateEmployers}"  field-name="Employers" data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="">
           </div>
         </div>
+
+        <div class="form-group">
+         <label class="col-md-3">Notice Period</label>
+          <div class="col-md-9">
+               <select class="form-control valid selectpicker" id="noticePeriod" name="noticePeriod">
+                 <option value="">--Select--</option>
+                 <option ${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately available</option>
+                 <option ${noticePeriod  == '15 Days' ? 'selected' : ''}>15 Days</option>
+                 <option ${noticePeriod  == '1 Month' ? 'selected' : ''}>1 Month</option>
+                 <option ${noticePeriod  == '2 Months' ? 'selected' : ''}>2 Months</option>
+                 <option ${noticePeriod  == '3 Months' ? 'selected' : ''}>3 Months</option>
+               </select>
+           </div>
+         </div>
+<div class="clearfix">
+          <div class="form-group">
+              <label class="col-md-3">Skills</label>
+              <div class="col-md-9">
+                <select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">
+                <c:forEach var="skill" items="${skillsList}">
+	                     <option value="${skill.name}">${skill.name}</option>
+                </c:forEach>
+                </select>
+              </div>
+            </div>
         
         
          <div class="form-group">
@@ -318,40 +343,14 @@
                 </select>
               </div>
             </div>
-       
-        
-        <div class="form-group">
-              <label class="col-md-3">Skills</label>
-              <div class="col-md-9">
-                <select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">
-                <c:forEach var="skill" items="${skillsList}">
-	                     <option value="${skill.name}">${skill.name}</option>
-                </c:forEach>
-                </select>
-              </div>
             </div>
-        
-        <div class="form-group">
+
+        <div class="form-group mb">
           <label class="col-md-3">Summary</label>
           <div class="col-md-9">
             <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
           </div>
         </div>
-        
-        <div class="form-group">
-         <label class="col-md-3">Notice Period</label>
-          <div class="col-md-9">
-               <select class="form-control valid selectpicker" id="noticePeriod" name="noticePeriod">
-                <option value=""><a href="#">Select</a></option>
-                 <option ${noticePeriod  == 'Immediately available' ? 'selected' : ''}><a href="#">Immediately available</a></option>
-                 <option ${noticePeriod  == '15 Days' ? 'selected' : ''}><a href="#">15 Days</a></option>
-                 <option ${noticePeriod  == '1 Month' ? 'selected' : ''}><a href="#">1 Month</a></option>
-                 <option ${noticePeriod  == '2 Months' ? 'selected' : ''}><a href="#">2 Months</a></option>
-                 <option ${noticePeriod  == '3 Months' ? 'selected' : ''}><a href="#">3 Months</a></option>
-                </select>
-             
-           </div>
-         </div>
         
         <div class="form-group">
           <label class="col-md-3"></label>
@@ -366,7 +365,7 @@
     </div>
     
     
-    <div class="form-footer clearfix">
+    <div class="form-footer clearfix mt">
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
@@ -757,6 +756,7 @@ function getCities(){
 	     			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
 	     			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
 	     	      }else{
+	     	    	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	     	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
 	        		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
 	     		var form = $('#candidate_form')[0];

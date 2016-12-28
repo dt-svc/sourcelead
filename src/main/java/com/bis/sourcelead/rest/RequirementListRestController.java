@@ -168,6 +168,13 @@ public class RequirementListRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user.getId());
 		for(Requirement requirement : requirementList){
+			
+			int totalApplicatsCountForRequirement = 0;
+			totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(loginOrgLocation.getId(),requirement.getId());
+			if(totalApplicatsCountForRequirement > 0){
+				requirement.setTotalApplicantsForRequirement(totalApplicatsCountForRequirement); ;
+			}
+			
 			if(requirement.getClientId() != null){
 				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
 					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
@@ -185,7 +192,8 @@ public class RequirementListRestController {
 				if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
 					managerLastName = requirement.getManagerUserId().getLastName();
 				}
-				requirement.setManager(managerFirstName+" "+managerLastName);
+				StringBuilder name = new StringBuilder();
+				requirement.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
 			}
 			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqStatusChange");
 			if(msg != null && msg != ""){
@@ -218,7 +226,8 @@ public class RequirementListRestController {
 							if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
 								managerLastName = requirement.getManagerUserId().getLastName();
 							}
-							requirement.setManager(managerFirstName+" "+managerLastName);
+							 StringBuilder managerSB = new StringBuilder();
+							requirement.setManager(managerSB.append(managerFirstName).append(" ").append(managerLastName).toString());
 						}
 						
 						requirementList1.add(requirement);
@@ -282,20 +291,23 @@ public class RequirementListRestController {
 					if(requirement.getSpocId().getInitiatorLocationId().getId() == loginOrgLocation.getId() ){
 						
 						if(requirement.getSpocId().getSpocUser().getFirstName() != null && requirement.getSpocId().getSpocUser().getFirstName() != "" && requirement.getSpocId().getSpocUser().getLastName() != null && requirement.getSpocId().getSpocUser().getLastName() != "" ){
-							requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
+							StringBuilder spocSB = new StringBuilder();
+							requirement.setSpocName(spocSB.append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ").append(requirement.getSpocId().getSpocUser().getLastName()).toString());
 						}else{
 							requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName());
 						}
 					 }
 					if(requirement.getSpocId().getResponderLocationId().getId() == loginOrgLocation.getId()){
-						requirement.setSpocName(requirement.getSpocId().getOwnerUser().getFirstName()+" "+requirement.getSpocId().getOwnerUser().getLastName());
+						StringBuilder spocSB1 = new StringBuilder();
+						requirement.setSpocName(spocSB1.append(requirement.getSpocId().getOwnerUser().getFirstName()).append(" ").append(requirement.getSpocId().getOwnerUser().getLastName()).toString());
 					}
 					requirement.setSpocEmail(requirement.getSpocId().getSpocUser().getEmail());
 					requirement.setSpocMobilePhone(requirement.getSpocId().getSpocUser().getMobilePhone());
 					/*requirement.setClientSubmissionTemplate(requirement.getClientSubmissionTemplateId().getTemplateName());*/
 					}
 					if(requirement.getManagerUserId() != null && requirement.getManagerUserId().getFirstName() != null && requirement.getManagerUserId().getLastName() != null ){
-						requirement.setManager(requirement.getManagerUserId().getFirstName()+" "+requirement.getManagerUserId().getLastName());	
+						StringBuilder managerSB = new StringBuilder();
+						requirement.setManager(managerSB.append(requirement.getManagerUserId().getFirstName()).append(" ").append(requirement.getManagerUserId().getLastName()).toString());	
 					}
 					
 
@@ -309,7 +321,8 @@ public class RequirementListRestController {
 					ArrayList<String> ar = new ArrayList<String>();
 					if(list !=null && list.size() >0){
 						for(RequirementApproverHierarchy approverN :list ){
-							ar.add(approverN.getApproverUserId().getFirstName() +""+ approverN.getApproverUserId().getLastName());
+							StringBuilder approverSB = new StringBuilder();
+							ar.add(approverSB.append(approverN.getApproverUserId().getFirstName()).append(" ").append(approverN.getApproverUserId().getLastName()).toString());
 						}
 						requirement.setHighestLevel(highestLevel);
 						requirement.setApproverNames(ar);
@@ -362,7 +375,8 @@ public class RequirementListRestController {
 			       if(requirementAssignToListdb !=null && !requirementAssignToListdb.isEmpty()){
 			           for (RequirementAssignTo assing : requirementAssignToListdb) { 
 			        	   RequirementAssignTo ra = new  RequirementAssignTo();
-			        	   ra.setAssignedUserName(assing.getAssignUserId().getFirstName()+" "+assing.getAssignUserId().getLastName());
+			        	   StringBuilder assignUserSB = new StringBuilder();
+			        	   ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).append(" ").append(assing.getAssignUserId().getLastName()).toString());
 					       if(assing.getRoleId() != null ){
 					    	   ra.setAssignedUserRole(assing.getRoleId().getDisplayName());
 					       }
@@ -400,10 +414,20 @@ public class RequirementListRestController {
 					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 					if(requirementId !=null && !requirementId.isEmpty()){
 						List<RequirementSubmission> requirementStatusList = null;
-						if(!"all".equalsIgnoreCase(submissionType)){
-							 requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);	
-						}else{
-							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
+//						if(!"all".equalsIgnoreCase(submissionType)){
+//							 requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);	
+//						}else{
+//							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
+//						}
+						if(Constants.All_APPLICANTS.equalsIgnoreCase(submissionType)){
+							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+						}else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(submissionType)){
+							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
+//							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+						}
+						else{
+							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
+//							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
 						}
 						if(requirementStatusList != null){
 							for (RequirementSubmission requirementSubmission : requirementStatusList) {
@@ -417,7 +441,8 @@ public class RequirementListRestController {
 										RequirementSubmissionHistory requirementSubmissionHistory = requirementSubmissionHistoryServiceList.get(0); 								
 										User usr = userService.getUserByUserCode(requirementSubmissionHistory.getCreatedBy());
 										if(usr.getFirstName() != null && usr.getLastName() !=null){
-											requirementSubmission.setSubmittedBy(usr.getFirstName()+" "+usr.getLastName());
+											StringBuilder name = new StringBuilder();
+											requirementSubmission.setSubmittedBy(name.append(usr.getFirstName()).append(" ").append(usr.getLastName()).toString());
 										}else{
 											requirementSubmission.setSubmittedBy(usr.getFirstName());
 										}
@@ -441,7 +466,8 @@ public class RequirementListRestController {
 									}
 									String candidateName = requirementSubmissionTemplateFields.getFirstName();
 									if(requirementSubmissionTemplateFields.getLastName()!=null){
-										candidateName = candidateName+" "+requirementSubmissionTemplateFields.getLastName();
+										StringBuilder candidateNameSB = new StringBuilder();
+										candidateName = candidateNameSB.append(candidateName).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
 									}
 									requirementSubmission.setCandidateName(candidateName);
 									requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
@@ -480,15 +506,16 @@ public class RequirementListRestController {
 										requirementSubmission.setUpDatedStr(Constants.DF_YMD.format(requirementSubmission.getUpdatedDate()));
 									}
 									User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-									requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
+									StringBuilder userNameSB = new StringBuilder();
+									requirementSubmission.setUserName(userNameSB.append(userVal.getFirstName()).append(" ").append(userVal.getLastName()).toString());
 									requirementSubmission.setResumeName(candidateResumes.getFileName());
 									Candidate candidate = candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
 									List<Candidate> candidateList = new ArrayList<>();
 									candidateList.add(candidate);
 									List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScore(candidateList,requirementSubmission.getRequirement());
 									if(candidateListCopy !=null && candidateListCopy.size() >0){
-										requirementSubmission.setScore(candidateListCopy.get(0).getCandidateScore()+"%");
-										logger.info("size of score is "+candidateListCopy.get(0).getCandidateScore());
+										StringBuilder canScoreSB = new StringBuilder();
+										requirementSubmission.setScore(canScoreSB.append(candidateListCopy.get(0).getCandidateScore()).append("%").toString());
 									}else{
 										requirementSubmission.setScore("0 %");
 									}
@@ -518,7 +545,8 @@ public class RequirementListRestController {
 			 requirement.setUpdatedBy(loginUser.getUserCode());
 			 requirement.setUpdatedDate(commonUtil.currentDate());
 			 requirementService.addRequirement(requirement); 
-			SourceLeadSessionManager.setSessionAttribute(request, "reqStatusChange", " "+requirement.getJobTitle()+" Status changed "+requirement.getRequirementSubmissionPreviousStatus()+" to "+requirement.getRequirementSubmissionStatus()+" ");
+			 StringBuilder reqStatusChange = new StringBuilder();
+			 SourceLeadSessionManager.setSessionAttribute(request, "reqStatusChange", reqStatusChange.append(" ").append(requirement.getJobTitle()).append(" Status changed ").append(requirement.getRequirementSubmissionPreviousStatus()).append(" to ").append(requirement.getRequirementSubmissionStatus()).append(" ").toString());
 
 			return "success";
 		 }
@@ -569,7 +597,8 @@ public class RequirementListRestController {
 					if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
 						managerLastName = requirement.getManagerUserId().getLastName();
 					}
-					requirement.setManager(managerFirstName+" "+managerLastName);
+					StringBuilder managerSB = new StringBuilder();
+					requirement.setManager(managerSB.append(managerFirstName).append(" ").append(managerLastName).toString());
 				}
 			}
 			
@@ -600,7 +629,8 @@ public class RequirementListRestController {
 								if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
 									managerLastName = requirement.getManagerUserId().getLastName();
 								}
-								requirement.setManager(managerFirstName+" "+managerLastName);
+								StringBuilder managerSB1 = new StringBuilder();
+								requirement.setManager(managerSB1.append(managerFirstName).append(" ").append(managerLastName).toString());
 							}
 							
 							requirementList1.add(requirement);
@@ -617,7 +647,8 @@ public class RequirementListRestController {
 					mimeType = "application/octet-stream";
 				}
 				response.setContentType(mimeType);
-				response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+				StringBuilder fileName = new StringBuilder();
+				response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
 				response.setContentLength((int) file.length());
 				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 				FileCopyUtils.copy(inputStream, response.getOutputStream());
@@ -698,8 +729,8 @@ public class RequirementListRestController {
 				Requirement requirement =  requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
 			    
 			    response.setContentType("application/octet-stream");
-		        response.setHeader("Content-Disposition",
-		                "attachment;filename="+requirement.getFileName());
+			    StringBuilder fileName = new StringBuilder();
+		        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(requirement.getFileName()).append("\"").toString());
 			    
 				InputStream inputStream = new ByteArrayInputStream(requirement.getDocFile());
 				try {
@@ -799,7 +830,7 @@ public class RequirementListRestController {
 		 * @throws Exception
 		 */
 		@RequestMapping(value = "/getSubmissionsCountBySubmissionStatus" , method = RequestMethod.POST)
-		 @ResponseBody  String getSubmissionsCountBySubmissionStatus(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
+		 @ResponseBody  String getSubmissionsCountBySubmissionStatus(@RequestParam(value="requirementId", required=false) String  requirementId,@RequestParam(value="submissionType", required=false) String submissionType,HttpServletRequest request) throws Exception {
 				String resultJson = null;
 				int numOfShortList = 0;
 				int numOfInterview = 0;
@@ -808,11 +839,15 @@ public class RequirementListRestController {
 				int numOfRejected = 0;
 				int numofrequestsent = 0;
 				
+
+				
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				
 				if(requirementId !=null && !requirementId.isEmpty()){
 					List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+					
+					List<RequirementSubmission> duplicatecount = requirementSubmissionService.duplicateCandidateCountList(Long.parseLong(requirementId), user, loginOrgLocation);
 					
 					for(RequirementSubmission rmentSubmission :requirementSubmissions){
 						
@@ -849,8 +884,10 @@ public class RequirementListRestController {
 						rmentSubmission.setNumOfOffers(numOfOffers);
 						rmentSubmission.setNumOfRejected(numOfRejected);
 						rmentSubmission.setNumofrequestsent(numofrequestsent);
-						
+						if(duplicatecount.size()!= 0 && duplicatecount != null){
+						rmentSubmission.setDuplicateCount(duplicatecount.size());
 						}
+					}
 					resultJson = commonUtil.toJSON(requirementSubmissions);
 				}
 				return resultJson;
@@ -869,8 +906,8 @@ public class RequirementListRestController {
 			
 				RequirementOffers offer = requirementOffersService.getRequirementOfferId(offerId);
 			    response.setContentType("application/octet-stream");
-		        response.setHeader("Content-Disposition",
-		                "attachment;filename="+offer.getFileName());
+			    StringBuilder fileName = new StringBuilder();
+		        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(offer.getFileName()).append("\"").toString());
 				InputStream inputStream = new ByteArrayInputStream(offer.getDocFile());
 				try {
 					OutputStream outStream = response.getOutputStream();
@@ -926,10 +963,15 @@ public class RequirementListRestController {
 			RequirementSubmissionCounts requirementSubmissionCounts = getRequirementSubmissionsCount(Long.valueOf(requirementId),user,loginOrgLocation);
 			if(requirementId !=null && !requirementId.isEmpty()){
 				List<RequirementSubmission> requirementStatusList = null;
-				if(!"all".equalsIgnoreCase(submissionType)){
-					 requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);	
-				}else{
-					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
+				if(Constants.All_APPLICANTS.equalsIgnoreCase(submissionType)){
+					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+				}else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(submissionType)){
+					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
+//					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+				}
+				else{
+					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
+//					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
 				}
 				
 				if(requirementStatusList != null){
@@ -939,7 +981,7 @@ public class RequirementListRestController {
 							RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 							List<RequirementInterview> numberOfInterviews = requirementInterviewService.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(requirementSubmission.getId(),loginOrgLocation.getId());
 							List<RequirementOffers> requirementOffersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(requirementSubmission.getId(),loginOrgLocation.getId());
-							if("all".equalsIgnoreCase(submissionType)){
+							if(Constants.All_APPLICANTS.equalsIgnoreCase(submissionType)){
 								submissionType = "SUBMISSION";
 							}
 							List<RequirementSubmissionHistory> requirementSubmissionHistoryServiceList = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndStage(loginOrgLocation.getId(),submissionType,requirementSubmission.getId());
@@ -947,7 +989,8 @@ public class RequirementListRestController {
 								RequirementSubmissionHistory requirementSubmissionHistory = requirementSubmissionHistoryServiceList.get(0); 								
 								User usr = userService.getUserByUserCode(requirementSubmissionHistory.getCreatedBy());
 								if(usr.getFirstName() != null && usr.getLastName() !=null){
-									requirementSubmission.setSubmittedBy(usr.getFirstName()+" "+usr.getLastName());
+									StringBuilder name = new StringBuilder();
+									requirementSubmission.setSubmittedBy(name.append(usr.getFirstName()).append(" ").append(usr.getLastName()).toString());
 								}else{
 									requirementSubmission.setSubmittedBy(usr.getFirstName());
 								}
@@ -972,7 +1015,8 @@ public class RequirementListRestController {
 							}
 							String candidateName = requirementSubmissionTemplateFields.getFirstName();
 							if(requirementSubmissionTemplateFields.getLastName()!=null){
-								candidateName = candidateName+" "+requirementSubmissionTemplateFields.getLastName();
+								StringBuilder candidateNameSB = new StringBuilder();
+								candidateName = candidateNameSB.append(candidateName).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
 							}
 							requirementSubmission.setCandidateName(candidateName);
 							requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
@@ -1013,7 +1057,8 @@ public class RequirementListRestController {
 								requirementSubmission.setUpDatedStr(Constants.DF_YMD.format(requirementSubmission.getUpdatedDate()));
 							}
 							User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-							requirementSubmission.setUserName(userVal.getFirstName()+" "+userVal.getLastName());
+							StringBuilder canNameSB = new StringBuilder();
+							requirementSubmission.setUserName(canNameSB.append(userVal.getFirstName()).append(" ").append(userVal.getLastName()).toString());
 							requirementSubmission.setResumeName(candidateResumes.getFileName());
 							requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getPreviousSubmissionStatus());
 							Candidate candidate = candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
@@ -1021,8 +1066,8 @@ public class RequirementListRestController {
 							candidateList.add(candidate);
 							List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScore(candidateList,requirementSubmission.getRequirement());
 							if(candidateListCopy !=null && candidateListCopy.size() >0){
-								requirementSubmission.setScore(candidateListCopy.get(0).getCandidateScore()+"%");
-								logger.info("size of score is "+candidateListCopy.get(0).getCandidateScore());
+								StringBuilder candidateScoreSB = new StringBuilder();
+								requirementSubmission.setScore(candidateScoreSB.append(candidateListCopy.get(0).getCandidateScore()).append("%").toString());
 							}else{
 								requirementSubmission.setScore("0 %");
 							}
@@ -1038,7 +1083,8 @@ public class RequirementListRestController {
 						mimeType = "application/octet-stream";
 					}
 					response.setContentType(mimeType);
-					response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+					StringBuilder fileName = new StringBuilder();
+					response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
 					response.setContentLength((int) file.length());
 					InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 					FileCopyUtils.copy(inputStream, response.getOutputStream());
@@ -1059,6 +1105,8 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 	int numOfOffers = 0;
 	int numOfRejected = 0;
 	int numOfRequestSent = 0;
+	
+	 List<RequirementSubmission>duplicatecount =requirementSubmissionService.duplicateCandidateCountList(requirementId, user, loginOrgLocation);
 	
 	RequirementSubmissionCounts requirementSubmissionCounts = new RequirementSubmissionCounts();
 	if(requirementId !=null){
@@ -1090,10 +1138,12 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 		requirementSubmissionCounts.setNumOfRejected(numOfRejected);
 		requirementSubmissionCounts.setSubmittedCount(requirementSubmissions.size());
 		requirementSubmissionCounts.setNumOfRequestSent(numOfRequestSent);
-		
-
+		if(duplicatecount.size()!= 0 && duplicatecount != null){
+		requirementSubmissionCounts.setDuplicateCount(duplicatecount.size());
+		}
 	}
 	return requirementSubmissionCounts;
+	
 	
 }
 }

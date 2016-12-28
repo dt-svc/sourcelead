@@ -35,6 +35,8 @@ public class UserProfile {
 	
 	private String googlePlus;
 	
+	private String designation;
+	
 	
 	
 
@@ -140,6 +142,14 @@ public class UserProfile {
 
 	public void setGooglePlus(String googlePlus) {
 		this.googlePlus = googlePlus;
+	}
+
+	public String getDesignation() {
+		return designation;
+	}
+
+	public void setDesignation(String designation) {
+		this.designation = designation;
 	}
 	
 	
