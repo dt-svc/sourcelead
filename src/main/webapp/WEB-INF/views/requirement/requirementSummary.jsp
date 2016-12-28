@@ -1203,11 +1203,9 @@ function requirementPipeline(requirementId,submissionType){
 				        	   result = result + '<th>Applied on</th>';
 					           result = result + '<th>Rate</th>';
 					           
-					         if(clientSubmissions == 'Y'){
 					           if(submissionType != 'REQUEST_SENT'){
 					           result = result + '<th>Sub. Rate</th>';
 					           }
-					         }
 					           result = result + '<th>Source</th>';
 				            }
 						  
@@ -1291,7 +1289,6 @@ function requirementPipeline(requirementId,submissionType){
 							    	     }
 							          
 							           if(submissionType != 'REQUEST_SENT'){
-							        	   if(clientSubmissions == 'Y'){
 							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
@@ -1305,7 +1302,6 @@ function requirementPipeline(requirementId,submissionType){
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
 							        	   }
-							           }
 							           }
 							           
 							           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
