@@ -3,18 +3,6 @@
 
 <!DOCTYPE html>
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>::Org Settings</title>
-<style type="text/css">
-.comp-textarea textarea {
-min-height: 90px;
-} 
-#loading {
-z-index: 9999999999 !important;
-}
-</style>
-</head>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
@@ -28,7 +16,9 @@ z-index: 9999999999 !important;
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<link href="resources/css/bootstrap-colorpicker.min.css" rel="stylesheet">
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/bootstrap-colorpicker.min.js"></script> 
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -36,6 +26,7 @@ z-index: 9999999999 !important;
 <script type="text/javascript">
 window.onload = function () {
 	getAllCountries();
+	colourpicker();
  };
 </script>
 
@@ -159,6 +150,15 @@ function cancel(){
     <div class="content-area clearfix">
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
       <div id="loading"></div> 
+      <div id="signatureLoading"></div>
+        <!-- Tab Pills navbar -->
+      <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#orgsetting">Settings</a></li>
+        <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
+      </ul>
+      <!-- Tab Pills navbar -->
+      <div class="tab-content">
+        <div id="orgsetting" class="tab-pane fade in active">   
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		    <!-- Tab for Profile setting-area -->
@@ -231,6 +231,14 @@ function cancel(){
 								     <select  class="chosen-select form-control" name="city" id="city" field-name="City"  ></select>
 								</div>
 							</div>
+							
+							<div class="form-group">
+							<label class="col-md-3">Address</label>
+							<div class="col-md-9">
+							<input type="text" id="address" name="address" class="form-control"  field-name="Address" data-validation="validate_Space" data-validation-optional="true" value="${SourceLeadWeb_address}" />
+							</div>
+							</div>
+							
 							<input type="hidden" id="existingCity" value="${SourceLeadWeb_orgLocations.city}" >
 				   </div>
 				
@@ -257,7 +265,7 @@ function cancel(){
 						<div class="form-group comp-textarea">
 						  <label class="col-md-3">About</label>
 							<div class="col-md-9">
-							   <textarea rows="2" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_Space validate_length length5-5000" class="form-control">${SourceLeadWeb_org.orgDescription}</textarea>
+							   <textarea rows="6" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_Space validate_length length5-5000" class="form-control">${SourceLeadWeb_org.orgDescription}</textarea>
 							</div>
 						</div>
 							
@@ -280,9 +288,41 @@ function cancel(){
 			</div>
 		   </div>
 		</div>
+		</div>
+		
+		<div id="emailSign" class="tab-pane fade form-horizontal"> 
+                <!-- Tab for Profile setting-area -->
+                    <div class="accountsettings-tab">
+                        <div class="tab-content panel-body">
+                            <div class="clearfix mb">
+                                <div class="pull-left">
+                                    <h4 id="SignatureHeading">Create Default Signature</h4>
+                                    <div id="signLoading"></div>
+                                    <div id="restorePopUp"></div>
+                                </div>
+                                <div class="pull-right">
+                                     <button type="reset" id="reset" class="btn btn-default btm-sm" data-toggle="tab" href="#emailSign" onclick="restoreSignature();"><i class="fa fa-refresh"></i>
+                                         &nbsp;&nbsp;Restore</button>
+                                         
+                                        <button type="reset" class="btn btn-default btm-sm" id="settings"  data-toggle="tab" href="#emailSign" onclick="loadSignature();"><i class="fa fa-gears"></i>
+                                         &nbsp;&nbsp;Settings</button>
+                                     
+                                     <button type="reset" class="btn btn-default btm-sm" onclick="getSignaturePreview();"><i class="fa fa-eye"></i>
+                                         &nbsp;&nbsp;Preview</button>
+                                </div>
+                            </div>
+                            
+                <div id="campaignSignatrue"></div>            
+                                        
+            </div>
+        </div>
+    </div>
+  </div>
+  </div>
+		</div>
+		
+		
 			<!-- Tab for Profile setting-area ends -->
-		  </div>
-		  </div>
   </section>
   <!-- Tab for Profile setting-area starts Ends -->
   <!-- Content Area Ends-->
@@ -560,6 +600,434 @@ $(function(){
 		  })
 });
 </script>
+
+
+<script>
+function loadSignature(){
+	
+	
+	$("#campaignSignatrue").empty(); 
+	$("#SignatureHeading").html("Create Default Signature");
+	document.getElementById("reset").style.display="";
+	document.getElementById("settings").style.display="none";
+
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		 
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getOrgSignature?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(data) {
+		        	
+		        	 var json = JSON.parse(data);
+					 var result = "";
+					
+					result = result + '<form id="signature_form"  name="signature_form" method="post">'; 
+					result = result + '<input type="hidden" name="signatureListSize" value="'+json.signatureList.length+'">';
+					for (var i=0; i<json.signatureList.length; i++)
+ 					{
+						var opt = json.signatureList[i];
+						var name = opt.labelName.replace(/\s+/g, '');
+						var checked = "";
+						var readonly = "";
+						
+						var boldClass = "";
+						var italicClass = "";
+						var underlineClass = "";
+						var boldValue = "";
+						var italicValue = "";
+						var underlineValue = "";
+						var boldChecked = "";
+						var italicChecked = "";
+						var underlineChecked = "";
+
+						if(opt.fontStyle != null){
+							 var fontStyle = opt.fontStyle.split(',');
+							  for(var fn = 0; fn < fontStyle.length; fn++) {
+								 if(fontStyle[fn] == "Bold"){
+									 boldClass = "btn-active";
+									 boldValue = "value = 'Y'";
+									 boldChecked = "checked";
+								 }else{
+									 boldValue = "value = 'N'";
+								 } 
+								  
+								 if(fontStyle[fn] == "Italic"){
+									 italicClass = "btn-active";
+									 italicValue = "value = 'Y'";
+									 italicChecked = "checked";
+								 }else{
+									 italicValue = "value = 'N'";
+								 }
+								 if(fontStyle[fn] == "Underline"){
+									 underlineClass = "btn-active";
+									 underlineValue = "value = 'Y'";
+									 underlineChecked = "checked";
+								 }else{
+									 underlineValue = "value = 'N'";
+								 }
+							 } 
+						}
+						
+						if(opt.status == '1'){
+							checked = "checked"+" "+"value = 'Y'";
+						}else{
+							checked = "value = 'N'";
+						}
+						
+						var labelText = "";
+						
+						if(opt.labelName == 'Sign Off'){
+							labelText = opt.labelText;
+						}else{
+							
+							if(opt.labelName == 'Name'){
+								if('${SourceLeadWeb_user.lastName}' != null){
+									labelText = '${SourceLeadWeb_user.firstName}'+" "+'${SourceLeadWeb_user.lastName}'
+								}else{
+									labelText = '${SourceLeadWeb_user.firstName}'
+								}
+								
+							}else if(opt.labelName == 'Designation'){
+								if('${SourceLeadWeb_designation}' != null){
+									labelText = '${SourceLeadWeb_designation}';
+								}
+								
+							}
+							else if(opt.labelName == 'Email'){
+								if('${SourceLeadWeb_user.email}' != null){
+									labelText = '${SourceLeadWeb_user.email}';
+								}
+								
+							}
+							
+							else if(opt.labelName == 'Phone'){
+								if('${SourceLeadWeb_user.mobilePhone}' != null){
+									labelText = '${SourceLeadWeb_user.mobilePhone}';
+								}
+								
+							}
+							
+							else if(opt.labelName == 'Company Name'){
+								if('${SourceLeadWeb_orgName}' != null){
+									labelText = '${SourceLeadWeb_orgName}';
+								}
+								
+							}
+							
+							else if(opt.labelName == 'Address'){
+								if('${SourceLeadWeb_address}' != null){
+									labelText = '${SourceLeadWeb_address}';
+								}
+								
+							}
+							
+							else if(opt.labelName == 'Fax'){
+								if('${SourceLeadWeb_orgLocations.fax}' != null){
+									labelText = '${SourceLeadWeb_orgLocations.fax}';
+								}
+								
+							}
+							
+							else if(opt.labelName == 'Website'){
+								if('${SourceLeadWeb_website}' != null){
+									labelText = '${SourceLeadWeb_website}';
+								}
+								
+							}
+							
+							readonly = "readonly";
+						}
+						
+							
+						result = result + '<div class="form-group">';
+						result = result + '<label class="control-label col-md-2"><strong>'+opt.labelName+'</strong></label>';
+						result = result + '<div class="col-md-10 colpadding">';
+						result = result + '<div class="row">';
+						if(opt.labelName != 'Logo'){
+						
+						if(opt.labelName == "Sign Off"){
+							result = result + '<div class="col-md-3" title="Text Box"><input type="text" name=\''+name+'\' field-name="Sign Off" data-validation="required validate_Space validate_length length2-100" value="'+labelText+'" class="form-control input-sm" placeholder="Text Box"></div>';
+						}else{
+							result = result + '<div class="col-md-3" title="Text Box"><input type="text" '+readonly+' value="'+labelText+'" class="form-control input-sm" placeholder="Text Box"></div>';
+						}
+						
+						result = result + '<div class="col-md-2 select-field">';
+						result = result + '<select name="fontFamily'+opt.id+'" class="form-control input-sm">';
+						for (var j=0; j<json.fontFamilyList.length; j++)
+	 					{
+							var fontFamily = json.fontFamilyList[j];
+							result = result + '<option value="'+fontFamily+'"';
+							if(opt.fontFamily == fontFamily){
+								result = result+' selected';
+							}
+							result = result + '>'+fontFamily+'</option>';
+	 					}
+						result = result + '</select>';
+						result = result + '</div>';
+						
+						result = result + '<div class="col-md-2 select-field">';
+						result = result + '<select name="fontsize'+opt.id+'" class="form-control input-sm">';
+						for (var k=0; k<json.fontFamilyList.length; k++)
+	 					{
+							var fontSize = json.fontSizeList[k];
+							result = result + '<option value="'+fontSize+'"';
+							
+							if(opt.fontSize == fontSize){
+								result = result+' selected';
+							}
+							
+							result = result + '>'+fontSize+'</option>';
+	 					}
+						result = result + '</select>';
+						result = result + '</div>';
+						result = result + '<div class="col-md-2" title="Color Picker">';
+						result = result + '<div id="cp'+opt.id+'"  class="input-group colorpicker-component">';
+						result = result + '<input type="text" name="fontcolor'+opt.id+'" value="'+opt.fontColor+'" readonly="readonly" class="form-control" />';
+						result = result + '<span class="input-group-addon"><i></i></span>';
+						result = result + '</div>';
+						result = result + '</div>';
+						result = result + '<div class="col-md-2 email-button">';
+						result = result + '<div class="pull-left positionRelative">';
+						result = result + '<label class="btn-styles">';
+						result = result + '<input type="checkbox" name="bold'+opt.id+'" id="bold'+opt.id+'" '+boldChecked+'  '+boldValue+' onclick="getboldStyle('+opt.id+')" >';
+						result = result + '<i class="btn btn-default btn-sm fa fa-bold '+boldClass+'" id="boldActive'+opt.id+'" ></i>';
+						result = result + '</label>';
+						result = result + '</div>';
+						result = result + '<div class="pull-left positionRelative">';
+						result = result + '<label class="btn-styles">';
+						result = result + '<input type="checkbox" name="underline'+opt.id+'" id="underline'+opt.id+'" '+underlineChecked+' '+underlineValue+' onclick="getunderlineStyle('+opt.id+')" >';
+						result = result + '<i class="btn btn-default btn-sm fa fa-underline '+underlineClass+'" id="underlineActive'+opt.id+'"></i>';
+						result = result + '</label>';
+						result = result + '</div>';
+						result = result + '<div class="pull-left positionRelative">';
+						result = result + '<label class="btn-styles">';
+						result = result + '<input type="checkbox" name="italic'+opt.id+'" id="italic'+opt.id+'" '+italicChecked+' '+italicValue+' onclick="getitalicStyle('+opt.id+')" >';
+						result = result + '<i class="btn btn-default btn-sm fa fa-italic '+italicClass+'" id="italicActive'+opt.id+'"></i>';
+						result = result + '</label>';
+						result = result + '</div>';
+						result = result + '</div>';
+						
+						}else{
+							result = result + '<div class="col-md-3" title="Text Box"><img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value="/displayOrgImage/${SourceLeadWeb_orgCode}"/>" alt="Org Image" style="height:60px; width: 100px;"></div>';
+							result = result + '<div class="col-md-8 select-field">';
+							result = result + '</div>';
+						}
+						result = result + '<div class="col-md-1 email-switch" title="On/Off">';
+						result = result + '<label class="switch">';
+						result = result + '<input type="checkbox" onclick="checkSignature('+opt.id+')"  name="check'+opt.id+'"  id="check'+opt.id+'" '+checked+'></input>';
+						result = result + '<div class="slider" ></div>';
+						result = result + ' </label>';
+						result = result + '</div>';
+						result = result + '</div>';
+						result = result + '</div>';
+						result = result + '</div>';
+ 					} 
+					result = result + '<div class="pull-right">';
+					result = result + '<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">';
+					result = result + '</div>';
+					result = result + ' </form>';
+					
+					$("#campaignSignatrue").append(result);  
+					$("#signLoading").removeAttr("style");
+					for (var i=0; i<=json.signatureList.length; i++)
+ 					{
+						var opt = json.signatureList[i];
+						$('#cp'+opt.id+'').colorpicker();
+ 					}
+					
+					
+					
+		        },
+		 });
+}
+</script>
+
+<script>
+function colourpicker(){
+	$('#cp2, #cp3').colorpicker();
+}
+</script>
+
+
+<script>
+function checkSignature(id){
+	var checked = document.getElementById("check"+id).checked
+	if(checked == true){
+		$("#check"+id).val("Y");
+	}else{
+		$("#check"+id).val("N");
+	}
+}
+</script>
+
+<script>
+function getboldStyle(id){
+	var checked = document.getElementById("bold"+id).checked
+	if(checked == true){
+		$("#bold"+id).val("Y");
+		document.getElementById("boldActive"+id).removeAttribute("class");
+		document.getElementById("boldActive"+id).className = 'btn btn-default btn-sm fa fa-bold btn-active'
+	}else{
+		$("#bold"+id).val("N");
+		document.getElementById("boldActive"+id).removeAttribute("class");
+		document.getElementById("boldActive"+id).className = 'btn btn-default btn-sm fa fa-bold'
+	}
+}
+</script>
+
+<script>
+function getunderlineStyle(id){
+	var checked = document.getElementById("underline"+id).checked
+	if(checked == true){
+		$("#underline"+id).val("Y");
+		document.getElementById("underlineActive"+id).removeAttribute("class");
+		document.getElementById("underlineActive"+id).className = 'btn btn-default btn-sm fa fa-underline btn-active'
+	}else{
+		$("#underline"+id).val("N");
+		document.getElementById("underlineActive"+id).removeAttribute("class");
+		document.getElementById("underlineActive"+id).className = 'btn btn-default btn-sm fa fa-underline'
+	}
+}
+</script>
+
+<script>
+function getitalicStyle(id){
+	var checked = document.getElementById("italic"+id).checked
+	if(checked == true){
+		$("#italic"+id).val("Y");
+		document.getElementById("italicActive"+id).removeAttribute("class");
+		document.getElementById("italicActive"+id).className = 'btn btn-default btn-sm fa fa-italic btn-active'
+	}else{
+		$("#italic"+id).val("N");
+		document.getElementById("italicActive"+id).removeAttribute("class");
+		document.getElementById("italicActive"+id).className = 'btn btn-default btn-sm fa fa-italic'
+	}
+}
+</script>
+
+
+
+<script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#signature_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		    e.preventDefault(); 
+	          		
+        		    var sourceleadUrl = '${sourceleadUrl}';
+        			var frm = $('#signature_form').serializeFormJSON();
+        			var con = JSON.stringify(frm);
+        			con = con.replace(/[{}]/g, ""); 
+        		    var jsonData = encodeURIComponent(con);
+        		    $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	           		
+        		     $.ajax({
+        				type : "POST",
+        				url : sourceleadUrl+"/saveOrgSignature?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+        				success : function(result) {
+        					loadSignature();
+        				},
+        			});  
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+         $('#signature_form').showHelpOnFocus();
+         $('#signature_form').validateOnBlur(false, validationSettings); 
+            
+     
+</script> 
+
+<script>
+function getSignaturePreview(){
+	
+	$("#campaignSignatrue").empty(); 
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	   $.ajax({
+			type : "POST",
+			url : sourceleadUrl+"/getSignaturePreview?${_csrf.parameterName}=${_csrf.token}",
+			success : function(result) {
+				
+				$("#campaignSignatrue").html(result);
+				$("#SignatureHeading").html("Signature Preview");
+				document.getElementById("reset").style.display="none";
+				document.getElementById("settings").style.display="";
+				
+			},
+		}); 
+	 
+}
+</script>
+
+
+<script type="text/javascript">
+function restoreSignature(){
+	
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure to restore</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='restSignature();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#restorePopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#restorePopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<script type="text/javascript">
+function restSignature(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$("#restorePopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+	$("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	
+	   $.ajax({
+			type : "POST",
+			url : sourceleadUrl+"/restoreSignature?${_csrf.parameterName}=${_csrf.token}",
+			success : function(result) {
+				
+				if(result == "success"){
+					loadSignature();
+				}
+				
+				
+			},
+		}); 
+	 
+}
+</script>
+
+
+
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+
+        
+</script> 
 
 <jsp:include page="masterFooter.jsp" />
 </html>

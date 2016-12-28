@@ -3,7 +3,10 @@ package com.bis.sourcelead.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +21,14 @@ import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UserSignature;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmailService;
+import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserSignatureService;
@@ -51,6 +56,10 @@ public class EmailServiceImpl implements EmailService {
 	@Autowired
 	UserRoleService userRoleService;
 	
+	@Autowired
+	SourceleadSignatureService sourceleadSignatureService;
+	
+	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -65,9 +74,9 @@ public class EmailServiceImpl implements EmailService {
 		 UserSignature userSignature = null;
 		 String signature = "";
 		 String emails = null;
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();	 
 		 	StringBuilder lastName=new StringBuilder();
+		 Set<String> recipantsList = new HashSet<String>();
 		   	 if(!isNullOrEmpty(user.getLastName())){
 		   		 fullName = lastName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
 		   	 }else{
@@ -84,16 +93,24 @@ public class EmailServiceImpl implements EmailService {
 				String[] toEmails = emails.split(",");
 				 
 				for(int i=0 ; i< toEmails.length ; i++){
-					 EmailRecipient emailRecipient = new EmailRecipient();
-					 emailRecipient.setEmail(toEmails[i]);
-					 emailRecipientList.add(emailRecipient);
+					recipantsList.add(toEmails[i]);
 				}
+				
+				for(String email : recipantsList){
+					EmailRecipient emailRecipient = new EmailRecipient();
+					emailRecipient.setEmail(email);
+					emailRecipientList.add(emailRecipient);
+				}
+				
+				
 			}
 			
 			 emailMessage.setCreatedBy(user.getUserCode());
 			 emailMessage.setFromEmail(user.getEmail());
 			 emailMessage.setFromName(fullName);
 			 emailMessage.setEmailType(Constants.EMAIL_CAMPAIGN);
+			 
+			 signature = sourceleadSignatureService.buildSignature(user, orgLocation);
 			 
 			 
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -105,9 +122,7 @@ public class EmailServiceImpl implements EmailService {
 			 String subject = emailScenerioUtil.bulidSubject(jsonObj.getString("subject"),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 			 
-			 if(null != userSignature){
-				 signature = emailScenerioUtil.buildSignature(userSignature.getSignature(),globalVarsMap);
-			 }
+			
 			 
 			 String url = sourceleadUrl;
 			 
@@ -136,6 +151,9 @@ public class EmailServiceImpl implements EmailService {
 			 saveToUserMailBox(user,orgLocation,emailRecipientList,subject,jsonObj.getString("bodytext"),userSignature,multiFile);
 		
 	}
+	
+	
+	
 
 	private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailRecipient> emailRecipientList,String subject,String body,UserSignature userSignature,MultipartFile multiFile) throws Exception{
 		

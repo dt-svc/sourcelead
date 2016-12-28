@@ -590,11 +590,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    for(Projects projects :projectsSet){
 		    	 User fromUser = null;
 		    	List<ProjectApproverHierarchy> pahList = projectApproverHierarchyService.getApproverUsersByProjectId(projects.getId());
-		    	/*for(ProjectApproverHierarchy pah :pahList){
-		    		if(pah.getLevel() != null && pah.getLevel().intValue() == 1){*/
+		    	//for(ProjectApproverHierarchy pah :pahList){
+		    		//if(pah.getLevel() != null && pah.getLevel().intValue() == 1){
 //		    	for(ProjectApproverHierarchy pah :pahList){
 		    	ProjectApproverHierarchy pah = pahList.get(0);
-		    		if(pah.getLevel()==1){
+		    		if(pah.getLevel() != null && pah.getLevel().intValue() == 1){
 		    			fromUser = pah.getApproverUserId();
 		    		}
 		    		 logger.info("Aprover for the Employee "+user.getFirstName()+" is :"+fromUser.getFirstName()+"("+fromUser.getUserType()+")");

@@ -11,7 +11,11 @@
 <script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
-
+<style type="text/css">
+.mt10 {
+    margin-top: 10px !important;
+}
+</style>
 
 
 
@@ -29,43 +33,46 @@ function getAddApplicant(requirementId){
 	
 	result = result + '<div class="row">';
 	result = result + '<div class="venk clearfix">';
-	result = result + '<div class="col-md-9 radioInline">';
+	result = result + '<div class="col-md-7 radioInline">';
 	result = result + '<label class="mr"><input type="radio" checked="checked" value="Candidates" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Candidate\');">Candidates</label>';
 	result = result + '<label class="mr"><input type="radio" value="Consultants" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Consultant\');">Consultants</label>';
 	result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');">Add New Candidate</label>';
 	result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');">Parse Candidate</label>';
 	result = result + '</div>';	
 	
-	result = result + '<div class="col-md-5">';
-	result = result + '<div id="selectCandidateDiv" style="display: block;">';
-	result = result + '<select  onchange="getCandidateResumes();" onclick="getCandidateDetails();" name="candidateId" id="candidateId" data-validation="required" field-name="Applicant" class="form-control  block mt10">';
-	result = result + '<option value="">--Select Candidate--</option>';
-	result = result + '</select>';
-	result = result + '</div>';	
-	result = result + '</div>';	
-	result = result + '<div id="orConditionDiv" class="text-center text-info col-md-2" style="display: none;">';
-	result = result + '------- ( OR ) -------';
-	result = result + '</div>';
-	
 	result = result + '<div class="col-md-5 pull-right">';
-	result = result + '<div class="panel-border col-md-12">';
-	result = result + '<div class="" id="browseDiv"  style="display: none;">';
-
+	result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
 	result = result + '<div class="input-group" id="uploadFileGroup">';
 	result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload">';
 	result = result + '</span> </label>';
 	result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
 	result = result + '</div>';
-
-	result = result + '</div>';
 	result = result + '</div>';	
-                    
-	result = result + '<div class="panel-border_a col-md-12" id="resumesDiv"  style="display: none;">';
+	result = result + '</div>';
+	
+	result = result + '<div class="clearfix"></div>';
+	result = result + '<div class="col-md-6">';
+	result = result + '<div id="selectCandidateDiv" style="display: block;">';
+	result = result + '<select  onchange="getCandidateResumes();" onclick="getCandidateDetails();" name="candidateId" id="candidateId" data-validation="required" field-name="Applicant" class="form-control  block mt10">';
+	result = result + '<option value="">--Select Candidate--</option>';
+	result = result + '</select>';
+	result = result + '</div>';	
+	result = result + '</div>';	
+	
+	result = result + '<div class="panel-border_a col-md-5 mt10" id="resumesDiv"  style="display: none;">';
 	result = result + '<select id="candidateResumesList" name="candidateResume" field-name="Resume" class="form-control block">';
 	result = result + '</select>';
 	result = result + '</div>';
-	result = result + '</div></div>';
+	
+	result = result + '<div id="orConditionDiv" class="text-center text-info col-md-2" style="display: none;">';
+	result = result + '------- ( OR ) -------';
+	result = result + '</div>';
+	
+	
+	
+	
+	result = result + '</div>';
 	
 	result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="loading"></div> <div id="emailDiv"></div>';
 	
@@ -75,7 +82,7 @@ function getAddApplicant(requirementId){
 	result = result + '</div>';
 	result = result + '<div class="row">';
 	result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv" style="display: none;">';
-	result = result + '<label class="col-md-4">Add Resume</label>';
+	result = result + '<label class="col-md-4">Add Resume &nbsp;*</label>';
 	result = result + '		<div class="col-md-8">';
 	result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
 	result = result + '			        <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
@@ -153,6 +160,8 @@ function ApplicantPermit(){
 <script type="text/javascript">
  function getCandidatesList(requirementId,candidateType) {
 	 $('#sjfb-fields').find('p.jquery_form_error_message').remove();
+	 $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+	 $('#uploadFileGroup1').find('p.jquery_form_error_message').remove();
 	 
 	 $('#candidateId').removeAttr('data-validation-optional');
 	 $("#candidateId").attr("data-validation", "required");
@@ -207,7 +216,7 @@ function ApplicantPermit(){
 	     if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType == 'parseCandidate'){
 	    	 document.getElementById("browseDiv").style.display="";
 	    	 $('#uploadFile').removeAttr('data-validation-optional');
-			 $('#uploadFile').attr("data-validation","required"); 
+			 $('#uploadFile').attr("data-validation","required validate_Space validatedoc "); 
 			 
 			 document.getElementById("newResumeDiv").style.display="none";
 			 $('#newUploadFile').removeAttr('data-validation');

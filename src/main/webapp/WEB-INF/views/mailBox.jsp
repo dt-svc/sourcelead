@@ -130,7 +130,6 @@
 			<div class="col-md-9" id="details">
 			 <div class="mail-box mail-content">
 			 <div class="mail-widget">
-              <h3 class="box-title">Read Mail</h3>
               <div id="mailDetails"></div>
               </div>
               </div>

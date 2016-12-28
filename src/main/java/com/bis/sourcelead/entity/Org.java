@@ -89,6 +89,10 @@ public class Org implements Serializable{
 	@Type(type="text")
 	private String orgDescription;
 	
+	@Column(name = "ORG_ADDRESS")
+	@Type(type="text")
+	private String orgAddress;
+	
 	
 	@Column(name = "ATS")
 	@Enumerated(EnumType.STRING)
@@ -307,6 +311,14 @@ public class Org implements Serializable{
 
 	public void setModulesId(String modulesId) {
 		this.modulesId = modulesId;
+	}
+
+	public String getOrgAddress() {
+		return orgAddress;
+	}
+
+	public void setOrgAddress(String orgAddress) {
+		this.orgAddress = orgAddress;
 	}
 
 	
