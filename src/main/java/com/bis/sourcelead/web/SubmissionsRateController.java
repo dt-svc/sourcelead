@@ -104,7 +104,7 @@ public class SubmissionsRateController {
 		model.addObject("requirementSubmission",requirementSubmission);
 		model.setViewName("requirement/submissionRate");
 		
-		if("Accepted".equalsIgnoreCase(rateStatus) && "YES".equalsIgnoreCase(permission)){
+		if("Accepted".equalsIgnoreCase(rateStatus)){
 			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 			UserRole userRole =userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), requirementSubmission.getOrgLocations().getId());
 			
@@ -166,7 +166,7 @@ public class SubmissionsRateController {
 		model.addObject("requirementSubmission",requirementSubmission);
 		model.setViewName("requirement/submissionRate");
 		
-		if("Accepted".equalsIgnoreCase(rateStatus) && permission.equalsIgnoreCase("YES")){
+		if("Accepted".equalsIgnoreCase(rateStatus)){
 			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 			UserRole userRole =userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), requirementSubmission.getOrgLocations().getId());
 			
@@ -195,7 +195,7 @@ public class SubmissionsRateController {
 			Requirement requirement = requirementSubmission.getRequirement();
 			Candidate candidate = requirementSubmission.getCandidate();
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
-			requirementSubmissionService.applicantAcceptMailAboutRequirement(requirement,userRole.getUser(),candidate,orgLocations);
+			requirementSubmissionService.userAcceptRateNegotiation(requirement,userRole.getUser(),candidate,orgLocations,requirementRateSubmissionNegotiation);
 			
 		}
 		return model;

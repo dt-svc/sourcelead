@@ -760,11 +760,15 @@ $('input:checkbox:not(#checkAllCandidates)').click(function() {
 
 <script>
 function getEmails(){
-	var emails = [];
+	
+	var oTable = $('#example').dataTable();
+	var rowcollection =  oTable.$("input[name='emails[]']:checked", {"page": "all"});
+	
+	
 	var internalOutput = "";
-	 $("input[name='emails[]']:checked").each( function (i) {
-		 emails[i] = $(this).val();
-		 internalOutput = internalOutput+"<option value='" +emails[i]+ "' selected>"+emails[i]+"</option>";
+	rowcollection.each(function(index,elem){
+		 var checkbox_value = $(elem).val();
+		 internalOutput = internalOutput+"<option value='" +checkbox_value+ "' selected>"+checkbox_value+"</option>";
 	});
 	 
 	    $("#emailsList").append(internalOutput);
@@ -772,7 +776,6 @@ function getEmails(){
 		
 		$("input[name='emails[]']:checked").removeAttr('checked');
 		$('#checkAllContacts').removeAttr('checked');
-		
 		
 }
 </script>
@@ -819,12 +822,15 @@ function getContactEmails(){
 
 <script>
 function getCheckedCandidates(){
-	var candidatesIds = [];
+	
+	var oTable = $('#candidates').dataTable();
+	var rowcollection =  oTable.$("input[name='candidatesIds[]']:checked", {"page": "all"});
+	
+	
 	var internalOutput = "";
-	 $("input[name='candidatesIds[]']:checked").each( function (i) {
-		 candidatesIds[i] = $(this).val();
-		 var candidate = candidatesIds[i].split(",")
-		 internalOutput = internalOutput+"<option value='" +candidate[0]+ "' selected>"+candidate[1]+"</option>";
+	rowcollection.each(function(index,elem){
+		 var checkbox_value = $(elem).val().split(",");
+		 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
 	});
 	 
 	  
@@ -833,7 +839,6 @@ function getCheckedCandidates(){
 		
 		$("input[name='candidatesIds[]']:checked").removeAttr('checked');
 		$('#checkAllCandidates').removeAttr('checked'); 
-		
 		
 }
 </script>

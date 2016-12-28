@@ -343,16 +343,14 @@ public class BackOfficeRestController {
     public void downloadAssetFile(@RequestParam(value="fileType", required=false) String fileType ,@RequestParam(value="assetId", required=false) Long assetId ,HttpServletResponse response) throws Exception {
 		
 		     Asset asset = assetService.getAssetById(assetId);
-		     StringBuilder shiftAfileName = new StringBuilder();
-		     StringBuilder shiftBfileName = new StringBuilder();
 		     StringBuilder fileName = new StringBuilder();
 		    
 		     InputStream inputStream;
 		     if(null != fileType && "shiftAfile".equals(fileType)){
-		    	 response.setHeader("content-disposition", shiftAfileName.append("attachment; filename=\"").append(asset.getShiftAFileName()).append("\"").toString());
+		    	 response.setHeader("content-disposition", fileName.append("attachment; filename=\"").append(asset.getShiftAFileName()).append("\"").toString());
 				 inputStream = new ByteArrayInputStream(asset.getShiftADocFile()); 
 		     }else if(null != fileType && "shiftBfile".equals(fileType)){
-		    	 response.setHeader("content-disposition", shiftBfileName.append("attachment; filename=\"").append(asset.getShiftBFileName()).append("\"").toString());
+		    	 response.setHeader("content-disposition", fileName.append("attachment; filename=\"").append(asset.getShiftBFileName()).append("\"").toString());
 				 inputStream = new ByteArrayInputStream(asset.getShiftBDocFile()); 
 		     }else{
 		    	 response.setHeader("content-disposition", fileName.append("attachment; filename=\"").append(asset.getFileName()).append("\"").toString());

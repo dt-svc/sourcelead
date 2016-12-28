@@ -29,7 +29,7 @@ display: none;
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Hotlist Mail Box</h2>
+        <h2>Compose Mail</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/mailBox'/>"> Mailbox</a>
 			&raquo; Compose Email</div>
@@ -443,12 +443,17 @@ function pagination(){
 
 <script>
 function getEmails(){
-	var emails = [];
+	
+	var oTable = $('#example').dataTable();
+	var rowcollection =  oTable.$("input[name='emails[]']:checked", {"page": "all"});
+	
+	
 	var internalOutput = "";
-	 $("input[name='emails[]']:checked").each( function (i) {
-		 emails[i] = $(this).val();
-		 internalOutput = internalOutput+"<option value='" +emails[i]+ "' selected>"+emails[i]+"</option>";
+	rowcollection.each(function(index,elem){
+		 var checkbox_value = $(elem).val();
+		 internalOutput = internalOutput+"<option value='" +checkbox_value+ "' selected>"+checkbox_value+"</option>";
 	});
+	
 	 
 	    $("#emailsList").append(internalOutput);
 		$("#emailsList").trigger("chosen:updated");
