@@ -631,7 +631,6 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 	text-align: center;
 	line-height: 60px;
 	vertical-align: middle;
-s
 }
 .msg-img img {
 	display: block;
@@ -4759,8 +4758,8 @@ import-tranhd  [class*="col-md-"]{
        background-size:8px;
        }
 .cand-advsrch {
-	margin:15px;
-	position: relative;
+	margin:8px 15px;
+	position: relative; z-index: 100;
 }
 .cand-advsrch .fa-search{
 	color: #fff !important;
@@ -4772,23 +4771,18 @@ import-tranhd  [class*="col-md-"]{
 .cand-advsrch-popup{
 	border: 1px solid #ccc;
 	background: #eee;
-	padding: 10px 15px;
+	padding: 15px 15px 0px;
 	border-radius: 5px;
 	width: 800px;
 	position: absolute;
 	top: 30px;
 	left: 0;
-	min-height:100px;
-	max-height:450px;
-	overflow:auto;
 	display: none;
 	z-index: 999;
 }
 .cand-advsrch-popup .close-div{
 	right: 0;
 	left: auto;
-	top:2px;
-	z-index: 9999;
 }
 .cand-advsrch-popup .col-md-4{
 	/*margin-bottom: 10px;*/
@@ -5456,17 +5450,76 @@ padding:0 5px;
     position: relative;
     top: 5px;
 }
+/* Signature styles */
 .signature-area {
     min-height: 150px;
-    border: 1px solid #ccc;
+    /*border: 1px solid #ccc;*/
     padding: 10px;
     box-sizing: border-box;
 }
+.signature-area h4 {
+    font-weight: 600;
+    margin: 0;
+}
+.signature-area p {
+    font-weight: normal;
+    margin: 0;
+    font-size: 13px;
+    line-height: 19px;
+    color:#707070;
+}
+.imageSignature {
+	min-height: 100px;
+	max-height: 150px;
+	overflow: hidden;
+	position: relative;
+	text-align: center;
+	vertical-align: middle;
+	width: 150px;
+	margin: 0px auto 5px;
+}
+.imageSignature img {
+	height: auto;
+	margin: auto;
+	max-height: 100%;
+	max-width: 100%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	top: 0;
+	vertical-align: middle;
+	width: auto;
+}
+/* Signature styels ends */
 .btn-active{
  color:#f60 !important;   
 }
 .selp-custom-min.custommin > .bootstrap-select .btn-default {
     height: 30px;
+}
+label.btn-styles{
+    margin-right: 30px;margin-bottom: 0;
+}
+.btn-styles input[type="checkbox"] {
+    border: 1px solid red;
+    opacity: 0.2;
+    position: relative;
+}
+.btn-styles .btn{
+    position: absolute;
+    top: 0;
+    padding: 7px 15px;
+    left: 0;
+}
+.mail-body{
+padding: 0 15px !important;
+}
+.custom-form.custom-mailform{
+background: transparent;
+float: left;
+width: 65%;
+padding: 0;
 }
 /* media 320px */
 @media (max-width: 320px) {

@@ -863,7 +863,7 @@ function getCheckedCandidates(){
 			  //Adding Customized Emails to the list
 	        var select, chosen;
 		    select = $("#otherEmails");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Email:' });
 		    chosen = select.data('chosen');
 		    chosen.search_field.on('keyup', function(e)
 		    {
