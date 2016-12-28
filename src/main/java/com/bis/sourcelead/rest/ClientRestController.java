@@ -316,7 +316,10 @@ public class ClientRestController {
 		Long projectCount = orgRelationsService.getNumberOfProjectsPerClient(orgRelation.getId());
 		orgRelation.setProjectsCont(projectCount);
 		User user = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
-		orgRelation.setVendorCreateduserName(user.getFirstName()+" "+user.getLastName());
+		if(user != null){
+			StringBuilder name = new StringBuilder();
+			orgRelation.setVendorCreateduserName(name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		}
 		return commonUtil.toJSON(orgRelation);
 	}
 	
@@ -352,7 +355,8 @@ public class ClientRestController {
 				if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getLastName() != null){
 					ownerLastName = orgSpoc.getOwnerUser().getLastName();
 				}
-				orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+ownerLastName);
+				StringBuilder name = new StringBuilder();
+				orgSpoc.setOwnerName(name.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(ownerLastName).toString());
 			}
 		}
 		return commonUtil.toJSON(orgSpocsList);
@@ -578,7 +582,9 @@ public class ClientRestController {
 	       String json1 = "{" + json + "}";
 	       JSONObject jsonObj = new JSONObject(json1);
 	       clientService.updateClientDetails(jsonObj, orgRelationId,clientLocationId, orgLocation.getId());
-	       SourceLeadSessionManager.setSessionAttribute(request, "editClient","Success !! "+jsonObj.getString("clientName")+" details updated.");
+	       
+	       StringBuilder editClientMsg = new StringBuilder();
+		   SourceLeadSessionManager.setSessionAttribute(request, "editClient", editClientMsg.append("Success !! ").append(jsonObj.getString("clientName")).append(" details updated.").toString());
 
 		return "success";
 	}
@@ -599,7 +605,21 @@ public class ClientRestController {
 		List<Org> org =orgService.getOrgs();
 	    boolean flag = false;
 		
-			flag = orgService.isClientNameValid(clientName,orgLocation.getId(),responderType);
+			List<OrgRelations> relationsList = orgRelationsService.getClientOrVendorListByOrgLocationId(orgLocation.getId(), responderType);
+			for(OrgRelations orgRelations : relationsList){
+				if(orgRelations.getLocationId().getId() == orgLocation.getId()){
+					if(clientName.equalsIgnoreCase(orgRelations.getResponderLocationId().getOrg().getOrgName())){
+						flag = true;
+					}
+				}	
+				else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
+					if(clientName.equalsIgnoreCase(orgRelations.getLocationId().getOrg().getOrgName())){
+						flag = true;
+					}
+					
+				}
+				
+			}
 		
 		
 		return flag;
@@ -701,7 +721,9 @@ public class ClientRestController {
 	
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	       clientService.updateVendorDetails(jsonObj, orgRelationId,vendorLocationId, orgLocation.getId());
-	       SourceLeadSessionManager.setSessionAttribute(request, "editVendor","Success !! "+jsonObj.getString("vendorName")+" details updated.");
+	       
+	       StringBuilder editVendorMsg = new StringBuilder();
+		   SourceLeadSessionManager.setSessionAttribute(request, "editVendor", editVendorMsg.append("Success !! ").append(jsonObj.getString("vendorName")).append(" details updated.").toString());
 
 		return "success";
 	}
@@ -725,7 +747,8 @@ public class ClientRestController {
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	       OrgSpoc orgSpoc = clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation);
 	       
-	       SourceLeadSessionManager.setSessionAttribute(request, "editSpocMsg",	"Success !! "+orgSpoc.getSpocUser().getFirstName()+" details updated.");
+	       StringBuilder editSpocMsg = new StringBuilder();
+		   SourceLeadSessionManager.setSessionAttribute(request, "editSpocMsg", editSpocMsg.append("Success !! ").append(orgSpoc.getSpocUser().getFirstName()).append(" details updated.").toString());
 
 		return jsonObj.getString("owner");
 	}
@@ -894,7 +917,8 @@ public class ClientRestController {
 				mimeType = "application/octet-stream";
 			}
 			response.setContentType(mimeType);
-			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"" ).append(file.getName()).append("\"").toString());
 			response.setContentLength((int) file.length());
 			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 			FileCopyUtils.copy(inputStream, response.getOutputStream());
@@ -930,7 +954,8 @@ public class ClientRestController {
 				mimeType = "application/octet-stream";
 			}
 			response.setContentType(mimeType);
-			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"" ).append(file.getName()).append( "\"").toString());
 			response.setContentLength((int) file.length());
 			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 			FileCopyUtils.copy(inputStream, response.getOutputStream());

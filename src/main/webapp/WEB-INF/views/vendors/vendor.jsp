@@ -69,7 +69,7 @@ window.onload = function () {
 			<div class="form-group " id="companyWebsiteDiv">
 				<label class="col-md-3">Website</label>
 				<div class="col-md-9">
-				<input type="text" class="form-control" id="webSite" name="webSite" value="" field-name="Vendor Website" onblur="validateWebsite();" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
+				<input type="text" class="form-control" id="webSite" name="webSite" value="" field-name="Vendor Website" onkeyup="validateWebsite();" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
 				</div>
 			</div>
 						
@@ -139,7 +139,7 @@ window.onload = function () {
             <div class="form-group" id="EmailIdDiv">
 				<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
-					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateWebsite();getSpocUserDetails();">
+					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="getSpocUserDetails();">
 	                            <span class="hidden">Valid Email</span>
 				</div>
 			</div>
@@ -460,12 +460,6 @@ function getRolesList(){
 
 <script type="text/javascript">
 	function saveVendor() {
-		var validationSettings = {
-			errorMessagePosition : 'element',
-			borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd'
-		};
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
 			var frm = $('#client_form').serializeFormJSON();
@@ -585,8 +579,9 @@ function validateClientName(){
 	if(clientName.match(/^[^\s-](.*)*$/) != null){
 		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
 	if (clientName != null && clientName != '') {
-		//$("#save_client").attr("disabled", "disabled");
-		// $( "#save_client" ).addClass('button').val('Processing..');
+		
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+clientName+"&responderType=Vendor",
@@ -613,6 +608,8 @@ function validateClientName(){
 						} */
 					});
 				}
+				
+				$("#loading").removeAttr("style");
 			},
 
 		});
@@ -654,10 +651,10 @@ function validateClientName(){
 						$('input#webSite').attr('class','valid form-control');
 						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 				
-						$("#save_client").click(function() {
+						/* $("#save_client").click(function() {
 							if ($(this).validate(false, validationSettings)) {
 							}
-						});
+						}); */
 					}
 				},
 

@@ -78,6 +78,9 @@ public class Team implements Serializable{
 	@Transient
 	private String teamOwnerName;
 	
+	@Transient
+	private Integer candidateHotlistCount;
+	
 	public Long getId() {
 		return id;
 	}
@@ -189,5 +192,12 @@ public class Team implements Serializable{
 	public void setTeamOwnerName(String teamOwnerName) {
 		this.teamOwnerName = teamOwnerName;
 	}
-	
+
+	public Integer getCandidateHotlistCount() {
+		return candidateHotlistCount;
+	}
+
+	public void setCandidateHotlistCount(Integer candidateHotlistCount) {
+		this.candidateHotlistCount = candidateHotlistCount;
+	}
 }

@@ -92,6 +92,15 @@ public class MailBoxController {
  	}
 
 	
+	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
+	@RequestMapping(value = "/composeMail")
+ 	public ModelAndView composeMail(HttpServletRequest request) {
+		    ModelAndView model = new ModelAndView();
+ 			model.setViewName("composeMail");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			return model;
+ 	}
+	
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/hotlistMail")
  	public ModelAndView hotlistMail(HttpServletRequest request) {
@@ -181,6 +190,10 @@ public class MailBoxController {
 	    	}else if(candidatesListType.equalsIgnoreCase("candidates")){
 	    		 candidatesList = candidateService.getAllActiveCandidatesForCampaignByLocation(orgLocations.getId(),"Candidate");
 	    	}
+	    	else if(candidatesListType.equalsIgnoreCase("openHotlist")){
+	    		candidatesList = candidateService.getAllHotlistCandidatesAndNotAssignedToTeamByLocation(orgLocations.getId());
+	    	}
+	    	
 	    	else if(candidatesListType.equalsIgnoreCase("hotlistConsultants") || candidatesListType.equalsIgnoreCase("hotlistCandidates")){
 	    		UserRole userRole = userRoleService.getUserByUserId(user.getId());
 	    		if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_ADMIN") || userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
@@ -201,21 +214,7 @@ public class MailBoxController {
 	    	
 	    }
 	    
-	   
-	    
-	    
-	    if(null != candidatesList){
-	    	for(Candidate candidate : candidatesList){
-	    		boolean flag = candidateHotListService.isCandidateIsFavourite(candidate.getId(), orgLocations.getId());
-	    		if(flag == true){
-	    			candidate.setIsFavourite(Constants.YES);
-	    		}else{
-	    			candidate.setIsFavourite(Constants.NO);
-	    		}
-	    		candList.add(candidate);
-	    	}
-	    }
-	    resultJson = commonUtil.toJSON(candList);
+	    resultJson = commonUtil.toJSON(candidatesList);
 		return resultJson;
 	}
 	

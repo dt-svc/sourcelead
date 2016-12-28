@@ -40,6 +40,7 @@ import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
@@ -82,6 +83,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	
 	@Autowired
 	private RequirementInterviewHistoryService requirementInterviewHistoryService;
+	
+	@Autowired
+	private SubmissionTemplateService submissionTemplateService;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -152,10 +156,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 									requirementInterview.setRemainedBefore(remainedBefore.toString());
 								}
 								
-							   	if(jsonObj.has("interviewSubmissionTemplate") && jsonObj.getString("interviewSubmissionTemplate") != null){
-							   		SubmissionTemplate submissionTemplate = new SubmissionTemplate();
-									submissionTemplate.setId(Long.parseLong(jsonObj.getString("interviewSubmissionTemplate")));
-								   requirementInterview.setInterviewTemplateId(submissionTemplate);
+							   	if(jsonObj.has("interviewSubmissionTemplate") && jsonObj.getString("interviewSubmissionTemplate") != null && !"".equalsIgnoreCase(jsonObj.getString("interviewSubmissionTemplate"))){
+							   			SubmissionTemplate sub= submissionTemplateService.getSubmissionTemplateById(Long.parseLong(jsonObj.getString("interviewSubmissionTemplate")));
+										   requirementInterview.setInterviewTemplateId(sub);
 							   	}
 							   requirementInterview.setStatus(Constants.RECORD_ACTIVE);
 					           requirementInterview.setCreatedDate(new Date());
@@ -320,14 +323,14 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String time = "";
 		 String endTime = ""; 
 		 if(requirementInterview.getStartTime() != null){
-	    	 String hours = requirementInterview.getStartTime().getHours()+"";
-	    	 String minutes = requirementInterview.getStartTime().getMinutes()+"";
+	    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
+	    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
 	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
 	    }
 	    
 	    if(requirementInterview.getEndTime() != null){
-	    	 String hours = requirementInterview.getEndTime().getHours()+"";
-	    	 String minutes = requirementInterview.getEndTime().getMinutes()+"";
+	    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
+	    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
 	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
 	    }
 		 
@@ -402,14 +405,14 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 
 		 
 		 if(requirementInterview.getStartTime() != null){
-	    	 String hours = requirementInterview.getStartTime().getHours()+"";
-	    	 String minutes = requirementInterview.getStartTime().getMinutes()+"";
+	    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
+	    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
 	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
 	    }
 	    
 	    if(requirementInterview.getEndTime() != null){
-	    	 String hours = requirementInterview.getEndTime().getHours()+"";
-	    	 String minutes = requirementInterview.getEndTime().getMinutes()+"";
+	    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
+	    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
 	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
 	    }
 		 
@@ -431,10 +434,18 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("interviewTime",time);
 			 globalVarsMap.put("interviewType",interviewTypeValue);
 			 globalVarsMap.put("Location",requirementInterview.getLocation());
-			 globalVarsMap.put("acceptURL","<a href='"+sourceleadUrl+"/"+"acceptOrRejectInterview?interviewStatus=Attending&requirementInterviewId="+requirementInterview.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a><br>");
-			 globalVarsMap.put("rejectURL","<a href='"+sourceleadUrl+"/"+"acceptOrRejectInterview?interviewStatus=Not Attending&requirementInterviewId="+requirementInterview.getId()+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a><br>");
-			 globalVarsMap.put("tentativeURL","<a href='"+sourceleadUrl+"/"+"acceptOrRejectInterview?interviewStatus=Maybe&requirementInterviewId="+requirementInterview.getId()+" 'style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Tentative</div></a>");
+			 StringBuilder acceptBuilder = new StringBuilder();
+			 StringBuilder rejectBuilder = new StringBuilder();
+			 StringBuilder tentativeBuilder = new StringBuilder();
 			 
+			 globalVarsMap.put("acceptURL",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectInterview?interviewStatus=Attending&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+			 globalVarsMap.put("rejectURL",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectInterview?interviewStatus=Not Attending&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+			 globalVarsMap.put("tentativeURL",tentativeBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectInterview?interviewStatus=Maybe&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Tentative</div></a>").toString());
+			 
+			/* globalVarsMap.put("acceptURL","<a href='"+sourceleadUrl+"/"+"acceptOrRejectInterview?interviewStatus=Attending&requirementInterviewId="+requirementInterview.getId()+"' style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
+			 globalVarsMap.put("rejectURL","<a href='"+sourceleadUrl+"/"+"acceptOrRejectInterview?interviewStatus=Not Attending&requirementInterviewId="+requirementInterview.getId()+"' style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
+			 globalVarsMap.put("tentativeURL","<a href='"+sourceleadUrl+"/"+"acceptOrRejectInterview?interviewStatus=Maybe&requirementInterviewId="+requirementInterview.getId()+" 'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Tentative</div></a>");
+			*/ 
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
@@ -496,14 +507,14 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			    }
 			    
 			    if(requirementInterview.getStartTime() != null){
-			    	 String hours = requirementInterview.getStartTime().getHours()+"";
-			    	 String minutes = requirementInterview.getStartTime().getMinutes()+"";
+			    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
+			    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
 			    	 requirementInterview.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
 			    }
 			    
 			    if(requirementInterview.getEndTime() != null){
-			    	 String hours = requirementInterview.getEndTime().getHours()+"";
-			    	 String minutes = requirementInterview.getEndTime().getMinutes()+"";
+			    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
+			    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
 			    	 requirementInterview.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
 			    }
 			    
@@ -545,14 +556,14 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			    }
 			    
 			    if(requirementInterview.getStartTime() != null){
-			    	 String hours = requirementInterview.getStartTime().getHours()+"";
-			    	 String minutes = requirementInterview.getStartTime().getMinutes()+"";
+			    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
+			    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
 			    	 requirementInterview.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
 			    }
 			    
 			    if(requirementInterview.getEndTime() != null){
-			    	 String hours = requirementInterview.getEndTime().getHours()+"";
-			    	 String minutes = requirementInterview.getEndTime().getMinutes()+"";
+			    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
+			    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
 			    	 requirementInterview.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
 			    }
 			    
@@ -600,14 +611,14 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String time = "";
 		 String endTime = "";
 		 if(requirementInterview.getStartTime() != null){
-	    	 String hours = requirementInterview.getStartTime().getHours()+"";
-	    	 String minutes = requirementInterview.getStartTime().getMinutes()+"";
+	    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
+	    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
 	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
 	    }
 	    
 	    if(requirementInterview.getEndTime() != null){
-	    	 String hours = requirementInterview.getEndTime().getHours()+"";
-	    	 String minutes = requirementInterview.getEndTime().getMinutes()+"";
+	    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
+	    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
 	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes);
 	    }
 		 
@@ -750,7 +761,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("interviewTime", interviewTime);
 			 globalVarsMap.put("interviewType",interviewTypeValue);
 			 globalVarsMap.put("applicantName",candidateName);
-			 globalVarsMap.put("FeedbackLink","<a href='"+sourceleadUrl+"/"+"publicInterviewFeedBackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerid+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>");
+			 StringBuilder feedbackBuilder = new StringBuilder();
+			 
+			 globalVarsMap.put("FeedbackLink",feedbackBuilder.append("<a href='").append(sourceleadUrl).append("/publicInterviewFeedBackTemplate?templateId=").append(templateId).append("&requirementInterviewid=").append(requirementInterviewerid).append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>").toString());
+			 //globalVarsMap.put("FeedbackLink","<a href='"+sourceleadUrl+"/"+"publicInterviewFeedBackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerid+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>");
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
@@ -810,14 +824,14 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			    }
 			    
 			    if(requirementInterview.getStartTime() != null){
-			    	 String hours = requirementInterview.getStartTime().getHours()+"";
-			    	 String minutes = requirementInterview.getStartTime().getMinutes()+"";
+			    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
+			    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
 			    	 requirementInterview.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
 			    }
 			    
 			    if(requirementInterview.getEndTime() != null){
-			    	 String hours = requirementInterview.getEndTime().getHours()+"";
-			    	 String minutes = requirementInterview.getEndTime().getMinutes()+"";
+			    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
+			    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
 			    	 requirementInterview.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(hours+":"+minutes));
 			    }
 			    

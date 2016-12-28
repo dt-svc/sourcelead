@@ -1,8 +1,6 @@
 package com.bis.sourcelead.elk.index.helper;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -100,18 +98,5 @@ public class CandidateIndexHelper {
 		
 	}
 	
-	public CandidateIndex getCandidateIndexFromCandidateResume(Candidate candidate) throws Exception{
-		CandidateIndex candidateIndex = null;
-		if(null != candidate && null != candidate.getId()){
-			candidateIndex = new CandidateIndex();
-			candidateIndex.setCandidateId(candidate.getId());
-			CandidateResumes candidateResumes = candidateResumesService.getCandidateLatesResumes(candidate.getId(),Constants.CANDIDATE_SKILL_ACTIVE);
-			if(null != candidateResumes){
-				candidateIndex.setCurrentResumeId(candidateResumes.getId());
-				candidateIndex.setCurrentResumeName(candidateResumes.getFileName());
-				candidateIndex.setResumeContent("");
-			}
-		}
-		return candidateIndex;
-	}
+	
 }

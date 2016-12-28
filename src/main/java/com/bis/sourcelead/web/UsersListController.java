@@ -143,7 +143,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		 List<UserRole> notLoggedInList = null;
 		 DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		 Workbook createExcelworkbook =  new XSSFWorkbook();
- 		 Sheet createExcelsheet = createExcelworkbook.createSheet("users "+dateFormat.format(new Date()));
+		 StringBuilder excelSB = new StringBuilder();
+ 		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("users ").append(dateFormat.format(new Date())).toString());
          
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
  		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -185,8 +186,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
  		if(!"pdf".equalsIgnoreCase(exportType)){
  			createExcelsheet = userRoleService.getExcelFile(createExcelsheet,createExcelworkbook,activeList,inactiveList,notLoggedInList,userRolesList,userState);
  	 		 /* file = new File("users_"+dateFormat.format(new Date())+".xls");*/
- 	 		
- 	 		  file = File.createTempFile("users_"+dateFormat.format(new Date()),".xls");
+ 			  StringBuilder templateSB = new StringBuilder();
+ 	 		  file = File.createTempFile(templateSB.append("users_").append(dateFormat.format(new Date())).toString(),".xls");
  	 		  file.setReadable(true);
  	 		  
  			 FileOutputStream fos = new FileOutputStream(file);
@@ -205,7 +206,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 				mimeType = "application/octet-stream";
 			}
 			response.setContentType(mimeType);
-			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			StringBuilder fileNameSB = new StringBuilder();
+			response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
 			response.setContentLength((int) file.length());
 			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 			FileCopyUtils.copy(inputStream, response.getOutputStream());

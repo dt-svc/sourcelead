@@ -34,6 +34,9 @@ overflow-x: auto;
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
+	    <div class="success_pop" id="selector1" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+       </div>
 			<div class="pull-left">
 				<h2>Clients<span class="select-fild">
 				    <select id="listOfVendors" onchange="listChange(this);">
@@ -301,6 +304,13 @@ function getClientDetails(){
 	
 	
 }	
+</script> 
+
+<script>
+	function msgFadein() {
+		$("#selector1").fadeIn(200);
+        $('#selector1').delay(2000).fadeOut('slow');
+	}
 </script> 
 
 <script>
@@ -903,7 +913,7 @@ function getEndDatePickerById(projectId,localFieldName){
 		
 		$("#filter1ApprovePop").click(function(){
 			$("#filter1ApprovedPop").slideToggle(200);
-			$("#filter2ApprovedPop, #filter3ApprovedPop, #filter4ApprovedPop").slideUp(200);
+			$(".export_pop, #filter3ApprovedPop, #filter4ApprovedPop").slideUp(200);
 		});
 	    $("html").click(function() {
 	        $("#filter1ApprovedPop").slideUp(200);
@@ -914,7 +924,7 @@ function getEndDatePickerById(projectId,localFieldName){
 		
 		$("#filter2ApprovePop").click(function(){
 			$("#filter2ApprovedPop").slideToggle(200);
-			$("#filter1ApprovedPop, #filter3ApprovedPop, #filter4ApprovedPop").slideUp(200);
+			$(" .export_pop").slideUp(200);
 		});
 	    $("html").click(function() {
 	        $("#filter2ApprovedPop").slideUp(200);
@@ -925,7 +935,7 @@ function getEndDatePickerById(projectId,localFieldName){
 	    
 	    $("#filter3ApprovePop").click(function(){
 			$("#filter3ApprovedPop").slideToggle(200);
-			$("#filter1ApprovedPop, #filter2ApprovedPop, #filter4ApprovedPop").slideUp(200);
+			$("#filter1ApprovedPop, .export_pop, #filter4ApprovedPop").slideUp(200);
 		});
 	    $("html").click(function() {
 	        $("#filter3ApprovedPop").slideUp(200);
@@ -936,7 +946,7 @@ function getEndDatePickerById(projectId,localFieldName){
 	    
 	    $("#filter4ApprovePop").click(function(){
 			$("#filter4ApprovedPop").slideToggle(200);
-			$("#filter1ApprovedPop, #filter2ApprovedPop, #filter3ApprovedPop").slideUp(200);
+			$("#filter1ApprovedPop, .export_pop, #filter3ApprovedPop").slideUp(200);
 		});
 	    $("html").click(function() {
 	        $("#filter4ApprovedPop").slideUp(200);
@@ -990,7 +1000,11 @@ function acceptInvitation(spocId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Accepted",	    	   
 		    success: function(data) {
+		    	$("#selector1").removeAttr("style");
+    			$("#selector1").css({ display: "block" });
+    			$("#msgDiv").html("Accept Invitation Successfully");
 		    	getVendorContactLists();
+		    	msgFadein();
 		    }
 	   });
 }
@@ -1044,7 +1058,11 @@ function rejectInvitation(spocId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Rejected",
 		    success: function(data) {
+		    	$("#selector1").removeAttr("style");
+    			$("#selector1").css({ display: "block" });
+    			$("#msgDiv").html("Reject Invitation Successfully");
 		    	getVendorContactLists();
+		    	msgFadein();
 		    }
 	   });
 }
@@ -1196,6 +1214,7 @@ $(document).ready(function() {
  $('#selector').delay(2000).fadeOut('slow');
 	   $("#client-imports").click(function(){
 	       $(".export_pop").toggle();
+	       $("#filter2ApprovedPop").slideUp();
 	       });
 	   $("html").click(function() {
 	       $(".export_pop").hide();
@@ -1210,6 +1229,7 @@ $('#selector').delay(2000).fadeOut('slow');
   $(document).ready(function() {
 	   $("#export-popcon").click(function(){
 		   $(".export_pop").toggle();
+		   $("#filter1ApprovedPop, #filter4ApprovedPop, #filter3ApprovedPop").slideUp();
 	       });
 	   $("html").click(function() {
 	       $(".export_pop").hide(200);

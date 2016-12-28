@@ -64,8 +64,6 @@ public class CandidateCertificationsRestController {
 		JSONObject jsonObject = new JSONObject(json1);
 		candidateCertificationsService.storeCandidateCertifications(jsonObject,users,loginOrgLocation,candidateId);
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		SourceLeadSessionManager.setSessionAttribute(request, "addCertification", "New Certification added for "+candidate.getFirstName()+" ");
-		
 		return json;
 	 }
 	
@@ -93,7 +91,7 @@ public class CandidateCertificationsRestController {
 		
 		for(CandidateCertifications candidateCertifications : candidateCertificationsList){
 
-			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addCertification");
+			/*msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addCertification");
 			if(msg == null){
 				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editCertification");
 			}
@@ -106,7 +104,7 @@ public class CandidateCertificationsRestController {
 				 SourceLeadSessionManager.removeSessionAttribute(request, "deleteCertification");
 			    SourceLeadSessionManager.removeSessionAttribute(request, "addCertification");
 			    SourceLeadSessionManager.removeSessionAttribute(request, "editCertification");
-			
+			*/
 		}
 		resultJson = commonUtil.toJSON(candidateCertificationsList);
 		return resultJson;
@@ -133,7 +131,7 @@ public class CandidateCertificationsRestController {
 
 			 CandidateCertifications  candidatesCertificate = candidateCertificationsService.removeCandidateCertificateBycandidateIdandcandidateCertificateId(candidateId, candidateCertificationId);
 			 resultJson = commonUtil.toJSON(candidatesCertificate);
-			 SourceLeadSessionManager.setSessionAttribute(request, "deleteCertification", "Certfification deleted");
+			 //SourceLeadSessionManager.setSessionAttribute(request, "deleteCertification", "Certfification deleted");
 
 			 return resultJson;
 		}
@@ -190,7 +188,7 @@ public class CandidateCertificationsRestController {
 			String json1 = "{"+json+"}";
 			JSONObject jsonObject = new JSONObject(json1);
 			candidateCertificationsService.storeCandidateCertifications(jsonObject,users,loginOrgLocation,candidateId);
-			SourceLeadSessionManager.setSessionAttribute(request, "editCertification", "Certification details updated ");
+			//SourceLeadSessionManager.setSessionAttribute(request, "editCertification", "Certification details updated ");
 
 			return json;
 		 }

@@ -13,11 +13,12 @@
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script>
- window.onload = function() {
-	 getUserSignature();
-};
-</script>
+<style>
+.modal-backdrop{
+display: none;
+}
+</style>
+
 
 
 <section class="content-wraper">
@@ -32,6 +33,7 @@
     
    
     <div class="content-area clearfix">
+    <div id="mailLoading"></div>
       <div class="form-horizontal compose-mail col-md-10 col-md-offset-1">
        <form:form id="hotlistCampaign_form" name="hotlistCampaign_form"  enctype='multipart/form-data' >
         <div class="col-md-12 clearfix">
@@ -112,6 +114,7 @@
                           <select class="form-control" id="candidatesListType" onchange="candidateListChange();">
                             <option value="consultants" selected>Consultants</option>
                             <option value="candidates">Candidates</option>
+                             <option value="openHotlist">Open Hotlist</option>
                             <option value="hotlistConsultants">Hostlist Consultants</option>
                             <option value="hotlistCandidates">Hostlist Candidates</option>
                           
@@ -131,7 +134,7 @@
         </div>
         <div class="clearfix">
           <div class="col-md-6">
-            <label class="col-md-4 control-label text-info small">Saluation</label>
+            <label class="col-md-4 control-label text-info small">Salutation</label>
             <div class="col-md-8 saluation field-border">
               <select id="saluation" name="saluation">
                <option value="Dear" selected>Dear</option>
@@ -182,52 +185,18 @@
         
         <!-- Attachment button-->
         <div class="col-md-12 clearfix mt">
-          <div class="col-md-6">
-            <div class="pull-left select-field">
-              <select class="form-control inpu-sm" id="userSignature" name="userSignature">
-                <option selected disabled value="">-Select Signature-</option>
-              </select>
-            </div>
-            <div class="pull-left positionRelative">
-              <input type="button" class="btn btn-primary btn-sm ml10" value="New Sign" title="New Sign" onClick="createSign()">
-            </div>
-          </div>
-          <div class="col-md-6">
             <div class="pull-right"> 
               <!--<input type="button" value="Schedule" class="btn btn-sm btn-primary">-->
               <button type="button" class="btn btn-sm btn-success" onclick="sendHotListCampaign();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
               <!-- <a class="btn btn-sm btn-success" href="readmail.html" title="Read Mail"><i class="glyphicon glyphicon-eye-open"></i>&nbsp;Preview</a> -->
               <button type="button" class="btn btn-sm btn-default"><i class="fa fa-times"></i>&nbsp;Cancel</button>
             </div>
-          </div>
         </div>
         <!-- Attachment button --> 
          </form:form>
       </div>
       
-      <div class="createSign-pop">
-                
-                <form:form id="signature_form" name="signature_form" method="post" >
-                <div class="clearfix">
-                  <lable>Name of the Signature</lable>
-                  <div class="col-md-12">
-                    <input type="text" name="signatureName" id="signatureName" data-validation="required validate_Space validate_length length2-100" field-name="Signature Name" class="form-control input-sm" autofocus>
-                  </div>
-                </div>
-                <div class="clearfix mt">
-                  <lable>Create Signture</lable>
-                  <div class="col-md-12">
-                    <textarea data-placeholder="Signature" id="signatureText"  data-validation="required" field-name="Signature" name="signatureText" rows="2" class="form-control" ></textarea>
-                  </div>
-                </div>
-                <div class="clearfix mt">
-                  <div class="pull-right"> 
-                  <button type="button" class="btn btn-sm btn-success" onclick="saveSignatrue();">&nbsp;Save</button>
-                   <a href="javascript:void(o)" class="ml btn btn-default btn-sm" onClick="closeSign()">Cancel</a> </div>
-                </div>
-                </form:form>
-                
-    </div>
+      
     </div>
    
     
@@ -240,27 +209,7 @@
   
   
   
- <script>
-function getUserSignature(){
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/getSignatures?${_csrf.parameterName}=${_csrf.token}", 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	var output = "";
-	        	output = output + "<option value=''>-Select Signatrue-</option>"; 
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		output = output + "<option value='" +opt.id+ "'>"+opt.signatureName+"</option>";
-				}
-	        	$("#userSignature").empty();
-		        $("#userSignature").append(output);
-	        },
-	    }); 
-}
-</script>  
+   
 
 <script type="text/javascript">
 $(function(){
@@ -295,7 +244,7 @@ $(function(){
 	    var form = $('#hotlistCampaign_form')[0];
   		var formData = new FormData(form)
   		
-	    
+  		$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 			type : "POST",
     	    data: formData,
@@ -325,41 +274,7 @@ $(function(){
 
 
 
-<script type="text/javascript">
-	function saveSignatrue() {
-		
-	if ($('#signature_form').validate(false, validationSettings)){ 
-		
-	    var sourceleadUrl = '${sourceleadUrl}';
-		var frm = $('#signature_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, ""); 
-	    var jsonData = encodeURIComponent(con);
-	    
-		$.ajax({
-			type : "POST",
-			url : sourceleadUrl+"/saveUserSignature?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-			success : function(result) {
-				$("#signatureName").val('');
-				$("#signatureText").val('');
-				$(".createSign-pop").fadeOut(200);
-				getUserSignature();
-			},
-		});
-	    
-	    return true
-		 
-		}else{
-			return false;
-		  }
-		
-	}
 
-   $('body').on('blur', '#signature_form', function() {
-		$("#signature_form").showHelpOnFocus();
-		$("#signature_form").validateOnBlur(false, validationSettings);  
-   });
-</script>
 
 <script type="text/javascript">
 	(function($) {
@@ -672,7 +587,10 @@ function getCandidates(candidatesListType){
 	                		result = result +'             <th>Email</th>';
 	                		result = result +'             <th>Phone</th>';
 	                		result = result +'             <th>Designation</th>';
-	                		result = result +'             <th>Position Type</th>';
+	                		if(candidatesListType == 'openHotlist'){
+	                			result = result +'<th>Type</th>';
+	                		}
+	                		result = result +'             <th>Employment Type</th>';
 	                		result = result +'           </tr>';
 	                		result = result +'           </thead>';
 		                    result = result +"<tbody>"; 
@@ -683,7 +601,6 @@ function getCandidates(candidatesListType){
 		                    	 var mobile = ''
 		                    	 var designation = '';
 		                    	 var designationType = '';
-		                    	 var isFavClass = '';
 		                    	 
 		                    	 if(opt.lastName != null && opt.lastName != 'undefined' && opt.lastName != ""){
 		                    		 name = opt.firstName+" "+opt.lastName ;
@@ -708,21 +625,18 @@ function getCandidates(candidatesListType){
 		                    	 }else{
 		                    		 designationType = "&nbsp;&nbsp;-----------";
 		                    	 }
-		                    	 
-	                    	     if(opt.isFavourite != 'Y'){
-				            		isFavClass = "text-muted";
-				            	 }else{
-				            		isFavClass = "text-primary";
-				            	 }
+		                    	
 		                    	 
 		                    	 result = result +'<tr>';
 		                    	 result = result +'<td>&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.id+','+name+'"  type="checkbox" name="candidatesIds[]" class="myCheckbox" >';
-		                    	 result = result +'&nbsp;&nbsp;<i class="fa fa-star '+isFavClass+'"></i>';
 		                    	 result = result +'</td>';
 		                    	 result = result +'<td>'+name+'</td>';
 		                    	 result = result +'<td>'+opt.email+'</td>';
 		                    	 result = result +'<td>'+mobile+'</td>';
 		                    	 result = result +'<td>'+designation+'</td>';
+		                    	 if(candidatesListType == 'openHotlist'){
+		                    		 result = result +'<td>'+opt.candidateType+'</td>'; 
+		                    	 }
 		                    	 result = result +'<td>'+designationType+'</td>';
 		                    	 result = result +'</tr>';
 		                    	
@@ -757,7 +671,10 @@ function getCandidates(candidatesListType){
 	        		result = result +'             <th>Email</th>';
 	        		result = result +'             <th>Phone</th>';
 	        		result = result +'             <th>Designation</th>';
-	        		result = result +'             <th>Position Type</th>';
+	        		if(candidatesListType == 'openHotlist'){
+            			result = result +'<th>Type</th>';
+            		}
+	        		result = result +'             <th>Employment Type</th>';
  	           		result = result +'           </tr>';
  	           		result = result +'           </thead>';
  	        		result = result +'           </table>';

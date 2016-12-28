@@ -126,7 +126,8 @@ public class RequirementOfferRestController {
 		for (RequirementSubmission requirementSubmission : shortListCandidatesList) {
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 			if(requirementSubmissionTemplateFields.getLastName() != null){
-				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName()+" "+requirementSubmissionTemplateFields.getLastName());
+				 StringBuilder canNameSB = new StringBuilder();
+				requirementSubmission.setCandidateName(canNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
 			}else{
 				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
 			}
@@ -304,8 +305,8 @@ public class RequirementOfferRestController {
 		   RequirementOffers requirementOffers  =requirementOffersService.getRequirementOfferId(offerId);
 		
 		    response.setContentType("application/octet-stream");
-	        response.setHeader("Content-Disposition",
-	                "attachment;filename="+requirementOffers.getFileName());
+		    StringBuilder fileName = new StringBuilder();
+	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(requirementOffers.getFileName()).append("\"").toString());
 		    
 			InputStream inputStream = new ByteArrayInputStream(requirementOffers.getDocFile());
 			try {
@@ -329,6 +330,7 @@ public class RequirementOfferRestController {
 	@RequestMapping(value = "/acceptOrRejectOffer")
     @ResponseBody  String acceptOrRejectOffer(@RequestParam(value="offerStatus", required=false) String offerStatus,
                            @RequestParam(value = "offerId", required = false) Long offerId,
+                           @RequestParam(value="rejectedReason", required=false) String rejectedReason,
                            HttpServletRequest request) throws Exception {
 
 			 String setofferStatus = "";
@@ -365,6 +367,7 @@ public class RequirementOfferRestController {
 				    		}else{
 				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERREJECTED);
 				    		}
+				    		 requirementSubmission.setRejectedReason(rejectedReason);
 							 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 							 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					  }
@@ -372,10 +375,11 @@ public class RequirementOfferRestController {
 			    	  //Changing the status of offerTable 
 					  if(requirementOffers  != null ){
 						    requirementOffers.setOfferStatus("OFFERREJECTED");
+						    requirementOffers.setRejectedReason(rejectedReason);
 						    requirementOffers.setUpdatedDate(commonUtil.currentDate());
 						    requirementOffersService.saveOfferStatus(requirementOffers);
 				      }
-					  setofferStatus ="you have rejected the offer";
+					  setofferStatus ="success";
 			    }
 			 }
 			 

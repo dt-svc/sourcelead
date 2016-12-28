@@ -31,17 +31,22 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateSkills;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UserSignature;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
+import com.bis.sourcelead.service.EmailService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.service.UserMailBoxService;
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.UserSignatureService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -74,7 +79,22 @@ public class MailBoxRestController {
 	private CommonUtil commonUtil;
 	
 	@Autowired
-	private CandidateSkillsService candidateSkillsService;
+	CandidateSkillsService candidateSkillsService;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	UserRoleService userRoleService;
+	
+	@Autowired
+	EmailService emailService;
+	
+	@Autowired
+	SourceleadSignatureService sourceleadSignatureService;
+	
+	
+	
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -118,6 +138,29 @@ public class MailBoxRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		hotListEmailCampaignService.sendHotListEmailCampaign(jsonObj, user, orgLocation, multiFile);
 		
+		
+		
+		return "success";
+	}
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
+	@RequestMapping(value = "/sendEmailToUsers", method = RequestMethod.POST)
+	public String sendEmailToUsers(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+		
+		MultipartFile multiFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if(itrator.hasNext()){
+	        multiFile = request.getFile(itrator.next());
+		}
+		
+		String jsonc = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(jsonc);
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		emailService.sendEmail(jsonObj, user, orgLocation, multiFile);
 		
 		
 		return "success";
@@ -183,18 +226,24 @@ public class MailBoxRestController {
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
-		String[] mailBoxIds = mailIds.split(",");
-		for(int i=0; i < mailBoxIds.length; i++){
-			
-			UserMailBox userMailBox = userMailBoxService.getUserMailBoxById(mailBoxIds[i]);
-			userMailBox.setIsFavourite(0);
-			userMailBox.setMailStatus("Trash");
-			userMailBox.setUpdatedBy(user.getCreatedBy());
-			userMailBox.setUpdatedDate(new Date());
-			userMailBoxService.saveUserMailBox(userMailBox);
+		if(!isNullOrEmpty(mailIds)){
+			String[] mailBoxIds = mailIds.split(",");
+			for(int i=0; i < mailBoxIds.length; i++){
+				
+				UserMailBox userMailBox = userMailBoxService.getUserMailBoxById(mailBoxIds[i]);
+				userMailBox.setIsFavourite(0);
+				if(!userMailBox.getMailStatus().equalsIgnoreCase("Trash")){
+					userMailBox.setMailStatus("Trash");
+				}else{
+					userMailBox.setMailStatus("Deleted");
+					userMailBox.setStatus(0);
+				}
+				
+				userMailBox.setUpdatedBy(user.getCreatedBy());
+				userMailBox.setUpdatedDate(new Date());
+				userMailBoxService.saveUserMailBox(userMailBox);
+			}
 		}
-		
-		
 		
 		
 		return "success";
@@ -217,6 +266,7 @@ public class MailBoxRestController {
 	    if(userMailbox != null){
 	    	
 	    	List<Long> candidateId = new ArrayList<Long>();
+	    	if(null !=  userMailbox.getCandidateId()){
 			 for (String s : userMailbox.getCandidateId().split(",")){
 				 candidateId.add(Long.parseLong(s));
 			 }
@@ -230,9 +280,9 @@ public class MailBoxRestController {
 						 String experienceInYears = null;
 						 String experienceInMonths = null;
 						 String totalExp = null;
-						 
 						 if(!isNullOrEmpty(candidate.getLastName())){
-							 candidateName = candidate.getFirstName()+" "+candidate.getLastName();
+							 StringBuilder name = new StringBuilder();
+							 candidateName = name.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString();
 					   	 }else{
 					   		candidateName = candidate.getFirstName();
 					   	 }
@@ -250,7 +300,8 @@ public class MailBoxRestController {
 						 if(isNullOrEmpty(candidate.getExperienceMonths()) && isNullOrEmpty(candidate.getExperienceMonths())){
 							 totalExp = "-----";
 						 }else{
-							 totalExp = experienceInYears+" Years "+experienceInMonths+" Months";
+							 StringBuilder exp = new StringBuilder();
+							 totalExp = exp.append(experienceInYears).append(" Years ").append(experienceInMonths).append(" Months").toString();
 						 }
 						 
 						 candidate.setCandidateName(candidateName);
@@ -259,8 +310,9 @@ public class MailBoxRestController {
 					}
 					
 				}
-				
-				userMailbox.setIsMailRead(1);
+	    	  }
+	    	
+		    	userMailbox.setIsMailRead(1);
 				userMailBoxService.saveUserMailBox(userMailbox);
 				
 				Integer inboxUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocation.getId(), "Inbox");
@@ -268,8 +320,8 @@ public class MailBoxRestController {
 				userMailbox.setUnreadInboxCount(inboxUnreadMailsCount);
 				userMailbox.setUnreadRequestedCount(requestedUnreadMailsCount);
 				userMailbox.setTotalUnReadMailsCount(inboxUnreadMailsCount+requestedUnreadMailsCount);
-				
 				userMailbox.setCandidatesList(reqCandidatesList);
+				
 				mailBoxList.add(userMailbox);
 				calculateDays(mailBoxList);
 				
@@ -286,8 +338,8 @@ public class MailBoxRestController {
 		 UserMailBox userMailbox = userMailBoxService.getUserMailBoxByUUID(UUID);
 		    
 		    response.setContentType("application/octet-stream");
-	        response.setHeader("Content-Disposition",
-	                "attachment;filename="+userMailbox.getFileName());
+		    StringBuilder fileName = new StringBuilder();
+	        response.setHeader("Content-Disposition",  fileName.append("attachment; filename=\"").append(userMailbox.getFileName()).append("\"").toString());
 		    
 			InputStream inputStream = new ByteArrayInputStream(userMailbox.getDocFile());
 			try {
@@ -373,45 +425,49 @@ public class MailBoxRestController {
 					 skills.toString();
 					 String candidateSkills =  skills.substring(0,skills.length()-2);
 					 
-					 String candidateName = null;
+					
+					 StringBuilder candidateName = new StringBuilder();
 					 String experienceInYears = null;
 					 String experienceInMonths = null;
-					 String totalExp = null;
-					 String rate = null;
-					
+					 StringBuilder totalExp = new StringBuilder();
+					 StringBuilder rate = new StringBuilder();
+					 
+					 StringBuilder nameBuilder = new StringBuilder();
+					 StringBuilder expBuilder = new StringBuilder();
+					 StringBuilder rateBuilder = new StringBuilder();
 					 
 					 if(userMailbox.getNameFields().equalsIgnoreCase("firstname")){
-						 candidateName = candidate.getFirstName();
+						 candidateName = nameBuilder.append(candidate.getFirstName());
 					 }
 				 	 else if(userMailbox.getNameFields().equalsIgnoreCase("firstnameandlastName")){
-						 if(!isNullOrEmpty(candidate.getLastName())){
-							 candidateName = candidate.getFirstName()+" "+candidate.getLastName();
+				 		if(!isNullOrEmpty(candidate.getLastName())){
+							 candidateName = nameBuilder.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
 					   	 }else{
-					   		candidateName = candidate.getFirstName();
+					   		candidateName = nameBuilder.append(candidate.getFirstName());
 					   	 }
 					 }
 				 	 else if(userMailbox.getNameFields().equalsIgnoreCase("firstname1stletterlastname")){
-				 		 if(!isNullOrEmpty(candidate.getLastName())){
-				 			candidateName = candidate.getFirstName()+" "+String.valueOf(candidate.getLastName().charAt(0));
+				 		if(!isNullOrEmpty(candidate.getLastName())){
+				 			candidateName = nameBuilder.append(candidate.getFirstName()).append(" ").append(String.valueOf(candidate.getLastName().charAt(0)));
 				 		 }else{
-				 			candidateName = candidate.getFirstName();
+				 			candidateName = nameBuilder.append(candidate.getFirstName());
 				 		 }
 				 		
 				 	 }
 				 	 else if(userMailbox.getNameFields().equalsIgnoreCase("1letterfirstnamelastname")){
 				 		 if(!isNullOrEmpty(candidate.getLastName())){
-				 			candidateName = String.valueOf(candidate.getFirstName().charAt(0))+" "+candidate.getLastName();
-				 		 }else{
-				 			candidateName = String.valueOf(candidate.getFirstName().charAt(0));
-				 		 }
+					 			candidateName = nameBuilder.append(String.valueOf(candidate.getFirstName().charAt(0))).append(" ").append(candidate.getLastName());
+					 		 }else{
+					 			candidateName = nameBuilder.append(String.valueOf(candidate.getFirstName().charAt(0)));
+					 		 }
 				 		
 				 	 }
 				 	else if(userMailbox.getNameFields().equalsIgnoreCase("1letterfirstname1letterlastname")){
 				 		 if(!isNullOrEmpty(candidate.getLastName())){
-				 			candidateName = String.valueOf(candidate.getFirstName().charAt(0))+" "+String.valueOf(candidate.getLastName().charAt(0));
-				 		 }else{
-				 			candidateName = String.valueOf(candidate.getFirstName().charAt(0));
-				 		 }
+					 			candidateName = nameBuilder.append(String.valueOf(candidate.getFirstName().charAt(0))).append(" ").append(String.valueOf(candidate.getLastName().charAt(0)));
+					 		 }else{
+					 			candidateName = nameBuilder.append(String.valueOf(candidate.getFirstName().charAt(0)));
+					 		 }
 				 		
 				 	 }
 					 
@@ -426,20 +482,19 @@ public class MailBoxRestController {
 					 }
 					 
 					 if(isNullOrEmpty(candidate.getExperienceMonths()) && isNullOrEmpty(candidate.getExperienceMonths())){
-						 totalExp = "-----";
+						 totalExp = expBuilder.append("-----");
 					 }else{
-						 totalExp = experienceInYears+" Years "+experienceInMonths+" Months";
+						 totalExp = expBuilder.append(experienceInYears).append(" Years ").append(experienceInMonths).append(" Months");
 					 }
 					 
 					 if(!isNullOrEmpty(candidate.getExpectedRate())){
-						 rate = candidate.getExpectedRate()+" /"+candidate.getRateType();
+						 rate = rateBuilder.append(candidate.getExpectedRate()).append(" /").append(candidate.getRateType());
 					 }else{
-						 rate = "-----";
+						 rate = rateBuilder.append("-----");
 					 }
-					 
-					 candidate.setCandidateName(candidateName);
-					 candidate.setTotalExp(totalExp);
-					 candidate.setRate(rate);
+					 candidate.setCandidateName(candidateName.toString());
+					 candidate.setTotalExp(totalExp.toString());
+					 candidate.setRate(rate.toString());
 					 candidate.setSkills(candidateSkills);
 					 
 					 reqCandidatesList.add(candidate);
@@ -451,6 +506,68 @@ public class MailBoxRestController {
 			resultJson = toJSON(reqCandidatesList);
 			return resultJson;
 		}
+	 
+	 
+	 
+	 @RequestMapping(value = "/getMailingUserList", method = RequestMethod.POST)
+		public @ResponseBody String getMailingUserList(@RequestParam(value="teamType",required = false) String teamType,HttpServletRequest request) throws Exception {
+			
+			String resultJson;
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<User> usersList = userService.getUsersByTeamType(orgLocation.getId(),teamType);
+			for(User user : usersList){
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocation.getId());
+				if(userRole !=null){
+					user.setUserType(userRole.getUserType());
+				}
+			}
+			resultJson = commonUtil.toJSON(usersList);
+			return resultJson;
+		}
+	 
+	 
+	 
+	    @PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+		@RequestMapping(value = "/saveOrgSignature", method = RequestMethod.POST)
+		public String saveOrgSignature(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
+			
+			String jsonc = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(jsonc);
+			
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			sourceleadSignatureService.saveOrgSignatrue(jsonObj, orgLocation, user);
+			
+			return "success";
+		}
+		
+	    
+		
+	        @PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	  		@RequestMapping(value = "/getSignaturePreview", method = RequestMethod.POST)
+	  		public String getSignaturePreview(HttpServletRequest request) throws Exception {
+	  			
+	  			
+	  			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	  			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	  			String signature = sourceleadSignatureService.buildSignature(user, orgLocation);
+	  			
+	  			return signature;
+	  		}
+	        
+	        
+	        @PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	  		@RequestMapping(value = "/restoreSignature", method = RequestMethod.POST)
+	  		public String restoreSignature(HttpServletRequest request) throws Exception {
+	  			
+	  			
+	  			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	  			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	  			sourceleadSignatureService.restoreSignature(user, orgLocation);
+	  			
+	  			return "success";
+	  		}
 	 
 	 
 		

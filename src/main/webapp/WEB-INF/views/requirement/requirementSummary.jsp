@@ -9,6 +9,9 @@
  <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
  
  <style type="text/css">
+ .overflow-data {
+  min-height: 250px;
+ }
 .show-tooltip {
 	position:relative;
 	font-size:13px !important;
@@ -17,12 +20,12 @@
 	color:#333;
 	background: #e1e6fa;
     border-radius: 3px;
-    display: none;
+    display:none;
     padding:5px;
     position: absolute;
     top: 25px;
 	left:-48px;
-    width: 415px;
+    width: 450px;
 	box-sizing:border-box;
 	z-index:999;
 	transition: all 0.5s ease;
@@ -31,15 +34,21 @@
 	color:#333;
 	background: #e1e6fa;
     border-radius: 3px;
-    display: none;
+     display:none;
     padding:5px;
     position: absolute;
     top: 20px;
 	right:0;
     width: auto;
+    min-height:50px;
+    max-height:150px;
+    overflow-y:scroll;
 	box-sizing:border-box;
 	z-index:999;
 	transition: all 0.5s ease;
+}
+.tooltipint_detilas table tr th, .tooltipint_detilas table tr td {
+height: 25px;
 }
 .show-tooltip .tooltip_div:after{
 	bottom: 100%;
@@ -230,6 +239,8 @@ $(document).ready(function() {
 $(document).ready(function() {
     $("#export-pop").click(function(){
 		$(".export_pop").slideToggle(200);
+		 $(".action-pop").slideUp(200);
+		
 	});
     $("html").click(function() {
         $(".export_pop").slideUp(200);
@@ -426,13 +437,22 @@ function sideBar(requirementId){
               		 else{
               			var result = '';
               			
+              			var jobType = '';
+              			if(json.jobType != null && json.jobType != '' && json.jobType != 'undefined'){
+              				jobType = '-'+json.jobType;
+             			 	}else{
+             			 		jobType = '';
+             			 	}
+              			
+              			
               			result = result+'    <div class="profile_details requirement_details clearfix">';
-              			if(json.jobId != '' && json.jobId != null){
-				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
+              			if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined'){
+				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobId+'-'+json.jobTitle+''+jobType+'<i></i></h4></a>';
               			}
-              			else{
-    				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
-	
+              			else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined'){
+    				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+''+jobType+'<i></i></h4></a>';
+              			}else{
+              				result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'<i></i></h4></a>';
               			}
 				        result = result+'<div class="hide-row">';
 				        
@@ -487,19 +507,17 @@ function sideBar(requirementId){
   
 				       }
 				       
-				        if(json.state !='' && json.state != 'undefined' && json.city !='' && json.city != 'undefined')
+				        if(json.state != null && json.state !='' && json.state != 'undefined' && json.city !=null && json.city !='' && json.city != 'undefined')
 				        	{
 				        result = result+'<li><i class="fa fa-map-marker"></i><span title="'+json.country+', '+json.state+', '+json.city+'">'+json.country+', '+json.state+', '+json.city+'</span></li>';
 				        	}
-				        else if(json.state !='' && json.state != 'undefined')
+				        else if(json.state != null && json.state !='' && json.state != 'undefined')
 				        	{
-
 					    result = result+' <li><i class="fa fa-map-marker"></i><span title="'+json.country+', '+json.state+'">'+json.country+', '+json.state+'</span></li>';
 
 				        	}
 				        else{
 					     result = result+' <li><i class="fa fa-map-marker"></i><span title="'+json.country+'">'+json.country+'</span></li>';
-
 				        }
 				        result = result+'</ul>';
 				        result = result+'</div>';
@@ -682,7 +700,7 @@ function requirementDetails(requirementId){
 				             if(json.requirementSubmissionStatus  !='DRAFT'  &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
                					 result = result +'<button  class="btn btn-success mr" type="button" id = "approverbut" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
                		             result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
-   				           	 }else if(json.requirementApproverHierarchyStatus == 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
+   				           	 }else if(json.requirementApproverHierarchyStatus == 'APPROVED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
       						              result = result +'<strong  id="requirementStatus" class="pull-right mr btn btn-success disabled">OPEN</strong>';
     				         }else if( json.requirementSubmissionStatus  !='DRAFT'  && json.requirementApproverHierarchyStatus == 'REJECTED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
 					              result = result +'<button  id="requirementStatus" class="btn btn-danger pull-right mr" type="button">REJECTED</button>';
@@ -1171,7 +1189,7 @@ function requirementPipeline(requirementId,submissionType){
 				           result = result + '<div class="clearfix"></div>';
 				           result = result + '</div>';
 				           result = result + '<div class="require_wrap_table overflow-data">';
-				           result = result + '<div class="table-overflow-hide">';
+				           result = result + '<div class="clerfix">';
 				           result = result + '<table id="requirementsPagination" class="display" cellspacing="0" width="100%"">';
 				           result = result + '<thead>';
 				           result = result + '<tr>';
@@ -1181,14 +1199,15 @@ function requirementPipeline(requirementId,submissionType){
 				           result = result + '<th>Ph. No</th>';
 				           }
 				           result = result + '<th>Resume</th>';
-				           if(submissionType == 'all' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'REQUEST_SENT'){
+				           if(submissionType == 'all' ||  submissionType == 'DUPLICATE_APPLICANTS'|| submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'REQUEST_SENT'){
 				        	   result = result + '<th>Applied on</th>';
 					           result = result + '<th>Rate</th>';
 					           
+					         if(clientSubmissions == 'Y'){
 					           if(submissionType != 'REQUEST_SENT'){
 					           result = result + '<th>Sub. Rate</th>';
 					           }
-					           
+					         }
 					           result = result + '<th>Source</th>';
 				            }
 						  
@@ -1205,7 +1224,7 @@ function requirementPipeline(requirementId,submissionType){
 							   result = result + '<th>Attachment</th>'; 
 					           }
 
-				           if(submissionType == 'all' || submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'|| submissionType == 'REQUEST_SENT'){
+				           if(submissionType == 'all' || submissionType == 'DUPLICATE_APPLICANTS' || submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'|| submissionType == 'REQUEST_SENT'){
 				        	   if(submissionType != 'INTERVIEW' && submissionType != 'REJECTED'){
 				        		   result = result + '<th>Score</th>';
 						           result = result + '<th>Exp</th>';
@@ -1256,7 +1275,7 @@ function requirementPipeline(requirementId,submissionType){
 							    	   result = result + '         <td><div>--</div></td>';
 						    	     }
 						           
-						           if(submissionType == 'all' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'|| submissionType == 'REQUEST_SENT'){
+						           if(submissionType == 'all' || submissionType == 'DUPLICATE_APPLICANTS'|| submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT'|| submissionType == 'REQUEST_SENT'){
 						        	   
 						        	   if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
 							        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
@@ -1278,10 +1297,12 @@ function requirementPipeline(requirementId,submissionType){
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
 							           }else{
+							        	   if(clientSubmissions == 'Y'){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
 							        	   }else{
 							        		   result = result + '         <td><div><span>--</span></div></td>';
+							        	   }
 							        	   }
 							           }
 							           }
@@ -1303,9 +1324,9 @@ function requirementPipeline(requirementId,submissionType){
 						       		        result = result +'<div class="tooltipint_detilas">';
 						       			    result = result +'<table class="table-bordered table-hover table-striped table-responsive" width="100%;">';
 						       			    result = result +' <thead><tr>';
-						       			 	result = result +'<th>Interview Type</th>';
-						       			    result = result +'<th>Interview Date</th>';
-						       			    result = result +'<th>Start Time</th>';
+						       			 	result = result +'<th>Interview&nbsp;Type</th>';
+						       			    result = result +'<th>Interview&nbsp;Date</th>';
+						       			    result = result +'<th>Start&nbsp;Time</th>';
 						       			    result = result +'<th>End Time</th>';
 						       			    result = result +'<th>Location</th>';
 						       			    result = result +'<th>Feedback</th>';
@@ -1401,7 +1422,7 @@ function requirementPipeline(requirementId,submissionType){
 							    	     } 
 						           }
 
-						           if(submissionType == 'all' || submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'SUBMIT_TO_CLIENT'|| submissionType == 'REQUEST_SENT'){
+						           if(submissionType == 'all' ||  submissionType == 'DUPLICATE_APPLICANTS'|| submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'REQUEST_SENT'){
 						        	   
 						        	   if(submissionType != 'INTERVIEW' && submissionType != 'REJECTED'){
 						        		   if(report.score != null && report.score != '' && report.score != 'undefined'){
@@ -1447,7 +1468,7 @@ function requirementPipeline(requirementId,submissionType){
 							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 							        	   result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
 							           }else{
-							        	   result = result + '<td><div class="tblwidth-150"><select><option>'+report.submissionStatus+'</option><option onClick="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";>Reject</option></select>';
+							        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
 								           result = result + '</div></td>';
 							           }
 							           
@@ -1524,18 +1545,27 @@ function documentpagination(){
 <div id="popUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
-	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Applicant reject message here</p>";
-	result = result +"		<textarea  id='reasonForReject' name='reasonForReject'  placeholder='Comments here'></textarea>";
-	result = result + ' <div id="reasonForApplicantDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveRejectApplicantReason("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelRejectApplicant();'></b>";
-	result = result +"	</div>";
-	$("#popUp").append(result);
-	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	var selectBox = $('#rejectApplicantSelect'+submissionId).val();
+    if(selectBox != "Status"){
+    	var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Applicant reject message here</p>";
+		result = result +"		<textarea  id='reasonForReject' name='reasonForReject'  placeholder='Comments here'></textarea>";
+		result = result + ' <div id="reasonForApplicantDiv"/>';
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveRejectApplicantReason("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelRejectApplicant();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#remove_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+    }
 }
+</script>
+
+<script type="text/javascript">
+function cancelRejectApplicant(){ 
+	$("#remove_user_pop, .project_inn_mask").fadeOut(200);
+};
 </script>
 
 <script>
@@ -1581,6 +1611,7 @@ function requirementSubmissionCount(requirementId){
         	 $("#offersCount").html(report1.numOfOffers);
         	 $("#rejectedCount").html(report1.numOfRejected);
         	 $("#requestSent").html(report1.numofrequestsent);
+        	 $("#duplicateApplicantsCount").html(report1.duplicateCount);
          },
 	  });
 }
@@ -1810,6 +1841,7 @@ function recommendationpagination(){
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
+	$(".export_pipline").slideUp(200);
 	$("html").click(function(){
 		$(".action-pop").slideUp(200);
 	});
@@ -2047,6 +2079,7 @@ function requirementStatusBar(requirementId){
   	   var rejected = 'REJECTED';
        var submitToClient = 'SUBMIT_TO_CLIENT';
        var clientSubmissions = '${clientSubmissions}';
+       var duplicateApplicantCount = 'DUPLICATE_APPLICANTS';
 		
        
        var offerMade = 'OFFERMADE';
@@ -2055,6 +2088,10 @@ function requirementStatusBar(requirementId){
 		 result = result + '     <li id="applicantli" class="pipeline-active tabActivation" onclick="filterReq('+requirementId+',\''+all+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Applicants">';
 		 result = result + '       <label><strong>Applicants</strong></label>';
 		 result = result + '       </a> <span class="label label-default" id="applicantsCount">0</span> </li>';
+		 
+		 result = result + '     <li id="duplicataplctli" class="tabActivation" onclick="filterReq('+requirementId+',\''+duplicateApplicantCount+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Duplicate Applicants">';
+		 result = result + '       <label><strong>Duplicate Applicants</strong></label>';
+		 result = result + '       </a> <span class="label label-default" id="duplicateApplicantsCount">0</span> </li>';
 		 
 		 result = result + '   <li id="requestSentli" class="tabActivation" onclick="filterReq('+requirementId+',\''+requestSent+'\');tabEnable(this);"> <a href="javascript:void(0)" title="RequestSent">';
          result = result + '     <label><strong>RequestSent</strong></label>';
@@ -2079,6 +2116,7 @@ function requirementStatusBar(requirementId){
          result = result + '      </a><span class="label label-warning" id="rejectedCount">0</span></li>';
          
          result = result + '   </ul>';
+         result = result +' <div> <i class="ratepop" id="ratepop"></div>';
          result = result + ' </div>';
        $("#status-div").empty();
       $("#status-div").prepend(result);
@@ -2103,6 +2141,7 @@ function tabEnable(local){
 //piplineexportpop 
 function piplineexport(){
 	$(".export_pipline").toggle();
+	 $(".action-pop").slideUp(200);	
 };
 /* $("#pipline-exportpop").click(function(){
 	$("#export_pipline").show();
@@ -2136,7 +2175,24 @@ function getRateListDiv(submissionId, candidateId){
           		 }else{
           			     var result = "";
       			         result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
-         			     result = result + '<section class="tbl-scroll">';
+      			         result = result + '<p><strong>Rate Negotiation History</strong></p>';
+         			     result = result + '<section class="tbl-scroll require_wrap_table">';
+         			     /*result = result + ' <ul class="nav nav-tabs">';
+	         			  result = result + ' <li class="active"><a data-toggle="tab" href="#tab1">Tab1</a></li>';
+	         			  result = result + ' <li><a data-toggle="tab" href="#tab2">Tab2</a></li>';
+	         			  result = result + ' </ul>';
+	         			  result = result + ' <div class="tab-content">';
+		         			  
+	         			 //Tab1 Data    
+	         			  result = result + ' <div id="tab1" class="tab-pane fade in active">';
+		         			 
+		         			  result = result + ' <h3>HOME</h3>';
+		         			  result = result + ' <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>';
+		         			  
+		         			  result = result + ' </div>';
+			         			
+		         			  //Tab2 Data  
+		         			  result = result + ' <div id="tab2" class="tab-pane fade">';*/
 	                     result = result + '  <table>';
 	                     result = result + '    <thead>';
 	                     result = result + '      <tr>';
@@ -2177,6 +2233,8 @@ function getRateListDiv(submissionId, candidateId){
 			   				}
 	                     result = result + '    </tbody>';
 	                     result = result + '  </table>';
+	                     /*  result = result + ' </div>';
+    			  		 result = result + ' </div>'; */
 	                     result = result + '</section>';
 	                     if(isLastNegotiator=="false"){
 	                    	 
@@ -2224,6 +2282,7 @@ function getRateListDiv(submissionId, candidateId){
         	 		$("#ratepop").removeAttr("style");
 		    	     var result ="";
 		    	     result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
+		    	     result = result + '<p><strong>Rate Negotiation History</strong></p>';
 		    	     result = result+"   <div class='row'>"; 
 					 result = result+"	<div class='col-lg-12'>"; 
 					 result = result+"		<div class='clearfix'>"; 

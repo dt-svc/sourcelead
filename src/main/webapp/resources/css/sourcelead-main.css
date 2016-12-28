@@ -1652,7 +1652,7 @@ custom scroll bar ends*/
 	font-size: 13px;
 	margin: 10px 0 0;
 	color: #909090;
-	word-wrap:break-word;
+	word-wrap: break-word;
 }
 .notificatons {
 	background: #ffffff;
@@ -2363,11 +2363,11 @@ ul.tree-checkbox::before {
 .close-div {
 	background: #f60 none repeat scroll 0 0;
 	border: 1px solid #f60;
-	border-radius: 50%;
+	border-radius: 20%;
 	color: #fff;
 	cursor: pointer;
 	left: -15px;
-	padding: 6px 7px;
+	padding: 4px 7px;
 	position: absolute;
 	top: -15px;
 }
@@ -2780,6 +2780,10 @@ ul.can-perdt li a {
 	background-color: white;
 	-webkit-transition: .4s;
 	transition: .4s;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    box-shadow: 1px 1px 2px #333;
 }
 input:checked + .slider {
 	background-color: #4CAF50;
@@ -3813,7 +3817,7 @@ position:absolute;
 bottom:-20px;
 background:#ccc;
 z-index:999;
-right:0px;
+left:0px;
 text-wrap:none;
 font-style:normal;
 display:none;
@@ -3844,7 +3848,7 @@ margin-bottom: 10px;
   overflow-y:visible !important;
 }
 .ratepop:after{
-	bottom:10%;
+	top:52%;
 	left:100%;
 	border: solid transparent;
 	content: " ";
@@ -4270,8 +4274,6 @@ inst-search .col-md-9{
 .instsearch{
 	background: #ccc;
 	padding: 10px 10px;
-	
-	
 }
 .require_wrap_details_cta.require_education{
        width:100%;
@@ -4645,6 +4647,13 @@ import-tranhd  [class*="col-md-"]{
 	-moz-box-shadow: 0 8px 6px -8px #505050;
 	box-shadow: 0 8px 6px -8px #505050;
 }
+.pending-user{
+    background-color:#ffb74d;
+	border: 1px solid #ffa726;
+	-webkit-box-shadow: 0 8px 6px -8px #505050;
+	-moz-box-shadow: 0 8px 6px -8px #505050;
+	box-shadow: 0 8px 6px -8px #505050;
+}
 .reason-msg {
 	font-size: 25px;
 	text-align: center;
@@ -4769,12 +4778,17 @@ import-tranhd  [class*="col-md-"]{
 	position: absolute;
 	top: 30px;
 	left: 0;
+	min-height:100px;
+	max-height:450px;
+	overflow:auto;
 	display: none;
 	z-index: 999;
 }
 .cand-advsrch-popup .close-div{
 	right: 0;
 	left: auto;
+	top:2px;
+	z-index: 9999;
 }
 .cand-advsrch-popup .col-md-4{
 	/*margin-bottom: 10px;*/
@@ -5221,7 +5235,6 @@ display: inline-block;
 font-size: 60px;
 margin-bottom: 20px;
 }
-
 .mail-widget{
 padding:10px 15px;
 position: relative;
@@ -5245,7 +5258,6 @@ border-bottom: none !important;
 }
 .checkbox-custom-label, .radio-custom-label {
     position: relative;
-    margin-bottom: 0;
 }
 .checkbox-custom + .checkbox-custom-label:before, .radio-custom + .radio-custom-label:before {
     content: '';
@@ -5272,14 +5284,15 @@ border-bottom: none !important;
 	padding: 0px 5px !important;
 }
 /* check boc custom styels */
-
-
-.mrleft8
-{
-	margin-left: 8px !important;
+.margnleft8{
+	margin-left: 8px;
 }
 #mailBoxList .table{
 	margin-bottom: 0 !important;
+}
+.mrleft8
+{
+	margin-left: 8px !important;
 }
 .mail-read a{
 	color:#909090;
@@ -5287,7 +5300,174 @@ border-bottom: none !important;
 .mail-unread a{
 	color:#333;
 }
+.project_wrap_table.mail-table table tr td {
+border-left: none !important;
+}
+.mail-table table{
+border:none;
+border-bottom: 1px solid #ccc !important;
+}
+mail-content .table-responsive{
+overflow: visible;
+}
+.mail-content .dataTables_wrapper thead{
+display: none;
+}
+.mail-content table.dataTable.no-footer {
+border-bottom: 1px solid #ccc;
+}
+.addcandidate-popup {
+    display: none;
+    position:absolute;
+    padding: 15px;
+    left: 15%;
+    width: 70%;
+    z-index: 99999;
+    top: 30%;
+    border-radius: 5px;
+}
+.small-widget {
+    padding:20px 10px;
+    border-radius: 5px;
+    text-align: center;
+    box-sizing: border-box;
+    position: relative;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.8);
+    
+    -webkit-transition: all 200ms ease-in;
+    -webkit-transform: scale(1); 
+    -ms-transition: all 200ms ease-in;
+    -ms-transform: scale(1); 
+    -moz-transition: all 200ms ease-in;
+    -moz-transform: scale(1);
+    transition: all 200ms ease-in;
+    transform: scale(1);
+}
+.small-widget:hover{
+    
+    -webkit-transition: background-color 2s ease-out;
+  -moz-transition: background-color 2s ease-out;
+  -o-transition: background-color 2s ease-out;
+  transition: background-color 2s ease-out;
+    background: #efebe9;
+-webkit-transition: all 200ms ease-in;
+    -webkit-transform: scale(1.3);
+    -ms-transition: all 200ms ease-in;
+    -ms-transform: scale(1.3);   
+    -moz-transition: all 200ms ease-in;
+    -moz-transform: scale(1.3);
+    transition: all 200ms ease-in;
+    transform: scale(1.3);
+    z-index: 9999;
+}
+.small-widget a {
+    color: #333;
+ }
+.bg-purple {
+    background: #d1c4e9;
+}
+.bg-green {
+    background: #b2ebf2;
+}
+.bg-yellow {
+    background: #ffecb3;
+}
+.close-popdiv{
+	background-color: #d94747;
+    color: #fff;
+    left: -10px;
+    padding: 4px 5px;
+    position: absolute;
+    top: -5px;
+	border-radius:3px;
+	cursor:pointer;
+}
+.pop_mask {
+    position:fixed; width:100%; height:100%; background-color:rgba(0,0,0,0.6); top:0px; left:0px; z-index:9999; display:none;
+    background-image:"../images/cancel.png"; background-repeat:no-repeat; background-position:10% 40px;
+}
+.edit_role_pop {
+position:absolute; width:60%; min-height:150px; background-color:#FFF; box-sizing:border-box; right:125px; top:45px;
+padding:10px 10px; display:none; box-shadow:0px 0px 3px rgba(0,0,0,0.3); z-index: 999;
+}
+.assignroles.changeRole{
+	position: relative;
+	width: 600px;
+	margin-top: 10px;
+	height: auto !important;
+	overflow: visible;
+}
+.changeRole .chosen-container-single .chosen-drop {
+	width: 100%;
+	margin-left:0px;
+}
+.clients_side_wrap select {
+    background-position: 96%;
+}
+.email-switch .switch {
+    width: 35px;
+    height: 29px;
+}
+.email-switch .slider::before {
+    height: 20px;
+    width: 15px;
+    left: 4px;
+    bottom: 5px;
+}
+.email-switch input:checked + .slider {
+    background-color: #8D6E63;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
+}
+.email-switch .slider {
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+}
+.email-button .btn {
+    padding: 4px 16px;
+}
+.colpadding [class*="col-md-"] {
+padding:0 5px;	
+/*padding: 5px 9px;*/
+}
 
+.radioInline input[type="radio"], .radioInline input[type="checkbox"]{
+    top:2px;
+    margin-right: 5px;
+    position: relative;
+}
+
+.btn.colorpicker{
+    padding: 2px;
+}
+.upresume .col-md-4{
+    width: 29%;
+}
+.upresume .col-md-8{
+    width: 71%;
+}
+.email-social .fa
+{
+    position: relative;
+    top: 5px;
+}
+.signature-area {
+    min-height: 150px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.btn-active{
+ color:#f60 !important;   
+}
+.selp-custom-min.custommin > .bootstrap-select .btn-default {
+    height: 30px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {

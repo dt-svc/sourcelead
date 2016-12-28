@@ -277,10 +277,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 			 	
 	    	Projects projects = new Projects();
 	    	projects.setProjectSequeneNumber("Project001");
-	    	projects.setProjectName(registration.getCompanyName()+"_Project");
-	    	projects.setDescription(registration.getCompanyName()+"_Project");
+	    	projects.setProjectName(registration.getCompanyName());
+	    	projects.setDescription(registration.getCompanyName());
 	    	projects.setStartDate(new Date());
-	    	
+	    	projects.setInvoiceFrequency(Constants.WEEKLY);
 	    	projects.setProjectStatus(Project_Status.STARTED);
 	    	projects.setIsPrimary(1);
 	    	projects.setCreatedDate(new Date());

@@ -23,6 +23,7 @@
 $(document).ready(function() {
     $("#filter2ApprovePop").click(function(){
 		$("#filter2ApprovedPop").slideToggle(200);
+		$(".export_pop, .action-pop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter2ApprovedPop").slideUp(200);
@@ -182,6 +183,7 @@ function requirementList(){
 	                     result = result +"    <th>Position type</th>"; 
 	                     result = result +"    <th>Location</th>"; 
 	                     result = result +"    <th>No.of<br> Positions</th>"; 
+	                     result = result +"    <th>Applicants</th>"; 
 	                     result = result +"    <th>Owner</th>"; 
 	                     result = result +"    <th>Status</th>"; 
 	                     result = result +"    <th>Release</th>"; 
@@ -242,6 +244,11 @@ function requirementList(){
 		                    	 result = result +"<td><div>"+opt.positions+"</div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>----</div></td>";
+		                     }
+		                     if(opt.totalApplicantsForRequirement!=null && opt.totalApplicantsForRequirement!='' && opt.totalApplicantsForRequirement!='undefined'){
+		                    	 result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div>"+opt.totalApplicantsForRequirement+"</div></a></td>";
+		                     }else{
+		                    	 result = result +"<td><div>0</div></td>";
 		                     }
 		                     if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
 		                    	 result = result +"<td><div>"+opt.manager+"</div></td>";
@@ -1184,14 +1191,22 @@ function requirementPipeline(requirementId){
           	<li> <a href="<c:url value='/team'/>"><i class="fa fa-plus"></i>Team</a></li>
           </sec:authorize>
           
-            <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')"> 
-          	<li> <a href="<c:url value='/template'/>"><i class="fa fa-plus"></i>Template</a></li>
-          </sec:authorize> 
+          <li>
+          <a class="action" href="javascript:void(0)">Template
+          	<i onclick="getActions();" class="fa fa-caret-down"></i>
+          </a>
+          <div class="action-pop">
+          <span>
+              <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
+                 <a href="<c:url value='/template'/>"><i class="fa fa-plus"></i>Requirement</a>
+               </sec:authorize> 
 
-          <sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
-          <li> <a href="<c:url value='/interViewFeedBackTemplate'/>"><i class="fa fa-plus"></i>Interview Template</a></li>
-           </sec:authorize>
-
+              <sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
+                 <a href="<c:url value='/interViewFeedBackTemplate'/>"><i class="fa fa-plus"></i>Interview</a>
+             </sec:authorize> 
+          </span>
+          </div>
+          </li>
           <sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
            <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop" onClick="mypop();"></i>
             <div class="export_pop">
@@ -1285,21 +1300,6 @@ $(document).ready(function() {
     });	
 });
 
-// Export Popup
-$(document).ready(function() {
-    $("#export-pop").click(function(){
-		$(".export_pop").slideToggle(200);
-	});
-    $("html").click(function() {
-        $(".export_pop").slideUp(200);
-    });
-    $(".export_pop, #export-pop").click(function(e) {
-        e.stopPropagation();
-    });	
-});
-
-
-	
 // project side bar
 $(document).ready(function() {
     $(".proj_show").click(function(){
@@ -1433,6 +1433,7 @@ function changeStatus(requirementId){
 <script>
     $("#export-pop").click(function(){
 		$(".export_pop").slideToggle(200);
+		$(" #filter2ApprovedPop, .action-pop").slideUp(200);
 	});
     $("html").click(function() {
         $(".export_pop").slideUp(200);
@@ -1519,5 +1520,18 @@ function cancel(){
            setTimeout(function(){
                    $('#selector2').fadeOut('slow'); }, 1000);
        }
+</script>
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".export_pop, #filter2ApprovedPop").slideUp(200);
+	
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
+}
 </script>
 <jsp:include page="../masterFooter.jsp" />
