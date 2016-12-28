@@ -447,10 +447,10 @@ function sideBar(requirementId){
               			
               			result = result+'    <div class="profile_details requirement_details clearfix">';
               			if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined'){
-				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobId+'-'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
+				        result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobId+'-'+json.jobTitle+''+jobType+'<i></i></h4></a>';
               			}
               			else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined'){
-    				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'-'+json.jobType+'<i></i></h4></a>';
+    				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+''+jobType+'<i></i></h4></a>';
               			}else{
               				result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'<i></i></h4></a>';
               			}
@@ -507,19 +507,17 @@ function sideBar(requirementId){
   
 				       }
 				       
-				        if(json.state != null && json.state !='' && json.state != 'undefined' && json.city != null && json.city !='' && json.city != 'undefined')
+				        if(json.state != null && json.state !='' && json.state != 'undefined' && json.city !=null && json.city !='' && json.city != 'undefined')
 				        	{
 				        result = result+'<li><i class="fa fa-map-marker"></i><span title="'+json.country+', '+json.state+', '+json.city+'">'+json.country+', '+json.state+', '+json.city+'</span></li>';
 				        	}
 				        else if(json.state != null && json.state !='' && json.state != 'undefined')
 				        	{
-
 					    result = result+' <li><i class="fa fa-map-marker"></i><span title="'+json.country+', '+json.state+'">'+json.country+', '+json.state+'</span></li>';
 
 				        	}
 				        else{
 					     result = result+' <li><i class="fa fa-map-marker"></i><span title="'+json.country+'">'+json.country+'</span></li>';
-
 				        }
 				        result = result+'</ul>';
 				        result = result+'</div>';
