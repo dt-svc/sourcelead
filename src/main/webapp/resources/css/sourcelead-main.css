@@ -5521,6 +5521,9 @@ float: left;
 width: 65%;
 padding: 0;
 }
+.disable-choosen-dropdown .chosen-container .chosen-drop{
+	display: none !important
+}
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {

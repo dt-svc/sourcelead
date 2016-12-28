@@ -44,7 +44,7 @@ display: none;
         </div>
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-primary small">To</label>
-          <div class="col-md-10 positionRelative">
+          <div class="col-md-10 positionRelative disable-choosen-dropdown">
             <select class="chosen-select" data-validation="required"  field-name="To List" multiple data-placeholder="&nbsp;" id="emailsList" name="Toemails">
             </select>
             <span class="select-multiple" data-target="#multiplemail" onclick="listChange();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
@@ -81,7 +81,7 @@ display: none;
         </div>
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-warning small">Others</label>
-          <div class="col-md-10 email-icon positionRelative">
+          <div class="col-md-10 email-icon positionRelative disable-choosen-dropdown">
                 <select multiple data-placeholder="Enter Emails" class="chosen-select form-control" name="otherEmails" id="otherEmails" >
                 </select>
           </div>
@@ -867,14 +867,26 @@ function getCheckedCandidates(){
 		    chosen = select.data('chosen');
 		    chosen.search_field.on('keyup', function(e)
 		    {
-		    	var newEmail = this.value.replace(",","");
+		    	var newEmail = this.value.replace(","," ");
 		        if ((e.which == 13 || e.which == 188) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
 		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(newEmail).text(newEmail);
-		            select.append(option);
-		            select.find(option).prop('selected', true);
-	        		$("#otherEmails").trigger("chosen:updated");
+	        		var par = this.parent;
+		        	var  tagArray = newEmail.split(" ");
+		        	 if(tagArray.length == 1){
+		        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
+		        		 select.append(option);
+				            select.find(option).prop('selected', true);
+			        		$("#otherEmails").trigger("chosen:updated");
+		        	 }else if(tagArray.length > 1){
+		        		 var emailArray = this.value.split(',')
+		        		 for (var i=0; i < emailArray.length; i++) {
+		        			 var option = $("<option>").val(emailArray[i].replace(",","")).text(emailArray[i].replace(",",""));
+		        			 select.append(option);
+		 		             select.find(option).prop('selected', true);
+		 	        		 $("#otherEmails").trigger("chosen:updated");
+		                 }
+		        	 }
+		           
 	        		
 		        }
 		    });
