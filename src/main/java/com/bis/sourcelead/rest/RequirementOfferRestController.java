@@ -25,7 +25,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -35,7 +37,9 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
@@ -90,6 +94,9 @@ public class RequirementOfferRestController {
 	
 	@Autowired
 	CandidateService candidateService ;
+	
+	@Autowired
+	NotificationsService notificationsService;
 	
 	
 	
@@ -458,7 +465,7 @@ public class RequirementOfferRestController {
 	* 
 	* @throws Exception
 	*/
-	@RequestMapping(value = "/acceptRejectCandidate", method = RequestMethod.GET)
+	@RequestMapping(value = "/acceptRejectCandidate", method = RequestMethod.POST)
 	public @ResponseBody String acceptRejectCandidate(@RequestParam(value = "json", required = false) String json, String submissionId, String decision, MultipartHttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
@@ -486,6 +493,41 @@ public class RequirementOfferRestController {
 		}else{
 			return "exception";
 		}
+	}
+	
+	@RequestMapping(value = "/acceptCandidateFromNotification", method = RequestMethod.GET)
+	public ModelAndView acceptCandidateFromNotification(String submissionId,
+												  @RequestParam(value = "UUID", required = false) String UUID,HttpServletRequest request) throws Exception {
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		
+		if(StringUtils.isNotEmpty(submissionId)){
+			RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
+			requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
+			requirementSubmissionService.sendEmailtoApplicant(loginOrg, user, requirementSubmission, orgLocation);
+		
+			 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
+			 if(null != notifications){
+				 notifications.setUserNotificationStatus("Accepted");
+				 notificationsService.saveNotification(notifications);
+			 }
+			 
+			StringBuilder redirectUrl = new StringBuilder();
+			
+			ModelAndView model = new ModelAndView();
+			model.setViewName("/dashboard");
+			return model;
+			
+		}else{
+			
+			ModelAndView model = new ModelAndView();
+			model.setViewName("/dashboard");
+			return model;
+			
+		}
+		
 	}
 	
 }

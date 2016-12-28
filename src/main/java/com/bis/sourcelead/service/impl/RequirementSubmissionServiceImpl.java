@@ -1784,7 +1784,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());		
 	}
 
-	@Override
 	public void sendEmailtoClient(Org loginOrg, User users, User pastUser, Requirement requirement, Candidate candidate,
 			StringBuilder tempHTML,OrgLocations orgLocations) throws Exception {
 		EmailMessage emailMessage = new EmailMessage();
@@ -1863,6 +1862,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.duplicateCandidateCountList(requirementId, user, loginOrgLocation) ;
 	}
 
+	@Override
 	public void sendEmailtoRequirementManager(Org loginOrg, User users,RequirementSubmission requirementSubmission,
 			 OrgLocations loginOrgLocation) throws Exception {
 		
@@ -1936,13 +1936,16 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		  
-		 String actionLink="acceptRejectCandidate?submissionId="+requirementSubmission.getId()+"&decision=accept";
+		
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 		 
+		 String UUID = SourceLeadRandomCodeHelper.generateUUID();
+		 String actionLink="acceptCandidateFromNotification?submissionId="+requirementSubmission.getId()+"&UUID="+UUID;
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 		 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);
+		 notificationScenario.setUUID(UUID);
 		 emailScenerioUtil.sendNotification(actionLink, users,requirementSubmission.getRequirement().getManagerUserId(), loginOrgLocation, notificationScenario);
 		 
 	}

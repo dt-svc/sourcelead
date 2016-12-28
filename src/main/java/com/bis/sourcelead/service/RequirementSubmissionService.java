@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +12,6 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
-import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -118,4 +116,11 @@ public interface RequirementSubmissionService {
 			OrgLocations loginOrgLocation)throws Exception;
 	
 	List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, String status);
+	
+	public void sendEmailtoRequirementManager(Org loginOrg, User users,RequirementSubmission requirementSubmission,
+			 OrgLocations loginOrgLocation) throws Exception;
+	
+	public void sendEmailtoApplicant(Org loginOrg, User users,RequirementSubmission requirementSubmission,
+			 OrgLocations loginOrgLocation) throws Exception;
+		
 }
