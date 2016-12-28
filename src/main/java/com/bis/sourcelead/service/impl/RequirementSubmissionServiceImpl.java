@@ -1936,7 +1936,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		  
-		 String actionLink="";
+		 String actionLink="acceptRejectCandidate?submissionId="+requirementSubmission.getId()+"&decision=accept";
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 		 
@@ -2021,6 +2021,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		  
 		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
 		 
+	}
+
+	@Override
+	public List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, String status) {
+		
+		return requirementSubmissionDao.getApplicantsByStatus(orgLocationsId, status);
 	}
 	
 

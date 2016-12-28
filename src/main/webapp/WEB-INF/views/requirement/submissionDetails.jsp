@@ -1241,7 +1241,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 				//It will escape all the special characters
 		        var jsonData = encodeURIComponent(con);
 				$.ajax({
-						type : "POST",
+						type : "GET",
 		        	    data: formData,
 		        	    contentType : 'application/json; charset=utf-8',
 		        	    enctype: 'multipart/form-data',
@@ -1304,7 +1304,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 				//It will escape all the special characters
 		        var jsonData = encodeURIComponent(con);
 				$.ajax({
-						type : "POST",
+						type : "GET",
 		        	    data: formData,
 		        	    contentType : 'application/json; charset=utf-8',
 		        	    enctype: 'multipart/form-data',
@@ -1358,7 +1358,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 				//It will escape all the special characters
 		        var jsonData = encodeURIComponent(con);
 				$.ajax({
-						type : "POST",
+						type : "GET",
 		        	    data: formData,
 		        	    contentType : 'application/json; charset=utf-8',
 		        	    enctype: 'multipart/form-data',

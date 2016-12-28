@@ -24,7 +24,6 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
-import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
@@ -86,7 +85,8 @@ public class DashboardRestController {
 	 
 	 @Autowired
      UserRoleService userRoleService;
-	
+	 
+	 
 	@Autowired
 	CommonUtil commonUtil;
 	/****
@@ -519,6 +519,18 @@ public class DashboardRestController {
 			requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
 			
 			return "success";
+			
+		}
+		
+		@RequestMapping(value = "/getApplicantsByStatus", method = RequestMethod.POST)
+		public String getApplicantsByStatus(@RequestParam(value = "status", required = false)  String status, HttpServletRequest request) throws Exception {
+			
+			String resultJson;
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			List<RequirementSubmission> requirementSubmissionList = requirementSubmissionService.getApplicantsByStatus(loginOrgLocations.getId(), status);
+			resultJson = commonUtil.toJSON(requirementSubmissionList);
+			return resultJson;
 			
 		}
 

@@ -647,6 +647,18 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				}
 			return requirementSubmission;
 		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, String status) {
+
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "";
+			List<RequirementSubmission> requirementSubmissionList = null;
+			query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:orgLocations"; 
+			requirementSubmissionList =session.createQuery(query).setLong("orgLocations", orgLocationsId).setCacheable(true).list(); 
+			return requirementSubmissionList;
+		}
   }
 
 

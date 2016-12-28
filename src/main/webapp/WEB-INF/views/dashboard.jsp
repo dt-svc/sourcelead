@@ -287,6 +287,9 @@ overflow-x: auto;
 			    	 </sec:authorize>
 			    </div>
 		    </c:if>
+		     <div class="clearfix row mb"> 
+		     <jsp:include page="dashboardApplicants.jsp"></jsp:include>
+		     </div>
 	    <%-- </c:if> --%>
 	    
 	    <!-- commented by prasad salina on 16/12/16 -->

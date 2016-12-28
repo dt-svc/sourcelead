@@ -458,7 +458,7 @@ public class RequirementOfferRestController {
 	* 
 	* @throws Exception
 	*/
-	@RequestMapping(value = "/acceptRejectCandidate", method = RequestMethod.POST)
+	@RequestMapping(value = "/acceptRejectCandidate", method = RequestMethod.GET)
 	public @ResponseBody String acceptRejectCandidate(@RequestParam(value = "json", required = false) String json, String submissionId, String decision, MultipartHttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
