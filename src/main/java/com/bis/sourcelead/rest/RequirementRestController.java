@@ -208,7 +208,74 @@ public class RequirementRestController {
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
 	    
-		// to get  RequirementApproverHierarchy with maximum Level
+		
+		
+		
+		// requirement created user
+					User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
+
+					// to get RequirementApproverHierarchy with maximum Level
+					Integer maxLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirementId);
+
+					if (maxLevel != null) {
+						if (maxLevel.equals(requirementApproverHierarchy.getLevel())) {
+								if (status.equalsIgnoreCase("APPROVED")) {
+									requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+								} else if (status.equalsIgnoreCase("REJECTED")) {
+									requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
+								}
+									requirement.setUpdatedBy(loginUser.getUserCode());
+									requirement.setUpdatedDate(commonUtil.currentDate());
+									requirementService.addRequirement(requirement);
+									List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
+									for (RequirementApproverHierarchy rah : list1) {
+										if (status.equalsIgnoreCase("APPROVED")) {
+											rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+										} else if (status.equalsIgnoreCase("REJECTED")) {
+											rah.setRejectedReason(reason);
+											rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+										}
+										rah.setUpdatedBy(loginUser.getUserCode());
+										rah.setUpdatedDate(commonUtil.currentDate());
+										requirementApproverHierarchyService.addRequirementApproverHierarchy(rah);
+									}
+								// this is for sending email to requirement initiator
+								if (status.equalsIgnoreCase("APPROVED")) {
+									requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement, orgLocation);
+								} else if (status.equalsIgnoreCase("REJECTED")) {
+									requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation);
+								}
+						}else{
+
+							    RequirementApproverHierarchy level2approver = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(requirementId);
+								User approverUser = userService.getUserById(level2approver.getApproverUserId().getId());
+								if (status.equalsIgnoreCase("APPROVED")) {
+									if (level2approver != null) {
+										// this is for sending email to second level approver
+										requirementService.approverTwoEmailScenario(loginUser, approverUser, requirement, null,	orgLocation);
+									}
+									requirementApproverHierarchy
+											.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+								} else if (status.equalsIgnoreCase("REJECTED")) {
+									// this is for sending email to requirement initiator
+									requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+									requirementApproverHierarchy.setRejectedReason(reason);
+									requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation);
+			
+								}
+								requirementApproverHierarchy.setUpdatedBy(loginUser.getUserCode());
+								requirementApproverHierarchy.setUpdatedDate(commonUtil.currentDate());
+								requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
+								requirementService.addRequirement(requirement);
+						}
+					}
+
+					return "success";
+					
+	}
+			
+		// Old Code			
+		/*// to get  RequirementApproverHierarchy with maximum Level
 		Integer maxLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirementId);
 
 		if(status.equalsIgnoreCase("APPROVED")){ 
@@ -281,11 +348,7 @@ public class RequirementRestController {
 				   }
 		    }
 		}
-		
-		
-		return "success";
-		
-	}
+		*/
 	
 	
 	/**
