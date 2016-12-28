@@ -183,7 +183,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 												result = result + "Request sent to Manager";
 											result = result + '	</li>';
 											result = result + '	<li>';
-												result = result + "<a href='#'>"+json.submissionRequestFileName+"</a>";
+												result = result + '<a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a>';
 											result = result + '	</li>';
 											result = result + '	<li>';
 												result = result + "comment: "+json.submissionRequestComment;
