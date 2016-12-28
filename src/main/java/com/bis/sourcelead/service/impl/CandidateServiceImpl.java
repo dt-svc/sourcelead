@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,7 +72,7 @@ public class CandidateServiceImpl implements CandidateService {
 	@Autowired
 	CandidateSkillsService candidateSkillsService;
 	
-	@Autowired
+	@Autowired @Lazy
 	CandidateResumesService candidateResumesService;
 	
 	@Autowired
@@ -334,8 +335,8 @@ public class CandidateServiceImpl implements CandidateService {
 	}
 
 	@Override
-	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId) throws Exception {
-		return candidateDao.getCandidatesByOrgLocationID(orgLocationId,requirementId);
+	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId, String candidateType) throws Exception {
+		return candidateDao.getCandidatesByOrgLocationID(orgLocationId,requirementId,candidateType);
 	}
 
 	@Override
@@ -397,8 +398,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	if(candidate.getMobilePhone() !=null && !"".equalsIgnoreCase(candidate.getMobilePhone())){
 		writeRow.createCell(3).setCellValue(candidate.getMobilePhone());
 	}
-	if(candidate.getCity() !=null && !"".equalsIgnoreCase(candidate.getCity())){
-		writeRow.createCell(4).setCellValue(candidate.getCity());
+	if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
+		writeRow.createCell(4).setCellValue(candidate.getCountry());
 	}
 	if(candidate.getDesignation() !=null && !"".equalsIgnoreCase(candidate.getDesignation())){
 		writeRow.createCell(5).setCellValue(candidate.getDesignation());

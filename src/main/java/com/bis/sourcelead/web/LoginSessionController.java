@@ -324,7 +324,8 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "userType", user.getUserType());
 		SourceLeadSessionManager.setSessionAttribute(request, "userCode", user.getUserCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "userId", user.getId());
-		SourceLeadSessionManager.setSessionAttribute(request, "userName", user.getFirstName()+" "+user.getLastName());
+		StringBuilder userNameSB = new StringBuilder();
+		SourceLeadSessionManager.setSessionAttribute(request, "userName", userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		
 	}
 	

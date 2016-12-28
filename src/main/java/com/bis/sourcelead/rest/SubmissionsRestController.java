@@ -194,11 +194,19 @@ public class SubmissionsRestController {
 		JSONObject jsonObj = new JSONObject(json1);
 
 		MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if (itrator.hasNext()) {
-			multiFile = request.getFile(itrator.next());
+		//to get parse resume
+		if(locationMapFileData != null && locationMapFileData.getSize() > 0 ){
+			Iterator<String> itrator = request.getFileNames();
+			if (itrator.hasNext()) {
+				multiFile = request.getFile(itrator.next());
+			}
 		}
-
+		//to get the manually uploaded resume
+		else{
+			final Map files = request.getFileMap();
+		    multiFile = (MultipartFile)files.get("newUploadBtn");
+		}
+		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
@@ -207,8 +215,8 @@ public class SubmissionsRestController {
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
 		requirementSubmissionHistory.setFromStage("NEW");
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
-				requirementSubmissionHistory);
+//		requirementSubmission.get
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
 		return "success";
 
 	}
@@ -278,13 +286,12 @@ public class SubmissionsRestController {
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
 
 		for (RequirementSubmission requirementSubmission : shortlistedList) {
-			CandidateResumes candidateResumes = candidateResumesService
-					.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+			CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
 					.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 			if (requirementSubmissionTemplateFields.getLastName() != null) {
-				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName() + " "
-						+ requirementSubmissionTemplateFields.getLastName());
+				StringBuilder canNameSB = new StringBuilder();
+				requirementSubmission.setCandidateName(canNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
 			} else {
 				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
 			}
@@ -298,7 +305,8 @@ public class SubmissionsRestController {
 						.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 			}
 			User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-			requirementSubmission.setUserName(userVal.getFirstName() + " " + userVal.getLastName());
+			StringBuilder userNameSB = new StringBuilder();
+			requirementSubmission.setUserName(userNameSB.append(userVal.getFirstName()).append(" ").append(userVal.getLastName()).toString());
 			requirementSubmission.setResumeName(candidateResumes.getFileName());
 			candidatesList.add(requirementSubmission);
 		}
@@ -325,8 +333,8 @@ public class SubmissionsRestController {
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
 					.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 			if (requirementSubmissionTemplateFields.getLastName() != null) {
-				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName() + " "
-						+ requirementSubmissionTemplateFields.getLastName());
+				StringBuilder canNameSB = new StringBuilder();
+				requirementSubmission.setCandidateName(canNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
 			} else {
 				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
 			}
@@ -340,7 +348,8 @@ public class SubmissionsRestController {
 						.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 			}
 			User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-			requirementSubmission.setUserName(userVal.getFirstName() + " " + userVal.getLastName());
+			StringBuilder userNameSB = new StringBuilder();
+			requirementSubmission.setUserName(userNameSB.append(userVal.getFirstName()).append(" ").append(userVal.getLastName()).toString());
 			requirementSubmission.setResumeName(candidateResumes.getFileName());
 			candidatesList.add(requirementSubmission);
 		}
@@ -408,20 +417,20 @@ public class SubmissionsRestController {
 		String resultJson = null;
 
 		RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-		String skillsList = "";
+		StringBuilder skillsList = new StringBuilder();
 		Set<CandidateSkills> candidateSkills = submission.getCandidate().getCandidateSkills();
 		int i = 0;
 		for (CandidateSkills skilss : candidateSkills) {
 			if (i <= 5) {
-				skillsList = skillsList + skilss.getName();
+				skillsList = skillsList.append(skilss.getName());
 				if (i != candidateSkills.size() - 1) {
-					skillsList = skillsList + ",";
+					skillsList = skillsList.append(",");
 				}
 			}
 			i++;
 		}
 
-		submission.setSkillsList(skillsList);
+		submission.setSkillsList(skillsList.toString());
 		resultJson = toJSON(submission);
 		return resultJson;
 
@@ -474,7 +483,8 @@ public class SubmissionsRestController {
 		emailMessage.setToEmail(requirement.getManagerUserId().getEmail());
 		emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		emailMessage.setCreatedBy(user.getUserCode());
-		emailMessage.setFromName(user.getFirstName() + " " + user.getLastName());
+		StringBuilder userNameSB = new StringBuilder();
+		emailMessage.setFromName(userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -494,7 +504,8 @@ public class SubmissionsRestController {
 				&& requirement.getMaxExp() != "undefiend")
 				&& (requirement.getMinExp() != null && requirement.getMinExp() != ""
 						&& requirement.getMinExp() != "undefiend")) {
-			globalVarsMap.put("requirementExperience", requirement.getMinExp() + " - " + requirement.getMaxExp());
+			StringBuilder expSB = new StringBuilder();
+			globalVarsMap.put("requirementExperience", expSB.append(requirement.getMinExp()).append(" - " ).append(requirement.getMaxExp()).toString());
 		} else if ((requirement.getMaxExp() != null && requirement.getMaxExp() != ""
 				&& requirement.getMaxExp() != "undefiend")
 				&& (requirement.getMinExp() == null || requirement.getMinExp() == ""
@@ -507,21 +518,23 @@ public class SubmissionsRestController {
 			globalVarsMap.put("requirementExperience", requirement.getMinExp());
 		}
 		if (requirement.getRate() != null && requirement.getRate() != "" && requirement.getRate() != "undefiend") {
-			globalVarsMap.put("requirementRate", requirement.getRate() + " " + requirement.getRateType());
+			StringBuilder rateSB = new StringBuilder();
+			globalVarsMap.put("requirementRate", rateSB.append(requirement.getRate()).append(" ").append(requirement.getRateType()).toString());
 		}
 		if (requirement.getSkills() != null && requirement.getSkills() != ""
 				&& requirement.getSkills() != "undefiend") {
 			globalVarsMap.put("requirementSkill", requirement.getSkills());
 		}
 
-		globalVarsMap.put("LoginURL", "<a href='" + sourceleadUrl + "/"
-				+ "' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
-
+		StringBuilder loginURLBuilder = new StringBuilder();
+		globalVarsMap.put("LoginURL", loginURLBuilder.append("<a href='").append(sourceleadUrl).append("/").append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		
 		// setting the Recipient information
 		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		EmailRecipient emailRecipient = new EmailRecipient();
 		emailRecipient.setEmail(emailMessage.getToEmail());
-		emailRecipient.setName(emailMessage.getFirstName() + " " + emailMessage.getLastName());
+		StringBuilder nameSB = new StringBuilder();
+		emailRecipient.setName(nameSB.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		emailRecipientList.add(emailRecipient);
 
 		// getting the current EmailScenario by EmailScenario unique name and
@@ -563,6 +576,7 @@ public class SubmissionsRestController {
 	public @ResponseBody String submitToClient(@RequestParam(value = "jsonData", required = false) String jsonData,
 			@RequestParam(value = "selectedIds", required = false) String submissionsList,
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
+			@RequestParam(value = "selectedShortlistsRate", required = false) String selectedShortlistsRate,
 			MultipartHttpServletRequest multPartrequest) throws Exception {
 		String jsonc = "{" + jsonData + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
@@ -573,7 +587,7 @@ public class SubmissionsRestController {
 		final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) multPartrequest;
 		final Map<String, MultipartFile> files = multiRequest.getFileMap();
 		requirementSubmissionService.storeClientSubmissionWithEmailPreview(requirementId, user, orgLocations,
-				submissionsList, org, jsonObj, files);
+				submissionsList, org, jsonObj, files,selectedShortlistsRate);
 		return "success";
 	}
 
@@ -610,7 +624,8 @@ public class SubmissionsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String fullName = null;
 		if (!"".equalsIgnoreCase(user.getLastName()) && user.getLastName() != null) {
-			fullName = user.getFirstName() + " " + user.getLastName();
+			StringBuilder nameSB = new StringBuilder();
+			fullName = nameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
 		} else {
 			fullName = user.getFirstName();
 		}
@@ -623,14 +638,14 @@ public class SubmissionsRestController {
 		} else {
 			requirement.setSubmitToClientToMailId(requirement.getSpocId().getSpocUser().getEmail());
 		}
-		requirement.setSubmitToClientMailSubject("New applicants received for the" + " " + requirement.getJobTitle());
+		StringBuilder subjectSB = new StringBuilder();
+		requirement.setSubmitToClientMailSubject(subjectSB.append("New applicants received for the").append(" ").append(requirement.getJobTitle()).toString());
 
 		if (requirement != null && requirement.getParentRequirement() != null) {
-			sb.append("Hi," + " " + requirement.getParentRequirement().getManagerUserId().getFirstName() + ""
-					+ requirement.getParentRequirement().getManagerUserId().getLastName());
+			sb.append("Hi,").append(" ").append(requirement.getParentRequirement().getManagerUserId().getFirstName()).append(" ").append(requirement.getParentRequirement().getManagerUserId().getLastName()).toString();
 			sb.append("\n\n");
-			sb.append(fullName + " submitted the applicants for the" + " " + requirement.getJobTitle() + ".\n\n");
-			sb.append("Total no.of submitted applicants :" + submissions.length);
+			sb.append(fullName).append(" submitted the applicants for the").append(" ").append(requirement.getJobTitle()).append(".\n\n").toString();
+			sb.append("Total no.of submitted applicants :").append(submissions.length).append(".\n\n").toString();
 			sb.append("Best Regards,\n");
 			sb.append(fullName);
 			requirement.setMailBody(sb.toString());

@@ -79,6 +79,8 @@ text-align:left;
 </style>
 <script>
 function editCandidate(candidateId){
+	$("#profileEditPopup").show();
+	
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var loginCountryName = '${loginCountryName}';
 	  
@@ -88,7 +90,6 @@ function editCandidate(candidateId){
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
-		
 		
  if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
 	  
@@ -197,13 +198,18 @@ function editCandidate(candidateId){
 							result = result + '</select>';
 							result = result + '</div>';
 							
-							result = result + '<div class="col-md-6 custom-fields">';
-							
-							result = result + '<div class="input-group">';
+							result = result + '<div class="col-md-6">';
 							result = result + '<input type="text" class="form-control input-sm" name="designation"  value="'+designation+'" placeholder="Designation">';
+							result = result + '</div>';
 							
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="clearfix mb10">';
+							
+                            result = result + '<div class="col-md-6 custom-fields">';
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
-							result = result + '<select class="selct-picker" id="designationType" name="designationType" field-name="Designation Type">';
+							result = result + '<select class="form-control" id="designationType" name="designationType" field-name="Designation Type">';
 							result = result + '<option value="">Designation Type</option>';
 							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'><a href="#">C2C</a></option>';
 							result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'><a href="#">W-2</a></option>';
@@ -213,13 +219,9 @@ function editCandidate(candidateId){
 							result = result + ' </select>';
 							result = result + '</div>';
 							
-							result = result + '</div>';
-							result = result + '</div>';
 							
 							result = result + '</div>';
 							
-							
-							result = result + '<div class="clearfix mb10">';
 							
 							result = result + '<div class="col-md-6">';
 							
@@ -246,13 +248,14 @@ function editCandidate(candidateId){
 							result = result + ' <option '+(json.currentRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
 							result = result + '<option  '+ (json.currentRateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
 							result = result + '<option  '+(json.currentRateType == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
-							result = result + '<option  '+(json.currentRateType == "SemiMonthly" ? "selected" : '') +'>Semi-Monthly</option>';
+							result = result + '<option  '+(json.currentRateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
 							result = result + '<option  '+(json.currentRateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
 							result = result + '<option  '+(json.currentRateType == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
 							result = result + '<option '+(json.currentRateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
 							result = result + ' </select>';
 							result = result + '</div>';
 							
+							result = result + '</div>';
 							result = result + '</div>';
 							result = result + '</div>';
 							
@@ -281,7 +284,7 @@ function editCandidate(candidateId){
 							result = result + ' <option '+(json.rateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
 							result = result + '<option  '+ (json.rateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
 							result = result + '<option  '+(json.rateType == "Biweekly" ? "selected" : '') +'>Bi-weekly</option>';
-							result = result + '<option  '+(json.rateType == "SemiMonthly" ? "selected" : '') +'>Semi-Monthly</option>';
+							result = result + '<option  '+(json.rateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
 							result = result + '<option  '+(json.rateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
 							result = result + '<option  '+(json.rateType == "BiMonthly" ? "selected" : '') +'>Bi-Monthly</option>';
 							result = result + '<option '+(json.rateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
@@ -291,12 +294,13 @@ function editCandidate(candidateId){
 							
 							result = result + '</div>';
 							result = result + '</div>';
-							result = result + '</div>';
-							result = result + '</div>';
 							
-							result = result + '<div class="clearfix mb10">';
+							
+							
+							
 							result = result + '<div class="col-md-6">';
 							result = result + '<div class="row">';
+							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							
 							result = result + '<select  class="input-sm form-control" name="experienceYears"  id="experienceYears" field-name="Experience Years" onchange="javascript:disableMonths();">';
@@ -341,7 +345,9 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							result = result + '</div>';
 							
+							result = result + '</div>';
 							
+							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							result = result + '<select class="input-sm form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
 							result = result + '<option value="">Select</option>';
@@ -352,11 +358,12 @@ function editCandidate(candidateId){
 							result = result + '<option  '+(json.noticePeriod == "3 Months" ? "selected" : '') +'<a href="#">3 Months</a></option>';
 							result = result + ' </select>';
 							result = result + ' </div>';
-							result = result + '</div>';
+							
 							
 							result = result + '<div class="col-md-6">';
 							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5">'+summary+'</textarea>';
 							result = result + ' </div>';
+							result = result + '</div>';
 							result = result + '</div>';
 							
 							
@@ -644,6 +651,7 @@ function cancelAlert(){
 --%>
 <script type="text/javascript">
 function removeCandidateAlertMessage(candidateId){
+	$("#profileEditPopup").fadeOut();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";

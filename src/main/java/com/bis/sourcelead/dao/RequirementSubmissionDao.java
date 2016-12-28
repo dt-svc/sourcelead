@@ -34,6 +34,8 @@ public interface RequirementSubmissionDao {
 
 	Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus, String dateRange,String userType,User user);
 	
+	Integer getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(Long orgLocationsId,Long requirementId);
+	
 	List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(Long id,Long requirementId) throws Exception;
 	
 	RequirementSubmission getRequirementSubmissionByIdAndSubmissionStatus(Long submissionId,String submissionStatus)throws Exception;
@@ -41,7 +43,7 @@ public interface RequirementSubmissionDao {
 	/**
 	 * @author Prasad Salina
 	 * @param email
-	 * @param requirementId
+	 * @param requirementId 
 	 * @param orgLocationsId
 	 * @return
 	 */
@@ -72,5 +74,7 @@ public interface RequirementSubmissionDao {
 			OrgLocations loginOrgLocation, String submissionType)throws Exception;
 	
 	RequirementSubmission getClientSubmissionsBySubmissionIdAndOrgLocationId(Long submissionId, Long orgLocationId);
+
+	List<RequirementSubmission> duplicateCandidateCountList(Long requirementId, User user, OrgLocations loginOrgLocation) throws Exception;
 
 }

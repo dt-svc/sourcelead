@@ -52,7 +52,6 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.mysql.jdbc.log.Log;
 
 /**
  * 
@@ -356,7 +355,8 @@ public class ProjectsDashboardRestController {
 				mimeType = "application/octet-stream";
 			}
 			response.setContentType(mimeType);
-			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
 			response.setContentLength((int) file.length());
 			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 			FileCopyUtils.copy(inputStream, response.getOutputStream());

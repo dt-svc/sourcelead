@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -96,7 +97,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	@Autowired
 	OrgLocationService orgLocationService;
 	
-	@Autowired
+	@Autowired @Lazy
 	private CandidateResumesService candidateResumesService;
 	
 	@Autowired
@@ -115,7 +116,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	private String defaultFromEmailAddressPwd;
 
 	@Override
-	@Async
+	//@Async
 	public void sendEmail(EmailMessage emailMessage, Long locationsId, ArrayList<EmailRecipient> emailRecipientList,
 			List<EmailAttachment> attachmentList) throws Exception {
 
@@ -204,7 +205,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			message.setHeader("Content-Type", "text/html; charset=UTF-8");
 			message.setSubject(emailMessage.getSubject());
 
-			if (null != attachmentList) {
+			if (null != attachmentList && attachmentList.size() > 0) {
 				for (EmailAttachment attachment : attachmentList) {
 					
 					DataSource dataSource = null;
