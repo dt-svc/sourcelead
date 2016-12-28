@@ -13,10 +13,15 @@
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<style>
+.modal-backdrop{
+display: none;
+}
+</style>
+
 <script>
  window.onload = function() {
 	 getTeamsList('All');
-	 getUserSignature();
 };
 </script>
 
@@ -57,7 +62,7 @@
                     <h4 class="modal-title">Select Mailer</h4>
                   </div>
                   
-                   <div class="modal-body clearfix">
+                   <div class="modal-body mail-body clearfix">
                     <div class="modal-body-custom mailerpopup mt clearfix">
                      <div id="userList"></div>
                     </div>
@@ -114,51 +119,19 @@
         <!-- Attachment button --> 
         
         <!-- Attachment button-->
-        <div class="col-md-12 clearfix mt">
-          <div class="col-md-6">
-            <div class="pull-left select-field">
-              <select class="form-control inpu-sm" id="userSignature" name="userSignature">
-                <option selected disabled value="">-Select Signature-</option>
-              </select>
-            </div>
-            <div class="pull-left positionRelative">
-              <input type="button" class="btn btn-primary btn-sm ml10" value="New Sign" title="New Sign" onClick="createSign()">
-            </div>
-          </div>
-          <div class="col-md-6">
+          
+          <div class="col-md-12  clearfix mt">
             <div class="pull-right"> 
               <!--<input type="button" value="Schedule" class="btn btn-sm btn-primary">-->
               <button type="button" class="btn btn-sm btn-success" onclick="sendEmails();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
               <button type="button" class="btn btn-sm btn-default"><i class="fa fa-times"></i>&nbsp;Cancel</button>
             </div>
           </div>
-        </div>
         <!-- Attachment button --> 
          </form:form>
       </div>
       
-      <div class="createSign-pop">
-                
-                <form:form id="signature_form" name="signature_form" method="post" >
-                <div class="clearfix">
-                  <lable>Name of the Signature</lable>
-                  <div class="col-md-12">
-                    <input type="text" name="signatureName" id="signatureName" data-validation="required validate_Space validate_length length2-100" field-name="Signature Name" class="form-control input-sm" autofocus>
-                  </div>
-                </div>
-                <div class="clearfix mt">
-                  <lable>Create Signture</lable>
-                  <div class="col-md-12">
-                    <textarea data-placeholder="Signature" id="signatureText"  data-validation="required" field-name="Signature" name="signatureText" rows="2" class="form-control" ></textarea>
-                  </div>
-                </div>
-                <div class="clearfix mt">
-                  <div class="pull-right"> 
-                  <button type="button" class="btn btn-sm btn-success" onclick="saveSignatrue();">&nbsp;Save</button>
-                   <a href="javascript:void(o)" class="ml btn btn-default btn-sm" onClick="closeSign()">Cancel</a> </div>
-                </div>
-                </form:form>
-    </div>
+      
     </div>
    
     
@@ -171,27 +144,7 @@
   
   
   
- <script>
-function getUserSignature(){
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/getSignatures?${_csrf.parameterName}=${_csrf.token}", 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	var output = "";
-	        	output = output + "<option value=''>-Select Signatrue-</option>"; 
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		output = output + "<option value='" +opt.id+ "'>"+opt.signatureName+"</option>";
-				}
-	        	$("#userSignature").empty();
-		        $("#userSignature").append(output);
-	        },
-	    }); 
-}
-</script>  
+ 
 
 <script type="text/javascript">
 $(function(){
@@ -255,41 +208,7 @@ $(function(){
 
 
 
-<script type="text/javascript">
-	function saveSignatrue() {
-		
-	if ($('#signature_form').validate(false, validationSettings)){ 
-		
-	    var sourceleadUrl = '${sourceleadUrl}';
-		var frm = $('#signature_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, ""); 
-	    var jsonData = encodeURIComponent(con);
-	    
-		$.ajax({
-			type : "POST",
-			url : sourceleadUrl+"/saveUserSignature?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-			success : function(result) {
-				$("#signatureName").val('');
-				$("#signatureText").val('');
-				$(".createSign-pop").fadeOut(200);
-				getUserSignature();
-			},
-		});
-	    
-	    return true
-		 
-		}else{
-			return false;
-		  }
-		
-	}
 
-   $('body').on('blur', '#signature_form', function() {
-		$("#signature_form").showHelpOnFocus();
-		$("#signature_form").validateOnBlur(false, validationSettings);  
-   });
-</script>
 
 <script type="text/javascript">
 	(function($) {
@@ -344,15 +263,10 @@ function getUserList(teamType){
                		 else{
 			    	     $("#userList").removeAttr("style");
 	                	    var result = '';
-	                	    result = result +'<div class="modal-body clearfix">';
-	                		result = result +'<div class="form-horizontal custom-form">';
+	                	    result = result +'<div class="modal-body clearfix mail-body">';
+	                		result = result +'<div class="form-horizontal custom-form custom-mailform">';
 	                		result = result +'     <div class="row">';
-	                		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 hidden">';
-	                		result = result +'         <div class="input-group">';
-	                		result = result +'           <input type="search" class="form-control" value="">';
-	                		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
-	                		result = result +'       </div>';
-	                		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
+	                		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 selectpicker100">';
 	                		result = result +'          <select id="rolesDiv" onchange="filterTeamMembers();" class="selectpicker form-control" style="display:block !important">';
 	                		result = result +'          </select>';
 	                		result = result +'     </div>';
@@ -394,7 +308,7 @@ function getUserList(teamType){
 	                 	 result = result +'     <div class="clearfix">';
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
-	                 	 result = result +'   <div class="modal-footer">';
+	                 	 result = result +'   <div class="clearfix pull-right mr mt10">';
 	                 	 result = result +'     <button class="btn btn-primary" type="button" id="assignbtnId" onClick="getEmails();">Add</button>';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
 	                 	 result = result +'   </div>'; 
