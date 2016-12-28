@@ -486,7 +486,6 @@ function getEmails(){
 		    chosen.search_field.on('keyup', function(e)
 		    {
 		    	var tagArray = this.value.split(',');
-		    	alert(tagArray.length);
 		    	var newEmail = this.value.replace(",","");
 		        if ((e.which == 13 || e.which == 188) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
 		        {
