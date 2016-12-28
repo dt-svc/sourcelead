@@ -3,8 +3,10 @@ package com.bis.sourcelead.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +75,7 @@ public class EmailServiceImpl implements EmailService {
 		 String signature = "";
 		 String emails = null;
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 
+		 Set<String> recipantsList = new HashSet<String>();
 		 
 		   	 if(!isNullOrEmpty(user.getLastName())){
 		   		 fullName = user.getFirstName()+" "+user.getLastName();
@@ -91,10 +93,16 @@ public class EmailServiceImpl implements EmailService {
 				String[] toEmails = emails.split(",");
 				 
 				for(int i=0 ; i< toEmails.length ; i++){
-					 EmailRecipient emailRecipient = new EmailRecipient();
-					 emailRecipient.setEmail(toEmails[i]);
-					 emailRecipientList.add(emailRecipient);
+					recipantsList.add(toEmails[i]);
 				}
+				
+				for(String email : recipantsList){
+					EmailRecipient emailRecipient = new EmailRecipient();
+					emailRecipient.setEmail(email);
+					emailRecipientList.add(emailRecipient);
+				}
+				
+				
 			}
 			
 			 emailMessage.setCreatedBy(user.getUserCode());
