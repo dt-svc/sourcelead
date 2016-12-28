@@ -3,8 +3,10 @@ package com.bis.sourcelead.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +23,18 @@ import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UserSignature;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
+import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.service.UserMailBoxService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserSignatureService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -57,6 +63,13 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	@Autowired
 	UserMailBoxService userMailBoxService;
 	
+	@Autowired
+	SourceleadSignatureService sourceleadSignatureService;
+	
+	@Autowired
+	UserRoleService userRoleService;
+	
+	
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -75,6 +88,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	 String candidates = null;
 	 String emails = null;
 	 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+	 Set<String> recipantsList = new HashSet<String>();
 	 
 	 
 	   	 if(!isNullOrEmpty(user.getLastName())){
@@ -91,11 +105,9 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 			emails = jsonObj.getString("Toemails").replaceAll("\\[", "").replaceAll("\\]","");
 			emails = emails.replaceAll("\"", "");
 			String[] toEmails = emails.split(",");
-			 
+			
 			for(int i=0 ; i< toEmails.length ; i++){
-				 EmailRecipient emailRecipient = new EmailRecipient();
-				 emailRecipient.setEmail(toEmails[i]);
-				 emailRecipientList.add(emailRecipient);
+				recipantsList.add(toEmails[i]);
 			}
 		}
 		
@@ -104,11 +116,17 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 			String othmails = jsonObj.getString("otherEmails").replaceAll("\\[", "").replaceAll("\\]","");
 			othmails = othmails.replaceAll("\"", "");
 			String[] otherEmails = othmails.split(",");
+			
 			for(int i=0 ; i< otherEmails.length ; i++){
-				 EmailRecipient emailRecipient = new EmailRecipient();
-				 emailRecipient.setEmail(otherEmails[i]);
-				 emailRecipientList.add(emailRecipient);
+				recipantsList.add(otherEmails[i]);
 			}
+			
+		}
+		
+		for(String email : recipantsList){
+			 EmailRecipient emailRecipient = new EmailRecipient();
+			 emailRecipient.setEmail(email);
+			 emailRecipientList.add(emailRecipient);
 		}
 		
 		 emailMessage.setCreatedBy(user.getUserCode());
@@ -125,6 +143,8 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 
 		String table =  getHotListCandidatesTable(hotlistedCandidates,jsonObj.getString("namefield"));
 		String UUID = SourceLeadRandomCodeHelper.generateUUID();
+		
+		signature = sourceleadSignatureService.buildSignature(user, orgLocation);
 		 
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("salutation", jsonObj.getString("saluation"));
@@ -139,9 +159,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 String subject = emailScenerioUtil.bulidSubject(jsonObj.getString("subject"),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 
-		 if(null != userSignature){
-			 signature = emailScenerioUtil.buildSignature(userSignature.getSignature(),globalVarsMap);
-		 }
+		
 		 
 		 String url = sourceleadUrl;
 		 
@@ -218,7 +236,8 @@ private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailR
 	userMailBoxService.saveUserMailBox(userMailBox);
 	
 }
-	
+
+
 private String getHotListCandidatesTable(String[] hotlistedCandidates,String nameField) throws Exception{
 		
 		
@@ -231,11 +250,16 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='15%' bgcolor='#5bace8'><span>Rate<span></th>";
 		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='50%' bgcolor='#5bace8'><span>Skills<span></th>";
 		 tempHTML = tempHTML+"</tr>";
-		   
+		 
+		 Set<String> candidateEmailsList = new HashSet<String>();
 		 
 		 for(int i=0 ; i < hotlistedCandidates.length; i++){
+			 candidateEmailsList.add(hotlistedCandidates[i]);
+		 }
+		 
+		 for(String email : candidateEmailsList){
 			 StringBuilder skills = new StringBuilder();
-			 List<CandidateSkills> skillsList = candidateSkillsService.getCandidateSkillsByCandidateId(hotlistedCandidates[i]);
+			 List<CandidateSkills> skillsList = candidateSkillsService.getCandidateSkillsByCandidateId(email);
 			 if(skillsList != null){
 				 for(CandidateSkills skill : skillsList){
 					 skills.append(skill.getName()).append(", ");
@@ -255,7 +279,7 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 			 StringBuilder expBuilder = new StringBuilder();
 			 StringBuilder rateBuilder = new StringBuilder();
 			
-			 Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(hotlistedCandidates[i]));
+			 Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(email));
 			 
 			 if(nameField.equalsIgnoreCase("firstname")){
 				 candidateName = nameBuilder.append(candidate.getFirstName());

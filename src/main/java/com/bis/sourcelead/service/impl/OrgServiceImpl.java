@@ -69,6 +69,7 @@ public class OrgServiceImpl implements OrgService {
 		System.out.println(multiFile.getContentType());
 		org.setOrgName(orgSettings.getCompanyName());
 		org.setOrgDescription(orgSettings.getAboutCompany());
+		org.setOrgAddress(orgSettings.getAddress());
 		
         if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
     	  try {
