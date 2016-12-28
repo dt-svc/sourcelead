@@ -55,9 +55,9 @@ INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_S
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('ApplicantWillReceiveMailAboutTheAcceptanceOfRequirementByManager', 'Email', 'ApplicantWillReceiveMailAboutTheAcceptanceOfRequirementByManager', 'Used for Applicant Will Receive Mail About The Acceptance Of Requirement By Manager', 'You have submitted for {{AssignedUser.RequirementName}}', 'sourcelead', 'Best Regards {{AssignedUser.ManagerName}}', 'Dear{{AssignedUser.ApplicantName}},\n�You have submitted for {{AssignedUser.RequirementName}}.\n Requirement Location :{{AssignedUser.RequirementLocation}} \n  Employment Type :{{AssignedUser.RequirementLocation}} \n Rate :{{AssignedUser.Rate}}', 'N', 'SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
 
 
-CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_SUBMISSION','SUBMISSION_REQUEST_COMMENT','TEXT NULL AFTER `SUBMISSION_RATE_DOC_FILE`');
-CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_SUBMISSION','SUBMISSION_REQUEST_DOC_FILE','MEDIUMBLOB NULL AFTER `SUBMISSION_RATE_STATUS`');
-CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_SUBMISSION','SUBMISSION_REQUEST_FILE_CONTENT_TYPE','VARCHAR(50) NULL AFTER `SUBMISSION_RATE_COMMENT`');
-CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_SUBMISSION','SUBMISSION_REQUEST_FILE_NAME','TEXT NULL AFTER `SUBMISSION_RATE_FILE_CONTENT_TYPE`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_SUBMISSION','SUBMISSION_REQUEST_COMMENT','VARCHAR(50) NULL AFTER `SUBMISSION_RATE_DOC_FILE`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_SUBMISSION','SUBMISSION_REQUEST_DOC_FILE','MEDIUMBLOB NULL AFTER `SUBMISSION_REQUEST_COMMENT`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_SUBMISSION','SUBMISSION_REQUEST_FILE_CONTENT_TYPE','VARCHAR(50) NULL AFTER `SUBMISSION_REQUEST_DOC_FILE`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_SUBMISSION','SUBMISSION_REQUEST_FILE_NAME','TEXT NULL AFTER `SUBMISSION_REQUEST_FILE_CONTENT_TYPE`');
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_SUBMISSION','SUBMISSION_REQUEST_USER','VARCHAR(50) NULL AFTER `SUBMISSION_REQUEST_FILE_NAME`');
