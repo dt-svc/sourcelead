@@ -303,9 +303,7 @@ public class VendorRestController {
 						}else{
 							orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
 						}
-						     StringBuilder spocNameSB2 = new StringBuilder();
 						     StringBuilder ownerNameSB1 = new StringBuilder();
-							 orgSpoc.setSpocName(spocNameSB2.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
 							 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 							 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 							 orgSpoc.setOwnerName(ownerNameSB1.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
@@ -323,12 +321,17 @@ public class VendorRestController {
 						}else{
 							orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
 						}
-						 //orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
 						
-						 StringBuilder ownerNameSB2 = new StringBuilder();
+						if(orgSpoc.getOwnerUser().getFirstName() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
+							StringBuilder ownerNameSB2 = new StringBuilder();
+							orgSpoc.setOwnerName(ownerNameSB2.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
+						}else{
+							orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName());
+						}
+						
+						 
 						 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 						 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-						 orgSpoc.setOwnerName(ownerNameSB2.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
 						 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
 						 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
 					 }
