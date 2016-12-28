@@ -414,10 +414,20 @@ public class RequirementListRestController {
 					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 					if(requirementId !=null && !requirementId.isEmpty()){
 						List<RequirementSubmission> requirementStatusList = null;
-						if(!"all".equalsIgnoreCase(submissionType)){
-							 requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);	
-						}else{
-							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
+//						if(!"all".equalsIgnoreCase(submissionType)){
+//							 requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);	
+//						}else{
+//							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
+//						}
+						if(Constants.All_APPLICANTS.equalsIgnoreCase(submissionType)){
+							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+						}else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(submissionType)){
+							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
+//							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+						}
+						else{
+							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
+//							requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
 						}
 						if(requirementStatusList != null){
 							for (RequirementSubmission requirementSubmission : requirementStatusList) {
@@ -820,7 +830,7 @@ public class RequirementListRestController {
 		 * @throws Exception
 		 */
 		@RequestMapping(value = "/getSubmissionsCountBySubmissionStatus" , method = RequestMethod.POST)
-		 @ResponseBody  String getSubmissionsCountBySubmissionStatus(@RequestParam(value="requirementId", required=false) String  requirementId,HttpServletRequest request) throws Exception {
+		 @ResponseBody  String getSubmissionsCountBySubmissionStatus(@RequestParam(value="requirementId", required=false) String  requirementId,@RequestParam(value="submissionType", required=false) String submissionType,HttpServletRequest request) throws Exception {
 				String resultJson = null;
 				int numOfShortList = 0;
 				int numOfInterview = 0;
@@ -829,11 +839,15 @@ public class RequirementListRestController {
 				int numOfRejected = 0;
 				int numofrequestsent = 0;
 				
+
+				
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				
 				if(requirementId !=null && !requirementId.isEmpty()){
 					List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+					
+					List<RequirementSubmission> duplicatecount = requirementSubmissionService.duplicateCandidateCountList(Long.parseLong(requirementId), user, loginOrgLocation);
 					
 					for(RequirementSubmission rmentSubmission :requirementSubmissions){
 						
@@ -870,8 +884,10 @@ public class RequirementListRestController {
 						rmentSubmission.setNumOfOffers(numOfOffers);
 						rmentSubmission.setNumOfRejected(numOfRejected);
 						rmentSubmission.setNumofrequestsent(numofrequestsent);
-						
+						if(duplicatecount.size()!= 0 && duplicatecount != null){
+						rmentSubmission.setDuplicateCount(duplicatecount.size());
 						}
+					}
 					resultJson = commonUtil.toJSON(requirementSubmissions);
 				}
 				return resultJson;
@@ -947,10 +963,15 @@ public class RequirementListRestController {
 			RequirementSubmissionCounts requirementSubmissionCounts = getRequirementSubmissionsCount(Long.valueOf(requirementId),user,loginOrgLocation);
 			if(requirementId !=null && !requirementId.isEmpty()){
 				List<RequirementSubmission> requirementStatusList = null;
-				if(!"all".equalsIgnoreCase(submissionType)){
-					 requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);	
-				}else{
-					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
+				if(Constants.All_APPLICANTS.equalsIgnoreCase(submissionType)){
+					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+				}else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(submissionType)){
+					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
+//					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
+				}
+				else{
+					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementIdandStatus(Long.valueOf(requirementId),user,loginOrgLocation,submissionType);
+//					requirementStatusList = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);	
 				}
 				
 				if(requirementStatusList != null){
@@ -960,6 +981,9 @@ public class RequirementListRestController {
 							RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 							List<RequirementInterview> numberOfInterviews = requirementInterviewService.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(requirementSubmission.getId(),loginOrgLocation.getId());
 							List<RequirementOffers> requirementOffersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(requirementSubmission.getId(),loginOrgLocation.getId());
+							if(Constants.All_APPLICANTS.equalsIgnoreCase(submissionType)){
+								submissionType = "SUBMISSION";
+							}
 							List<RequirementSubmissionHistory> requirementSubmissionHistoryServiceList = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndStage(loginOrgLocation.getId(),submissionType,requirementSubmission.getId());
 							if(requirementSubmissionHistoryServiceList !=null && requirementSubmissionHistoryServiceList.size() >0){
 								RequirementSubmissionHistory requirementSubmissionHistory = requirementSubmissionHistoryServiceList.get(0); 								
@@ -1082,6 +1106,8 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 	int numOfRejected = 0;
 	int numOfRequestSent = 0;
 	
+	 List<RequirementSubmission>duplicatecount =requirementSubmissionService.duplicateCandidateCountList(requirementId, user, loginOrgLocation);
+	
 	RequirementSubmissionCounts requirementSubmissionCounts = new RequirementSubmissionCounts();
 	if(requirementId !=null){
 		List<RequirementSubmission> requirementSubmissions = requirementSubmissionService.getSubmissionsByRequirementId(Long.valueOf(requirementId),user,loginOrgLocation);
@@ -1112,10 +1138,12 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 		requirementSubmissionCounts.setNumOfRejected(numOfRejected);
 		requirementSubmissionCounts.setSubmittedCount(requirementSubmissions.size());
 		requirementSubmissionCounts.setNumOfRequestSent(numOfRequestSent);
-		
-
+		if(duplicatecount.size()!= 0 && duplicatecount != null){
+		requirementSubmissionCounts.setDuplicateCount(duplicatecount.size());
+		}
 	}
 	return requirementSubmissionCounts;
+	
 	
 }
 }

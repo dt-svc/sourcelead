@@ -280,7 +280,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	    	projects.setProjectName(registration.getCompanyName());
 	    	projects.setDescription(registration.getCompanyName());
 	    	projects.setStartDate(new Date());
-	    	
+	    	projects.setInvoiceFrequency(Constants.WEEKLY);
 	    	projects.setProjectStatus(Project_Status.STARTED);
 	    	projects.setIsPrimary(1);
 	    	projects.setCreatedDate(new Date());

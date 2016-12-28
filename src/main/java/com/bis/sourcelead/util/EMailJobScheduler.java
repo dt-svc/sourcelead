@@ -126,12 +126,9 @@ public class EMailJobScheduler {
 					if("Admin".equalsIgnoreCase(userRole.getUserType()))
 						continue;
 					HashSet<TimesheetSubmissions> timesheetSubmissions = timesheetSubmissionsService.getWeekFrequency(projectMember.getId(),userRole.getOrgLocations().getId(),userRole.getUser().getId());
-					List<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.getAllProjectApproverHierarchyByProjectId(projectMember.getProjects().getId(), userRole.getUser().getId());
-					if(projectApproverHierarchyList.size() == 0){
-						String level ="";
+					String level ="";
 						projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),timesheetSubmissions,level);	
 						logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
-					}
 				}
 			}
 			
