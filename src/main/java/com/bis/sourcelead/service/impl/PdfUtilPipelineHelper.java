@@ -475,6 +475,11 @@ public class PdfUtilPipelineHelper  {
 	private PdfPTable getPdfTable(String[] headers, int[] width) {
 		PdfPTable table = new PdfPTable(headers.length);
 		try{
+			Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase("HMKCODE.com - iText PDFTable Example",font));
+	        cell1.setColspan(12);
+	        headerCellStyle(cell1);
+            table.addCell(cell1);
 			table.setWidthPercentage(100);
 	        table.setWidths(width);
 	        for (int i = 0; i < headers.length; i++) {
@@ -511,9 +516,9 @@ public class PdfUtilPipelineHelper  {
 		    	PdfWriter.getInstance(document, new FileOutputStream(file));
 		        document.open();
 		        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-		        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
+		        BaseColor myColor1 = WebColors.getRGBColor("#000000");
 		        boldFont.setColor(myColor1);
-	            Paragraph para = new Paragraph(orgName+" Requirements.",boldFont);
+	            Paragraph para = new Paragraph(orgName+" Requirements",boldFont);
 	            para.setAlignment(Element.ALIGN_CENTER);
 	            document.add(para);
 		        // Create an instance of PdfPTable. After that we transform the header and
@@ -884,6 +889,15 @@ public class PdfUtilPipelineHelper  {
 			
 			return requirementArray;
 		}
+	
+	private static void headerCellStyle(PdfPCell cell){
+	    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    cell.setPaddingTop(0f);
+	    cell.setPaddingBottom(7f);
+	    cell.setBackgroundColor(new BaseColor(0,121,182));
+	    cell.setBorder(0);
+	    cell.setBorderWidthBottom(2f);
+	    }
 
 
 }

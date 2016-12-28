@@ -68,7 +68,11 @@ public class PdfUtil {
 	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
 	        document.open();
-            Paragraph para = new Paragraph("Organization : " +orgName);
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	        BaseColor myColor1 = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myColor1);
+            Paragraph para = new Paragraph(orgName + " Users ",boldFont);
+            para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        
 	        int inActiveCount = 0; 
@@ -97,20 +101,25 @@ public class PdfUtil {
 					 notLoggedInCount = notLoggedInList.size();
 				 }
 			 }
-	        orderedList.add(new ListItem("Active :"+activeCount));
-	        orderedList.add(new ListItem("Inactive :"+inActiveCount));
-	        orderedList.add(new ListItem("Not Loggedin :"+notLoggedInCount));
+	        orderedList.add(new ListItem("Active:"+activeCount));
+	        orderedList.add(new ListItem("Inactive:"+inActiveCount));
+	        orderedList.add(new ListItem("Not Loggedin:"+notLoggedInCount));
 	        document.add(orderedList);
 	        // Create an instance of PdfPTable. After that we transform the header and
 	        PdfPTable table = new PdfPTable(headers.length);
+	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase("HMKCODE.com - iText PDFTable Example",font));
+	        cell1.setColspan(11);
+	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
             table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5,3});
+            table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
 	            PdfPCell cell = new PdfPCell();
 	            cell.setGrayFill(0.9f);
 	            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
-	            BaseColor myColor = WebColors.getRGBColor("#33caff");
+	            BaseColor myColor = WebColors.getRGBColor("#808080");
 	            cell.setBackgroundColor(myColor);
 	            table.addCell(cell);
 	        }
@@ -238,15 +247,20 @@ public class PdfUtil {
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
 	        document.open();
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
+	        BaseColor myColor1 = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myColor1);
-            Paragraph para = new Paragraph(orgName+ " Candidates.",boldFont);
+            Paragraph para = new Paragraph(orgName+ " Candidates",boldFont);
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header and
 	        PdfPTable table = new PdfPTable(headers.length);
+	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase("HMKCODE.com - iText PDFTable Example",font));
+	        cell1.setColspan(11);
+	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
             table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5});
+            table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
 	            PdfPCell cell = new PdfPCell();
@@ -373,9 +387,9 @@ public class PdfUtil {
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
 	        document.open();
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
+	        BaseColor myColor1 = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myColor1);
-            Paragraph para = new Paragraph(orgName+" Requirements.",boldFont);
+            Paragraph para = new Paragraph(orgName+" Requirements",boldFont);
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header and
@@ -388,8 +402,13 @@ public class PdfUtil {
 	        orderedList.add(new ListItem("Closed :"+requirementSubCount.getCancelRequirementCount()));
 	        document.add(orderedList);
             PdfPTable table = new PdfPTable(headers.length);
+            Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase("HMKCODE.com - iText PDFTable Example",font));
+	        cell1.setColspan(12);
+	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
             table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5,3,3});
+            table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
 	            PdfPCell cell = new PdfPCell();
@@ -514,7 +533,7 @@ public class PdfUtil {
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
 	        document.open();
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
+	        BaseColor myColor1 = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myColor1);
             Paragraph para = new Paragraph(orgName+" "+vendorType,boldFont);
             para.setAlignment(Element.ALIGN_CENTER);
@@ -586,6 +605,11 @@ public class PdfUtil {
 		PdfPTable table = new PdfPTable(headers.length);
         table.setWidthPercentage(100);
         try {
+        	    Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+		        PdfPCell cell1 = new PdfPCell(new Phrase("HMKCODE.com - iText PDFTable Example",font));
+		        cell1.setColspan(8);
+		        headerCellStyle(cell1);
+	            table.addCell(cell1);
 			table.setWidths(columnWidths);
 			for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -612,7 +636,7 @@ public class PdfUtil {
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
 	        document.open();
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-	        BaseColor myColor1 = WebColors.getRGBColor("#33caff");
+	        BaseColor myColor1 = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myColor1);
             Paragraph para = new Paragraph(orgName+" "+vendorType+" Contacts.",boldFont);
             para.setAlignment(Element.ALIGN_CENTER);
@@ -698,12 +722,14 @@ public class PdfUtil {
 	    	// Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
 	        document.open();
-	        Font blue = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLUE);
-	        Chunk blueText = new Chunk("Project Name : " +projectName, blue);
-            Paragraph para = new Paragraph();
-            para.add(blueText);
-            document.add(para);
 	        
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	        BaseColor myColor1 = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myColor1);
+            Paragraph para = new Paragraph("Project Name : " +projectName,boldFont);
+            para.setAlignment(Element.ALIGN_CENTER);
+            document.add(para);
+            
 	        List orderedList = new List(List.ORDERED);
 	        
 	        orderedList.add(new ListItem("Project Name :"+projectName));
@@ -793,5 +819,14 @@ public class PdfUtil {
 			}
 		return empArray;
 	}
+	
+	private static void headerCellStyle(PdfPCell cell){
+	    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    cell.setPaddingTop(0f);
+	    cell.setPaddingBottom(7f);
+	    cell.setBackgroundColor(new BaseColor(0,121,182));
+	    cell.setBorder(0);
+	    cell.setBorderWidthBottom(2f);
+	    }
 	
 	}
