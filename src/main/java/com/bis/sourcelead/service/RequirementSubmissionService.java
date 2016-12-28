@@ -114,4 +114,6 @@ public interface RequirementSubmissionService {
 
 	List<RequirementSubmission> duplicateCandidateCountList(Long requirementId, User user,
 			OrgLocations loginOrgLocation)throws Exception;
+
+	void userAcceptRateNegotiation(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation) throws Exception;
 }
