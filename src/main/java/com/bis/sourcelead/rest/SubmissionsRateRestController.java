@@ -135,6 +135,11 @@ public class SubmissionsRateRestController {
 			}
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
+			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+			requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
+			requirementSubmissionHistory.setFromStage("NEW");
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+			
 			//this logic is for mail 
 			Requirement requirement = requirementSubmission.getRequirement();
 			Candidate candidate = requirementSubmission.getCandidate();
@@ -142,26 +147,6 @@ public class SubmissionsRateRestController {
 			requirementSubmissionService.applicantRejectMailAboutRequirement(requirement,userRole.getUser(),candidate,orgLocations,rejectreason);
 			return "success";
 		}else{
-
-			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
-			requirementSubmission.setRejectedReason(rejectreason);
-			/*requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
-			requirementSubmission.setSubmissionRateComment(rejectreason);*/
-		}
-		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		
-		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
-		requirementSubmissionHistory.setFromStage("NEW");
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
-		
-		//this logic is for mail 
-		Requirement requirement = requirementSubmission.getRequirement();
-		Candidate candidate = requirementSubmission.getCandidate();
-		OrgLocations orgLocations = requirementSubmission.getOrgLocations();
-		requirementSubmissionService.applicantRejectMailAboutRequirement(requirement,userRole.getUser(),candidate,orgLocations,rejectreason);
-		return "success";
-
 			return "failure";	
 			}
 
