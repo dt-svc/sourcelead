@@ -74,16 +74,28 @@ function ApplicantAuthorization(dateRange){
 	            				resultToday = resultToday+'	</thead>';
 	            				resultToday = resultToday+'	<tbody>';
 	            				
-	            				for (var i=0; i<json.length; i++){
-	            					var report = json[i];
-	            						resultToday = resultToday+'	  <tr>';
-	            						resultToday  = resultToday + '           <td><div><span>'+report.id+'</span></div></td>';
-	            						resultToday  = resultToday + '           <td><div><span>'+report.id+'</span></div></td>';
-	            						resultToday  = resultToday + '           <td><div><span>'+report.id+'</span></div></td>';
-	            						resultToday  = resultToday + '           <td><div><span>'+report.id+'</span></div></td>';
-	            						resultToday  = resultToday + '           <td><div><span>'+report.id+'</span></div></td>';
-	            						resultToday = resultToday+'	 </tr>';
-	            				}
+	            			     for (var i=0; i<json.length; i++){
+                                       var report = json[i];
+                                      resultToday = resultToday+'      <tr>';
+                                      if(report.candidateName != '' && report.candidateName != null && report.candidateName !='undefined'){
+                                          resultToday  = resultToday + '           <td><div><span>'+report.candidateName+'</span></div></td>';
+                                      }else{
+                                          resultToday  = resultToday + '           <td><div>-----</div></td>';
+                                      }
+                                      if(report.requirementName != '' && report.requirementName != null && report.requirementName !='undefined'){
+                                          resultToday  = resultToday + '           <td><div><span>'+report.requirementName+'</span></div></td>';
+                                      }else{
+                                          resultToday  = resultToday + '           <td><div>-----</div></td>';
+                                      }
+                                      if(report.submittedBy != '' && report.submittedBy != null && report.submittedBy !='undefined'){
+                                          resultToday  = resultToday + '           <td><div><span>'+report.submittedBy+'</span></div></td>';
+                                      }else{
+                                          resultToday  = resultToday + '           <td><div>-----</div></td>';
+                                      }
+                                      resultToday  = resultToday + '           <td><div><span>'+report.id+'</span></div></td>';
+                                      resultToday  = resultToday + '           <td><div><span>'+report.id+'</span></div></td>';
+                                      resultToday = resultToday+'     </tr>';
+	            			                                }
 	            					resultToday = resultToday+'	 </tbody>';
 	            					resultToday = resultToday+'	</table>';											
 	            			}

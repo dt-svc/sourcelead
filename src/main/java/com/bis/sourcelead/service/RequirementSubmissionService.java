@@ -116,7 +116,7 @@ public interface RequirementSubmissionService {
 			OrgLocations loginOrgLocation)throws Exception;
 
 	
-	List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, String status);
+	List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, String status) throws Exception;
 	
 	public void sendEmailtoRequirementManager(Org loginOrg, User users,RequirementSubmission requirementSubmission,
 			 OrgLocations loginOrgLocation) throws Exception;

@@ -104,10 +104,10 @@ function requirementApproverList(statusType){
 				            	 result = result + '<a  href="javascript:void(0)"  onClick="updateReuqirementStatus(\''+ APPROVED+ '\','+opt.id+');"   ><i class="fa fa-check text-success"></i></a>';
 		                    	 result = result + '<a  href="javascript:void(0)"  onClick="rejectRequirementAlertMessage(\''+ REJECTED+ '\','+opt.id+');"  ><i class="fa fa-close text-danger"></i></a>';
    				           	 
-				             }else if(opt.requirementApproverHierarchyStatus == 'APPROVED' &&  opt.requirementApproverHierarchyStatus == 'OPEN'  && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
-      						      result = result +'<button  id="requirementStatus" class="btn btn-success pull-right mr" type="button">'+opt.approvedBy+'</button>';
+				             }else if((opt.requirementApproverHierarchyStatus == 'APPROVED' ||  opt.requirementApproverHierarchyStatus == 'OPEN')  && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
+				            	 result = result +'<button  id="requirementStatus" class="btn btn-success pull-right mr" type="button">'+opt.approvedBy+'</button>';
     				         }else if( opt.requirementSubmissionStatus  !='DRAFT'  && opt.requirementApproverHierarchyStatus == 'REJECTED'  && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
-					              result = result +'<button  id="requirementStatus" class="btn btn-danger pull-right mr" type="button">'+opt.approvedBy+'</button>';
+    				        	 result = result +'<button  id="requirementStatus" class="btn btn-danger pull-right mr" type="button">'+opt.approvedBy+'</button>';
 		                     }else{
 		                    	 result = result +"<div>-----</div>";
 		                     }  
