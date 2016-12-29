@@ -33,8 +33,13 @@ public class RequirementSubmissionHistory implements Serializable{
     private RequirementSubmission submissionId;
 	
 	@ManyToOne
+
     @JoinColumn(name="INTERVIEWER_ID", nullable=false )        
     private RequirementInterviewer interviewerId;
+
+    @JoinColumn(name="CANDIDATE_ID", nullable=false )        
+    private Candidate candidateId;
+
 	
 	@Column(name = "FROM_STAGE")
 	private String fromStage;
@@ -123,6 +128,14 @@ public class RequirementSubmissionHistory implements Serializable{
 
 	public void setSubmissionId(RequirementSubmission submissionId) {
 		this.submissionId = submissionId;
+	}
+	
+	public Candidate getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Candidate candidateId) {
+		this.candidateId = candidateId;
 	}
 
 	public RequirementInterviewer getInterviewerId() {

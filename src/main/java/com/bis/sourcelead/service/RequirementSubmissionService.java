@@ -71,6 +71,14 @@ public interface RequirementSubmissionService {
 	
 	RequirementSubmission getSubmissionsBySourceSubmissionId(Long sourceSubmissionId, Long orgLocationsId);
 	
+	/**
+	 * @author Prasad Salina
+	 * @param submissionIds
+	 * To get candidate resume ids of submissions
+	 */
+	List<Long> getResumeIdsByRequirementSubmissionId(List<Long> submissionIds) throws Exception;
+	
+	
 	RequirementSubmission getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(Long sourceSubmissionId, Long vendorLocationID);
 	
 	Integer getAllSubmissionCountByRequirementIdAndSubmissionStage(Long orgLocationsId, Long requirementId, String submissionStatus);
@@ -105,7 +113,12 @@ public interface RequirementSubmissionService {
 	void sendEmailtoClient(Org loginOrg, User users, User pastUser, Requirement requirement, Candidate candidate,
 			StringBuilder tempHTML, OrgLocations loginOrgLocation)throws Exception;
 
+
 	void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations orgLocations,String submissionsList, Org org, JSONObject jsonObj, Map files)throws Exception;
 	
+
+	void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations orgLocations,String submissionsList, Org org, JSONObject jsonObj, Map files, String selectedShortlistsRate)throws Exception;
+
+
 
 }

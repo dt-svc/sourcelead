@@ -89,8 +89,18 @@ public class SubmissionsRateController {
 			 HttpServletRequest request) throws Exception {
 		
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+		
+		RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(submissionId);
+		
 		String type = "Candidate";
 		ModelAndView model = new ModelAndView();
+		String permission = "YES";
+		if(pastRequirementRateSubmissionNegotiation != null && (pastRequirementRateSubmissionNegotiation.getRateStage() != SubmissionRateStatus.ACCEPTED || pastRequirementRateSubmissionNegotiation.getRateStage() != SubmissionRateStatus.REJECTED) && (pastRequirementRateSubmissionNegotiation.getCreatedBy() == "" || pastRequirementRateSubmissionNegotiation.getCreatedBy() == null)){
+			permission = "NO";
+		}else if((requirementSubmission != null && requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.REJECTED)) || (rateStatus.equalsIgnoreCase("Accepted") && requirementSubmission != null && requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.SUBMISSION))){
+			permission = "NO";
+		}
+		model.addObject("permission",permission);
 		model.addObject("rateStatus",rateStatus);
 		model.addObject("type",type);
 		model.addObject("submissionId",submissionId);
@@ -99,12 +109,12 @@ public class SubmissionsRateController {
 		model.addObject("requirementSubmission",requirementSubmission);
 		model.setViewName("requirement/submissionRate");
 		
-		if("Accepted".equalsIgnoreCase(rateStatus)){
+		if("Accepted".equalsIgnoreCase(rateStatus) && "YES".equalsIgnoreCase(permission)){
 			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 			UserRole userRole =userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), requirementSubmission.getOrgLocations().getId());
 			
 			List<RequirementRateSubmissionNegotiation> allSubmissionRateHistory = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId,requirementSubmission.getCandidate().getId());
-			RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(submissionId);
+			//RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(submissionId);
 			RequirementRateSubmissionNegotiation  requirementRateSubmissionNegotiation = new RequirementRateSubmissionNegotiation();
 			
 			if(allSubmissionRateHistory != null && !allSubmissionRateHistory.isEmpty()){
@@ -150,8 +160,15 @@ public class SubmissionsRateController {
 			 HttpServletRequest request) throws Exception {
 		
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+		
+		RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(submissionId);
 		String type = "User";
 		ModelAndView model = new ModelAndView();
+		String permission = "YES";
+		if(pastRequirementRateSubmissionNegotiation != null && (pastRequirementRateSubmissionNegotiation.getRateStage() != SubmissionRateStatus.ACCEPTED || pastRequirementRateSubmissionNegotiation.getRateStage() != SubmissionRateStatus.REJECTED && (pastRequirementRateSubmissionNegotiation.getCreatedBy() != "" || pastRequirementRateSubmissionNegotiation.getCreatedBy() != null))){
+			permission = "NO";
+		}
+		model.addObject("permission",permission);
 		model.addObject("rateStatus",rateStatus);
 		model.addObject("type",type);
 		model.addObject("submissionId",submissionId);
@@ -160,12 +177,12 @@ public class SubmissionsRateController {
 		model.addObject("requirementSubmission",requirementSubmission);
 		model.setViewName("requirement/submissionRate");
 		
-		if("Accepted".equalsIgnoreCase(rateStatus)){
+		if("Accepted".equalsIgnoreCase(rateStatus) && permission.equalsIgnoreCase("YES")){
 			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 			UserRole userRole =userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), requirementSubmission.getOrgLocations().getId());
 			
 			List<RequirementRateSubmissionNegotiation> allSubmissionRateHistory = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId,requirementSubmission.getCandidate().getId());
-			RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(submissionId);
+			//RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(submissionId);
 			RequirementRateSubmissionNegotiation  requirementRateSubmissionNegotiation = new RequirementRateSubmissionNegotiation();
 			
 			if(allSubmissionRateHistory != null && !allSubmissionRateHistory.isEmpty()){

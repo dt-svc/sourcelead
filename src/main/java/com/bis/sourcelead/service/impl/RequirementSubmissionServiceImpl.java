@@ -1,6 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -10,7 +12,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.util.ByteArrayDataSource;
+
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -29,8 +39,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.beust.jcommander.internal.Lists;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateEducationDao;
@@ -774,6 +784,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.getSubmissionsBySourceSubmissionId(sourceSubmissionId,orgLocationsId);
 	}
 
+	@Override
+	public List<Long> getResumeIdsByRequirementSubmissionId(List<Long> submissionIds) throws Exception {
+		return requirementSubmissionDao.getResumeIdsByRequirementSubmissionId(submissionIds);
+	}
 	
 	@Override
 	public RequirementSubmission getRequirementSubmissionByIdAndSubmissionStatus(Long submissionId,
@@ -1242,11 +1256,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations loginOrgLocation,String submissionIds, Org org, JSONObject jsonData,Map files) throws Exception {
+	public void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations loginOrgLocation,String submissionIds, Org org, JSONObject jsonData,Map files,String selectedShortlistsRate) throws Exception {
 		
 		 String requirementName = null;
 		 String fullName = null;
 		 String[] submissionId = submissionIds.split(",");
+		 String[] clientShortlistsRate = selectedShortlistsRate.split(",");
    	     Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
 		 requirement.setId(requirementId);
 		 if(requirement.getParentRequirement() != null){
@@ -1293,6 +1308,23 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 clientSubmission.setCreatedDate(new Date());
    		 clientSubmission.setCreatedBy(user.getUserCode());
    		 clientSubmission = requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
+   		 
+   		 
+   		 String clientRate = clientShortlistsRate[i];
+		 RequirementRateSubmissionNegotiation rateNegotiation = new RequirementRateSubmissionNegotiation();
+		 rateNegotiation.setRequirementsubmissionId(clientSubmission);
+		 rateNegotiation.setExpectedRate(clientRate);
+		 rateNegotiation.setExpectedRateType("Yearly");
+			 rateNegotiation.setRateInitiatorType(SubmissionRateStatus.VENDOR);
+			 rateNegotiation.setInitiatorOrgLocationId(loginOrgLocation);
+			 rateNegotiation.setRateReason("");
+			 rateNegotiation.setRateStage(SubmissionRateStatus.NEWRATE);
+			 rateNegotiation.setStatus(Constants.RECORD_ACTIVE);
+			 rateNegotiation.setCreatedDate(commonUtil.currentDate());
+			 rateNegotiation.setCreatedBy(user.getUserCode());
+			 rateNegotiation.setUpdatedDate(commonUtil.currentDate());
+			 rateNegotiation.setUpdatedBy(user.getUserCode());
+		 requirementRateSubmissionNegotiationService.saveRateNegotiation(rateNegotiation);
    		 
    		 RequirementSubmissionTemplateFields templateFields = requirementSubmissionTemplateFieldsDao.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submission.getId());
    		 
@@ -1392,9 +1424,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 }
    	 }
    	 
+   	 
    	SubmissionXls submissionXls =  saveSubmissionTracker(dateFormat,createExcelworkbook,requirement,user);
     
-   	sendMailTemplateWithAttachment(jsonData,user,files,loginOrgLocation,submissionXls);
+   	sendMailTemplateWithAttachment(jsonData,user,files,loginOrgLocation,submissionXls,submissionId);
 	
 		
 	}
@@ -1405,12 +1438,22 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
  * @param files
  * @param loginOrgLocation
  * @param submissionXls
+ * @param submissionId 
  * @throws Exception
  */
 	private void sendMailTemplateWithAttachment(JSONObject jsonObj, User user, Map files, OrgLocations loginOrgLocation,
-			SubmissionXls submissionXls) throws Exception {
+			SubmissionXls submissionXls, String[] submissionId) throws Exception {
 		List<EmailAttachment> attachmentList = new ArrayList<>();
 		EmailMessage emailMessage = new EmailMessage();
+		
+		//to check send resumes condition
+		if (jsonObj.has("sendResumes")) {
+			emailMessage.setSendResumes(Constants.YES);
+		}else{
+			emailMessage.setSendResumes(Constants.NO);
+		}
+		
+		
 		emailMessage.setCreatedBy(user.getUserCode());
 		emailMessage.setFromEmail(user.getEmail());
 		emailMessage.setFromName(user.getFirstName() + "" + user.getLastName());
@@ -1485,13 +1528,39 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 				}
 			}
-
-			emailScenerioUtil.sendWithAttachmentEmail(emailMessage, loginOrgLocation.getId(), emailRecipientList,attachmentList);
+			
+			
+			emailScenerioUtil.sendWithAttachmentEmail(emailMessage, loginOrgLocation.getId(), emailRecipientList,attachmentList,submissionId);
 
 		}
 
 	}
-
+	
+	public static void addToZipFile(byte[] by, ZipOutputStream zos , String fileName) throws FileNotFoundException, IOException {
+	    byte[] content = by;
+	    if(content != null){
+	    	 int size = content.length;
+       
+		        ByteArrayInputStream ins = null;
+		        ins = new ByteArrayInputStream(content);
+        
+		        ZipEntry zipEntry = new ZipEntry(fileName); 
+				zos.putNextEntry(zipEntry);
+		
+				final int BUFFER = 2048;
+				byte[] bytes = new byte[1024];
+				byte data[] = new byte[BUFFER];
+		
+				int length = 0;
+				while ((length = ins.read(bytes)) >= 0) {
+					zos.write(bytes, 0, length);
+				}
+		
+        }
+		zos.closeEntry();
+	}
+	
+	
 	private SubmissionXls saveSubmissionTracker(DateFormat dateFormat, Workbook createExcelworkbook, Requirement requirement, User user) throws Exception {
 		String fileName = "Submission"+SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode()+""+dateFormat.format(new Date())+".xls";
 		 String UUID = null;
