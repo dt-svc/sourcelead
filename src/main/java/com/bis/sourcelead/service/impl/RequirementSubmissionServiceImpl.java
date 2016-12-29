@@ -1519,7 +1519,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			emailRecipientList.add(toEmailRecipient);
 			String subject = "";
 			String body = "";
-			String signature = user.getFirstName();
+			//String signature = user.getFirstName();
 			String url = "";
 
 			// getting the current EmailScenario by EmailScenario unique name
@@ -1536,13 +1536,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			if (jsonObj.has("mailBody")) {
 				body = jsonObj.getString("mailBody");
 			}
-			if (jsonObj.has("submitToClientSignature")) {
+			/*if (jsonObj.has("submitToClientSignature")) {
 				signature = jsonObj.getString("submitToClientSignature");
-			}
+			}*/
 
 			// construct HTML template using required data
 			String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-					signature, url, new Org());
+					null, url, new Org());
 			emailMessage.setSubject(subject);
 			emailMessage.setMessageBody(emailTemplate);
 
