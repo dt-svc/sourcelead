@@ -110,7 +110,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		File file = null;
 		Workbook wb = new XSSFWorkbook();
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-		Sheet sheet = wb.createSheet(user.getFirstName() + "_" + dateFormat.format(new Date()));
+		StringBuilder fName=new StringBuilder();
+		Sheet sheet = wb.createSheet(fName.append(user.getFirstName()).append("_").append(dateFormat.format(new Date())).toString());
 		Row writeRow = null;
 		
 		HashMap<String, Date> submissionDateRange =	timesheetSubmissionsService.getMinAndMaxTimesheetSubmissionDatesForEmployee(user.getId(),orgLocations.getId());
@@ -296,7 +297,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 						              if(timesheetEntries.getMonHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getMonHours())){
 						            	  cell2 = writeRow.createCell(2);
 						            	  cell2.setCellValue(timesheetEntries.getMonHours()); 
-//						            	  monTotHours = monTotHours + Double.parseDouble(timesheetEntries.getMonHours());
+						            	 // monTotHours = monTotHours + Double.parseDouble(timesheetEntries.getMonHours());
 						            	  monTotHours = monTotHours + getTotalHoursFormDayHours(timesheetEntries.getMonHours());
 						              }
 					            	  if(!isNullOrEmpty(timesheetEntries.getMoncomments())){
@@ -400,7 +401,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		writeRow.createCell(8).setCellValue(getTotalHours(sunTotHours));
 		writeRow.createCell(9).setCellValue(getTotalHours(totalHours));
 		
-		file = new File(user.getFirstName()+"_"+weekStartDate+" to "+weekEndDate+".xls");
+		StringBuilder fileName=new StringBuilder();
+		file = new File(fileName.append(user.getFirstName()).append("_").append(weekStartDate).append(" to ").append(weekEndDate).append(".xls").toString());
 		FileOutputStream fos = new FileOutputStream(file);
 		try {
 			wb.write(fos);
@@ -475,7 +477,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		 cell5.setCellStyle(style);
 		 
 		 Cell cell6 = writeRow.createCell(1);
-		 cell6.setCellValue(weekStartDate+" to "+weekEndDate); 
+		 StringBuilder val=new StringBuilder();
+		 cell6.setCellValue(val.append(weekStartDate).append(" to ").append(weekEndDate).toString()); 
 		 cell6.setCellStyle(style);
 		 
 		return createExcelsheet = setExcelHeader(createExcelsheet,style,createExcelworkbook);
@@ -532,7 +535,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
             String startWithZero = "";
             if(StringUtils.isNotEmpty(actualMinutesStr) && actualMinutesStr.length()==1)
             	startWithZero ="0";	
-            actualTimeString =  actualHours+"."+startWithZero+actualMinutes;
+            StringBuilder actualTime=new StringBuilder();
+            actualTimeString =  actualTime.append(actualHours).append(".").append(startWithZero+actualMinutes).toString();
             
 		}
 		return actualTimeString;

@@ -23,6 +23,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +46,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateHotList;
 import com.bis.sourcelead.entity.CandidateSkills;
@@ -96,6 +104,9 @@ public class CandidateListRestController {
 	
 	  @Autowired
 	  CandidateHotListService candidateHotListService;
+	  
+	  @Autowired
+	  private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	 /**
 	   * @author David and sarath kumar
 	   * @since  aug 30 2016
@@ -141,6 +152,269 @@ public class CandidateListRestController {
 	 }
 	 
 	 
+	  /**
+	   * @author Naresh Bolisetty
+	   * @since  Dec 28 2016
+	   * @version 0.0.1
+	   * 
+	   *  
+	   * @return string 
+	   * 
+	   * @throws NullPointer
+	   */
+	 @RequestMapping(value = "/searchCandidate", method = RequestMethod.POST)
+	 public String searchCandidate(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+
+		    MultipartFile multiFile = null;
+			Iterator<String> itrator = request.getFileNames();
+			if(itrator.hasNext()){
+		        multiFile = request.getFile(itrator.next());
+			}
+			String jsonc = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(jsonc);
+			
+			 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			 BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+			 Long maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId());
+			 
+		   	    //Exclude Keyword
+				ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+				if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
+					for(String keywd : excludeKeyWordArray){
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								boolQueryBuilder.mustNot(matchQueryBuilder);
+							}
+						}
+						
+					}
+				}
+				//Any Keyword
+				ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
+				anyKeyWordArray.removeAll(excludeKeyWordArray);
+				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+					for(String keywd : anyKeyWordArray){
+						BoolQueryBuilder anyKeywordBoolQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								anyKeywordBoolQueryBuilder.should(matchQueryBuilder);
+							}
+							boolQueryBuilder.must(anyKeywordBoolQueryBuilder);
+						}
+					}
+				}
+				//All Keywords
+				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+				allKeyWordArray.remove(anyKeyWordArray);
+				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+					for(String keywd : allKeyWordArray){
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								boolQueryBuilder.must(matchQueryBuilder);
+							}
+						}
+						
+					}
+				}
+				//Designation
+				ArrayList<String> designationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "designation");
+				designationArray.removeAll(excludeKeyWordArray);
+				if(designationArray != null && !designationArray.isEmpty()){
+					BoolQueryBuilder designationBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : designationArray){
+						designationBoolQueryBuilder.should(QueryBuilders.matchQuery("designation", keywd));
+					}
+					boolQueryBuilder.must(designationBoolQueryBuilder);
+				}
+				
+				//Notice_Period
+				ArrayList<String> noticePeriodArray = getSearchKeywordsFromChosenSelectField(jsonObj, "noticePeriod");
+				noticePeriodArray.removeAll(excludeKeyWordArray);
+				if(noticePeriodArray != null && !noticePeriodArray.isEmpty()){
+					BoolQueryBuilder noticePeriodBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : noticePeriodArray){
+						noticePeriodBoolQueryBuilder.should(QueryBuilders.matchQuery("noticePriod", keywd));
+					}
+					boolQueryBuilder.must(noticePeriodBoolQueryBuilder);
+				}
+			
+				 //Country
+				if(jsonObj.has("country") && StringUtils.isNotEmpty(jsonObj.getString("country"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country")));
+			    }
+				 //State
+				if(jsonObj.has("state") && StringUtils.isNotEmpty(jsonObj.getString("state"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("state", jsonObj.getString("state")));
+			    }
+				
+				if(jsonObj.has("city")  && StringUtils.isNotEmpty(jsonObj.getString("city"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
+			    }
+				
+				 //City
+			    if(jsonObj.has("currency") && jsonObj.getString("currency") !=null){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("expectedRateCurrencey", jsonObj.getString("currency")));
+			    } 
+				
+				
+				
+				
+			   //Rate Type
+				if(jsonObj.has("rateType") && jsonObj.getString("rateType") !=null){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("rateType", jsonObj.getString("rateType")));
+			    }
+				//Exclude Educations
+				ArrayList<String> excludeEducationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeEducation");
+				excludeEducationArray.removeAll(excludeKeyWordArray);
+				if(excludeEducationArray != null && !excludeEducationArray.isEmpty()){
+					BoolQueryBuilder excludeEdunBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : excludeEducationArray){
+						excludeEdunBoolQueryBuilder.should(QueryBuilders.matchQuery("education", keywd));
+					}
+					boolQueryBuilder.mustNot(excludeEdunBoolQueryBuilder);
+				} 
+				//Educations
+				ArrayList<String> educationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "education");
+				educationArray.removeAll(excludeEducationArray);
+				if(educationArray != null && !educationArray.isEmpty()){
+					BoolQueryBuilder edunBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : educationArray){
+						edunBoolQueryBuilder.should(QueryBuilders.matchQuery("education", keywd));
+					}
+					boolQueryBuilder.must(edunBoolQueryBuilder);
+				} 
+				
+				//Certifications
+				ArrayList<String> certificationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "certification");
+				certificationArray.removeAll(excludeKeyWordArray);
+				if(certificationArray != null && !certificationArray.isEmpty()){
+					BoolQueryBuilder certificationBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : certificationArray){
+						certificationBoolQueryBuilder.should(QueryBuilders.matchQuery("certifications", keywd));
+					}
+					boolQueryBuilder.must(certificationBoolQueryBuilder);
+				} 
+				
+				//Exclude Employers
+				ArrayList<String> excludeEmployerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeEmployers");
+				excludeEmployerArray.removeAll(excludeKeyWordArray);
+				if(excludeEmployerArray != null && !excludeEmployerArray.isEmpty()){
+					BoolQueryBuilder excldEmployerBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : excludeEmployerArray){
+						excldEmployerBoolQueryBuilder.should(QueryBuilders.matchQuery("employer", keywd));
+					}
+					boolQueryBuilder.mustNot(excldEmployerBoolQueryBuilder);
+				} 
+				
+				//Employers
+				ArrayList<String> employerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employers");
+				employerArray.removeAll(excludeEmployerArray);
+				if(employerArray != null && !employerArray.isEmpty()){
+					BoolQueryBuilder employerBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : employerArray){
+						employerBoolQueryBuilder.should(QueryBuilders.matchQuery("employer", keywd));
+					}
+					boolQueryBuilder.must(employerBoolQueryBuilder);
+				}
+				 
+				//applicant type
+				if(jsonObj.has("applicantType") && StringUtils.isNotEmpty(jsonObj.getString("applicantType"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", jsonObj.getString("applicantType")));
+			    }
+				
+				
+				//CandidateSkills
+				ArrayList<String> candidateSkillsArray = getSearchKeywordsFromChosenSelectField(jsonObj, "candidateSkills");
+				candidateSkillsArray.removeAll(excludeKeyWordArray);
+				if(candidateSkillsArray != null && !candidateSkillsArray.isEmpty()){
+					BoolQueryBuilder skillBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : candidateSkillsArray){
+						skillBoolQueryBuilder.should(QueryBuilders.matchQuery("skills", keywd));
+					}
+					boolQueryBuilder.must(skillBoolQueryBuilder);
+				} 
+				
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				ArrayList<Candidate>   candList = new ArrayList<>();
+				if(searchHits != null && searchHits.length >0){
+					for (SearchHit hit : searchHits) {
+						Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(hit.getId()));
+						boolean flag = candidateHotListService.isCandidateIsFavourite(candidate.getId(), loginOrgLocation.getId());
+						if(flag == true){
+							candidate.setIsFavourite(Constants.YES);
+						}else{
+							candidate.setIsFavourite(Constants.NO);
+						}
+						candList.add(candidate);
+					}
+				}
+			 String resultJson;
+			 resultJson = commonUtil.toJSON(candList);
+			 return resultJson;
+	 }
+	 
+	 private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
+		 ArrayList<String> keyWordList = null;
+		 if(jsonObj.has(param)){
+			 String searchKeywordString = null;
+			 try{
+	   		   JSONArray jsonArray = jsonObj.getJSONArray(param);
+	   		   searchKeywordString = jsonArray.toString();
+		   	  }
+		   	  catch(JSONException e){
+		   		  searchKeywordString= jsonObj.getString(param);
+		   	  }
+			 
+		     searchKeywordString = searchKeywordString.replaceAll("\\[", "").replaceAll("\\]","");
+		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
+		 }
+		 else{
+			 keyWordList = new ArrayList<String>();
+		 }
+         return keyWordList;
+     }
+
+	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
+		    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("email", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateEmail", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("address", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("experienceYears", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("experienceYears", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("designation", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("designationType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("currentRate", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("currentRateType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("currentRateCurrency", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("expectedRate", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("rateType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("expectedRateCurrencey", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("summary", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("employer", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("certifications", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("candidateType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("noticePriod", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("currentResumeName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("resumeContent", keywd));
+			
+			
+			return matchQueryBuilderList; 
+	 }
 	 
 	 
 	 @PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
