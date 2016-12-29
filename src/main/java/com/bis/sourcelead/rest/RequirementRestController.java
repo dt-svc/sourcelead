@@ -39,6 +39,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
+import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TeamService;
@@ -96,7 +97,8 @@ public class RequirementRestController {
 	 @Autowired
 	 private RolesService roleService;
 	 
-	 
+	 @Autowired
+	 private RequirementAssignToService requirementAssignToService;
 	 
 	
 	/**
@@ -234,8 +236,17 @@ public class RequirementRestController {
 							     User approverUser = userService.getUserById(level2approver.getApproverUserId().getId());
 								 requirementService.approverTwoEmailScenario(loginUser, approverUser,requirement,null,orgLocation);
 						}
-					   
 		          }
+		    	 /*This logic is to send mail to assigned team members after approver accepted the requirement request(parallel approver)*/
+		    	 RequirementApproverHierarchy hierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
+		    	 List<RequirementAssignTo> reqAssignTo = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(requirementId,orgLocation.getId());
+	    			if(hierarchy!= null && "OPEN".equals(hierarchy.getRequirementApproverStatus().toString())){
+	    				for(RequirementAssignTo reqAssign:reqAssignTo ){
+								if(reqAssign.getAssignUserId() != null && !loginUser.getId().equals(reqAssign.getAssignUserId().getId())){
+									requirementService.AssignToTeamMembersEmail(loginUser, reqAssign.getAssignUserId(), requirement,new StringBuilder(),orgLocation);
+								}
+	    				}
+	    		}
             }
 		}
 		if(status.equalsIgnoreCase("REJECTED")){

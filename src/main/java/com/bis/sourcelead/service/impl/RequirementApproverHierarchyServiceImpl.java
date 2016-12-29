@@ -81,5 +81,10 @@ public class RequirementApproverHierarchyServiceImpl implements RequirementAppro
 			throws Exception {
 		return requirementApproverHierarchyDao.getRequirementsAsApprover(userId, orgLocationId);
 	}
+
+	@Override
+	public RequirementApproverHierarchy getApproverHierarchyByRequirementId(Long requirementId) {
+		return requirementApproverHierarchyDao.getApproverHierarchyByRequirementId(requirementId);
+	}
 	
 }
