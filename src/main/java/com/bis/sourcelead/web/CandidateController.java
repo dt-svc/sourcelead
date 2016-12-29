@@ -21,10 +21,12 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -41,6 +43,9 @@ public class CandidateController {
 	
 	@Autowired
 	CountriesService countriesService;
+	
+	@Autowired
+	StatesService statesService;
 	
 	@Autowired
 	LookUpDataService lookUpDataService;
@@ -123,12 +128,16 @@ public class CandidateController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("candidates/candidatesList");
 		
+		List<Countries> countryList = countriesService.getAllCountries();
+		model.addObject("countryList", countryList);
+		
 		if(orgLocations != null && StringUtils.isNotEmpty(orgLocations.getCountry())){
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 	        model.addObject("loginCountryName", countries.getName());
+	        
+	        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
+	        model.addObject("statesList", statesList);
 		}
-		
-        
 		
 	/*	List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(orgLocations.getId(),org.getId(),Constants.CANDIDATE_ACTIVE,"");
 		model.addObject("candidatesList", candidatesList);*/

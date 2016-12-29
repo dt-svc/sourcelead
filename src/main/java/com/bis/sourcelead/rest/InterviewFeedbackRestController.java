@@ -275,7 +275,8 @@ public class InterviewFeedbackRestController {
 						List<RequirementInterviewer> interviewers = requirementInterviewerService.getInterviwersListByInterviewId(interviewId);
 						
 						for(RequirementInterviewer interviewer: interviewers){
-							interviewer.setInterviewerName(interviewer.getInterviewerUser().getFirstName()+" "+interviewer.getInterviewerUser().getLastName());
+							StringBuilder name = new StringBuilder();
+							interviewer.setInterviewerName(name.append(interviewer.getInterviewerUser().getFirstName()).append(" ").append(interviewer.getInterviewerUser().getLastName()).toString());
 							InterviewFeedbackTemplate feedbackTemplate = interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(interviewer.getId()) ;
 							if(feedbackTemplate != null){
 								interviewer.setFeedbackDate(Constants.DMY.format(feedbackTemplate.getCreatedDate()));

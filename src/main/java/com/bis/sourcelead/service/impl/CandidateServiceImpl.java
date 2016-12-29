@@ -354,8 +354,9 @@ public class CandidateServiceImpl implements CandidateService {
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
         
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-		Sheet createExcelsheet = createExcelworkbook.createSheet(orgName+"_candidate_"+dateFormat.format(new Date()));
-		Row writeRow = null;
+		 StringBuilder excelSheet = new StringBuilder();
+		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSheet.append(orgName).append("_candidate_").append(dateFormat.format(new Date())).toString());
+    	Row writeRow = null;
 		String headers [] = Constants.CANDIDATE_EXCEL_HEADERS;
 		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
 		 int column=0;
@@ -364,7 +365,8 @@ public class CandidateServiceImpl implements CandidateService {
 	       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,candidate);
 	       	 column++;
 	        }
-	        File file = File.createTempFile(orgName+"_candidates_"+dateFormat.format(new Date()),".xls");
+	        StringBuilder orgNameSB = new StringBuilder();
+	        File file = File.createTempFile(orgNameSB.append(orgName).append("_candidates_").append(dateFormat.format(new Date())).toString(),".xls");
 	        file.setReadable(true);
 	        /*File file = new File(orgName+"_candidates_"+dateFormat.format(new Date())+".xls");*/
 			 FileOutputStream fos = new FileOutputStream(file);
@@ -398,8 +400,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	if(candidate.getMobilePhone() !=null && !"".equalsIgnoreCase(candidate.getMobilePhone())){
 		writeRow.createCell(3).setCellValue(candidate.getMobilePhone());
 	}
-	if(candidate.getCity() !=null && !"".equalsIgnoreCase(candidate.getCity())){
-		writeRow.createCell(4).setCellValue(candidate.getCity());
+	if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
+		writeRow.createCell(4).setCellValue(candidate.getCountry());
 	}
 	if(candidate.getDesignation() !=null && !"".equalsIgnoreCase(candidate.getDesignation())){
 		writeRow.createCell(5).setCellValue(candidate.getDesignation());
@@ -408,19 +410,20 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		Set<CandidateEducation> candidateEducation = candidate.getCandidateEducation();
 		StringBuilder educations = new StringBuilder();
 		for(CandidateEducation candidateEdu : candidateEducation){
-			educations.append(candidateEdu.getName()+",");
+			educations.append(candidateEdu.getName()).append(",");
 		}
 		String educationList = educations.toString();
 		writeRow.createCell(6).setCellValue(educationList.substring(0, educations.length()-1));
 	}
+	 StringBuilder exp = new StringBuilder();
 	if(candidate.getExperienceYears() !=null && !"".equalsIgnoreCase(candidate.getExperienceYears()) && candidate.getExperienceMonths() !=null && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
-		writeRow.createCell(7).setCellValue(candidate.getExperienceYears()+"."+candidate.getExperienceMonths()+"years");
+		writeRow.createCell(7).setCellValue(exp.append(candidate.getExperienceYears()).append(".").append(candidate.getExperienceMonths()).append("years").toString());
 	}else{
 		if(candidate.getExperienceYears() !=null && !"".equalsIgnoreCase(candidate.getExperienceYears())){
-			writeRow.createCell(7).setCellValue(candidate.getExperienceYears()+"years");
+			writeRow.createCell(7).setCellValue(exp.append(candidate.getExperienceYears()).append("years").toString());
 		}else{
 			if(candidate.getExperienceMonths() !=null && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
-				writeRow.createCell(7).setCellValue(candidate.getExperienceMonths()+"Months");
+				writeRow.createCell(7).setCellValue(exp.append(candidate.getExperienceMonths()).append("Months").toString());
 			}
 		}
 	}
@@ -428,11 +431,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		StringBuilder skills = new StringBuilder();
 		Set<CandidateSkills> candidateSkillsList = candidate.getCandidateSkills();
 	    for(CandidateSkills candidateSkills : candidateSkillsList){
-	    	skills.append(candidateSkills.getName()+",");
+	    	skills.append(candidateSkills.getName()).append(",");
 	    }
 	    writeRow.createCell(8).setCellValue(skills.toString().substring(0, skills.length()-1));
-	}if(candidate.getExpectedRate() !=null && !"".equalsIgnoreCase(candidate.getExpectedRate()) && candidate.getRateType() !=null && !"".equalsIgnoreCase(candidate.getRateType())){
-		 writeRow.createCell(9).setCellValue(candidate.getExpectedRate()+"/"+candidate.getRateType());
+	}
+	if(candidate.getExpectedRate() !=null && !"".equalsIgnoreCase(candidate.getExpectedRate()) && candidate.getRateType() !=null && !"".equalsIgnoreCase(candidate.getRateType())){
+		StringBuilder rateBuilder = new StringBuilder();
+		writeRow.createCell(9).setCellValue(rateBuilder.append(candidate.getExpectedRate()).append("/").append(candidate.getRateType()).toString());
 	}else{
 		writeRow.createCell(9).setCellValue(candidate.getExpectedRate());
 	}

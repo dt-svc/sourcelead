@@ -280,7 +280,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	    	projects.setProjectName(registration.getCompanyName());
 	    	projects.setDescription(registration.getCompanyName());
 	    	projects.setStartDate(new Date());
-	    	
+	    	projects.setInvoiceFrequency(Constants.WEEKLY);
 	    	projects.setProjectStatus(Project_Status.STARTED);
 	    	projects.setIsPrimary(1);
 	    	projects.setCreatedDate(new Date());
@@ -440,10 +440,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 	 public void  saveDefaultSubmissionTemplate(Org org,OrgLocations orgLocations,User user) throws Exception {
 		 SubmissionTemplate sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
 		 
-		 
+		 StringBuilder templateStringBuilder=new StringBuilder();
 		 SubmissionTemplate submissionTemplate = new SubmissionTemplate();
-		 submissionTemplate.setTemplateName(org.getOrgName()+" Default Template");
-		 submissionTemplate.setDescription(org.getOrgName()+" Default Template");
+		 submissionTemplate.setTemplateName(templateStringBuilder.append(org.getOrgName()).append(" Default Template").toString());
+		 submissionTemplate.setDescription(templateStringBuilder.append(org.getOrgName()).append(" Default Template").toString());
 		 submissionTemplate.setOrgLocationId(orgLocations);
 		 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 		 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -488,13 +488,15 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
-		 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+		 StringBuilder loginURLStringBuilder=new StringBuilder();
+		 globalVarsMap.put("loginURL",loginURLStringBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder nameStringBuilder=new StringBuilder();
+		 emailRecipient.setName(nameStringBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -530,13 +532,15 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
 		 globalVarsMap.put("verificationCode",verificationCode);
-		 globalVarsMap.put("resetPasswordURL","<a href='"+sourceleadUrl+"/resetPassword"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>");
+		 StringBuilder resetPasswordURLStringBuilder=new StringBuilder();
+		 globalVarsMap.put("resetPasswordURL",resetPasswordURLStringBuilder.append("<a href='").append(sourceleadUrl).append("/resetPassword").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
 			
 		//setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder nameStringBuilder=new StringBuilder();
+		 emailRecipient.setName(nameStringBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		//getting the current EmailScenario by EmailScenario unique name and entity type
@@ -577,7 +581,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder nameStringBuilder=new StringBuilder();
+		 emailRecipient.setName(nameStringBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		//getting the current EmailScenario by EmailScenario unique name and entity type

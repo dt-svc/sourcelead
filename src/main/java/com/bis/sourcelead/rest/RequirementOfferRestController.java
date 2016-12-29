@@ -307,8 +307,8 @@ public class RequirementOfferRestController {
 		   RequirementOffers requirementOffers  =requirementOffersService.getRequirementOfferId(offerId);
 		
 		    response.setContentType("application/octet-stream");
-	        response.setHeader("Content-Disposition",
-	                "attachment;filename="+requirementOffers.getFileName());
+		    StringBuilder fileName = new StringBuilder();
+	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(requirementOffers.getFileName()).append("\"").toString());
 		    
 			InputStream inputStream = new ByteArrayInputStream(requirementOffers.getDocFile());
 			try {

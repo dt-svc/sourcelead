@@ -248,6 +248,10 @@ public class RequirementSubmission implements Serializable{
 	@Transient
 	private String filename;
 
+	@Transient
+	private int duplicateCount;
+	
+
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
 	}
@@ -722,6 +726,7 @@ public class RequirementSubmission implements Serializable{
 		this.numofrequestsent = numofrequestsent;
 	}
 
+
 	public String getState() {
 		return state;
 	}
@@ -793,4 +798,13 @@ public class RequirementSubmission implements Serializable{
 	public void setFilename(String filename) {
 		this.filename = filename;
 	}
+
+	public int getDuplicateCount() {
+		return duplicateCount;
+	}
+
+	public void setDuplicateCount(int duplicateCount) {
+		this.duplicateCount = duplicateCount;
+	}
+
 }

@@ -116,7 +116,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	private String defaultFromEmailAddressPwd;
 
 	@Override
-	@Async
+	//@Async
 	public void sendEmail(EmailMessage emailMessage, Long locationsId, ArrayList<EmailRecipient> emailRecipientList,
 			List<EmailAttachment> attachmentList) throws Exception {
 
@@ -456,7 +456,8 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			    	         MimeBodyPart messageBodyPart1 = new MimeBodyPart();
 			    	         messageBodyPart1.setDataHandler(new DataHandler( source ));
 			    	         DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy"); 
-			    	         String fileName = "resumes"+SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode()+""+dateFormat.format(new Date())+".zip";
+			    	         StringBuilder fName= new StringBuilder();
+			    	         String fileName = fName.append("resumes").append(SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode()).append(" ").append(dateFormat.format(new Date())).append(".zip").toString();
 			    	         messageBodyPart1.setFileName(fileName);
 			 				 mimeMultipart.addBodyPart(messageBodyPart1);
 			    	 }

@@ -105,18 +105,6 @@ public class CandidateResumeRestController {
 			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
 			
 			candidateResumesService.storeCandidateResume(jsonObj, user, candidate, resumeId, orgLocation, multiFile);
-
-			
-			/*if(resumeId != null && !"null".equalsIgnoreCase(resumeId)){
-				SourceLeadSessionManager.setSessionAttribute(request, "editResume", "Resume details updated");
-			}else{
-				SourceLeadSessionManager.setSessionAttribute(request, "addResume", "New Resume added for "+candidate.getFirstName()+"");
-				
-			}*/
-			
-			
-			
-			
 			return "success";
 		}else{
 			return "exception";
@@ -146,21 +134,9 @@ public class CandidateResumeRestController {
 			for(CandidateResumes candidateResume : candidateResumesList){
 				User createdUser = userService.getUserByUserCode(candidateResume.getCreatedBy());
 				if(createdUser != null){
-					candidateResume.setCreatedBy(createdUser.getFirstName()+" "+createdUser.getLastName());
+					StringBuilder name = new StringBuilder();
+					candidateResume.setCreatedBy(name.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
 				}
-				/*msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addResume");
-				 if(msg == null){
-						msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editResume");
-					}
-					if(msg == null){
-						msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "deleteResume");
-					}
-					if(msg !=null && msg != ""){
-						candidateResume.setMsg(msg);
-					}
-					 	SourceLeadSessionManager.removeSessionAttribute(request, "addResume");
-					    SourceLeadSessionManager.removeSessionAttribute(request, "editResume");
-					    SourceLeadSessionManager.removeSessionAttribute(request, "deleteResume");*/
 			}
 			resultJson = commonUtil.toJSON(candidateResumesList);
 		}
@@ -245,8 +221,8 @@ public class CandidateResumeRestController {
 			CandidateResumes candidateResume =  candidateResumesService.getCandidateResumeByResumeId(Long.parseLong(resumeId));
 		    
 		    response.setContentType("application/octet-stream");
-	        response.setHeader("Content-Disposition",
-	                "attachment;filename="+candidateResume.getFileName());
+		    StringBuilder fileName = new StringBuilder();
+	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(candidateResume.getFileName()).append("\"").toString());
 		    
 			InputStream inputStream = new ByteArrayInputStream(candidateResume.getDocFile());
 			try {

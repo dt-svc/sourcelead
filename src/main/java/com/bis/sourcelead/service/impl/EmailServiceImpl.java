@@ -3,8 +3,13 @@ package com.bis.sourcelead.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +23,14 @@ import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UserSignature;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmailService;
+import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserSignatureService;
@@ -51,6 +58,10 @@ public class EmailServiceImpl implements EmailService {
 	@Autowired
 	UserRoleService userRoleService;
 	
+	@Autowired
+	SourceleadSignatureService sourceleadSignatureService;
+	
+	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -62,38 +73,50 @@ public class EmailServiceImpl implements EmailService {
 		
 		EmailMessage emailMessage = new EmailMessage(); 
 		 String fullName = null;
-		 UserSignature userSignature = null;
 		 String signature = "";
 		 String emails = null;
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 
-		 
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();	 
+		 	StringBuilder lastName=new StringBuilder();
+		 Set<String> recipantsList = new HashSet<String>();
 		   	 if(!isNullOrEmpty(user.getLastName())){
-		   		 fullName = user.getFirstName()+" "+user.getLastName();
+		   		 fullName = lastName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
 		   	 }else{
 		   		 fullName = user.getFirstName();
 		   	 }
 				
-		   	if(jsonObj.has("userSignature") && !isNullOrEmpty(jsonObj.getString("userSignature"))){
-		   		userSignature = userSignatureService.getUserSignatureById(Long.parseLong(jsonObj.getString("userSignature")));
-		   	}
-	   	 
+			
 			if(jsonObj.has("Toemails") && !isNullOrEmpty(jsonObj.getString("Toemails"))){
-				emails = jsonObj.getString("Toemails").replaceAll("\\[", "").replaceAll("\\]","");
-				emails = emails.replaceAll("\"", "");
-				String[] toEmails = emails.split(",");
-				 
-				for(int i=0 ; i< toEmails.length ; i++){
-					 EmailRecipient emailRecipient = new EmailRecipient();
-					 emailRecipient.setEmail(toEmails[i]);
-					 emailRecipientList.add(emailRecipient);
-				}
+				
+		    	  try{
+		    		   JSONArray jsonArray = jsonObj.getJSONArray("Toemails");
+		    		   emails = jsonArray.toString();
+		    	  }
+		    	  catch(JSONException e){
+		    		  emails= jsonObj.getString("Toemails");
+		    	  }
+		    	  if(emails != null){
+		    		  emails = emails.replaceAll("\\[", "").replaceAll("\\]","");
+		    		  emails = emails.replaceAll("\"", "");
+			  	      String[] toEmails = emails.split(",");
+			    	  for (String toEmail : toEmails) {
+			    		  recipantsList.add(toEmail);
+			    	  } 
+		    	  }
+		    	  
+		    	  for(String email : recipantsList){
+						EmailRecipient emailRecipient = new EmailRecipient();
+						emailRecipient.setEmail(email);
+						emailRecipientList.add(emailRecipient);
+					}
+		    	 
 			}
 			
 			 emailMessage.setCreatedBy(user.getUserCode());
 			 emailMessage.setFromEmail(user.getEmail());
 			 emailMessage.setFromName(fullName);
 			 emailMessage.setEmailType(Constants.EMAIL_CAMPAIGN);
+			 
+			 signature = sourceleadSignatureService.buildSignature(user, orgLocation);
 			 
 			 
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -105,9 +128,7 @@ public class EmailServiceImpl implements EmailService {
 			 String subject = emailScenerioUtil.bulidSubject(jsonObj.getString("subject"),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 			 
-			 if(null != userSignature){
-				 signature = emailScenerioUtil.buildSignature(userSignature.getSignature(),globalVarsMap);
-			 }
+			
 			 
 			 String url = sourceleadUrl;
 			 
@@ -131,13 +152,16 @@ public class EmailServiceImpl implements EmailService {
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),emailRecipientList,attachmentList);
 			 
-			 saveUserMailBox(user,orgLocation,emailRecipientList,subject,jsonObj.getString("bodytext"),userSignature,multiFile);
+			 saveUserMailBox(user,orgLocation,emailRecipientList,subject,jsonObj.getString("bodytext"),signature,multiFile);
 			 
-			 saveToUserMailBox(user,orgLocation,emailRecipientList,subject,jsonObj.getString("bodytext"),userSignature,multiFile);
+			 saveToUserMailBox(user,orgLocation,emailRecipientList,subject,jsonObj.getString("bodytext"),signature,multiFile);
 		
 	}
+	
+	
+	
 
-	private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailRecipient> emailRecipientList,String subject,String body,UserSignature userSignature,MultipartFile multiFile) throws Exception{
+	private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailRecipient> emailRecipientList,String subject,String body,String signature,MultipartFile multiFile) throws Exception{
 		
 		UserMailBox userMailBox = new UserMailBox();
 		StringBuilder toEmails = new StringBuilder();
@@ -153,7 +177,7 @@ public class EmailServiceImpl implements EmailService {
 		userMailBox.setMailStatus(Constants.MAIL_BOX_SENT);
 		userMailBox.setSubject(subject);
 		userMailBox.setBody(body);
-		userMailBox.setSignatureId(userSignature);
+		userMailBox.setSignature(signature);
 		userMailBox.setIsMailRead(0);
 		userMailBox.setIsFavourite(0);
 		userMailBox.setUuid(SourceLeadRandomCodeHelper.generateUUID());
@@ -181,7 +205,7 @@ public class EmailServiceImpl implements EmailService {
 	}
 	
 	
-	private void saveToUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailRecipient> emailRecipientList,String subject,String body,UserSignature userSignature,MultipartFile multiFile) throws Exception{
+	private void saveToUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailRecipient> emailRecipientList,String subject,String body,String signature,MultipartFile multiFile) throws Exception{
 		
 		
 		for (EmailRecipient recipient : emailRecipientList) {
@@ -198,7 +222,7 @@ public class EmailServiceImpl implements EmailService {
 				userMailBox.setMailStatus(Constants.MAIL_BOX_INBOX);
 				userMailBox.setSubject(subject);
 				userMailBox.setBody(body);
-				userMailBox.setSignatureId(userSignature);
+				userMailBox.setSignature(signature);
 				userMailBox.setIsMailRead(0);
 				userMailBox.setIsFavourite(0);
 				userMailBox.setUuid(SourceLeadRandomCodeHelper.generateUUID());

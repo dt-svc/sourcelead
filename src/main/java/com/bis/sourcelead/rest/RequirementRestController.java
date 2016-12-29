@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -133,26 +132,20 @@ public class RequirementRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Requirement requirement = requirementService.storeRequirement(jsonObj,orgLocation,user,multiFile);
 		
+		StringBuilder reqCreateMsg = new StringBuilder();
 		if(jsonObj.getString("saveType").equalsIgnoreCase("draft")){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! New "+requirement.getJobTitle()+" requirement  saved to Draft");
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved to Draft").toString());
+		}else if(jsonObj.getString("saveType").equalsIgnoreCase("save")){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  saved").toString());
+		}else if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval")){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" requirement  submitted for approval").toString());
+		}else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("save"))){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg",  reqCreateMsg.append("Success!! ").append(requirement.getJobTitle()).append(" details updated").toString());
+		}else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval"))){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!! ").append(requirement.getJobTitle()).append(" Updated and Submitted "));
+		}else if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("draft"))){
+			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqCreateMsg.append("Success!!  ").append(requirement.getJobTitle()).append(" Updated in Draft Stage").toString());
 		}
-		if(jsonObj.getString("saveType").equalsIgnoreCase("save")){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! New "+requirement.getJobTitle()+" requirement  saved");
-		}
-		if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval")){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! New "+requirement.getJobTitle()+" requirement  submitted for approval");
-		}
-		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("save"))){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! "+requirement.getJobTitle()+" details updated");
-		}
-		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval"))){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!! "+requirement.getJobTitle()+" Updated and Submitted ");
-		}
-		 if ((jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())) && (jsonObj.getString("saveType").equalsIgnoreCase("draft"))){
-			SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", "Success!!  "+requirement.getJobTitle()+" Updated in Draft Stage");
-		}
-		
-		
 
 		return "success";
 		
@@ -256,7 +249,7 @@ public class RequirementRestController {
 		    		    for(RequirementApproverHierarchy rah :list1){
 			    		      rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 			    		      rah.setUpdatedBy(loginUser.getUserCode());
-			    		      if(rah.getApproverUserId().getId() == loginUser.getId()){
+			    		      if(rah.getApproverUserId().getId().longValue() == loginUser.getId().longValue()){
 			    		    	  requirementApproverHierarchy.setRejectedReason(reason);
 			    		      }
 							  rah.setUpdatedDate(commonUtil.currentDate());
@@ -369,10 +362,12 @@ public class RequirementRestController {
 			if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getLastName() != null){
 				ownerLastName = orgSpoc.getOwnerUser().getLastName();
 			}
-			orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName()+" "+orgSpoc.getSpocUser().getLastName());
+			StringBuilder spocNameSB = new StringBuilder();
+			StringBuilder ownerNameSB = new StringBuilder();
+			orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
 			orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 			orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-			orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName()+" "+ownerLastName);
+			orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(ownerLastName).toString());
 			orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
 			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
 		}
@@ -505,6 +500,29 @@ public class RequirementRestController {
 				Boolean validatejobName = requirementService.validateRequirementTitle(templateName,orgLocation.getId());
 				return validatejobName.toString();
 		    }
+	 
+	 
+	 @RequestMapping(value = "/terminateRequirementTemplate", method = RequestMethod.POST)
+		public @ResponseBody String terminateRequirementTemplate(String requirementId, String status, HttpServletRequest request) throws Exception {
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			Requirement rt =  requirementService.getRequirementTemplateByRequirementId(Long.parseLong(requirementId),orgLocation.getId());
+			if(rt != null){
+				
+				if(status.equalsIgnoreCase("remove")){
+					rt.setStatus(Constants.MEMBER_IN_ACTIVE);
+				}else if(status.equalsIgnoreCase("reActive")){
+					rt.setStatus(Constants.MEMBER_ACTIVE);
+				}
+				
+				rt.setUpdatedBy(user.getUserCode());
+				rt.setUpdatedDate(commonUtil.currentDate());
+				requirementService.updateRequirementTemplate(rt);
+			}
+			return "success";
+		}
 	 
 		
 }

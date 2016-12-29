@@ -13,11 +13,12 @@
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script>
- window.onload = function() {
-	 getUserSignature();
-};
-</script>
+<style>
+.modal-backdrop{
+display: none;
+}
+</style>
+
 
 
 <section class="content-wraper">
@@ -43,7 +44,7 @@
         </div>
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-primary small">To</label>
-          <div class="col-md-10 positionRelative">
+          <div class="col-md-10 positionRelative disable-choosen-dropdown">
             <select class="chosen-select" data-validation="required"  field-name="To List" multiple data-placeholder="&nbsp;" id="emailsList" name="Toemails">
             </select>
             <span class="select-multiple" data-target="#multiplemail" onclick="listChange();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
@@ -80,7 +81,7 @@
         </div>
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-warning small">Others</label>
-          <div class="col-md-10 email-icon positionRelative">
+          <div class="col-md-10 email-icon positionRelative disable-choosen-dropdown">
                 <select multiple data-placeholder="Enter Emails" class="chosen-select form-control" name="otherEmails" id="otherEmails" >
                 </select>
           </div>
@@ -184,52 +185,18 @@
         
         <!-- Attachment button-->
         <div class="col-md-12 clearfix mt">
-          <div class="col-md-6">
-            <div class="pull-left select-field">
-              <select class="form-control inpu-sm" id="userSignature" name="userSignature">
-                <option selected disabled value="">-Select Signature-</option>
-              </select>
-            </div>
-            <div class="pull-left positionRelative">
-              <input type="button" class="btn btn-primary btn-sm ml10" value="New Sign" title="New Sign" onClick="createSign()">
-            </div>
-          </div>
-          <div class="col-md-6">
             <div class="pull-right"> 
               <!--<input type="button" value="Schedule" class="btn btn-sm btn-primary">-->
               <button type="button" class="btn btn-sm btn-success" onclick="sendHotListCampaign();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
               <!-- <a class="btn btn-sm btn-success" href="readmail.html" title="Read Mail"><i class="glyphicon glyphicon-eye-open"></i>&nbsp;Preview</a> -->
               <button type="button" class="btn btn-sm btn-default"><i class="fa fa-times"></i>&nbsp;Cancel</button>
             </div>
-          </div>
         </div>
         <!-- Attachment button --> 
          </form:form>
       </div>
       
-      <div class="createSign-pop">
-                
-                <form:form id="signature_form" name="signature_form" method="post" >
-                <div class="clearfix">
-                  <lable>Name of the Signature</lable>
-                  <div class="col-md-12">
-                    <input type="text" name="signatureName" id="signatureName" data-validation="required validate_Space validate_length length2-100" field-name="Signature Name" class="form-control input-sm" autofocus>
-                  </div>
-                </div>
-                <div class="clearfix mt">
-                  <lable>Create Signture</lable>
-                  <div class="col-md-12">
-                    <textarea data-placeholder="Signature" id="signatureText"  data-validation="required" field-name="Signature" name="signatureText" rows="2" class="form-control" ></textarea>
-                  </div>
-                </div>
-                <div class="clearfix mt">
-                  <div class="pull-right"> 
-                  <button type="button" class="btn btn-sm btn-success" onclick="saveSignatrue();">&nbsp;Save</button>
-                   <a href="javascript:void(o)" class="ml btn btn-default btn-sm" onClick="closeSign()">Cancel</a> </div>
-                </div>
-                </form:form>
-                
-    </div>
+      
     </div>
    
     
@@ -242,27 +209,7 @@
   
   
   
- <script>
-function getUserSignature(){
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/getSignatures?${_csrf.parameterName}=${_csrf.token}", 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	var output = "";
-	        	output = output + "<option value=''>-Select Signatrue-</option>"; 
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		output = output + "<option value='" +opt.id+ "'>"+opt.signatureName+"</option>";
-				}
-	        	$("#userSignature").empty();
-		        $("#userSignature").append(output);
-	        },
-	    }); 
-}
-</script>  
+   
 
 <script type="text/javascript">
 $(function(){
@@ -327,41 +274,7 @@ $(function(){
 
 
 
-<script type="text/javascript">
-	function saveSignatrue() {
-		
-	if ($('#signature_form').validate(false, validationSettings)){ 
-		
-	    var sourceleadUrl = '${sourceleadUrl}';
-		var frm = $('#signature_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, ""); 
-	    var jsonData = encodeURIComponent(con);
-	    
-		$.ajax({
-			type : "POST",
-			url : sourceleadUrl+"/saveUserSignature?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-			success : function(result) {
-				$("#signatureName").val('');
-				$("#signatureText").val('');
-				$(".createSign-pop").fadeOut(200);
-				getUserSignature();
-			},
-		});
-	    
-	    return true
-		 
-		}else{
-			return false;
-		  }
-		
-	}
 
-   $('body').on('blur', '#signature_form', function() {
-		$("#signature_form").showHelpOnFocus();
-		$("#signature_form").validateOnBlur(false, validationSettings);  
-   });
-</script>
 
 <script type="text/javascript">
 	(function($) {
@@ -847,11 +760,15 @@ $('input:checkbox:not(#checkAllCandidates)').click(function() {
 
 <script>
 function getEmails(){
-	var emails = [];
+	
+	var oTable = $('#example').dataTable();
+	var rowcollection =  oTable.$("input[name='emails[]']:checked", {"page": "all"});
+	
+	
 	var internalOutput = "";
-	 $("input[name='emails[]']:checked").each( function (i) {
-		 emails[i] = $(this).val();
-		 internalOutput = internalOutput+"<option value='" +emails[i]+ "' selected>"+emails[i]+"</option>";
+	rowcollection.each(function(index,elem){
+		 var checkbox_value = $(elem).val();
+		 internalOutput = internalOutput+"<option value='" +checkbox_value+ "' selected>"+checkbox_value+"</option>";
 	});
 	 
 	    $("#emailsList").append(internalOutput);
@@ -859,7 +776,6 @@ function getEmails(){
 		
 		$("input[name='emails[]']:checked").removeAttr('checked');
 		$('#checkAllContacts').removeAttr('checked');
-		
 		
 }
 </script>
@@ -906,12 +822,15 @@ function getContactEmails(){
 
 <script>
 function getCheckedCandidates(){
-	var candidatesIds = [];
+	
+	var oTable = $('#candidates').dataTable();
+	var rowcollection =  oTable.$("input[name='candidatesIds[]']:checked", {"page": "all"});
+	
+	
 	var internalOutput = "";
-	 $("input[name='candidatesIds[]']:checked").each( function (i) {
-		 candidatesIds[i] = $(this).val();
-		 var candidate = candidatesIds[i].split(",")
-		 internalOutput = internalOutput+"<option value='" +candidate[0]+ "' selected>"+candidate[1]+"</option>";
+	rowcollection.each(function(index,elem){
+		 var checkbox_value = $(elem).val().split(",");
+		 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
 	});
 	 
 	  
@@ -920,7 +839,6 @@ function getCheckedCandidates(){
 		
 		$("input[name='candidatesIds[]']:checked").removeAttr('checked');
 		$('#checkAllCandidates').removeAttr('checked'); 
-		
 		
 }
 </script>
@@ -950,18 +868,30 @@ function getCheckedCandidates(){
 			  //Adding Customized Emails to the list
 	        var select, chosen;
 		    select = $("#otherEmails");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Email:' });
 		    chosen = select.data('chosen');
 		    chosen.search_field.on('keyup', function(e)
 		    {
-		    	var newEmail = this.value.replace(",","");
+		    	var newEmail = this.value.replace(","," ");
 		        if ((e.which == 13 || e.which == 188) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
 		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(newEmail).text(newEmail);
-		            select.append(option);
-		            select.find(option).prop('selected', true);
-	        		$("#otherEmails").trigger("chosen:updated");
+	        		var par = this.parent;
+		        	var  tagArray = newEmail.split(" ");
+		        	 if(tagArray.length == 1){
+		        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
+		        		 select.append(option);
+				            select.find(option).prop('selected', true);
+			        		$("#otherEmails").trigger("chosen:updated");
+		        	 }else if(tagArray.length > 1){
+		        		 var emailArray = this.value.split(',')
+		        		 for (var i=0; i < emailArray.length; i++) {
+		        			 var option = $("<option>").val(emailArray[i].replace(",","")).text(emailArray[i].replace(",",""));
+		        			 select.append(option);
+		 		             select.find(option).prop('selected', true);
+		 	        		 $("#otherEmails").trigger("chosen:updated");
+		                 }
+		        	 }
+		           
 	        		
 		        }
 		    });

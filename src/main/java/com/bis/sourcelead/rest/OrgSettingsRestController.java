@@ -32,20 +32,19 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
-import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
@@ -79,6 +78,9 @@ public class OrgSettingsRestController {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	SourceleadSignatureService sourceleadSignatureService;
+	
    @PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
    @RequestMapping(value = "/saveOrgSettings" , method = RequestMethod.POST)
    public String saveOrgSettings(@RequestParam(value="json", required=false) String json,MultipartHttpServletRequest request) throws Exception {
@@ -100,6 +102,7 @@ public class OrgSettingsRestController {
 			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 		    SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 		    SourceLeadSessionManager.setSessionAttribute(request, "orgName", org.getOrgName());
+		    SourceLeadSessionManager.setSessionAttribute(request, "address", org.getOrgAddress());
 			
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e)); 
@@ -142,6 +145,36 @@ public class OrgSettingsRestController {
 				logger.error(ExceptionUtils.getFullStackTrace(e1)); 
 			}
    }
+   
+   
+   
+   @RequestMapping(value = "/displayOrgImageInMail/{orgCode}" , method = RequestMethod.GET)
+   public void displayOrgImageInMail(@PathVariable String orgCode,HttpServletResponse response) {
+  	 
+  	 Org org = null;
+			try {
+				org = orgService.getOrgByOrgCode(orgCode);
+				
+				if(org != null && org.getDocFile() != null)
+				{
+					org.setFileContentType("image/jpeg");
+					InputStream in = new ByteArrayInputStream(org.getDocFile());
+					BufferedImage bi = ImageIO.read(in);
+					OutputStream out = response.getOutputStream();
+					ImageIO.write(bi, "jpg", out);
+					out.close();
+				}
+				
+			} catch (IOException e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e)); 
+			} 
+			
+			catch (Exception e1) {
+				logger.error(ExceptionUtils.getFullStackTrace(e1)); 
+			}
+   }
+   
+   
    @RequestMapping(value = "/deleteOrgImage" , method = RequestMethod.GET)
    public String deleteOrgImage(HttpServletRequest request) throws Exception {
 	   
@@ -189,7 +222,8 @@ public class OrgSettingsRestController {
    
    @RequestMapping(value = "/roleActions/{roleId}" , method = RequestMethod.GET)
 	 public @ResponseBody void roleActions(@PathVariable Long roleId,HttpServletRequest request,HttpServletResponse response) throws Exception {
-			response.sendRedirect("/sourcelead/enrollRoleActions?roleId="+roleId);
+			StringBuilder redirectUrl = new StringBuilder();
+			response.sendRedirect(redirectUrl.append("/sourcelead/enrollRoleActions?roleId=").append(roleId).toString());
 			
 	   }
    
@@ -238,7 +272,8 @@ public class OrgSettingsRestController {
 	 	
 	 	 Roles roles = new Roles();
 	 	if(jsonObj.has("roleName") && !isNullOrEmpty(jsonObj.getString("roleName"))){
-	 		roles.setRoleName("ROLE_"+jsonObj.getString("roleName").replaceAll(" ", "_").toUpperCase());
+	 		StringBuilder role = new StringBuilder();
+	 		roles.setRoleName(role.append("ROLE_").append(jsonObj.getString("roleName")).toString().replaceAll(" ", "_").toUpperCase());
 	 		roles.setDisplayName(jsonObj.getString("roleName"));
 	 		roles.setOrg(org);
 	 		roles.setOrgLocations(orgLocations);
@@ -257,6 +292,44 @@ public class OrgSettingsRestController {
 	   }
    
    
+   
+   
+    @RequestMapping(value = "/getOrgSignature")
+	public String getOrgSignature(HttpServletRequest request) throws Exception {
+		
+	 	String resultJson = null;
+	 	SourceleadSignature signature = new SourceleadSignature();
+	 	
+	 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	List<SourceleadSignature> signatureList = null;
+	 	 signatureList = sourceleadSignatureService.getSourceLeadSignatureByLocationId(orgLocations.getId());
+	 	 if(signatureList.size() == 0){
+	 		 signatureList = sourceleadSignatureService.getSourceLeadSignature();
+	 	 }
+	   
+		String[] fontFamily = Constants.FONT_FAMILY;
+		String[] fontSize = Constants.FONT_SIZE;
+		
+		List<String> fontFamilyList = new ArrayList<String>();
+		List<String> fontSizeList = new ArrayList<String>();
+		
+		for(String fFamily : fontFamily){
+			fontFamilyList.add(fFamily);
+		}
+		
+		for(String fSize : fontSize){
+			fontSizeList.add(fSize);
+		}
+		
+		signature.setFontFamilyList(fontFamilyList);
+		signature.setFontSizeList(fontSizeList);
+		
+		signature.setSignatureList(signatureList);
+		
+		resultJson = toJSON(signature);
+		return resultJson;
+
+	}
 	 
    
    private String toJSON(Object obj){

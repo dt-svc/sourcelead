@@ -281,11 +281,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	projects.setEndDate(endDate);
     	}
     	
-    	if(jsonObj.has("invoiceFrequency")){
-			if(jsonObj.getString("invoiceFrequency") != null && !"".equalsIgnoreCase(jsonObj.getString("invoiceFrequency"))){
-				projects.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
-		}
-    	}
+    	
+		if(jsonObj.has("invoiceFrequency") && jsonObj.getString("invoiceFrequency") != null && !"".equalsIgnoreCase(jsonObj.getString("invoiceFrequency"))){
+			projects.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+	    }else{
+	    	projects.setInvoiceFrequency(Constants.WEEKLY);
+	    }
+    	
     	
     	if((jsonObj.has("Satatus"))){
     	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));
@@ -438,10 +440,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 	            }
 			    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
 			    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
+			    	StringBuilder projectStringBuilder=new StringBuilder();
 			    	if(approverHierarchy.getLevel()==1){
-			    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFirstName()+" "+approverHierarchy.getApproverUserId().getLastName());
+			    		projects.setManagerLevel1(projectStringBuilder.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 			    	}else if(approverHierarchy.getLevel()==2){
-			    		projects.setManagerLevel2(approverHierarchy.getApproverUserId().getFirstName()+" "+approverHierarchy.getApproverUserId().getLastName());
+			    		projects.setManagerLevel2(projectStringBuilder.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 			    	}
 			    }
 	    }
@@ -481,13 +484,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 	@Override
 	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,HashSet<TimesheetSubmissions> timesheetSubmissions,String level) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(locationsId);
+		
 		Set<Projects> projectsSet = new HashSet<>();
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
-		 emailMessage.setFromName(user.getFirstName()+" "+user.getLastName());
+		 StringBuilder fromNameSB = new StringBuilder();
+		 emailMessage.setFromName(fromNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -508,8 +513,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 			if(timesheetSubmissions != null && !timesheetSubmissions.isEmpty()){
 				 for(TimesheetSubmissions ts :timesheetSubmissions){
 					 tempHTML.append("<tr>");
-					 tempHTML.append("<td>"+ts.getProjectMembers().getProjects().getProjectName()+"</td>");
-					 tempHTML.append("<td>"+Constants.DMY.format(ts.getStartDate())+" To "+Constants.DMY.format(ts.getEndDate())+"</td>");
+					 tempHTML.append("<td>").append(ts.getProjectMembers().getProjects().getProjectName()).append("</td>").toString();
+					 tempHTML.append("<td>").append(Constants.DMY.format(ts.getStartDate())).append(" To ").append(Constants.DMY.format(ts.getEndDate())).append("</td>").toString();
 					 tempHTML.append("</tr>");
 					 projectsSet.add(ts.getProjectMembers().getProjects());
 				 }
@@ -521,7 +526,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder nameSB = new StringBuilder();
+		 emailRecipient.setName(nameSB.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -575,7 +581,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 
 	private void sendWeeklyBaseNotiFication(User user, OrgLocations orgLocations, Set<Projects> projectsSet) throws Exception {
-		if(user.getId() !=1 && user.getId() !=2){
+		if(user.getId().longValue() !=1l && user.getId().longValue() !=2l){
 			List<Employees> empList = userService.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(user.getId());
 		    Employees emp = empList.get(0);
 		    logger.info("Employee Location code :"+emp.getOrgLocations().getLocationCode());
@@ -584,10 +590,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    for(Projects projects :projectsSet){
 		    	 User fromUser = null;
 		    	List<ProjectApproverHierarchy> pahList = projectApproverHierarchyService.getApproverUsersByProjectId(projects.getId());
-		    	for(ProjectApproverHierarchy pah :pahList){
-		    		if(pah.getLevel()==1){
-		    			fromUser = pah.getApproverUserId();
-		    		}else{
+		    	//for(ProjectApproverHierarchy pah :pahList){
+		    		//if(pah.getLevel() != null && pah.getLevel().intValue() == 1){
+//		    	for(ProjectApproverHierarchy pah :pahList){
+		    	ProjectApproverHierarchy pah = pahList.get(0);
+		    		if(pah.getLevel() != null && pah.getLevel().intValue() == 1){
 		    			fromUser = pah.getApproverUserId();
 		    		}
 		    		 logger.info("Aprover for the Employee "+user.getFirstName()+" is :"+fromUser.getFirstName()+"("+fromUser.getUserType()+")");
@@ -603,7 +610,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 					   loginOrgLocation.setLocationCode(emp.getOrgLocations().getLocationCode());
 					   loginOrgLocation.setOrg(emp.getOrgLocations().getOrg());
 					   emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario);
-		    	}
+//		    	}
 		    }
 		}
 	}
@@ -643,7 +650,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    if(projects.getProjectSequeneNumber() != null){
 	    	projects.setProjectSequeneNumber(projects.getProjectSequeneNumber());
 	    }
-	    projects.setCreatedBy(user.getFirstName()+" "+user.getLastName());
+	    StringBuilder projectApprover=new StringBuilder();
+	    projects.setCreatedBy(projectApprover.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 	    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
 	   
 	    /**
@@ -654,7 +662,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
 		    	if(approverHierarchy.getLevel() != null){
 		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
-		    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
+		    		projects.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 		    	}
 	    	}
 	    }else{
@@ -662,11 +670,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
 		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 1){
 		    		projects.setManager1(approverHierarchy.getApproverUserId().getId());
-		    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
+		    		projects.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 		    	}
 		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2){
 		    		projects.setManager2(approverHierarchy.getApproverUserId().getId());
-		    		projects.setManagerLevel2(approverHierarchy.getApproverUserId().getFirstName() +" " + approverHierarchy.getApproverUserId().getLastName());
+		    		projects.setManagerLevel2(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 		    	}
 		    	
 		    }
@@ -685,7 +693,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    String[] approvers = new String[projectApproverHierarchies.size()];
 	    int i = 0;
 	    for(ProjectApproverHierarchy php : projectApproverHierarchies){
-	    	approvers[i] = php.getApproverUserId().getFirstName()+"&"+php.getApproverUserId().getId();
+	    	StringBuilder approverHierarchies=new StringBuilder();
+	    	approvers[i] = approverHierarchies.append(php.getApproverUserId().getFirstName()).append("&").append(php.getApproverUserId().getId()).toString();
 	    	i++;
 	    }
 	    projects.setProjectManagerName(approvers);
@@ -700,7 +709,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 					projects.setClient(ocl.getResponderLocationId().getOrg().getOrgName());
 				}
 			}
-			clientList[j] = ocl.getResponderLocationId().getOrg().getOrgName()+"&"+ocl.getId();
+			StringBuilder approverHierarchiesSB=new StringBuilder();
+			clientList[j] = approverHierarchiesSB.append(ocl.getResponderLocationId().getOrg().getOrgName()).append("&").append(ocl.getId()).toString();
 			j++;
 		 }
 		projects.setClientName(clientList);
@@ -1074,9 +1084,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Projects pr = projectsDao.getProjectById(projectId);
 		
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
+		StringBuilder membersListStringBuilder=new StringBuilder();
 		 for(ProjectMembers pm : projectMembersList){
 			 if(pm.getEmployee() != null){
-				 pm.setEmpName(pm.getEmployee().getUser().getFirstName()+" "+pm.getEmployee().getUser().getLastName());	 
+				 pm.setEmpName(membersListStringBuilder.append(pm.getEmployee().getUser().getFirstName()).append(" ").append(pm.getEmployee().getUser().getLastName()).toString());	 
 				 pm.setEmpEmail(pm.getEmployee().getUser().getEmail());	 
 			 }
 			 pm.setProjectStatus(pr.getProjectStatus().getValue());
@@ -1380,14 +1391,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 			  	 if(isNullOrEmpty(teamMembersList) && ("undefined".equals(teamMembersList))){
 			  		teamMembersList = "-";
 			  	 }
-			  	
+			  	 StringBuilder fromNameBuilder=new StringBuilder();
 			     EmailMessage emailMessage = new EmailMessage();
 				 emailMessage.setFirstName(projectManager.getFirstName());
 				 emailMessage.setLastName(projectManager.getLastName());
 				 emailMessage.setToEmail(projectManager.getEmail());
 				 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 				 emailMessage.setCreatedBy(loginUser.getUserCode());
-				 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+				 emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 
 				 //setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1398,13 +1409,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 globalVarsMap.put("teamMembers",teamMembersList);
 				 globalVarsMap.put("projectName", projects.getProjectName());
 				 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
-				 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+				 StringBuilder loginURLBuilder=new StringBuilder();
+				 globalVarsMap.put("loginURL",loginURLBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 				 
 				 //setting the Recipient information
 				 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 				 EmailRecipient emailRecipient = new EmailRecipient();
 				 emailRecipient.setEmail(emailMessage.getToEmail());
-				 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+				 StringBuilder nameBuilder=new StringBuilder();
+				 emailRecipient.setName(nameBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 				 emailRecipientList.add(emailRecipient);
 				 
 				 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -1445,14 +1458,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 			  */
 			  private void sendEmailToTeamMembers(Projects projects, Employees emp, User loginUser, User approverUserId1, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
 				  	 User projectManager = userService.getUserById(approverUserId1.getId());
-				  	
+				  	 StringBuilder fromNameBuilder=new StringBuilder();
 				     EmailMessage emailMessage = new EmailMessage();
 					 emailMessage.setFirstName(emp.getUser().getFirstName());
 					 emailMessage.setLastName(emp.getUser().getLastName());
 					 emailMessage.setToEmail(emp.getUser().getEmail());
 					 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 					 emailMessage.setCreatedBy(loginUser.getUserCode());
-					 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+					 emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 
 					 //setting the class filed values
 					 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1464,13 +1477,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 globalVarsMap.put("employeeLastName",emailMessage.getLastName());
 					 globalVarsMap.put("projectName", projects.getProjectName());
 					 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
-					 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+					 StringBuilder loginURLBuilder=new StringBuilder();
+					 globalVarsMap.put("loginURL",loginURLBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 					 
 					 //setting the Recipient information
 					 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 					 EmailRecipient emailRecipient = new EmailRecipient();
 					 emailRecipient.setEmail(emailMessage.getToEmail());
-					 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+					 StringBuilder nameBuilder=new StringBuilder();
+					 emailRecipient.setName(nameBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 					 emailRecipientList.add(emailRecipient);
 					 
 					 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -1569,9 +1584,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 											/**
 										    * This teamMembersList string to store all team members for mail to project manager.
 										    */
+											StringBuilder teamStringBuilder=new StringBuilder();
+											StringBuilder teamMembersStringBuilder=new StringBuilder();
 											String teamMember = "";
-											teamMember = emp.getUser().getFirstName()+" "+emp.getUser().getLastName();
-											teamMembersList = teamMembersList+teamMember+"<br/>";
+											teamMember = teamStringBuilder.append(emp.getUser().getFirstName()).append(" ").append(emp.getUser().getLastName()).toString();
+											teamMembersList = teamMembersStringBuilder.append(teamMembersList).append(teamMember).append("<br/>").toString();
 									    }
 									}
 							    }
@@ -1591,13 +1608,13 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 	     }else{
 	    	 user = orgLocations.getUser();
 	     }
-	     
+	     StringBuilder fNameStringBuilder=new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
-		 emailMessage.setFromName(user.getFirstName()+" "+user.getLastName());
+		 emailMessage.setFromName(fNameStringBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1612,7 +1629,8 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder nameStringBuilder=new StringBuilder();
+		 emailRecipient.setName(nameStringBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
