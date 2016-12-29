@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementAssignToDao;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 
 @Repository
@@ -137,6 +138,15 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 			isAvilable = true;
 		}
 		return isAvilable;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementAssignTo> getAssignedToMembersByRequirementIdAndOrgLocationId(Long requirementId,Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementAssignTo rato   where rato.requirementId.id = :requirementId and rato.requirementId.id IN ( select req.id from Requirement req where req.orgLocationId.id =:orgLocationId)";
+		return session.createQuery(query).setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
 
     
