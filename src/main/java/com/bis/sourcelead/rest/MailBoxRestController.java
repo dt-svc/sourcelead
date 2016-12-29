@@ -415,17 +415,17 @@ public class MailBoxRestController {
 			
 				for(Candidate candidate : candidatesList){
 					StringBuilder skills = new StringBuilder();
-					StringBuilder candidateSkills = null; 
+					String candidateSkills = null;
 					List<CandidateSkills> skillsList = candidateSkillsService.getCandidateSkillsByCandidateId(candidate.getId().toString());
 					 if(skillsList.size() > 0){
 						 for(CandidateSkills skill : skillsList){
 							 skills.append(skill.getName()).append(", ");
 						 }
-						 
 						 skills.toString();
-						 candidateSkills = new StringBuilder();
-						 candidateSkills.append(skills);
+						 candidateSkills =  skills.substring(0,skills.length()-2);
 					 }
+					 
+					
 					 
 					
 					 StringBuilder candidateName = new StringBuilder();
@@ -497,7 +497,7 @@ public class MailBoxRestController {
 					 candidate.setCandidateName(candidateName.toString());
 					 candidate.setTotalExp(totalExp.toString());
 					 candidate.setRate(rate.toString());
-					 candidate.setSkills(candidateSkills.toString());
+					 candidate.setSkills(candidateSkills);
 					 
 					 reqCandidatesList.add(candidate);
 				}
