@@ -27,13 +27,14 @@
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
           <div class="clearfix require_wrap_table dashboard-data clients_wrap_table">
             <ul class="nav nav-tabs">
-              <li class="active" id="acceptedTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); ApplicantAuthorization('accepted')">Request Sent</a></li>
-              <li id="requestSentTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); ApplicantAuthorization('requestSent')">Accepted</a></li>
+              <li class="active" id="acceptedTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); ApplicantAuthorization('requestSent')">Request Sent</a></li>
+              <li id="requestSentTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); ApplicantAuthorization('accepted')">Accepted</a></li>
             </ul>
+            
             <div class="tab-content clearfix mt custom-datatble">
               <div id="accepted" class="tab-pane fade in active"></div>
               <div id="requestSent" class="tab-pane fade"></div>
-            </div>
+            </div> 
           </div>
         </div>
       </div>
@@ -61,7 +62,7 @@ function ApplicantAuthorization(dateRange){
 	        	        	$("#requestSent").empty();
 	              			$("#accepted").removeAttr("style");
 	              			if(json.length > 0){
-	            				resultToday = resultToday+'	<table id="requirementInterviewsPagination" class="display" cellspacing="0" width="100%">';
+	            				resultToday = resultToday+'	<table id="applicantsPagination" class="display" cellspacing="0" width="100%">';
 	            				resultToday = resultToday+'	<thead>';
 	            				resultToday = resultToday+'	  <tr>';
 	            				resultToday = resultToday+'	    <th>Applicant</th>';
@@ -74,7 +75,7 @@ function ApplicantAuthorization(dateRange){
 	            				resultToday = resultToday+'	<tbody>';
 	            				
 	            				for (var i=0; i<json.length; i++){
-	            		       		var report = json[i];
+	            					var report = json[i];
 	            						resultToday = resultToday+'	  <tr>';
 	            						resultToday  = resultToday + '           <td><div><span>'+report.id+'</span></div></td>';
 	            						resultToday  = resultToday + '           <td><div><span>'+report.id+'</span></div></td>';
@@ -88,19 +89,20 @@ function ApplicantAuthorization(dateRange){
 	            			}
 	            	        if(dateRange == 'accepted'){
 	            	            $("#accepted").append(resultToday);
-	            	            requirementInterviewsPagination();
+	            	            applicantsPagination();
 	            	            $("#accepted").addClass("tab-pane fade in active");
 	            				$("#requestSent").removeClass("tab-pane fade in active");
 	            	        }else if(dateRange == 'requestSent'){
 	            				$("#requestSent").append(resultToday);
-	            				requirementInterviewsPagination();
+	            				applicantsPagination();
 	            				$("#accepted").removeClass("tab-pane fade in active");
 	            				$("#requestSent").addClass("tab-pane fade in active");
 	            	        }else{
 	            	        	$("#accepted").append(resultToday);
-	            	            requirementInterviewsPagination();
+	            	        	applicantsPagination();
 	            	            $("#acceptedTab").removeClass("active");
 	            				$("#requestSentTab").removeClass("active");
+	            				
 	            	        } 
               		 	}
 					}else{
@@ -110,7 +112,7 @@ function ApplicantAuthorization(dateRange){
 	 	    	        var result ="";
 						result = result+"			<div class='blank-pages'>";
 						result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-						result = result+"			        <p>No Interviews Found</p>";
+						result = result+"			        <p>No Applicants Found</p>";
 						result = result+"			 </div>";
 					    $("#accepted").append(result); 
 	               }

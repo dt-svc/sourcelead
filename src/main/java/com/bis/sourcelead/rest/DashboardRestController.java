@@ -587,5 +587,20 @@ public class DashboardRestController {
 			return "success";
 			
 		}
+		
+		@RequestMapping(value = "/getApplicantsByStatus", method = RequestMethod.POST)
 
+		public String getApplicantsByStatus(@RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception {
+
+		 String resultJson;
+
+		 OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		 List<RequirementSubmission> requirementSubmissionList = requirementSubmissionService.getApplicantsByStatus(loginOrgLocations.getId(), status);
+
+		 resultJson = commonUtil.toJSON(requirementSubmissionList);
+
+		 return resultJson;
+
+		}
 }
