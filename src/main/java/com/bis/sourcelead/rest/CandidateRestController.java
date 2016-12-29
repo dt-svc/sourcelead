@@ -5,7 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,20 +31,37 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.RequirementInterviewer;
+import com.bis.sourcelead.entity.RequirementOfferHistory;
+import com.bis.sourcelead.entity.RequirementOffers;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateSkillsService;
+import com.bis.sourcelead.service.RequirementInterviewHistoryService;
+import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementInterviewerService;
+import com.bis.sourcelead.service.RequirementOfferHistoryService;
+import com.bis.sourcelead.service.RequirementOffersService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParser;
@@ -86,6 +106,26 @@ public class CandidateRestController {
 	@Autowired
 	private TeamService teamService;
 	
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
+	@Autowired
+	RequirementOffersService requirementOffersService;
+	
+	@Autowired
+	RequirementInterviewService requirementInterviewService;
+	
+	@Autowired
+	RequirementInterviewerService requirementInterviewerService; 
+	
+	@Autowired
+	RequirementInterviewHistoryService requirementInterviewHistoryService;
+	
+	@Autowired
+	RequirementOfferHistoryService requirementOfferHistoryService; 
 	/**
 	 * @author prasad k
 	 * @since  sep 1 2016
@@ -358,8 +398,262 @@ public class CandidateRestController {
 		}
 	 
 	 
+	/**
+	 * @author Laxman
+	 * @ this method is uses for get the requirement History by candidate
+	 * @param candidateId
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getRequirementHistoryListByCandidateId")
+	public String getRequirementHistoryListByCandidateId(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 String resultJson;
+		 List<RequirementSubmission> requirementSubmission =requirementSubmissionService.getRequirementHistoryListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
+		 for(RequirementSubmission req :requirementSubmission ){
+			 req.setPositionType(req.getRequirement().getJobTitle());
+			 req.setCountry(req.getRequirement().getCountry());
+			 req.setState(req.getRequirement().getState());
+			 req.setCity(req.getRequirement().getCity());
+			 req.setRate(req.getRequirement().getRate());
+			 req.setCreatedDateStr(Constants.DMY.format(req.getCreatedDate()));
+			 if(req.getRequirement().getManagerUserId().getLastName() != null){
+				 req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName() +" "+req.getRequirement().getManagerUserId().getLastName());
+			 }else{
+				 req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName());
+			 }
+			
+			 if(req.getRequirement().getSpocId() != null){
+				 if(!"".equalsIgnoreCase(req.getRequirement().getSpocId().getSpocUser().getLastName()) && req.getRequirement().getSpocId().getSpocUser().getLastName() != null ){
+					 req.setClientName(req.getRequirement().getSpocId().getSpocUser().getFirstName() +""+req.getRequirement().getSpocId().getSpocUser().getLastName());
+				 }else{
+					 req.setClientName(req.getRequirement().getSpocId().getSpocUser().getFirstName());
+				 }
+			 }
+			
+			 
+		 }
+		 resultJson = commonUtil.toJSON(requirementSubmission);
+		 return resultJson;
+	}	
+	
+	
+	/**
+	 * @author Laxman
+	 * this method is used for candidate submitte related resumes list
+	 * @param candidateId
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getRequirementHistoryDetailsByCandidateId")
+	public String getRequirementHistoryDetailsByCandidateId(@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "requirementId", required = false) Long requirementId,
+			@RequestParam(value = "submissionId", required = false) Long submissionId,HttpServletRequest request) throws Exception {
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 String resultJson;
+		 
+		 List<RequirementSubmissionHistory>  requirementSubmissionhistory =  requirementSubmissionHistoryService.getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementIdAndSubmissionId(candidateId, loginOrgLocation.getId(), requirementId, submissionId);
+		 for(RequirementSubmissionHistory rsh:requirementSubmissionhistory){
+			 RequirementOffers ros =  requirementOffersService.getRequirementOfferSubmissionById(rsh.getSubmissionId().getId());
+			 if(ros != null){
+				 rsh.setOfferResumeid(ros.getId());
+			 }
+			 if(rsh.getSubmissionId().getCandidateResumes() != null){
+				 rsh.setResumeid(rsh.getSubmissionId().getCandidateResumes().getId());
+				 rsh.setFileName(rsh.getSubmissionId().getCandidateResumes().getFileName());
+			 }
+			 if(!"".equalsIgnoreCase(rsh.getSubmissionId().getOrgLocations().getOrg().toString()) && rsh.getSubmissionId().getOrgLocations().getOrg() != null){
+				 rsh.setOrgLocationId(rsh.getSubmissionId().getOrgLocations().getOrg().getOrgCode());
+			 }
+			 rsh.setToStage(rsh.getToStage());
+			 rsh.setSubmissionStage(rsh.getSubmissionId().getSubmissionStatus().toString());
+			 rsh.setRequirementReson(rsh.getSubmissionId().getRejectedReason());
+			 
+			 StringBuilder userName  = new StringBuilder();
+			 if(rsh.getSubmissionId().getCandidate().getLastName() != null){
+				 rsh.setUserName(userName.append(rsh.getSubmissionId().getCandidate().getFirstName()).append(" ").append(rsh.getSubmissionId().getCandidate().getLastName()).toString());	 
+			 }else{
+				 rsh.setUserName(userName.append(rsh.getSubmissionId().getCandidate().getFirstName()).toString());
+			 }
+
+			 // user related data is getting
+			 User user = userService.getUserDetailsByUserCode(rsh.getCreatedBy());
+			 StringBuilder  loginUserName = new StringBuilder();
+			 if(user.getLastName() != null){
+				 rsh.setLoginUserName(loginUserName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+			 }else{
+				 rsh.setLoginUserName(loginUserName.append(user.getFirstName()).toString());
+			 }
+			 
+			 //get the inteviewerName
+				 if(rsh.getInterviewerId() != null && rsh.getInterviewerId().getId() != null){
+					 RequirementInterviewer requirementInterviewer =requirementInterviewerService.getInterviwerstByInterviewId(rsh.getInterviewerId().getId());
+					 StringBuilder interviewerName = new StringBuilder();
+						 if(!"".equalsIgnoreCase(requirementInterviewer.getInterviewerUser().getLastName()) && requirementInterviewer.getInterviewerUser().getLastName() != null){
+							 rsh.setInterviewerName(interviewerName.append(requirementInterviewer.getInterviewerUser().getFirstName()).append(requirementInterviewer.getInterviewerUser().getLastName()).toString());	 
+						 }else{
+							 rsh.setInterviewerName(interviewerName.append(requirementInterviewer.getInterviewerUser().getFirstName()).toString());
+						 
+					 }
+				 }
+				 
+				 //get the client side offer history
+				List<RequirementOfferHistory> requirementOfferHistory = requirementOfferHistoryService.getRequirementInternalAndIsClientOffersHistoryBySubmissionIdAndOrgLocationsId(submissionId, loginOrgLocation.getId());
+				for(RequirementOfferHistory roh : requirementOfferHistory){
+					StringBuilder offerClientName = new StringBuilder();
+					user = userService.getUserDetailsByUserCode(roh.getCreatedBy());
+					if(user.getLastName() != null){
+						roh.setClientName(offerClientName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+					 }else{
+						 roh.setClientName(offerClientName.append(user.getFirstName()).toString());
+					 }
+					//this logic is date conversion
+					long diff = commonUtil.currentDate().getTime() - roh.getCreatedDate().getTime();
+				    Object object =  getCnadidateHistoryTimeConversion(diff,roh);
+				    roh = (RequirementOfferHistory)object;
+					roh.setOfferResumeId(roh.getOfferId().getId());
+				    roh.setOfferSourceType(roh.getOfferSourceType());
+					roh.setNotifyToVendor(roh.getNotifyToVendor());
+					rsh.setRequirementOfferHistoryList(requirementOfferHistory);
+				}
+				
+					
+					
+			 //get the client side interview interviewHistory 
+				 List<RequirementInterviewHistory> requirementInterviewHistory = requirementInterviewHistoryService.getClientInterviewsHistoryBySubmissionIdAndOrgLocationsId(rsh.getSubmissionId().getId(),loginOrgLocation.getId());
+				 for(RequirementInterviewHistory rh:requirementInterviewHistory){
+					 StringBuilder clientName = new StringBuilder();
+					 rh.setInterviewSourceType(rh.getInterviewSourceType());
+					 user = userService.getUserDetailsByUserCode(rh.getCreatedBy());
+					 if(user.getLastName() != null){
+						rh.setClientName(clientName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+					 }else{
+						 rh.setClientName(clientName.append(user.getFirstName()).toString());
+					 }
+					 
+				     long diff = commonUtil.currentDate().getTime() - rh.getCreatedDate().getTime();
+				     Object object =  getCnadidateHistoryTimeConversion(diff,rh);
+					 rh = (RequirementInterviewHistory)object;
+					
+					if(rh.getInterviewId() != null){
+						if(rh.getInterviewId().getDateOfInterview() != null){
+							rh.setDateOfInterviewStr(Constants.DMY.format(rh.getInterviewId().getDateOfInterview()));
+						    }
+						    if(rh.getInterviewId().getStartTime() != null){
+						    	StringBuilder startTime = new StringBuilder(); 
+						    	 String hours = Integer.toString(rh.getInterviewId().getStartTime().getHours());
+						    	 String minutes = Integer.toString(rh.getInterviewId().getStartTime().getMinutes());
+						    	 rh.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(startTime.append(hours).append(":").append(minutes).toString()));
+						    }
+						    if(rh.getInterviewId().getEndTime() != null){
+						    	StringBuilder endTime = new StringBuilder(); 
+						    	 String hours = Integer.toString(rh.getInterviewId().getEndTime().getHours());
+						    	 String minutes = Integer.toString(rh.getInterviewId().getEndTime().getMinutes());
+						    	 rh.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(endTime.append(hours).append(":").append(minutes).toString()));
+						    }
+					}
+					rh.setInterviewType(rh.getInterviewId().getInterviewType());
+				 rsh.setRequirementInterviewHistoryList(requirementInterviewHistory);
+				 }
+				 
+				 
+			    long diff = commonUtil.currentDate().getTime() - rsh.getCreatedDate().getTime();
+			    Object object =  getCnadidateHistoryTimeConversion(diff,rsh);
+			    rsh = (RequirementSubmissionHistory)object;
+			    
+				//interview related data is getting
+				List<RequirementInterview> RequirementInterview = requirementInterviewService.getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(submissionId, loginOrgLocation.getId());
+				for(RequirementInterview requirementInterview :RequirementInterview){
+					 if(requirementInterview.getDateOfInterview() != null){
+						 rsh.setInterviewDateStr(Constants.DMY.format(requirementInterview.getDateOfInterview()));
+					    }
+					    if(requirementInterview.getStartTime() != null){
+					    	StringBuilder startTime = new StringBuilder(); 
+					    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
+					    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
+					    	 rsh.setInterviewStartTime(CalendarUtil.get12FormatTimeFrom24FormatTime(startTime.append(hours).append(":").append(minutes).toString()));
+					    }
+					    if(requirementInterview.getEndTime() != null){
+					    	StringBuilder endTime = new StringBuilder(); 
+					    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
+					    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
+					    	 rsh.setInterviewEndTime(CalendarUtil.get12FormatTimeFrom24FormatTime(endTime.append(hours).append(":").append(minutes).toString()));
+					    }
+					    rsh.setInterviewType(requirementInterview.getInterviewType());
+				}
+				
+				
+		 }
+		 
+		 resultJson = commonUtil.toJSON(requirementSubmissionhistory);
+		 return resultJson;
+	}	
+	
 	 
-	 public String toJSON(Object obj){
+
+	private Object getCnadidateHistoryTimeConversion(long diff, Object obj) {
+		    long diffSeconds = diff / 1000 % 60;
+			long diffMinutes = diff / (60 * 1000) % 60;
+			long diffHours = diff / (60 * 60 * 1000) % 24;
+			long diffDays = diff / (24 * 60 * 60 * 1000);
+			if(obj instanceof RequirementInterviewHistory){
+				 StringBuilder  time = new StringBuilder();
+				 RequirementInterviewHistory rih = (RequirementInterviewHistory)obj;
+				if(diffDays == 0 && diffHours == 0 && diffMinutes == 0){
+					rih.setInterviewHistoryCreatedDate(time.append(diffSeconds).append(" seconds ago ").toString());
+				}else if(diffDays == 0 && diffHours == 0){
+					rih.setInterviewHistoryCreatedDate(time.append(diffMinutes).append(" minutes ago").toString());
+				}else if(diffDays == 0){
+					rih.setInterviewHistoryCreatedDate(time.append(diffHours).append(" hours ").append(diffMinutes).append(" minutes ago ").toString());
+				}else if(diffDays < 7){
+					rih.setInterviewHistoryCreatedDate(time.append(diffDays).append(" days ").append(diffHours).append(" hours ago ").toString());
+				}else{
+					DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
+					String commonDateFormat = standardFormat.format(rih.getCreatedDate());
+					rih.setInterviewHistoryCreatedDate(commonDateFormat.toString());
+				} 
+			 return rih;
+			 }else if(obj instanceof RequirementSubmissionHistory){
+				 StringBuilder  time = new StringBuilder();
+				 RequirementSubmissionHistory rsh = (RequirementSubmissionHistory)obj;
+				if(diffDays == 0 && diffHours == 0 && diffMinutes == 0){
+					rsh.setCreatedDateStr(time.append(diffSeconds).append(" seconds ago ").toString());
+				}else if(diffDays == 0 && diffHours == 0){
+					rsh.setCreatedDateStr(time.append(diffMinutes).append(" minutes ago").toString());
+				}else if(diffDays == 0){
+					rsh.setCreatedDateStr(time.append(diffHours).append(" hours ").append(diffMinutes).append(" minutes ago ").toString());
+				}else if(diffDays < 7){
+					rsh.setCreatedDateStr(time.append(diffDays).append(" days ").append(diffHours).append(" hours ago ").toString());
+				}else{
+					DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
+					String commonDateFormat = standardFormat.format(rsh.getCreatedDate());
+					rsh.setCreatedDateStr(commonDateFormat.toString());
+				}
+				return rsh;
+			 }else if(obj instanceof RequirementOfferHistory){
+				 StringBuilder  time = new StringBuilder();
+				 RequirementOfferHistory roh = (RequirementOfferHistory)obj;
+				 if(diffDays == 0 && diffHours == 0 && diffMinutes == 0){
+						roh.setCreateDateStr(time.append(diffSeconds).append(" seconds ago ").toString());
+					}else if(diffDays == 0 && diffHours == 0){
+						roh.setCreateDateStr(time.append(diffMinutes).append(" minutes ago").toString());
+					}else if(diffDays == 0){
+						roh.setCreateDateStr(time.append(diffHours).append(" hours ").append(diffMinutes).append(" minutes ago ").toString());
+					}else if(diffDays < 7){
+						roh.setCreateDateStr(time.append(diffDays).append(" days ").append(diffHours).append(" hours ago ").toString());
+					}else{
+						DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
+						String commonDateFormat = standardFormat.format(roh.getCreatedDate());
+						roh.setCreateDateStr(commonDateFormat.toString());
+					} 
+				return roh;
+			 }
+			return null;
+	}
+
+	public String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 	            public HierarchicalStreamWriter createWriter(Writer writer) {
 	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);

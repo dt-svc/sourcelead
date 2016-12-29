@@ -453,7 +453,6 @@ function sideBar(requirementId){
               				result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1">'+json.jobTitle+'<i></i></h4></a>';
               			}
 				        result = result+'<div class="hide-row">';
-				        
 				       /*result = result+'    <div class="profile_details requirement_details clearfix">'; */
 				        result = result+'<div class="col-md-9">';
 				        result = result+'<div class="row">';

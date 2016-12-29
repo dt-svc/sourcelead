@@ -217,9 +217,36 @@ public class RequirementSubmission implements Serializable{
 	
 	@Transient
 	private String clientSubmissionId;
-
+	
 	@Transient
 	private String submittedOn;
+	
+	@Transient
+	private String state;
+	
+	@Transient
+	private String city;
+	
+	@Transient
+	private String country;
+	
+	@Transient
+	private String ownerName;
+	
+	@Transient
+	private String clientName;
+	
+	@Transient
+	private String rate;
+	
+	@Transient
+	private String employeeType;
+	
+	@Transient
+	private String orgLocationId;
+	
+	@Transient
+	private String filename;
 
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -694,6 +721,76 @@ public class RequirementSubmission implements Serializable{
 	public void setNumofrequestsent(int numofrequestsent) {
 		this.numofrequestsent = numofrequestsent;
 	}
-	
 
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getOwnerName() {
+		return ownerName;
+	}
+
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
+	}
+
+	public String getRate() {
+		return rate;
+	}
+
+	public void setRate(String rate) {
+		this.rate = rate;
+	}
+
+	public String getEmployeeType() {
+		return employeeType;
+	}
+
+	public void setEmployeeType(String employeeType) {
+		this.employeeType = employeeType;
+	}
+
+	public String getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(String orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
 }
