@@ -83,7 +83,6 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	 EmailMessage emailMessage = new EmailMessage(); 
 	 String fullName = null;
 	 String[] hotlistedCandidates = null;
-	 UserSignature userSignature = null;
 	 String signature = "";
 	 String candidates = null;
 	 String emails = null;
@@ -97,10 +96,6 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	   		 fullName = user.getFirstName();
 	   	 }
 			
-	   	if(jsonObj.has("userSignature") && !isNullOrEmpty(jsonObj.getString("userSignature"))){
-	   		userSignature = userSignatureService.getUserSignatureById(Long.parseLong(jsonObj.getString("userSignature")));
-	   	}
-   	 
 		if(jsonObj.has("Toemails") && !isNullOrEmpty(jsonObj.getString("Toemails"))){
 			emails = jsonObj.getString("Toemails").replaceAll("\\[", "").replaceAll("\\]","");
 			emails = emails.replaceAll("\"", "");
@@ -186,12 +181,12 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),emailRecipientList,attachmentList);
 		 
-		 saveUserMailBox(user,orgLocation,emailRecipientList,candidates,subject,table,UUID,jsonObj.getString("bodytext"),userSignature,jsonObj.getString("namefield"),multiFile);
+		 saveUserMailBox(user,orgLocation,emailRecipientList,candidates,subject,table,UUID,jsonObj.getString("bodytext"),signature,jsonObj.getString("namefield"),multiFile);
 		
 	}
 	
 	
-private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailRecipient> emailRecipientList,String candidates,String subject,String table,String UUID,String body,UserSignature userSignature,String nameFields,MultipartFile multiFile) throws Exception{
+private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailRecipient> emailRecipientList,String candidates,String subject,String table,String UUID,String body,String signature,String nameFields,MultipartFile multiFile) throws Exception{
 	
 	UserMailBox userMailBox = new UserMailBox();
 	StringBuilder toEmails = new StringBuilder();
@@ -209,7 +204,7 @@ private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailR
 	userMailBox.setSubject(subject);
 	userMailBox.setCampaignTableData(table);
 	userMailBox.setBody(body);
-	userMailBox.setSignatureId(userSignature);
+	userMailBox.setSignature(signature);
 	userMailBox.setIsMailRead(0);
 	userMailBox.setIsFavourite(0);
 	userMailBox.setUuid(UUID);

@@ -562,8 +562,8 @@ function getEmailDetails(uuid){
 	   			}
 	            
                 
-              if(opt.signatureId != null && opt.signatureId != "" && opt.signatureId != 'undefined'){
-            	  result = result +'<p>'+opt.signatureId.signature+'</p>';
+              if(opt.signature != null && opt.signature != "" && opt.signature != 'undefined'){
+            	  result = result +'<p>'+opt.signature+'</p>';
               }else{
             	  result = result +'<p>Thanks,<br>'+opt.fromMail+'</p>';
               }
