@@ -128,6 +128,7 @@ public class SubmissionsRateController {
 			}else{
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 			}
+			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
 			Requirement requirement = requirementSubmission.getRequirement();
@@ -190,6 +191,7 @@ public class SubmissionsRateController {
 			}else{
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 			}
+			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
 			Requirement requirement = requirementSubmission.getRequirement();

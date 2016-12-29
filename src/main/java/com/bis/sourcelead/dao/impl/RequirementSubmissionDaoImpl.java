@@ -266,9 +266,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
     		String subQuery = "";
     		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
     			if(dateRange != null && "today".equals(dateRange)){
-    				subQuery = "where rs.orgLocations.id = :orgLocationsId "+submissionStages+" and  rs.status = 1 and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+    				subQuery = "where rs.orgLocations.id = :orgLocationsId "+submissionStages+" and rs.status = 1 and DATE(rs.updatedDate) = CURDATE() and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
     			}else if(dateRange != null && "previous".equals(dateRange)){
-    			    subQuery = "where rs.orgLocations.id = :orgLocationsId "+submissionStages+" and rs.status = 1  and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+    			    subQuery = "where rs.orgLocations.id = :orgLocationsId "+submissionStages+" and rs.status = 1 and DATE(rs.updatedDate) < CURDATE() and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
     			}
     			params.put("orgLocationsId",orgLocationsId);
     			//params.put("submissionStatus",submissionStatus);
@@ -297,9 +297,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
         	
         	String query = "";
         	if(dateRange != null && "today".equals(dateRange)){
-                query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and DATE(rs.createdDate) = CURDATE()";
+                query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and DATE(rs.updatedDate) = CURDATE()";
      		}else if(dateRange != null && "previous".equals(dateRange)){
-     			query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and DATE(rs.createdDate) < CURDATE()";
+     			query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and DATE(rs.updatedDate) < CURDATE()";
      		}
         	
         	List<Long> reqSubmsCount =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).list();

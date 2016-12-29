@@ -180,6 +180,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					           }else{
 					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
 					           }
+					           requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					           
 					           
@@ -214,6 +215,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					        		   if(jsonObj.has("notifyToVendor") && !jsonObj.getString("notifyToVendor").isEmpty() && sourcesubmission != null){
 					        			   requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
 		                                	sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);
+		                                	sourcesubmission.setUpdatedDate(commonUtil.currentDate());
 		                                	requirementSubmissionService.storeRequirementSubmission(sourcesubmission);
 		                                	
 		                                	//to save offer history
@@ -682,6 +684,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 								        	   if(sourcesubmission != null){
 								        		   
 								        		   sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);
+								        		   sourcesubmission.setUpdatedDate(commonUtil.currentDate());
 									        	   requirementSubmissionService.storeRequirementSubmission(sourcesubmission);
 								        		   
 								        		   RequirementOfferHistory vendorOfferHistory = new RequirementOfferHistory();

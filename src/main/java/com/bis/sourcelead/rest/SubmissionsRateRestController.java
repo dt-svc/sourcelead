@@ -128,6 +128,7 @@ public class SubmissionsRateRestController {
 				/*requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 				requirementSubmission.setSubmissionRateComment(rejectreason);*/
 			}
+			requirementSubmission.setCreatedDate(commonUtil.currentDate());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
 			//this logic is for mail 

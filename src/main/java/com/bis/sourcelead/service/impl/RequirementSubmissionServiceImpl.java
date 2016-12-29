@@ -311,6 +311,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 requirementSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
 		 requirementSubmission.setCreatedBy(user.getUserCode());
 		 requirementSubmission.setCreatedDate(new Date());
+		 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 		 requirementSubmission = requirementSubmissionDao.storeRequirementSubmission(requirementSubmission);
 		
 		 if("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit())){
@@ -392,7 +393,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 templateFields.setStatus(Constants.CANDIDATE_ACTIVE);
 		 templateFields.setCreatedBy(user.getUserCode());
 		 templateFields.setCreatedDate(new Date());
-		 
+		 templateFields.setUpdatedDate(commonUtil.currentDate());
 		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(templateFields);
 		return requirementSubmission;
 		
@@ -522,6 +523,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 clientSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
     		 clientSubmission.setCreatedDate(new Date());
     		 clientSubmission.setCreatedBy(user.getUserCode());
+    		 clientSubmission.setUpdatedDate(commonUtil.currentDate());
     		 clientSubmission = requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
     		 
     		 String clientRate = clientShortlistsRate[i];
@@ -615,6 +617,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 clientSubmissionFields.setStatus(Constants.CANDIDATE_ACTIVE);
     		 clientSubmissionFields.setCreatedBy(user.getUserCode());
     		 clientSubmissionFields.setCreatedDate(new Date());
+    		 clientSubmissionFields.setUpdatedDate(commonUtil.currentDate());
     		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(clientSubmissionFields);
     		 RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
     		 requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
@@ -1301,6 +1304,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 			
 		}
+		requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 		requirementSubmissionDao.storeRequirementSubmission(requirementSubmission);
 		
 		return requirementSubmission;
@@ -1371,6 +1375,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 clientSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
    		 clientSubmission.setCreatedDate(new Date());
    		 clientSubmission.setCreatedBy(user.getUserCode());
+   		 clientSubmission.setUpdatedDate(commonUtil.currentDate());
    		 clientSubmission = requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
    		 
    		 
@@ -1462,12 +1467,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 clientSubmissionFields.setStatus(Constants.CANDIDATE_ACTIVE);
    		 clientSubmissionFields.setCreatedBy(user.getUserCode());
    		 clientSubmissionFields.setCreatedDate(new Date());
+   		 clientSubmissionFields.setUpdatedDate(commonUtil.currentDate());
    		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(clientSubmissionFields);
    		 RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
    		 requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
    		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT);
    		 submission.setUpdatedBy(user.getUserCode());
-   		 submission.setUpdatedDate(new Date());
+   		 submission.setUpdatedDate(commonUtil.currentDate());
    		 requirementSubmissionDao.storeRequirementSubmission(submission);
    		 
    		 requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory);

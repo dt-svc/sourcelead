@@ -174,6 +174,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					           }else{
 					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW);
 					           }
+					           requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					           requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 					           
@@ -181,6 +182,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					        	   RequirementSubmission parentSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
 						           if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty() && parentSubmission != null){
 						        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_INTERVIEW);
+						        	   parentSubmission.setUpdatedDate(commonUtil.currentDate());
 						        	   requirementSubmissionService.storeRequirementSubmission(parentSubmission);
 						           }
 					           }
