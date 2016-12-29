@@ -288,7 +288,7 @@ public class RequirementListRestController {
 						}
 					//requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName()+" "+requirement.getSpocId().getSpocUser().getLastName());
 					
-					if(requirement.getSpocId().getInitiatorLocationId().getId() == loginOrgLocation.getId() ){
+					if(requirement.getSpocId().getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
 						
 						if(requirement.getSpocId().getSpocUser().getFirstName() != null && requirement.getSpocId().getSpocUser().getFirstName() != "" && requirement.getSpocId().getSpocUser().getLastName() != null && requirement.getSpocId().getSpocUser().getLastName() != "" ){
 							StringBuilder spocSB = new StringBuilder();
@@ -297,7 +297,7 @@ public class RequirementListRestController {
 							requirement.setSpocName(requirement.getSpocId().getSpocUser().getFirstName());
 						}
 					 }
-					if(requirement.getSpocId().getResponderLocationId().getId() == loginOrgLocation.getId()){
+					if(requirement.getSpocId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
 						StringBuilder spocSB1 = new StringBuilder();
 						requirement.setSpocName(spocSB1.append(requirement.getSpocId().getOwnerUser().getFirstName()).append(" ").append(requirement.getSpocId().getOwnerUser().getLastName()).toString());
 					}

@@ -250,11 +250,16 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='15%' bgcolor='#5bace8'><span>Rate<span></th>";
 		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='50%' bgcolor='#5bace8'><span>Skills<span></th>";
 		 tempHTML = tempHTML+"</tr>";
-		   
+		 
+		 Set<String> candidateEmailsList = new HashSet<String>();
 		 
 		 for(int i=0 ; i < hotlistedCandidates.length; i++){
+			 candidateEmailsList.add(hotlistedCandidates[i]);
+		 }
+		 
+		 for(String email : candidateEmailsList){
 			 StringBuilder skills = new StringBuilder();
-			 List<CandidateSkills> skillsList = candidateSkillsService.getCandidateSkillsByCandidateId(hotlistedCandidates[i]);
+			 List<CandidateSkills> skillsList = candidateSkillsService.getCandidateSkillsByCandidateId(email);
 			 if(skillsList != null){
 				 for(CandidateSkills skill : skillsList){
 					 skills.append(skill.getName()).append(", ");
@@ -274,7 +279,7 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 			 StringBuilder expBuilder = new StringBuilder();
 			 StringBuilder rateBuilder = new StringBuilder();
 			
-			 Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(hotlistedCandidates[i]));
+			 Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(email));
 			 
 			 if(nameField.equalsIgnoreCase("firstname")){
 				 candidateName = nameBuilder.append(candidate.getFirstName());

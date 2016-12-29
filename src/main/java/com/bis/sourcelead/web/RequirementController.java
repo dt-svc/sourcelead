@@ -282,6 +282,15 @@ public class RequirementController {
         }else{
             model.addObject("parentRequirement","N");
         }
+        
+        if(requirement.getSpocId() != null && requirement.getSpocId().getId() != null){
+			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
+			if(orgSpoc != null && orgSpoc.getSpocStatus() != null && "In-Active".equalsIgnoreCase(orgSpoc.getSpocStatus())){
+				model.addObject("isSpocActive", Constants.NO);
+			}else{
+				model.addObject("isSpocActive", Constants.YES);
+			}
+		}
 		
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");

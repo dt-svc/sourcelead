@@ -1054,6 +1054,7 @@ function requirementPipeline(requirementId,submissionType){
 	
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
+	  var isSpocActive = '${isSpocActive}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
@@ -1070,7 +1071,7 @@ function requirementPipeline(requirementId,submissionType){
             		 }
             		 else{ 
             			 var submitToClient = '';
-            			 if(clientSubmissions == 'Y'){
+            			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
             				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
             			 }
             			   
@@ -2076,6 +2077,7 @@ function requirementStatusBar(requirementId){
   	   var rejected = 'REJECTED';
        var submitToClient = 'SUBMIT_TO_CLIENT';
        var clientSubmissions = '${clientSubmissions}';
+       var isSpocActive = '${isSpocActive}';
        var duplicateApplicantCount = 'DUPLICATE_APPLICANTS';
 		
        
@@ -2097,7 +2099,7 @@ function requirementStatusBar(requirementId){
 		 result = result + '      <li id="shortListli" class="tabActivation" onclick="filterReq('+requirementId+',\''+shortList+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Shortlisted">';
 		 result = result + '       <label><strong>Shortlisted</strong></label>';
 		 result = result + '     </a> <span class="label label-warning" id="shortlistCount">0</span></li>';
-		if(clientSubmissions == 'Y'){
+		if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
 		 result = result + '    <li id="submitToClientli" class="tabActivation" onclick="filterReq('+requirementId+',\''+submitToClient+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Submit to Client">';
 		 result = result + '       <label><strong>Submit to Client</strong></label>';
 		 result = result + '       </a> <span class="label label-info" id="submitToClientCount">0</span> </li>';

@@ -29,7 +29,7 @@ display: none;
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Hotlist Mail Box</h2>
+        <h2>Compose Mail</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/mailBox'/>"> Mailbox</a>
 			&raquo; Compose Email</div>
@@ -49,7 +49,7 @@ display: none;
         </div>
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-primary small">To</label>
-          <div class="col-md-10 positionRelative">
+          <div class="col-md-10 positionRelative disable-choosen-dropdown">
             <select class="chosen-select form-control" data-validation="required"  field-name="To List" multiple data-placeholder="&nbsp;" id="emailsList" name="Toemails">
             </select>
             <span class="select-multiple" data-target="#multiplemail" onclick="getUserList();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
@@ -443,12 +443,17 @@ function pagination(){
 
 <script>
 function getEmails(){
-	var emails = [];
+	
+	var oTable = $('#example').dataTable();
+	var rowcollection =  oTable.$("input[name='emails[]']:checked", {"page": "all"});
+	
+	
 	var internalOutput = "";
-	 $("input[name='emails[]']:checked").each( function (i) {
-		 emails[i] = $(this).val();
-		 internalOutput = internalOutput+"<option value='" +emails[i]+ "' selected>"+emails[i]+"</option>";
+	rowcollection.each(function(index,elem){
+		 var checkbox_value = $(elem).val();
+		 internalOutput = internalOutput+"<option value='" +checkbox_value+ "' selected>"+checkbox_value+"</option>";
 	});
+	
 	 
 	    $("#emailsList").append(internalOutput);
 		$("#emailsList").trigger("chosen:updated");
@@ -481,18 +486,30 @@ function getEmails(){
 			  //Adding Customized Emails to the list
 	        var select, chosen;
 		    select = $("#emailsList");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Email:' });
 		    chosen = select.data('chosen');
 		    chosen.search_field.on('keyup', function(e)
 		    {
-		    	var newEmail = this.value.replace(",","");
+		    	var newEmail = this.value.replace(","," ");
 		        if ((e.which == 13 || e.which == 188) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
 		        {
 		        	var par = this.parent;
-		            var option = $("<option>").val(newEmail).text(newEmail);
-		            select.append(option);
-		            select.find(option).prop('selected', true);
-	        		$("#emailsList").trigger("chosen:updated");
+		        	var  tagArray = newEmail.split(" ");
+		        	 if(tagArray.length == 1){
+		        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
+		        		 select.append(option);
+				            select.find(option).prop('selected', true);
+			        		$("#emailsList").trigger("chosen:updated");
+		        	 }else if(tagArray.length > 1){
+		        		 var emailArray = this.value.split(',')
+		        		 for (var i=0; i < emailArray.length; i++) {
+		        			 var option = $("<option>").val(emailArray[i].replace(",","")).text(emailArray[i].replace(",",""));
+		        			 select.append(option);
+		 		             select.find(option).prop('selected', true);
+		 	        		 $("#emailsList").trigger("chosen:updated");
+		                 }
+		        	 }
+		           
 	        		
 		        }
 		    });
