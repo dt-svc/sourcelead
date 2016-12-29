@@ -29,21 +29,21 @@ public class UserMailBox implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false)
+    @Column(name = "ID")
 	private Long id;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="USER_ID", nullable=false )        
+    @JoinColumn(name="USER_ID")        
     private User userId;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
+    @JoinColumn(name="ORG_LOCATION_ID")        
     private OrgLocations orgLocationId;
 	
 
-	@ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="USER_SIGNATURE_ID", nullable=false )        
-    private UserSignature signatureId;
+    @JoinColumn(name="SIGNATURE")      
+    @Type(type="text")
+    private String signature;
 	
 	@Column(name = "TO_MAIL")
 	@Type(type="text")
@@ -171,12 +171,14 @@ public class UserMailBox implements Serializable{
 		this.orgLocationId = orgLocationId;
 	}
 
-	public UserSignature getSignatureId() {
-		return signatureId;
+	
+
+	public String getSignature() {
+		return signature;
 	}
 
-	public void setSignatureId(UserSignature signatureId) {
-		this.signatureId = signatureId;
+	public void setSignature(String signature) {
+		this.signature = signature;
 	}
 
 	public String getToMail() {
