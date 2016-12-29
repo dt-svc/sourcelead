@@ -309,7 +309,7 @@ function getUserList(teamType){
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   <div class="clearfix pull-right mr mt10">';
-	                 	 result = result +'     <button class="btn btn-primary" type="button" id="assignbtnId" onClick="getEmails();">Add</button>';
+	                 	 result = result +'     <button class="btn btn-primary"  type="button" data-dismiss="modal" id="assignbtnId" onClick="getEmails();">Add</button>';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
 	                 	 result = result +'   </div>'; 
 	                 	 $("#userList").empty(); 
