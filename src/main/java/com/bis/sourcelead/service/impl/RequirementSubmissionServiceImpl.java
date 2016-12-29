@@ -421,7 +421,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 String fullName = null;
     	 if(!isNullOrEmpty(user.getLastName())){
-    		 fullName = user.getFirstName()+" "+user.getLastName();
+    		 StringBuilder sb = new StringBuilder();
+    		 fullName = sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
     	 }else{
     		 fullName = user.getFirstName();
     	 }
@@ -634,8 +635,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     	 }
     	 
     	 
-    	 
-    	 String fileName = "Submission"+SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode()+""+dateFormat.format(new Date())+".xls";
+    	 StringBuilder sb = new StringBuilder();
+    	 String fileName = sb.append("Submission").append(SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode()).append("").append(dateFormat.format(new Date())).append(".xls").toString();
 		 
 		 ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		 createExcelworkbook.write(bos);
@@ -677,7 +678,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder recepientBuilder = new StringBuilder();
+		 emailRecipient.setName(recepientBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		 
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -830,7 +832,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setToEmail(candidate.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 StringBuilder emailBuilder = new StringBuilder();
+		 emailMessage.setFromName(emailBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -845,27 +848,32 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }else{
 				 globalVarsMap.put("organizationName","--");
 			 }
-		 if(candidate.getFirstName()+""+candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()+""+candidate.getLastName())){
-			 globalVarsMap.put("applicantName", candidate.getFirstName()+""+candidate.getLastName());
+		 if(candidate.getFirstName() != null && candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()) && !"".equalsIgnoreCase(candidate.getLastName())){
+			 StringBuilder candidateBuild = new StringBuilder();
+			 globalVarsMap.put("applicantName", candidateBuild.append(candidate.getFirstName()).append("").append(candidate.getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("applicantName","--");
+				 globalVarsMap.put("applicantName",candidate.getFirstName());
 			 }
 		 if((requirement.getMinExp()!= null && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null && !"".equalsIgnoreCase(requirement.getMaxExp()))){
-			 globalVarsMap.put("experience", requirement.getMinExp()+"-"+requirement.getMaxExp()); 
+			 StringBuilder expBuild = new StringBuilder();
+			 globalVarsMap.put("experience",expBuild.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString()); 
 		 	 }else if(requirement.getMinExp()!= null && !"".equalsIgnoreCase(requirement.getMinExp())){
 			 globalVarsMap.put("experience", requirement.getMinExp());
 		 	 }else{
 			 globalVarsMap.put("experience","--");
 			 }
 		 if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState())){
-			 globalVarsMap.put("location", requirement.getCountry()+","+requirement.getState());
+			 StringBuilder locBuildeer = new StringBuilder();
+			 globalVarsMap.put("location", locBuildeer.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
 		 	}else if(requirement.getCity()!= null && !"".equalsIgnoreCase(requirement.getCity())){
-			 globalVarsMap.put("location", requirement.getCountry()+","+requirement.getState()+","+requirement.getCity());
+		 		StringBuilder locBuildeer = new StringBuilder();
+			 	globalVarsMap.put("location", locBuildeer.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
 		 	}else{
 			globalVarsMap.put("location","--");
 			}
 		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
-			 globalVarsMap.put("requirementRate", requirement.getCurrencyCode()+"-"+requirement.getRate()+"-"+requirement.getRateType());
+			 StringBuilder rateBuild = new StringBuilder();
+			 globalVarsMap.put("requirementRate", rateBuild.append(requirement.getCurrencyCode()).append("-").append(requirement.getRate()).append("-").append(requirement.getRateType()).toString());
 			 }else{
 				 globalVarsMap.put("requirementRate","--");
 			 }
@@ -880,7 +888,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 globalVarsMap.put("jobDescription","--");
 			 }
 		 if((loginUser.getFirstName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName())) && (loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getLastName()))){
-			 globalVarsMap.put("loginUserName", loginUser.getFirstName()+" "+loginUser.getLastName());
+			 StringBuilder nameBuild = new StringBuilder();
+			 globalVarsMap.put("loginUserName", nameBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 			 }
 		 else if(loginUser.getFirstName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName())){
 			 globalVarsMap.put("loginUserName", loginUser.getFirstName());
@@ -888,11 +897,15 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 globalVarsMap.put("loginUserName","--");
 			 }                       
 		
-		 globalVarsMap.put("acceptLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Accepted&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
+		 StringBuilder acceptBuilder = new StringBuilder();
+		 StringBuilder rejectBuilder = new StringBuilder();
+		 StringBuilder negotiateBuilder = new StringBuilder();
+		 
+		 globalVarsMap.put("acceptLink",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Accepted&submissionId=").append(submissionId).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
 	        
-	     globalVarsMap.put("rejectLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Rejected&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
+	     globalVarsMap.put("rejectLink",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Rejected&submissionId=").append(submissionId).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 
-	     globalVarsMap.put("negotiateRateLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Negotiate&submissionId="+submissionId+"' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>");
+	     globalVarsMap.put("negotiateRateLink",negotiateBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Negotiate&submissionId=").append(submissionId).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>").toString());
 
 
 	        
@@ -910,7 +923,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder recepBuild = new StringBuilder();
+		 emailRecipient.setName(recepBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -949,7 +963,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setToEmail(initiatorUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
-		 emailMessage.setFromName(candidate.getFirstName()+" "+candidate.getLastName());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString());
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -966,27 +981,32 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 globalVarsMap.put("requirementName","--");
 			 }
 		
-		 if(candidate.getFirstName()+""+candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()+""+candidate.getLastName())){
-			 globalVarsMap.put("applicantName", candidate.getFirstName()+""+candidate.getLastName());
+		 if(candidate.getFirstName() != null && candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()) && !"".equalsIgnoreCase(candidate.getLastName())){
+			 StringBuilder candBuild = new StringBuilder();
+			 globalVarsMap.put("applicantName", candBuild.append(candidate.getFirstName()).append("").append(candidate.getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("applicantName","--");
+				 globalVarsMap.put("applicantName",candidate.getFirstName());
 			 }
 		 if((requirement.getMinExp()!= null && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null && !"".equalsIgnoreCase(requirement.getMaxExp()))){
-			 globalVarsMap.put("experience", requirement.getMinExp()+"-"+requirement.getMaxExp()); 
+			 StringBuilder expBuild = new StringBuilder();
+			 globalVarsMap.put("experience", expBuild.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString()); 
 		 	 }else if(requirement.getMinExp()!= null && !"".equalsIgnoreCase(requirement.getMinExp())){
 			 globalVarsMap.put("experience", requirement.getMinExp());
 		 	 }else{
 			 globalVarsMap.put("experience","--");
 			 }
 		 if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState())){
-			 globalVarsMap.put("location", requirement.getCountry()+","+requirement.getState());
+			 StringBuilder locBuild = new StringBuilder();
+			 globalVarsMap.put("location", locBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
 		 	}else if(requirement.getCity()!= null && !"".equalsIgnoreCase(requirement.getCity())){
-			 globalVarsMap.put("location", requirement.getCountry()+","+requirement.getState()+","+requirement.getCity());
+		 		StringBuilder locBuild = new StringBuilder();
+		 		globalVarsMap.put("location", locBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
 		 	}else{
 			globalVarsMap.put("location","--");
 			}
 		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
-			 globalVarsMap.put("requirementRate", requirement.getCurrencyCode()+"-"+requirement.getRate()+"-"+requirement.getRateType());
+			 StringBuilder rateBuild = new StringBuilder();
+			 globalVarsMap.put("requirementRate", rateBuild.append(requirement.getCurrencyCode()).append("-").append(requirement.getRate()).append("-").append(requirement.getRateType()).toString());
 			 }else{
 				 globalVarsMap.put("requirementRate","--");
 			 }
@@ -1005,7 +1025,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder receipBuild = new StringBuilder();
+		 emailRecipient.setName(receipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -1045,7 +1066,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setToEmail(initiatorUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
-		 emailMessage.setFromName(candidate.getFirstName()+" "+candidate.getLastName());
+		 StringBuilder emailBuild = new StringBuilder();
+		 emailMessage.setFromName(emailBuild.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString());
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1062,27 +1084,32 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 globalVarsMap.put("requirementName","--");
 			 }
 		
-		 if(candidate.getFirstName()+""+candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()+""+candidate.getLastName())){
-			 globalVarsMap.put("applicantName", candidate.getFirstName()+""+candidate.getLastName());
+		 if(candidate.getFirstName() != null && candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()) && !"".equalsIgnoreCase(candidate.getLastName())){
+			 StringBuilder candiBuild = new StringBuilder();
+			 globalVarsMap.put("applicantName", candiBuild.append(candidate.getFirstName()).append("").append(candidate.getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("applicantName","--");
+				 globalVarsMap.put("applicantName",candidate.getFirstName());
 			 }
 		 if((requirement.getMinExp()!= null && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null && !"".equalsIgnoreCase(requirement.getMaxExp()))){
-			 globalVarsMap.put("experience", requirement.getMinExp()+"-"+requirement.getMaxExp()); 
+			 StringBuilder expBuild = new StringBuilder();
+			 globalVarsMap.put("experience", expBuild.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString()); 
 		 	 }else if(requirement.getMinExp()!= null && !"".equalsIgnoreCase(requirement.getMinExp())){
 			 globalVarsMap.put("experience", requirement.getMinExp());
 		 	 }else{
 			 globalVarsMap.put("experience","--");
 			 }
 		 if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState())){
-			 globalVarsMap.put("location", requirement.getCountry()+","+requirement.getState());
+			 StringBuilder locBuild = new StringBuilder();
+			 globalVarsMap.put("location", locBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
 		 	}else if(requirement.getCity()!= null && !"".equalsIgnoreCase(requirement.getCity())){
-			 globalVarsMap.put("location", requirement.getCountry()+","+requirement.getState()+","+requirement.getCity());
+		 		StringBuilder locBuild = new StringBuilder();
+			 globalVarsMap.put("location", locBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
 		 	}else{
 			globalVarsMap.put("location","--");
 			}
 		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
-			 globalVarsMap.put("requirementRate", requirement.getCurrencyCode()+"-"+requirement.getRate()+"-"+requirement.getRateType());
+			 StringBuilder rateBuild = new StringBuilder();
+			 globalVarsMap.put("requirementRate", rateBuild.append(requirement.getCurrencyCode()).append("-").append(requirement.getRate()).append("-").append(requirement.getRateType()).toString());
 			 }else{
 				 globalVarsMap.put("requirementRate","--");
 			 }
@@ -1105,7 +1132,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder mailBuild = new StringBuilder();
+		 emailRecipient.setName(mailBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -1145,7 +1173,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setToEmail(initiatorUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
-		 emailMessage.setFromName(candidate.getFirstName()+" "+candidate.getLastName());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString());
 		 
 		 
 		 
@@ -1164,18 +1193,21 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 globalVarsMap.put("requirementName","--");
 			 }
 		
-		 if(candidate.getFirstName()+""+candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()+""+candidate.getLastName())){
-			 globalVarsMap.put("applicantName", candidate.getFirstName()+""+candidate.getLastName());
+		 if(candidate.getFirstName() != null && candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()) && !"".equalsIgnoreCase(candidate.getLastName())){
+			 StringBuilder sb = new StringBuilder();
+			 globalVarsMap.put("applicantName", sb.append(candidate.getFirstName()).append("").append(candidate.getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("applicantName","--");
+				 globalVarsMap.put("applicantName",candidate.getFirstName());
 			 }
 		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
-			 globalVarsMap.put("requirementRate", requirement.getCurrencyCode()+"-"+requirement.getRate()+"-"+requirement.getRateType());
+			 StringBuilder sb = new StringBuilder();
+			 globalVarsMap.put("requirementRate", sb.append(requirement.getCurrencyCode()).append("-").append(requirement.getRate()).append("-").append(requirement.getRateType()).toString());
 			 }else{
 				 globalVarsMap.put("requirementRate","--");
 			 }
 		 if(negotiation.getCurrentRate() != null && !"".equalsIgnoreCase(negotiation.getCurrentRate())){
-			 globalVarsMap.put("applicantRate",negotiation.getCurrentRate()+" "+negotiation.getCurrentRateType());
+			 StringBuilder sb = new StringBuilder();
+			 globalVarsMap.put("applicantRate",sb.append(negotiation.getCurrentRate()).append(" ").append(negotiation.getCurrentRateType()).toString());
 			 }else{
 				 globalVarsMap.put("applicantRate","--");
 			 }
@@ -1187,7 +1219,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder receipBuild = new StringBuilder();
+		 emailRecipient.setName(receipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -1293,7 +1326,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }
 		 
    	 if(!isNullOrEmpty(user.getLastName())){
-   		 fullName = user.getFirstName()+" "+user.getLastName();
+   		StringBuilder sb = new StringBuilder();
+   		 fullName = sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
    	 }else{
    		 fullName = user.getFirstName();
    	 }
@@ -1478,7 +1512,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		
 		emailMessage.setCreatedBy(user.getUserCode());
 		emailMessage.setFromEmail(user.getEmail());
-		emailMessage.setFromName(user.getFirstName() + "" + user.getLastName());
+		StringBuilder emailBuild = new StringBuilder();
+		emailMessage.setFromName(emailBuild.append(user.getFirstName()).append("").append(user.getLastName()).toString());
 		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 
 		if (jsonObj.has("toMailId")) {
@@ -1584,7 +1619,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	
 	
 	private SubmissionXls saveSubmissionTracker(DateFormat dateFormat, Workbook createExcelworkbook, Requirement requirement, User user) throws Exception {
-		String fileName = "Submission"+SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode()+""+dateFormat.format(new Date())+".xls";
+		StringBuilder sb = new StringBuilder();
+		String fileName = sb.append("Submission").append(SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode()).append("").append(dateFormat.format(new Date())).append(".xls").toString();
 		 String UUID = null;
 		 ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		 createExcelworkbook.write(bos);
@@ -1617,7 +1653,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
  * @throws Exception
  */
 	private Sheet createSubmissionTracker(Org org, String fullName, String[] submissionIds, String requirementName, Workbook createExcelworkbook, Row writeRow, DateFormat dateFormat) throws NumberFormatException, Exception {
-		 Sheet createExcelsheet = createExcelworkbook.createSheet("submissions "+dateFormat.format(new Date()));
+		StringBuilder sb = new StringBuilder(); 
+		Sheet createExcelsheet = createExcelworkbook.createSheet(sb.append("submissions ").append(dateFormat.format(new Date())).toString());
 		 
 		 CellStyle style = createExcelworkbook.createCellStyle();
 	     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
@@ -1718,7 +1755,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setToEmail(candidate.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(user.getUserCode());
-		 emailMessage.setFromName(user.getFirstName()+" "+user.getLastName());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		 
 		 
 		 
@@ -1726,7 +1764,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 
 		 if(user.getFirstName()!= null && !"".equalsIgnoreCase(user.getFirstName()) && user.getLastName()!= null && !"".equalsIgnoreCase(user.getLastName())){
-			 globalVarsMap.put("userName", user.getFirstName()+" "+user.getLastName());
+			 StringBuilder sb = new StringBuilder();
+			 globalVarsMap.put("userName", sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 			 }else{
 				 globalVarsMap.put("userName",user.getFirstName());
 			 }
@@ -1737,10 +1776,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 globalVarsMap.put("requirementName","--");
 			 }
 		
-		 if(candidate.getFirstName()+""+candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()+""+candidate.getLastName())){
-			 globalVarsMap.put("applicantName", candidate.getFirstName()+""+candidate.getLastName());
+		 if(candidate.getFirstName()!= null && candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()) && !"".equalsIgnoreCase(candidate.getLastName())){
+			 StringBuilder candiBuild = new StringBuilder();
+			 globalVarsMap.put("applicantName", candiBuild.append(candidate.getFirstName()).append("").append(candidate.getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("applicantName","--");
+				 globalVarsMap.put("applicantName",candidate.getFirstName());
 			 }
 		 if(orgLocations.getOrg().getOrgName()!= null && !"".equalsIgnoreCase(orgLocations.getOrg().getOrgName())){
 			 globalVarsMap.put("organizationName", orgLocations.getOrg().getOrgName());
@@ -1755,7 +1795,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder recipBuild = new StringBuilder();
+		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -1792,7 +1833,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setToEmail(pastUser.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(users.getUserCode());
-		 emailMessage.setFromName(users.getFirstName()+" "+users.getLastName());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(users.getFirstName()).append(" ").append(users.getLastName()).toString());
 		 
 		 
 		 
@@ -1800,7 +1842,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 
 		 if(users.getFirstName()!= null && !"".equalsIgnoreCase(users.getFirstName()) && users.getLastName()!= null && !"".equalsIgnoreCase(users.getLastName())){
-			 globalVarsMap.put("loginUser", users.getFirstName()+" "+users.getLastName());
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("loginUser", userBuild.append(users.getFirstName()).append(" ").append(users.getLastName()).toString());
 			 }else{
 				 globalVarsMap.put("loginUser",users.getFirstName());
 			 }
@@ -1811,10 +1854,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 globalVarsMap.put("requirementName","--");
 			 }
 		
-		 if(candidate.getFirstName()+""+candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()+""+candidate.getLastName())){
-			 globalVarsMap.put("candidateName", candidate.getFirstName()+""+candidate.getLastName());
+		 if(candidate.getFirstName() != null && candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()) && !"".equalsIgnoreCase(candidate.getLastName())){
+			 StringBuilder candiBuild = new StringBuilder();
+			 globalVarsMap.put("candidateName", candiBuild.append(candidate.getFirstName()).append("").append(candidate.getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("candidateName","--");
+				 globalVarsMap.put("candidateName",candidate.getFirstName());
 			 }
 		 if(loginOrg.getOrgName() != null && !"".equalsIgnoreCase(loginOrg.getOrgName())){
 			 globalVarsMap.put("loginOrgName", loginOrg.getOrgName());
@@ -1829,7 +1873,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 StringBuilder recipBuild = new StringBuilder();
+ 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -1863,6 +1908,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
+
 	public void sendEmailtoRequirementManager(Org loginOrg, User users,RequirementSubmission requirementSubmission,
 			 OrgLocations loginOrgLocation) throws Exception {
 		
@@ -1912,15 +1958,65 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 globalVarsMap.put("ApplicantRate","--");
 		 }
 		 
+
+	public void userAcceptRateNegotiation(Requirement requirement, User user, Candidate candidate,
+			OrgLocations orgLocations, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation) throws Exception {
+
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(candidate.getFirstName());
+		 emailMessage.setLastName(candidate.getLastName());
+		 emailMessage.setToEmail(candidate.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setCreatedBy(user.getUserCode());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+
+		 if(requirement.getJobTitle()!= null && !"".equalsIgnoreCase(requirement.getJobTitle())){
+			 globalVarsMap.put("requirementName", requirement.getJobTitle());
+			 }else{
+				 globalVarsMap.put("requirementName","--");
+			 }
+		 if(candidate.getFirstName() != null && candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()) && !"".equalsIgnoreCase(candidate.getLastName())){
+			 StringBuilder candBuild = new StringBuilder();
+			 globalVarsMap.put("applicantName", candBuild.append(candidate.getFirstName()).append("").append(candidate.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("applicantName",candidate.getFirstName());
+			 }
+		 if(user.getFirstName()!= null && !"".equalsIgnoreCase(user.getFirstName()) && user.getLastName()!= null && !"".equalsIgnoreCase(user.getLastName())){
+			 StringBuilder sb = new StringBuilder();
+			 globalVarsMap.put("userName", sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("userName",user.getFirstName());
+			 }
+		 if(requirementRateSubmissionNegotiation.getCurrentRate() != null && !"".equalsIgnoreCase(requirementRateSubmissionNegotiation.getCurrentRate()) && requirementRateSubmissionNegotiation.getCurrentRateType() != null && !"".equalsIgnoreCase(requirementRateSubmissionNegotiation.getCurrentRateType())){
+			 StringBuilder sb = new StringBuilder();
+			 globalVarsMap.put("finalRate", sb.append(requirementRateSubmissionNegotiation.getCurrentRate()).append(" / ").append(requirementRateSubmissionNegotiation.getCurrentRateType()).toString());
+			 }else{
+				 globalVarsMap.put("finalRate","--");
+			 }
+
 		 //setting the Recipient information
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
+
 		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Applicant_Acceptance_By_Manager_Of_Requirement,Constants.ENTITY_TYPE_EMAIL);
+
+
+		 StringBuilder receipBuild = new StringBuilder();
+		 emailRecipient.setName(receipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+		 emailRecipientList.add(emailRecipient);
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_ACCEPT_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
+		
 
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
@@ -1928,14 +2024,17 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 		 String url = "";
 		 
+
 		/*String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		notificationScenario.setBody(notificationbody);*/
 		 
+
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		  
+
 		
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
@@ -2031,6 +2130,16 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		
 		return requirementSubmissionDao.getApplicantsByStatus(orgLocationsId, status);
 	}
+
+		// User toUser = orgLocations.getUser();
+		 
+		// String actionLink="";
+		//calling the sendEmail method of emailScenerioUtil
+		// emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		
+	}
+
+
 	
 
 }

@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -633,7 +632,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public List<Requirement> getAllRequirementTeplateJobsByOrgLocationId(Long orgLocationId, User user)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Requirement req where req.isTemplate = 'Y' and req.orgLocationId.id =:orgLocationId and req.status <>'0'";
+		String query = "from Requirement req where req.isTemplate = 'Y' and req.orgLocationId.id =:orgLocationId and req.status <>'0'  ORDER BY req.id DESC ";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
 

@@ -132,8 +132,7 @@ public class RequirementOfferRestController {
 		for (RequirementSubmission requirementSubmission : shortListCandidatesList) {
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 			if(requirementSubmissionTemplateFields.getLastName() != null){
-				 StringBuilder canNameSB = new StringBuilder();
-				requirementSubmission.setCandidateName(canNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
+				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName()+" "+requirementSubmissionTemplateFields.getLastName());
 			}else{
 				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
 			}

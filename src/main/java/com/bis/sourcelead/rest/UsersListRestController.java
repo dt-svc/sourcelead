@@ -461,9 +461,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 						List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId, orgLocations.getId(), "Client");
 						if(null != orgSpocList){
 							for(OrgSpoc orgSpoc : orgSpocList){
-								if(orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()){
+								if(orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 									orgSpoc.setOwnerUser(clientOwnerOrUser);
-								}else if(orgSpoc.getOrgRelations().getLocationId().getId() != orgLocations.getId()){
+								}else if(orgSpoc.getOrgRelations().getLocationId().getId().longValue() != orgLocations.getId().longValue()){
 									orgSpoc.setSpocUser(clientOwnerOrUser);
 								}
 								orgSpoc.setUpdatedBy(user.getUserCode());
@@ -480,9 +480,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListRestContro
 						List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId, orgLocations.getId(), "Vendor");
 						if(null != orgSpocList){
 							for(OrgSpoc orgSpoc : orgSpocList){
-								if(orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()){
+								if(orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 									orgSpoc.setOwnerUser(vendorOwnerOrUser);
-								}else if(orgSpoc.getOrgRelations().getLocationId().getId() != orgLocations.getId()){
+								}else if(orgSpoc.getOrgRelations().getLocationId().getId().longValue() != orgLocations.getId().longValue()){
 									orgSpoc.setSpocUser(vendorOwnerOrUser);
 								}
 								orgSpoc.setUpdatedBy(user.getUserCode());

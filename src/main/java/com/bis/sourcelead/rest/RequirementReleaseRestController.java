@@ -414,13 +414,13 @@ public class RequirementReleaseRestController {
 			requirement.setOrgLocationId(orgSpoc.getResponderLocationId());
 		}*/
 		
-		if(orgSpoc != null && orgSpoc.getResponderLocationId().getId() == loginOrgLocation.getId()){
+		if(orgSpoc != null && orgSpoc.getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
 			requirement.setOrgLocationId(orgSpoc.getInitiatorLocationId());
 			requirement.setManagerUserId(orgSpoc.getOwnerUser());
 			requirement.setUpdatedBy(orgSpoc.getOwnerUser().getUserCode());
 			requirement.setCreatedBy(orgSpoc.getOwnerUser().getUserCode());
 		}
-		if(orgSpoc != null && orgSpoc.getInitiatorLocationId().getId() == loginOrgLocation.getId() ){
+		if(orgSpoc != null && orgSpoc.getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
 			requirement.setOrgLocationId(orgSpoc.getResponderLocationId());
 			requirement.setManagerUserId(orgSpoc.getSpocUser());
 			requirement.setUpdatedBy(orgSpoc.getSpocUser().getUserCode());

@@ -140,10 +140,11 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 		
 		List<TeamMembers> teamMembersList = teamMemberDao.getTeamMembersListByLocationId(orgLocationId);
 		for(TeamMembers teamMembers :teamMembersList){
-			
+			StringBuilder sb = new StringBuilder();
+			StringBuilder membersb = new StringBuilder();
 			teamMembers.setTeamName(teamMembers.getTeamId().getName());
-			teamMembers.setOwnerName(teamMembers.getTeamId().getOwnerUserId().getFirstName() +""+teamMembers.getTeamId().getOwnerUserId().getLastName() );
-			teamMembers.setMemberName(teamMembers.getMemberUserId().getFirstName()+""+teamMembers.getMemberUserId().getLastName());
+			teamMembers.setOwnerName(sb.append(teamMembers.getTeamId().getOwnerUserId().getFirstName()).append(" ").append(teamMembers.getTeamId().getOwnerUserId().getLastName()).toString());
+			teamMembers.setMemberName(membersb.append(teamMembers.getMemberUserId().getFirstName()).append(" ").append(teamMembers.getMemberUserId().getLastName()).toString());
 			teamMembers.setEmail(teamMembers.getEmail());
 		}
 		return teamMembersList;

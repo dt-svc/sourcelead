@@ -114,6 +114,7 @@ public interface RequirementSubmissionService {
 
 	List<RequirementSubmission> duplicateCandidateCountList(Long requirementId, User user,
 			OrgLocations loginOrgLocation)throws Exception;
+
 	
 	List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, String status);
 	
@@ -123,4 +124,8 @@ public interface RequirementSubmissionService {
 	public void sendEmailtoApplicant(Org loginOrg, User users,RequirementSubmission requirementSubmission,
 			 OrgLocations loginOrgLocation) throws Exception;
 		
+
+
+	void userAcceptRateNegotiation(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation) throws Exception;
+
 }

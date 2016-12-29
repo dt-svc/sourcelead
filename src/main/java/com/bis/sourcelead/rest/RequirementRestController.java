@@ -321,7 +321,7 @@ public class RequirementRestController {
 		    		    for(RequirementApproverHierarchy rah :list1){
 			    		      rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 			    		      rah.setUpdatedBy(loginUser.getUserCode());
-			    		      if(rah.getApproverUserId().getId() == loginUser.getId()){
+			    		      if(rah.getApproverUserId().getId().longValue() == loginUser.getId().longValue()){
 			    		    	  requirementApproverHierarchy.setRejectedReason(reason);
 			    		      }
 							  rah.setUpdatedDate(commonUtil.currentDate());
@@ -596,6 +596,29 @@ public class RequirementRestController {
 				Boolean validatejobName = requirementService.validateRequirementTitle(templateName,orgLocation.getId());
 				return validatejobName.toString();
 		    }
+	 
+	 
+	 @RequestMapping(value = "/terminateRequirementTemplate", method = RequestMethod.POST)
+		public @ResponseBody String terminateRequirementTemplate(String requirementId, String status, HttpServletRequest request) throws Exception {
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			Requirement rt =  requirementService.getRequirementTemplateByRequirementId(Long.parseLong(requirementId),orgLocation.getId());
+			if(rt != null){
+				
+				if(status.equalsIgnoreCase("remove")){
+					rt.setStatus(Constants.MEMBER_IN_ACTIVE);
+				}else if(status.equalsIgnoreCase("reActive")){
+					rt.setStatus(Constants.MEMBER_ACTIVE);
+				}
+				
+				rt.setUpdatedBy(user.getUserCode());
+				rt.setUpdatedDate(commonUtil.currentDate());
+				requirementService.updateRequirementTemplate(rt);
+			}
+			return "success";
+		}
 	 
 		
 }

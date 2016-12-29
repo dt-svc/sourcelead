@@ -55,7 +55,8 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 			userMailBox.setOrgLocationId(mailBox.getOrgLocationId());
 			userMailBox.setIsFavourite(0);
 			userMailBox.setUuid(SourceLeadRandomCodeHelper.generateUUID());
-			userMailBox.setSubject("Rep: "+mailBox.getSubject());
+			StringBuilder sb = new StringBuilder();
+			userMailBox.setSubject(sb.append("Rep: ").append(mailBox.getSubject()).toString());
 			
 			if(jsonObj.has("phone") && !isNullOrEmpty(jsonObj.getString("phone"))){
 				userMailBox.setPhno(jsonObj.getString("phone"));
