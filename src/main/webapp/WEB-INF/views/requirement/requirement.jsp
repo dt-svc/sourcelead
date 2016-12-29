@@ -111,7 +111,8 @@ $(document).ready(function() {
 			var jobType = '${requirement.jobType}';
 			if(jobType !=null && jobType != "" && jobType != "undefined" && jobType == 'Other'){
 				  document.getElementById("jobTypeDiv").style.display="";
-				  $("#jobOtherType").attr("data-validation", "required validate_Space validate_length length2-250");
+				  $("#jobOtherType").attr("data-validation-optional", "true");
+				  $("#jobOtherType").attr("data-validation", "validate_Space validate_length length2-250");
 			}else{
 				document.getElementById("jobTypeDiv").style.display="none";
 				  $("#jobOtherType").attr("data-validation-optional", "true");
@@ -380,10 +381,10 @@ $(document).ready(function () {
                     <option value="">Rate Per</option>
                     <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-                    <option ${requirement.rateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
+                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
                     <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-                    <option ${requirement.rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
+                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
                     <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
@@ -585,11 +586,11 @@ $(document).ready(function () {
 			                <option value="">Rate Per</option>
 		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 		                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-		                    <option ${requirement.clientRateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
-		                    <option ${requirement.clientRateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+		                    <option ${requirement.clientRateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+		                    <option ${requirement.clientRateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-		                    <option ${requirement.clientRateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-		                    <option ${requirement.clientRateType  == 'others' ? 'selected' : ''}>Yearly</option>
+		                    <option ${requirement.clientRateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+		                    <option ${requirement.clientRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
 	                  </select>
            		</div>
               </div>
@@ -1959,28 +1960,31 @@ function getTeamMembers(){
 
 <script>
 function getIsClientVal(){
-$("#selectContact").empty().trigger('chosen:updated');
-$("#clientSubmissionForm").empty().trigger('chosen:updated');
+/* $("#selectContact").empty().trigger('chosen:updated');
+$("#clientSubmissionForm").empty().trigger('chosen:updated'); */
 var existingValue = document.getElementById('isClientJob').value;
 
 	if (document.getElementById('isClientJob').checked){
 		 $("#isClientJob").val('Y');
 		 
-		 $("#addClientId").val('');
+		// $("#addClientId").val('');
 		 $('#addClientId').trigger("chosen:updated");
 		 
-		 $("#selectContact").find('.chosen-results').val('').trigger('chosen:updated');
+		 $("#selectContact").trigger('chosen:updated');
 		
-		 
-		 $('select[name=clientCurrencyCodgetIsClientVale]').val(1);
+		 $("#clientCurrencyCodge").trigger('chosen:updated');
+
+		 /* $('select[name=clientCurrencyCodgetIsClientVale]').val(1);
 		 $('.selectpicker').selectpicker('refresh');
+		  */
+		 //$('#clientRate').val('');
 		 
-		 $('#clientRate').val('');
-		 
-		 $('select[name=clientRateType]').val(1);
+		$("#clientRateType").trigger('chosen:updated');
+
+		 /* $('select[name=clientRateType]').val(1);
 		 $('.selectpicker').selectpicker('refresh');
-		 
-		 $("#clientSubmissionForm").val('');
+		  */
+		// $("#clientSubmissionForm").val('');
 		 $('#clientSubmissionForm').trigger("chosen:updated");
 		 existingValue = document.getElementById('isClientJob').value;
 	}else {
@@ -1989,12 +1993,18 @@ var existingValue = document.getElementById('isClientJob').value;
 		 $("#addClientId").val('');
 		 $('#addClientId').trigger("chosen:updated");
 		 
-		 $("#selectContact").find('.chosen-results').val('').trigger('chosen:updated');
+		// $("#selectContact").find('.chosen-results').val('').trigger('chosen:updated');
+		
+		$("#selectContact").val('');
+		$('#selectContact').trigger("chosen:updated");
 		
 		 
-		 $('select[name=clientCurrencyCodgetIsClientVale]').val(1);
+		/*  $('select[name=clientCurrencyCodgetIsClientVale]').val(1);
 		 $('.selectpicker').selectpicker('refresh');
-		 
+		  */
+		  
+		  $("#clientCurrencyCode").val('');
+			
 		 $('#clientRate').val('');
 		 
 		 $('select[name=clientRateType]').val(1);
@@ -2209,8 +2219,9 @@ function removeEditButton() {
 function getJobType(jobType){
 	var existingJobType = '${requirement.jobType}';
 	if(jobType.value == 'Other'){
-		  document.getElementById("jobTypeDiv").style.display="";
-		  $("#jobOtherType").attr("data-validation", "required validate_Space validate_length length2-250");
+		 document.getElementById("jobTypeDiv").style.display="";
+		  $("#jobOtherType").attr("data-validation-optional", "true");
+		  $("#jobOtherType").attr("data-validation", "validate_Space validate_length length2-250");
 	}else{
 		document.getElementById("jobTypeDiv").style.display="none";
 		  $("#jobOtherType").attr("data-validation-optional", "true");
