@@ -655,11 +655,11 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "";
 			List<RequirementSubmission> requirementSubmissionList = null;
-			if("accepted".equalsIgnoreCase(status)){
-					query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:orgLocations"; 
+			if("accepted".equalsIgnoreCase(status)){     
+					query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:orgLocations and reqSub.submissionRateStatus = 'ACCEPTED' "; 
 					requirementSubmissionList =session.createQuery(query).setLong("orgLocations", orgLocationsId).setCacheable(true).list(); 
 			}else if("requestSent".equalsIgnoreCase(status)){
-					query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:orgLocations"; 
+					query = "from RequirementSubmission reqSub where reqSub.orgLocations.id =:orgLocations and reqSub.submissionRateStatus = 'REQUEST' "; 
 					requirementSubmissionList =session.createQuery(query).setLong("orgLocations", orgLocationsId).setCacheable(true).list(); 
 			}
 			return requirementSubmissionList;

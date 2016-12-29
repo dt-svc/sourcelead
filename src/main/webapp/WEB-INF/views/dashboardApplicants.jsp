@@ -43,7 +43,7 @@
 
 <script>
 window.onload = ApplicantAuthorization('accepted');
-function ApplicantAuthorization(dateRange){
+function ApplicantAuthorization(status){
 	var resultToday ="";
 	var sourceleadUrl = '${sourceleadUrl}';
 	$("#accepted").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
@@ -99,12 +99,12 @@ function ApplicantAuthorization(dateRange){
 	            					resultToday = resultToday+'	 </tbody>';
 	            					resultToday = resultToday+'	</table>';											
 	            			}
-	            	        if(dateRange == 'accepted'){
+	            	        if(status == 'accepted'){
 	            	            $("#accepted").append(resultToday);
 	            	            applicantsPagination();
 	            	            $("#accepted").addClass("tab-pane fade in active");
 	            				$("#requestSent").removeClass("tab-pane fade in active");
-	            	        }else if(dateRange == 'requestSent'){
+	            	        }else if(status == 'requestSent'){
 	            				$("#requestSent").append(resultToday);
 	            				applicantsPagination();
 	            				$("#accepted").removeClass("tab-pane fade in active");
