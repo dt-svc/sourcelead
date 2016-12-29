@@ -36,9 +36,6 @@ public class RequirementSubmissionHistory implements Serializable{
     @JoinColumn(name="INTERVIEWER_ID", nullable=false )        
     private RequirementInterviewer interviewerId;
 
-    @JoinColumn(name="CANDIDATE_ID", nullable=false )        
-    private Candidate candidateId;
-
 	@Column(name = "FROM_STAGE")
 	private String fromStage;
 	
