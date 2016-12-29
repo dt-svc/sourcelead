@@ -244,11 +244,19 @@ $.ajax({
 			                     result = result +"<tbody>"; 
 			                     for (var i = 0; i < json.length; i++) { 
 			                    	 var opt = json[i];  
+			                    	 var skills  =  "";
+			                    	 
+			                    	 if(opt.skills == 'undefined' || opt.skills == null || opt.skills == ''){
+			                    		 skills = "-------"
+			                    	 }else{
+			                    		 skills = opt.skills;
+			                    	 }
+			                    	 
 			                    	 result  = result + ' <td><div><span>&nbsp;&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.id+'"  type="checkbox" name="candidatesIds[]" class="myCheckbox" ></span></div></td>';
 			                    	 result  = result + ' <td><div><span>'+opt.candidateName+'</span></div></td>';
 			                    	 result  = result + ' <td><div><span>'+opt.totalExp+'</span></div></td>';
 			                    	 result  = result + ' <td><div><span>'+opt.rate+'</span></div></td>';
-			                    	 result  = result + ' <td><div>'+opt.skills+'</div></td>';
+			                    	 result  = result + ' <td><div>'+skills+'</div></td>';
 			                    	
 			                    	 result  = result + '</tr>';
 			                      } 
