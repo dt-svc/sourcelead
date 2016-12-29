@@ -268,6 +268,7 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 		
 		
 		 String tempHTML = null;
+		 StringBuilder candidateSkills = null;
 		 
 		 tempHTML = "<table style='display:table-cell;vertical-align:middle'>";
 		 tempHTML = tempHTML+"<tr align='center'>";
@@ -286,14 +287,15 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 		 for(String email : candidateEmailsList){
 			 StringBuilder skills = new StringBuilder();
 			 List<CandidateSkills> skillsList = candidateSkillsService.getCandidateSkillsByCandidateId(email);
-			 if(skillsList != null){
+			 if(skillsList.size() > 0){
 				 for(CandidateSkills skill : skillsList){
 					 skills.append(skill.getName()).append(", ");
 				 }
+				 candidateSkills = new StringBuilder();
+				 candidateSkills.append(skills);
 			 }
 			 
-			 skills.toString();
-			 String candidateSkills =  skills.substring(0,skills.length()-2);
+			 
 			 
 			 StringBuilder candidateName = new StringBuilder();
 			 String experienceInYears = null;
@@ -368,7 +370,7 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+candidateName.toString()+"</td>";
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+totalExp.toString()+"</td>";
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+rate.toString()+"</td>";
-			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+candidateSkills+"</td>";
+			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+candidateSkills.toString()+"</td>";
 			 
 			 tempHTML = tempHTML+"</tr>";
 			 

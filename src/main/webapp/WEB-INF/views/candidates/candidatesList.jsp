@@ -930,10 +930,10 @@ function cancel(candidateId){
     <div class="vendor_wrap">
     
      <div class="pull-left cand-advsrch">
-			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
+			 <!--  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>
-			  </a>
+			  </a> -->
 			  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
 				  <div class="cand-advsrch-popup" >
 					  <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
