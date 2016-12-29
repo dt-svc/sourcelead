@@ -329,6 +329,7 @@ bottom:-14px;
            });
            //Adding Customized Skills to the list
            
+	       
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
