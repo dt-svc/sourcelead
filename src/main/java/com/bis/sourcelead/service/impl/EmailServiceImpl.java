@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -82,23 +84,31 @@ public class EmailServiceImpl implements EmailService {
 		   		 fullName = user.getFirstName();
 		   	 }
 				
-	   	 
+			
 			if(jsonObj.has("Toemails") && !isNullOrEmpty(jsonObj.getString("Toemails"))){
-				emails = jsonObj.getString("Toemails").replaceAll("\\[", "").replaceAll("\\]","");
-				emails = emails.replaceAll("\"", "");
-				String[] toEmails = emails.split(",");
-				 
-				for(int i=0 ; i< toEmails.length ; i++){
-					recipantsList.add(toEmails[i]);
-				}
 				
-				for(String email : recipantsList){
-					EmailRecipient emailRecipient = new EmailRecipient();
-					emailRecipient.setEmail(email);
-					emailRecipientList.add(emailRecipient);
-				}
-				
-				
+		    	  try{
+		    		   JSONArray jsonArray = jsonObj.getJSONArray("Toemails");
+		    		   emails = jsonArray.toString();
+		    	  }
+		    	  catch(JSONException e){
+		    		  emails= jsonObj.getString("Toemails");
+		    	  }
+		    	  if(emails != null){
+		    		  emails = emails.replaceAll("\\[", "").replaceAll("\\]","");
+		    		  emails = emails.replaceAll("\"", "");
+			  	      String[] toEmails = emails.split(",");
+			    	  for (String toEmail : toEmails) {
+			    		  recipantsList.add(toEmail);
+			    	  } 
+		    	  }
+		    	  
+		    	  for(String email : recipantsList){
+						EmailRecipient emailRecipient = new EmailRecipient();
+						emailRecipient.setEmail(email);
+						emailRecipientList.add(emailRecipient);
+					}
+		    	 
 			}
 			
 			 emailMessage.setCreatedBy(user.getUserCode());

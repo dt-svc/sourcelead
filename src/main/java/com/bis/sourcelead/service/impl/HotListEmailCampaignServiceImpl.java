@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -97,25 +100,43 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	   	 }
 			
 		if(jsonObj.has("Toemails") && !isNullOrEmpty(jsonObj.getString("Toemails"))){
-			emails = jsonObj.getString("Toemails").replaceAll("\\[", "").replaceAll("\\]","");
-			emails = emails.replaceAll("\"", "");
-			String[] toEmails = emails.split(",");
 			
-			for(int i=0 ; i< toEmails.length ; i++){
-				recipantsList.add(toEmails[i]);
-			}
+	    	  try{
+	    		   JSONArray jsonArray = jsonObj.getJSONArray("Toemails");
+	    		   emails = jsonArray.toString();
+	    	  }
+	    	  catch(JSONException e){
+	    		  emails= jsonObj.getString("Toemails");
+	    	  }
+	    	  if(emails != null){
+	    		  emails = emails.replaceAll("\\[", "").replaceAll("\\]","");
+	    		  emails = emails.replaceAll("\"", "");
+		  	      String[] toEmails = emails.split(",");
+		    	  for (String toEmail : toEmails) {
+		    		  recipantsList.add(toEmail);
+		    	  } 
+	    	  }
+	    	 
 		}
 		
 		
 		if(jsonObj.has("otherEmails") && !isNullOrEmpty(jsonObj.getString("otherEmails"))){
-			String othmails = jsonObj.getString("otherEmails").replaceAll("\\[", "").replaceAll("\\]","");
-			othmails = othmails.replaceAll("\"", "");
-			String[] otherEmails = othmails.split(",");
-			
-			for(int i=0 ; i< otherEmails.length ; i++){
-				recipantsList.add(otherEmails[i]);
-			}
-			
+			 String othmails = null;
+			 try{
+	    		   JSONArray jsonArray = jsonObj.getJSONArray("otherEmails");
+	    		   othmails = jsonArray.toString();
+	    	  }
+	    	  catch(JSONException e){
+	    		  othmails= jsonObj.getString("otherEmails");
+	    	  }
+			 if(othmails != null){
+				 othmails = othmails.replaceAll("\\[", "").replaceAll("\\]","");
+				 othmails = othmails.replaceAll("\"", "");
+		  	      String[] otherEmails = othmails.split(",");
+		    	  for (String otherEmail : otherEmails) {
+		    		  recipantsList.add(otherEmail);
+		    	  }
+			 }
 		}
 		
 		for(String email : recipantsList){
@@ -129,11 +150,21 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 emailMessage.setFromName(fullName);
 		
 		 if(jsonObj.has("hotlistcandidates") && !isNullOrEmpty(jsonObj.getString("hotlistcandidates"))){
-			 
-			    candidates = jsonObj.getString("hotlistcandidates").replaceAll("\\[", "").replaceAll("\\]","");
-			    candidates = candidates.replaceAll("\"", "");
-				
-				hotlistedCandidates = candidates.split(",");
+			    
+				 try{
+		    		   JSONArray jsonArray = jsonObj.getJSONArray("hotlistcandidates");
+		    		   candidates = jsonArray.toString();
+		    	  }
+		    	  catch(JSONException e){
+		    		  candidates= jsonObj.getString("hotlistcandidates");
+		    	  }
+				 if(candidates != null){
+					 candidates = candidates.replaceAll("\\[", "").replaceAll("\\]","");
+					 candidates = candidates.replaceAll("\"", "");
+			  	      hotlistedCandidates = candidates.split(",");
+				 }
+				 
+				 
 		 }
 		 
 		String table =  getHotListCandidatesTable(hotlistedCandidates,jsonObj.getString("namefield"));
@@ -238,6 +269,7 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 		
 		 String tempHTML = null;
 		 
+		 
 		 tempHTML = "<table style='display:table-cell;vertical-align:middle'>";
 		 tempHTML = tempHTML+"<tr align='center'>";
 		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='20%' bgcolor='#5bace8'><span>Name<span></th>";
@@ -254,15 +286,18 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 		 
 		 for(String email : candidateEmailsList){
 			 StringBuilder skills = new StringBuilder();
+			 StringBuilder candidateSkills = new StringBuilder();
 			 List<CandidateSkills> skillsList = candidateSkillsService.getCandidateSkillsByCandidateId(email);
-			 if(skillsList != null){
+			 if(skillsList.size() > 0){
 				 for(CandidateSkills skill : skillsList){
 					 skills.append(skill.getName()).append(", ");
 				 }
+				 candidateSkills.append(skills);
+			 }else{
+				 candidateSkills.append("-----");
 			 }
 			 
-			 skills.toString();
-			 String candidateSkills =  skills.substring(0,skills.length()-2);
+			 
 			 
 			 StringBuilder candidateName = new StringBuilder();
 			 String experienceInYears = null;
@@ -337,7 +372,7 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+candidateName.toString()+"</td>";
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+totalExp.toString()+"</td>";
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+rate.toString()+"</td>";
-			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+candidateSkills+"</td>";
+			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+candidateSkills.toString()+"</td>";
 			 
 			 tempHTML = tempHTML+"</tr>";
 			 
