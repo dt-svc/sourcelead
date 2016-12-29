@@ -85,6 +85,7 @@
         </div>
 			<!-- mail side-bar ends -->
 			<div class="col-md-9" id="inbox">
+			<div id="mailLoading"></div>
 			 <div class="mail-box mail-content">
 			 <div class="mail-box-header">
               <h3 class="box-title" id="mailboxLabel"></h3>
@@ -129,6 +130,7 @@
 			
 			<div class="col-md-9" id="details">
 			 <div class="mail-box mail-content">
+			 <div id="mailContentLoading"></div>
 			 <div class="mail-widget">
               <div id="mailDetails"></div>
               </div>
@@ -163,6 +165,9 @@
 	  }
 	  
 	  setActiveTab(type)
+	  
+	  
+	  $("#mailLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
 	  
 	  $.ajax({
           type : "POST",
@@ -248,6 +253,7 @@
 	                 	 $("#mailDetails").empty(); 
 	                     $("#mailBoxList").append(result); 
 	                     pagination(); 
+	                     $("#mailLoading").removeAttr("style"); 
 			    	} 
                 }else{
  	    	         
@@ -266,6 +272,7 @@
 					$("#mailBoxList").empty();
 					$("#mailDetails").empty(); 
 				    $("#mailBoxList").append(result); 
+				    $("#mailLoading").removeAttr("style"); 
                }
          },
            
@@ -445,12 +452,14 @@ function refreshList(){
 
 <script>
 function getEmailDetails(uuid){
+	
 	var sourceleadUrl = '${sourceleadUrl}';
 	
 	 document.getElementById("details").style.display="";
 	 document.getElementById("inbox").style.display="none";
 	 
-	
+	 $("#mailContentLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
+	 
 	$.ajax({
 		type : "POST",
 		url : sourceleadUrl+"/getEmailDetails?${_csrf.parameterName}=${_csrf.token}&UUID="+uuid,
@@ -574,7 +583,7 @@ function getEmailDetails(uuid){
             $("#mailBoxList").empty(); 
             $("#mailDetails").empty(); 
             $("#mailDetails").append(result);
-            
+            $("#mailContentLoading").removeAttr("style"); 
    				  
 
              }
