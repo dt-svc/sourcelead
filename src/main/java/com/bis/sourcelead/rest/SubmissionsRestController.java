@@ -651,6 +651,15 @@ public class SubmissionsRestController {
 			requirement.setMailBody(sb.toString());
 
 		}
+		if(requirement.getIsClientJob().equalsIgnoreCase("Y") && requirement.getSpocId().getSpocUser() != null ){
+			sb.append("Hi,").append(" ").append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ").append(requirement.getSpocId().getSpocUser().getLastName()).toString();
+			sb.append("\n\n");
+			sb.append(fullName).append(" submitted the applicants for the").append(" ").append(requirement.getJobTitle()).append(".\n\n").toString();
+			sb.append("Total no.of submitted applicants :").append(submissions.length).append(".\n\n").toString();
+			sb.append("Best Regards,\n");
+			sb.append(fullName);
+			requirement.setMailBody(sb.toString());
+		}
 
 		resultJson = toJSON(requirement);
 		return resultJson;
