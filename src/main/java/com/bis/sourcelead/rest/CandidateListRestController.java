@@ -179,8 +179,8 @@ public class CandidateListRestController {
 			 BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 			 Long maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId());
-			 Integer shouldCount = 0;
 			 
+		   	    //Exclude Keyword
 				ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
 				if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
 					for(String keywd : excludeKeyWordArray){
@@ -193,19 +193,22 @@ public class CandidateListRestController {
 						
 					}
 				}
+				//Any Keyword
 				ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
 				anyKeyWordArray.removeAll(excludeKeyWordArray);
 				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
 					for(String keywd : anyKeyWordArray){
+						BoolQueryBuilder anyKeywordBoolQueryBuilder = QueryBuilders.boolQuery();
 						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
 						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
 							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								boolQueryBuilder.should(matchQueryBuilder);
+								anyKeywordBoolQueryBuilder.should(matchQueryBuilder);
 							}
+							boolQueryBuilder.must(anyKeywordBoolQueryBuilder);
 						}
-						
 					}
 				}
+				//All Keywords
 				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
 				allKeyWordArray.remove(anyKeyWordArray);
 				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
@@ -219,7 +222,7 @@ public class CandidateListRestController {
 						
 					}
 				}
-				
+				//Designation
 				ArrayList<String> designationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "designation");
 				designationArray.removeAll(excludeKeyWordArray);
 				if(designationArray != null && !designationArray.isEmpty()){
@@ -230,6 +233,7 @@ public class CandidateListRestController {
 					boolQueryBuilder.must(designationBoolQueryBuilder);
 				}
 				
+				//Notice_Period
 				ArrayList<String> noticePeriodArray = getSearchKeywordsFromChosenSelectField(jsonObj, "noticePeriod");
 				noticePeriodArray.removeAll(excludeKeyWordArray);
 				if(noticePeriodArray != null && !noticePeriodArray.isEmpty()){
@@ -240,10 +244,11 @@ public class CandidateListRestController {
 					boolQueryBuilder.must(noticePeriodBoolQueryBuilder);
 				}
 			
+				 //Country
 				if(jsonObj.has("country") && StringUtils.isNotEmpty(jsonObj.getString("country"))){
 					boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country")));
 			    }
-				
+				 //State
 				if(jsonObj.has("state") && StringUtils.isNotEmpty(jsonObj.getString("state"))){
 					boolQueryBuilder.must(QueryBuilders.matchQuery("state", jsonObj.getString("state")));
 			    }
@@ -252,18 +257,18 @@ public class CandidateListRestController {
 					boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
 			    }
 				
-				
-			   /*if(jsonObj.has("currency") && jsonObj.getString("currency") !=null){
-					boolQueryBuilder.should(QueryBuilders.matchQuery("expectedRateCurrencey", jsonObj.getString("currency")));
-			    } */
-				
-				
+				 //City
+			    if(jsonObj.has("currency") && jsonObj.getString("currency") !=null){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("expectedRateCurrencey", jsonObj.getString("currency")));
+			    } 
 				
 				
 				
-				/*if(jsonObj.has("rateType") && jsonObj.getString("rateType") !=null){
-					boolQueryBuilder.should(QueryBuilders.matchQuery("rateType", jsonObj.getString("rateType")));
-			    }*/
+				
+			   //Rate Type
+				if(jsonObj.has("rateType") && jsonObj.getString("rateType") !=null){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("rateType", jsonObj.getString("rateType")));
+			    }
 				//Exclude Educations
 				ArrayList<String> excludeEducationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeEducation");
 				excludeEducationArray.removeAll(excludeKeyWordArray);
@@ -353,8 +358,6 @@ public class CandidateListRestController {
 			 resultJson = commonUtil.toJSON(candList);
 			 return resultJson;
 	 }
-	 
-	 
 	 
 	 private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
 		 ArrayList<String> keyWordList = null;

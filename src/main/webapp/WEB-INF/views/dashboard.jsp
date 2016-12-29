@@ -289,8 +289,7 @@ overflow-x: auto;
 		    </c:if>
 	    <%-- </c:if> --%>
 	    
-	    <!-- commented by prasad salina on 16/12/16 -->
-	    <%--  <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT')">
+	   			 <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
 	   				  <div class='row'>
 						<div class='col-lg-12'> 
 						<div class='content-area clearfix'>
@@ -301,8 +300,7 @@ overflow-x: auto;
 						</div>
 						</div>
 					  </div> 
-					   </sec:authorize> --%>
-		<!-- commented by prasad salina on 16/12/16 -->	
+				 </sec:authorize> 
 				 
 	    <div class="clearfix row mb"> 
 	   	 <%--  <jsp:include page="dashboardTimesheetsApprovals.jsp"></jsp:include> --%>

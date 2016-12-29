@@ -930,10 +930,10 @@ function cancel(candidateId){
     <div class="vendor_wrap">
     
      <div class="pull-left cand-advsrch">
-			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
+			 <!--  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>
-			  </a>
+			  </a> -->
 			  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
 				  <div class="cand-advsrch-popup" >
 					  <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
@@ -979,15 +979,15 @@ function cancel(candidateId){
 									<label>Rate</label>
 									 <div class="input-group">
 										<div id="currencyDiv" class="input-group-btn selp-custom-min custommin">
-											<select class="selectpicker" field-name="Currency" id="currency" name="currency">
-												<option  disabled>Currency</option>
-												<option selected>INR</option>
-												<option>AUD</option>
-												<option>USD</option>
-												<option>GPB</option>
-												<option>SGD</option>
-												<option>EUR</option>
-											</select>
+										    <select class="selectpicker" name="currency" id="currency" field-name="Currency"  >
+										        <option value="">Currency</option>
+										        <option value="INR">INR</option>
+											    <option value="AUD">AUD</option>
+												<option value="USD">USD</option>
+												<option value="GPB">GPB</option>
+												<option value="SGD">SGD</option>
+												<option value="EUR">EUR</option>
+				                            </select>
 										</div>
 										 <div id="minRateDiv">
 									      <input type="text" id="minRate" name="minRate" field-name="Min Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  class="form-control input-sm" placeholder="Min Rate">
@@ -1001,16 +1001,16 @@ function cancel(candidateId){
 									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  placeholder="Max Rate">
 									</div>
 									<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
-										<select class="selectpicker" id="rateType" name="rateType" field-name="Rate Type">
-											<option selected disabled>Rate Type</option>
-											<option>Hourly</option>
-											<option>Weekly</option>
-											<option>Bi-weekly</option>
-											<option>Semi-Monthly</option>
-											<option>Monthly</option>
-											<option>Bi-Monthly</option>
-											<option>Yearly</option>
-										</select>
+									      <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
+									            <option value="">Rate Type</option>
+										        <option value="Hourly">Hourly</option>
+												<option value="Weekly">Weekly</option>
+												<option value="Bi-weekly">Bi-weekly</option>
+												<option value="Semi-Monthly">Semi-Monthly</option>
+												<option value="Monthly">Monthly</option>
+												<option value="Bi-Monthly">Bi-Monthly</option>
+												<option value="Yearly">Yearly</option>
+				                            </select> 
 									</div>
 								</div>
 							</div>
@@ -1043,11 +1043,11 @@ function cancel(candidateId){
 							  <label>Notice Period</label>
 							  <div class="clearfix">
 								 <select class="chosen-select" id="noticePeriod" name="noticePeriod" data-placeholder="Notice Period" multiple>
-						                 <option>Immediately available</option>
-						                 <option>15 Days</option>
-						                 <option>1 Month</option>
-						                 <option>2 Months</option>
-						                 <option>3 Months</option>
+						                 <option value="Immediately available">Immediately available</option>
+						                 <option value="15 Days">15 Days</option>
+						                 <option value="1 Month">1 Month</option>
+						                 <option value="2 Months">2 Months</option>
+						                 <option value="3 Months">3 Months</option>
 				                </select>
 							  </div>
 						  </div>
@@ -1055,13 +1055,13 @@ function cancel(candidateId){
 							  <label>Updated On</label>
 							  <div class="clearfix">
 								  <select class="chosen-select" id="updatedOn" name="updatedOn" data-placeholder="Updated On">
-									  <option>All</option>
-									  <option>1 Day Ago</option>
-									  <option>3 Days Ago</option>
-									  <option>1 Week Ago</option>
-									  <option>2 Weeks Ago</option>
-									  <option>1 Month Ago</option>
-									  <option>3 Months Ago</option>
+									  <option value="All">All</option>
+									  <option value="1 Day Ago">1 Day Ago</option>
+									  <option value="3 Days Ago">3 Days Ago</option>
+									  <option value="1 Week Ago">1 Week Ago</option>
+									  <option value="2 Weeks Ago">2 Weeks Ago</option>
+									  <option value="1 Month Ago">1 Month Ago</option>
+									  <option value="3 Months Ago">3 Months Ago</option>
 								  </select>
 							  </div>
 						  </div>

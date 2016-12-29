@@ -1952,7 +1952,8 @@ public class RequirementServiceImpl implements RequirementService {
 					
 					skillId = skillId.replaceAll("\"", "");
 					reqTemplate.setSkills(skillId);
-				
+				}else{
+					reqTemplate.setSkills(null);	
 				}
 				
 				if(jsonObj.has("education")){
@@ -1969,7 +1970,8 @@ public class RequirementServiceImpl implements RequirementService {
 					educationId = educationId.replaceAll("\"", "");
 					
 					reqTemplate.setEducation(educationId);
-				
+				 }else{
+					 reqTemplate.setEducation(null);
 				 }
 				reqTemplate.setStatus(Constants.MEMBER_ACTIVE);
 				reqTemplate.setCreatedDate(commonUtil.currentDate());
