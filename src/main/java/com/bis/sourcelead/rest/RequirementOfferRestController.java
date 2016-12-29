@@ -505,6 +505,7 @@ public class RequirementOfferRestController {
 		if(StringUtils.isNotEmpty(submissionId)){
 			RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
 			requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
+			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			requirementSubmissionService.sendEmailtoApplicant(loginOrg, user, requirementSubmission, orgLocation);
 		
 			 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
@@ -526,7 +527,31 @@ public class RequirementOfferRestController {
 			return model;
 			
 		}
+	}
+	
+	@RequestMapping(value = "/acceptRejectCandidateFromDashboard", method = RequestMethod.POST)
+	public @ResponseBody String acceptRejectCandidateFromDashboard(String submissionId,String status,HttpServletRequest request) throws Exception { 
+												 
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		
+		if(StringUtils.isNotEmpty(submissionId)){
+			RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
+			if(StringUtils.equalsIgnoreCase(status, "accept")){
+				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
+				requirementSubmission.setSubmissionRequestUser(user.getFirstName()+""+user.getLastName());
+				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+				requirementSubmissionService.sendEmailtoApplicant(loginOrg, user, requirementSubmission, orgLocation);
+			}
+			else if(StringUtils.equalsIgnoreCase(status, "reject")){
+				requirementSubmission.setSubmissionRequestUser(user.getFirstName()+""+user.getLastName());
+				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
+				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+			}
+		}
+		return "success";	  
 	}
 	
 }

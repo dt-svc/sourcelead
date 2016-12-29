@@ -42,7 +42,7 @@
 
 
 <script>
-window.onload = ApplicantAuthorization('accepted');
+window.onload = ApplicantAuthorization('requestSent');
 function ApplicantAuthorization(status){
 	var resultToday ="";
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -68,8 +68,13 @@ function ApplicantAuthorization(status){
 	            				resultToday = resultToday+'	    <th>Applicant</th>';
 	            				resultToday = resultToday+'	    <th>Requirement</th>';
 	            				resultToday = resultToday+'	    <th>Team Member</th>';
-	            				resultToday = resultToday+'	    <th>Accepted by</th>';
-	            				resultToday = resultToday+'	    <th>Accepted on</th>';
+	            				if(status == 'accepted'){
+	            					resultToday = resultToday+'	    <th>Accepted by</th>';
+		            				resultToday = resultToday+'	    <th>Accepted on</th>';
+	            				}
+	            				if(status == 'requestSent'){
+	            					resultToday = resultToday+'	    <th>Action</th>';
+	            				}
 	            				resultToday = resultToday+'	  </tr>';
 	            				resultToday = resultToday+'	</thead>';
 	            				resultToday = resultToday+'	<tbody>';
@@ -92,8 +97,18 @@ function ApplicantAuthorization(status){
                                       }else{
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';
                                       }
-                                      resultToday  = resultToday + '           <td><div><span>'+report.id+'</span></div></td>';
-                                      resultToday  = resultToday + '           <td><div><span>'+report.id+'</span></div></td>';
+                                      if(status == 'accepted'){
+                                    	  resultToday  = resultToday + '           <td><div><span>'+report.submissionRequestUser+'</span></div></td>';
+                                          resultToday  = resultToday + '           <td><div><span>'+report.updatedDate+'</span></div></td>';
+                                      }
+                                      if(status == 'requestSent'){ 
+                                    	    resultToday = resultToday +"<td>";
+                                    	    if(report.submissionRateStatus == 'REQUEST'){
+                                    	    	resultToday = resultToday + '<a  href="javascript:void(0)"  onClick="acceptRejectCandidateFromDashboard(\''+report.id+'\', \'accept\');"><i class="fa fa-check text-success"></i></a>';
+                                    	    	resultToday = resultToday + '<a  href="javascript:void(0)"   onClick="acceptRejectCandidateFromDashboard(\''+report.id+'\', \'rejected\');"><i class="fa fa-close text-danger"></i></a>';
+                                    	    }
+                                    	    result = result +"</td>";
+                                      }
                                       resultToday = resultToday+'     </tr>';
 	            			                                }
 	            					resultToday = resultToday+'	 </tbody>';
@@ -134,6 +149,28 @@ function ApplicantAuthorization(status){
 }
 </script>
 
+<script type="text/javascript">
+	function acceptRejectCandidateFromDashboard(submissionId, status){
+			 var sourceleadUrl = '${sourceleadUrl}';
+			 alert("one");
+			 $.ajax({
+					 type : "POST",
+					 url : sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,
+					 success : function(result) {
+								 if( result.indexOf('Sign In') >= 0){
+						    		location.replace(sourceleadUrl);
+						    	 }
+			            		 else if (result.indexOf('exception') >= 0) {
+			            			 location.replace(sourceleadUrl+"/errorPage");
+			            		 }
+			            		 else{
+			            			 $('#accpet-div').fadeOut();
+			            			 $('#reject').fadeOut();
+			            		 }
+					 },
+				}); 
+	}
+</script>
  
 <!--      
 <script>
