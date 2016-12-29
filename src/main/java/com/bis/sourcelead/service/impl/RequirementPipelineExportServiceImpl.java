@@ -54,7 +54,8 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		if (!"pdf".equalsIgnoreCase(exportType)) {
 			Workbook createExcelworkbook = new XSSFWorkbook();
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + dateFormat.format(new Date()));
+			StringBuilder excelStringBuilder=new StringBuilder();
+			Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(orgName).append("_").append(dateFormat.format(new Date())).toString());
 			Row writeRow = null;
 			if (submissionType.equals("SUBMIT_TO_CLIENT")) {
 				createExcelsheet = getExcelSheetWithHeaderSubmitClient(createExcelsheet, writeRow, createExcelworkbook,requirementId,requirementSubmissionCounts);
@@ -120,7 +121,8 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 				}
 			}
 			/*file = new File(orgName + "_Requirements_" + dateFormat.format(new Date()) + ".xls");*/
-			file = File.createTempFile(orgName + "_Requirements_" + dateFormat.format(new Date()),".xls");
+			StringBuilder tempFileBuilder=new StringBuilder();
+			file = File.createTempFile(tempFileBuilder.append(orgName).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".xls");
 			file.setReadable(true);
 
 			FileOutputStream fos = new FileOutputStream(file);
@@ -501,8 +503,9 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		cell3.setCellStyle(style);
 
 		String location = "";
+		StringBuilder requirementBuilder=new StringBuilder();
 		if(requirement.getCountry() !=null && requirement.getState() !=null){
-			location = requirement.getCountry() + " " + requirement.getState();
+			location = requirementBuilder.append(requirement.getCountry()).append(" ").append(requirement.getState()).toString();
 		}else{
 			location = requirement.getCountry();
 		}
@@ -521,17 +524,17 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		Cell cell6 = writeRow.createCell(1);
 		if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
 			
-			cell6.setCellValue(requirement.getMinExp() + "-" + requirement.getMaxExp());
+			cell6.setCellValue(requirementBuilder.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString());
 			cell6.setCellStyle(style);
 			
 		}else if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp())){
 			
-			cell6.setCellValue("0 -" +requirement.getMinExp() + "years");
+			cell6.setCellValue(requirementBuilder.append("0 -").append(requirement.getMinExp()).append("years").toString());
 			cell6.setCellStyle(style);	
 			
 			}else if(requirement.getMaxExp() != null && !"".equalsIgnoreCase(requirement.getMaxExp())){
 				
-				cell6.setCellValue("0 -" +requirement.getMaxExp() + "years");
+				cell6.setCellValue(requirementBuilder.append("0 -").append(requirement.getMaxExp()).append("years").toString());
 				cell6.setCellStyle(style);
 				
 			}else{

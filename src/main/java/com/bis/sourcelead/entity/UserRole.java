@@ -75,6 +75,9 @@ public class UserRole implements Serializable{
 	
 	@Column(name = "TERMINATE_REASON", columnDefinition = "TEXT default NULL")
 	private String terminateReason;
+	
+    @Column(name = "DESIGNATION")
+	private String designation;
     
     @Column(name = "STATUS")
 	private String status;
@@ -545,6 +548,14 @@ public class UserRole implements Serializable{
 
 	public void setRoleChangeReason(String roleChangeReason) {
 		this.roleChangeReason = roleChangeReason;
+	}
+
+	public String getDesignation() {
+		return designation;
+	}
+
+	public void setDesignation(String designation) {
+		this.designation = designation;
 	}
 
 

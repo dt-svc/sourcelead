@@ -124,12 +124,12 @@ public class CandidateResumeRestController {
 		String msg = "";
 		String resultJson = null;
 		Integer status = Constants.CANDIDATE_ACTIVE;
-		StringBuilder name = new StringBuilder();
 		if(candidateId != null){
 			List<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesListByCandidateIdAndStatus(Long.parseLong(candidateId), status);
 			for(CandidateResumes candidateResume : candidateResumesList){
 				User createdUser = userService.getUserByUserCode(candidateResume.getCreatedBy());
 				if(createdUser != null){
+					StringBuilder name = new StringBuilder();
 					candidateResume.setCreatedBy(name.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
 				}
 			}

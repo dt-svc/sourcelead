@@ -1054,6 +1054,7 @@ function requirementPipeline(requirementId,submissionType){
 	
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
+	  var isSpocActive = '${isSpocActive}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
@@ -1070,7 +1071,7 @@ function requirementPipeline(requirementId,submissionType){
             		 }
             		 else{ 
             			 var submitToClient = '';
-            			 if(clientSubmissions == 'Y'){
+            			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
             				 submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
             			 }
             			   
@@ -1203,11 +1204,9 @@ function requirementPipeline(requirementId,submissionType){
 				        	   result = result + '<th>Applied on</th>';
 					           result = result + '<th>Rate</th>';
 					           
-					         if(clientSubmissions == 'Y'){
 					           if(submissionType != 'REQUEST_SENT'){
 					           result = result + '<th>Sub. Rate</th>';
 					           }
-					         }
 					           result = result + '<th>Source</th>';
 				            }
 						  
@@ -1289,7 +1288,8 @@ function requirementPipeline(requirementId,submissionType){
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
 							    	     }
-							           if(submissionType != 'REQUEST_SENT'){ 
+							          
+							           if(submissionType != 'REQUEST_SENT'){
 							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
@@ -1297,14 +1297,12 @@ function requirementPipeline(requirementId,submissionType){
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
 							           }else{
-							        	   if(clientSubmissions == 'Y'){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop" id="ratepop"></div></td>';
 							        	   }else{
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
 							        	   }
-							           }
 							           }
 							           
 							           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
@@ -1422,9 +1420,9 @@ function requirementPipeline(requirementId,submissionType){
 							    	     } 
 						           }
 
-						           if(submissionType == 'all' ||  submissionType == 'DUPLICATE_APPLICANTS'|| submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'REQUEST_SENT'){
+						           if(submissionType == 'all' ||  submissionType == 'DUPLICATE_APPLICANTS'|| submissionType == 'INTERVIEW' || submissionType == 'SHORTLIST' || submissionType == 'REJECTED' || submissionType == 'SUBMIT_TO_CLIENT' || submissionType == 'REQUEST_SENT' || submissionType == 'OFFERMADE'){
 						        	   
-						        	   if(submissionType != 'INTERVIEW' && submissionType != 'REJECTED'){
+						        	   if(submissionType != 'INTERVIEW' && submissionType != 'REJECTED' && submissionType != 'OFFERMADE'){
 						        		   if(report.score != null && report.score != '' && report.score != 'undefined'){
 								        	   result = result + '         <td><div><span>'+report.score+'</span></div></td>';
 									           }
@@ -2079,6 +2077,7 @@ function requirementStatusBar(requirementId){
   	   var rejected = 'REJECTED';
        var submitToClient = 'SUBMIT_TO_CLIENT';
        var clientSubmissions = '${clientSubmissions}';
+       var isSpocActive = '${isSpocActive}';
        var duplicateApplicantCount = 'DUPLICATE_APPLICANTS';
 		
        
@@ -2100,7 +2099,7 @@ function requirementStatusBar(requirementId){
 		 result = result + '      <li id="shortListli" class="tabActivation" onclick="filterReq('+requirementId+',\''+shortList+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Shortlisted">';
 		 result = result + '       <label><strong>Shortlisted</strong></label>';
 		 result = result + '     </a> <span class="label label-warning" id="shortlistCount">0</span></li>';
-		if(clientSubmissions == 'Y'){
+		if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
 		 result = result + '    <li id="submitToClientli" class="tabActivation" onclick="filterReq('+requirementId+',\''+submitToClient+'\');tabEnable(this);"> <a href="javascript:void(0)" title="Submit to Client">';
 		 result = result + '       <label><strong>Submit to Client</strong></label>';
 		 result = result + '       </a> <span class="label label-info" id="submitToClientCount">0</span> </li>';

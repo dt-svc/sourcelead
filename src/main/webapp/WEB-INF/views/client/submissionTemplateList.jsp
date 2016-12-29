@@ -15,6 +15,9 @@
 
 <link rel="stylesheet" href="resources/css/style.css" />
 
+<script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+
 
 <style type="text/css">
 .collapse-div-adduser select{

@@ -40,7 +40,7 @@ public class CountriesDaoImpl implements CountriesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Countries> countires = new ArrayList<Countries>();
 		logger.debug("findByUserName start");
-		countires = session.createQuery("from Countries where name = :name" ).setString( "name", name ).list();
+		countires = session.createQuery("from Countries where name = :name" ).setString( "name", name ).setCacheable(true).list();
 		logger.debug("findByUserName end");
 		if (countires.size() > 0) {
 			return countires.get(0);

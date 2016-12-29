@@ -21,6 +21,11 @@ public class Constants {
 	
 	public static final String[] CHASE_FILE_HEADER_MAPPING = { "Details", "Posting Date", "Description", "Amount", "Type", "Balance", "Check Or Slip#" };
 
+	
+	public static final String[] FONT_FAMILY = { "Arial", "Comisc", "Comic Sans MS", "Courier New", "Georgia", "Monotype", "Tahoma", "Times New Roman", "Trebuchet MS", "Verdana", "Impace" };
+	
+	public static final String[] FONT_SIZE = { "8px", "9px", "10px", "11px", "12px", "13px", "14px", "15px", "16px", "17px", "18px", "19px", "20px", "21px", "221px", "23px", "24px" };
+	
 	public static final String EMPLOYEE_ID = "Employee ID";
 	public static final String FIRST_NAME = "First Name*";
 	public static final String LAST_NAME = "Last Name";
@@ -152,6 +157,7 @@ public class Constants {
 	public static String APPLICANT_NEGOTIATE_REQUIREMENT = "ApplicantNegotiateRequirement";
 	public static String USER_RATE_NEGOTIATION = "UserRateNegotiation";
 	public static String CLIENT_RATE_NEGOTIATION = "ClientRateNegotiation";
+	public static String USER_ACCEPT_RATE_NEGOTIATION = "UserAcceptRateNegotiation";
 
 
 

@@ -445,12 +445,12 @@ public class UserServiceImpl implements UserService {
 		 boolean isUserActive = false;
 		 isUserActive = userRoleService.isUserActive(user.getId());
 		 
-
+		 StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setOrgLocationId(locationId);
 		 
@@ -461,7 +461,8 @@ public class UserServiceImpl implements UserService {
 		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
 		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
 		 globalVarsMap.put("role",userRole.getUserType());
-		 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+		 StringBuilder loginBuilder = new StringBuilder();
+		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 globalVarsMap.put("userEmailId",user.getEmail());
 		 if(isUserActive == false){
 			 globalVarsMap.put("password",password);
@@ -471,10 +472,11 @@ public class UserServiceImpl implements UserService {
 		 
 		
 		 //setting the Recipient information
+		 StringBuilder emailRecipientBuilder = new StringBuilder();
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipient.setName(emailRecipientBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -673,7 +675,8 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+		 StringBuilder emailMsgBuilder = new StringBuilder();
+		 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -687,7 +690,8 @@ public class UserServiceImpl implements UserService {
 			 globalVarsMap.put("clientlastName",user.getLastName());
 			 globalVarsMap.put("clientOrgName",respondingPartyOrg.getOrgName());
 			 globalVarsMap.put("vendorOrgName",loginOrg.getOrgName());
-			 globalVarsMap.put("acceptURL","<a href='"+sourceleadUrl+"/"+"acceptClientOrVendorInvitation?respondingOrgType=VMS&respondingPartyOrgLocationId="+respondingPartyOrgLocation.getId()+"&UUID="+UUID+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
+			 StringBuilder urlBuilder = new StringBuilder();
+			 globalVarsMap.put("acceptURL",urlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&UUID=").append(UUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
 			 
 		     if(null != password){
 			    globalVarsMap.put("userName",user.getEmail());
@@ -703,8 +707,8 @@ public class UserServiceImpl implements UserService {
 				 globalVarsMap.put("userName",user.getEmail());
 				 globalVarsMap.put("password","Note : You have already registered with this org. Login with your registered password");
 			 } 
-			 
-			 actionLink = ""+sourceleadUrl+"/"+"acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=VMS&respondingPartyOrgLocationId="+respondingPartyOrgLocation.getId()+"&UUID="+UUID+" ";
+		     StringBuilder actionUrlBuilder = new StringBuilder();
+			 actionLink = actionUrlBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&UUID=").append(UUID).append(" ").toString();
 			 
 			 
 		 }else if("Vendor".equals(responderType)){
@@ -716,7 +720,8 @@ public class UserServiceImpl implements UserService {
 			 globalVarsMap.put("clientLastName",loginUser.getLastName());
 			 globalVarsMap.put("vendorOrgName",respondingPartyOrg.getOrgName());
 			 globalVarsMap.put("clientOrgName",loginOrg.getOrgName());
-			 globalVarsMap.put("acceptURL","<a href='"+sourceleadUrl+"/"+"acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId="+respondingPartyOrgLocation.getId()+"&UUID="+UUID+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
+			 StringBuilder actionUrlBuilder = new StringBuilder();
+			 globalVarsMap.put("acceptURL",actionUrlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&UUID=").append(UUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
 			
 			 if(null != password){
 			    globalVarsMap.put("userName",user.getEmail());
@@ -733,16 +738,17 @@ public class UserServiceImpl implements UserService {
 				 globalVarsMap.put("password","Note : You have already registered with this org. Login with your registered password");
 			 }
 			 
-			 
-			 actionLink = ""+sourceleadUrl+"/"+"acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId="+respondingPartyOrgLocation.getId()+"&UUID="+UUID+"";
+			 StringBuilder actionLinkBuilder = new StringBuilder();
+			 actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&UUID=").append(UUID).append("").toString();
 			 
 		 }
 		 
 		 //setting the Recipient information
+		 StringBuilder recipientbuilder = new StringBuilder();
 		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 emailRecipient.setName(recipientbuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type

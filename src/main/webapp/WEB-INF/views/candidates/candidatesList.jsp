@@ -116,150 +116,155 @@
            type : "POST",
             url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&updatedDateRange="+upcandidateStatus+"&candidateType="+candidateType,       
             success :function(data) {
-                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
-			    	     $("#candidateList").removeAttr("style");
-	                	 $("#candidateList").empty();
-	                	 var result = "";
-	                	 result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
-	                     result = result +"<thead>"; 
-	                     result = result +"  <tr>"; 
-	                    /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
-	                     result = result +"    <th>&nbsp;</th>";
-	                     result = result +"    <th>Name</th>"; 
-	                     result = result +"    <th>Designation</th>"; 
-	                     result = result +"    <th>Employment type</th>"; 
-	                     result = result +"    <th>Email</th>"; 
-	                     result = result +"    <th>Mobile</th>"; 
-	                     result = result +"    <th>Type</th>"; 
-	                     result = result +"    <th>Location</th>"; 
-	                     result = result +"    <th>Last Update</th>"; 
-	                     result = result +"  </tr>"; 
-	                     result = result +"</thead>";
-	                     result = result +"<tbody>"; 
-	                     var json = JSON.parse(data);
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i]; 
-	                    	 var mobilePhone = "";
-	                    	 var designation ="";
-	                    	 var address="";
-	                    	 var isFavourite = "";
-	                    	 var isFavClass = "";
-	                    	 
-	                    	 if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
-	                    		 mobilePhone = opt.mobilePhone;
-				            	}else{
-				            		mobilePhone = "----";
-				            	}
-				            	if(opt.designation != null && opt.designation != 'undefined' && opt.designation != ""){
-				            		designation = opt.designation;
-				            	}else{
-				            		designation = "----";
-				            	}
-				            	if(opt.address != null && opt.address != 'undefined' && opt.address != ""){
-				            		address = opt.address;
-				            	}else{
-				            		address = "----";
-				            	}
-				            	if(opt.candidateUpdateDateToString != null && opt.candidateUpdateDateToString != 'undefined' && opt.candidateUpdateDateToString != ""){
-				            		candidateUpdateDateToString = opt.candidateUpdateDateToString; 
-				            	}else{
-				            		candidateUpdateDateToString = "---";
-				            	}
-				            	
-				            	if(opt.isFavourite == 'Y'){
-				            		isFavourite = "checked";
-				            		isFavClass = "activestar-rating";
-				            	}
-				            	if(opt.lastName != null && opt.lastName != "" && opt.lastName != 'undefined'){
-				            		lastName = opt.lastName;
-				            	}else{
-				            		lastName = "";
-				            	}
-				            	if(opt.state != null && opt.state != "" && opt.state != 'undefined'){
-				            		state = opt.state;
-				            	}else{
-				            		state = "";
-				            	}
-				            	if(opt.city != null && opt.city != "" &&  opt.city != 'undefined'){
-				            		city = opt.city;
-				            	}else{
-				            		city = "";
-				            	}
-				            	
-				            	
-		                     result = result +"<tr>";
-		                     result = result +"<td style='width : 25px;'>";
-		                     result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.id+"'>";
-		                     '<sec:authorize access="hasRole(\'ROLE_ADD_CANDIDATE_HOTLIST\')">'; 
-		                     result = result +"<input type='checkbox' id='fav"+opt.id+"' "+isFavourite+" onclick='addFavourite("+opt.id+")'></input>";
-		                     '</sec:authorize>';
-		                    
-		                     result = result +" <label></label>";
-		                     result = result +"</div>";
-		                     result = result +"</td>";
-
-			                
-			                 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
-			                   result = result +"  <td><div class='proj_show' onclick='candidateSideBar("+opt.id+");'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
-			                 '</sec:authorize>';
-			                 
-			                 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
-			                  result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span></div></td>";
-			                 '</sec:authorize>';
-
-			                 result = result +"  <td><div><span>"+designation+"</span></div></td>";
-			                 if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
-			                	 {
-			                      result = result +"  <td><div>"+opt.designationType+"</div></td>";
-			                	 }else{
-			                		 result = result +"  <td><div>----</div></td>"; 
-			                	 }
-			                 result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
-			                 result = result +"  <td><div>"+mobilePhone+"</div></td>";
-			                 result = result +"  <td><div>"+opt.candidateType+"</div></td>";
-			                 if(state !='' && state != 'undefined' && city !='' && city != 'undefined'){
-	                             result = result +"  <td><div><span title='"+opt.country+", "+state+", "+city+"'>"+opt.country+", "+state+", "+city+"</span></div></td>";
-	                              } else if(state !='' && state != 'undefined')
-	                            {
-	                             result = result +"  <td><div><span title='"+opt.country+", "+state+"'>"+opt.country+", "+state+"</span></div></td>";
-	                            }
-	                            else{
-	                            result = result +"  <td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
-	                            }
-
-			                 result = result +"  <td><div>"+candidateUpdateDateToString+"</div></td>";
-			                 result = result +"</tr>"; 
-	                     }
-	                     result = result +" </tbody>";
-	                     result = result +"</table>";
-	                     $("#noCandidates").val('');
-	                     $("#candidateList").append(result);
-	                     cpagination(); 
-			    	} 
-                 }else{
-                	 $("#candidateList").removeAttr("style");
-  	    	         var result ="";
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Candidates Found</p>";
-					 result = result+"			 </div>";
-					$("#noCandidates").val("nocandidate");
-					$("#candidateList").empty();
-				    $("#candidateList").append(result); 
-                 }
-          },
+                	 prepareCandidateList(data);
+           },
             
        }); 
   } 
 </script>
-
+ <script>
+  function prepareCandidateList(data){
+	  if(data != null && data != 'undefined' && data != "" && data != '[]'){
+		 if( data.indexOf('Sign In') >= 0){
+ 		   location.replace(sourceleadUrl);
+ 	     }
+		 else if (data.indexOf('exception') >= 0) {
+			 location.replace(sourceleadUrl+"/errorPage");
+		 }
+		 else{
+	 	     $("#candidateList").removeAttr("style");
+	     	 $("#candidateList").empty();
+	     	 var result = "";
+	     	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
+	          result = result +"<thead>"; 
+	          result = result +"  <tr>"; 
+	         /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
+	          result = result +"    <th>&nbsp;</th>";
+	          result = result +"    <th>Name</th>"; 
+	          result = result +"    <th>Designation</th>"; 
+	          result = result +"    <th>Employment type</th>"; 
+	          result = result +"    <th>Email</th>"; 
+	          result = result +"    <th>Mobile</th>"; 
+	          result = result +"    <th>Type</th>"; 
+	          result = result +"    <th>Location</th>"; 
+	          result = result +"    <th>Last Update</th>"; 
+	          result = result +"  </tr>"; 
+	          result = result +"</thead>";
+	          result = result +"<tbody>"; 
+	          var json = JSON.parse(data);
+	          for (var i = 0; i < json.length; i++) { 
+	         	 var opt = json[i]; 
+	         	 var mobilePhone = "";
+	         	 var designation ="";
+	         	 var address="";
+	         	 var isFavourite = "";
+	         	 var isFavClass = "";
+	         	 var candidateUpdateDateToString ="";
+	         	        if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
+	         		       mobilePhone = opt.mobilePhone;
+		            	}else{
+		            		mobilePhone = "----";
+		            	}
+		            	if(opt.designation != null && opt.designation != 'undefined' && opt.designation != ""){
+		            		designation = opt.designation;
+		            	}else{
+		            		designation = "----";
+		            	}
+		            	if(opt.address != null && opt.address != 'undefined' && opt.address != ""){
+		            		address = opt.address;
+		            	}else{
+		            		address = "----";
+		            	}
+		            	if(opt.candidateUpdateDateToString != null && opt.candidateUpdateDateToString != 'undefined' && opt.candidateUpdateDateToString != ""){
+		            		candidateUpdateDateToString = opt.candidateUpdateDateToString; 
+		            	}else{
+		            		candidateUpdateDateToString = "---";
+		            	}
+		            	
+		            	if(opt.isFavourite == 'Y'){
+		            		isFavourite = "checked";
+		            		isFavClass = "activestar-rating";
+		            	}
+		            	if(opt.lastName != null && opt.lastName != "" && opt.lastName != 'undefined'){
+		            		lastName = opt.lastName;
+		            	}else{
+		            		lastName = "";
+		            	}
+		            	if(opt.state != null && opt.state != "" && opt.state != 'undefined'){
+		            		state = opt.state;
+		            	}else{
+		            		state = "";
+		            	}
+		            	if(opt.city != null && opt.city != "" &&  opt.city != 'undefined'){
+		            		city = opt.city;
+		            	}else{
+		            		city = "";
+		            	}
+		            	
+		            	
+	              result = result +"<tr>";
+	              result = result +"<td style='width : 25px;'>";
+	              result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.id+"'>";
+	              '<sec:authorize access="hasRole(\'ROLE_ADD_CANDIDATE_HOTLIST\')">'; 
+	              result = result +"<input type='checkbox' id='fav"+opt.id+"' "+isFavourite+" onclick='addFavourite("+opt.id+")'></input>";
+	              '</sec:authorize>';
+	             
+	              result = result +" <label></label>";
+	              result = result +"</div>";
+	              result = result +"</td>";
+	
+	             
+	              '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
+	                result = result +"  <td><div class='proj_show' onclick='candidateSideBar("+opt.id+");'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+	              '</sec:authorize>';
+	              
+	              '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
+	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span></div></td>";
+	              '</sec:authorize>';
+	
+	              result = result +"  <td><div><span>"+designation+"</span></div></td>";
+	              if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
+	             	 {
+	                   result = result +"  <td><div>"+opt.designationType+"</div></td>";
+	             	 }else{
+	             		 result = result +"  <td><div>----</div></td>"; 
+	             	 }
+	              result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
+	              result = result +"  <td><div>"+mobilePhone+"</div></td>";
+	              result = result +"  <td><div>"+opt.candidateType+"</div></td>";
+	              if(state !='' && state != 'undefined' && city !='' && city != 'undefined'){
+	                  result = result +"  <td><div><span title='"+opt.country+", "+state+", "+city+"'>"+opt.country+", "+state+", "+city+"</span></div></td>";
+	                   } else if(state !='' && state != 'undefined')
+	                 {
+	                  result = result +"  <td><div><span title='"+opt.country+", "+state+"'>"+opt.country+", "+state+"</span></div></td>";
+	                 }
+	                 else{
+	                 result = result +"  <td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
+	                 }
+	
+	              result = result +"  <td><div>"+candidateUpdateDateToString+"</div></td>";
+	              result = result +"</tr>"; 
+	          }
+	          result = result +" </tbody>";
+	          result = result +"</table>";
+	          $("#noCandidates").val('');
+	          $("#candidateList").append(result);
+	          cpagination(); 
+  	    } 
+	  }
+	  else{
+     	 $("#candidateList").removeAttr("style");
+	         var result ="";
+			 result = result+"			<div class='blank-pages'>";
+			 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+			 result = result+"			        <p>No Candidates Found</p>";
+			 result = result+"			 </div>";
+			$("#noCandidates").val("nocandidate");
+			$("#candidateList").empty();
+		    $("#candidateList").append(result); 
+      }
+  }
+</script>
 <%-- 
      @author : sarath kumar.
      this script is for prepare pagination to candidateList.
@@ -925,12 +930,12 @@ function cancel(candidateId){
     <div class="vendor_wrap">
     
      <div class="pull-left cand-advsrch">
-			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop()">
+			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>
 			  </a>
 			  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
-				  <div class="cand-advsrch-popup">
+				  <div class="cand-advsrch-popup" >
 					  <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
 					  <div class="row">
 						  <div class="col-md-4">
@@ -964,7 +969,8 @@ function cancel(candidateId){
 						  <div class="col-md-4">
 						    <label>Designation</label>
 						     <div class="clearfix">
-						            <input type="text" class="form-control input-sm" placeholder="Designation">
+						             <select class="chosen-select form-control input-sm" multiple data-placeholder="Designation" id="designation" name="designation">
+                                     </select>
 						    </div>
 						</div>
 						<div class="col-md-8">
@@ -972,34 +978,39 @@ function cancel(candidateId){
 								<div class="col-md-6">
 									<label>Rate</label>
 									 <div class="input-group">
-										<div class="input-group-btn selp-custom-min custommin">
-											<select class="selectpicker">
-												<option selected disabled>INR</option>
-												<option>AUD</option>
-												<option>USD</option>
-												<option>GPB</option>
-												<option>SGD</option>
-												<option>EUR</option>
-											</select>
+										<div id="currencyDiv" class="input-group-btn selp-custom-min custommin">
+										    <select class="selectpicker" name="currency" id="currency" field-name="Currency"  >
+										        <option value="">Currency</option>
+										        <option value="INR">INR</option>
+											    <option value="AUD">AUD</option>
+												<option value="USD">USD</option>
+												<option value="GPB">GPB</option>
+												<option value="SGD">SGD</option>
+												<option value="EUR">EUR</option>
+				                            </select>
 										</div>
-									   <input type="text" class="form-control input-sm" value="" placeholder="Min Rate">
+										 <div id="minRateDiv">
+									      <input type="text" id="minRate" name="minRate" field-name="Min Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  class="form-control input-sm" placeholder="Min Rate">
+								         </div>
 								    </div>
-								</div>
+								</div> 
 							<div class="col-md-6">
-								<label>&nbsp;</label>
+								<label>&nbsp;</label> 
 								<div class="input-group">
-									<input type="text" class="form-control input-sm" value="" placeholder="Max Rate">
-									<div class="input-group-btn selp-custom-min custommin">
-										<select class="selectpicker">
-											<option selected disabled>Per</option>
-											<option>Hourly</option>
-											<option>Weekly</option>
-											<option>Bi-weekly</option>
-											<option>Semi-Monthly</option>
-											<option>Monthly</option>
-											<option>Bi-Monthly</option>
-											<option>Yearly</option>
-										</select>
+								    <div id="maxRateDiv">
+									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true"  placeholder="Max Rate">
+									</div>
+									<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
+									      <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
+									            <option value="">Rate Type</option>
+										        <option value="Hourly">Hourly</option>
+												<option value="Weekly">Weekly</option>
+												<option value="Bi-weekly">Bi-weekly</option>
+												<option value="Semi-Monthly">Semi-Monthly</option>
+												<option value="Monthly">Monthly</option>
+												<option value="Bi-Monthly">Bi-Monthly</option>
+												<option value="Yearly">Yearly</option>
+				                            </select> 
 									</div>
 								</div>
 							</div>
@@ -1012,7 +1023,7 @@ function cancel(candidateId){
 							  <div class="clearfix row">
 							  <div class="col-md-6">
 								  <select class="chosen-select"  id="minExpYears" name="minExpYears" data-placeholder="Years">
-									  <option selected>Min</option>
+									  <option selected>Min Years</option>
 									 <c:forEach begin="0" end="24" varStatus="loop">
 									    <option value="${loop.index}">${loop.index} Years</option>
 									</c:forEach>
@@ -1020,7 +1031,7 @@ function cancel(candidateId){
 							  </div>
 							  <div class="col-md-6">
 								  <select class="chosen-select" id="maxExpYears" name="maxExpYears" data-placeholder="Months">
-									  <option selected>Max</option>
+									  <option selected>Max Years</option>
 									  <c:forEach begin="0" end="24" varStatus="loop">
 									    <option value="${loop.index}">${loop.index} Years</option>
 									</c:forEach>
@@ -1031,25 +1042,26 @@ function cancel(candidateId){
 						  <div class="col-md-4">
 							  <label>Notice Period</label>
 							  <div class="clearfix">
-								  <select class="chosen-select" data-placeholder="Notice Period" multiple>
-									  <option>one week</option>
-									  <option>15 Days</option>
-									  <option>one month</option>
-									  <option>Two month</option>
-								  </select>
+								 <select class="chosen-select" id="noticePeriod" name="noticePeriod" data-placeholder="Notice Period" multiple>
+						                 <option value="Immediately available">Immediately available</option>
+						                 <option value="15 Days">15 Days</option>
+						                 <option value="1 Month">1 Month</option>
+						                 <option value="2 Months">2 Months</option>
+						                 <option value="3 Months">3 Months</option>
+				                </select>
 							  </div>
 						  </div>
 						  <div class="col-md-4">
 							  <label>Updated On</label>
 							  <div class="clearfix">
-								  <select class="chosen-select" data-placeholder="Updated On">
-									  <option>All</option>
-									  <option>1 Day Ago</option>
-									  <option>3 Days Ago</option>
-									  <option>1 Week Ago</option>
-									  <option>2 Weeks Ago</option>
-									  <option>1 Month Ago</option>
-									  <option>3 Months Ago</option>
+								  <select class="chosen-select" id="updatedOn" name="updatedOn" data-placeholder="Updated On">
+									  <option value="All">All</option>
+									  <option value="1 Day Ago">1 Day Ago</option>
+									  <option value="3 Days Ago">3 Days Ago</option>
+									  <option value="1 Week Ago">1 Week Ago</option>
+									  <option value="2 Weeks Ago">2 Weeks Ago</option>
+									  <option value="1 Month Ago">1 Month Ago</option>
+									  <option value="3 Months Ago">3 Months Ago</option>
 								  </select>
 							  </div>
 						  </div>
@@ -1059,14 +1071,21 @@ function cancel(candidateId){
 							  <label>Country</label>
 							  <div class="clearfix">
 								 <select class="chosen-select" name="country" id="country" field-name="Country"  >
+								     <c:forEach var="cntry" items="${countryList}">
+							                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+						                </c:forEach>
 				                 </select>
 							  </div>
 						  </div>
 						  
-						  <div class="col-md-4">
+						  <div class="col-md-4"> 
 							  <label>State</label>
 							  <div class="clearfix">
 								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
+								        <option value="">---select state---</option>
+								        <c:forEach var="state" items="${statesList}">
+							                     <option value="${state.stateName}">${state.stateName}</option>
+						                </c:forEach>
                                  </select>
 							  </div>
 						  </div>
@@ -1074,6 +1093,7 @@ function cancel(candidateId){
 							  <label>City</label>
 							  <div class="clearfix">
 								  <select  class="chosen-select" name="city" id="city" field-name="City"  >
+								      <option value="">---select city---</option>
                                   </select>
 							  </div>
 						  </div>
@@ -1081,32 +1101,29 @@ function cancel(candidateId){
 						  <div class="clearfix">
 					  	<div class="col-md-4">
 							  <label>Education</label>
-							  <div class="clearfix">
-								  <select class="chosen-select" data-placeholder="Education" multiple>
-									  <option>MCA</option>
-									  <option>MBA</option>
-									  <option>B.Sc.(Computers)</option>
-								  </select>
+							  <div class="clearfix"> 
+								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Education" id="education" name="education">
+                                       <c:forEach var="edu" items="${educationsList}">
+							                     <option value="${edu.name}">${edu.name}</option>
+						                </c:forEach>
+                                  </select>
 							  </div>
-						  </div>
+						  </div> 
 						  <div class="col-md-4">
 							  <label>Exclude Education<i class="fa fa-info-circle" title="Exclude Education"></i></label>
 							  <div class="clearfix">
-								  <select class="chosen-select" data-placeholder="Exclude Education" multiple>
-									  <option>MCA</option>
-									  <option>MBA</option>
-									  <option>B.Sc.(Computers)</option>
-								  </select>
+								   <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Education" id="excludeEducation" name="excludeEducation">
+                                       <c:forEach var="edu" items="${educationsList}">
+							                     <option value="${edu.name}">${edu.name}</option>
+						                </c:forEach>
+                                   </select>
 							  </div>
 						  </div>
 						  <div class="col-md-4">
 							  <label>Certification<i class="fa fa-info-circle" title="Certification"></i></label>
 							  <div class="clearfix">
-								  <select class="chosen-select" data-placeholder="Certification" multiple>
-									  <option>MCA</option>
-									  <option>MBA</option>
-									  <option>B.Sc.(Computers)</option>
-								  </select>
+								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Certification" id="certification" name="certification">
+                                  </select>
 							  </div>
 						  </div>
 						  </div>
@@ -1114,31 +1131,26 @@ function cancel(candidateId){
 						  <div class="col-md-4">
 							  <label>Employers<i class="fa fa-info-circle" title="Employers"></i></label>
 							  <div class="clearfix">
-								  <select class="chosen-select" data-placeholder="Employers" multiple>
-									  <option>TCS</option>
-									  <option>IBM</option>
-									  <option>CTS</option>
-								  </select>
+								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Employers" id="employers" name="employers">
+                                  </select>
 							  </div>
 						  </div>
 						  <div class="col-md-4">
 							  <label>Exclude Employers<i class="fa fa-info-circle" title="Employers"></i></label>
 							  <div class="clearfix">
-								  <select class="chosen-select" data-placeholder="Employers">
-									  <option>TCS</option>
-									  <option>IBM</option>
-									  <option>CTS</option>
-								  </select>
+								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
+                                  </select>
 							  </div>
 						  </div>
 						  
 						   <div class="col-md-4">
-							  <label>Type</label>
+							  <label>Applicant Type</label>
 							  <div class="clearfix">
-								  <select class="chosen-select" data-placeholder="Employers">
-									  <option>Candiate</option>
-									  <option>Consultant</option>
-								  </select>
+								   <select class="chosen-select" name="applicantType" id="applicantType" field-name="Applicant Type"  >
+								      <option value="">---select Applicant Type---</option>
+								      <option value="candidate">Candiate</option>
+									  <option value="candidate">Consultant</option> 
+				                 </select>
 							  </div>
 						  </div>
 						  </div>
@@ -1146,30 +1158,26 @@ function cancel(candidateId){
 							    <div class="col-md-12">
 								  <label>Skills</label>
 								  <div class="clearfix">
-									  <select class="chosen-select"  multiple data-placeholder="Select Skills">
-										  <option>Skill-1</option>
-										  <option>Skill-2</option>
-										  <option>Skill-2</option>
-									  </select>
+									 <select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="candidateSkills" name="candidateSkills">
+                                          <c:forEach var="skill" items="${skillsList}">
+							                     <option value="${skill.name}">${skill.name}</option>
+						                </c:forEach>
+                                     </select>
 								  </div>
 							  </div>
 						    </div>
 					  </div>
 					  <div class="row form-footer mt">
 						  <div class="pull-right mr">
-							  <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a>
-							  <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a>
+							 <!--  <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a>
+							  <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a> -->
+							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-primary"/>
+                               <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
 						  </div>
 					  </div>
 				  </div>
 			  </form:form>
-  		  </div>
-    
-    
-    
-    
-    
-    
+      </div>
       <div class="timesheet_head  customtimesheet-head hdr-styles pull-right">
         <ul>
           <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES')">
@@ -1646,39 +1654,10 @@ function savedCommentAndCount(candidateId){
 			$("div.cand-advsrch-popup").hide();
 		}
 		function openPop(){
-			$("div.cand-advsrch-popup").toggle();
-			loadChosenScript();
+		  $("div.cand-advsrch-popup").toggle();
+		  
 		}
 	</script>
-<script type="text/javascript">
-function getAllCountries(){
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#country').empty();
-        	$('#country').append('<option value="">---select country---</option>');
-            for(var i=0;i<json.length;i++){
-            	if(json[i] == '${loginCountryName}'){
-            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}
-            	else{
-            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-            	}
-            	
-            }
-            $('#country').trigger("chosen:updated");
-            getStates();
-        },
-        error: function(e){
-        }
-    });
-} 
-</script>
-
-
 <script>
 function getStates(){
 	var countryName = $("#country").val();
@@ -1747,27 +1726,53 @@ function getCities(){
 
 
 <!-- Country,State,City Script Ends Here -->	
+<script type="text/javascript">	
+	function loadChosenScripts(){
+		$("#anyOfKeyword").val('').trigger("chosen:updated");
+	    $("#allKeywords").val('').trigger("chosen:updated");
+	    $("#excludeKeyWord").val('').trigger("chosen:updated");
+	    $("#designation").val('').trigger("chosen:updated");
+	    $("#education").val('').trigger("chosen:updated");
+	    $("#excludeEducation").val('').trigger("chosen:updated");
+	    $("#certification").val('').trigger("chosen:updated");
+	    $("#employers").val('').trigger("chosen:updated");
+	    $("#excludeEmployers").val('').trigger("chosen:updated");
+	    $("#candidateSkills").val('').trigger("chosen:updated");
+	    $("#noticePeriod").val('').trigger("chosen:updated");
+	    
+	    $('#minRate').val(''); 
+	    $('#maxRate').val(''); 
+	    $('#currency').val(''); 
+	    $('#rateType').val(''); 
+	       
+	    $('#minRateDiv').find('p.jquery_form_error_message').remove();
+	    $('#maxRateDiv').find('p.jquery_form_error_message').remove();
+	    $('#currencyDiv').find('p.jquery_form_error_message').remove();
+	    $('#rateTypeDiv').find('p.jquery_form_error_message').remove();
+	    
+	    
+	    $("#anyOfKeyword").empty();
+	    $("#allKeywords").empty();
+	    $("#excludeKeyWord").empty();
+	    $("#designation").empty();
+	    $("#certification").empty();
+	    $("#employers").empty();
+	    $("#excludeEmployers").empty();
+	}
+</script>
 	
 <script type="text/javascript">
-     function loadChosenScript(){
-    	 var config = {
-   			  '.chosen-select'           : {},
-   			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-   			  '.chosen-select-no-single' : {disable_search_threshold:10},
-   			  '.chosen-select-width'     : {width:"95%"}
-   			}
-   			
-   		   $("#country").chosen();
-   	       $("#state").chosen();
-   	       $("#city").chosen();
-   	       getAllCountries();
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			//Adding Customized Any Of Keyword to the list
+    	   var config = {
+    				  '.chosen-select'           : {},
+    				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+    				  '.chosen-select-no-single' : {disable_search_threshold:10},
+    				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+    				  '.chosen-select-width'     : {width:"95%"}
+    	   }
+			//Adding Customized Any Of Keyword to the list 
 		    var select, chosen;
 		    select = $("#anyOfKeyword");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosen = select.data('chosen');
 		    chosen.search_field.on('keyup', function(e)
 		    {
@@ -1789,15 +1794,15 @@ function getCities(){
 		  //Adding Customized Any Of Keyword to the list
 		    var selectone, chosenone;
 		    selectone = $("#allKeywords");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-		    chosenone = select.data('chosen');
-		    chosenone.search_field.on('keyup', function(e)
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosenone = selectone.data('chosen');
+		    chosenone.search_field.on('keyup', function(e1)
 		    {
-		    	var allKeywords = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (allKeywords != null  && allKeywords != '' && allKeywords != 'undefined'))
+		    	var allKeyword = this.value.replace(",","");
+		        if ((e1.which == 13 || e1.which == 188) && (allKeyword != null  && allKeyword != '' && allKeyword != 'undefined'))
 		        {
 		        	var par = this.parent;
-		            var option = $("<option>").val(allKeywords).text(allKeywords);
+		            var option = $("<option>").val(allKeyword).text(allKeyword);
 		            selectone.append(option);
 		            selectone.find(option).prop('selected', true);
                     $("#allKeywords option").each(function(){
@@ -1811,15 +1816,15 @@ function getCities(){
 		    
 		    var selecttwo, chosentwo;
 		    selecttwo = $("#excludeKeyWord");
-		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-		    chosentwo = select.data('chosen');
-		    chosentwo.search_field.on('keyup', function(e)
+		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosentwo = selecttwo.data('chosen');
+		    chosentwo.search_field.on('keyup', function(e2)
 		    {
-		    	var allKeywords = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (allKeywords != null  && allKeywords != '' && allKeywords != 'undefined'))
+		    	var excludeKeyword = this.value.replace(",","");
+		        if ((e2.which == 13 || e2.which == 188) && (excludeKeyword != null  && excludeKeyword != '' && excludeKeyword != 'undefined'))
 		        {
 		        	var par = this.parent;
-		            var option = $("<option>").val(allKeywords).text(allKeywords);
+		            var option = $("<option>").val(excludeKeyword).text(excludeKeyword);
 		            selecttwo.append(option);
 		            selecttwo.find(option).prop('selected', true);
                     $("#excludeKeyWord option").each(function(){
@@ -1830,11 +1835,112 @@ function getCities(){
 		        }
 		    });
 		    
+		    var selectthree, chosenthree;
+		    selectthree = $("#designation");
+		    selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Designation:' });
+		    chosenthree = selectthree.data('chosen');
+		    chosenthree.search_field.on('keyup', function(e3)
+		    {
+		    	var desg = this.value.replace(",","");
+		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(desg).text(desg);
+		            selectthree.append(option);
+		            selectthree.find(option).prop('selected', true);
+                    $("#designation option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#designation").trigger("chosen:updated");
+	        		
+		        }
+		    });
 		    
+		   	    
+		    var selectsix, chosensix;
+		    selectsix = $("#certification");
+		    selectsix.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Certification:' });
+		    chosensix = selectsix.data('chosen');
+		    chosensix.search_field.on('keyup', function(e6)
+		    {
+		    	var cert = this.value.replace(",","");
+		        if ((e6.which == 13 || e6.which == 188) && (cert != null  && cert != '' && cert != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(cert).text(cert);
+		            selectsix.append(option);
+		            selectsix.find(option).prop('selected', true);
+                    $("#certification option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#certification").trigger("chosen:updated");
+	        		
+		        }
+		    });
 		    
+		    var selectseven, chosenseven;
+		    selectseven = $("#employers");
+		    selectseven.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Employer:' });
+		    chosenseven = selectseven.data('chosen');
+		    chosenseven.search_field.on('keyup', function(e7)
+		    {
+		    	var emp = this.value.replace(",","");
+		        if ((e7.which == 13 || e7.which == 188) && (emp != null  && emp != '' && emp != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(emp).text(emp);
+		            selectseven.append(option);
+		            selectseven.find(option).prop('selected', true);
+                    $("#employers option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#employers").trigger("chosen:updated");
+	        		
+		        }
+		    });
 		    
+		    var selecteight, choseneight;
+		    selecteight = $("#excludeEmployers");
+		    selecteight.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Employer:' });
+		    choseneight = selecteight.data('chosen');
+		    choseneight.search_field.on('keyup', function(e8)
+		    {
+		    	var excEmp = this.value.replace(",","");
+		        if ((e8.which == 13 || e8.which == 188) && (excEmp != null  && excEmp != '' && excEmp != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(excEmp).text(excEmp);
+		            selecteight.append(option);
+		            selecteight.find(option).prop('selected', true);
+                    $("#excludeEmployers option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#excludeEmployers").trigger("chosen:updated");
+	        		
+		        }
+		    });
 		    
-		    $("#country").on('change', function (e) {
+		    var selectnine, chosennine;
+		    selectnine = $("#candidateSkills");
+		    selectnine.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Skill:' });
+		    chosennine = selecteight.data('chosen');
+		    chosennine.search_field.on('keyup', function(e9)
+		    {
+		    	var skills = this.value.replace(",","");
+		        if ((e9.which == 13 || e9.which == 188) && (skills != null  && skills != '' && skills != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(skills).text(skills);
+		            selectnine.append(option);
+		            selectnine.find(option).prop('selected', true);
+                    $("#candidateSkills option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#candidateSkills").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		      $("#country").on('change', function (e) {
 		    	   getStates();
 		       });
 		       $("#state").on('change', function (e) {
@@ -1847,9 +1953,12 @@ function getCities(){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				})
-          }
-				
 </script> 
+    <!-- <script type="text/javascript">
+		window.onload = function () {
+			loadChosenScripts();
+		 };
+	</script> -->
 <!-- Add candidate Popup -->
       <div class="addcandidate-popup">
 				  <div class="row">
@@ -1907,4 +2016,69 @@ function getCities(){
         $('.pop_mask').fadeOut(200);
        }
     </script>
+    
+    <script type="text/javascript">
+	function searchCandidate() {
+		var minRate = $('#minRate').val(); 
+		var maxRate = $('#maxRate').val();
+		 if((minRate != null && minRate != "" && minRate !='undefined') || (maxRate != null && maxRate != "" && maxRate !='undefined')){
+			 $('#rateType').removeAttr('data-validation-optional');
+			 $('#rateType').attr("data-validation","required"); 
+			 
+			 $('#currency').removeAttr('data-validation-optional');
+			 $('#currency').attr("data-validation","required"); 
+		 }else{
+			 $('#rateType').removeAttr('data-validation');
+			 $('#rateType').attr("data-validation-optional","true"); 
+			 
+			 $('#currency').removeAttr('data-validation');
+			 $('#currency').attr("data-validation-optional","true"); 
+		 }
+		var validationSettings = {
+				errorMessagePosition : 'element',
+				borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd'
+			};
+		
+		 if ($('#candidatelist_form').validate(false, validationSettings)){ 
+			
+			var sourceleadUrl = '${sourceleadUrl}';
+			var frm = $('#candidatelist_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, ""); 
+		    var jsonData = encodeURIComponent(con);
+			var form = $('#candidatelist_form')[0];
+      		var formData = new FormData(form); 
+			//It will escape all the special characters
+			$("#search_candidate").attr("disabled", "disabled");
+			$("#search_candidate").addClass('button').val('Processing..');
+
+			$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/searchCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						success : function(data) {
+							$("#search_candidate").addClass('button').val('Search');
+							$("#search_candidate").removeAttr("disabled");
+							closePop();
+							prepareCandidateList(data);
+						},
+					}); 
+			return true;
+		 }else{ 
+				return false;
+		 } 
+	} 
+	
+	$('body').on('blur', '#candidatelist_form', function() {
+		$("#candidatelist_form").showHelpOnFocus();
+		$("#candidatelist_form").validateOnBlur(false, validationSettings);
+	});
+</script>
 <jsp:include page="../masterFooter.jsp" /> 
