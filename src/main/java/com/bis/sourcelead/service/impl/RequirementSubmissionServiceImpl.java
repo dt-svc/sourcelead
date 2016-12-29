@@ -1259,28 +1259,53 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	
 	@Override
 	public RequirementSubmission acceptRejectCandidate(JSONObject jsonObj, User user,
-			RequirementSubmission requirementSubmission, String decision, MultipartFile multiFile,Org loginOrg,OrgLocations loginOrgLocation) throws Exception {
+			RequirementSubmission requirementSubmission, String decision, MultipartFile multiFile,Org loginOrg,  OrgLocations loginOrgLocation) throws Exception {
 		if(requirementSubmission != null){
-			if(jsonObj.has("comment")){
-				requirementSubmission.setSubmissionRateComment(jsonObj.getString("comment"));
-			}
+			
 			if(StringUtils.equalsIgnoreCase(decision, "accept")){
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
-			}else if(StringUtils.equalsIgnoreCase(decision, "reject")){
+				if(jsonObj.has("comment")){
+					requirementSubmission.setSubmissionRateComment(jsonObj.getString("comment"));
+				}
+				if(multiFile != null){
+					requirementSubmission.setSubmissionRateDocFile(multiFile.getBytes());
+					requirementSubmission.setSubmissionRateFileContentType(multiFile.getOriginalFilename());
+					requirementSubmission.setSubmissionRateFileName(multiFile.getContentType());
+				}
+				sendEmailtoApplicant(loginOrg, user,requirementSubmission,loginOrgLocation);
+			}
+			else if(StringUtils.equalsIgnoreCase(decision, "reject")){
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
+				if(jsonObj.has("comment")){
+					requirementSubmission.setSubmissionRateComment(jsonObj.getString("comment"));
+				}
+			}
+			else if(StringUtils.equalsIgnoreCase(decision, "request")){
+				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REQUEST);
+				if(multiFile != null){
+					requirementSubmission.setSubmissionRequestDocFile(multiFile.getBytes());
+					requirementSubmission.setSubmissionRequestFileContentType(multiFile.getContentType());
+					requirementSubmission.setSubmissionRequestFileName(multiFile.getOriginalFilename());
+				}
+				if(jsonObj.has("comment")){
+					requirementSubmission.setSubmissionRequestComment(jsonObj.getString("comment"));
+				}
+				requirementSubmission.setSubmissionRequestUser(user.getUserCode());
+				
+				//send mail to requirement manager.
+				sendEmailtoRequirementManager(loginOrg, user,requirementSubmission,loginOrgLocation);
+				
+				
 			}
 			requirementSubmission.setUpdatedBy(user.getUserCode());
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
-			if(multiFile != null){
-				requirementSubmission.setSubmissionRateDocFile(multiFile.getBytes());
-				requirementSubmission.setSubmissionRateFileContentType(multiFile.getOriginalFilename());
-				requirementSubmission.setSubmissionRateFileName(multiFile.getContentType());
-			 }
+			
 		}
 		requirementSubmissionDao.storeRequirementSubmission(requirementSubmission);
 		
 		return requirementSubmission;
 	}
+	
 
 	@Override
 	public RequirementRateSubmissionNegotiation getRequirementRateBySubmissionById(Long submissionId) {
