@@ -490,11 +490,11 @@ $(document).ready(function(){
 				}
 				
 				
-				if(json.InvoiceFrequency != null && json.InvoiceFrequency != "" && json.InvoiceFrequency != 'undefined'){
+				/* if(json.InvoiceFrequency != null && json.InvoiceFrequency != "" && json.InvoiceFrequency != 'undefined'){
 					result = result + ' 		<div class="project_details_cta">';
 					result = result + '				<strong>Invoice Frequency:</strong><span class="fix">'+json.InvoiceFrequency+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
-				}
+				} */
 				
 				if(json.hireDateStr != null && json.hireDateStr != "" && json.hireDateStr != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
@@ -1264,12 +1264,12 @@ $("#editRoleDetailsList").empty();
 						selected7 = 'selected';
 					}
 				
-				var selected8 = '';
+				/*var selected8 = '';
 				var selected9 = '';
 				var selected10 = '';
 				var selected11 = '';
 				
-				if(json.InvoiceFrequency == 'Weekly'){
+				 if(json.InvoiceFrequency == 'Weekly'){
 					selected8 = 'selected';
 					} 
 				
@@ -1283,7 +1283,7 @@ $("#editRoleDetailsList").empty();
 				
 				if(json.InvoiceFrequency == 'Monthly'){
 					selected11 = 'selected';
-					} 
+					}  */
 				
 				var employeeId = "";
 			    var lastName = "";
@@ -1394,7 +1394,7 @@ $("#editRoleDetailsList").empty();
 					}
 					result = result + ' </div>';	
 					
-					result = result + ' <div class="user_summary_edit_cta">';
+					/* result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Invoice frequency</label>';
 					result = result + ' <select id="InvoiceFrequency" name="InvoiceFrequency">';
 					result = result + ' <option value="">-Select Frequency-</option>';
@@ -1403,7 +1403,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <option '+selected10+'>Semi-Monthly</option>';
 					result = result + ' <option '+selected11+'>Monthly</option>';
 					result = result + ' </select>';
-					result = result + ' </div>';
+					result = result + ' </div>'; */
 					
 					result = result + ' <div class="user_summary_edit_cta" id="DayHoursDiv">';
 					result = result + ' <label>Day hours</label>';
