@@ -240,7 +240,7 @@
 		              			 }
 			              			
 		              			
-		              			result = result +'<td class="mailbox-subject '+isMailRead+'"><a href="#" onclick="getEmailDetails(\''+opt.uuid+'\')">'+opt.subject+'</a></td>';
+		              			result = result +'<td class="mailbox-subject '+isMailRead+'"><a href="#" onclick="getEmailDetails(\''+opt.uuid+'\',\''+type+'\')">'+opt.subject+'</a></td>';
 		              			result = result +'<td class="mailbox-date">'+opt.calDays+' days ago</td>';
 		              			result = result +'</tr>';
 		                    }
@@ -451,7 +451,8 @@ function refreshList(){
 
 
 <script>
-function getEmailDetails(uuid){
+function getEmailDetails(uuid,type){
+	
 	
 	var sourceleadUrl = '${sourceleadUrl}';
 	
@@ -462,7 +463,7 @@ function getEmailDetails(uuid){
 	 
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/getEmailDetails?${_csrf.parameterName}=${_csrf.token}&UUID="+uuid,
+		url : sourceleadUrl+"/getEmailDetails?${_csrf.parameterName}=${_csrf.token}&UUID="+uuid+"&type="+type,
 		success : function(data) {
 			
 			 var json = JSON.parse(data);
@@ -474,11 +475,23 @@ function getEmailDetails(uuid){
            	     $('#unreadMailsCount').html(opt.totalUnReadMailsCount);
             	     
                  var result =""; 
+                 
              	 
               	result = result +'<div class="box-tools pull-right">';
               	result = result +'<div class="btn-group">';
-              	result = result +'<button class="btn btn-default btn-sm" type="button"><i class="fa fa-chevron-left"></i></button>';
-              	result = result +'<button class="btn btn-default btn-sm" type="button"><i class="fa fa-chevron-right"></i></button>';
+              	if(opt.previousMailUUID != null && opt.previousMailUUID != '' && opt.previousMailUUID != 'undefined'){
+              		result = result +'<button class="btn btn-default btn-sm" type="button" onclick="getEmailDetails(\''+opt.previousMailUUID+'\',\''+type+'\')"><i class="fa fa-chevron-left"></i></button>';
+              	}else{
+              		result = result +'<button class="btn btn-default btn-sm" type="button" ><i class="fa fa-chevron-left mail-next-previous-muted"></i></button>';
+              	}
+              	
+              	if(opt.nextMailUUID != null && opt.nextMailUUID != '' && opt.nextMailUUID != 'undefined'){
+              		result = result +'<button class="btn btn-default btn-sm" type="button" onclick="getEmailDetails(\''+opt.nextMailUUID+'\',\''+type+'\')"><i class="fa fa-chevron-right"></i></button>';
+              	}else{
+              		result = result +'<button class="btn btn-default btn-sm" type="button" ><i class="fa fa-chevron-right mail-next-previous-muted"></i></button>';
+              	}
+              	
+              	
               	result = result +'</div>'; 
                 result = result +'</div>';
                 result = result +'</div>';

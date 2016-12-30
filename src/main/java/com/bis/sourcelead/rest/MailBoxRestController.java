@@ -252,6 +252,7 @@ public class MailBoxRestController {
 	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/getEmailDetails")
 	public @ResponseBody String getEmailDetails(@RequestParam(value = "UUID", required = false) String UUID,
+			@RequestParam(value = "type", required = false) String type,
 			HttpServletRequest request) throws Exception {
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -264,6 +265,10 @@ public class MailBoxRestController {
 	    List<UserMailBox> mailBoxList = new ArrayList<UserMailBox>();
 	    
 	    if(userMailbox != null){
+	    	
+	    	UserMailBox previousMail = userMailBoxService.getUserPreviousMail(userMailbox.getId(), user.getId(), orgLocation.getId(), type);
+	    	
+	    	UserMailBox nextMail = userMailBoxService.getUserNextMail(userMailbox.getId(), user.getId(), orgLocation.getId(), type);
 	    	
 	    	List<Long> candidateId = new ArrayList<Long>();
 	    	if(null !=  userMailbox.getCandidateId()){
@@ -321,6 +326,15 @@ public class MailBoxRestController {
 				userMailbox.setUnreadRequestedCount(requestedUnreadMailsCount);
 				userMailbox.setTotalUnReadMailsCount(inboxUnreadMailsCount+requestedUnreadMailsCount);
 				userMailbox.setCandidatesList(reqCandidatesList);
+				if(null != nextMail){
+					userMailbox.setNextMailUUID(nextMail.getUuid());
+				}
+				
+				if(null != previousMail){
+					userMailbox.setPreviousMailUUID(previousMail.getUuid());
+				}
+				
+				
 				
 				mailBoxList.add(userMailbox);
 				calculateDays(mailBoxList);
