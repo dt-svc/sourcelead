@@ -82,8 +82,6 @@ function editCandidate(candidateId){
 	$("#profileEditPopup").show();
 	
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  var loginCountryName = '${loginCountryName}';
-	  
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -445,7 +443,6 @@ function editCandidate(candidateId){
 function getAllCandidateCountries(){
 	setTimeout(function(){ 
 	var countryName = $("#updateCountry").val();
-	var loginCountryName = '${loginCountryName}';
 	$.ajax({
     	type: "POST",
     	dataType: "json",
@@ -457,7 +454,7 @@ function getAllCandidateCountries(){
             for(var i=0;i<json.length;i++){
             	if(json[i] == countryName){
             		$('#candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}else if(json[i] == '${loginCountryName}' && countryName ==null && countryName ==''){
+            	}else if(json[i] == '${candidateCountry}' && countryName ==null && countryName ==''){
             		$('#candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{ 
