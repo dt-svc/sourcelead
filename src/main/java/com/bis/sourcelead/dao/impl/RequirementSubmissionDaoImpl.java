@@ -608,6 +608,16 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			}
 	  return null;
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmission> getRequirementHistoryListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+	     String query = "from RequirementSubmission rs where rs.candidate.id =:candidateId and rs.orgLocations =:orgLocationId";
+	     List<RequirementSubmission> requirementHistoryList = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	  return requirementHistoryList;
+	}
 	
 	/*
 	SUBMISSION("submission"),
@@ -620,6 +630,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
     OFFERREJECTED("offer_rejected"),
     OFFERHIRED("hired");
 	*/
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmission> getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementId(
+			Long candidateId, Long orgLocationId, Long requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+	     String query = "from RequirementSubmission rs where rs.candidate.id =:candidateId and rs.requirement.id =:requirementId and rs.orgLocations =:orgLocationId";
+	     List<RequirementSubmission> requirementHistoryList = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setCacheable(true).list();
+	  return requirementHistoryList;
+	}
+    
+
 	
 	
 		@Override
@@ -647,6 +670,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				}
 			return requirementSubmission;
 		}
+
   }
 
 

@@ -29,6 +29,7 @@ import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
@@ -96,6 +98,9 @@ public class RequirementController {
 	
 	@Autowired
 	RequirementOfferHistoryService requirementOfferHistoryService;
+	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/requirement")
@@ -403,7 +408,7 @@ public class RequirementController {
 	
 	@RequestMapping(value = "/acceptOrRejectRequirementOffer")
 	public ModelAndView acceptOrRejectRequirementOffer(HttpServletRequest request,@RequestParam(value="offerStatus", required=false)String offerStatus,@RequestParam(value="offerId", required=false)Long offerId) throws Exception {
-		 
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		RequirementOffers requirementOffers  = requirementOffersService.getRequirementOfferId(offerId);
 		List<RequirementOfferHistory> requirementOfferHistories = requirementOfferHistoryService.getAllRequirementOfferHistoriesByOfferId(offerId);
 		
@@ -427,8 +432,16 @@ public class RequirementController {
 				    		}
 							 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 							 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+							 
+							//Strote RequirementSubmissionHistory
+						    RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+							requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
+							requirementSubmissionHistory.setFromStage("OFFERMADE");
+							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 					  }
 			    	
+					
 			    	  //Changing the status of offerTable 
 				      if(requirementOffers  != null){
 						    requirementOffers.setOfferStatus("OFFERACCEPTED");
