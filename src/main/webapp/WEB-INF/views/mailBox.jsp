@@ -479,7 +479,7 @@ function getEmailDetails(uuid){
               	result = result +'<div class="btn-group">';
               	result = result +'<button class="btn btn-default btn-sm" type="button"><i class="fa fa-chevron-left"></i></button>';
               	result = result +'<button class="btn btn-default btn-sm" type="button"><i class="fa fa-chevron-right"></i></button>';
-              	result = result +'</div>';
+              	result = result +'</div>'; 
                 result = result +'</div>';
                 result = result +'</div>';
 			    result = result +'<div class="mailbox-read-info">';
@@ -489,7 +489,7 @@ function getEmailDetails(uuid){
 			    result = result +'<span class="mailbox-read-time pull-right">'+opt.calDays+' days ago</span></h5>';
 			    result = result +'</div>	';
 
-	   			result = result +'<div class="mailbox-controls clearfix">';
+	   			/* result = result +'<div class="mailbox-controls clearfix">';
 	   			result = result +'<div class="pull-left">';
 	   			result = result +'<div class="btn-group">';
 	   			result = result +'<button class="btn btn-danger" type="button" title="Delete"><i class="fa fa-trash-o"></i></button>';
@@ -501,7 +501,7 @@ function getEmailDetails(uuid){
 	   			result = result +'<button class="btn btn-default" type="button" title="Refresh"><i class="fa fa-refresh"></i></button>';
 	   			result = result +'<button class="btn btn-default" type="button" title="Print"><i class="fa fa-print"></i></button>';
 	   			result = result +'</div>';
-	   			result = result +'</div>';
+	   			result = result +'</div>'; */
 	   			  
 	   			result = result +'<div class="mailbox-read-message clearfix borderbottm-none">';
 	   			
