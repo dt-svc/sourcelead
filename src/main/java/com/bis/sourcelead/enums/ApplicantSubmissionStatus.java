@@ -20,6 +20,10 @@ public enum ApplicantSubmissionStatus {
     OFFERHIRED("hired"),
     FEEDBACK("feedback"),
     
+    ATTENDING("Attending"),
+    NOT_ATTENDING("Not_Attending"),
+    MAYBE("Maybe"),
+    
     CLIENT_OFFERMADE("client_offer_made"),
     CLIENT_OFFERACCEPTED("client_offer_accepted"),
     CLIENT_OFFERREJECTED("client_offer_rejected"),

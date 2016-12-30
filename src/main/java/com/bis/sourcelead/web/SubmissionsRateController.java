@@ -137,7 +137,7 @@ public class SubmissionsRateController {
 			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 			//requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
-			requirementSubmissionHistory.setFromStage("REQUEST_SENT");
+			requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REQUEST_SENT.toString());
 			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION_ACCEPT);
 			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 			
