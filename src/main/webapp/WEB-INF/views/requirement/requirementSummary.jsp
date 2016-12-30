@@ -1051,7 +1051,6 @@ function cancelAlert(){
 --%>
 <script>  
 function requirementPipeline(requirementId,submissionType){
-	
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
@@ -1494,6 +1493,7 @@ function requirementPipeline(requirementId,submissionType){
 							$("#status-data").empty();
 							$("#status-data").append(result);
 							$("#tab-2").append(status-data);
+							$("#loading").removeAttr("style"); 
 							$("#emptyPipelinelist").val(json.length);
 							
 							documentpagination();
